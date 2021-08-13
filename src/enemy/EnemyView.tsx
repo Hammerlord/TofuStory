@@ -131,7 +131,7 @@ const EnemyView = ({ enemy, onClick, isAffectedByArea, action, ...other }) => {
     const classes = useStyles();
 
     useEffect(() => {
-        if (enemy === null || oldEnemyState === null) {
+        if (enemy === null || oldEnemyState === null || oldEnemyState.id !== enemy.id) {
             setOldEnemyState(enemy);
             return;
         }
