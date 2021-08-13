@@ -371,12 +371,12 @@ const BattlefieldContainer = ({ player }) => {
     };
 
     const onPlayerTurnStart = () => {
-        updatePlayer({
+        updatePlayer((player) => ({
             resources: Math.min(
                 player.maxResources,
                 player.resources + player.resourcesPerTurn
             ),
-        });
+        }));
         drawCards();
     };
 
