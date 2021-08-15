@@ -13,12 +13,7 @@ import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
 import { Event, parsePlayerAbilityActions } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
-import {
-    canUseAbility,
-    getBattleEndResult,
-    isValidTarget,
-    updateEffects,
-} from "./utils";
+import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 
 const CARDS_PER_DRAW = 5;
 
@@ -107,8 +102,7 @@ const BattlefieldContainer = ({
     const [enemies, setEnemies] = useState(challenge.createEnemies());
     const [allies, setAllies] = useState(initialAllies);
     const [recentActions, setRecentActions] = useState([]);
-    const [isPlayingAbilityAnimations, setIsPlayingAbilityAnimations] =
-        useState(false);
+    const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
     const [notification, setNotification] = useState(null) as [
         BattleNotification,
         Function
@@ -116,17 +110,14 @@ const BattlefieldContainer = ({
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
 
-    const player = allies.find(
-        (ally: Combatant | null) => ally && ally.isPlayer
-    );
+    const player = allies.find((ally: Combatant | null) => ally && ally.isPlayer);
 
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
     const classes = useStyles();
 
     const noMoreMoves =
-        !hand.length ||
-        hand.every((ability) => !canUseAbility(player, ability));
+        !hand.length || hand.every((ability) => !canUseAbility(player, ability));
 
     const handleAbilityClick = (i: number) => {
         if (!canUseAbility(player, hand[i])) {
@@ -204,26 +195,36 @@ const BattlefieldContainer = ({
     };
 
     const drawCards = () => {
+        let i = 0;
         let newDeck = deck.slice();
-        let newDiscard = [...hand, ...discard];
-        let newHand = newDeck.splice(0, CARDS_PER_DRAW);
-        if (!newDeck.length) {
-            newDeck = shuffle(newDiscard);
-            newDiscard = [];
-            newHand = [
-                ...newHand,
-                ...newDeck.splice(0, CARDS_PER_DRAW - newHand.length),
-            ];
-        }
+        let newDiscard = discard.slice();
+        let newHand = [];
+        setIsPlayingAnimations(true);
+        const drawCard = () => {
+            setTimeout(() => {
+                if (!newDeck.length) {
+                    newDeck = shuffle(newDiscard);
+                    newDiscard = [];
+                }
 
-        setDeck(newDeck);
-        setHand(newHand);
-        setDiscard(newDiscard);
+                const card = newDeck.shift();
+                newHand = [...newHand, card];
+                setDeck(newDeck);
+                setHand(newHand);
+                setDiscard(newDiscard);
+                ++i;
+                if (i < CARDS_PER_DRAW) {
+                    drawCard();
+                } else {
+                    setIsPlayingAnimations(false);
+                }
+            }, 200);
+        };
+
+        drawCard();
     };
 
-    const updatePlayer = (
-        statChanges: Function | object
-    ): (Combatant | null)[] => {
+    const updatePlayer = (statChanges: Function | object): (Combatant | null)[] => {
         const updatedAllies = allies.map((ally) => {
             if (!ally || !ally.isPlayer) {
                 return ally;
@@ -269,7 +270,7 @@ const BattlefieldContainer = ({
         // Spaghetti play animations
         if (recentActions.length) {
             if (!isPlayingAbilityAnimations) {
-                setIsPlayingAbilityAnimations(true);
+                setIsPlayingAnimations(true);
             }
 
             setTimeout(() => {
@@ -298,7 +299,7 @@ const BattlefieldContainer = ({
             setIsPlayerTurn(true);
             setEnemies(enemies.map(updateEffects));
         }
-        setIsPlayingAbilityAnimations(false);
+        setIsPlayingAnimations(false);
     }, [recentActions]);
 
     const handleEndTurn = () => {
@@ -323,9 +324,7 @@ const BattlefieldContainer = ({
                     {notification.text}
                 </Notification>
             )}
-            {showTurnAnnouncement && (
-                <TurnAnnouncement isPlayerTurn={isPlayerTurn} />
-            )}
+            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
             <div className={classes.battlefieldContainer}>
                 <div className={classes.battlefield}>
                     <div className={classes.enemiesContainer}>
@@ -340,9 +339,7 @@ const BattlefieldContainer = ({
                                         })
                                     }
                                     onMouseEnter={() => setHoveredEnemyIndex(i)}
-                                    onMouseLeave={() =>
-                                        setHoveredEnemyIndex(null)
-                                    }
+                                    onMouseLeave={() => setHoveredEnemyIndex(null)}
                                     isAffectedByArea={
                                         !disableActions && isAffectedByArea(i)
                                     }
@@ -356,20 +353,19 @@ const BattlefieldContainer = ({
                         <div className={classes.leftContainer}>
                             <Deck deck={deck} discard={discard} />
                         </div>
-                            <PlayerView
-                                onClick={() =>
-                                    handleTargetClick({
-                                        index: null,
-                                        side: "allies", // Ha
-                                    })
-                                }
-                                isAffectedByArea={
-                                    !disableActions &&
-                                    hand[selectedAbilityIndex]
-                                }
-                                player={player}
-                                action={getAction(player)}
-                            />
+                        <PlayerView
+                            onClick={() =>
+                                handleTargetClick({
+                                    index: null,
+                                    side: "allies", // Ha
+                                })
+                            }
+                            isAffectedByArea={
+                                !disableActions && hand[selectedAbilityIndex]
+                            }
+                            player={player}
+                            action={getAction(player)}
+                        />
                         <div className={classes.rightContainer}>
                             <EndTurnButton
                                 disabled={disableActions}
@@ -382,8 +378,7 @@ const BattlefieldContainer = ({
                                 <AbilityView
                                     onClick={() => handleAbilityClick(i)}
                                     isSelected={
-                                        isPlayerTurn &&
-                                        selectedAbilityIndex === i
+                                        isPlayerTurn && selectedAbilityIndex === i
                                     }
                                     key={i}
                                     ability={ability}
