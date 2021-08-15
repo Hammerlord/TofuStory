@@ -6,7 +6,6 @@ import AbilityView from "../ability/AbilityView";
 import { Ability, Action, TARGET_TYPES } from "../ability/types";
 import PlayerView from "../character/PlayerView";
 import { Combatant } from "../character/types";
-import { createEnemies } from "../enemy/createEnemy";
 import enemyTurn from "../enemy/enemyTurn";
 import EnemyView from "../enemy/EnemyView";
 import { shuffle } from "../utils";
@@ -15,6 +14,7 @@ import Notification from "./Notification";
 import { Event, parsePlayerAbilityActions } from "./parseAbilityActions";
 import { updateEffects } from "./utils";
 import { cloneDeep } from "lodash";
+import BattleEndOverlay from "./BattleEndOverlay";
 
 const useStyles = createUseStyles({
     battlefieldContainer: {
@@ -35,7 +35,7 @@ const useStyles = createUseStyles({
     enemiesContainer: {
         position: "relative",
         height: "45%",
-        width: "width: calc(100% - 32px)",
+        width: "calc(100% - 32px)",
         marginTop: "36px",
     },
     enemies: {
@@ -301,12 +301,12 @@ interface BattleNotification {
     severity: "warning" | "info" | "error";
 }
 
-const BattlefieldContainer = ({ player }) => {
+const BattlefieldContainer = ({ player, challenge, onBattleEnd }) => {
     const [deck, setDeck] = useState(shuffle(player.deck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
     const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-    const [enemies, setEnemies] = useState(createEnemies());
+    const [enemies, setEnemies] = useState(challenge.createEnemies());
     const [allies, setAllies] = useState([
         null,
         null,
@@ -322,14 +322,13 @@ const BattlefieldContainer = ({ player }) => {
         Function
     ];
     const [showTurnNotification, setShowTurnNotification] = useState(false);
+    const [isBattleEnded, setIsMatchOver] = useState(false);
 
     const classes = useBattlefieldContainerStyles();
     const discardHand = () => {
         setHand([]);
         setDiscard([...hand, ...discard]);
     };
-
-    const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP === 0);
 
     const drawCards = () => {
         let newDeck = deck.slice();
@@ -380,14 +379,34 @@ const BattlefieldContainer = ({ player }) => {
         drawCards();
     };
 
+    const getBattleEndResult = () => {
+        const enemiesAllDead = enemies.every(
+            (enemy) => !enemy || enemy.HP === 0
+        );
+        const playerDead = allies.find((ally) => ally && ally.isPlayer).HP <= 0;
+
+        if (enemiesAllDead && playerDead) {
+            return "Draw";
+        }
+
+        if (enemiesAllDead) {
+            return "Victory";
+        }
+
+        if (playerDead) {
+            return "Defeat";
+        }
+    };
+
     useEffect(() => {
         if (isPlayingAbilityAnimations) {
             return;
         }
 
-        if (enemiesAllDead) {
+        const isBattleEnded = Boolean(getBattleEndResult());
+        if (isBattleEnded) {
             setTimeout(() => {
-                setEnemies(createEnemies());
+                setIsMatchOver(true);
             }, 1000);
         }
     }, [enemies, isPlayingAbilityAnimations]);
@@ -504,7 +523,7 @@ const BattlefieldContainer = ({ player }) => {
                 onTargetClick={handleAbilityUse}
                 disableActions={
                     isPlayingAbilityAnimations ||
-                    enemiesAllDead ||
+                    Boolean(getBattleEndResult()) ||
                     showTurnNotification
                 }
                 onClickEndTurn={handleEndTurn}
@@ -516,6 +535,12 @@ const BattlefieldContainer = ({ player }) => {
                 }
                 currentAction={recentActions[0]}
             />
+            {isBattleEnded && (
+                <BattleEndOverlay
+                    result={getBattleEndResult()}
+                    onClickContinue={onBattleEnd}
+                />
+            )}
         </div>
     );
 };

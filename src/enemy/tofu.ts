@@ -37,7 +37,7 @@ export interface Enemy {
 export const smalltofu = {
     name: "Smalltofu",
     image: smalltofuPortrait,
-    maxHP: 3,
+    maxHP: 5,
     armor: 0,
     damage: 1,
     abilities: [loaf],

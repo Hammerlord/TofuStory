@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { Shield, Blood, CrossedSwords, Dizzy, Heart } from "../images";
 import { Fury } from "../resource/ResourcesView";
-import { EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 const useAreaStyles = createUseStyles({
     area: {
@@ -48,6 +48,7 @@ const useStyles = createUseStyles({
         background: "#d9ca96",
         transition: "transform 0.25s",
         borderRadius: "2px",
+        textAlign: "center",
     },
     header: {
         display: "flex",
@@ -66,7 +67,7 @@ const useStyles = createUseStyles({
         borderTop: "3px solid rgb(221, 46, 68)",
     },
     support: {
-        borderTop: "3px solid rgb(23, 111, 189)"
+        borderTop: "3px solid rgb(23, 111, 189)",
     },
     body: {
         minHeight: "40px",
@@ -85,23 +86,32 @@ const useStyles = createUseStyles({
     },
 });
 
-const AbilityView = ({ onClick, isSelected, ability }) => {
+interface AbilityViewProps {
+    onClick?: (event: any) => void;
+    isSelected?: boolean;
+    ability: Ability;
+}
+
+const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     const classes = useStyles();
     const { actions = [], resourceCost, name } = ability;
     const { area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF)
-        .reduce(
-            (acc, { healing = 0, damage = 0, armor = 0, resources = 0 }) => {
-                return {
-                    selfHealing: (acc.healing || 0) + healing,
-                    selfArmor: (acc.armor || 0) + armor,
-                    selfDamage: (acc.damage || 0) + damage,
-                    resourceGain: (acc.resources || 0) + resources,
-                };
-            },
-            {}
-        );
+        .reduce((acc: any, current: Action) => {
+            const {
+                healing = 0,
+                damage = 0,
+                armor = 0,
+                resources = 0,
+            } = current;
+            return {
+                selfHealing: (acc.selfHealing || 0) + healing,
+                selfArmor: (acc.selfArmor || 0) + armor,
+                selfDamage: (acc.selfDamage || 0) + damage,
+                resourceGain: (acc.resourceGain || 0) + resources,
+            };
+        }, {}) as any;
     const damage = actions
         .filter(({ target }) => target === TARGET_TYPES.HOSTILE)
         .reduce((acc, { damage = 0 }) => acc + damage, 0);
@@ -131,7 +141,9 @@ const AbilityView = ({ onClick, isSelected, ability }) => {
             className={classNames(classes.root, {
                 [classes.selectedAbility]: isSelected,
                 [classes.offensive]: targetType === TARGET_TYPES.HOSTILE,
-                [classes.support]: targetType === TARGET_TYPES.FRIENDLY ||  targetType === TARGET_TYPES.SELF
+                [classes.support]:
+                    targetType === TARGET_TYPES.FRIENDLY ||
+                    targetType === TARGET_TYPES.SELF,
             })}
         >
             <span className={classes.header}>

@@ -13,7 +13,7 @@ const useStyles = createUseStyles({
 });
 
 interface FuryInterface {
-    text?: string;
+    text?: string | number;
     className?: string;
 }
 
