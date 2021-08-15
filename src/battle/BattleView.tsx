@@ -1,22 +1,34 @@
-import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
 import AbilityView from "../ability/AbilityView";
-import { Ability, Action, TARGET_TYPES } from "../ability/types";
+import { Ability, Action } from "../ability/types";
 import PlayerView from "../character/PlayerView";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
 import EnemyView from "../enemy/EnemyView";
 import { shuffle } from "../utils";
+import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
+import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
 import { Event, parsePlayerAbilityActions } from "./parseAbilityActions";
-import { updateEffects } from "./utils";
-import { cloneDeep } from "lodash";
-import BattleEndOverlay from "./BattleEndOverlay";
+import TurnAnnouncement from "./TurnNotification";
+import {
+    canUseAbility,
+    getBattleEndResult,
+    isValidTarget,
+    updateEffects,
+} from "./utils";
+
+const CARDS_PER_DRAW = 5;
 
 const useStyles = createUseStyles({
+    root: {
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        background: "#968e72",
+    },
     battlefieldContainer: {
         height: "100%",
         display: "flex",
@@ -73,60 +85,52 @@ const useStyles = createUseStyles({
         right: "32px",
         top: "0",
     },
-    endTurn: {
-        padding: "8px 16px",
-        background: "#ffd736",
-        fontSize: "16px",
-        fontWeight: "bold",
-        borderRadius: "4px",
-        border: "2px solid rgba(0, 0, 0, 0.3)",
-        boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)",
-        "&.no-more-moves": {
-            background: "#25b814",
-            color: "white",
-        },
-
-        "&.disabled": {
-            background: "#cccccc",
-        },
-    },
 });
 
-const Battlefield = ({
-    enemies,
-    hand,
-    deck,
-    discard,
-    isPlayerTurn,
-    allies,
-    onTargetClick,
-    disableActions,
-    onClickEndTurn,
-    showNotification,
-    currentAction,
+interface BattleNotification {
+    id: string; // For rerendering the same message if applicable
+    text: string;
+    severity: "warning" | "info" | "error";
+}
+
+const BattlefieldContainer = ({
+    challenge,
+    onBattleEnd,
+    initialDeck,
+    initialAllies,
+    tutorialMode,
 }) => {
+    const [deck, setDeck] = useState(shuffle(initialDeck));
+    const [discard, setDiscard] = useState([]);
+    const [hand, setHand] = useState([]);
+    const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+    const [enemies, setEnemies] = useState(challenge.createEnemies());
+    const [allies, setAllies] = useState(initialAllies);
+    const [recentActions, setRecentActions] = useState([]);
+    const [isPlayingAbilityAnimations, setIsPlayingAbilityAnimations] =
+        useState(false);
+    const [notification, setNotification] = useState(null) as [
+        BattleNotification,
+        Function
+    ];
+    const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
+    const [battleEndResult, setBattleEndResult] = useState(undefined);
+
     const player = allies.find(
         (ally: Combatant | null) => ally && ally.isPlayer
     );
-    const canUseAbility = (ability): boolean => {
-        if (!ability) {
-            return false;
-        }
-
-        const { resourceCost = 0 } = ability;
-        return resourceCost <= player.resources;
-    };
 
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
     const classes = useStyles();
 
     const noMoreMoves =
-        !hand.length || hand.every((ability) => !canUseAbility(ability));
+        !hand.length ||
+        hand.every((ability) => !canUseAbility(player, ability));
 
     const handleAbilityClick = (i: number) => {
-        if (!canUseAbility(hand[i])) {
-            showNotification({
+        if (!canUseAbility(player, hand[i])) {
+            setNotification({
                 severity: "warning",
                 text: `Need more resources to use ${hand[i].name}.`,
             });
@@ -138,38 +142,43 @@ const Battlefield = ({
         }
     };
 
-    const isValidTarget = ({ ability, side, index }): boolean => {
-        // Get the first action target to determine whether a valid target has been clicked.
-        const { actions = [] } = ability;
-        if (!actions[0]) {
-            return true;
+    const handleAbilityUse = ({ index, selectedAbilityIndex, side }) => {
+        const newHand = hand.slice();
+        const [card] = newHand.splice(selectedAbilityIndex, 1);
+        const { resourceCost = 0, actions } = card as Ability;
+
+        let recentAllies = allies;
+        if (resourceCost) {
+            recentAllies = updatePlayer((player) => ({
+                resources: player.resources - resourceCost,
+            }));
         }
 
-        const { target } = actions[0];
-
-        if (side === "allies") {
-            return (
-                target === TARGET_TYPES.FRIENDLY || target === TARGET_TYPES.SELF
-            );
-        }
-
-        return target === TARGET_TYPES.HOSTILE;
+        setRecentActions(
+            parsePlayerAbilityActions({
+                actions,
+                targetIndex: index,
+                enemies,
+                allies: recentAllies,
+                side,
+                resourceCost,
+                casterId: player.id,
+            })
+        );
+        setDiscard([card, ...discard]);
+        setHand(newHand);
     };
 
-    const handleTargetClick = ({ target, side, index }) => {
+    const handleTargetClick = ({ side, index }) => {
         const selectedAbility = hand[selectedAbilityIndex];
-        if (
-            !selectedAbility ||
-            disableActions ||
-            !canUseAbility(selectedAbility)
-        ) {
+        if (disableActions || !canUseAbility(player, selectedAbility)) {
             return;
         }
-        if (isValidTarget({ ability: selectedAbility, side, index })) {
-            onTargetClick({ target, index, selectedAbilityIndex });
+        if (isValidTarget({ ability: selectedAbility, side })) {
+            handleAbilityUse({ index, selectedAbilityIndex, side });
             setSelectedAbilityIndex(null);
         } else {
-            showNotification({
+            setNotification({
                 severity: "warning",
                 text: `Please select a valid target for ${selectedAbility.name}.`,
             });
@@ -189,145 +198,9 @@ const Battlefield = ({
 
     const getAction = (character): Action => {
         // Returns the ability if the character is using it.
-        if (currentAction?.casterId === character?.id) {
-            return currentAction?.action;
+        if (recentActions[0]?.casterId === character?.id) {
+            return recentActions[0]?.action;
         }
-    };
-
-    return (
-        <div className={classes.battlefieldContainer}>
-            <div className={classes.battlefield}>
-                <div className={classes.enemiesContainer}>
-                    <div className={classes.enemies}>
-                        {enemies.map((enemy, i: number) => (
-                            <EnemyView
-                                enemy={enemy}
-                                onClick={() =>
-                                    handleTargetClick({
-                                        target: enemy,
-                                        index: i,
-                                        side: "enemies",
-                                    })
-                                }
-                                onMouseEnter={() => setHoveredEnemyIndex(i)}
-                                onMouseLeave={() => setHoveredEnemyIndex(null)}
-                                isAffectedByArea={
-                                    !disableActions && isAffectedByArea(i)
-                                }
-                                key={i}
-                                action={getAction(enemy)}
-                            />
-                        ))}
-                    </div>
-                </div>
-                <div className={classes.playerContainer}>
-                    <div className={classes.leftContainer}>
-                        <Deck deck={deck} discard={discard} />
-                    </div>
-                    <div>
-                        <div />
-                        <PlayerView
-                            onClick={() =>
-                                handleTargetClick({
-                                    target: player,
-                                    index: null,
-                                    side: "allies", // Ha
-                                })
-                            }
-                            isAffectedByArea={
-                                !disableActions && hand[selectedAbilityIndex]
-                            }
-                            player={player}
-                            action={getAction(player)}
-                        />
-                    </div>
-                    <div className={classes.rightContainer}>
-                        <button
-                            className={classNames(classes.endTurn, {
-                                "no-more-moves": noMoreMoves,
-                                disabled: !isPlayerTurn || disableActions,
-                            })}
-                            disabled={!isPlayerTurn || disableActions}
-                            onClick={onClickEndTurn}
-                        >
-                            End Turn
-                        </button>
-                    </div>
-                    <div className={classes.abilities}>
-                        {hand.map((ability: Ability, i: number) => (
-                            <AbilityView
-                                onClick={() => handleAbilityClick(i)}
-                                isSelected={
-                                    isPlayerTurn && selectedAbilityIndex === i
-                                }
-                                key={i}
-                                ability={ability}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const CARDS_PER_DRAW = 5;
-
-const useBattlefieldContainerStyles = createUseStyles({
-    root: {
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        background: "#968e72",
-    },
-    turnNotification: {
-        fontSize: "24px",
-        fontWeight: "bold",
-        background: "rgba(0, 0, 0, 0.75)",
-        color: "white",
-        textAlign: "center",
-        position: "absolute",
-        padding: "32px 48px",
-        left: "50%",
-        top: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
-        zIndex: 5,
-    },
-});
-
-interface BattleNotification {
-    id: string; // For rerendering the same message if applicable
-    text: string;
-    severity: "warning" | "info" | "error";
-}
-
-const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutorialMode }) => {
-    const [deck, setDeck] = useState(shuffle(deckUsed));
-    const [discard, setDiscard] = useState([]);
-    const [hand, setHand] = useState([]);
-    const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-    const [enemies, setEnemies] = useState(challenge.createEnemies());
-    const [allies, setAllies] = useState([
-        null,
-        null,
-        { ...cloneDeep(player), isPlayer: true },
-        null,
-        null,
-    ]);
-    const [recentActions, setRecentActions] = useState([]);
-    const [isPlayingAbilityAnimations, setIsPlayingAbilityAnimations] =
-        useState(false);
-    const [notification, setNotification] = useState(null) as [
-        BattleNotification,
-        Function
-    ];
-    const [showTurnNotification, setShowTurnNotification] = useState(false);
-    const [isBattleEnded, setIsMatchOver] = useState(false);
-
-    const classes = useBattlefieldContainerStyles();
-    const discardHand = () => {
-        setHand([]);
-        setDiscard([...hand, ...discard]);
     };
 
     const drawCards = () => {
@@ -369,61 +242,24 @@ const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutori
         return updatedAllies;
     };
 
-    const onPlayerTurnStart = () => {
-        updatePlayer((player) => ({
-            resources: Math.min(
-                player.maxResources,
-                player.resources + player.resourcesPerTurn
-            ),
-        }));
-        drawCards();
-    };
-
-    const getBattleEndResult = () => {
-        const enemiesAllDead = enemies.every(
-            (enemy) => !enemy || enemy.HP === 0
-        );
-        const playerDead = allies.find((ally) => ally && ally.isPlayer).HP <= 0;
-
-        if (enemiesAllDead && playerDead) {
-            return "Draw";
-        }
-
-        if (enemiesAllDead) {
-            return "Victory";
-        }
-
-        if (playerDead) {
-            return "Defeat";
-        }
-    };
-
-    useEffect(() => {
-        if (isPlayingAbilityAnimations) {
-            return;
-        }
-
-        const isBattleEnded = Boolean(getBattleEndResult());
-        if (isBattleEnded) {
-            setTimeout(() => {
-                setIsMatchOver(true);
-            }, 1000);
-        }
-    }, [enemies, isPlayingAbilityAnimations]);
-
     useEffect(() => {
         const TURN_NOTIFICATION_WAIT_TIME = 1000;
-        setShowTurnNotification(true);
-
-        if (isPlayerTurn) {
-            onPlayerTurnStart();
-        }
+        setShowTurnAnnouncement(true);
 
         setTimeout(() => {
-            setShowTurnNotification(false);
+            setShowTurnAnnouncement(false);
 
-            if (!isPlayerTurn) {
-                discardHand();
+            if (isPlayerTurn) {
+                updatePlayer((player) => ({
+                    resources: Math.min(
+                        player.maxResources,
+                        player.resources + player.resourcesPerTurn
+                    ),
+                }));
+                drawCards();
+            } else {
+                setHand([]);
+                setDiscard([...hand, ...discard]);
                 setRecentActions(enemyTurn({ enemies, allies }));
             }
         }, TURN_NOTIFICATION_WAIT_TIME);
@@ -431,10 +267,6 @@ const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutori
 
     useEffect(() => {
         // Spaghetti play animations
-        if (showTurnNotification) {
-            return;
-        }
-
         if (recentActions.length) {
             if (!isPlayingAbilityAnimations) {
                 setIsPlayingAbilityAnimations(true);
@@ -442,60 +274,43 @@ const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutori
 
             setTimeout(() => {
                 const updatedRecentActions = recentActions.slice();
-                const recentAction = updatedRecentActions.shift() as Event;
-                const { updatedEnemies, updatedAllies } = recentAction;
+                const { updatedEnemies, updatedAllies } =
+                    updatedRecentActions.shift() as Event;
                 setEnemies(updatedEnemies);
                 setAllies(updatedAllies);
+
                 setTimeout(() => {
-                    setRecentActions(updatedRecentActions);
+                    const battleEnd = getBattleEndResult({
+                        enemies: updatedEnemies,
+                        allies: updatedAllies,
+                    });
+                    if (battleEnd) {
+                        setBattleEndResult(battleEnd);
+                    } else {
+                        setRecentActions(updatedRecentActions);
+                    }
                 }, 900);
             }, 400);
-        } else {
-            if (!isPlayerTurn) {
-                setIsPlayerTurn(true);
-                setShowTurnNotification(true);
-                setEnemies(enemies.map(updateEffects));
-            }
-            setIsPlayingAbilityAnimations(false);
+            return;
         }
+
+        if (!isPlayerTurn) {
+            setIsPlayerTurn(true);
+            setEnemies(enemies.map(updateEffects));
+        }
+        setIsPlayingAbilityAnimations(false);
     }, [recentActions]);
-
-    const handleAbilityUse = ({
-        target,
-        index,
-        selectedAbilityIndex,
-        side,
-    }) => {
-        const newHand = hand.slice();
-        const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, actions } = card as Ability;
-
-        let recentAllies = allies;
-        if (resourceCost) {
-            recentAllies = updatePlayer((player) => ({
-                resources: player.resources - resourceCost,
-            }));
-        }
-
-        setRecentActions(
-            parsePlayerAbilityActions({
-                actions,
-                targetIndex: index,
-                enemies,
-                allies: recentAllies,
-                side,
-                resourceCost,
-                casterId: player.id,
-            })
-        );
-        setDiscard([card, ...discard]);
-        setHand(newHand);
-    };
 
     const handleEndTurn = () => {
         setAllies(allies.map(updateEffects));
         setIsPlayerTurn(false);
     };
+
+    const disableActions =
+        isPlayingAbilityAnimations ||
+        battleEndResult ||
+        showTurnAnnouncement ||
+        !isPlayerTurn;
 
     return (
         <div className={classes.root}>
@@ -508,37 +323,79 @@ const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutori
                     {notification.text}
                 </Notification>
             )}
-            {showTurnNotification && (
-                <div className={classes.turnNotification}>
-                    {isPlayerTurn ? "Player Turn" : "Enemy Turn"}
-                </div>
+            {showTurnAnnouncement && (
+                <TurnAnnouncement isPlayerTurn={isPlayerTurn} />
             )}
-            <Battlefield
-                allies={allies}
-                enemies={enemies}
-                deck={deck}
-                discard={discard}
-                hand={hand}
-                isPlayerTurn={isPlayerTurn}
-                onTargetClick={handleAbilityUse}
-                disableActions={
-                    isPlayingAbilityAnimations ||
-                    Boolean(getBattleEndResult()) ||
-                    showTurnNotification
-                }
-                onClickEndTurn={handleEndTurn}
-                showNotification={(notification) =>
-                    setNotification({
-                        ...notification,
-                        id: uuid.v4(),
-                    })
-                }
-                currentAction={recentActions[0]}
-                tutorialMode={tutorialMode}
-            />
-            {isBattleEnded && (
+            <div className={classes.battlefieldContainer}>
+                <div className={classes.battlefield}>
+                    <div className={classes.enemiesContainer}>
+                        <div className={classes.enemies}>
+                            {enemies.map((enemy, i: number) => (
+                                <EnemyView
+                                    enemy={enemy}
+                                    onClick={() =>
+                                        handleTargetClick({
+                                            index: i,
+                                            side: "enemies",
+                                        })
+                                    }
+                                    onMouseEnter={() => setHoveredEnemyIndex(i)}
+                                    onMouseLeave={() =>
+                                        setHoveredEnemyIndex(null)
+                                    }
+                                    isAffectedByArea={
+                                        !disableActions && isAffectedByArea(i)
+                                    }
+                                    key={i}
+                                    action={getAction(enemy)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div className={classes.playerContainer}>
+                        <div className={classes.leftContainer}>
+                            <Deck deck={deck} discard={discard} />
+                        </div>
+                            <PlayerView
+                                onClick={() =>
+                                    handleTargetClick({
+                                        index: null,
+                                        side: "allies", // Ha
+                                    })
+                                }
+                                isAffectedByArea={
+                                    !disableActions &&
+                                    hand[selectedAbilityIndex]
+                                }
+                                player={player}
+                                action={getAction(player)}
+                            />
+                        <div className={classes.rightContainer}>
+                            <EndTurnButton
+                                disabled={disableActions}
+                                highlight={noMoreMoves}
+                                onClick={handleEndTurn}
+                            />
+                        </div>
+                        <div className={classes.abilities}>
+                            {hand.map((ability: Ability, i: number) => (
+                                <AbilityView
+                                    onClick={() => handleAbilityClick(i)}
+                                    isSelected={
+                                        isPlayerTurn &&
+                                        selectedAbilityIndex === i
+                                    }
+                                    key={i}
+                                    ability={ability}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {battleEndResult && (
                 <BattleEndOverlay
-                    result={getBattleEndResult()}
+                    result={battleEndResult}
                     onClickContinue={onBattleEnd}
                 />
             )}

@@ -17,6 +17,7 @@ import {
     slam,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
+import { cloneDeep } from "lodash";
 
 enum PLAYER_STATE {
     CLASS_SELECTION = 0,
@@ -152,10 +153,16 @@ const MainMenu = () => {
             )}
             {activityState === PLAYER_STATE.BATTLE && (
                 <BattlefieldContainer
-                    player={player}
+                    initialAllies={[
+                        null,
+                        null,
+                        { ...cloneDeep(player), isPlayer: true },
+                        null,
+                        null,
+                    ]}
                     onBattleEnd={handleBattleEnd}
                     challenge={challenge}
-                    deckUsed={challenge.presetDeck || deck}
+                    initialDeck={challenge.presetDeck || deck}
                     tutorialMode={challenge.isTutorial}
                 />
             )}

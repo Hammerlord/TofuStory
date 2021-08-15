@@ -1,19 +1,11 @@
 import { createUseStyles } from "react-jss";
+import Overlay from "./Overlay";
 
 interface BattleEndOverlay {
     result: "Victory" | "Defeat" | "Draw";
 }
 
 const useStyles = createUseStyles({
-    root: {
-        width: "100%",
-        height: "100%",
-        left: 0,
-        top: 0,
-        position: "fixed",
-        background: "rgba(0, 0, 0, 0.25)",
-        zIndex: "3",
-    },
     inner: {
         position: "absolute",
         left: "50%",
@@ -30,14 +22,14 @@ const useStyles = createUseStyles({
 const BattleEndOverlay = ({ result, onClickContinue }) => {
     const classes = useStyles();
     return (
-        <div className={classes.root}>
+        <Overlay>
             <div className={classes.inner}>
                 <h2>{result}</h2>
                 <button className={classes.continue} onClick={onClickContinue}>
                     Continue
                 </button>
             </div>
-        </div>
+        </Overlay>
     );
 };
 
