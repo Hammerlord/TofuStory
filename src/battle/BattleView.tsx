@@ -301,8 +301,8 @@ interface BattleNotification {
     severity: "warning" | "info" | "error";
 }
 
-const BattlefieldContainer = ({ player, challenge, onBattleEnd }) => {
-    const [deck, setDeck] = useState(shuffle(player.deck));
+const BattlefieldContainer = ({ player, challenge, onBattleEnd, deckUsed, tutorialMode }) => {
+    const [deck, setDeck] = useState(shuffle(deckUsed));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
     const [isPlayerTurn, setIsPlayerTurn] = useState(true);
@@ -534,6 +534,7 @@ const BattlefieldContainer = ({ player, challenge, onBattleEnd }) => {
                     })
                 }
                 currentAction={recentActions[0]}
+                tutorialMode={tutorialMode}
             />
             {isBattleEnded && (
                 <BattleEndOverlay

@@ -73,24 +73,6 @@ const MainMenu = () => {
     const [player, setPlayer] = useState({
         id: uuid.v4(),
         class: PLAYER_CLASSES.WARRIOR,
-        deck: [
-            cleave,
-            cleave,
-            charge,
-            bash,
-            bash,
-            bash,
-            slam,
-            slam,
-            anger,
-            rampage,
-            shieldStrike,
-            block,
-            block,
-            rend,
-            rend,
-            bloodthirst,
-        ],
         HP: 25,
         maxHP: 25,
         resources: 0,
@@ -99,6 +81,24 @@ const MainMenu = () => {
         armor: 0,
         effects: [],
     });
+    const [deck, setDeck] = useState([
+        cleave,
+        cleave,
+        charge,
+        bash,
+        bash,
+        bash,
+        slam,
+        slam,
+        anger,
+        rampage,
+        shieldStrike,
+        block,
+        block,
+        rend,
+        rend,
+        bloodthirst,
+    ]);
 
     const classes = useStyles();
 
@@ -118,7 +118,7 @@ const MainMenu = () => {
     };
 
     const handleSaveDeck = (deck) => {
-        setPlayer({ ...player, deck });
+        setDeck(deck);
         setActivityState(PLAYER_STATE.ACTIVITY_MENU);
     };
 
@@ -147,7 +147,7 @@ const MainMenu = () => {
                     allCards={allCards}
                     onSaveDeck={handleSaveDeck}
                     onBack={() => setActivityState(PLAYER_STATE.ACTIVITY_MENU)}
-                    currentDeck={player.deck}
+                    currentDeck={deck}
                 />
             )}
             {activityState === PLAYER_STATE.BATTLE && (
@@ -155,6 +155,8 @@ const MainMenu = () => {
                     player={player}
                     onBattleEnd={handleBattleEnd}
                     challenge={challenge}
+                    deckUsed={challenge.presetDeck || deck}
+                    tutorialMode={challenge.isTutorial}
                 />
             )}
         </>
