@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { bash, charge, cleave, slam } from "../ability/Abilities";
 import { Ability } from "../ability/types";
-import createEnemyCombatant, { createEnemies } from "../enemy/createEnemy";
+import createCombatant, { createEnemies } from "../enemy/createEnemy";
 import { smalltofu } from "../enemy/tofu";
 
 export interface Challenge {
@@ -18,7 +18,7 @@ const challenges: Challenge[] = [
         name: "Tutorial",
         description: "Learn about basic gameplay",
         createEnemies: () =>
-            [null, smalltofu, null, smalltofu, null].map(createEnemyCombatant),
+            [null, smalltofu, null, smalltofu, null].map(createCombatant),
         presetDeck: [bash, bash, bash, bash, bash, slam, charge],
         isTutorial: true,
     },
@@ -27,7 +27,7 @@ const challenges: Challenge[] = [
         description: "Learn about area attacks",
         createEnemies: () =>
             [smalltofu, smalltofu, smalltofu, smalltofu, smalltofu].map(
-                createEnemyCombatant
+                createCombatant
             ),
         presetDeck: [bash, bash, bash, bash, bash, cleave, cleave],
         isTutorial: true,

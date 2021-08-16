@@ -29,7 +29,12 @@ const useStyles = createUseStyles({
     },
 });
 
-const Armor = ({ amount, className }) => {
+interface ArmorInterface {
+    amount: number;
+    className?: string;
+}
+
+const Armor = ({ amount, className }: ArmorInterface) => {
     const [oldAmount, setOldAmount] = useState(0);
     useEffect(() => {
         let timeout;

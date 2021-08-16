@@ -71,6 +71,7 @@ const enemyMove = ({ casterId, allies, enemies }): Event[] => {
                 indices.push(i);
             }
         });
+        console.log('indices', indices);
         return indices;
     };
 

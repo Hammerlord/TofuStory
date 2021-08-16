@@ -5,10 +5,10 @@ export const getActionType = (action: Action): ACTION_TYPES => {
         return;
     }
 
-    const { damage, healing, resources, armor, movement } = action;
+    const { damage, healing, resources, armor, movement, minion } = action;
     if (damage) {
         return ACTION_TYPES.DAMAGE;
-    } else if (healing || resources) {
+    } else if (healing || resources || minion) {
         return ACTION_TYPES.CASTING;
     } else if (armor) {
         return ACTION_TYPES.ARMOR;
@@ -17,4 +17,8 @@ export const getActionType = (action: Action): ACTION_TYPES => {
     }
 
     return ACTION_TYPES.NONE;
+};
+
+export const isAttack = (action: Action): boolean => {
+    return getActionType(action) === ACTION_TYPES.DAMAGE;
 };

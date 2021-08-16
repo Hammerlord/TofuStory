@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView";
-import { Ability, Action } from "../ability/types";
-import PlayerView from "../character/PlayerView";
+import { Ability, Action, TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
-import EnemyView from "../enemy/EnemyView";
+import CombatantView from "../character/CombatantView";
 import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
-import { Event, parsePlayerAbilityActions } from "./parseAbilityActions";
+import { Event, parseAbilityActions } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
+import { Fury } from "../resource/ResourcesView";
 
 const CARDS_PER_DRAW = 5;
 
@@ -23,6 +23,7 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "relative",
         background: "#968e72",
+        overflow: "hidden",
     },
     battlefieldContainer: {
         height: "100%",
@@ -33,38 +34,47 @@ const useStyles = createUseStyles({
     battlefield: {
         textAlign: "center",
         margin: "auto",
-        width: "70rem",
+        width: "80rem",
         maxWidth: "100%",
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
     },
-    enemiesContainer: {
+    combatantContainer: {
         position: "relative",
-        height: "45%",
-        width: "calc(100% - 32px)",
-        marginTop: "36px",
+        height: "200px",
+        width: "calc(100% - 300px)",
+        margin: "auto",
+        marginTop: "48px",
     },
-    enemies: {
+    combatants: {
         display: "flex",
         margin: "auto",
         justifyContent: "space-evenly",
-        borderBottom: "1px solid rgba(0, 0, 0, 0.15)",
-        paddingBottom: "24px",
-        marginBottom: "24px",
         position: "absolute",
         bottom: 0,
         width: "100%",
     },
-    abilities: {
+    divider: {
+        paddingTop: "24px",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.15)",
+        marginBottom: "24px",
+    },
+    abilityContainer: {
         position: "absolute",
         bottom: "32px",
         left: "50%",
         transform: "translateX(-50%)",
+    },
+    resource: {
+        margin: "0 1px",
+    },
+    abilities: {
         display: "flex",
         margin: "auto",
         justifyContent: "space-evenly",
         marginTop: "32px",
+        height: "150px",
     },
     playerContainer: {
         position: "relative",
@@ -103,23 +113,29 @@ const BattlefieldContainer = ({
     const [allies, setAllies] = useState(initialAllies);
     const [recentActions, setRecentActions] = useState([]);
     const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
-    const [notification, setNotification] = useState(null) as [
-        BattleNotification,
-        Function
-    ];
+    const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
 
     const player = allies.find((ally: Combatant | null) => ally && ally.isPlayer);
 
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [hoveredAllyIndex, setHoveredAllyIndex] = useState(null);
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
+    const [alliesAttackedThisTurn, setAlliesAttackedThisTurn] = useState([]);
+    const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
 
+    const isEligibleToAttack = (ally: Combatant): boolean => {
+        return ally && ally.damage && alliesAttackedThisTurn.every((id) => id !== ally.id);
+    };
     const noMoreMoves =
-        !hand.length || hand.every((ability) => !canUseAbility(player, ability));
+        !hand.length ||
+        (hand.every((ability) => !canUseAbility(player, ability)) &&
+            allies.every((ally) => !isEligibleToAttack(ally)));
 
     const handleAbilityClick = (i: number) => {
+        setSelectedAllyIndex(null);
         if (!canUseAbility(player, hand[i])) {
             setNotification({
                 severity: "warning",
@@ -129,7 +145,11 @@ const BattlefieldContainer = ({
         }
 
         if (isPlayerTurn) {
-            setSelectedAbilityIndex(i);
+            if (selectedAbilityIndex === i) {
+                setSelectedAbilityIndex(null);
+            } else {
+                setSelectedAbilityIndex(i);
+            }
         }
     };
 
@@ -146,7 +166,7 @@ const BattlefieldContainer = ({
         }
 
         setRecentActions(
-            parsePlayerAbilityActions({
+            parseAbilityActions({
                 actions,
                 targetIndex: index,
                 enemies,
@@ -156,35 +176,66 @@ const BattlefieldContainer = ({
                 casterId: player.id,
             })
         );
+        setSelectedAbilityIndex(null);
         setDiscard([card, ...discard]);
         setHand(newHand);
     };
 
+    const handleAllyAttack = ({ index }) => {
+        const { damage = 0, id } = allies[selectedAllyIndex];
+        setRecentActions(
+            parseAbilityActions({
+                enemies,
+                targetIndex: index,
+                side: "enemies",
+                actions: [
+                    {
+                        damage,
+                        target: TARGET_TYPES.HOSTILE,
+                    },
+                ],
+                allies,
+                casterId: id,
+            })
+        );
+        setAlliesAttackedThisTurn([...alliesAttackedThisTurn, id]);
+        setSelectedAllyIndex(null);
+    };
+
     const handleTargetClick = ({ side, index }) => {
         const selectedAbility = hand[selectedAbilityIndex];
-        if (disableActions || !canUseAbility(player, selectedAbility)) {
+        if (disableActions) {
             return;
         }
+
+        if (!selectedAbility) {
+            if (side === "allies") {
+                if (index === selectedAllyIndex) {
+                    setSelectedAllyIndex(null);
+                } else if (isEligibleToAttack(allies[index])) {
+                    setSelectedAllyIndex(index);
+                }
+                return;
+            }
+
+            if (side === "enemies" && isEligibleToAttack(allies[selectedAllyIndex])) {
+                handleAllyAttack({ index });
+            }
+            return;
+        }
+
+        if (!canUseAbility(player, selectedAbility)) {
+            return;
+        }
+
         if (isValidTarget({ ability: selectedAbility, side })) {
             handleAbilityUse({ index, selectedAbilityIndex, side });
-            setSelectedAbilityIndex(null);
         } else {
             setNotification({
                 severity: "warning",
                 text: `Please select a valid target for ${selectedAbility.name}.`,
             });
         }
-    };
-
-    const isAffectedByArea = (i: number | null): boolean => {
-        const ability = hand[selectedAbilityIndex];
-        if (!ability || hoveredEnemyIndex === null) {
-            return false;
-        }
-
-        const { actions = [] } = ability;
-        const { area = 0 } = actions[0] || {};
-        return i >= hoveredEnemyIndex - area && i <= hoveredEnemyIndex + area;
     };
 
     const getAction = (character): Action => {
@@ -275,8 +326,7 @@ const BattlefieldContainer = ({
 
             setTimeout(() => {
                 const updatedRecentActions = recentActions.slice();
-                const { updatedEnemies, updatedAllies } =
-                    updatedRecentActions.shift() as Event;
+                const { updatedEnemies, updatedAllies } = updatedRecentActions.shift() as Event;
                 setEnemies(updatedEnemies);
                 setAllies(updatedAllies);
 
@@ -297,6 +347,7 @@ const BattlefieldContainer = ({
 
         if (!isPlayerTurn) {
             setIsPlayerTurn(true);
+            setAlliesAttackedThisTurn([]);
             setEnemies(enemies.map(updateEffects));
         }
         setIsPlayingAnimations(false);
@@ -308,10 +359,27 @@ const BattlefieldContainer = ({
     };
 
     const disableActions =
-        isPlayingAbilityAnimations ||
-        battleEndResult ||
-        showTurnAnnouncement ||
-        !isPlayerTurn;
+        isPlayingAbilityAnimations || battleEndResult || showTurnAnnouncement || !isPlayerTurn;
+
+    const isTargeted = (i: number | null, side: "allies" | "enemies"): boolean => {
+        if (disableActions) {
+            return false;
+        }
+
+        const ally = allies[selectedAllyIndex];
+        if (ally) {
+            return side === "enemies" && hoveredEnemyIndex === i;
+        }
+        const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
+        const ability = hand[selectedAbilityIndex];
+        if (!ability || index === null) {
+            return false;
+        }
+
+        const { actions = [] } = ability;
+        const { area = 0 } = actions[0] || {};
+        return i >= index - area && i <= index + area;
+    };
 
     return (
         <div className={classes.root}>
@@ -327,45 +395,59 @@ const BattlefieldContainer = ({
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
             <div className={classes.battlefieldContainer}>
                 <div className={classes.battlefield}>
-                    <div className={classes.enemiesContainer}>
-                        <div className={classes.enemies}>
+                    <div className={classes.combatantContainer}>
+                        <div className={classes.combatants}>
                             {enemies.map((enemy, i: number) => (
-                                <EnemyView
-                                    enemy={enemy}
+                                <CombatantView
+                                    combatant={enemy}
+                                    isAlly={false}
                                     onClick={() =>
                                         handleTargetClick({
                                             index: i,
                                             side: "enemies",
                                         })
                                     }
+                                    isSelected={false}
                                     onMouseEnter={() => setHoveredEnemyIndex(i)}
                                     onMouseLeave={() => setHoveredEnemyIndex(null)}
-                                    isAffectedByArea={
-                                        !disableActions && isAffectedByArea(i)
-                                    }
+                                    isTargeted={isTargeted(i, "enemies")}
                                     key={i}
                                     action={getAction(enemy)}
+                                    isHighlighted={false}
                                 />
                             ))}
                         </div>
                     </div>
+                    <div className={classes.divider} />
                     <div className={classes.playerContainer}>
                         <div className={classes.leftContainer}>
                             <Deck deck={deck} discard={discard} />
                         </div>
-                        <PlayerView
-                            onClick={() =>
-                                handleTargetClick({
-                                    index: null,
-                                    side: "allies", // Ha
-                                })
-                            }
-                            isAffectedByArea={
-                                !disableActions && hand[selectedAbilityIndex]
-                            }
-                            player={player}
-                            action={getAction(player)}
-                        />
+                        <div className={classes.combatantContainer}>
+                            <div className={classes.combatants}>
+                                {allies.map((ally, i) => {
+                                    return (
+                                        <CombatantView
+                                            combatant={ally}
+                                            isAlly={true}
+                                            onClick={() =>
+                                                handleTargetClick({
+                                                    index: i,
+                                                    side: "allies",
+                                                })
+                                            }
+                                            isSelected={selectedAllyIndex === i}
+                                            onMouseEnter={() => setHoveredAllyIndex(i)}
+                                            onMouseLeave={() => setHoveredAllyIndex(null)}
+                                            isTargeted={isTargeted(i, "allies")}
+                                            key={i}
+                                            action={getAction(ally)}
+                                            isHighlighted={isEligibleToAttack(ally)}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        </div>
                         <div className={classes.rightContainer}>
                             <EndTurnButton
                                 disabled={disableActions}
@@ -373,13 +455,16 @@ const BattlefieldContainer = ({
                                 onClick={handleEndTurn}
                             />
                         </div>
+                    </div>
+                    <div className={classes.abilityContainer}>
+                        {Array.from({ length: player.resources }).map((_, i) => (
+                            <Fury key={i} className={classes.resource} />
+                        ))}
                         <div className={classes.abilities}>
                             {hand.map((ability: Ability, i: number) => (
                                 <AbilityView
                                     onClick={() => handleAbilityClick(i)}
-                                    isSelected={
-                                        isPlayerTurn && selectedAbilityIndex === i
-                                    }
+                                    isSelected={isPlayerTurn && selectedAbilityIndex === i}
                                     key={i}
                                     ability={ability}
                                 />
@@ -389,10 +474,7 @@ const BattlefieldContainer = ({
                 </div>
             </div>
             {battleEndResult && (
-                <BattleEndOverlay
-                    result={battleEndResult}
-                    onClickContinue={onBattleEnd}
-                />
+                <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
             )}
         </div>
     );

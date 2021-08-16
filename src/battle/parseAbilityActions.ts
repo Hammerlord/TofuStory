@@ -1,3 +1,5 @@
+import { createCombatant } from './../enemy/createEnemy';
+import uuid from 'uuid';
 import { Effect } from "./../ability/types";
 import { Action, TARGET_TYPES } from "../ability/types";
 import { Combatant, CombatPlayer } from "../character/types";
@@ -28,22 +30,14 @@ export const applyActionToCharacter = (
     character: Combatant,
     action: ApplyAction
 ): Combatant => {
-    const {
-        damage = 0,
-        healing = 0,
-        armor = 0,
-        effects = [],
-        resources = 0,
-    } = action;
+    const { damage = 0, healing = 0, armor = 0, effects = [], resources = 0 } = action;
 
     const updatedArmor = Math.max(0, character.armor - damage + armor);
     const healthDamage = Math.max(0, damage - character.armor);
     let HP = Math.max(0, character.HP - healthDamage);
     HP = HP > 0 ? Math.min(character.maxHP, HP + healing) : 0;
     const updatedEffects: Effect[] =
-        HP === 0
-            ? []
-            : [...character.effects, ...(effects.map(cloneDeep) as Effect[])];
+        HP === 0 ? [] : [...character.effects, ...(effects.map(cloneDeep) as Effect[])];
     return {
         ...character,
         HP,
@@ -61,15 +55,8 @@ export const emptyReport = Object.freeze({
     isSlain: false,
 });
 
-const parseAction = ({
-    enemies,
-    allies,
-    action,
-    targetIndex,
-    side,
-    casterId,
-}): Event => {
-    const { area = 0, target: targetType } = action;
+const parseAction = ({ enemies, allies, action, targetIndex, side, casterId }): Event => {
+    const { area = 0, target: targetType, minion } = action;
 
     const isTargetHit = (() => {
         const { friendly, hostile, caster } = getFriendlyOrHostile({
@@ -78,9 +65,7 @@ const parseAction = ({
             casterId,
         });
         const isTargetHit = (character, i) => {
-            return (
-                character && i >= targetIndex - area && i <= targetIndex + area
-            );
+            return character && i >= targetIndex - area && i <= targetIndex + area;
         };
         let targets = [];
         if (targetType === TARGET_TYPES.SELF) {
@@ -93,46 +78,56 @@ const parseAction = ({
         return ({ id }) => targets.some((t) => t.id === id);
     })();
 
-    const updateCharacters = (
-        characters: (Combatant | null)[]
-    ): (Combatant | null)[] => {
-        return characters.map((character) => {
-            if (!character) {
-                return character;
+    const updateCharacter = (character: Combatant | null): Combatant | null => {
+        if (!character) {
+            return character;
+        }
+
+        if (isTargetHit(character)) {
+            return applyActionToCharacter(character, action);
+        }
+
+        return cloneDeep(character);
+    };
+
+    const updateAllies = (allies: (Combatant | null)[]) => {
+        return allies.map((ally: Combatant | null, i) => {
+            if (!ally) {
+                if (minion && targetIndex === i) {
+                    return createCombatant(minion);
+                }
+
+                return ally;
             }
 
-            if (isTargetHit(character)) {
-                return applyActionToCharacter(character, action);
+            if (isTargetHit(ally)) {
+                return applyActionToCharacter(ally, action);
             }
 
-            return cloneDeep(character);
+            return cloneDeep(ally);
         });
     };
 
     return {
         action,
-        updatedAllies: updateCharacters(allies),
-        updatedEnemies: updateCharacters(enemies),
+        updatedAllies: updateAllies(allies),
+        updatedEnemies: enemies.map(updateCharacter),
         casterId,
     };
 };
 
 const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
-    const [friendly, hostile] = allies.find(
-        (ally) => ally && ally.id === casterId
-    )
+    const [friendly, hostile] = allies.find((ally) => ally && ally.id === casterId)
         ? [allies, enemies]
         : [enemies, allies];
     return {
         friendly,
         hostile,
-        caster: friendly.find(
-            (character) => character && character.id === casterId
-        ),
+        caster: friendly.find((character) => character && character.id === casterId),
     };
 };
 
-export const parsePlayerAbilityActions = ({
+export const parseAbilityActions = ({
     enemies,
     targetIndex,
     side,

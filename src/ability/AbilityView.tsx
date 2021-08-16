@@ -69,6 +69,9 @@ const useStyles = createUseStyles({
     support: {
         borderTop: "3px solid rgb(23, 111, 189)",
     },
+    minion: {
+        borderTop: "3px solid rgb(50, 168, 82)",
+    },
     body: {
         minHeight: "40px",
         marginTop: "16px",
@@ -99,12 +102,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF)
         .reduce((acc: any, current: Action) => {
-            const {
-                healing = 0,
-                damage = 0,
-                armor = 0,
-                resources = 0,
-            } = current;
+            const { healing = 0, damage = 0, armor = 0, resources = 0 } = current;
             return {
                 selfHealing: (acc.selfHealing || 0) + healing,
                 selfArmor: (acc.selfArmor || 0) + armor,
@@ -122,18 +120,14 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     }, []);
 
     const bleedDuration =
-        allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration ||
-        0;
+        allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration || 0;
     const stun = allEffects.find(({ type }) => type === EFFECT_TYPES.STUN);
-    const {
-        healthPerResourcesSpent = 0,
-        duration: healthPerResourcesSpentDuration = 0,
-    } =
+    const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
         allEffects.find(
             ({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0
         ) || {};
 
-    const targetType = actions[0]?.target;
+    const { target: targetType, minion } = actions[0] || {};
 
     return (
         <div
@@ -144,6 +138,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 [classes.support]:
                     targetType === TARGET_TYPES.FRIENDLY ||
                     targetType === TARGET_TYPES.SELF,
+                [classes.minion]: minion,
             })}
         >
             <span className={classes.header}>
@@ -152,8 +147,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 ) : (
                     <div className={classes.iconPlaceholder} />
                 )}{" "}
-                <span className={classes.name}>{name}</span>{" "}
-                <Fury text={resourceCost} />
+                <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
             </span>
             <div>
                 Area: <Area area={area} />
@@ -162,8 +156,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 <ul>
                     {bleedDuration > 0 && (
                         <li>
-                            Inflict{" "}
-                            <Icon icon={<Blood />} text={bleedDuration} />
+                            Inflict <Icon icon={<Blood />} text={bleedDuration} />
                         </li>
                     )}
                     {stun && (
@@ -189,20 +182,14 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                     )}
                     {selfHealing > 0 && (
                         <li>
-                            Heal for{" "}
-                            <Icon icon={<Heart />} text={selfHealing} />
+                            Heal for <Icon icon={<Heart />} text={selfHealing} />
                         </li>
                     )}
                     {healthPerResourcesSpent > 0 && (
                         <li>
-                            Gain{" "}
-                            <Icon
-                                icon={<Heart />}
-                                text={healthPerResourcesSpent}
-                            />{" "}
+                            Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} />{" "}
                             per <Fury /> spent{" "}
-                            {healthPerResourcesSpentDuration === 0 &&
-                                "this turn"}
+                            {healthPerResourcesSpentDuration === 0 && "this turn"}
                         </li>
                     )}
                 </ul>

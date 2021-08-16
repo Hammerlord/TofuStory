@@ -1,9 +1,10 @@
-import classNames from "classnames";
+import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckEditor from "../ability/DeckEditor";
 import BattlefieldContainer from "../battle/BattleView";
+import warmush from "../images/warmush.png";
 import {
     anger,
     bash,
@@ -15,9 +16,10 @@ import {
     rend,
     shieldStrike,
     slam,
+    wolf
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
-import { cloneDeep } from "lodash";
+
 
 enum PLAYER_STATE {
     CLASS_SELECTION = 0,
@@ -74,6 +76,7 @@ const MainMenu = () => {
     const [player, setPlayer] = useState({
         id: uuid.v4(),
         class: PLAYER_CLASSES.WARRIOR,
+        image: warmush,
         HP: 25,
         maxHP: 25,
         resources: 0,
@@ -99,6 +102,8 @@ const MainMenu = () => {
         rend,
         rend,
         bloodthirst,
+        wolf,
+        wolf
     ]);
 
     const classes = useStyles();

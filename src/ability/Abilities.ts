@@ -1,3 +1,4 @@
+import { Wolf } from "../images";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
@@ -141,6 +142,23 @@ export const sprint: Ability = {
         {
             cards: -1,
             target: TARGET_TYPES.SELF,
+        },
+    ],
+};
+
+export const wolf: Ability = {
+    name: "Wolf",
+    resourceCost: 2,
+    actions: [
+        {
+            minion: {
+                name: "Wolf",
+                image: Wolf,
+                maxHP: 4,
+                armor: 0,
+                damage: 1,
+                effects: [],
+            },
         },
     ],
 };

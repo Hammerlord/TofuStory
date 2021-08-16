@@ -5,15 +5,26 @@ import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { Zzz, Dizzy, PointingDown, Heart, CrossedSwords } from "../images";
 import HitIcon from "../icon/HitIcon";
 import { getCharacterStatChanges } from "../battle/utils";
-import { getActionType } from "../ability/utils";
+import { getActionType, isAttack } from "../ability/utils";
 import Icon from "../icon/Icon";
 import Bleed from "../icon/Bleed";
+import Armor from "../icon/Armor";
 
 const useStyles = createUseStyles({
     root: {
         minWidth: "20%",
         cursor: "pointer",
         position: "relative",
+
+        "&.-highlighted img": {
+            WebkitFilter: "drop-shadow(0 0 4px #45ff61)",
+            filter: "drop-shadow(0 0 4px #45ff61)",
+        },
+
+        "&.-selected img": {
+            WebkitFilter: "drop-shadow(0 0 2px #ff3f38)",
+            filter: "drop-shadow(0 0 2px #ff3f38)",
+        },
     },
     header: {
         textAlign: "center",
@@ -34,18 +45,20 @@ const useStyles = createUseStyles({
     },
     portraitContainer: {
         position: "relative",
-        height: "140px",
+        height: "125px",
         display: "flex",
     },
     HP: {
         position: "absolute",
-        bottom: "-6%",
-        left: "0",
+        left: "-8px",
+        bottom: "-8px",
     },
-    damage: {
+    rightContainer: {
         position: "absolute",
-        bottom: "-6%",
-        right: "0",
+        right: "-8px",
+        bottom: "-8px",
+        display: "flex",
+        flexDirection: "column",
     },
     hit: {
         position: "absolute",
@@ -93,7 +106,7 @@ const useStyles = createUseStyles({
         top: "24px",
         animation: "$actionIcon 1s forwards",
     },
-    "@keyframes acting": {
+    "@keyframes enemyActing": {
         from: {
             transform: "translateY(0)",
         },
@@ -101,8 +114,20 @@ const useStyles = createUseStyles({
             transform: "translateY(24px)",
         },
     },
-    acting: {
-        animationName: "$acting",
+    enemyActing: {
+        animationName: "$enemyActing",
+        animationDuration: "0.5s",
+    },
+    "@keyframes allyActing": {
+        from: {
+            transform: "translateY(0)",
+        },
+        to: {
+            transform: "translateY(-24px)",
+        },
+    },
+    allyActing: {
+        animationName: "$allyActing",
         animationDuration: "0.5s",
     },
     stun: {
@@ -125,97 +150,104 @@ const useStyles = createUseStyles({
     },
 });
 
-const EnemyView = ({ enemy, onClick, isAffectedByArea, action, ...other }) => {
+const CombatantView = ({
+    combatant,
+    onClick,
+    isTargeted,
+    action,
+    isAlly,
+    isSelected,
+    isHighlighted,
+    ...other
+}) => {
     const [statChanges, setStatChanges]: [any, Function] = useState({});
-    const [oldEnemyState, setOldEnemyState] = useState(enemy);
-    const classes = useStyles();
+    const [oldCombatantState, setOldEnemyState] = useState(combatant);
+    const classes = useStyles({ isAlly } as any); // Not using theme, just passing a prop in
 
     useEffect(() => {
-        if (enemy === null || oldEnemyState === null || oldEnemyState.id !== enemy.id) {
-            setOldEnemyState(enemy);
+        if (
+            combatant === null ||
+            oldCombatantState === null ||
+            oldCombatantState.id !== combatant.id
+        ) {
+            setOldEnemyState(combatant);
             return;
         }
 
         const statChanges = getCharacterStatChanges({
-            oldCharacter: oldEnemyState,
-            newCharacter: enemy,
+            oldCharacter: oldCombatantState,
+            newCharacter: combatant,
         });
 
         setStatChanges(statChanges);
-        setOldEnemyState(enemy);
-    }, [enemy]);
+        setOldEnemyState(combatant);
+    }, [combatant]);
 
     const hasAilment = (type: EFFECT_TYPES) => {
-        return enemy?.effects?.some((effect) => effect.type === type);
+        return combatant?.effects?.some((effect) => effect.type === type);
     };
 
     const isStunned = hasAilment(EFFECT_TYPES.STUN);
-    const bleeds =
-        enemy?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) ||
-        [];
+    const bleeds = combatant?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
 
     return (
-        <div className={classes.root} onClick={onClick} {...other}>
+        <div
+            className={classNames(classes.root, {
+                "-selected": isSelected,
+                "-highlighted": isHighlighted,
+            })}
+            onClick={onClick}
+            {...other}
+        >
             <div className={classes.inner}>
-                {isAffectedByArea && (
+                {isTargeted && (
                     <span className={classes.targetAffectedIndicatorContainer}>
-                        <Icon
-                            icon={<PointingDown />}
-                            className={classes.targetAffectedIndicator}
-                        />
+                        <Icon icon={<PointingDown />} className={classes.targetAffectedIndicator} />
                     </span>
                 )}
-                {enemy && (
+                {combatant && (
                     <>
-                        {enemy.HP > 0 && (
+                        {combatant.HP > 0 && (
                             <div className={classes.header}>
-                                <span>{enemy.name}</span>
+                                <span>{combatant.name}</span>
                             </div>
                         )}
                         <div className={classes.portraitContainer}>
-                            {enemy.HP > 0 && (
+                            {combatant.HP > 0 && (
                                 <>
                                     <img
-                                        className={classNames(
-                                            classes.portrait,
-                                            {
-                                                [classes.acting]:
-                                                    getActionType(action) ===
-                                                    ACTION_TYPES.DAMAGE,
-                                            }
-                                        )}
-                                        src={enemy.image}
+                                        className={classNames(classes.portrait, {
+                                            [classes.enemyActing]: isAttack(action) && !isAlly,
+                                            [classes.allyActing]: isAttack(action) && isAlly,
+                                        })}
+                                        src={combatant.image}
                                     />
                                     <Icon
                                         className={classes.HP}
                                         icon={<Heart />}
                                         size={"lg"}
-                                        text={enemy.HP}
+                                        text={combatant.HP}
                                     />
-                                    <Icon
-                                        className={classes.damage}
-                                        icon={<CrossedSwords />}
-                                        size={"lg"}
-                                        text={enemy.damage}
-                                    />
+                                    <div className={classes.rightContainer}>
+                                        {combatant.damage > 0 && (
+                                            <Icon
+                                                icon={<CrossedSwords />}
+                                                size={"lg"}
+                                                text={combatant.damage}
+                                            />
+                                        )}
+                                        {combatant.armor > 0 && <Armor amount={combatant.armor} />}
+                                    </div>
 
                                     {isStunned && (
-                                        <Icon
-                                            icon={<Dizzy />}
-                                            size="xl"
-                                            className={classes.stun}
-                                        />
+                                        <Icon icon={<Dizzy />} size="xl" className={classes.stun} />
                                     )}
                                     <div className={classes.bleed}>
                                         {bleeds.map((bleed, i: number) => (
-                                            <Bleed
-                                                key={i}
-                                                amount={bleed.duration}
-                                            />
+                                            <Bleed key={i} amount={bleed.duration} />
                                         ))}
                                     </div>
-                                    {getActionType(action) ===
-                                        ACTION_TYPES.NONE && (
+                                    {getActionType(action) === ACTION_TYPES.NONE && (
                                         <Icon
                                             icon={<Zzz />}
                                             size="xl"
@@ -237,4 +269,4 @@ const EnemyView = ({ enemy, onClick, isAffectedByArea, action, ...other }) => {
     );
 };
 
-export default EnemyView;
+export default CombatantView;

@@ -12,31 +12,41 @@ export enum EFFECT_TYPES {
 }
 
 export interface Effect {
-    type: EFFECT_TYPES
+    type: EFFECT_TYPES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
-    duration?: number
-    damage?: number
-    healthPerResourcesSpent?: number
+    duration?: number;
+    damage?: number;
+    healthPerResourcesSpent?: number;
+}
+
+interface Minion {
+    name: string;
+    image: string;
+    maxHP: number;
+    damage: number;
+    effects?: Effect[];
+    armor?: number;
 }
 
 export interface Action {
-    damage?: number
-    healing?: number
-    armor?: number
-    target: TARGET_TYPES
-    area?: number
-    effects?: Effect[]
-    description?: string
-    movement?: number
-    resources?: number
+    damage?: number;
+    healing?: number;
+    armor?: number;
+    target?: TARGET_TYPES;
+    minion?: Minion | Minion[];
+    area?: number;
+    effects?: Effect[];
+    description?: string;
+    movement?: number;
+    resources?: number;
     /** The number of cards to draw. Only applicable to player */
-    cards?: number
+    cards?: number;
 }
 
 export interface Ability {
-    name: string
-    resourceCost?: number
-    actions: Action[]
+    name: string;
+    resourceCost?: number;
+    actions: Action[];
 }
 
 export enum ACTION_TYPES {

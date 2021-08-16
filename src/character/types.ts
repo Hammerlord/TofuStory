@@ -10,6 +10,7 @@ export interface Combatant {
     id: string;
     resources: number; // Monsters probably do not use resources, but...
     isPlayer: boolean;
+    damage?: number;
 }
 
 /** Player in combat */

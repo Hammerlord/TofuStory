@@ -10,14 +10,14 @@ import {
 } from "./tofu";
 import uuid from "uuid";
 
-export const createEnemyCombatant = (enemy): Combatant => {
-    if (!enemy) {
+export const createCombatant = (combatant): Combatant => {
+    if (!combatant) {
         return null;
     }
     return {
         id: uuid.v4(),
-        ...enemy,
-        HP: enemy.HP || enemy.maxHP,
+        ...combatant,
+        HP: combatant.HP || combatant.maxHP,
         effects: [],
     };
 };
@@ -48,7 +48,7 @@ export const createEnemies = (): Combatant[] => {
             ],
         };
 
-        enemies.push(createEnemyCombatant(copy));
+        enemies.push(createCombatant(copy));
     }
 
     for (let i = numEnemies; i < 5; ++i) {
@@ -58,4 +58,4 @@ export const createEnemies = (): Combatant[] => {
     return shuffle(enemies);
 };
 
-export default createEnemyCombatant;
+export default createCombatant;
