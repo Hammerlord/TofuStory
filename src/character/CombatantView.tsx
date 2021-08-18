@@ -9,6 +9,7 @@ import { getActionType, isAttack } from "../ability/utils";
 import Icon from "../icon/Icon";
 import Bleed from "../icon/Bleed";
 import Armor from "../icon/Armor";
+import HealIcon from "../icon/HealIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -60,11 +61,13 @@ const useStyles = createUseStyles({
         display: "flex",
         flexDirection: "column",
     },
-    hit: {
+    center: {
         position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
+        height: "100%",
+        width: "100%",
     },
     "@keyframes upAndDown": {
         from: {
@@ -249,8 +252,13 @@ const CombatantView = ({
                                 </>
                             )}
                             {
-                                <span className={classes.hit}>
+                                <span className={classes.center}>
                                     <HitIcon statChanges={statChanges} />
+                                </span>
+                            }
+                            {
+                                <span className={classes.center}>
+                                    <HealIcon statChanges={statChanges} />
                                 </span>
                             }
                         </div>
