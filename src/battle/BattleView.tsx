@@ -14,6 +14,7 @@ import { Event, parseAbilityActions } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 import { Fury } from "../resource/ResourcesView";
+import uuid from "uuid";
 
 const CARDS_PER_DRAW = 5;
 
@@ -140,6 +141,7 @@ const BattlefieldContainer = ({
             setNotification({
                 severity: "warning",
                 text: `Need more resources to use ${hand[i].name}.`,
+                id: uuid.v4()
             });
             return;
         }
@@ -214,6 +216,12 @@ const BattlefieldContainer = ({
                     setSelectedAllyIndex(null);
                 } else if (isEligibleToAttack(allies[index])) {
                     setSelectedAllyIndex(index);
+                } else {
+                    setNotification({
+                        severity: "warning",
+                        text: "That character has already attacked this turn.",
+                        id: uuid.v4(),
+                    });
                 }
                 return;
             }
@@ -234,6 +242,7 @@ const BattlefieldContainer = ({
             setNotification({
                 severity: "warning",
                 text: `Please select a valid target for ${selectedAbility.name}.`,
+                id: uuid.v4(),
             });
         }
     };
