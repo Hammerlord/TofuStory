@@ -216,7 +216,7 @@ const BattlefieldContainer = ({
                     setSelectedAllyIndex(null);
                 } else if (isEligibleToAttack(allies[index])) {
                     setSelectedAllyIndex(index);
-                } else {
+                } else if (alliesAttackedThisTurn.some((id) => id === allies[index]?.id)) {
                     setNotification({
                         severity: "warning",
                         text: "That character has already attacked this turn.",
