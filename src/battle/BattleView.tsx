@@ -205,11 +205,11 @@ const BattlefieldContainer = ({
     };
 
     const handleTargetClick = ({ side, index }) => {
-        const selectedAbility = hand[selectedAbilityIndex];
         if (disableActions) {
             return;
         }
 
+        const selectedAbility = hand[selectedAbilityIndex];
         if (!selectedAbility) {
             if (side === "allies") {
                 if (index === selectedAllyIndex) {
@@ -236,7 +236,7 @@ const BattlefieldContainer = ({
             return;
         }
 
-        if (isValidTarget({ ability: selectedAbility, side })) {
+        if (isValidTarget({ ability: selectedAbility, side, allies, index })) {
             handleAbilityUse({ index, selectedAbilityIndex, side });
         } else {
             setNotification({
