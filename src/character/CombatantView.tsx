@@ -17,13 +17,13 @@ const useStyles = createUseStyles({
         position: "relative",
 
         "&.-highlighted img": {
-            WebkitFilter: "drop-shadow(0 0 4px #45ff61)",
-            filter: "drop-shadow(0 0 4px #45ff61)",
+            WebkitFilter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
+            filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
         },
 
         "&.-selected img": {
-            WebkitFilter: "drop-shadow(0 0 2px #ff3f38)",
-            filter: "drop-shadow(0 0 2px #ff3f38)",
+            WebkitFilter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
+            filter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
         },
     },
     header: {

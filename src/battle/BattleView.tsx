@@ -442,7 +442,10 @@ const BattlefieldContainer = ({
                                             isTargeted={isTargeted(i, "allies")}
                                             key={i}
                                             action={getAction(ally)}
-                                            isHighlighted={isEligibleToAttack(ally)}
+                                            isHighlighted={
+                                                selectedAllyIndex === null &&
+                                                isEligibleToAttack(ally)
+                                            }
                                         />
                                     );
                                 })}
