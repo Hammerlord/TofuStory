@@ -12,3 +12,4 @@ export { default as BigBeefy } from "./monster013.png";
 export { default as GreenHeart } from "./1f49a.svg";
 export { default as Sparkles } from "./2728.svg";
 export { default as Wolf } from "./wolf.png";
+export { default as ClickIndicator } from "./clickindicator.gif";

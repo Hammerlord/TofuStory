@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { Zzz, Dizzy, PointingDown, Heart, CrossedSwords } from "../images";
+import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords } from "../images";
 import HitIcon from "../icon/HitIcon";
 import { getCharacterStatChanges } from "../battle/utils";
 import { getActionType, isAttack } from "../ability/utils";
@@ -75,18 +75,10 @@ const useStyles = createUseStyles({
         },
     },
     targetAffectedIndicatorContainer: {
-        width: "24px",
-        height: "24px",
         position: "absolute",
-        top: "-64px",
+        top: "-48px",
         left: "50%",
         transform: "translateX(-50%)",
-    },
-    targetAffectedIndicator: {
-        width: "100%",
-        animationName: "$upAndDown",
-        animationDuration: "0.5s",
-        animationIterationCount: "infinite",
     },
     "@keyframes actionIcon": {
         from: {
@@ -202,7 +194,7 @@ const CombatantView = ({
             <div className={classes.inner}>
                 {isTargeted && (
                     <span className={classes.targetAffectedIndicatorContainer}>
-                        <Icon icon={<PointingDown />} className={classes.targetAffectedIndicator} />
+                        <Icon icon={ClickIndicator} />
                     </span>
                 )}
                 {combatant && (
