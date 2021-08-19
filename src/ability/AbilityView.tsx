@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { Shield, Blood, CrossedSwords, Dizzy, Heart } from "../images";
 import { Fury } from "../resource/ResourcesView";
+import AbilityTypeView from "./AbilityTypeView";
 import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 const useAreaStyles = createUseStyles({
@@ -97,7 +98,7 @@ interface AbilityViewProps {
 
 const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     const classes = useStyles();
-    const { actions = [], resourceCost, name } = ability;
+    const { actions = [], resourceCost, name, minion } = ability;
     const { area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF)
@@ -119,15 +120,12 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
         return acc;
     }, []);
 
-    const bleedDuration =
-        allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration || 0;
+    const bleedDuration = allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration || 0;
     const stun = allEffects.find(({ type }) => type === EFFECT_TYPES.STUN);
     const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
-        allEffects.find(
-            ({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0
-        ) || {};
+        allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
 
-    const { target: targetType, minion } = actions[0] || {};
+    const { target: targetType } = actions[0] || {};
 
     return (
         <div
@@ -136,8 +134,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 [classes.selectedAbility]: isSelected,
                 [classes.offensive]: targetType === TARGET_TYPES.HOSTILE,
                 [classes.support]:
-                    targetType === TARGET_TYPES.FRIENDLY ||
-                    targetType === TARGET_TYPES.SELF,
+                    targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
                 [classes.minion]: minion,
             })}
         >
@@ -149,9 +146,11 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 )}{" "}
                 <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
             </span>
-            <div>
-                Area: <Area area={area} />
-            </div>
+            {actions.length > 0 && (
+                <div>
+                    Area: <Area area={area} />
+                </div>
+            )}
             <div className={classes.body}>
                 <ul>
                     {bleedDuration > 0 && (
@@ -171,8 +170,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                     )}
                     {selfDamage > 0 && (
                         <li>
-                            Self-inflict{" "}
-                            <Icon icon={<CrossedSwords />} text={selfDamage} />
+                            Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} />
                         </li>
                     )}
                     {selfArmor > 0 && (
@@ -187,12 +185,19 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                     )}
                     {healthPerResourcesSpent > 0 && (
                         <li>
-                            Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} />{" "}
-                            per <Fury /> spent{" "}
-                            {healthPerResourcesSpentDuration === 0 && "this turn"}
+                            Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per{" "}
+                            <Fury /> spent {healthPerResourcesSpentDuration === 0 && "this turn"}
                         </li>
                     )}
                 </ul>
+                {minion && (
+                    <div>
+                        <Icon icon={<Heart />} text={minion.maxHP} />
+                        <Icon icon={<CrossedSwords />} text={minion.damage} />
+                    </div>
+                )}
+
+                <AbilityTypeView targetType={targetType} minion={minion} />
             </div>
         </div>
     );

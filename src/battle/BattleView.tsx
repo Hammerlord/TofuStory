@@ -10,7 +10,7 @@ import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
-import { Event, parseAbilityActions } from "./parseAbilityActions";
+import { Event, useAllyAbility } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 import { Fury } from "../resource/ResourcesView";
@@ -75,7 +75,6 @@ const useStyles = createUseStyles({
         margin: "auto",
         justifyContent: "space-evenly",
         marginTop: "32px",
-        height: "150px",
     },
     playerContainer: {
         position: "relative",
@@ -158,7 +157,7 @@ const BattlefieldContainer = ({
     const handleAbilityUse = ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, actions } = card as Ability;
+        const { resourceCost = 0 } = card as Ability;
 
         let recentAllies = allies;
         if (resourceCost) {
@@ -168,13 +167,12 @@ const BattlefieldContainer = ({
         }
 
         setRecentActions(
-            parseAbilityActions({
-                actions,
+            useAllyAbility({
+                ability: card,
                 targetIndex: index,
                 enemies,
                 allies: recentAllies,
                 side,
-                resourceCost,
                 casterId: player.id,
             })
         );
@@ -186,16 +184,18 @@ const BattlefieldContainer = ({
     const handleAllyAttack = ({ index }) => {
         const { damage = 0, id } = allies[selectedAllyIndex];
         setRecentActions(
-            parseAbilityActions({
+            useAllyAbility({
                 enemies,
                 targetIndex: index,
                 side: "enemies",
-                actions: [
-                    {
-                        damage,
-                        target: TARGET_TYPES.HOSTILE,
-                    },
-                ],
+                ability: {
+                    actions: [
+                        {
+                            damage,
+                            target: TARGET_TYPES.HOSTILE,
+                        },
+                    ],
+                },
                 allies,
                 casterId: id,
             })

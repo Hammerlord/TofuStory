@@ -149,16 +149,11 @@ export const sprint: Ability = {
 export const wolf: Ability = {
     name: "Wolf",
     resourceCost: 2,
-    actions: [
-        {
-            minion: {
-                name: "Wolf",
-                image: Wolf,
-                maxHP: 4,
-                armor: 0,
-                damage: 1,
-                effects: [],
-            },
-        },
-    ],
+    minion: {
+        name: "Wolf",
+        image: Wolf,
+        maxHP: 3,
+        damage: 1,
+    },
+    actions: []
 };

@@ -19,6 +19,7 @@ export const createCombatant = (combatant): Combatant => {
         ...combatant,
         HP: combatant.HP || combatant.maxHP,
         effects: [],
+        armor: 0,
     };
 };
 

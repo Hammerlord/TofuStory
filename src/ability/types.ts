@@ -33,7 +33,6 @@ export interface Action {
     healing?: number;
     armor?: number;
     target?: TARGET_TYPES;
-    minion?: Minion | Minion[];
     area?: number;
     effects?: Effect[];
     description?: string;
@@ -47,6 +46,7 @@ export interface Ability {
     name: string;
     resourceCost?: number;
     actions: Action[];
+    minion?: Minion;
 }
 
 export enum ACTION_TYPES {
