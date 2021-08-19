@@ -13,13 +13,12 @@ import {
     charge,
     cleave,
     rampage,
-    rend,
     shieldStrike,
     slam,
-    wolf
+    wolf,
+    rend
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
-
 
 enum PLAYER_STATE {
     CLASS_SELECTION = 0,
@@ -68,7 +67,7 @@ const useStyles = createUseStyles({
         margin: "auto",
         padding: "32px",
         background: "#f5ebcb",
-        height: "100%"
+        height: "100%",
     },
 });
 
@@ -103,14 +102,12 @@ const MainMenu = () => {
         rend,
         bloodthirst,
         wolf,
-        wolf
+        wolf,
     ]);
 
     const classes = useStyles();
 
-    const [activityState, setActivityState] = useState(
-        PLAYER_STATE.ACTIVITY_MENU
-    );
+    const [activityState, setActivityState] = useState(PLAYER_STATE.ACTIVITY_MENU);
     const [challenge, setChallenge] = useState(null);
 
     const handleSelectChallenge = (selectedChallenge) => {
@@ -134,17 +131,11 @@ const MainMenu = () => {
                 <div className={classes.activityMenu}>
                     <div className={classes.inner}>
                         <div>
-                            <button
-                                onClick={() =>
-                                    setActivityState(PLAYER_STATE.EDIT_DECK)
-                                }
-                            >
+                            <button onClick={() => setActivityState(PLAYER_STATE.EDIT_DECK)}>
                                 Change deck
                             </button>
                         </div>
-                        <ChallengeMenu
-                            onSelectChallenge={handleSelectChallenge}
-                        />
+                        <ChallengeMenu onSelectChallenge={handleSelectChallenge} />
                     </div>
                 </div>
             )}

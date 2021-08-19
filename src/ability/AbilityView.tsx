@@ -42,22 +42,41 @@ const Area = ({ area }) => {
 const useStyles = createUseStyles({
     root: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
-        width: "150px",
-        minHeight: "125px",
+        width: "140px",
+        minHeight: "175px",
         padding: "12px",
+        paddingTop: "6px",
+        paddingBottom: "2px",
         cursor: "pointer",
         background: "#d9ca96",
         transition: "transform 0.25s",
         borderRadius: "2px",
         textAlign: "center",
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
     },
     header: {
         display: "flex",
         justifyContent: "space-between",
+        marginBottom: "4px",
+        zIndex: 1,
     },
     name: {
         fontWeight: 600,
         fontSize: "1.1rem",
+    },
+    portraitContainer: {
+        height: "60px",
+    },
+    portrait: {
+        height: "64px",
+        objectFit: "contain",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        top: "35px",
     },
     selectedAbility: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
@@ -75,7 +94,8 @@ const useStyles = createUseStyles({
     },
     body: {
         minHeight: "40px",
-        marginTop: "16px",
+        marginTop: "8px",
+        fontSize: "0.9rem",
         "& ul": {
             listStyle: "none",
             padding: 0,
@@ -83,6 +103,10 @@ const useStyles = createUseStyles({
         },
         "& li": {
             marginBottom: "4px",
+        },
+
+        "& .icon-root": {
+            verticalAlign: "bottom",
         },
     },
     iconPlaceholder: {
@@ -98,7 +122,7 @@ interface AbilityViewProps {
 
 const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     const classes = useStyles();
-    const { actions = [], resourceCost, name, minion } = ability;
+    const { actions = [], resourceCost, name, minion, image } = ability;
     const { area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF)
@@ -127,6 +151,8 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
 
     const { target: targetType } = actions[0] || {};
 
+    let cardImage = minion?.image || image;
+
     return (
         <div
             onClick={onClick}
@@ -146,9 +172,9 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                 )}{" "}
                 <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
             </span>
-            {actions.length > 0 && (
-                <div>
-                    Area: <Area area={area} />
+            {cardImage && (
+                <div className={classes.portraitContainer}>
+                    <img src={cardImage} className={classes.portrait} />
                 </div>
             )}
             <div className={classes.body}>
@@ -196,7 +222,11 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                         <Icon icon={<CrossedSwords />} text={minion.damage} />
                     </div>
                 )}
-
+                {actions.length > 0 && (
+                    <div>
+                        Area: <Area area={area} />
+                    </div>
+                )}
                 <AbilityTypeView targetType={targetType} minion={minion} />
             </div>
         </div>

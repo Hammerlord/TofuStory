@@ -63,7 +63,7 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         position: "absolute",
-        bottom: "32px",
+        bottom: "16px",
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -74,7 +74,8 @@ const useStyles = createUseStyles({
         display: "flex",
         margin: "auto",
         justifyContent: "space-evenly",
-        marginTop: "32px",
+        marginTop: "16px",
+        minHeight: "175px",
     },
     playerContainer: {
         position: "relative",

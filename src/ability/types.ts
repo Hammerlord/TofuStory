@@ -47,6 +47,7 @@ export interface Ability {
     resourceCost?: number;
     actions: Action[];
     minion?: Minion;
+    image?: string;
 }
 
 export enum ACTION_TYPES {

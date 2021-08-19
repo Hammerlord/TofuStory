@@ -6,10 +6,9 @@ const SIZE = "5px";
 const useStyles = createUseStyles({
     root: {
         textAlign: "center",
-        fontSize: "12px",
+        fontSize: "0.7rem",
         textTransform: "uppercase",
-        marginTop: "8px",
-        paddingTop: "4px",
+        marginTop: "4px",
         borderTop: "0.5px solid rgba(0, 0, 0, 0.15)"
     },
     inner: {

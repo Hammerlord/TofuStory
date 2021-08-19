@@ -1,9 +1,22 @@
-import { Wolf } from "../images";
+import {
+    axe,
+    block as blockImage,
+    brick,
+    mace,
+    rage,
+    rend as rendImage,
+    risingrage,
+    shieldred,
+    shout,
+    warleap,
+    Wolf,
+} from "../images";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
     resourceCost: 0,
+    image: brick,
     actions: [
         {
             damage: 1,
@@ -15,6 +28,7 @@ export const bash: Ability = {
 export const charge: Ability = {
     name: "Charge",
     resourceCost: 1,
+    image: warleap,
     actions: [
         {
             damage: 1,
@@ -32,6 +46,7 @@ export const charge: Ability = {
 export const cleave: Ability = {
     name: "Cleave",
     resourceCost: 1,
+    image: axe,
     actions: [
         {
             damage: 2,
@@ -44,6 +59,7 @@ export const cleave: Ability = {
 export const slam: Ability = {
     name: "Slam",
     resourceCost: 1,
+    image: mace,
     actions: [
         {
             damage: 3,
@@ -55,6 +71,7 @@ export const slam: Ability = {
 export const anger: Ability = {
     name: "Anger",
     resourceCost: 0,
+    image: rage,
     actions: [
         {
             damage: 2,
@@ -67,6 +84,7 @@ export const anger: Ability = {
 export const shieldStrike: Ability = {
     name: "Shield Strike",
     resourceCost: 2,
+    image: shieldred,
     actions: [
         {
             damage: 2,
@@ -82,6 +100,7 @@ export const shieldStrike: Ability = {
 export const rampage: Ability = {
     name: "Rampage",
     resourceCost: 3,
+    image: risingrage,
     actions: [
         {
             damage: 9,
@@ -93,6 +112,7 @@ export const rampage: Ability = {
 export const block: Ability = {
     name: "Block",
     resourceCost: 1,
+    image: blockImage,
     actions: [
         {
             armor: 2,
@@ -104,6 +124,7 @@ export const block: Ability = {
 export const rend: Ability = {
     name: "Rend",
     resourceCost: 2,
+    image: rendImage,
     actions: [
         {
             damage: 2,
@@ -122,6 +143,7 @@ export const rend: Ability = {
 export const bloodthirst: Ability = {
     name: "Bloodthirst",
     resourceCost: 0,
+    image: shout,
     actions: [
         {
             effects: [
@@ -155,5 +177,5 @@ export const wolf: Ability = {
         maxHP: 3,
         damage: 1,
     },
-    actions: []
+    actions: [],
 };

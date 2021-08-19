@@ -48,8 +48,7 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        textShadow:
-            "0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black",
+        textShadow: "0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black",
         fontSize: "16px",
         fontWeight: "bold",
         zIndex: "3",
@@ -80,18 +79,14 @@ const Icon = ({
     let iconNode;
 
     if (typeof icon === "string") {
-        iconNode = (
-            <img src={icon} className={classNames(classes.icon, "icon")} />
-        );
+        iconNode = <img src={icon} className={classNames(classes.icon, "icon")} />;
     } else {
-        iconNode = (
-            <span className={classNames(classes.icon, "icon")}>{icon}</span>
-        );
+        iconNode = <span className={classNames(classes.icon, "icon")}>{icon}</span>;
     }
 
     return (
         <span
-            className={classNames(classes.root, className, size)}
+            className={classNames("icon-root", classes.root, className, size)}
             style={{ background, ...style }}
             {...other}
         >
