@@ -41,7 +41,7 @@ export const smalltofu = {
     maxHP: 3,
     armor: 0,
     damage: 1,
-    abilities: [loaf],
+    abilities: [loaf, move],
     effects: [thorns],
 };
 

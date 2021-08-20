@@ -54,10 +54,10 @@ const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number 
     }, 0);
 };
 
-const parseAction = ({ enemies, allies, action, targetIndex, side, casterId }): Event => {
-    const { area = 0, target: targetType } = action;
+export const parseAction = ({ enemies, allies, action, targetIndex, casterId }): Event => {
+    const { area = 0, target: targetType, movement } = action;
 
-    const { friendly, hostile, caster } = getFriendlyOrHostile({
+    const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
         enemies,
         allies,
         casterId,
@@ -95,22 +95,34 @@ const parseAction = ({ enemies, allies, action, targetIndex, side, casterId }): 
         return updatedTargetsMap[character?.id] || cloneDeep(character);
     };
 
+    if (movement) {
+        const index = friendly.findIndex(combatant => combatant?.id === casterId);
+        [friendly[index], friendly[targetIndex]] = [
+            friendly[targetIndex],
+            friendly[index],
+        ];
+    }
+
+    const [updatedAllies, updatedEnemies] = casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
+
     return {
         action,
-        updatedAllies: allies.map(getUpdatedCharacter),
-        updatedEnemies: enemies.map(getUpdatedCharacter),
+        updatedAllies: updatedAllies.map(getUpdatedCharacter),
+        updatedEnemies: updatedEnemies.map(getUpdatedCharacter),
         casterId,
     };
 };
 
 const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
-    const [friendly, hostile] = allies.find((ally) => ally && ally.id === casterId)
+    const casterSide = allies.find((ally) => ally?.id === casterId) ? "allies" : "enemies";
+    const [friendly, hostile] = casterSide === "allies"
         ? [allies, enemies]
         : [enemies, allies];
     return {
-        friendly,
-        hostile,
-        caster: friendly.find((character) => character && character.id === casterId),
+        friendly: friendly.slice(),
+        hostile: hostile.slice(),
+        caster: friendly.find((character) => character?.id === casterId),
+        casterSide,
     };
 };
 
@@ -139,20 +151,15 @@ export const useAllyAbility = ({
     const mostRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
     const mostRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
 
-    results.push(
-        ...actions.map((action: Action) => {
-            const parsed = parseAction({
-                enemies: mostRecentEnemies(),
-                allies: mostRecentAllies(),
-                targetIndex,
-                side,
-                action,
-                casterId,
-            });
-
-            return parsed;
-        })
-    );
+    actions.forEach((action: Action) => {
+        results.push(parseAction({
+            enemies: mostRecentEnemies(),
+            allies: mostRecentAllies(),
+            targetIndex,
+            action,
+            casterId,
+        }))
+    });
 
     const caster = mostRecentAllies().find((ally) => ally?.id === casterId);
 

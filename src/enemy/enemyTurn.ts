@@ -1,3 +1,4 @@
+import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
 import { Effect } from "./../ability/types";
 import { getRandomItem, shuffle } from "./../utils";
@@ -6,11 +7,7 @@ import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Enemy } from "./tofu";
 import { Combatant } from "../character/types";
 
-const getPossibleMoveIndices = ({
-    currentLocationIndex,
-    enemies,
-    movement,
-}): number[] => {
+const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement }): number[] => {
     const min = Math.max(0, currentLocationIndex - movement);
     const max = Math.min(enemies.length, currentLocationIndex + movement);
     const moveIndices = [];
@@ -59,9 +56,7 @@ const enemyMove = ({ casterId, allies, enemies }): Event[] => {
     const caster = enemies.find((e) => e && e.id === casterId);
     const { abilities } = caster;
     const ability: Ability = getRandomItem(
-        abilities.filter((a) =>
-            canUseAbility({ enemy: caster, ability: a, enemies })
-        )
+        abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies }))
     );
 
     const getValidTargetIndices = (characters: (Combatant | null)[]) => {
@@ -74,115 +69,95 @@ const enemyMove = ({ casterId, allies, enemies }): Event[] => {
         return indices;
     };
 
-    return ability.actions.map((action) => {
-        const { target, movement, area = 0 } = action;
-        let updatedEnemies;
-        let updatedAllies;
+    const results = [];
+    ability.actions.forEach((action) => {
+        const { target, movement } = action;
+        let targetIndex;
+        // Each subsequent action should be based on the most recently updated enemies/player states.
+        const recentEnemies = results[results.length - 1]?.updatedEnemies || enemies;
+        const recentAllies = results[results.length - 1]?.updatedAllies || allies;
 
-        const updateCharacters = (
-            characters: (Combatant | null)[],
-            targetIndex: number
-        ): Combatant[] => {
-            return characters.map((character: Combatant | null, i: number) => {
-                if (!character) {
-                    return null;
-                }
-
-                const isTargetHit =
-                    i >= targetIndex - area && i <= targetIndex + area;
-                if (isTargetHit) {
-                    return applyActionToCharacter(character, action);
-                }
-                return cloneDeep(character);
-            });
-        };
-
-        if (target === TARGET_TYPES.SELF) {
-            const index = enemies.findIndex((e) => e && e.id === caster.id);
-            updatedEnemies = updateCharacters(enemies, index);
-            if (movement) {
-                const targetIndex = getRandomItem(
-                    getPossibleMoveIndices({
-                        currentLocationIndex: index,
-                        enemies,
-                        movement,
-                    })
-                );
-                [updatedEnemies[index], updatedEnemies[targetIndex]] = [
-                    updatedEnemies[targetIndex],
-                    updatedEnemies[index],
-                ];
-            }
+        if (movement) {
+            targetIndex = getRandomItem(
+                getPossibleMoveIndices({
+                    currentLocationIndex: recentEnemies.findIndex(
+                        (enemy) => enemy?.id === casterId
+                    ),
+                    enemies: recentEnemies,
+                    movement,
+                })
+            );
         } else if (target === TARGET_TYPES.FRIENDLY) {
-            const validEnemyIndices = getValidTargetIndices(enemies);
-            const targetIndex = getRandomItem(validEnemyIndices);
-            updatedEnemies = updateCharacters(enemies, targetIndex);
-        } else {
-            updatedEnemies = enemies.map(cloneDeep);
+            const validEnemyIndices = getValidTargetIndices(recentEnemies);
+            targetIndex = getRandomItem(validEnemyIndices);
+        } else if (target === TARGET_TYPES.HOSTILE) {
+            const validAllyIndices = getValidTargetIndices(recentAllies);
+            targetIndex = getRandomItem(validAllyIndices);
         }
 
-        if (target === TARGET_TYPES.HOSTILE) {
-            const validAllyIndices = getValidTargetIndices(allies);
-            const targetIndex = getRandomItem(validAllyIndices);
-            updatedAllies = updateCharacters(allies, targetIndex);
-        } else {
-            updatedAllies = allies.map(cloneDeep);
-        }
-
-        return {
-            action,
-            updatedAllies,
-            updatedEnemies,
-            casterId: caster.id,
-        };
+        results.push(
+            parseAction({
+                casterId,
+                enemies: recentEnemies,
+                allies: recentAllies,
+                targetIndex,
+                action,
+            })
+        );
     });
+    return results;
 };
 
 const enemyTurn = ({ enemies, allies }): Event[] => {
     const randomizedIndices = shuffle(getPopulatedEnemyIndices(enemies)); // Randomize enemy move order
-    const enemyActions = [];
+    const results = [];
+    // Each subsequent move should be based on the most recently updated enemies/player states.
+    const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
+    const getRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
     randomizedIndices.forEach((i) => {
         const enemy = enemies[i];
         if (!enemy || enemy.HP === 0) {
             return;
         }
 
-        const parsed = enemyMove({ casterId: enemy.id, allies, enemies });
-        // Each subsequent action should be based on the most recently updated enemies/player states.
-        const latest = parsed[parsed.length - 1];
-        enemies = latest.updatedEnemies;
-        allies = latest.updatedAllies;
-        enemyActions.push(...parsed);
+        results.push(
+            ...enemyMove({
+                casterId: enemy.id,
+                allies: getRecentAllies(),
+                enemies: getRecentEnemies(),
+            })
+        );
     });
 
-    const enemiesWithBleedsTriggered: Combatant[] = enemies.map(
+    let totalBleedDamage = 0;
+    const enemiesWithBleedsTriggered: Combatant[] = getRecentEnemies().map(
         (enemy: Combatant, i: number) => {
             if (!enemy) {
                 return enemy;
             }
-            const totalBleedDamage: number = enemy.effects.reduce(
-                (acc: number, effect: Effect) => {
-                    if (effect.type === EFFECT_TYPES.BLEED) {
-                        acc += effect.damage || 1;
-                    }
-                    return acc;
-                },
-                0
-            );
+            const bleedDamage: number = enemy.effects.reduce((acc: number, effect: Effect) => {
+                if (effect.type === EFFECT_TYPES.BLEED) {
+                    acc += effect.damage || 1;
+                }
+                return acc;
+            }, 0);
 
+            totalBleedDamage += bleedDamage;
             return applyActionToCharacter(enemy, {
-                damage: totalBleedDamage,
+                damage: bleedDamage,
                 description: "Enemies took bleed damage.",
             });
         }
     );
 
-    enemyActions.push({
-        updatedEnemies: enemiesWithBleedsTriggered,
-        updatedAllies: allies,
-    } as Event);
+    if (totalBleedDamage) {
+        results.push({
+            updatedEnemies: enemiesWithBleedsTriggered,
+            updatedAllies: getRecentAllies(),
+        } as Event);
+    }
 
-    return enemyActions;
+    return results;
 };
 
 export default enemyTurn;
