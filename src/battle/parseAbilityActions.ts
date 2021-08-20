@@ -169,7 +169,7 @@ export const useAllyAbility = ({
         const healing = healthPerResourcesSpent * resourceCost;
         if (healing > 0) {
             const newHP = Math.min(caster.maxHP || Infinity, caster.HP + healing);
-            const updatedAllies = allies.map((character) => {
+            const updatedAllies = mostRecentAllies().map((character) => {
                 if (character?.id === caster.id) {
                     return {
                         ...cloneDeep(caster),
@@ -181,7 +181,7 @@ export const useAllyAbility = ({
             });
             results.push({
                 updatedAllies,
-                updatedEnemies: (results[results.length - 1]?.updatedEnemies || enemies).map(cloneDeep),
+                updatedEnemies: mostRecentEnemies().map(cloneDeep),
                 casterId: null,
             });
         }
