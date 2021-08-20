@@ -135,7 +135,8 @@ const BattlefieldContainer = ({
         (hand.every((ability) => !canUseAbility(player, ability)) &&
             allies.every((ally) => !isEligibleToAttack(ally)));
 
-    const handleAbilityClick = (i: number) => {
+    const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
+        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         setSelectedAllyIndex(null);
         if (!canUseAbility(player, hand[i])) {
             setNotification({
@@ -205,7 +206,9 @@ const BattlefieldContainer = ({
         setSelectedAllyIndex(null);
     };
 
-    const handleTargetClick = ({ side, index }) => {
+    const handleTargetClick = (e: React.ChangeEvent, { side, index }) => {
+        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
+
         if (disableActions) {
             return;
         }
@@ -246,6 +249,11 @@ const BattlefieldContainer = ({
                 id: uuid.v4(),
             });
         }
+    };
+
+    const handleBattlefieldClick = () => {
+        setSelectedAllyIndex(null);
+        setSelectedAbilityIndex(null);
     };
 
     const getAction = (character): Action => {
@@ -404,15 +412,15 @@ const BattlefieldContainer = ({
             )}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
             <div className={classes.battlefieldContainer}>
-                <div className={classes.battlefield}>
+                <div className={classes.battlefield} onClick={handleBattlefieldClick}>
                     <div className={classes.combatantContainer}>
                         <div className={classes.combatants}>
                             {enemies.map((enemy, i: number) => (
                                 <CombatantView
                                     combatant={enemy}
                                     isAlly={false}
-                                    onClick={() =>
-                                        handleTargetClick({
+                                    onClick={(e) =>
+                                        handleTargetClick(e, {
                                             index: i,
                                             side: "enemies",
                                         })
@@ -440,8 +448,8 @@ const BattlefieldContainer = ({
                                         <CombatantView
                                             combatant={ally}
                                             isAlly={true}
-                                            onClick={() =>
-                                                handleTargetClick({
+                                            onClick={(e) =>
+                                                handleTargetClick(e, {
                                                     index: i,
                                                     side: "allies",
                                                 })
@@ -476,7 +484,7 @@ const BattlefieldContainer = ({
                         <div className={classes.abilities}>
                             {hand.map((ability: Ability, i: number) => (
                                 <AbilityView
-                                    onClick={() => handleAbilityClick(i)}
+                                    onClick={(e) => handleAbilityClick(e, i)}
                                     isSelected={isPlayerTurn && selectedAbilityIndex === i}
                                     key={i}
                                     ability={ability}
