@@ -11,7 +11,7 @@ export const thorns = {
 
 export const spikedArmorEffect = {
     name: "Spiked Armor",
-    icon: spikes,
+    icon: Cactus,
     thorns: 1,
     duration: 3,
     type: EFFECT_TYPES.BUFF,

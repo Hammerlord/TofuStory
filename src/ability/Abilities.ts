@@ -190,7 +190,7 @@ export const spikedArmor: Ability = {
     actions: [
         {
             armor: 4,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             effects: [spikedArmorEffect],
         },
     ],

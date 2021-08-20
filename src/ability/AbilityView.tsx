@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
-import { Shield, Blood, CrossedSwords, Dizzy, Heart } from "../images";
+import { Shield, Blood, CrossedSwords, Dizzy, Heart, Cactus } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
 import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
@@ -125,7 +125,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     const { actions = [], resourceCost, name, minion, image } = ability;
     const { area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
-        .filter(({ target }) => target === TARGET_TYPES.SELF)
+        .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, current: Action) => {
             const { healing = 0, damage = 0, armor = 0, resources = 0 } = current;
             return {
@@ -145,6 +145,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
     }, []);
 
     const bleedDuration = allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration || 0;
+    const thornsDuration = allEffects.find(({ thorns = 0 }) => thorns > 0)?.duration || 0;
     const stun = allEffects.find(({ type }) => type === EFFECT_TYPES.STUN);
     const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
         allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
@@ -213,6 +214,11 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                         <li>
                             Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per{" "}
                             <Fury /> spent {healthPerResourcesSpentDuration === 0 && "this turn"}
+                        </li>
+                    )}
+                    {thornsDuration > 0 && (
+                        <li>
+                            Gain <Icon icon={<Cactus />} text={thornsDuration} />
                         </li>
                     )}
                 </ul>
