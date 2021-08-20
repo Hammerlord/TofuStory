@@ -17,6 +17,7 @@ export interface Effect {
     duration?: number;
     damage?: number;
     healthPerResourcesSpent?: number;
+    icon?: string;
 }
 
 interface Minion {

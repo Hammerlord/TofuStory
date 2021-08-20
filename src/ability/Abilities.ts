@@ -151,6 +151,7 @@ export const bloodthirst: Ability = {
                     type: EFFECT_TYPES.BUFF,
                     duration: 0,
                     healthPerResourcesSpent: 2,
+                    icon: shout,
                 },
             ],
             target: TARGET_TYPES.SELF,

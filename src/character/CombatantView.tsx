@@ -262,6 +262,11 @@ const CombatantView = ({
                                 </span>
                             }
                         </div>
+                        <div>
+                            {combatant.effects?.map((effect, i) =>
+                                effect.icon ? <Icon icon={effect.icon} key={i} /> : null
+                            )}
+                        </div>
                     </>
                 )}
             </div>
