@@ -1,3 +1,4 @@
+import { thorns } from './../ability/Effects';
 import { Ability, TARGET_TYPES } from "../ability/types";
 import matty from "../images/matty.png";
 import realtofuPortrait from "../images/item118.png";
@@ -41,6 +42,7 @@ export const smalltofu = {
     armor: 0,
     damage: 1,
     abilities: [loaf],
+    effects: [thorns],
 };
 
 export const thefaketofu = {

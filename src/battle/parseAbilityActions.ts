@@ -44,63 +44,61 @@ export const applyActionToCharacter = (character: Combatant, action: ApplyAction
     };
 };
 
-export const emptyReport = Object.freeze({
-    healingReceived: 0,
-    armorGained: 0,
-    effectsAdded: [],
-    damageTaken: 0,
-    isSlain: false,
-});
+const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number => {
+    if (!action.damage) {
+        return 0;
+    }
+
+    return hitTargets.reduce((acc, { effects }) => {
+        return acc + effects.reduce((acc, { thorns = 0 }) => acc + thorns, 0);
+    }, 0);
+};
 
 const parseAction = ({ enemies, allies, action, targetIndex, side, casterId }): Event => {
     const { area = 0, target: targetType } = action;
 
-    const isTargetHit = (() => {
-        const { friendly, hostile, caster } = getFriendlyOrHostile({
-            enemies,
-            allies,
-            casterId,
-        });
-        const isTargetHit = (character, i) => {
-            return character && i >= targetIndex - area && i <= targetIndex + area;
-        };
-        let targets = [];
-        if (targetType === TARGET_TYPES.SELF) {
-            targets = [caster];
-        } else if (targetType === TARGET_TYPES.FRIENDLY) {
-            targets = friendly.filter(isTargetHit);
-        } else if (targetType === TARGET_TYPES.HOSTILE) {
-            targets = hostile.filter(isTargetHit);
-        }
-        return (character) => targets.some((t) => t?.id === character?.id);
-    })();
-
-    const updateCharacter = (character: Combatant | null): Combatant | null => {
-        if (!character) {
-            return character;
-        }
-
-        if (isTargetHit(character)) {
-            return applyActionToCharacter(character, action);
-        }
-
-        return cloneDeep(character);
+    const { friendly, hostile, caster } = getFriendlyOrHostile({
+        enemies,
+        allies,
+        casterId,
+    });
+    const isInArea = (character, i) => {
+        return character && i >= targetIndex - area && i <= targetIndex + area;
     };
+    let targets = [];
+    if (targetType === TARGET_TYPES.SELF) {
+        targets = [caster];
+    } else if (targetType === TARGET_TYPES.FRIENDLY) {
+        targets = friendly.filter(isInArea);
+    } else if (targetType === TARGET_TYPES.HOSTILE) {
+        targets = hostile.filter(isInArea);
+    }
 
-    const updateAllies = (allies: (Combatant | null)[]) => {
-        return allies.map((ally: Combatant | null, i) => {
-            if (isTargetHit(ally)) {
-                return applyActionToCharacter(ally, action);
+    const updatedTargetsMap = targets
+        .map((character) => applyActionToCharacter(character, action))
+        .reduce((acc, current) => {
+            acc[current.id] = current;
+            return acc;
+        }, {});
+
+    const thornsDamage = calculateThornsDamage(action, targets);
+    if (thornsDamage > 0) {
+        updatedTargetsMap[casterId] = applyActionToCharacter(
+            updatedTargetsMap[casterId] || caster,
+            {
+                damage: thornsDamage,
             }
+        );
+    }
 
-            return cloneDeep(ally);
-        });
+    const getUpdatedCharacter = (character) => {
+        return updatedTargetsMap[character?.id] || cloneDeep(character);
     };
 
     return {
         action,
-        updatedAllies: updateAllies(allies),
-        updatedEnemies: enemies.map(updateCharacter),
+        updatedAllies: allies.map(getUpdatedCharacter),
+        updatedEnemies: enemies.map(getUpdatedCharacter),
         casterId,
     };
 };

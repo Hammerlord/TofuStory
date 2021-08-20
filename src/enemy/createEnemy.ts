@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { Combatant } from "../character/types";
 import { getRandomItem, shuffle } from "./../utils";
 import {
@@ -18,7 +19,7 @@ export const createCombatant = (combatant): Combatant => {
         id: uuid.v4(),
         ...combatant,
         HP: combatant.HP || combatant.maxHP,
-        effects: [],
+        effects: combatant.effects?.map(cloneDeep) || [],
         armor: 0,
     };
 };
@@ -43,9 +44,7 @@ export const createEnemies = (): Combatant[] => {
             ...enemy,
             abilities: [
                 ...(enemy.abilities || []),
-                ...Array.from({ length: 3 }).map(() =>
-                    createSyntheticAttack(enemy)
-                ),
+                ...Array.from({ length: 3 }).map(() => createSyntheticAttack(enemy)),
             ],
         };
 

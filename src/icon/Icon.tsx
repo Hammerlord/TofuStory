@@ -80,6 +80,9 @@ const Icon = ({
 
     if (typeof icon === "string") {
         iconNode = <img src={icon} className={classNames(classes.icon, "icon")} />;
+    } else if (typeof icon === "function") {
+        const Icon = icon;
+        iconNode = <span className={classNames(classes.icon, "icon")}><Icon/></span>;
     } else {
         iconNode = <span className={classNames(classes.icon, "icon")}>{icon}</span>;
     }
