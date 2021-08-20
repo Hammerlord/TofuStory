@@ -16,7 +16,8 @@ import {
     shieldStrike,
     slam,
     wolf,
-    rend
+    rend,
+    spikedArmor
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -103,6 +104,8 @@ const MainMenu = () => {
         bloodthirst,
         wolf,
         wolf,
+        spikedArmor,
+        spikedArmor,
     ]);
 
     const classes = useStyles();

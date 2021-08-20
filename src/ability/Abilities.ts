@@ -1,3 +1,4 @@
+import { spikedArmorEffect } from "./Effects";
 import {
     axe,
     block as blockImage,
@@ -8,6 +9,7 @@ import {
     risingrage,
     shieldred,
     shout,
+    spikes,
     warleap,
     Wolf,
 } from "../images";
@@ -179,4 +181,17 @@ export const wolf: Ability = {
         damage: 1,
     },
     actions: [],
+};
+
+export const spikedArmor: Ability = {
+    name: "Spiked Armor",
+    resourceCost: 3,
+    image: spikes,
+    actions: [
+        {
+            armor: 4,
+            target: TARGET_TYPES.SELF,
+            effects: [spikedArmorEffect],
+        },
+    ],
 };
