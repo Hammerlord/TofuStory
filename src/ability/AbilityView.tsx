@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
     root: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
         width: "140px",
-        minHeight: "175px",
+        minHeight: "250px",
         padding: "12px",
         paddingTop: "6px",
         paddingBottom: "2px",

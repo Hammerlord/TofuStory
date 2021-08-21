@@ -39,9 +39,9 @@ export const updateEffects = (target: Combatant) => {
         effects: target.effects
             .map((effect) => ({
                 ...effect,
-                duration: effect.duration - 1,
+                duration: (effect.duration || Infinity) - 1,
             }))
-            .filter((effect) => effect.duration > 0),
+            .filter(({ duration = Infinity }) => duration > 0),
     };
 };
 

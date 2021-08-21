@@ -46,7 +46,6 @@ const useStyles = createUseStyles({
         height: "200px",
         width: "calc(100% - 300px)",
         margin: "auto",
-        marginTop: "48px",
     },
     combatants: {
         display: "flex",
@@ -75,7 +74,7 @@ const useStyles = createUseStyles({
         margin: "auto",
         justifyContent: "space-evenly",
         marginTop: "16px",
-        minHeight: "175px",
+        minHeight: "250px",
     },
     playerContainer: {
         position: "relative",
@@ -313,27 +312,31 @@ const BattlefieldContainer = ({
 
     const onPlayerTurnStart = () => {
         const updatedAllies = updatePlayer((player) => ({
-            resources: Math.min(
-                player.maxResources,
-                player.resources + player.resourcesPerTurn
-            ),
+            resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
         }));
         setEnemies(enemies.map(updateEffects));
         drawCards();
         setAlliesAttackedThisTurn([]);
         const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
         if (aurasApplied.length) {
-            setRecentActions(aurasApplied.map(({ characters, action, casterId }) => ({
-                updatedAllies: characters,
-                updatedEnemies: enemies,
-                action,
-                casterId,
-            })))
+            setRecentActions(
+                aurasApplied.map(({ characters, action, casterId }) => ({
+                    updatedAllies: characters,
+                    updatedEnemies: enemies,
+                    action,
+                    casterId,
+                }))
+            );
         }
     };
 
     useEffect(() => {
         const TURN_NOTIFICATION_WAIT_TIME = 1000;
+        let updatedAllies = allies;
+        if (!isPlayerTurn) {
+            updatedAllies = allies.map(updateEffects);
+            setAllies(updatedAllies);
+        }
         setShowTurnAnnouncement(true);
 
         setTimeout(() => {
@@ -344,7 +347,7 @@ const BattlefieldContainer = ({
             } else {
                 setHand([]);
                 setDiscard([...hand, ...discard]);
-                setRecentActions(enemyTurn({ enemies, allies }));
+                setRecentActions(enemyTurn({ enemies, allies: updatedAllies }));
             }
         }, TURN_NOTIFICATION_WAIT_TIME);
     }, [isPlayerTurn]);
@@ -384,7 +387,6 @@ const BattlefieldContainer = ({
     }, [recentActions]);
 
     const handleEndTurn = () => {
-        setAllies(allies.map(updateEffects));
         setIsPlayerTurn(false);
     };
 
@@ -422,7 +424,6 @@ const BattlefieldContainer = ({
                     {notification.text}
                 </Notification>
             )}
-            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
             <div className={classes.battlefieldContainer}>
                 <div className={classes.battlefield} onClick={handleBattlefieldClick}>
                     <div className={classes.combatantContainer}>
@@ -473,6 +474,7 @@ const BattlefieldContainer = ({
                                             key={i}
                                             action={getAction(ally)}
                                             isHighlighted={
+                                                isPlayerTurn &&
                                                 selectedAllyIndex === null &&
                                                 isEligibleToAttack(ally)
                                             }
@@ -509,6 +511,7 @@ const BattlefieldContainer = ({
             {battleEndResult && (
                 <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
             )}
+            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>
     );
 };

@@ -8,7 +8,7 @@ const useStyles = createUseStyles({
         background: "rgba(0, 0, 0, 0.75)",
         color: "white",
         textAlign: "center",
-        position: "absolute",
+        position: "fixed",
         padding: "32px 48px",
         left: "50%",
         top: "50%",
