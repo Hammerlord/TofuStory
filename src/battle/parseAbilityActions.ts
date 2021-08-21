@@ -133,8 +133,8 @@ export const applyAuraPerTurnEffects = (characters) => {
 
     for (let i = 0; i < characters.length; ++i) {
         const recentCharacters = results[results.length - 1]?.characters || characters;
-        const { aura, id } = recentCharacters[i] || {};
-        if (!aura) {
+        const { aura, id, HP = 0 } = recentCharacters[i] || {};
+        if (!aura || HP <= 0) {
             continue;
         }
 
@@ -150,7 +150,7 @@ export const applyAuraPerTurnEffects = (characters) => {
         results.push({
             characters: recentCharacters.map((character, j) => {
                 // Aura effects do not apply to the owner of the aura
-                const isAffectedByAura = character && j >= i - area && j <= i + area && j !== i;
+                const isAffectedByAura = character?.HP > 0 && j >= i - area && j <= i + area && j !== i;
                 if (isAffectedByAura) {
                     return applyActionToTarget({ target: character, action });
                 }
@@ -177,15 +177,14 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     });
 
     updated.forEach((character: Combatant | null, i) => {
-        if (!character) return;
-        const { aura } = character;
-        if (aura) {
+        const { aura, HP = 0 } = character || {};
+        if (aura && HP > 0) {
             // Only a subset of aura properties are "persistent" effects -- apply or fade based on proximity to the
             // owner of the aura at any given moment
             const { area = 0, damage = 0, thorns = 0 } = aura;
             for (let j = i - area; j <= i + area; ++j) {
                 // Aura effects do not apply to the owner of the aura
-                if (i !== j && updated[j]) {
+                if (i !== j && updated[j] && updated[j].HP > 0) {
                     updated[j].effects.push({
                         thorns,
                         damage,
