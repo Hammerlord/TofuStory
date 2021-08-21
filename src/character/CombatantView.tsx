@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords } from "../images";
+import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords, Fireworks } from "../images";
 import HitIcon from "../icon/HitIcon";
 import { getCharacterStatChanges } from "../battle/utils";
 import { getActionType, isAttack } from "../ability/utils";
@@ -126,23 +126,23 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
     },
     "@keyframes casting": {
-        '0%': {
+        "0%": {
             WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             transform: "translateY(0)",
         },
 
-        '75%': {
+        "75%": {
             WebkitFilter:
                 "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             transform: "translateY(-24px)",
         },
 
-        '100%': {
+        "100%": {
             WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        }
+        },
     },
     casting: {
         animationDuration: "1s",
@@ -171,6 +171,12 @@ const useStyles = createUseStyles({
         "& .text": {
             color: "#42f57b",
         },
+    },
+    effectsContainer: {
+        position: "absolute",
+        bottom: "-24px",
+        left: "50%",
+        transform: "translateX(-50%)",
     },
 });
 
@@ -248,7 +254,8 @@ const CombatantView = ({
                                         className={classNames(classes.portrait, {
                                             [classes.enemyActing]: isAttack(action) && !isAlly,
                                             [classes.allyActing]: isAttack(action) && isAlly,
-                                            [classes.casting]: getActionType(action) === ACTION_TYPES.CASTING,
+                                            [classes.casting]:
+                                                getActionType(action) === ACTION_TYPES.CASTING,
                                         })}
                                         src={combatant.image}
                                     />
@@ -300,10 +307,11 @@ const CombatantView = ({
                                 </span>
                             }
                         </div>
-                        <div>
+                        <div className={classes.effectsContainer}>
                             {combatant.effects?.map((effect, i) =>
                                 effect.icon ? <Icon icon={effect.icon} key={i} /> : null
                             )}
+                            {combatant.aura && <Icon icon={Fireworks} />}
                         </div>
                     </>
                 )}

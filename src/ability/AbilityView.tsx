@@ -4,6 +4,7 @@ import Icon from "../icon/Icon";
 import { Shield, Blood, CrossedSwords, Dizzy, Heart, Cactus } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
+import AuraView from "./AuraView";
 import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 const useAreaStyles = createUseStyles({
@@ -152,7 +153,8 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
 
     const { target: targetType } = actions[0] || {};
 
-    let cardImage = minion?.image || image;
+    const cardImage = minion?.image || image;
+    const { aura } = minion || {};
 
     return (
         <div
@@ -228,6 +230,7 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
                         <Icon icon={<CrossedSwords />} text={minion.damage} />
                     </div>
                 )}
+                {aura && <AuraView aura={aura} />}
                 {actions.length > 0 && (
                     <div>
                         Area: <Area area={area} />
