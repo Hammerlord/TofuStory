@@ -1,6 +1,6 @@
 import { createCombatant } from "./../enemy/createEnemy";
 import uuid from "uuid";
-import { Effect } from "./../ability/types";
+import { Aura, Effect } from "./../ability/types";
 import { Action, TARGET_TYPES } from "../ability/types";
 import { Combatant, CombatPlayer } from "../character/types";
 import { cloneDeep } from "lodash";
@@ -111,8 +111,8 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId }):
 
     return {
         action,
-        updatedAllies: renewAuras(updatedAllies.map(getUpdatedCharacter)),
-        updatedEnemies: renewAuras(updatedEnemies.map(getUpdatedCharacter)),
+        updatedAllies: renewPersistentAuras(updatedAllies.map(getUpdatedCharacter)),
+        updatedEnemies: renewPersistentAuras(updatedEnemies.map(getUpdatedCharacter)),
         casterId,
     };
 };
@@ -128,7 +128,43 @@ const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
     };
 };
 
-const renewAuras = (characters: (Combatant | null)[]) => {
+export const applyAuraPerTurnEffects = (characters) => {
+    const results: { characters: (Combatant | null)[]; action: Action; casterId }[] = [];
+
+    for (let i = 0; i < characters.length; ++i) {
+        const recentCharacters = results[results.length - 1]?.characters || characters;
+        const { aura, id } = recentCharacters[i] || {};
+        if (!aura) {
+            continue;
+        }
+
+        const { armorPerTurn = 0, healthPerTurn = 0, area = 0 } = aura;
+        if (armorPerTurn === 0 && healthPerTurn === 0) {
+            continue;
+        }
+
+        const action = {
+            armor: armorPerTurn,
+            healing: healthPerTurn,
+        };
+        results.push({
+            characters: recentCharacters.map((character, j) => {
+                // Aura effects do not apply to the owner of the aura
+                const isAffectedByAura = character && j >= i - area && j <= i + area && j !== i;
+                if (isAffectedByAura) {
+                    return applyActionToTarget({ target: character, action });
+                }
+                return cloneDeep(character);
+            }),
+            action,
+            casterId: id,
+        });
+    }
+
+    return results;
+};
+
+const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     const updated = characters.map((character) => {
         if (!character) {
             return character;
@@ -144,12 +180,15 @@ const renewAuras = (characters: (Combatant | null)[]) => {
         if (!character) return;
         const { aura } = character;
         if (aura) {
-            const { area } = aura;
+            // Only a subset of aura properties are "persistent" effects -- apply or fade based on proximity to the
+            // owner of the aura at any given moment
+            const { area = 0, damage = 0, thorns = 0 } = aura;
             for (let j = i - area; j <= i + area; ++j) {
                 // Aura effects do not apply to the owner of the aura
                 if (i !== j && updated[j]) {
                     updated[j].effects.push({
-                        ...aura,
+                        thorns,
+                        damage,
                         isAuraEffect: true,
                     });
                 }
@@ -173,7 +212,7 @@ export const useAllyAbility = ({
     if (minion) {
         results.push({
             updatedEnemies: enemies.map(cloneDeep),
-            updatedAllies: renewAuras(
+            updatedAllies: renewPersistentAuras(
                 allies.map((ally: Combatant | null, i: number) => {
                     return i === targetIndex ? createCombatant(minion) : cloneDeep(ally);
                 })

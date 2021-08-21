@@ -10,7 +10,7 @@ import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
-import { Event, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 import { Fury } from "../resource/ResourcesView";
@@ -311,6 +311,27 @@ const BattlefieldContainer = ({
         return updatedAllies;
     };
 
+    const onPlayerTurnStart = () => {
+        const updatedAllies = updatePlayer((player) => ({
+            resources: Math.min(
+                player.maxResources,
+                player.resources + player.resourcesPerTurn
+            ),
+        }));
+        setEnemies(enemies.map(updateEffects));
+        drawCards();
+        setAlliesAttackedThisTurn([]);
+        const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
+        if (aurasApplied.length) {
+            setRecentActions(aurasApplied.map(({ characters, action, casterId }) => ({
+                updatedAllies: characters,
+                updatedEnemies: enemies,
+                action,
+                casterId,
+            })))
+        }
+    };
+
     useEffect(() => {
         const TURN_NOTIFICATION_WAIT_TIME = 1000;
         setShowTurnAnnouncement(true);
@@ -319,13 +340,7 @@ const BattlefieldContainer = ({
             setShowTurnAnnouncement(false);
 
             if (isPlayerTurn) {
-                updatePlayer((player) => ({
-                    resources: Math.min(
-                        player.maxResources,
-                        player.resources + player.resourcesPerTurn
-                    ),
-                }));
-                drawCards();
+                onPlayerTurnStart();
             } else {
                 setHand([]);
                 setDiscard([...hand, ...discard]);
@@ -364,8 +379,6 @@ const BattlefieldContainer = ({
 
         if (!isPlayerTurn) {
             setIsPlayerTurn(true);
-            setAlliesAttackedThisTurn([]);
-            setEnemies(enemies.map(updateEffects));
         }
         setIsPlayingAnimations(false);
     }, [recentActions]);
