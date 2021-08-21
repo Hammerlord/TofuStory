@@ -138,14 +138,14 @@ export const applyAuraPerTurnEffects = (characters) => {
             continue;
         }
 
-        const { armorPerTurn = 0, healthPerTurn = 0, area = 0 } = aura;
-        if (armorPerTurn === 0 && healthPerTurn === 0) {
+        const { armorPerTurn = 0, healingPerTurn = 0, area = 0 } = aura as Aura;
+        if (armorPerTurn === 0 && healingPerTurn === 0) {
             continue;
         }
 
         const action = {
             armor: armorPerTurn,
-            healing: healthPerTurn,
+            healing: healingPerTurn,
         };
         results.push({
             characters: recentCharacters.map((character, j) => {
