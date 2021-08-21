@@ -233,7 +233,7 @@ export const useAllyAbility = ({
 
 export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
     const caster = allies.find((ally) => ally?.id === casterId) || {};
-    const { effects, damage, id } = caster;
+    const { effects, damage = 0, id } = caster;
     const totalDamage = effects.reduce((acc: number, { damage = 0 }) => acc + damage, 0) + damage;
     return useAllyAbility({
         enemies,

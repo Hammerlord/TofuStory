@@ -128,7 +128,15 @@ const BattlefieldContainer = ({
     const classes = useStyles();
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        return ally && ally.damage && alliesAttackedThisTurn.every((id) => id !== ally.id);
+        if (!ally) {
+            return false;
+        }
+        const damageFromEffects = ally.effects?.reduce(
+            (acc: number, { damage = 0 }) => acc + damage,
+            0
+        );
+        const totalDamage = (ally.damage || 0) + damageFromEffects;
+        return totalDamage > 0 && alliesAttackedThisTurn.every((id) => id !== ally.id);
     };
     const noMoreMoves =
         !hand.length ||
@@ -142,7 +150,7 @@ const BattlefieldContainer = ({
             setNotification({
                 severity: "warning",
                 text: `Need more resources to use ${hand[i].name}.`,
-                id: uuid.v4()
+                id: uuid.v4(),
             });
             return;
         }
