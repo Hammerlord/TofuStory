@@ -125,6 +125,30 @@ const useStyles = createUseStyles({
         animationName: "$allyActing",
         animationDuration: "0.5s",
     },
+    "@keyframes casting": {
+        '0%': {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            transform: "translateY(0)",
+        },
+
+        '75%': {
+            WebkitFilter:
+                "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            filter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            transform: "translateY(-24px)",
+        },
+
+        '100%': {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        }
+    },
+    casting: {
+        animationDuration: "1s",
+        animationName: "$casting",
+        transition: "1s filter linear, 1s -webkit-filter linear",
+    },
     stun: {
         width: "48px",
         height: "48px",
@@ -224,6 +248,7 @@ const CombatantView = ({
                                         className={classNames(classes.portrait, {
                                             [classes.enemyActing]: isAttack(action) && !isAlly,
                                             [classes.allyActing]: isAttack(action) && isAlly,
+                                            [classes.casting]: getActionType(action) === ACTION_TYPES.CASTING,
                                         })}
                                         src={combatant.image}
                                     />
