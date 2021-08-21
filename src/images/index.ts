@@ -27,3 +27,4 @@ export { default as rage } from "./rage.png";
 export { default as axe } from "./axe.png";
 export { default as risingrage } from "./risingrage.png";
 export { default as spikes } from "./item218.png";
+export { default as flag } from "./flag.png";

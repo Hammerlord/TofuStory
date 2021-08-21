@@ -143,6 +143,11 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
     },
+    highlightText: {
+        "& .text": {
+            color: "#42f57b",
+        },
+    },
 });
 
 const CombatantView = ({
@@ -184,6 +189,11 @@ const CombatantView = ({
 
     const isStunned = hasAilment(EFFECT_TYPES.STUN);
     const bleeds = combatant?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
+    const damageFromEffects = combatant?.effects?.reduce(
+        (acc: number, { damage = 0 }) => acc + damage,
+        0
+    );
+    const totalDamage = (combatant?.damage || 0) + damageFromEffects;
 
     return (
         <div
@@ -224,11 +234,14 @@ const CombatantView = ({
                                         text={combatant.HP}
                                     />
                                     <div className={classes.rightContainer}>
-                                        {combatant.damage > 0 && (
+                                        {totalDamage > 0 && (
                                             <Icon
                                                 icon={<CrossedSwords />}
                                                 size={"lg"}
-                                                text={combatant.damage}
+                                                text={totalDamage}
+                                                className={classNames({
+                                                    [classes.highlightText]: damageFromEffects > 0,
+                                                })}
                                             />
                                         )}
                                         {combatant.armor > 0 && <Armor amount={combatant.armor} />}

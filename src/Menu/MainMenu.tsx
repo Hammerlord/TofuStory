@@ -17,7 +17,8 @@ import {
     slam,
     wolf,
     rend,
-    spikedArmor
+    spikedArmor,
+    warBanner
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -86,26 +87,13 @@ const MainMenu = () => {
         effects: [],
     });
     const [deck, setDeck] = useState([
-        cleave,
-        cleave,
-        charge,
-        bash,
-        bash,
-        bash,
-        slam,
-        slam,
-        anger,
-        rampage,
-        shieldStrike,
-        block,
-        block,
-        rend,
-        rend,
-        bloodthirst,
+
         wolf,
         wolf,
         spikedArmor,
         spikedArmor,
+        warBanner,
+        warBanner
     ]);
 
     const classes = useStyles();

@@ -1,7 +1,7 @@
-import { EFFECT_TYPES } from './types';
+import { Effect, EFFECT_TYPES } from './types';
 import { Cactus, spikes } from "../images";
 
-export const thorns = {
+export const thorns: Effect = {
     name: "Thorns",
     icon: Cactus,
     thorns: 1,
@@ -9,7 +9,7 @@ export const thorns = {
     type: EFFECT_TYPES.BUFF,
 };
 
-export const spikedArmorEffect = {
+export const spikedArmorEffect: Effect = {
     name: "Spiked Armor",
     icon: Cactus,
     thorns: 1,

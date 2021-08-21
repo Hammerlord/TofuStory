@@ -12,6 +12,7 @@ export enum EFFECT_TYPES {
 }
 
 export interface Effect {
+    name?: string;
     type: EFFECT_TYPES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
     duration?: number;
@@ -19,15 +20,24 @@ export interface Effect {
     healthPerResourcesSpent?: number;
     icon?: string;
     thorns?: number;
+    isAuraEffect?: boolean;
+    healingPerTurn?: number;
+    armorPerTurn?: number;
+}
+
+export interface Aura extends Effect {
+    area?: number;
 }
 
 interface Minion {
+    // Merge with Combatant?
     name: string;
     image: string;
     maxHP: number;
     damage: number;
     effects?: Effect[];
     armor?: number;
+    aura?: Aura;
 }
 
 export interface Action {

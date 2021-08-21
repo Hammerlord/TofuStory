@@ -10,7 +10,7 @@ import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
-import { Event, useAllyAbility } from "./parseAbilityActions";
+import { Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 import { Fury } from "../resource/ResourcesView";
@@ -184,21 +184,12 @@ const BattlefieldContainer = ({
     };
 
     const handleAllyAttack = ({ index }) => {
-        const { damage = 0, id } = allies[selectedAllyIndex];
+        const { id } = allies[selectedAllyIndex];
         setRecentActions(
-            useAllyAbility({
-                enemies,
-                targetIndex: index,
-                side: "enemies",
-                ability: {
-                    actions: [
-                        {
-                            damage,
-                            target: TARGET_TYPES.HOSTILE,
-                        },
-                    ],
-                },
+            useAttack({
                 allies,
+                enemies,
+                index,
                 casterId: id,
             })
         );

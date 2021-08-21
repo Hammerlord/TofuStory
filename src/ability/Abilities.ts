@@ -3,6 +3,7 @@ import {
     axe,
     block as blockImage,
     brick,
+    flag,
     mace,
     rage,
     rend as rendImage,
@@ -37,6 +38,7 @@ export const charge: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
+                    name: "Stun",
                     type: EFFECT_TYPES.STUN,
                     duration: 1,
                 },
@@ -134,6 +136,7 @@ export const rend: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
+                    name: "Bleed",
                     type: EFFECT_TYPES.BLEED,
                     duration: 3,
                 },
@@ -150,6 +153,7 @@ export const bloodthirst: Ability = {
         {
             effects: [
                 {
+                    name: "Bloodthirst",
                     type: EFFECT_TYPES.BUFF,
                     duration: 0,
                     healthPerResourcesSpent: 2,
@@ -194,4 +198,22 @@ export const spikedArmor: Ability = {
             effects: [spikedArmorEffect],
         },
     ],
+};
+
+export const warBanner: Ability = {
+    name: "War Banner",
+    resourceCost: 0,
+    minion: {
+        name: "War Banner",
+        image: flag,
+        maxHP: 5,
+        damage: 0,
+        aura: {
+            damage: 1,
+            armorPerTurn: 1,
+            area: 1,
+            type: EFFECT_TYPES.BUFF,
+        }
+    },
+    actions: [],
 };

@@ -2,7 +2,7 @@ import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
 import { Effect } from "./../ability/types";
 import { getRandomItem, shuffle } from "./../utils";
-import { applyActionToCharacter, Event } from "../battle/parseAbilityActions";
+import { applyActionToTarget, Event } from "../battle/parseAbilityActions";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Enemy } from "./tofu";
 import { Combatant } from "../character/types";
@@ -143,9 +143,12 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
             }, 0);
 
             totalBleedDamage += bleedDamage;
-            return applyActionToCharacter(enemy, {
-                damage: bleedDamage,
-                description: "Enemies took bleed damage.",
+            return applyActionToTarget({
+                target: enemy,
+                action: {
+                    damage: bleedDamage,
+                    description: "Enemies took bleed damage.",
+                }
             });
         }
     );

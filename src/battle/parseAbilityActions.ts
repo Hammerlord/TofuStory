@@ -26,21 +26,27 @@ interface ApplyAction {
     description?: string;
 }
 
-export const applyActionToCharacter = (character: Combatant, action: ApplyAction): Combatant => {
+export const applyActionToTarget = ({
+    target,
+    action,
+}: {
+    target: Combatant;
+    action: Action;
+}): Combatant => {
     const { damage = 0, healing = 0, armor = 0, effects = [], resources = 0 } = action;
 
-    const updatedArmor = Math.max(0, character.armor - damage + armor);
-    const healthDamage = Math.max(0, damage - character.armor);
-    let HP = Math.max(0, character.HP - healthDamage);
-    HP = HP > 0 ? Math.min(character.maxHP, HP + healing) : 0;
+    const updatedArmor = Math.max(0, target.armor - damage + armor);
+    const healthDamage = Math.max(0, damage - target.armor);
+    let HP = Math.max(0, target.HP - healthDamage);
+    HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
     const updatedEffects: Effect[] =
-        HP === 0 ? [] : [...character.effects, ...(effects.map(cloneDeep) as Effect[])];
+        HP === 0 ? [] : [...target.effects, ...(effects.map(cloneDeep) as Effect[])];
     return {
-        ...character,
+        ...target,
         HP,
         armor: updatedArmor,
         effects: updatedEffects,
-        resources: (character.resources || 0) + resources,
+        resources: (target.resources || 0) + resources,
     };
 };
 
@@ -75,7 +81,7 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId }):
     }
 
     const updatedTargetsMap = targets
-        .map((character) => applyActionToCharacter(character, action))
+        .map((target) => applyActionToTarget({ target, action }))
         .reduce((acc, current) => {
             acc[current.id] = current;
             return acc;
@@ -83,12 +89,12 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId }):
 
     const thornsDamage = calculateThornsDamage(action, targets);
     if (thornsDamage > 0) {
-        updatedTargetsMap[casterId] = applyActionToCharacter(
-            updatedTargetsMap[casterId] || caster,
-            {
+        updatedTargetsMap[casterId] = applyActionToTarget({
+            target: updatedTargetsMap[casterId] || caster,
+            action: {
                 damage: thornsDamage,
-            }
-        );
+            },
+        });
     }
 
     const getUpdatedCharacter = (character) => {
@@ -96,34 +102,61 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId }):
     };
 
     if (movement) {
-        const index = friendly.findIndex(combatant => combatant?.id === casterId);
-        [friendly[index], friendly[targetIndex]] = [
-            friendly[targetIndex],
-            friendly[index],
-        ];
+        const index = friendly.findIndex((combatant) => combatant?.id === casterId);
+        [friendly[index], friendly[targetIndex]] = [friendly[targetIndex], friendly[index]];
     }
 
-    const [updatedAllies, updatedEnemies] = casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
+    const [updatedAllies, updatedEnemies] =
+        casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
 
     return {
         action,
-        updatedAllies: updatedAllies.map(getUpdatedCharacter),
-        updatedEnemies: updatedEnemies.map(getUpdatedCharacter),
+        updatedAllies: renewAuras(updatedAllies.map(getUpdatedCharacter)),
+        updatedEnemies: renewAuras(updatedEnemies.map(getUpdatedCharacter)),
         casterId,
     };
 };
 
 const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
     const casterSide = allies.find((ally) => ally?.id === casterId) ? "allies" : "enemies";
-    const [friendly, hostile] = casterSide === "allies"
-        ? [allies, enemies]
-        : [enemies, allies];
+    const [friendly, hostile] = casterSide === "allies" ? [allies, enemies] : [enemies, allies];
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
         caster: friendly.find((character) => character?.id === casterId),
         casterSide,
     };
+};
+
+const renewAuras = (characters: (Combatant | null)[]) => {
+    const updated = characters.map((character) => {
+        if (!character) {
+            return character;
+        }
+
+        return {
+            ...cloneDeep(character),
+            effects: character.effects.filter((effect) => !effect.isAuraEffect),
+        };
+    });
+
+    updated.forEach((character: Combatant | null, i) => {
+        if (!character) return;
+        const { aura } = character;
+        if (aura) {
+            const { area } = aura;
+            for (let j = i - area; j <= i + area; ++j) {
+                // Aura effects do not apply to the owner of the aura
+                if (i !== j && updated[j]) {
+                    updated[j].effects.push({
+                        ...aura,
+                        isAuraEffect: true,
+                    });
+                }
+            }
+        }
+    });
+    return updated;
 };
 
 export const useAllyAbility = ({
@@ -140,9 +173,11 @@ export const useAllyAbility = ({
     if (minion) {
         results.push({
             updatedEnemies: enemies.map(cloneDeep),
-            updatedAllies: allies.map((ally: Combatant | null, i: number) => {
-                return i === targetIndex ? createCombatant(minion) : cloneDeep(ally);
-            }),
+            updatedAllies: renewAuras(
+                allies.map((ally: Combatant | null, i: number) => {
+                    return i === targetIndex ? createCombatant(minion) : cloneDeep(ally);
+                })
+            ),
             casterId,
         });
     }
@@ -152,13 +187,15 @@ export const useAllyAbility = ({
     const mostRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
 
     actions.forEach((action: Action) => {
-        results.push(parseAction({
-            enemies: mostRecentEnemies(),
-            allies: mostRecentAllies(),
-            targetIndex,
-            action,
-            casterId,
-        }))
+        results.push(
+            parseAction({
+                enemies: mostRecentEnemies(),
+                allies: mostRecentAllies(),
+                targetIndex,
+                action,
+                casterId,
+            })
+        );
     });
 
     const caster = mostRecentAllies().find((ally) => ally?.id === casterId);
@@ -192,4 +229,25 @@ export const useAllyAbility = ({
         }
     }
     return results;
+};
+
+export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
+    const caster = allies.find((ally) => ally?.id === casterId) || {};
+    const { effects, damage, id } = caster;
+    const totalDamage = effects.reduce((acc: number, { damage = 0 }) => acc + damage, 0) + damage;
+    return useAllyAbility({
+        enemies,
+        targetIndex: index,
+        side: "enemies",
+        ability: {
+            actions: [
+                {
+                    damage: totalDamage,
+                    target: TARGET_TYPES.HOSTILE,
+                },
+            ],
+        },
+        allies,
+        casterId: id,
+    });
 };
