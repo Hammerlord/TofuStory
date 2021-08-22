@@ -10,6 +10,8 @@ import Icon from "../icon/Icon";
 import Bleed from "../icon/Bleed";
 import Armor from "../icon/Armor";
 import HealIcon from "../icon/HealIcon";
+import Tooltip from "@material-ui/core/Tooltip";
+import EffectIcon from "../icon/EffectIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -308,10 +310,10 @@ const CombatantView = ({
                             }
                         </div>
                         <div className={classes.effectsContainer}>
-                            {combatant.effects?.map((effect, i) =>
-                                effect.icon ? <Icon icon={effect.icon} key={i} /> : null
-                            )}
-                            {combatant.aura && <Icon icon={Fireworks} />}
+                            {combatant.effects?.map((effect, i) => (
+                                <EffectIcon effect={effect} key={i} />
+                            ))}
+                            {combatant.aura && <EffectIcon effect={combatant.aura} isAura={true} />}
                         </div>
                     </>
                 )}
