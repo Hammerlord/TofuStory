@@ -40,6 +40,7 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
+        paddingTop: "48px",
     },
     combatantContainer: {
         position: "relative",
@@ -56,9 +57,9 @@ const useStyles = createUseStyles({
         width: "100%",
     },
     divider: {
-        paddingTop: "24px",
+        paddingTop: "32px",
         borderBottom: "1px solid rgba(0, 0, 0, 0.15)",
-        marginBottom: "24px",
+        marginBottom: "32px",
     },
     abilityContainer: {
         position: "absolute",
