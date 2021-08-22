@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import uuid from "uuid";
 import AbilityView from "../ability/AbilityView";
-import { Ability, Action, TARGET_TYPES } from "../ability/types";
+import { Ability, Action } from "../ability/types";
+import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
-import CombatantView from "../character/CombatantView";
+import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
 import Deck from "./Deck";
@@ -13,8 +15,6 @@ import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
-import { Fury } from "../resource/ResourcesView";
-import uuid from "uuid";
 
 const CARDS_PER_DRAW = 5;
 
@@ -204,48 +204,53 @@ const BattlefieldContainer = ({
         setSelectedAllyIndex(null);
     };
 
-    const handleTargetClick = (e: React.ChangeEvent, { side, index }) => {
+    const handleAllyClick = (e: React.ChangeEvent, index) => {
         e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
 
         if (disableActions) {
             return;
         }
+        const selectedAbility = hand[selectedAbilityIndex];
+        if (selectedAbility) {
+            if (isValidTarget({ ability: selectedAbility, side: "allies", allies, index })) {
+                handleAbilityUse({ index, selectedAbilityIndex, side: "allies" });
+            } else {
+                setNotification({
+                    severity: "warning",
+                    text: `Please select a valid target for ${selectedAbility.name}.`,
+                    id: uuid.v4(),
+                });
+            }
+            return;
+        }
+
+        if (index === selectedAllyIndex) {
+            setSelectedAllyIndex(null);
+        } else if (isEligibleToAttack(allies[index])) {
+            setSelectedAllyIndex(index);
+        }
+    };
+
+    const handleEnemyClick = (e: React.ChangeEvent, index) => {
+        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
 
         const selectedAbility = hand[selectedAbilityIndex];
-        if (!selectedAbility) {
-            if (side === "allies") {
-                if (index === selectedAllyIndex) {
-                    setSelectedAllyIndex(null);
-                } else if (isEligibleToAttack(allies[index])) {
-                    setSelectedAllyIndex(index);
-                } else if (alliesAttackedThisTurn.some((id) => id === allies[index]?.id)) {
-                    setNotification({
-                        severity: "warning",
-                        text: "That character has already attacked this turn.",
-                        id: uuid.v4(),
-                    });
-                }
-                return;
-            }
 
-            if (side === "enemies" && isEligibleToAttack(allies[selectedAllyIndex])) {
-                handleAllyAttack({ index });
+        if (selectedAbility) {
+            if (isValidTarget({ ability: selectedAbility, side: "enemies", allies, index })) {
+                handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
+            } else {
+                setNotification({
+                    severity: "warning",
+                    text: `Please select a valid target for ${selectedAbility.name}.`,
+                    id: uuid.v4(),
+                });
             }
             return;
         }
 
-        if (!canUseAbility(player, selectedAbility)) {
-            return;
-        }
-
-        if (isValidTarget({ ability: selectedAbility, side, allies, index })) {
-            handleAbilityUse({ index, selectedAbilityIndex, side });
-        } else {
-            setNotification({
-                severity: "warning",
-                text: `Please select a valid target for ${selectedAbility.name}.`,
-                id: uuid.v4(),
-            });
+        if (isEligibleToAttack(allies[selectedAllyIndex])) {
+            handleAllyAttack({ index });
         }
     };
 
@@ -432,12 +437,7 @@ const BattlefieldContainer = ({
                                 <CombatantView
                                     combatant={enemy}
                                     isAlly={false}
-                                    onClick={(e) =>
-                                        handleTargetClick(e, {
-                                            index: i,
-                                            side: "enemies",
-                                        })
-                                    }
+                                    onClick={(e) => handleEnemyClick(e, i)}
                                     isSelected={false}
                                     onMouseEnter={() => setHoveredEnemyIndex(i)}
                                     onMouseLeave={() => setHoveredEnemyIndex(null)}
@@ -461,12 +461,7 @@ const BattlefieldContainer = ({
                                         <CombatantView
                                             combatant={ally}
                                             isAlly={true}
-                                            onClick={(e) =>
-                                                handleTargetClick(e, {
-                                                    index: i,
-                                                    side: "allies",
-                                                })
-                                            }
+                                            onClick={(e) => handleAllyClick(e, i)}
                                             isSelected={selectedAllyIndex === i}
                                             onMouseEnter={() => setHoveredAllyIndex(i)}
                                             onMouseLeave={() => setHoveredAllyIndex(null)}
