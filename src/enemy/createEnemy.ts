@@ -8,6 +8,7 @@ import {
     createSyntheticAttack,
     smalltofu,
     bigBeefy,
+    theRegalTofu,
 } from "./tofu";
 import uuid from "uuid";
 
@@ -39,6 +40,8 @@ export const createEnemies = (): Combatant[] => {
             theraretofu,
             bigBeefy,
             bigBeefy,
+            theRegalTofu,
+            theRegalTofu,
         ]);
         const copy = {
             ...enemy,

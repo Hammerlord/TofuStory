@@ -4,9 +4,9 @@ import matty from "../images/matty.png";
 import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
-import { BigBeefy } from "../images";
+import { BigBeefy, regalTofu } from "../images";
 
-const loaf = {
+const loaf: Ability = {
     name: "Loaf",
     actions: [
         {
@@ -15,7 +15,7 @@ const loaf = {
     ],
 };
 
-const move = {
+const move: Ability = {
     name: "Move",
     actions: [
         {
@@ -24,6 +24,17 @@ const move = {
             target: TARGET_TYPES.SELF,
         },
     ],
+};
+
+const rally: Ability = {
+    name: "Rally",
+    actions: [
+        {
+            area: 1,
+            target: TARGET_TYPES.SELF,
+            armor: 2,
+        }
+    ]
 };
 
 export interface Enemy {
@@ -36,7 +47,7 @@ export interface Enemy {
 }
 
 export const smalltofu = {
-    name: "Smalltofu",
+    name: "Small Tofu",
     image: smalltofuPortrait,
     maxHP: 3,
     armor: 0,
@@ -46,7 +57,7 @@ export const smalltofu = {
 };
 
 export const thefaketofu = {
-    name: "Thefaketofu",
+    name: "Fake Tofu",
     image: matty,
     maxHP: 5,
     armor: 0,
@@ -55,7 +66,7 @@ export const thefaketofu = {
 };
 
 export const realtofu = {
-    name: "Realtofu",
+    name: "Real Tofu",
     image: realtofuPortrait,
     maxHP: 5,
     armor: 0,
@@ -64,7 +75,7 @@ export const realtofu = {
 };
 
 export const theraretofu = {
-    name: "Theraretofu",
+    name: "Rare Tofu",
     image: theraretofuPortrait,
     maxHP: 10,
     armor: 0,
@@ -78,6 +89,17 @@ export const bigBeefy = {
     maxHP: 30,
     armor: 0,
     damage: 2,
+};
+
+export const theRegalTofu = {
+    name: "The Regal Tofu",
+    image: regalTofu,
+    maxHP: 10,
+    armor: 0,
+    damage: 3,
+    abilities: [
+        rally,
+    ]
 };
 
 export const createSyntheticAttack = (enemy) => {
