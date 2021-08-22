@@ -380,13 +380,15 @@ const BattlefieldContainer = ({
                     } else {
                         setRecentActions(updatedRecentActions);
                     }
-                }, 900);
+                }, 700);
             }, 400);
             return;
         }
 
         if (!isPlayerTurn) {
-            setIsPlayerTurn(true);
+            setTimeout(() => {
+                setIsPlayerTurn(true);
+            }, 1000);
         }
         setIsPlayingAnimations(false);
     }, [recentActions]);
