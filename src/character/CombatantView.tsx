@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getActionType, isAttack } from "../ability/utils";
@@ -211,7 +211,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const CombatantView = ({
+const CombatantView = forwardRef(({
     combatant,
     onClick,
     isTargeted,
@@ -221,7 +221,7 @@ const CombatantView = ({
     isHighlighted,
     showReticle,
     ...other
-}) => {
+}: any, ref) => {
     const [statChanges, setStatChanges]: [any, Function] = useState({});
     const [oldCombatantState, setOldEnemyState] = useState(combatant);
     const classes = useStyles({ isAlly } as any); // Not using theme, just passing a prop in
@@ -261,6 +261,7 @@ const CombatantView = ({
             })}
             onClick={onClick}
             {...other}
+            ref={ref}
         >
             <div className={classes.inner}>
                 {isTargeted && (
@@ -354,6 +355,6 @@ const CombatantView = ({
             {showReticle && <Reticle className={classes.reticle} />}
         </div>
     );
-};
+});
 
 export default CombatantView;

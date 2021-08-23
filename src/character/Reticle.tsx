@@ -28,8 +28,9 @@ const Reticle = ({ color = "rgba(0, 0, 0, 0.25)", className, ...props }) => {
                     "m 90 0 Q 100 0 100 10",
                     "M 0 90 Q 0 100 10 100",
                     "M 100 90 Q 100 100 90 100",
-                ].map((d) => (
+                ].map((d, i) => (
                     <path
+                        key={i}
                         d={d}
                         stroke={color}
                         fill="transparent"

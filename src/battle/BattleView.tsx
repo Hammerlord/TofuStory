@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import AbilityView from "../ability/AbilityView";
@@ -13,6 +13,7 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
+import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
 
@@ -91,6 +92,14 @@ const useStyles = createUseStyles({
         right: "32px",
         top: "0",
     },
+    arrowContainer: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        left: 0,
+        top: 0,
+        pointerEvents: "none",
+    },
 });
 
 interface BattleNotification {
@@ -112,6 +121,12 @@ const BattlefieldContainer = ({
     const [isPlayerTurn, setIsPlayerTurn] = useState(true);
     const [enemies, setEnemies] = useState(challenge.createEnemies());
     const [allies, setAllies] = useState(initialAllies);
+    const [allyRefs, setAllyRefs] = useState(
+        Array.from({ length: allies.length }).map(() => React.createRef())
+    );
+    const [enemyRefs, setEnemyRefs] = useState(
+        Array.from({ length: enemies.length }).map(() => React.createRef())
+    );
     const [recentActions, setRecentActions] = useState([]);
     const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
@@ -447,6 +462,10 @@ const BattlefieldContainer = ({
         return isValidTarget({ ability, side, index, allies });
     };
 
+    const origination = useMemo(() => {
+        return !disableActions && allyRefs[selectedAllyIndex]?.current;
+    }, [disableActions, allyRefs[selectedAllyIndex]]);
+
     return (
         <div className={classes.root}>
             {notification && (
@@ -458,82 +477,86 @@ const BattlefieldContainer = ({
                     {notification.text}
                 </Notification>
             )}
-            <div className={classes.battlefieldContainer}>
-                <div className={classes.battlefield} onClick={handleBattlefieldClick}>
-                    <div className={classes.combatantContainer}>
-                        <div className={classes.combatants}>
-                            {enemies.map((enemy, i: number) => (
-                                <CombatantView
-                                    combatant={enemy}
-                                    isAlly={false}
-                                    onClick={(e) => handleEnemyClick(e, i)}
-                                    isSelected={false}
-                                    onMouseEnter={() => setHoveredEnemyIndex(i)}
-                                    onMouseLeave={() => setHoveredEnemyIndex(null)}
-                                    isTargeted={isTargeted(i, "enemies")}
-                                    key={i}
-                                    action={getAction(enemy)}
-                                    isHighlighted={false}
-                                    showReticle={showReticle("enemies", i)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                    <div className={classes.divider} />
-                    <div className={classes.playerContainer}>
-                        <div className={classes.leftContainer}>
-                            <Deck deck={deck} discard={discard} />
-                        </div>
+            <TargetLineCanvas originationRef={origination}>
+                <div className={classes.battlefieldContainer}>
+                    <div className={classes.battlefield} onClick={handleBattlefieldClick}>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
-                                {allies.map((ally, i) => {
-                                    return (
-                                        <CombatantView
-                                            combatant={ally}
-                                            isAlly={true}
-                                            onClick={(e) => handleAllyClick(e, i)}
-                                            isSelected={selectedAllyIndex === i}
-                                            onMouseEnter={() => setHoveredAllyIndex(i)}
-                                            onMouseLeave={() => setHoveredAllyIndex(null)}
-                                            isTargeted={isTargeted(i, "allies")}
-                                            key={i}
-                                            action={getAction(ally)}
-                                            isHighlighted={
-                                                isPlayerTurn &&
-                                                selectedAllyIndex === null &&
-                                                isEligibleToAttack(ally)
-                                            }
-                                            showReticle={showReticle("allies", i)}
-                                        />
-                                    );
-                                })}
+                                {enemies.map((enemy, i: number) => (
+                                    <CombatantView
+                                        combatant={enemy}
+                                        isAlly={false}
+                                        onClick={(e) => handleEnemyClick(e, i)}
+                                        isSelected={false}
+                                        onMouseEnter={() => setHoveredEnemyIndex(i)}
+                                        onMouseLeave={() => setHoveredEnemyIndex(null)}
+                                        isTargeted={isTargeted(i, "enemies")}
+                                        key={i}
+                                        action={getAction(enemy)}
+                                        isHighlighted={false}
+                                        showReticle={showReticle("enemies", i)}
+                                        ref={enemyRefs[i]}
+                                    />
+                                ))}
                             </div>
                         </div>
-                        <div className={classes.rightContainer}>
-                            <EndTurnButton
-                                disabled={disableActions}
-                                highlight={noMoreMoves}
-                                onClick={handleEndTurn}
-                            />
-                        </div>
-                    </div>
-                    <div className={classes.abilityContainer}>
-                        {Array.from({ length: player.resources }).map((_, i) => (
-                            <Fury key={i} className={classes.resource} />
-                        ))}
-                        <div className={classes.abilities}>
-                            {hand.map((ability: Ability, i: number) => (
-                                <AbilityView
-                                    onClick={(e) => handleAbilityClick(e, i)}
-                                    isSelected={isPlayerTurn && selectedAbilityIndex === i}
-                                    key={i}
-                                    ability={ability}
+                        <div className={classes.divider} />
+                        <div className={classes.playerContainer}>
+                            <div className={classes.leftContainer}>
+                                <Deck deck={deck} discard={discard} />
+                            </div>
+                            <div className={classes.combatantContainer}>
+                                <div className={classes.combatants}>
+                                    {allies.map((ally, i) => {
+                                        return (
+                                            <CombatantView
+                                                combatant={ally}
+                                                isAlly={true}
+                                                onClick={(e) => handleAllyClick(e, i)}
+                                                isSelected={selectedAllyIndex === i}
+                                                onMouseEnter={() => setHoveredAllyIndex(i)}
+                                                onMouseLeave={() => setHoveredAllyIndex(null)}
+                                                isTargeted={isTargeted(i, "allies")}
+                                                key={i}
+                                                action={getAction(ally)}
+                                                isHighlighted={
+                                                    isPlayerTurn &&
+                                                    selectedAllyIndex === null &&
+                                                    isEligibleToAttack(ally)
+                                                }
+                                                showReticle={showReticle("allies", i)}
+                                                ref={allyRefs[i]}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div className={classes.rightContainer}>
+                                <EndTurnButton
+                                    disabled={disableActions}
+                                    highlight={noMoreMoves}
+                                    onClick={handleEndTurn}
                                 />
+                            </div>
+                        </div>
+                        <div className={classes.abilityContainer}>
+                            {Array.from({ length: player.resources }).map((_, i) => (
+                                <Fury key={i} className={classes.resource} />
                             ))}
+                            <div className={classes.abilities}>
+                                {hand.map((ability: Ability, i: number) => (
+                                    <AbilityView
+                                        onClick={(e) => handleAbilityClick(e, i)}
+                                        isSelected={isPlayerTurn && selectedAbilityIndex === i}
+                                        key={i}
+                                        ability={ability}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </TargetLineCanvas>
             {battleEndResult && (
                 <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
             )}
