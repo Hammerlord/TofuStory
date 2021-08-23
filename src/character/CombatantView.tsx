@@ -11,9 +11,8 @@ import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import {
-    ClickIndicator, CrossedSwords, Dizzy, Heart, Zzz
-} from "../images";
+import { ClickIndicator, CrossedSwords, Dizzy, Heart, Zzz } from "../images";
+import Reticle from "./Reticle";
 
 const useStyles = createUseStyles({
     root: {
@@ -30,6 +29,13 @@ const useStyles = createUseStyles({
             WebkitFilter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
             filter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
         },
+    },
+    reticle: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        left: "0",
+        top: "0",
     },
     header: {
         textAlign: "center",
@@ -213,6 +219,7 @@ const CombatantView = ({
     isAlly,
     isSelected,
     isHighlighted,
+    showReticle,
     ...other
 }) => {
     const [statChanges, setStatChanges]: [any, Function] = useState({});
@@ -344,6 +351,7 @@ const CombatantView = ({
                     </>
                 )}
             </div>
+            {showReticle && <Reticle className={classes.reticle} />}
         </div>
     );
 };

@@ -421,6 +421,32 @@ const BattlefieldContainer = ({
         return i >= index - area && i <= index + area;
     };
 
+    const showReticle = (side, index) => {
+        if (isEligibleToAttack(allies[selectedAllyIndex])) {
+            if (typeof hoveredEnemyIndex === "number") {
+                return side === "enemies" && index === hoveredEnemyIndex;
+            }
+            return side === "enemies";
+        }
+
+        const ability = hand[selectedAbilityIndex];
+        if (!ability) {
+            return false;
+        }
+
+        const { minion } = ability;
+        if (minion) {
+            if (side === "allies" && !allies[index]) {
+                if (typeof hoveredAllyIndex === "number") {
+                    return index === hoveredAllyIndex;
+                }
+                return true;
+            }
+        }
+
+        return isValidTarget({ ability, side, index, allies });
+    };
+
     return (
         <div className={classes.root}>
             {notification && (
@@ -448,6 +474,7 @@ const BattlefieldContainer = ({
                                     key={i}
                                     action={getAction(enemy)}
                                     isHighlighted={false}
+                                    showReticle={showReticle("enemies", i)}
                                 />
                             ))}
                         </div>
@@ -476,6 +503,7 @@ const BattlefieldContainer = ({
                                                 selectedAllyIndex === null &&
                                                 isEligibleToAttack(ally)
                                             }
+                                            showReticle={showReticle("allies", i)}
                                         />
                                     );
                                 })}
