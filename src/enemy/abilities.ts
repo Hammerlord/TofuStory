@@ -33,7 +33,8 @@ export const rally: Ability = {
 
 export const tantrum: Ability = {
     name: "Tantrum",
-    resourceCost: 1,
+    description: "{{ caster }} will tantrum for increased damage.",
+    resourceCost: 5,
     channelDuration: 3,
     castTime: 1,
     actions: [
@@ -46,6 +47,7 @@ export const tantrum: Ability = {
 
 export const shiningLaser: Ability = {
     name: "Shining Laser",
+    description: "{{ caster }} is shining mightily!!!",
     resourceCost: 4,
     castTime: 1,
     actions: [

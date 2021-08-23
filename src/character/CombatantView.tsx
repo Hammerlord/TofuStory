@@ -2,16 +2,18 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords, Fireworks, Warning, Hourglass } from "../images";
-import HitIcon from "../icon/HitIcon";
-import { getCharacterStatChanges } from "../battle/utils";
 import { getActionType, isAttack } from "../ability/utils";
-import Icon from "../icon/Icon";
-import Bleed from "../icon/Bleed";
+import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
-import HealIcon from "../icon/HealIcon";
-import Tooltip from "@material-ui/core/Tooltip";
+import Bleed from "../icon/Bleed";
+import CastingIndicator from "../icon/CastingIndicator";
 import EffectIcon from "../icon/EffectIcon";
+import HealIcon from "../icon/HealIcon";
+import HitIcon from "../icon/HitIcon";
+import Icon from "../icon/Icon";
+import {
+    ClickIndicator, CrossedSwords, Dizzy, Heart, Zzz
+} from "../images";
 
 const useStyles = createUseStyles({
     root: {
@@ -264,12 +266,10 @@ const CombatantView = ({
                         {combatant.HP > 0 && (
                             <div className={classes.header}>
                                 {combatant.casting && (
-                                    <Tooltip title={combatant.casting.name}>
-                                        <div>
-                                            <Icon icon={<Warning />} text={combatant.casting.channelDuration} />
-                                            {combatant.casting.castTime > 0 && <Icon icon={<Hourglass />} text={combatant.casting.castTime} />}
-                                        </div>
-                                    </Tooltip>
+                                    <CastingIndicator
+                                        casting={combatant.casting}
+                                        combatant={combatant}
+                                    />
                                 )}
                                 <span>{combatant.name}</span>
                             </div>

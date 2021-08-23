@@ -62,6 +62,7 @@ export interface Ability {
     image?: string;
     channelDuration?: number;
     castTime?: number;
+    description?: string;
 }
 
 export enum ACTION_TYPES {
