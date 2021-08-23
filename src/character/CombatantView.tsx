@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords, Fireworks } from "../images";
+import { Zzz, Dizzy, ClickIndicator, Heart, CrossedSwords, Fireworks, Warning, Hourglass } from "../images";
 import HitIcon from "../icon/HitIcon";
 import { getCharacterStatChanges } from "../battle/utils";
 import { getActionType, isAttack } from "../ability/utils";
@@ -32,7 +32,7 @@ const useStyles = createUseStyles({
     header: {
         textAlign: "center",
         left: "50%",
-        top: "-16px",
+        bottom: "150px",
         transform: "translateX(-50%)",
         position: "absolute",
     },
@@ -103,6 +103,27 @@ const useStyles = createUseStyles({
         top: "24px",
         animation: "$actionIcon 1s forwards",
     },
+    "@keyframes casting": {
+        "0%": {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+        "75%": {
+            WebkitFilter:
+                "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            filter: "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+        },
+        "100%": {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+    },
+    casting: {
+        animationDuration: "1s",
+        animationName: "$casting",
+        transition: "1s filter linear, 1s -webkit-filter linear",
+        animationIterationCount: "infinite",
+    },
     "@keyframes enemyActing": {
         from: {
             transform: "translateY(0)",
@@ -127,7 +148,7 @@ const useStyles = createUseStyles({
         animationName: "$allyActing",
         animationDuration: "0.5s",
     },
-    "@keyframes casting": {
+    "@keyframes applyEffect": {
         "0%": {
             WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
@@ -146,9 +167,9 @@ const useStyles = createUseStyles({
             filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
     },
-    casting: {
+    applyingEffect: {
         animationDuration: "1s",
-        animationName: "$casting",
+        animationName: "$applyEffect",
         transition: "1s filter linear, 1s -webkit-filter linear",
     },
     stun: {
@@ -197,11 +218,7 @@ const CombatantView = ({
     const classes = useStyles({ isAlly } as any); // Not using theme, just passing a prop in
 
     useEffect(() => {
-        if (
-            combatant === null ||
-            oldCombatantState === null ||
-            oldCombatantState.id !== combatant.id
-        ) {
+        if (!combatant || !oldCombatantState || oldCombatantState.id !== combatant.id) {
             setOldEnemyState(combatant);
             return;
         }
@@ -246,6 +263,14 @@ const CombatantView = ({
                     <>
                         {combatant.HP > 0 && (
                             <div className={classes.header}>
+                                {combatant.casting && (
+                                    <Tooltip title={combatant.casting.name}>
+                                        <div>
+                                            <Icon icon={<Warning />} text={combatant.casting.channelDuration} />
+                                            {combatant.casting.castTime > 0 && <Icon icon={<Hourglass />} text={combatant.casting.castTime} />}
+                                        </div>
+                                    </Tooltip>
+                                )}
                                 <span>{combatant.name}</span>
                             </div>
                         )}
@@ -256,8 +281,9 @@ const CombatantView = ({
                                         className={classNames(classes.portrait, {
                                             [classes.enemyActing]: isAttack(action) && !isAlly,
                                             [classes.allyActing]: isAttack(action) && isAlly,
-                                            [classes.casting]:
-                                                getActionType(action) === ACTION_TYPES.CASTING,
+                                            [classes.applyingEffect]:
+                                                getActionType(action) === ACTION_TYPES.EFFECT,
+                                            [classes.casting]: combatant.casting,
                                         })}
                                         src={combatant.image}
                                     />

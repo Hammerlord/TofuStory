@@ -1,41 +1,11 @@
-import { thorns } from './../ability/Effects';
-import { Ability, TARGET_TYPES } from "../ability/types";
+import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
+import { thorns } from "./../ability/Effects";
+import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import matty from "../images/matty.png";
 import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
 import { BigBeefy, regalTofu } from "../images";
-
-const loaf: Ability = {
-    name: "Loaf",
-    actions: [
-        {
-            description: "{{caster}} is loafing around.",
-        },
-    ],
-};
-
-const move: Ability = {
-    name: "Move",
-    actions: [
-        {
-            movement: 1,
-            description: "{{caster}} has moved.",
-            target: TARGET_TYPES.SELF,
-        },
-    ],
-};
-
-const rally: Ability = {
-    name: "Rally",
-    actions: [
-        {
-            area: 1,
-            target: TARGET_TYPES.SELF,
-            armor: 2,
-        }
-    ]
-};
 
 export interface Enemy {
     name: string;
@@ -79,8 +49,9 @@ export const theraretofu = {
     image: theraretofuPortrait,
     maxHP: 10,
     armor: 0,
-    damage: 3,
-    abilities: [loaf, move],
+    damage: 2,
+    resources: 2,
+    abilities: [loaf, move, shiningLaser],
 };
 
 export const bigBeefy = {
@@ -89,6 +60,8 @@ export const bigBeefy = {
     maxHP: 30,
     armor: 0,
     damage: 2,
+    resources: 2,
+    abilities: [tantrum],
 };
 
 export const theRegalTofu = {
@@ -97,9 +70,16 @@ export const theRegalTofu = {
     maxHP: 10,
     armor: 0,
     damage: 3,
-    abilities: [
-        rally,
-    ]
+    abilities: [rally],
+};
+
+export const theCruelTofu = {
+    name: "The Cruel Tofu",
+    image: regalTofu, // TODO
+    maxHP: 30,
+    armor: 0,
+    damage: 3,
+    abilities: [whip],
 };
 
 export const createSyntheticAttack = (enemy) => {

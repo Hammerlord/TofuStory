@@ -60,11 +60,14 @@ export interface Ability {
     actions: Action[];
     minion?: Minion;
     image?: string;
+    channelDuration?: number;
+    castTime?: number;
 }
 
 export enum ACTION_TYPES {
     DAMAGE = "damage",
     CASTING = "casting",
+    EFFECT = "effect",
     ARMOR = "armor",
     NONE = "none",
     MOVEMENT = "movement",

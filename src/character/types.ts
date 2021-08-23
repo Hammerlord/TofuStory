@@ -12,6 +12,7 @@ export interface Combatant {
     isPlayer: boolean;
     damage?: number;
     aura?: Aura;
+    casting?: Ability;
 }
 
 /** Player in combat */

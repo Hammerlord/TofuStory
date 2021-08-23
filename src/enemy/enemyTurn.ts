@@ -7,15 +7,16 @@ import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Enemy } from "./tofu";
 import { Combatant } from "../character/types";
 
-const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement }): number[] => {
+const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement = 0 }): number[] => {
     const min = Math.max(0, currentLocationIndex - movement);
-    const max = Math.min(enemies.length, currentLocationIndex + movement);
+    const max = Math.min(enemies.length - 1, currentLocationIndex + movement);
     const moveIndices = [];
-    for (let i = min; i < max; ++i) {
+    for (let i = min; i <= max; ++i) {
         if (!enemies[i]) {
             moveIndices.push(i);
         }
     }
+
     return moveIndices;
 };
 
@@ -34,8 +35,9 @@ const getPopulatedEnemyIndices = (enemies) => {
 };
 
 /**
- * For now this is just to check that if a movement ability was picked, there are no obstructions blocking that movement.
+ * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
  * Otherwise, pick a different ability.
+ * 2) Check the resource cost of the ability.
  */
 const canUseAbility = ({ enemy, ability, enemies }): boolean => {
     const movementAction = ability.actions.find((action) => action.movement);
@@ -43,22 +45,21 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
         return true;
     }
     const index = enemies.findIndex((e: Combatant) => e && e.id === enemy.id);
-    return (
+    if (
         getPossibleMoveIndices({
             currentLocationIndex: index,
             enemies,
             movement: movementAction.movement,
-        }).length > 0
-    );
+        }).length === 0
+    ) {
+        return false;
+    }
+
+    const resourceCost = ability.resourceCost || 0;
+    return (enemy.resources || 0) >= resourceCost;
 };
 
-const enemyMove = ({ casterId, allies, enemies }): Event[] => {
-    const caster = enemies.find((e) => e && e.id === casterId);
-    const { abilities } = caster;
-    const ability: Ability = getRandomItem(
-        abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies }))
-    );
-
+const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
     const getValidTargetIndices = (characters: (Combatant | null)[]) => {
         const indices = [];
         characters.forEach((character: Combatant | null, i: number) => {
@@ -68,8 +69,8 @@ const enemyMove = ({ casterId, allies, enemies }): Event[] => {
         });
         return indices;
     };
-
     const results = [];
+
     ability.actions.forEach((action) => {
         const { target, movement } = action;
         let targetIndex;
@@ -105,11 +106,101 @@ const enemyMove = ({ casterId, allies, enemies }): Event[] => {
             })
         );
     });
+
     return results;
 };
 
+const handleCastTick = ({ allies, enemies, casterId, casting }): Event[] => {
+    const { castTime = 0, channelDuration = 0 } = casting;
+    let updatedCasting = { ...casting };
+    enemies = enemies.map((enemy) => {
+        if (enemy?.id !== casterId) {
+            return cloneDeep(enemy);
+        }
+        if (castTime > 0) {
+            updatedCasting.castTime = castTime - 1;
+        }
+
+        if (!updatedCasting.castTime && channelDuration > 0) {
+            updatedCasting.channelDuration = channelDuration - 1;
+        }
+
+        return {
+            ...cloneDeep(enemy),
+            casting: updatedCasting.channelDuration || updatedCasting.castTime ? updatedCasting : null,
+        };
+    });
+
+    if (!updatedCasting || !updatedCasting.castTime) {
+        return useAbilityActions({ allies, enemies, casterId, ability: updatedCasting });
+    }
+
+    // Return the enemy with the newly updated casting state as-is, don't use the ability
+    return [
+        {
+            updatedAllies: allies,
+            updatedEnemies: enemies,
+        },
+    ];
+};
+
+const useAbility = ({ caster, allies, enemies }): Event[] => {
+    const { abilities, id } = caster;
+
+    const ability: Ability = getRandomItem(
+        abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies }))
+    );
+
+    if (ability.castTime > 0 || ability.channelDuration > 0) {
+        enemies = enemies.map((enemy) => {
+            if (enemy?.id === id) {
+                return {
+                    ...cloneDeep(enemy),
+                    casting: cloneDeep(ability),
+                };
+            }
+
+            return enemy;
+        });
+    }
+
+    if (!ability.castTime) {
+        return useAbilityActions({ allies, enemies, casterId: id, ability });
+    } else {
+        // Return the enemy with the newly updated casting state as-is, don't use the ability
+        return [
+            {
+                updatedAllies: allies,
+                updatedEnemies: enemies,
+            },
+        ];
+    }
+};
+
+const enemyMove = ({ casterId, allies, enemies }): Event[] => {
+    const caster = enemies.find((e) => e && e.id === casterId);
+    const { casting } = caster;
+    if (casting) {
+        return handleCastTick({ allies, enemies, casterId, casting });
+    }
+
+    return useAbility({ caster, allies, enemies });
+};
+
 const enemyTurn = ({ enemies, allies }): Event[] => {
+    enemies = enemies.map((enemy) => {
+        if (!enemy) {
+            return enemy;
+        }
+
+        return {
+            ...cloneDeep(enemy),
+            resources: enemy.resources + 1,
+        };
+    });
+
     const randomizedIndices = shuffle(getPopulatedEnemyIndices(enemies)); // Randomize enemy move order
+
     const results = [];
     // Each subsequent move should be based on the most recently updated enemies/player states.
     const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
@@ -148,7 +239,7 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
                 action: {
                     damage: bleedDamage,
                     description: "Enemies took bleed damage.",
-                }
+                },
             });
         }
     );

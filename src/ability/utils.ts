@@ -9,7 +9,7 @@ export const getActionType = (action: Action): ACTION_TYPES => {
     if (damage) {
         return ACTION_TYPES.DAMAGE;
     } else if (healing || resources || effects?.length > 0 || armor) {
-        return ACTION_TYPES.CASTING;
+        return ACTION_TYPES.EFFECT;
     } else if (armor) { // TODO
         return ACTION_TYPES.ARMOR;
     } else if (movement) {
