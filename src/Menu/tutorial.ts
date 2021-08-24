@@ -5,41 +5,52 @@ import { createCombatant } from "../enemy/createEnemy";
 
 export interface Wave {
     name?: string;
-    description?: string;
+    description?: string | string[];
     createEnemies: Function;
     presetDeck?: Ability[];
     rewards?: Array<any>;
     winCondition?: {
         surviveRounds?: number;
     };
+    reset?: boolean;
 }
 
 const tutorial: Wave[] = [
     {
         name: "Basic attacks",
-        description: "Defeat enemies by using your attacks on them",
+        description: [
+            "Select an ability and an enemy to use it on.",
+            "Some abilities cost Fury, limiting the moves you can make per turn.",
+            "When you're out of moves, click End Turn to proceed.",
+        ],
         createEnemies: () => [null, basicDummy, null, basicDummy, null].map(createCombatant),
         presetDeck: [bash, charge, slam],
+        reset: true,
     },
     {
         name: "Area attacks",
-        description: "Target multiple enemies with Area attacks",
+        description: "Target multiple enemies with Area attacks like Cleave.",
         createEnemies: () => [null, basicDummy, basicDummy, basicDummy, null].map(createCombatant),
         presetDeck: [bash, bash, bash, cleave, cleave],
+        reset: true,
     },
     {
         name: "Supportive abilities",
-        description: "Defend against attacks by using Block on yourself",
+        description: "Use Block on yourself to defend against attacks.",
         createEnemies: () =>
             [basicDummy, basicDummy, basicDummy, basicDummy, basicDummy].map(createCombatant),
         presetDeck: [block, block, block],
         winCondition: {
             surviveRounds: 1,
         },
+        reset: true,
     },
     {
         name: "Summon minions",
-        description: "Summon a minion to assist you in battle",
+        description: [
+            "Summon a minion to assist you in battle.",
+            "Once you have placed the minion, select it and use it to attack.",
+        ],
         createEnemies: () => [null, null, basicDummy, null, null].map(createCombatant),
         presetDeck: [snailMinion, snailMinion, snailMinion],
     },
@@ -53,7 +64,8 @@ const tutorial: Wave[] = [
         name: "Defeat the Raging Dummy",
         description: "Defeat the Raging Dummy and its minions!",
         createEnemies: () => [null, basicDummy, ragingDummy, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, bash, slam, slam, cleave, cleave, block, block, charge],
+        presetDeck: [bash, bash, slam, cleave, block, block, snailMinion, snailMinion, charge],
+        reset: true,
     },
 ];
 

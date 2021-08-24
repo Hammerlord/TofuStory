@@ -36,17 +36,17 @@ const useStyles = createUseStyles({
     battlefield: {
         textAlign: "center",
         margin: "auto",
-        width: "80rem",
-        maxWidth: "100%",
+        width: "95%",
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
-        paddingTop: "48px",
+        paddingTop: "15vh",
     },
     combatantContainer: {
         position: "relative",
-        height: "200px",
-        width: "calc(100% - 300px)",
+        height: "20vh",
+        width: "90%",
+        maxWidth: "60rem",
         margin: "auto",
     },
     combatants: {
@@ -56,6 +56,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         bottom: 0,
         width: "100%",
+        height: "100%",
     },
     divider: {
         paddingTop: "32px",
@@ -108,6 +109,8 @@ interface BattleNotification {
     severity: "warning" | "info" | "error";
 }
 
+const TURN_ANNOUNCEMENT_TIME = 2000; // MS
+
 const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
@@ -124,6 +127,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [recentActions, setRecentActions] = useState([]);
     const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
+    const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
 
@@ -350,7 +354,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                     }))
                 );
             }
-        }, 1000);
+        }, TURN_ANNOUNCEMENT_TIME);
     };
 
     useEffect(() => {
@@ -388,7 +392,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
                 setCurrentRound(currentRound + 1);
                 handlePlayerTurnStart();
-            }, 1000);
+            }, TURN_ANNOUNCEMENT_TIME);
         }
         setIsPlayingAnimations(false);
     }, [recentActions]);
@@ -417,11 +421,25 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
 
         setIsPlayerTurn(true);
+        setAlliesAttackedThisTurn([]);
+
         const { presetDeck, description, createEnemies, reset } = waves[nextWaveIndex];
 
         const updatedAllies = updatePlayer((player) => ({
             resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
         }));
+        const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
+        if (aurasApplied.length) {
+            setRecentActions(
+                aurasApplied.map(({ characters, action, casterId }) => ({
+                    updatedAllies: characters,
+                    updatedEnemies: newEnemies,
+                    action,
+                    casterId,
+                }))
+            );
+        }
+
         if (presetDeck) {
             drawCards({ deck: presetDeck.slice(), hand: [], discard: [] });
         } else {
@@ -433,24 +451,31 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         if (reset) {
             setAllies(initialAllies.slice());
-            setAlliesAttackedThisTurn([]);
-            const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
-            if (aurasApplied.length) {
-                setRecentActions(
-                    aurasApplied.map(({ characters, action, casterId }) => ({
-                        updatedAllies: characters,
-                        updatedEnemies: newEnemies,
-                        action,
-                        casterId,
-                    }))
-                );
-            }
         }
 
-        setNotification({
-            text: description,
-            id: uuid.v4(),
-        });
+        if (description) {
+            showDescription({ description, i: 0, delay: 1000 });
+        }
+    };
+
+    const showDescription = ({
+        description,
+        i = 0,
+        delay,
+    }: {
+        description?: string | string[];
+        i?: number;
+        delay: number;
+    }) => {
+        setTimeout(() => {
+            setNotification({
+                text: Array.isArray(description) ? description[i] : description,
+                id: uuid.v4(),
+            });
+            if (Array.isArray(description) && description[i + 1]) {
+                showDescription({ description, i: i + 1, delay: 7500 });
+            }
+        }, delay);
     };
 
     useEffect(() => {
@@ -525,6 +550,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     return (
         <div className={classes.root}>
+            {info && (
+                <Notification onClick={() => setInfo(null)} id={info.id}>
+                    {info.text}
+                </Notification>
+            )}
             {notification && (
                 <Notification
                     severity={notification.severity}

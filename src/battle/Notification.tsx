@@ -4,13 +4,15 @@ import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
     root: {
-        padding: "16px 32px",
+        padding: "8px 32px",
         position: "fixed",
         left: "50%",
-        top: "5%",
+        top: "4%",
         transform: "translateX(-50%)",
         zIndex: 4,
         cursor: "pointer",
+        fontSize: "1.2rem",
+        whiteSpace: "nowrap",
         "&.warning": {
             background: "#ffd342",
             color: "black",
@@ -26,15 +28,26 @@ const useStyles = createUseStyles({
     },
 });
 
-const Notification = ({ children, severity = "info", id, onClick }) => {
+const Notification = ({ children, severity = "info", id, onClick, duration = 7000 }) => {
     const [opacity, setOpacity] = useState(0);
+    const [fadeOut, setFadeOut] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
-        setOpacity(30); // 30 keeps it at 100% opacity for longer
+        setOpacity(1);
+        setFadeOut(false);
+        const timeOut = setTimeout(() => {
+            setFadeOut(true);
+        }, duration);
+
+        return () => clearTimeout(timeOut);
     }, [children, id]);
 
     useEffect(() => {
+        if (!fadeOut) {
+            return;
+        }
+
         const interval = setInterval(() => {
             if (opacity > 0) {
                 setOpacity(opacity - 0.02);
@@ -44,7 +57,7 @@ const Notification = ({ children, severity = "info", id, onClick }) => {
         }, 1);
 
         return () => clearInterval(interval);
-    }, [opacity]);
+    }, [opacity, fadeOut]);
 
     if (!children || opacity <= 0) {
         return null;
