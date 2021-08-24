@@ -15,7 +15,7 @@ import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
-import { canUseAbility, getBattleEndResult, isValidTarget, updateEffects } from "./utils";
+import { canUseAbility, isValidTarget, updateEffects } from "./utils";
 
 const CARDS_PER_DRAW = 5;
 
@@ -108,23 +108,17 @@ interface BattleNotification {
     severity: "warning" | "info" | "error";
 }
 
-const BattlefieldContainer = ({
-    challenge,
-    onBattleEnd,
-    initialDeck,
-    initialAllies,
-    tutorialMode,
-}) => {
+const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
     const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-    const [enemies, setEnemies] = useState(challenge.createEnemies());
-    const [allies, setAllies] = useState(initialAllies);
-    const [allyRefs, setAllyRefs] = useState(
-        Array.from({ length: allies.length }).map(() => React.createRef())
-    );
-    const [enemyRefs, setEnemyRefs] = useState(
+    const [currentWave, setCurrentWave] = useState(-1);
+    const [currentRound, setCurrentRound] = useState(0);
+    const [enemies, setEnemies] = useState(waves[0].createEnemies());
+    const [allies, setAllies] = useState(initialAllies.slice());
+    const [allyRefs] = useState(Array.from({ length: allies.length }).map(() => React.createRef()));
+    const [enemyRefs] = useState(
         Array.from({ length: enemies.length }).map(() => React.createRef())
     );
     const [recentActions, setRecentActions] = useState([]);
@@ -282,11 +276,11 @@ const BattlefieldContainer = ({
         }
     };
 
-    const drawCards = () => {
+    const drawCards = ({ deck, discard, hand }) => {
         let i = 0;
         let newDeck = deck.slice();
         let newDiscard = discard.slice();
-        let newHand = [];
+        let newHand = hand.slice();
         setIsPlayingAnimations(true);
         const drawCard = () => {
             setTimeout(() => {
@@ -301,7 +295,7 @@ const BattlefieldContainer = ({
                 setHand(newHand);
                 setDiscard(newDiscard);
                 ++i;
-                if (i < CARDS_PER_DRAW) {
+                if (i < CARDS_PER_DRAW && (newDeck.length || newDiscard.length)) {
                     drawCard();
                 } else {
                     setIsPlayingAnimations(false);
@@ -331,47 +325,33 @@ const BattlefieldContainer = ({
         return updatedAllies;
     };
 
-    const onPlayerTurnStart = () => {
-        const updatedAllies = updatePlayer((player) => ({
-            resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
-        }));
-        setEnemies(enemies.map(updateEffects));
-        drawCards();
-        setAlliesAttackedThisTurn([]);
-        const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
-        if (aurasApplied.length) {
-            setRecentActions(
-                aurasApplied.map(({ characters, action, casterId }) => ({
-                    updatedAllies: characters,
-                    updatedEnemies: enemies,
-                    action,
-                    casterId,
-                }))
-            );
-        }
-    };
-
-    useEffect(() => {
-        const TURN_NOTIFICATION_WAIT_TIME = 1000;
-        let updatedAllies = allies;
-        if (!isPlayerTurn) {
-            updatedAllies = allies.map(updateEffects);
-            setAllies(updatedAllies);
-        }
+    const handlePlayerTurnStart = () => {
+        setIsPlayerTurn(true);
         setShowTurnAnnouncement(true);
-
         setTimeout(() => {
             setShowTurnAnnouncement(false);
-
-            if (isPlayerTurn) {
-                onPlayerTurnStart();
-            } else {
-                setHand([]);
-                setDiscard([...hand, ...discard]);
-                setRecentActions(enemyTurn({ enemies, allies: updatedAllies }));
+            const updatedAllies = updatePlayer((player) => ({
+                resources: Math.min(
+                    player.maxResources,
+                    player.resources + player.resourcesPerTurn
+                ),
+            }));
+            setEnemies(enemies.map(updateEffects));
+            drawCards({ discard, hand, deck });
+            setAlliesAttackedThisTurn([]);
+            const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
+            if (aurasApplied.length) {
+                setRecentActions(
+                    aurasApplied.map(({ characters, action, casterId }) => ({
+                        updatedAllies: characters,
+                        updatedEnemies: enemies,
+                        action,
+                        casterId,
+                    }))
+                );
             }
-        }, TURN_NOTIFICATION_WAIT_TIME);
-    }, [isPlayerTurn]);
+        }, 1000);
+    };
 
     useEffect(() => {
         // Spaghetti play animations
@@ -387,13 +367,7 @@ const BattlefieldContainer = ({
                 setAllies(updatedAllies);
 
                 setTimeout(() => {
-                    const battleEnd = getBattleEndResult({
-                        enemies: updatedEnemies,
-                        allies: updatedAllies,
-                    });
-                    if (battleEnd) {
-                        setBattleEndResult(battleEnd);
-                    } else {
+                    if (checkContinueWave({ enemies: updatedEnemies, allies: updatedAllies })) {
                         setRecentActions(updatedRecentActions);
                     }
                 }, 700);
@@ -403,14 +377,97 @@ const BattlefieldContainer = ({
 
         if (!isPlayerTurn) {
             setTimeout(() => {
-                setIsPlayerTurn(true);
+                const { winCondition } = waves[currentWave] || {};
+                if (winCondition) {
+                    if (currentRound + 1 > winCondition.surviveRounds) {
+                        setCurrentRound(0);
+                        nextWave();
+                        return;
+                    }
+                }
+
+                setCurrentRound(currentRound + 1);
+                handlePlayerTurnStart();
             }, 1000);
         }
         setIsPlayingAnimations(false);
     }, [recentActions]);
 
+    const checkContinueWave = ({ enemies, allies }) => {
+        const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
+        const playerDead = allies.find((ally) => ally?.isPlayer).HP <= 0;
+
+        if (playerDead) {
+            setBattleEndResult("Defeat");
+            return false;
+        } else if (enemiesAllDead) {
+            nextWave();
+            return false;
+        }
+
+        return true;
+    };
+
+    const nextWave = () => {
+        const nextWaveIndex = currentWave + 1;
+        setCurrentWave(nextWaveIndex);
+        if (!waves[nextWaveIndex]) {
+            setBattleEndResult("Victory");
+            return;
+        }
+
+        setIsPlayerTurn(true);
+        const { presetDeck, description, createEnemies, reset } = waves[nextWaveIndex];
+
+        const updatedAllies = updatePlayer((player) => ({
+            resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
+        }));
+        if (presetDeck) {
+            drawCards({ deck: presetDeck.slice(), hand: [], discard: [] });
+        } else {
+            drawCards({ deck, hand, discard });
+        }
+
+        const newEnemies = createEnemies();
+        setEnemies(newEnemies);
+
+        if (reset) {
+            setAllies(initialAllies.slice());
+            setAlliesAttackedThisTurn([]);
+            const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
+            if (aurasApplied.length) {
+                setRecentActions(
+                    aurasApplied.map(({ characters, action, casterId }) => ({
+                        updatedAllies: characters,
+                        updatedEnemies: newEnemies,
+                        action,
+                        casterId,
+                    }))
+                );
+            }
+        }
+
+        setNotification({
+            text: description,
+            id: uuid.v4(),
+        });
+    };
+
+    useEffect(() => {
+        nextWave();
+    }, []);
+
     const handleEndTurn = () => {
         setIsPlayerTurn(false);
+        const updatedAllies = allies.map(updateEffects);
+        setAllies(updatedAllies);
+        setShowTurnAnnouncement(true);
+        setTimeout(() => {
+            setShowTurnAnnouncement(false);
+            setHand([]);
+            setDiscard([...hand, ...discard]);
+            setRecentActions(enemyTurn({ enemies, allies: updatedAllies }));
+        }, 1000);
     };
 
     const disableActions =

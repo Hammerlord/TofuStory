@@ -1,15 +1,11 @@
 import { createUseStyles } from "react-jss";
-import { bash, charge, cleave, slam } from "../ability/Abilities";
-import { Ability } from "../ability/types";
-import createCombatant, { createEnemies } from "../enemy/createEnemy";
-import { smalltofu } from "../enemy/tofu";
+import { createEnemies } from "../enemy/createEnemy";
+import tutorial, { Wave } from "./tutorial";
 
 export interface Challenge {
     name: string;
     description: string;
-    createEnemies: Function;
-    presetDeck?: Ability[];
-    isTutorial?: boolean;
+    waves: Wave[];
     rewards?: Array<any>;
 }
 
@@ -17,25 +13,15 @@ const challenges: Challenge[] = [
     {
         name: "Tutorial",
         description: "Learn about basic gameplay",
-        createEnemies: () =>
-            [null, smalltofu, null, smalltofu, null].map(createCombatant),
-        presetDeck: [bash, bash, bash, bash, bash, slam, charge],
-        isTutorial: true,
-    },
-    {
-        name: "Tutorial 2",
-        description: "Learn about area attacks",
-        createEnemies: () =>
-            [smalltofu, smalltofu, smalltofu, smalltofu, smalltofu].map(
-                createCombatant
-            ),
-        presetDeck: [bash, bash, bash, bash, bash, cleave, cleave],
-        isTutorial: true,
+        waves: tutorial,
+        rewards: [],
     },
     {
         name: "Random tofus",
         description: "Fight some tofus and their minions",
-        createEnemies,
+        waves: [{
+            createEnemies: createEnemies,
+        }],
         rewards: [],
     },
 ];

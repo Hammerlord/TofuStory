@@ -24,6 +24,10 @@ export const createCombatant = (combatant): Combatant => {
         armor: 0,
         resources: combatant.resources || 0,
         casting: null,
+        abilities: [
+            ...(combatant.abilities || []),
+            ...Array.from({ length: 3 }).map(() => createSyntheticAttack(combatant)),
+        ],
     };
 };
 
@@ -38,15 +42,8 @@ export const createEnemies = (): Combatant[] => {
             theraretofu,
             theraretofu,
         ]);
-        const copy = {
-            ...enemy,
-            abilities: [
-                ...(enemy.abilities || []),
-                ...Array.from({ length: 3 }).map(() => createSyntheticAttack(enemy)),
-            ],
-        };
 
-        enemies.push(createCombatant(copy));
+        enemies.push(createCombatant(enemy));
     }
 
     for (let i = numEnemies; i < 5; ++i) {

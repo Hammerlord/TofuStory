@@ -32,3 +32,4 @@ export { default as risingrage } from "./risingrage.png";
 export { default as spikes } from "./item218.png";
 export { default as flag } from "./flag.png";
 export { default as regalTofu } from "./regaltofu.png";
+export { default as puppetree } from "./puppetree.png";

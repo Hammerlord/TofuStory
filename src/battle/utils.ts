@@ -1,3 +1,4 @@
+import { shuffle } from "./../utils";
 import { Ability, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
 
@@ -43,26 +44,6 @@ export const updateEffects = (target: Combatant) => {
             }))
             .filter(({ duration = Infinity }) => duration > 0),
     };
-};
-
-export const getBattleEndResult = ({
-    enemies,
-    allies,
-}): "Draw" | "Victory" | "Defeat" | undefined => {
-    const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP === 0);
-    const playerDead = allies.find((ally) => ally && ally.isPlayer).HP <= 0;
-
-    if (enemiesAllDead && playerDead) {
-        return "Draw";
-    }
-
-    if (enemiesAllDead) {
-        return "Victory";
-    }
-
-    if (playerDead) {
-        return "Defeat";
-    }
 };
 
 /**

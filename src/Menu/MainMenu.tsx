@@ -148,9 +148,8 @@ const MainMenu = () => {
                         null,
                     ]}
                     onBattleEnd={handleBattleEnd}
-                    challenge={challenge}
-                    initialDeck={challenge.presetDeck || deck}
-                    tutorialMode={challenge.isTutorial}
+                    waves={challenge.waves}
+                    initialDeck={deck}
                 />
             )}
         </>
