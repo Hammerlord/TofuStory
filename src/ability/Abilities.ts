@@ -11,6 +11,7 @@ import {
     shieldred,
     shout,
     spikes,
+    snail as snailPortrait,
     warleap,
     Wolf,
 } from "../images";
@@ -202,18 +203,30 @@ export const spikedArmor: Ability = {
 
 export const warBanner: Ability = {
     name: "War Banner",
-    resourceCost: 0,
+    resourceCost: 3,
     minion: {
         name: "War Banner",
         image: flag,
-        maxHP: 5,
+        maxHP: 3,
         damage: 0,
         aura: {
             damage: 1,
             armorPerTurn: 1,
             area: 1,
             type: EFFECT_TYPES.BUFF,
-        }
+        },
+    },
+    actions: [],
+};
+
+export const snailMinion: Ability = {
+    name: "Snail",
+    resourceCost: 1,
+    minion: {
+        name: "Snail",
+        image: snailPortrait,
+        maxHP: 1,
+        damage: 1,
     },
     actions: [],
 };
