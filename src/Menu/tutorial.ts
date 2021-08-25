@@ -12,7 +12,6 @@ export interface Wave {
     winCondition?: {
         surviveRounds?: number;
     };
-    reset?: boolean;
 }
 
 const tutorial: Wave[] = [
@@ -25,14 +24,12 @@ const tutorial: Wave[] = [
         ],
         createEnemies: () => [null, basicDummy, null, basicDummy, null].map(createCombatant),
         presetDeck: [bash, charge, slam],
-        reset: true,
     },
     {
         name: "Area attacks",
         description: "Target multiple enemies with Area attacks like Cleave.",
         createEnemies: () => [null, basicDummy, basicDummy, basicDummy, null].map(createCombatant),
         presetDeck: [bash, bash, bash, cleave, cleave],
-        reset: true,
     },
     {
         name: "Supportive abilities",
@@ -43,7 +40,6 @@ const tutorial: Wave[] = [
         winCondition: {
             surviveRounds: 1,
         },
-        reset: true,
     },
     {
         name: "Summon minions",
@@ -65,7 +61,6 @@ const tutorial: Wave[] = [
         description: "Defeat the Raging Dummy and its minions!",
         createEnemies: () => [null, basicDummy, ragingDummy, basicDummy, null].map(createCombatant),
         presetDeck: [bash, bash, slam, cleave, block, block, snailMinion, snailMinion, charge],
-        reset: true,
     },
 ];
 

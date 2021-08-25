@@ -460,9 +460,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             } else {
                 drawCards({ deck, hand, discard });
             }
-            if (reset) {
-                setAllies(initialAllies.slice());
-            }
 
             if (description) {
                 showDescription({ description, i: 0, delay: 1000 });
