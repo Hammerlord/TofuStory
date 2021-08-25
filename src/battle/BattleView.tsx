@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import AbilityView from "../ability/AbilityView";
 import { Ability, Action } from "../ability/types";
+import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
@@ -133,6 +134,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [enemyRefs] = useState(
         Array.from({ length: enemies.length }).map(() => React.createRef())
     );
+    const [abilityRefs] = useState(Array.from({ length: 10 }).map(() => React.createRef())); // Let's assume the max hand size is 10 for now...
     const [recentActions, setRecentActions] = useState([]);
     const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
@@ -236,14 +238,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
         const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
-            if (isValidTarget({ ability: selectedAbility, side: "allies", allies, index })) {
+            if (
+                isValidTarget({ ability: selectedAbility, side: "allies", allies, index, enemies })
+            ) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "allies" });
             } else {
-                setNotification({
-                    severity: "warning",
-                    text: `Please select a valid target for ${selectedAbility.name}.`,
-                    id: uuid.v4(),
-                });
+                setSelectedAbilityIndex(null);
             }
             return;
         }
@@ -261,14 +261,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
-            if (isValidTarget({ ability: selectedAbility, side: "enemies", allies, index })) {
+            if (
+                isValidTarget({ ability: selectedAbility, side: "enemies", allies, index, enemies })
+            ) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
             } else {
-                setNotification({
-                    severity: "warning",
-                    text: `Please select a valid target for ${selectedAbility.name}.`,
-                    id: uuid.v4(),
-                });
+                setSelectedAbilityIndex(null);
             }
             return;
         }
@@ -480,9 +478,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 }, 500);
             }, 2000);
         } else {
-            setTimeout(() => {
-                setup();
-            }, 500);
+            setup();
         }
     };
 
@@ -535,9 +531,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         if (ally) {
             return side === "enemies" && hoveredEnemyIndex === i;
         }
-        const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
+
         const ability = hand[selectedAbilityIndex];
-        if (!ability || index === null) {
+        const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
+        if (
+            !ability ||
+            index === null ||
+            !isValidTarget({ ability, side, index: i, enemies, allies })
+        ) {
             return false;
         }
 
@@ -569,12 +570,25 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             }
         }
 
-        return isValidTarget({ ability, side, index, allies });
+        if (typeof hoveredEnemyIndex === "number") {
+            return isTargeted(index, side);
+        }
+
+        if (!isValidTarget({ ability, side, index, allies, enemies })) {
+            return false;
+        }
+
+        return true;
     };
 
     const origination = useMemo(() => {
-        return !disableActions && allyRefs[selectedAllyIndex]?.current;
-    }, [disableActions, allyRefs[selectedAllyIndex]]);
+        if (disableActions) {
+            return null;
+        }
+        return allyRefs[selectedAllyIndex]?.current || abilityRefs[selectedAbilityIndex]?.current;
+    }, [disableActions, selectedAllyIndex, selectedAbilityIndex]);
+
+    const targetLineColor = getAbilityColor(hand[selectedAbilityIndex]);
 
     return (
         <div className={classes.root}>
@@ -592,7 +606,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                     {notification.text}
                 </Notification>
             )}
-            <TargetLineCanvas originationRef={origination}>
+            <TargetLineCanvas originationRef={origination} color={targetLineColor}>
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield} onClick={handleBattlefieldClick}>
                         <div className={classes.waves}>
@@ -668,6 +682,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                         isSelected={isPlayerTurn && selectedAbilityIndex === i}
                                         key={i}
                                         ability={ability}
+                                        ref={abilityRefs[i]}
                                     />
                                 ))}
                             </div>
@@ -678,9 +693,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             {battleEndResult && (
                 <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
             )}
-            {showWaveClear && (
-                <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />
-            )}
+            {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>
     );

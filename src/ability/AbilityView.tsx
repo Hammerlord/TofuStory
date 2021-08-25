@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { Shield, Blood, CrossedSwords, Dizzy, Heart, Cactus } from "../images";
@@ -6,6 +7,7 @@ import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
 import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { getAbilityColor } from "./utils";
 
 const useAreaStyles = createUseStyles({
     area: {
@@ -81,17 +83,8 @@ const useStyles = createUseStyles({
     },
     selectedAbility: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
-        background: "#ffc83e",
+        background: "#ead27c",
         transform: "translateY(-16px)",
-    },
-    offensive: {
-        borderTop: "3px solid rgb(221, 46, 68)",
-    },
-    support: {
-        borderTop: "3px solid rgb(23, 111, 189)",
-    },
-    minion: {
-        borderTop: "3px solid rgb(50, 168, 82)",
     },
     body: {
         minHeight: "40px",
@@ -121,7 +114,7 @@ interface AbilityViewProps {
     ability: Ability;
 }
 
-const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
+const AbilityView = forwardRef(({ onClick, isSelected, ability }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], resourceCost, name, minion, image } = ability;
     const { area } = actions[0] || {};
@@ -161,13 +154,10 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
             onClick={onClick}
             className={classNames(classes.root, {
                 [classes.selectedAbility]: isSelected,
-                [classes.offensive]: targetType === TARGET_TYPES.HOSTILE,
-                [classes.support]:
-                    targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
-                [classes.minion]: minion,
             })}
+            style={{ borderTop: `3px solid ${getAbilityColor(ability)}`}}
         >
-            <span className={classes.header}>
+            <span className={classes.header} ref={ref as any}>
                 {damage ? (
                     <Icon icon={<CrossedSwords />} text={damage} />
                 ) : (
@@ -240,6 +230,6 @@ const AbilityView = ({ onClick, isSelected, ability }: AbilityViewProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default AbilityView;

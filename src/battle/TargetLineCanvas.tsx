@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
 /**
  * Draws a targeting line from eg. a selected ally to the mouse position
  */
-const TargetLineCanvas = ({ children, originationRef, ...other }) => {
+const TargetLineCanvas = ({ children, originationRef, color = 'rgb(221, 46, 68)', ...other }) => {
     const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
     const [targetLineRef] = useState(createRef() as React.RefObject<SVGLineElement>);
     const [circleRef] = useState(createRef() as React.RefObject<SVGCircleElement>);
@@ -47,20 +47,20 @@ const TargetLineCanvas = ({ children, originationRef, ...other }) => {
                             y1={origination.top + origination.height / 2}
                             x2={origination.left + origination.width / 2}
                             y2={origination.top + origination.height / 2}
-                            stroke="rgb(221, 46, 68)"
+                            stroke={color}
                             strokeDasharray="10"
                             strokeWidth="5"
                         />
                         <circle
                             ref={bullseyeRef}
-                            fill="rgb(221, 46, 68)"
+                            fill={color}
                             r="8"
                             cx={origination.left + origination.width / 2}
                             cy={origination.top + origination.height / 2}
                         />
                         <circle
                             ref={circleRef}
-                            stroke="rgb(221, 46, 68)"
+                            stroke={color}
                             strokeWidth="5px"
                             fill="transparent"
                             r="16"

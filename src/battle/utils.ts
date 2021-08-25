@@ -55,7 +55,7 @@ export const canUseAbility = (character, ability: Ability | undefined): boolean 
     return resourceCost <= (character.resources || 0);
 };
 
-export const isValidTarget = ({ ability, side, allies, index }): boolean => {
+export const isValidTarget = ({ ability, side, allies, enemies, index }): boolean => {
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
 
@@ -63,17 +63,25 @@ export const isValidTarget = ({ ability, side, allies, index }): boolean => {
         return side === "allies" && (!allies[index] || allies[index].HP === 0);
     }
 
-    const { target } = actions[0] || {};
+    const { target, area = 1 } = actions[0] || {};
 
-    if (target === TARGET_TYPES.SELF) {
-        return side === "allies" && allies[index]?.isPlayer;
+    if (side === "allies") {
+        if (target === TARGET_TYPES.SELF) {
+            return allies[index]?.isPlayer;
+        }
+
+        if (target === TARGET_TYPES.FRIENDLY) {
+            if (area === 1) { // No sense in letting a single target ability whiff on an empty slot, for now
+                return Boolean(allies[index]) && allies[index].HP > 0;
+            }
+            return true;
+        }
+    } else if (side === "enemies" && target === TARGET_TYPES.HOSTILE) {
+        if (area === 1) {
+            return Boolean(enemies[index]) && enemies[index].HP > 0;
+        }
+        return true;
     }
 
-    if (target === TARGET_TYPES.FRIENDLY) {
-        return side === "allies";
-    }
-
-    if (target === TARGET_TYPES.HOSTILE) {
-        return side === "enemies";
-    }
+    return false;
 };
