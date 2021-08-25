@@ -6,16 +6,20 @@ import { Ability, Action } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
+import { clear } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
+import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Notification from "./Notification";
+import Overlay from "./Overlay";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, isValidTarget, updateEffects } from "./utils";
+import WaveInfo from "./WaveInfo";
 
 const CARDS_PER_DRAW = 5;
 
@@ -41,6 +45,11 @@ const useStyles = createUseStyles({
         position: "relative",
         background: "#f5ebcb",
         paddingTop: "15vh",
+    },
+    waves: {
+        position: "absolute",
+        top: 0,
+        left: 0,
     },
     combatantContainer: {
         position: "relative",
@@ -129,6 +138,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
+    const [showWaveClear, setShowWaveClear] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
 
     const player = allies.find((ally: Combatant | null) => ally && ally.isPlayer);
@@ -420,41 +430,59 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
-        setIsPlayerTurn(true);
-        setAlliesAttackedThisTurn([]);
+        const setup = () => {
+            setIsPlayerTurn(true);
+            setAlliesAttackedThisTurn([]);
 
-        const { presetDeck, description, createEnemies, reset } = waves[nextWaveIndex];
+            const { presetDeck, description, createEnemies, reset } = waves[nextWaveIndex];
 
-        const updatedAllies = updatePlayer((player) => ({
-            resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
-        }));
-        const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
-        if (aurasApplied.length) {
-            setRecentActions(
-                aurasApplied.map(({ characters, action, casterId }) => ({
-                    updatedAllies: characters,
-                    updatedEnemies: newEnemies,
-                    action,
-                    casterId,
-                }))
-            );
-        }
+            const updatedAllies = updatePlayer((player) => ({
+                resources: Math.min(
+                    player.maxResources,
+                    player.resources + player.resourcesPerTurn
+                ),
+            }));
 
-        if (presetDeck) {
-            drawCards({ deck: presetDeck.slice(), hand: [], discard: [] });
+            const newEnemies = createEnemies();
+            setEnemies(newEnemies);
+            const aurasApplied = applyAuraPerTurnEffects(updatedAllies);
+            if (aurasApplied.length) {
+                setRecentActions(
+                    aurasApplied.map(({ characters, action, casterId }) => ({
+                        updatedAllies: characters,
+                        updatedEnemies: newEnemies,
+                        action,
+                        casterId,
+                    }))
+                );
+            }
+
+            if (presetDeck) {
+                drawCards({ deck: presetDeck.slice(), hand: [], discard: [] });
+            } else {
+                drawCards({ deck, hand, discard });
+            }
+            if (reset) {
+                setAllies(initialAllies.slice());
+            }
+
+            if (description) {
+                showDescription({ description, i: 0, delay: 1000 });
+            }
+        };
+
+        if (nextWaveIndex > 0) {
+            setShowWaveClear(true);
+            setTimeout(() => {
+                setShowWaveClear(false);
+                setTimeout(() => {
+                    setup();
+                }, 500);
+            }, 2000);
         } else {
-            drawCards({ deck, hand, discard });
-        }
-
-        const newEnemies = createEnemies();
-        setEnemies(newEnemies);
-
-        if (reset) {
-            setAllies(initialAllies.slice());
-        }
-
-        if (description) {
-            showDescription({ description, i: 0, delay: 1000 });
+            setTimeout(() => {
+                setup();
+            }, 500);
         }
     };
 
@@ -567,6 +595,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             <TargetLineCanvas originationRef={origination}>
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield} onClick={handleBattlefieldClick}>
+                        <div className={classes.waves}>
+                            <WaveInfo waves={waves} currentIndex={currentWave} cleared={false} />
+                        </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
                                 {enemies.map((enemy, i: number) => (
@@ -646,6 +677,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             </TargetLineCanvas>
             {battleEndResult && (
                 <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
+            )}
+            {showWaveClear && (
+                <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />
             )}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>
