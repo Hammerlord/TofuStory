@@ -46,6 +46,17 @@ export const updateEffects = (target: Combatant) => {
     };
 };
 
+export const removeEndedEffects = (target: Combatant) => {
+    if (!target) {
+        return target;
+    }
+
+    return {
+        ...target,
+        effects: target.effects.filter(({ duration = Infinity }) => duration > 0),
+    };
+};
+
 /**
  * Player conditional helpers
  */
@@ -71,7 +82,8 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
-            if (area === 1) { // No sense in letting a single target ability whiff on an empty slot, for now
+            if (area === 1) {
+                // No sense in letting a single target ability whiff on an empty slot, for now
                 return Boolean(allies[index]) && allies[index].HP > 0;
             }
             return true;
@@ -84,4 +96,22 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
     }
 
     return false;
+};
+
+export const updatePlayer = (
+    statChanges: Function,
+    allies: (Combatant | null)[]
+): (Combatant | null)[] => {
+    const updatedAllies = allies.map((ally) => {
+        if (!ally || !ally.isPlayer) {
+            return ally;
+        }
+
+        return {
+            ...ally,
+            ...statChanges(ally),
+        };
+    });
+
+    return updatedAllies;
 };

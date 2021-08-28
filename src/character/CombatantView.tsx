@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef, useEffect, useState } from "react";
+import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getActionType, isAttack } from "../ability/utils";
@@ -51,13 +51,17 @@ const useStyles = createUseStyles({
     },
     portrait: {
         maxHeight: "100%",
-        minWidth: "50%",
-        minHeight: "40%",
-        margin: "auto",
+        width: "100%",
+        margin: "0 auto",
         alignSelf: "flex-end",
-        objectFit: "contain",
+
+        "& > img": {
+            minWidth: "50%",
+            minHeight: "40%",
+            objectFit: "contain",
+        },
     },
-    portraitContainer: {
+    combatantContainer: {
         display: "flex",
         position: "absolute",
         bottom: "24px",
@@ -125,8 +129,7 @@ const useStyles = createUseStyles({
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
         "75%": {
-            WebkitFilter:
-                "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            WebkitFilter: "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
         },
         "100%": {
@@ -140,30 +143,6 @@ const useStyles = createUseStyles({
         transition: "1s filter linear, 1s -webkit-filter linear",
         animationIterationCount: "infinite",
     },
-    "@keyframes enemyActing": {
-        from: {
-            transform: "translateY(0)",
-        },
-        to: {
-            transform: "translateY(24px)",
-        },
-    },
-    enemyActing: {
-        animationName: "$enemyActing",
-        animationDuration: "0.5s",
-    },
-    "@keyframes allyActing": {
-        from: {
-            transform: "translateY(0)",
-        },
-        to: {
-            transform: "translateY(-24px)",
-        },
-    },
-    allyActing: {
-        animationName: "$allyActing",
-        animationDuration: "0.5s",
-    },
     "@keyframes applyEffect": {
         "0%": {
             WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
@@ -172,8 +151,7 @@ const useStyles = createUseStyles({
         },
 
         "75%": {
-            WebkitFilter:
-                "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            WebkitFilter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             transform: "translateY(-24px)",
         },
@@ -220,51 +198,83 @@ const useStyles = createUseStyles({
 });
 
 const CombatantView = forwardRef(
-    (
-        {
-            combatant,
-            onClick,
-            isTargeted,
-            action,
-            isAlly,
-            isSelected,
-            isHighlighted,
-            showReticle,
-            ...other
-        }: any,
-        ref
-    ) => {
+    ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, ...other }: any, ref) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
-        const [oldCombatantState, setOldEnemyState] = useState(combatant);
-        const classes = useStyles({ isAlly } as any); // Not using theme, just passing a prop in
-
+        const [oldState, setOldState] = useState(combatant);
+        const [portraitRef] = useState(createRef() as React.RefObject<any>);
+        const classes = useStyles();
         useEffect(() => {
-            if (!combatant || !oldCombatantState || oldCombatantState.id !== combatant.id) {
-                setOldEnemyState(combatant);
+            if (!combatant || !oldState || oldState.id !== combatant.id) {
+                setOldState(combatant);
                 return;
             }
 
             const statChanges = getCharacterStatChanges({
-                oldCharacter: oldCombatantState,
+                oldCharacter: oldState,
                 newCharacter: combatant,
             });
 
-            setStatChanges(statChanges);
-            setOldEnemyState(combatant);
+            setTimeout(() => {
+                setStatChanges(statChanges);
+                setOldState(combatant);
+            }, 700);
         }, [combatant]);
 
+        useEffect(() => {
+            if (isAttack(event.action) && event.target) {
+                const getTargetPoint = (rect) => {
+                    const { x, y, height, width } = rect;
+                    return {
+                        x: x + width / 2,
+                        y: y + height / 2,
+                    };
+                };
+                const { x, y } = getTargetPoint(portraitRef.current.getBoundingClientRect());
+                const { x: x2, y: y2 } = getTargetPoint(event.target.getBoundingClientRect());
+                const increments = 50;
+                const moveIncrementX = (x2 - x) / increments;
+                const moveIncrementY = (y2 - y) / increments;
+                let i = 1;
+                let direction = 1;
+                const move = () => {
+                    const xPos = i * moveIncrementX;
+                    const yPos = i * moveIncrementY;
+                    portraitRef.current.style.transform = `translateX(${xPos}px) translateY(${yPos}px)`;
+
+                    if (direction === 1) {
+                        ++i;
+
+                        if (i > increments) {
+                            direction = -1;
+                        }
+
+                        setTimeout(() => {
+                            move();
+                        });
+                    } else {
+                        --i;
+
+                        if (i > 0) {
+                            setTimeout(() => {
+                                move();
+                            });
+                        } else {
+                            portraitRef.current.style.transform = "unset";
+                        }
+                    }
+                };
+                move();
+            }
+        }, [event.action]);
+
         const hasAilment = (type: EFFECT_TYPES) => {
-            return combatant?.effects?.some((effect) => effect.type === type);
+            return oldState?.effects?.some((effect) => effect.type === type);
         };
 
         const isStunned = hasAilment(EFFECT_TYPES.STUN);
-        const bleeds =
-            combatant?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
-        const damageFromEffects = combatant?.effects?.reduce(
-            (acc: number, { damage = 0 }) => acc + damage,
-            0
-        );
-        const totalDamage = (combatant?.damage || 0) + damageFromEffects;
+        const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
+        const damageFromEffects = oldState?.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
+        const totalDamage = (oldState?.damage || 0) + damageFromEffects;
 
         return (
             <div
@@ -282,38 +292,38 @@ const CombatantView = forwardRef(
                             <Icon icon={ClickIndicator} />
                         </span>
                     )}
-                    {combatant && (
+                    {oldState && (
                         <>
-                            {combatant.HP > 0 && (
+                            {oldState.HP > 0 && (
                                 <div className={classes.header}>
-                                    {combatant.casting && (
-                                        <CastingIndicator
-                                            casting={combatant.casting}
-                                            combatant={combatant}
-                                        />
-                                    )}
-                                    <span>{combatant.name}</span>
+                                    {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
+                                    <span>{oldState.name}</span>
                                 </div>
                             )}
-                            <div className={classes.portraitContainer}>
-                                {combatant.HP > 0 && (
+                            <div className={classes.combatantContainer}>
+                                <span
+                                    ref={portraitRef}
+                                    className={classNames(classes.portrait, {
+                                        [classes.applyingEffect]: getActionType(event.action) === ACTION_TYPES.EFFECT,
+                                        [classes.casting]: oldState.casting,
+                                    })}
+                                >
+                                    {oldState.HP > 0 && <img src={oldState.image} />}
+
+                                    {
+                                        <span className={classes.center}>
+                                            <HitIcon statChanges={statChanges} />
+                                        </span>
+                                    }
+                                    {
+                                        <span className={classes.center}>
+                                            <HealIcon statChanges={statChanges} />
+                                        </span>
+                                    }
+                                </span>
+                                {oldState.HP > 0 && (
                                     <>
-                                        <img
-                                            className={classNames(classes.portrait, {
-                                                [classes.enemyActing]: isAttack(action) && !isAlly,
-                                                [classes.allyActing]: isAttack(action) && isAlly,
-                                                [classes.applyingEffect]:
-                                                    getActionType(action) === ACTION_TYPES.EFFECT,
-                                                [classes.casting]: combatant.casting,
-                                            })}
-                                            src={combatant.image}
-                                        />
-                                        <Icon
-                                            className={classes.HP}
-                                            icon={<Heart />}
-                                            size={"lg"}
-                                            text={combatant.HP}
-                                        />
+                                        <Icon className={classes.HP} icon={<Heart />} size={"lg"} text={oldState.HP} />
                                         <div className={classes.rightContainer}>
                                             {totalDamage > 0 && (
                                                 <Icon
@@ -321,55 +331,30 @@ const CombatantView = forwardRef(
                                                     size={"lg"}
                                                     text={totalDamage}
                                                     className={classNames({
-                                                        [classes.highlightText]:
-                                                            damageFromEffects > 0,
+                                                        [classes.highlightText]: damageFromEffects > 0,
                                                     })}
                                                 />
                                             )}
-                                            {combatant.armor > 0 && (
-                                                <Armor amount={combatant.armor} />
-                                            )}
+                                            {oldState.armor > 0 && <Armor amount={oldState.armor} />}
                                         </div>
 
-                                        {isStunned && (
-                                            <Icon
-                                                icon={<Dizzy />}
-                                                size="xl"
-                                                className={classes.stun}
-                                            />
-                                        )}
+                                        {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}
                                         <div className={classes.bleed}>
                                             {bleeds.map((bleed, i: number) => (
                                                 <Bleed key={i} amount={bleed.duration} />
                                             ))}
                                         </div>
-                                        {getActionType(action) === ACTION_TYPES.NONE && (
-                                            <Icon
-                                                icon={<Zzz />}
-                                                size="xl"
-                                                className={classes.actionIcon}
-                                            />
+                                        {getActionType(event.action) === ACTION_TYPES.NONE && (
+                                            <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />
                                         )}
                                     </>
                                 )}
-                                {
-                                    <span className={classes.center}>
-                                        <HitIcon statChanges={statChanges} />
-                                    </span>
-                                }
-                                {
-                                    <span className={classes.center}>
-                                        <HealIcon statChanges={statChanges} />
-                                    </span>
-                                }
                             </div>
                             <div className={classes.effectsContainer}>
-                                {combatant.effects?.map((effect, i) => (
+                                {oldState.effects?.map((effect, i) => (
                                     <EffectIcon effect={effect} key={i} />
                                 ))}
-                                {combatant.aura && (
-                                    <EffectIcon effect={combatant.aura} isAura={true} />
-                                )}
+                                {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} />}
                             </div>
                         </>
                     )}

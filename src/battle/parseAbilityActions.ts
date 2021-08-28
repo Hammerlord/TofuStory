@@ -13,17 +13,8 @@ export interface Event {
     updatedAllies: Combatant[];
     updatedEnemies: Combatant[];
     casterId?: string;
-}
-
-// it's like an Action, but can be synthetic, so it doesn't necessarily have a target
-// ... yeah I know
-interface ApplyAction {
-    damage?: number;
-    healing?: number;
-    armor?: number;
-    effects?: Effect[];
-    resources?: number;
-    description?: string;
+    targetIndex?: number;
+    targetSide?: 'allies' | 'enemies';
 }
 
 export const applyActionToTarget = ({
@@ -60,7 +51,7 @@ const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number 
     }, 0);
 };
 
-export const parseAction = ({ enemies, allies, action, targetIndex, casterId }): Event => {
+export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
     const { area = 0, target: targetType, movement } = action;
 
     const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
@@ -114,6 +105,8 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId }):
         updatedAllies: renewPersistentAuras(updatedAllies.map(getUpdatedCharacter)),
         updatedEnemies: renewPersistentAuras(updatedEnemies.map(getUpdatedCharacter)),
         casterId,
+        targetIndex,
+        targetSide: side,
     };
 };
 
@@ -232,6 +225,7 @@ export const useAllyAbility = ({
                 targetIndex,
                 action,
                 casterId,
+                side,
             })
         );
     });

@@ -4,7 +4,6 @@ import { Effect } from "./../ability/types";
 import { getRandomItem, shuffle } from "./../utils";
 import { applyActionToTarget, Event } from "../battle/parseAbilityActions";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
-import { Enemy } from "./tofu";
 import { Combatant } from "../character/types";
 
 const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement = 0 }): number[] => {
@@ -77,6 +76,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
         // Each subsequent action should be based on the most recently updated enemies/player states.
         const recentEnemies = results[results.length - 1]?.updatedEnemies || enemies;
         const recentAllies = results[results.length - 1]?.updatedAllies || allies;
+        let side = "enemies";
 
         if (movement) {
             targetIndex = getRandomItem(
@@ -94,6 +94,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
         } else if (target === TARGET_TYPES.HOSTILE) {
             const validAllyIndices = getValidTargetIndices(recentAllies);
             targetIndex = getRandomItem(validAllyIndices);
+            side = "allies";
         }
 
         results.push(
@@ -103,6 +104,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
                 allies: recentAllies,
                 targetIndex,
                 action,
+                side
             })
         );
     });

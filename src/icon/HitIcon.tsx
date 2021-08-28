@@ -44,7 +44,7 @@ const HitIcon = ({ statChanges }) => {
 
     useEffect(() => {
         if (statChanges.damage > 0) {
-            setOpacity(5); // 5 keeps it at 100% for longer
+            setOpacity(10); // 10 keeps it at 100% for longer
         }
     }, [statChanges]);
 
