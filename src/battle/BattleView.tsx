@@ -17,13 +17,7 @@ import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
-import {
-    canUseAbility,
-    isValidTarget,
-    removeEndedEffects,
-    updateEffects,
-    updatePlayer,
-} from "./utils";
+import { canUseAbility, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
 import WaveInfo from "./WaveInfo";
 
 const CARDS_PER_DRAW = 5;
@@ -135,9 +129,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [enemies, setEnemies] = useState(waves[0].createEnemies());
     const [allies, setAllies] = useState(initialAllies.slice());
     const [allyRefs] = useState(Array.from({ length: allies.length }).map(() => React.createRef()));
-    const [enemyRefs] = useState(
-        Array.from({ length: enemies.length }).map(() => React.createRef())
-    );
+    const [enemyRefs] = useState(Array.from({ length: enemies.length }).map(() => React.createRef()));
     const [abilityRefs] = useState(Array.from({ length: 10 }).map(() => React.createRef())); // Let's assume the max hand size is 10 for now...
     const [eventInPlay, setEventInPlay] = useState(null);
     const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
@@ -160,17 +152,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         if (!ally) {
             return false;
         }
-        const damageFromEffects = ally.effects?.reduce(
-            (acc: number, { damage = 0 }) => acc + damage,
-            0
-        );
+        const damageFromEffects = ally.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
         const totalDamage = (ally.damage || 0) + damageFromEffects;
         return totalDamage > 0 && alliesAttackedThisTurn.every((id) => id !== ally.id);
     };
     const noMoreMoves =
-        !hand.length ||
-        (hand.every((ability) => !canUseAbility(player, ability)) &&
-            allies.every((ally) => !isEligibleToAttack(ally)));
+        !hand.length || (hand.every((ability) => !canUseAbility(player, ability)) && allies.every((ally) => !isEligibleToAttack(ally)));
 
     const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
         e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
@@ -241,9 +228,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
         const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
-            if (
-                isValidTarget({ ability: selectedAbility, side: "allies", allies, index, enemies })
-            ) {
+            if (isValidTarget({ ability: selectedAbility, side: "allies", allies, index, enemies })) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "allies" });
             } else {
                 setSelectedAbilityIndex(null);
@@ -264,9 +249,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
-            if (
-                isValidTarget({ ability: selectedAbility, side: "enemies", allies, index, enemies })
-            ) {
+            if (isValidTarget({ ability: selectedAbility, side: "enemies", allies, index, enemies })) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
             } else {
                 setSelectedAbilityIndex(null);
@@ -344,10 +327,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const refreshPlayerResources = (allies) => {
         return updatePlayer(
             (player) => ({
-                resources: Math.min(
-                    player.maxResources,
-                    player.resources + player.resourcesPerTurn
-                ),
+                resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
             }),
             allies
         );
@@ -381,23 +361,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setIsPlayingAnimations(true);
 
         const play = (events: Event[], resolve) => {
+            const event = events.shift() as Event;
+            setEventInPlay(event);
+            const { updatedEnemies, updatedAllies } = event;
             setTimeout(() => {
-                const event = events.shift() as Event;
-                setEventInPlay(event);
-                const { updatedEnemies, updatedAllies } = event;
-                setTimeout(() => {
-                    if (
-                        checkContinueWave({ enemies: updatedEnemies, allies: updatedAllies }) &&
-                        events.length
-                    ) {
-                        play(events, resolve);
-                    } else {
-                        setEventInPlay(null);
-                        setIsPlayingAnimations(false);
-                        resolve(event);
-                    }
-                }, 700);
-            }, 400);
+                if (checkContinueWave({ enemies: updatedEnemies, allies: updatedAllies }) && events.length) {
+                    play(events, resolve);
+                } else {
+                    setEventInPlay(null);
+                    setIsPlayingAnimations(false);
+                    resolve(event);
+                }
+            }, 500);
         };
 
         const { updatedAllies, updatedEnemies } = events[events.length - 1];
@@ -414,7 +389,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             setBattleEndResult("Defeat");
             return false;
         } else if (enemiesAllDead) {
-            nextWave(allies);
+            setTimeout(() => {
+                nextWave(allies);
+            }, 1000);
             return false;
         }
 
@@ -431,15 +408,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const setup = () => {
             const { presetDeck, description, createEnemies } = waves[nextWaveIndex];
-            const cards = presetDeck
-                ? { deck: shuffle(presetDeck.slice()), hand: [], discard: [] }
-                : { deck, hand, discard };
+            const cards = presetDeck ? { deck: shuffle(presetDeck.slice()), hand: [], discard: [] } : { deck, hand, discard };
             const enemies = createEnemies();
             setEnemies(enemies);
             handlePlayerTurnStart({ ...cards, allies: mostRecentAllies, enemies });
 
             if (description) {
-                showDescription({ description, i: 0, delay: 1000 });
+                showWaveDescription({ description, i: 0, delay: 2000 });
             }
         };
 
@@ -456,22 +431,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
     };
 
-    const showDescription = ({
-        description,
-        i = 0,
-        delay,
-    }: {
-        description?: string | string[];
-        i?: number;
-        delay: number;
-    }) => {
+    const showWaveDescription = ({ description, i = 0, delay }: { description?: string | string[]; i?: number; delay: number }) => {
         setTimeout(() => {
             setNotification({
                 text: Array.isArray(description) ? description[i] : description,
                 id: uuid.v4(),
             });
             if (Array.isArray(description) && description[i + 1]) {
-                showDescription({ description, i: i + 1, delay: 7500 });
+                showWaveDescription({ description, i: i + 1, delay: 7500 });
             }
         }, delay);
     };
@@ -490,30 +457,50 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setDiscard(newDiscard);
         setTimeout(async () => {
             setShowTurnAnnouncement(false);
-            const event = await playEvents(enemyTurn({ enemies, allies: updatedAllies }));
+            const enemyActions = enemyTurn({ enemies, allies: updatedAllies });
 
-            setTimeout(() => {
-                const { winCondition } = waves[currentWave] || {};
-                if (currentRound + 1 > winCondition?.surviveRounds) {
-                    setCurrentRound(0);
-                    nextWave(event?.updatedAllies || updatedAllies);
-                    return;
+            const playEnemyActions = async () => {
+                const event = enemyActions.shift();
+                if (event) {
+                    await playEvents([event]);
                 }
 
-                setCurrentRound(currentRound + 1);
-                handlePlayerTurnStart({
-                    hand: [],
-                    discard: newDiscard,
-                    deck,
-                    allies: event?.updatedAllies || updatedAllies,
-                    enemies: event?.updatedEnemies || enemies,
-                });
-            }, 500);
+                if (enemyActions.length) {
+                    setTimeout(() => {
+                        playEnemyActions();
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        const { winCondition } = waves[currentWave] || {};
+                        if (currentRound + 1 > winCondition?.surviveRounds) {
+                            setCurrentRound(0);
+                            nextWave(event?.updatedAllies || updatedAllies);
+                            return;
+                        }
+
+                        setCurrentRound(currentRound + 1);
+                        handlePlayerTurnStart({
+                            hand: [],
+                            discard: newDiscard,
+                            deck,
+                            allies: event?.updatedAllies || updatedAllies,
+                            enemies: event?.updatedEnemies || enemies,
+                        });
+                    }, 2000);
+                }
+            };
+
+            playEnemyActions();
         }, TURN_ANNOUNCEMENT_TIME);
     };
 
     const disableActions =
-        isPlayingAbilityAnimations || battleEndResult || showTurnAnnouncement || !isPlayerTurn;
+        isPlayingAbilityAnimations ||
+        battleEndResult ||
+        showTurnAnnouncement ||
+        !isPlayerTurn ||
+        showWaveClear ||
+        enemies.every((enemy) => !enemy || enemy.HP <= 0);
 
     const isTargeted = (i: number | null, side: "allies" | "enemies"): boolean => {
         if (disableActions) {
@@ -527,11 +514,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const ability = hand[selectedAbilityIndex];
         const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
-        if (
-            !ability ||
-            index === null ||
-            !isValidTarget({ ability, side, index: i, enemies, allies })
-        ) {
+        if (!ability || index === null || !isValidTarget({ ability, side, index: i, enemies, allies })) {
             return false;
         }
 
@@ -591,11 +574,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 </Notification>
             )}
             {notification && (
-                <Notification
-                    severity={notification.severity}
-                    onClick={() => setNotification(null)}
-                    id={notification.id}
-                >
+                <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
                     {notification.text}
                 </Notification>
             )}
@@ -607,24 +586,22 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
-                                {(eventInPlay?.updatedEnemies || enemies).map(
-                                    (enemy, i: number) => (
-                                        <CombatantView
-                                            combatant={enemy}
-                                            isAlly={false}
-                                            onClick={(e) => handleEnemyClick(e, i)}
-                                            isSelected={false}
-                                            onMouseEnter={() => setHoveredEnemyIndex(i)}
-                                            onMouseLeave={() => setHoveredEnemyIndex(null)}
-                                            isTargeted={isTargeted(i, "enemies")}
-                                            key={i}
-                                            event={getEvent(enemy)}
-                                            isHighlighted={false}
-                                            showReticle={showReticle("enemies", i)}
-                                            ref={enemyRefs[i]}
-                                        />
-                                    )
-                                )}
+                                {(eventInPlay?.updatedEnemies || enemies).map((enemy, i: number) => (
+                                    <CombatantView
+                                        combatant={enemy}
+                                        isAlly={false}
+                                        onClick={(e) => handleEnemyClick(e, i)}
+                                        isSelected={false}
+                                        onMouseEnter={() => setHoveredEnemyIndex(i)}
+                                        onMouseLeave={() => setHoveredEnemyIndex(null)}
+                                        isTargeted={isTargeted(i, "enemies")}
+                                        key={i}
+                                        event={getEvent(enemy)}
+                                        isHighlighted={false}
+                                        showReticle={showReticle("enemies", i)}
+                                        ref={enemyRefs[i]}
+                                    />
+                                ))}
                             </div>
                         </div>
                         <div className={classes.divider} />
@@ -646,11 +623,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                                 isTargeted={isTargeted(i, "allies")}
                                                 key={i}
                                                 event={getEvent(ally)}
-                                                isHighlighted={
-                                                    isPlayerTurn &&
-                                                    selectedAllyIndex === null &&
-                                                    isEligibleToAttack(ally)
-                                                }
+                                                isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
                                                 showReticle={showReticle("allies", i)}
                                                 ref={allyRefs[i]}
                                             />
@@ -659,11 +632,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 </div>
                             </div>
                             <div className={classes.rightContainer}>
-                                <EndTurnButton
-                                    disabled={disableActions}
-                                    highlight={noMoreMoves}
-                                    onClick={handleEndTurn}
-                                />
+                                <EndTurnButton disabled={disableActions} highlight={noMoreMoves} onClick={handleEndTurn} />
                             </div>
                         </div>
                         <div className={classes.abilityContainer}>
@@ -685,9 +654,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                     </div>
                 </div>
             </TargetLineCanvas>
-            {battleEndResult && (
-                <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />
-            )}
+            {battleEndResult && <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />}
             {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>

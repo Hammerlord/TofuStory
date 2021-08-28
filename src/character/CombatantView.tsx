@@ -217,7 +217,7 @@ const CombatantView = forwardRef(
             setTimeout(() => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-            }, 700);
+            }, 300);
         }, [combatant]);
 
         useEffect(() => {
