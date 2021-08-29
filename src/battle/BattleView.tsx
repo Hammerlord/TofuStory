@@ -540,7 +540,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     }, [isPlayerTurn]);
 
     const disableActions =
-        events.length > 0 ||
         battleEndResult ||
         showTurnAnnouncement ||
         !isPlayerTurn ||

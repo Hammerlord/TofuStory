@@ -208,8 +208,7 @@ const useStyles = createUseStyles({
         },
     },
     dead: {
-        animationDuration: "1s",
-        animationName: "$deadAnimation",
+        animation: "$deadAnimation 1s forwards",
         transitionTimignFunction: "ease-in-out",
     },
 });
