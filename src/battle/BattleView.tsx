@@ -481,11 +481,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     useEffect(() => {
         nextWave(allies);
-        setShowTurnAnnouncement(true);
-
-        setTimeout(() => {
-            setShowTurnAnnouncement(false);
-        }, TURN_ANNOUNCEMENT_TIME);
     }, []);
 
     const handleEndTurn = () => {
