@@ -25,7 +25,7 @@ export const rally: Ability = {
     actions: [
         {
             area: 1,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY, // Todo this should be self and the area should work
             armor: 2,
         },
     ],
