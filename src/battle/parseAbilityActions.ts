@@ -1,9 +1,9 @@
-import { createCombatant } from "./../enemy/createEnemy";
-import uuid from "uuid";
-import { Aura, Effect } from "./../ability/types";
-import { Action, TARGET_TYPES } from "../ability/types";
-import { Combatant, CombatPlayer } from "../character/types";
+import { cleanUpDeadCharacters } from './utils';
 import { cloneDeep } from "lodash";
+import { Action, TARGET_TYPES } from "../ability/types";
+import { Combatant } from "../character/types";
+import { Aura, Effect } from "./../ability/types";
+import { createCombatant } from "./../enemy/createEnemy";
 
 /**
  * The results of an action being applied.
@@ -14,24 +14,17 @@ export interface Event {
     updatedEnemies: Combatant[];
     casterId?: string;
     targetIndex?: number;
-    targetSide?: 'allies' | 'enemies';
+    targetSide?: "allies" | "enemies";
 }
 
-export const applyActionToTarget = ({
-    target,
-    action,
-}: {
-    target: Combatant;
-    action: Action;
-}): Combatant => {
+export const applyActionToTarget = ({ target, action }: { target: Combatant; action: Action }): Combatant => {
     const { damage = 0, healing = 0, armor = 0, effects = [], resources = 0 } = action;
 
     const updatedArmor = Math.max(0, target.armor - damage + armor);
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
-    const updatedEffects: Effect[] =
-        HP === 0 ? [] : [...target.effects, ...(effects.map(cloneDeep) as Effect[])];
+    const updatedEffects: Effect[] = HP === 0 ? [] : [...target.effects, ...(effects.map(cloneDeep) as Effect[])];
     return {
         ...target,
         HP,
@@ -97,8 +90,7 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
         [friendly[index], friendly[targetIndex]] = [friendly[targetIndex], friendly[index]];
     }
 
-    const [updatedAllies, updatedEnemies] =
-        casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
+    const [updatedAllies, updatedEnemies] = casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
 
     return {
         action,
@@ -190,14 +182,7 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     return updated;
 };
 
-export const useAllyAbility = ({
-    enemies,
-    targetIndex,
-    side,
-    ability,
-    allies,
-    casterId,
-}): Event[] => {
+export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, casterId }): Event[] => {
     const { minion, actions, resourceCost } = ability;
     const results = [];
 
@@ -214,8 +199,8 @@ export const useAllyAbility = ({
     }
 
     // All actions should be based on the most recent version of enemies/allies
-    const mostRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
-    const mostRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
+    const mostRecentEnemies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
+    const mostRecentAllies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
 
     actions.forEach((action: Action) => {
         results.push(
@@ -232,12 +217,9 @@ export const useAllyAbility = ({
 
     const caster = mostRecentAllies().find((ally) => ally?.id === casterId);
 
-    const healthPerResourcesSpent = caster.effects.reduce(
-        (acc, { healthPerResourcesSpent = 0 }) => {
-            return acc + healthPerResourcesSpent;
-        },
-        0
-    );
+    const healthPerResourcesSpent = caster.effects.reduce((acc, { healthPerResourcesSpent = 0 }) => {
+        return acc + healthPerResourcesSpent;
+    }, 0);
 
     if (healthPerResourcesSpent > 0) {
         const healing = healthPerResourcesSpent * resourceCost;

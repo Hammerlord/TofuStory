@@ -403,15 +403,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
 
         const { updatedAllies, updatedEnemies } = events[events.length - 1];
-        const cleanUpDeadCharacters = (character) => {
-            if (!character || character.HP > 0) {
-                return character;
-            }
-
-            return null;
-        };
-        setEnemies(updatedEnemies.map(cleanUpDeadCharacters));
-        setAllies(updatedAllies.map(cleanUpDeadCharacters));
+        setEnemies(updatedEnemies);
+        setAllies(updatedAllies);
         play(events.slice());
     }, [events]);
 

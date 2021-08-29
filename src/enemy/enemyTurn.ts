@@ -1,3 +1,4 @@
+import { cleanUpDeadCharacters } from "./../battle/utils";
 import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
 import { Effect } from "./../ability/types";
@@ -74,16 +75,14 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
         const { target, movement } = action;
         let targetIndex;
         // Each subsequent action should be based on the most recently updated enemies/player states.
-        const recentEnemies = results[results.length - 1]?.updatedEnemies || enemies;
-        const recentAllies = results[results.length - 1]?.updatedAllies || allies;
+        const recentEnemies = cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
+        const recentAllies = cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
         let side = "enemies";
 
         if (movement) {
             targetIndex = getRandomItem(
                 getPossibleMoveIndices({
-                    currentLocationIndex: recentEnemies.findIndex(
-                        (enemy) => enemy?.id === casterId
-                    ),
+                    currentLocationIndex: recentEnemies.findIndex((enemy) => enemy?.id === casterId),
                     enemies: recentEnemies,
                     movement,
                 })
@@ -104,7 +103,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
                 allies: recentAllies,
                 targetIndex,
                 action,
-                side
+                side,
             })
         );
     });
@@ -149,9 +148,7 @@ const handleCastTick = ({ allies, enemies, casterId, casting }): Event[] => {
 const useAbility = ({ caster, allies, enemies }): Event[] => {
     const { abilities, id } = caster;
 
-    const ability: Ability = getRandomItem(
-        abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies }))
-    );
+    const ability: Ability = getRandomItem(abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies })));
 
     if (ability.castTime > 0 || ability.channelDuration > 0) {
         enemies = enemies.map((enemy) => {
@@ -223,28 +220,26 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
     });
 
     let totalBleedDamage = 0;
-    const enemiesWithBleedsTriggered: Combatant[] = getRecentEnemies().map(
-        (enemy: Combatant, i: number) => {
-            if (!enemy) {
-                return enemy;
-            }
-            const bleedDamage: number = enemy.effects.reduce((acc: number, effect: Effect) => {
-                if (effect.type === EFFECT_TYPES.BLEED) {
-                    acc += effect.damage || 1;
-                }
-                return acc;
-            }, 0);
-
-            totalBleedDamage += bleedDamage;
-            return applyActionToTarget({
-                target: enemy,
-                action: {
-                    damage: bleedDamage,
-                    description: "Enemies took bleed damage.",
-                },
-            });
+    const enemiesWithBleedsTriggered: Combatant[] = getRecentEnemies().map((enemy: Combatant, i: number) => {
+        if (!enemy) {
+            return enemy;
         }
-    );
+        const bleedDamage: number = enemy.effects.reduce((acc: number, effect: Effect) => {
+            if (effect.type === EFFECT_TYPES.BLEED) {
+                acc += effect.damage || 1;
+            }
+            return acc;
+        }, 0);
+
+        totalBleedDamage += bleedDamage;
+        return applyActionToTarget({
+            target: enemy,
+            action: {
+                damage: bleedDamage,
+                description: "Enemies took bleed damage.",
+            },
+        });
+    });
 
     if (totalBleedDamage) {
         results.push({

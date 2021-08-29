@@ -2,13 +2,7 @@ import { shuffle } from "./../utils";
 import { Ability, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
 
-export const getCharacterStatChanges = ({
-    oldCharacter,
-    newCharacter,
-}: {
-    oldCharacter: Combatant;
-    newCharacter: Combatant;
-}) => {
+export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
     const oldEffectiveHP = oldCharacter.HP + oldCharacter.armor;
     const newEffectiveHP = newCharacter.HP + newCharacter.armor;
@@ -98,10 +92,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
     return false;
 };
 
-export const updatePlayer = (
-    statChanges: Function,
-    allies: (Combatant | null)[]
-): (Combatant | null)[] => {
+export const updatePlayer = (statChanges: Function, allies: (Combatant | null)[]): (Combatant | null)[] => {
     const updatedAllies = allies.map((ally) => {
         if (!ally || !ally.isPlayer) {
             return ally;
@@ -114,4 +105,17 @@ export const updatePlayer = (
     });
 
     return updatedAllies;
+};
+
+/**
+ * Clean up dead characters from previous events, or some staleness may occur.
+ */
+export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
+    return characters.map((character) => {
+        if (!character || character.HP > 0) {
+            return character;
+        }
+
+        return null;
+    });
 };
