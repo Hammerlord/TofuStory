@@ -13,6 +13,7 @@ import BattleEndOverlay from "./BattleEndOverlay";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
+import Hand from "./Hand";
 import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
@@ -300,29 +301,23 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         let newDeck = deck.slice();
         let newDiscard = discard.slice();
         let newHand = hand.slice();
-        const drawCard = () => {
-            setTimeout(() => {
-                if (!newDeck.length && newDiscard.length) {
-                    newDeck = shuffle(newDiscard);
-                    newDiscard = [];
-                }
+        for (let i = 0; i < CARDS_PER_DRAW; ++i) {
+            if (!newDeck.length && newDiscard.length) {
+                newDeck = shuffle(newDiscard);
+                newDiscard = [];
+            }
 
-                if (newDeck.length === 0) {
-                    return;
-                }
+            if (newDeck.length === 0) {
+                break;
+            }
 
-                const card = newDeck.shift();
-                newHand = [...newHand, card];
-                setDeck(newDeck);
-                setHand(newHand);
-                setDiscard(newDiscard);
-                if (newHand.length < CARDS_PER_DRAW) {
-                    drawCard();
-                }
-            }, 200);
-        };
+            const card = newDeck.shift();
+            newHand = [...newHand, card];
+        }
 
-        drawCard();
+        setDeck(newDeck);
+        setHand(newHand);
+        setDiscard(newDiscard);
     };
 
     const refreshPlayerResources = (allies) => {
@@ -540,11 +535,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     }, [isPlayerTurn]);
 
     const disableActions =
-        battleEndResult ||
-        showTurnAnnouncement ||
-        !isPlayerTurn ||
-        showWaveClear ||
-        enemies.every((enemy) => !enemy || enemy.HP <= 0);
+        battleEndResult || showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemies.every((enemy) => !enemy || enemy.HP <= 0);
 
     const isTargeted = (i: number | null, side: "allies" | "enemies"): boolean => {
         if (disableActions) {
@@ -683,17 +674,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                             {Array.from({ length: player.resources }).map((_, i) => (
                                 <Fury key={i} className={classes.resource} />
                             ))}
-                            <div className={classes.abilities}>
-                                {hand.map((ability: Ability, i: number) => (
-                                    <AbilityView
-                                        onClick={(e) => handleAbilityClick(e, i)}
-                                        isSelected={isPlayerTurn && selectedAbilityIndex === i}
-                                        key={i}
-                                        ability={ability}
-                                        ref={abilityRefs[i]}
-                                    />
-                                ))}
-                            </div>
+                            <Hand
+                                className={classes.abilities}
+                                hand={hand}
+                                refs={abilityRefs}
+                                isAbilitySelected={(i: number) => isPlayerTurn && selectedAbilityIndex === i}
+                                onAbilityClick={handleAbilityClick}
+                            />
                         </div>
                     </div>
                 </div>
