@@ -190,7 +190,7 @@ export const wolf: Ability = {
 
 export const spikedArmor: Ability = {
     name: "Spiked Armor",
-    resourceCost: 3,
+    resourceCost: 2,
     image: spikes,
     actions: [
         {
@@ -203,7 +203,7 @@ export const spikedArmor: Ability = {
 
 export const warBanner: Ability = {
     name: "War Banner",
-    resourceCost: 3,
+    resourceCost: 2,
     minion: {
         name: "War Banner",
         image: flag,

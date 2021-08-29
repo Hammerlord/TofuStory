@@ -125,7 +125,7 @@ const DeckEditor = ({ allCards, onSaveDeck, onBack, currentDeck }) => {
     };
 
     const handleAddCard = (cardName) => {
-        if (allCardsCount[cardName] - workingDeckCardsCount[cardName] > 0) {
+        if (allCardsCount[cardName] - (workingDeckCardsCount[cardName] || 0) > 0) {
             setWorkingDeck([
                 ...workingDeck,
                 allCards.find((card) => card.name === cardName),
@@ -182,7 +182,7 @@ const DeckEditor = ({ allCards, onSaveDeck, onBack, currentDeck }) => {
                                 {ability.name}
                             </span>
                             <span
-                                onClick={handleRemoveCard}
+                                onClick={() => handleRemoveCard(i)}
                                 className={classes.removeCard}
                             >
                                 -

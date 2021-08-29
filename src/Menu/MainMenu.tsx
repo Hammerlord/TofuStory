@@ -18,7 +18,8 @@ import {
     wolf,
     rend,
     spikedArmor,
-    warBanner
+    warBanner,
+    snailMinion,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -55,6 +56,14 @@ const allCards = [
     rend,
     rend,
     bloodthirst,
+    warBanner,
+    warBanner,
+    spikedArmor,
+    spikedArmor,
+    wolf,
+    wolf,
+    snailMinion,
+    snailMinion,
 ];
 
 const useStyles = createUseStyles({
@@ -87,13 +96,24 @@ const MainMenu = () => {
         effects: [],
     });
     const [deck, setDeck] = useState([
-
-        wolf,
-        wolf,
+        snailMinion,
+        snailMinion,
         spikedArmor,
         spikedArmor,
         warBanner,
-        warBanner
+        warBanner,
+        block,
+        block,
+        bloodthirst,
+        rend,
+        bash,
+        bash,
+        bash,
+        anger,
+        rampage,
+        cleave,
+        cleave,
+        charge,
     ]);
 
     const classes = useStyles();
@@ -122,9 +142,7 @@ const MainMenu = () => {
                 <div className={classes.activityMenu}>
                     <div className={classes.inner}>
                         <div>
-                            <button onClick={() => setActivityState(PLAYER_STATE.EDIT_DECK)}>
-                                Change deck
-                            </button>
+                            <button onClick={() => setActivityState(PLAYER_STATE.EDIT_DECK)}>Change deck</button>
                         </div>
                         <ChallengeMenu onSelectChallenge={handleSelectChallenge} />
                     </div>
@@ -140,13 +158,7 @@ const MainMenu = () => {
             )}
             {activityState === PLAYER_STATE.BATTLE && (
                 <BattlefieldContainer
-                    initialAllies={[
-                        null,
-                        null,
-                        { ...cloneDeep(player), isPlayer: true },
-                        null,
-                        null,
-                    ]}
+                    initialAllies={[null, null, { ...cloneDeep(player), isPlayer: true }, null, null]}
                     onBattleEnd={handleBattleEnd}
                     waves={challenge.waves}
                     initialDeck={deck}
