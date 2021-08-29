@@ -37,9 +37,14 @@ export const createEnemies = (): Combatant[] => {
     const enemies = [];
     for (let i = 0; i < numEnemies; ++i) {
         const enemy = getRandomItem([
+            smalltofu,
+            smalltofu,
+            smalltofu,
+            thefaketofu,
+            thefaketofu,
+            theRegalTofu,
+            theRegalTofu,
             bigBeefy,
-            bigBeefy,
-            theraretofu,
             theraretofu,
         ]);
 

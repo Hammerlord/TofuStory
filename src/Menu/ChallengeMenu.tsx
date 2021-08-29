@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
 import { createEnemies } from "../enemy/createEnemy";
+import { challenge } from "./challenges";
 import tutorial, { Wave } from "./tutorial";
 
 export interface Challenge {
@@ -12,13 +13,18 @@ export interface Challenge {
 const challenges: Challenge[] = [
     {
         name: "Tutorial",
-        description: "Learn about basic gameplay",
+        description: "HOW DO I PLAY THIS GAME?",
         waves: tutorial,
         rewards: [],
     },
     {
-        name: "Random tofus",
-        description: "Fight some tofus and their minions",
+        name: "Test Challenge",
+        description: "Test",
+        waves: challenge,
+    },
+    {
+        name: "Random Tofus",
+        description: "Fight some tofus and their minions. Fairness is not guaranteed.",
         waves: [{
             createEnemies: createEnemies,
         }],
