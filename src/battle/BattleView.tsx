@@ -118,21 +118,21 @@ interface BattleNotification {
 }
 
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
+const BATTLEFIELD_SIZE = 5;
 
 const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
-    const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+    const [isPlayerTurn, setIsPlayerTurn] = useState(null);
     const [currentWave, setCurrentWave] = useState(-1);
     const [currentRound, setCurrentRound] = useState(0);
-    const [enemies, setEnemies] = useState(waves[0].createEnemies());
+    const [enemies, setEnemies] = useState([]);
     const [allies, setAllies] = useState(initialAllies.slice());
-    const [allyRefs] = useState(Array.from({ length: allies.length }).map(() => React.createRef()));
-    const [enemyRefs] = useState(Array.from({ length: enemies.length }).map(() => React.createRef()));
+    const [allyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
+    const [enemyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [abilityRefs] = useState(Array.from({ length: 10 }).map(() => React.createRef())); // Let's assume the max hand size is 10 for now...
-    const [eventInPlay, setEventInPlay] = useState(null);
-    const [isPlayingAbilityAnimations, setIsPlayingAnimations] = useState(false);
+    const [events, setEvents] = useState([]);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
@@ -146,6 +146,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
     const [alliesAttackedThisTurn, setAlliesAttackedThisTurn] = useState([]);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
+    const [minionCardsInPlay, setMinionCardsInPlay] = useState([]);
     const classes = useStyles();
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
@@ -180,16 +181,20 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
     };
 
-    const handleAbilityUse = ({ index, selectedAbilityIndex, side }) => {
+    const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
         const { resourceCost = 0, minion } = card as Ability;
 
         setSelectedAbilityIndex(null);
-        setDiscard([card, ...discard]);
+        if (minion) {
+            setMinionCardsInPlay((prev) => [card, ...prev]);
+        } else {
+            setDiscard((prev) => [card, ...prev]);
+        }
 
         setHand(newHand);
-        playEvents(
+        setEvents(
             useAllyAbility({
                 ability: card,
                 targetIndex: index,
@@ -208,7 +213,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     const handleAllyAttack = ({ index }) => {
         const { id } = allies[selectedAllyIndex];
-        playEvents(
+        setSelectedAllyIndex(null);
+        setAlliesAttackedThisTurn([...alliesAttackedThisTurn, id]);
+        setEvents(
             useAttack({
                 allies,
                 enemies,
@@ -216,8 +223,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 casterId: id,
             })
         );
-        setAlliesAttackedThisTurn([...alliesAttackedThisTurn, id]);
-        setSelectedAllyIndex(null);
     };
 
     const handleAllyClick = (e: React.ChangeEvent, index) => {
@@ -270,15 +275,15 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const getEvent = (character) => {
         let action;
         let target;
-        if (!eventInPlay) {
+        if (!events.length) {
             return { action, target };
         }
 
-        const { casterId, targetSide, targetIndex } = (eventInPlay as Event) || {};
+        const { casterId, targetSide, targetIndex } = (events[0] as Event) || {};
 
         // Returns the ability if the character is using it.
         if (casterId === character?.id) {
-            action = eventInPlay.action;
+            action = events[0].action;
         }
 
         if (typeof targetIndex === "number" && targetSide) {
@@ -291,11 +296,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
     };
 
-    const drawCards = ({ deck, discard, hand }) => {
+    const drawCards = () => {
         let newDeck = deck.slice();
         let newDiscard = discard.slice();
         let newHand = hand.slice();
-        setIsPlayingAnimations(true);
         const drawCard = () => {
             setTimeout(() => {
                 if (!newDeck.length && newDiscard.length) {
@@ -304,7 +308,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 }
 
                 if (newDeck.length === 0) {
-                    setIsPlayingAnimations(false);
                     return;
                 }
 
@@ -315,8 +318,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setDiscard(newDiscard);
                 if (newHand.length < CARDS_PER_DRAW) {
                     drawCard();
-                } else {
-                    setIsPlayingAnimations(false);
                 }
             }, 200);
         };
@@ -333,70 +334,91 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         );
     };
 
-    const handlePlayerTurnStart = ({ discard, hand, deck, allies, enemies }) => {
-        setIsPlayerTurn(true);
-        setShowTurnAnnouncement(true);
-        setTimeout(() => {
-            setShowTurnAnnouncement(false);
-            setEnemies(enemies.map(updateEffects));
-            drawCards({ discard, hand, deck });
-            setAlliesAttackedThisTurn([]);
-            const updatedAllies = refreshPlayerResources(allies);
-            setAllies(updatedAllies);
-            playEvents(
-                applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
-                    updatedAllies: characters,
-                    updatedEnemies: enemies,
-                    action,
-                    casterId,
-                }))
-            );
-        }, TURN_ANNOUNCEMENT_TIME);
+    const handlePlayerTurnStart = ({ allies, enemies }) => {
+        setEnemies(enemies.map(updateEffects));
+        drawCards();
+        setAlliesAttackedThisTurn([]);
+        const updatedAllies = refreshPlayerResources(allies);
+        setAllies(updatedAllies);
+        setEvents(
+            applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
+                updatedAllies: characters,
+                updatedEnemies: enemies,
+                action,
+                casterId,
+            }))
+        );
     };
 
-    const playEvents = async (events: Event[]): Promise<Event> => {
+    const updateMinionsInPlay = (updatedAllies) => {
+        const deadAllies = updatedAllies.filter((ally) => ally?.HP <= 0);
+        const updatedMinionsInPlay = minionCardsInPlay.slice();
+        const recoveredCards = [];
+        deadAllies.forEach((ally) => {
+            const [card] = updatedMinionsInPlay.splice(
+                updatedMinionsInPlay.findIndex(({ minion }) => ally.name === minion.name),
+                1
+            );
+            recoveredCards.push(card);
+        });
+
+        if (recoveredCards.length) {
+            setDiscard((prev) => [...recoveredCards, ...prev]);
+            setMinionCardsInPlay(updatedMinionsInPlay);
+        }
+    };
+
+    useEffect(() => {
         if (!events.length) {
             return;
         }
-        setIsPlayingAnimations(true);
 
-        const play = (events: Event[], resolve) => {
+        const play = (events: Event[]) => {
             const event = events.shift() as Event;
-            setEventInPlay(event);
             const { updatedEnemies, updatedAllies } = event;
             setTimeout(() => {
-                if (checkContinueWave({ enemies: updatedEnemies, allies: updatedAllies }) && events.length) {
-                    play(events, resolve);
+                const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
+                const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
+                if (playerDead) {
+                    setTimeout(() => {
+                        setEvents([]);
+                        setBattleEndResult("Defeat");
+                    }, 1000);
+                    return;
+                }
+                if (enemiesAllDead) {
+                    setTimeout(() => {
+                        setEvents([]);
+                        updateMinionsInPlay(updatedAllies);
+                        setTimeout(() => {
+                            nextWave(updatedAllies);
+                        }, 1000);
+                    }, 1000);
+                    return;
+                }
+                if (events.length) {
+                    play(events);
                 } else {
-                    setEventInPlay(null);
-                    setIsPlayingAnimations(false);
-                    resolve(event);
+                    setTimeout(() => {
+                        setEvents([]);
+                        updateMinionsInPlay(updatedAllies);
+                    }, 500);
                 }
             }, 500);
         };
 
         const { updatedAllies, updatedEnemies } = events[events.length - 1];
-        setEnemies(updatedEnemies);
-        setAllies(updatedAllies);
-        return new Promise((resolve) => play(events.slice(), resolve));
-    };
+        const cleanUpDeadCharacters = (character) => {
+            if (!character || character.HP > 0) {
+                return character;
+            }
 
-    const checkContinueWave = ({ enemies, allies }): boolean => {
-        const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
-        const playerDead = allies.find((ally) => ally?.isPlayer).HP <= 0;
-
-        if (playerDead) {
-            setBattleEndResult("Defeat");
-            return false;
-        } else if (enemiesAllDead) {
-            setTimeout(() => {
-                nextWave(allies);
-            }, 1000);
-            return false;
-        }
-
-        return true;
-    };
+            return null;
+        };
+        setEnemies(updatedEnemies.map(cleanUpDeadCharacters));
+        setAllies(updatedAllies.map(cleanUpDeadCharacters));
+        play(events.slice());
+    }, [events]);
 
     const nextWave = (mostRecentAllies) => {
         const nextWaveIndex = currentWave + 1;
@@ -408,10 +430,24 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const setup = () => {
             const { presetDeck, description, createEnemies } = waves[nextWaveIndex];
-            const cards = presetDeck ? { deck: shuffle(presetDeck.slice()), hand: [], discard: [] } : { deck, hand, discard };
-            const enemies = createEnemies();
-            setEnemies(enemies);
-            handlePlayerTurnStart({ ...cards, allies: mostRecentAllies, enemies });
+            setEnemies(createEnemies());
+            if (presetDeck) {
+                setDeck(shuffle(presetDeck.slice()));
+                setHand([]);
+                setDiscard([]);
+                mostRecentAllies = mostRecentAllies.map((ally) => (!ally || ally.isPlayer ? ally : null)); // Clean up minions
+            } else {
+                setDeck(deck);
+                setHand(hand);
+                setDiscard(discard);
+            }
+
+            setAllies(mostRecentAllies);
+            if (isPlayerTurn) {
+                setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
+            }
+
+            setIsPlayerTurn(true);
 
             if (description) {
                 showWaveDescription({ description, i: 0, delay: 2000 });
@@ -445,57 +481,71 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     useEffect(() => {
         nextWave(allies);
+        setShowTurnAnnouncement(true);
+
+        setTimeout(() => {
+            setShowTurnAnnouncement(false);
+        }, TURN_ANNOUNCEMENT_TIME);
     }, []);
 
     const handleEndTurn = () => {
-        setIsPlayerTurn(false);
         const updatedAllies = allies.map(removeEndedEffects);
         setAllies(updatedAllies);
-        setShowTurnAnnouncement(true);
+        setIsPlayerTurn(false);
         setHand([]);
         const newDiscard = [...hand, ...discard];
         setDiscard(newDiscard);
-        setTimeout(async () => {
-            setShowTurnAnnouncement(false);
-            const enemyActions = enemyTurn({ enemies, allies: updatedAllies });
-
-            const playEnemyActions = async () => {
-                const event = enemyActions.shift();
-                if (event) {
-                    await playEvents([event]);
-                }
-
-                if (enemyActions.length) {
-                    setTimeout(() => {
-                        playEnemyActions();
-                    }, 1000);
-                } else {
-                    setTimeout(() => {
-                        const { winCondition } = waves[currentWave] || {};
-                        if (currentRound + 1 > winCondition?.surviveRounds) {
-                            setCurrentRound(0);
-                            nextWave(event?.updatedAllies || updatedAllies);
-                            return;
-                        }
-
-                        setCurrentRound(currentRound + 1);
-                        handlePlayerTurnStart({
-                            hand: [],
-                            discard: newDiscard,
-                            deck,
-                            allies: event?.updatedAllies || updatedAllies,
-                            enemies: event?.updatedEnemies || enemies,
-                        });
-                    }, 2000);
-                }
-            };
-
-            playEnemyActions();
-        }, TURN_ANNOUNCEMENT_TIME);
     };
 
+    useEffect(() => {
+        if (currentWave === -1 || isPlayerTurn === null) {
+            return;
+        }
+        setShowTurnAnnouncement(true);
+
+        setTimeout(() => {
+            setShowTurnAnnouncement(false);
+
+            if (!isPlayerTurn) {
+                const enemyActions = enemyTurn({ enemies, allies });
+
+                const playEnemyActions = () => {
+                    const event = enemyActions.shift();
+                    if (event) {
+                        setEvents([event]);
+                    }
+
+                    if (enemyActions.length) {
+                        setTimeout(() => {
+                            playEnemyActions();
+                        }, 1500);
+                    } else {
+                        setTimeout(() => {
+                            const { winCondition } = waves[currentWave] || {};
+                            if (currentRound + 1 >= winCondition?.surviveRounds) {
+                                setCurrentRound(0);
+                                nextWave(event?.updatedAllies || allies);
+                                return;
+                            }
+
+                            setCurrentRound(currentRound + 1);
+                            setIsPlayerTurn(true);
+                        }, 2000);
+                    }
+                };
+
+                playEnemyActions();
+            } else {
+                handlePlayerTurnStart({
+                    allies,
+                    enemies,
+                });
+            }
+        }, TURN_ANNOUNCEMENT_TIME);
+    }, [isPlayerTurn]);
+
     const disableActions =
-        isPlayingAbilityAnimations ||
+        events.length > 0 ||
         battleEndResult ||
         showTurnAnnouncement ||
         !isPlayerTurn ||
@@ -586,7 +636,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
-                                {(eventInPlay?.updatedEnemies || enemies).map((enemy, i: number) => (
+                                {(events[0]?.updatedEnemies || enemies).map((enemy, i: number) => (
                                     <CombatantView
                                         combatant={enemy}
                                         isAlly={false}
@@ -611,7 +661,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>
-                                    {(eventInPlay?.updatedAllies || allies).map((ally, i) => {
+                                    {(events[0]?.updatedAllies || allies).map((ally, i) => {
                                         return (
                                             <CombatantView
                                                 combatant={ally}

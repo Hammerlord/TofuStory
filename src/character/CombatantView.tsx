@@ -203,8 +203,11 @@ const CombatantView = forwardRef(
         const [oldState, setOldState] = useState(combatant);
         const [portraitRef] = useState(createRef() as React.RefObject<any>);
         const classes = useStyles();
+
         useEffect(() => {
+
             if (!combatant || !oldState || oldState.id !== combatant.id) {
+                setStatChanges({});
                 setOldState(combatant);
                 return;
             }
@@ -221,7 +224,7 @@ const CombatantView = forwardRef(
         }, [combatant]);
 
         useEffect(() => {
-            if (isAttack(event.action) && event.target) {
+            if (isAttack(event.action) && event.target && portraitRef.current) {
                 const getTargetPoint = (rect) => {
                     const { x, y, height, width } = rect;
                     return {

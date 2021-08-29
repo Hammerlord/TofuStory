@@ -19,7 +19,7 @@ const tutorial: Wave[] = [
         name: "Basic attacks",
         description: [
             "Select an ability and an enemy to use it on.",
-            "Some abilities cost Fury, limiting the moves you can make per turn.",
+            "After usage, the ability goes on Cooldown until you reach the end of your Deck.",
             "When you're out of moves, click End Turn to proceed.",
         ],
         createEnemies: () => [null, basicDummy, null, basicDummy, null].map(createCombatant),
@@ -46,6 +46,7 @@ const tutorial: Wave[] = [
         description: [
             "Summon a minion to assist you in battle.",
             "Once you have placed the minion, select it and use it to attack.",
+            "Minions will only return to your Cooldown deck when they are knocked out.",
         ],
         createEnemies: () => [null, null, basicDummy, null, null].map(createCombatant),
         presetDeck: [snailMinion, snailMinion, snailMinion],
