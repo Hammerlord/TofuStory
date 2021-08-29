@@ -18,7 +18,7 @@ import Notification from "./Notification";
 import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
-import { canUseAbility, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
+import { canUseAbility, cleanUpDeadCharacters, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
 import WaveInfo from "./WaveInfo";
 
 const CARDS_PER_DRAW = 5;
@@ -403,8 +403,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
 
         const { updatedAllies, updatedEnemies } = events[events.length - 1];
-        setEnemies(updatedEnemies);
-        setAllies(updatedAllies);
+        setEnemies(cleanUpDeadCharacters(updatedEnemies));
+        setAllies(cleanUpDeadCharacters(updatedAllies));
         play(events.slice());
     }, [events]);
 
