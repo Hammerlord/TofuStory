@@ -424,6 +424,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setHand([]);
                 setDiscard([]);
                 mostRecentAllies = mostRecentAllies.map((ally) => (!ally || ally.isPlayer ? ally : null)); // Clean up minions
+                if (isPlayerTurn) {
+                    setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
+                }
             } else {
                 setDeck(deck);
                 setHand(hand);
@@ -431,10 +434,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             }
 
             setAllies(mostRecentAllies);
-            if (isPlayerTurn) {
-                setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
-            }
-
             setIsPlayerTurn(true);
 
             if (description) {
