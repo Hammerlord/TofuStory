@@ -392,8 +392,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                         updateMinionsInPlay(updatedAllies);
                         setTimeout(() => {
                             nextWave(updatedAllies);
-                        }, 1000);
-                    }, 1000);
+                        }, 500);
+                    }, 500);
                     return;
                 }
                 if (events.length) {
