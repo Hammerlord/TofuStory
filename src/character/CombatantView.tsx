@@ -59,6 +59,7 @@ const useStyles = createUseStyles({
             minWidth: "50%",
             minHeight: "40%",
             objectFit: "contain",
+            maxHeight: "17vh",
         },
     },
     combatantContainer: {
