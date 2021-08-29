@@ -329,8 +329,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         );
     };
 
-    const handlePlayerTurnStart = ({ allies, enemies }) => {
-        setEnemies(enemies.map(updateEffects));
+    const handlePlayerTurnStart = () => {
+        const updatedEnemies = enemies.map(updateEffects);
+        setEnemies(updatedEnemies);
         drawCards();
         setAlliesAttackedThisTurn([]);
         const updatedAllies = refreshPlayerResources(allies);
@@ -338,7 +339,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setEvents(
             applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
                 updatedAllies: characters,
-                updatedEnemies: enemies,
+                updatedEnemies,
                 action,
                 casterId,
             }))
@@ -417,6 +418,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
 
         const setup = () => {
+            setCurrentRound(0);
             const { presetDeck, description, createEnemies } = waves[nextWaveIndex];
             setEnemies(createEnemies());
             if (presetDeck) {
@@ -505,23 +507,21 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                         setTimeout(() => {
                             const { winCondition } = waves[currentWave] || {};
                             if (currentRound + 1 >= winCondition?.surviveRounds) {
-                                setCurrentRound(0);
                                 nextWave(event?.updatedAllies || allies);
                                 return;
                             }
 
-                            setCurrentRound(currentRound + 1);
-                            setIsPlayerTurn(true);
+                            if (!event || event?.updatedEnemies.some((enemy) => enemy?.HP > 0)) {
+                                setIsPlayerTurn(true);
+                                setCurrentRound(currentRound + 1);
+                            }
                         }, 2000);
                     }
                 };
 
                 playEnemyActions();
             } else {
-                handlePlayerTurnStart({
-                    allies,
-                    enemies,
-                });
+                handlePlayerTurnStart();
             }
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
