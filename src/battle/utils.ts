@@ -83,7 +83,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
             return true;
         }
     } else if (side === "enemies" && target === TARGET_TYPES.HOSTILE) {
-        if (area === 1) {
+        if (area === 0) {
             return Boolean(enemies[index]) && enemies[index].HP > 0;
         }
         return true;
