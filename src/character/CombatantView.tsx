@@ -195,6 +195,23 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
     },
+    "@keyframes deadAnimation": {
+        from: {
+            transform: "translateY(0)",
+            opacity: 1,
+        },
+        to: {
+            transform: "translateY(-100px)",
+            opacity: 0,
+            WebkitFilter: "brightness(0.5)",
+            filter: "brightness(0.5)",
+        },
+    },
+    dead: {
+        animationDuration: "1s",
+        animationName: "$deadAnimation",
+        transitionTimignFunction: "ease-in-out",
+    },
 });
 
 const CombatantView = forwardRef(
@@ -205,7 +222,6 @@ const CombatantView = forwardRef(
         const classes = useStyles();
 
         useEffect(() => {
-
             if (!combatant || !oldState || oldState.id !== combatant.id) {
                 setStatChanges({});
                 setOldState(combatant);
@@ -311,7 +327,12 @@ const CombatantView = forwardRef(
                                         [classes.casting]: oldState.casting,
                                     })}
                                 >
-                                    {oldState.HP > 0 && <img src={oldState.image} />}
+                                    <img
+                                        src={oldState.image}
+                                        className={classNames({
+                                            [classes.dead]: oldState.HP === 0,
+                                        })}
+                                    />
 
                                     {
                                         <span className={classes.center}>
