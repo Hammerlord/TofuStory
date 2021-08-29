@@ -158,7 +158,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         return totalDamage > 0 && alliesAttackedThisTurn.every((id) => id !== ally.id);
     };
     const noMoreMoves =
-        !hand.length || (hand.every((ability) => !canUseAbility(player, ability)) && allies.every((ally) => !isEligibleToAttack(ally)));
+        allies.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
 
     const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
         e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
