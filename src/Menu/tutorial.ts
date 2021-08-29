@@ -55,7 +55,7 @@ const tutorial: Wave[] = [
         name: "Enemy affixes",
         description: "This dummy has Thorns. Hover over the icon to see what it does.",
         createEnemies: () => [null, null, spikedDummy, null, null].map(createCombatant),
-        presetDeck: [bash, bash, slam],
+        presetDeck: [bash, slam, snailMinion, snailMinion],
     },
     {
         name: "Defeat the Raging Dummy",
