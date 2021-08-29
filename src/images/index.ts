@@ -37,3 +37,4 @@ export { default as puppetree2 } from "./puppetree2.png";
 export { default as puppetree3 } from "./puppetree3.png";
 export { default as snail } from "./snail.png";
 export { default as clear } from "./clear.png";
+export { default as victoria } from "./bg.png";

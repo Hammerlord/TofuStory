@@ -7,6 +7,7 @@ import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import enemyTurn from "../enemy/enemyTurn";
+import { victoria } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
@@ -28,7 +29,7 @@ const useStyles = createUseStyles({
         width: "100%",
         height: "100%",
         position: "relative",
-        background: "#968e72",
+        backgroundImage: `url(${victoria})`,
         overflow: "hidden",
     },
     battlefieldContainer: {
@@ -41,6 +42,7 @@ const useStyles = createUseStyles({
         textAlign: "center",
         margin: "auto",
         width: "95%",
+        maxWidth: "87rem",
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
