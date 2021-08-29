@@ -216,6 +216,10 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
     });
 
     const caster = mostRecentAllies().find((ally) => ally?.id === casterId);
+    if (!caster) {
+        // If it's dead, return here
+        return results;
+    }
 
     const healthPerResourcesSpent = caster.effects.reduce((acc, { healthPerResourcesSpent = 0 }) => {
         return acc + healthPerResourcesSpent;
