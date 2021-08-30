@@ -1,4 +1,4 @@
-import { cleanUpDeadCharacters } from "./../battle/utils";
+import { cleanUpDeadCharacters, getValidTargetIndices } from "./../battle/utils";
 import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
 import { ACTION_TYPES, Effect } from "./../ability/types";
@@ -60,15 +60,6 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
 };
 
 const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
-    const getValidTargetIndices = (characters: (Combatant | null)[]) => {
-        const indices = [];
-        characters.forEach((character: Combatant | null, i: number) => {
-            if (character && character.HP > 0) {
-                indices.push(i);
-            }
-        });
-        return indices;
-    };
     const results = [];
 
     ability.actions.forEach((action) => {

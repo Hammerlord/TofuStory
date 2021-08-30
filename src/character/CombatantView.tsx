@@ -239,6 +239,7 @@ const CombatantView = forwardRef(
         }, [combatant]);
 
         useEffect(() => {
+            let timeout;
             if (event?.action?.type === ACTION_TYPES.ATTACK && event.target && portraitRef.current) {
                 const getTargetPoint = (rect) => {
                     const { x, y, height, width } = rect;
@@ -266,14 +267,14 @@ const CombatantView = forwardRef(
                             direction = -1;
                         }
 
-                        setTimeout(() => {
+                        timeout = setTimeout(() => {
                             move();
                         });
                     } else {
                         --i;
 
                         if (i > 0) {
-                            setTimeout(() => {
+                            timeout = setTimeout(() => {
                                 move();
                             });
                         } else {
@@ -283,6 +284,13 @@ const CombatantView = forwardRef(
                 };
                 move();
             }
+
+            return () => {
+                if (portraitRef?.current?.style) {
+                    portraitRef.current.style.transform = "unset";
+                }
+                clearTimeout(timeout);
+            };
         }, [event.action]);
 
         const hasAilment = (type: EFFECT_TYPES) => {

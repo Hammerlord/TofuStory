@@ -2,6 +2,7 @@ export enum TARGET_TYPES {
     HOSTILE = "hostile",
     SELF = "self",
     FRIENDLY = "friendly",
+    RANDOM_HOSTILE = "random-hostile"
 }
 
 export enum EFFECT_TYPES {
@@ -80,6 +81,7 @@ export interface Ability {
     channelDuration?: number;
     castTime?: number;
     description?: string;
+    area?: number;
 }
 
 export enum ACTION_TYPES {

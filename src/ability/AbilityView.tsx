@@ -1,14 +1,15 @@
 import classNames from "classnames";
+import Handlebars from "handlebars";
 import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
 import { calculateDamage } from "../battle/utils";
 import { Combatant } from "../character/types";
 import Icon from "../icon/Icon";
-import { Shield, Blood, CrossedSwords, Dizzy, Heart, Cactus } from "../images";
+import { Blood, Cactus, CrossedSwords, Dizzy, Heart, Shield } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
-import { Ability, Action, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 import { getAbilityColor } from "./utils";
 
 const useAreaStyles = createUseStyles({
@@ -122,8 +123,8 @@ interface AbilityViewProps {
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
-    const { actions = [], resourceCost, name, minion, image } = ability;
-    const { area } = actions[0] || {};
+    const { actions = [], resourceCost, name, minion, image, description } = ability;
+    const { area = ability.area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, current: Action) => {
@@ -135,7 +136,9 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 resourceGain: (acc.resourceGain || 0) + resources,
             };
         }, {}) as any;
-    const damage = actions.reduce((acc, action) => acc + calculateDamage({ actor: player, action }), 0);
+    const totalDamage = actions.reduce((acc, action) => acc + calculateDamage({ actor: player, action }), 0);
+    const numActionsWithDamage = actions.filter((action) => action.type === ACTION_TYPES.ATTACK && action.damage).length;
+    const baseDamage = Math.floor(totalDamage / (numActionsWithDamage || 1));
     const damageFromEffects = player?.effects.reduce((acc, { damage = 0 }) => acc + damage, 0) || 0;
 
     const allEffects = actions.reduce((acc, { effects = [] }) => {
@@ -153,6 +156,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
 
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
+    const interpolatedDescription = Handlebars.compile(description || '')({ damage: baseDamage });
 
     return (
         <div
@@ -163,10 +167,10 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
             style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
         >
             <span className={classes.header} ref={ref as any}>
-                {damage ? (
+                {totalDamage ? (
                     <Icon
                         icon={<CrossedSwords />}
-                        text={damage}
+                        text={`${baseDamage}${numActionsWithDamage > 1 ? "x" : ""}`}
                         className={classNames({
                             [classes.highlightText]: damageFromEffects > 0,
                         })}
@@ -224,6 +228,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                             Gain <Icon icon={<Cactus />} text={thornsDuration} />
                         </li>
                     )}
+                    {interpolatedDescription && <li>{interpolatedDescription}</li>}
                 </ul>
                 {minion && (
                     <div>

@@ -12,7 +12,7 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
         return GREEN;
     }
 
-    if (targetType === TARGET_TYPES.HOSTILE) {
+    if (targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE) {
         return RED;
     }
 

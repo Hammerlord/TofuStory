@@ -197,7 +197,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
 
         setHand(newHand);
-        setEvents(
+        handleNewEvents(
             useAllyAbility({
                 ability: card,
                 targetIndex: index,
@@ -214,11 +214,22 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         );
     };
 
+    const handleNewEvents = (events: Event[]) => {
+        const lastEvent = events[events.length - 1];
+        if (!lastEvent) {
+            return;
+        }
+
+        setAllies(cleanUpDeadCharacters(lastEvent.updatedAllies));
+        setEnemies(cleanUpDeadCharacters(lastEvent.updatedEnemies));
+        setEvents(events);
+    };
+
     const handleAllyAttack = ({ index }) => {
         const { id } = allies[selectedAllyIndex];
         setSelectedAllyIndex(null);
         setAlliesAttackedThisTurn([...alliesAttackedThisTurn, id]);
-        setEvents(
+        handleNewEvents(
             useAttack({
                 allies,
                 enemies,
@@ -340,7 +351,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setAlliesAttackedThisTurn([]);
         const updatedAllies = refreshPlayerResources(allies);
         setAllies(updatedAllies);
-        setEvents(
+        handleNewEvents(
             applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
                 updatedAllies: characters,
                 updatedEnemies,
@@ -373,44 +384,41 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
-        const play = (events: Event[]) => {
-            const event = events.shift() as Event;
-            const { updatedEnemies, updatedAllies } = event;
-            setTimeout(() => {
-                const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
-                const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
-                if (playerDead) {
+        const updatedEvents = events.slice();
+        const event = updatedEvents.shift() as Event;
+        const { updatedEnemies, updatedAllies } = event;
+        setTimeout(() => {
+            const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
+            const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
+            if (playerDead) {
+                setTimeout(() => {
+                    setEvents([]);
+                    setBattleEndResult("Defeat");
+                }, 1000);
+                return;
+            }
+            if (enemiesAllDead) {
+                setTimeout(() => {
+                    setEvents([]);
+                    updateMinionsInPlay(updatedAllies);
                     setTimeout(() => {
-                        setEvents([]);
-                        setBattleEndResult("Defeat");
-                    }, 1000);
-                    return;
-                }
-                if (enemiesAllDead) {
-                    setTimeout(() => {
-                        setEvents([]);
-                        updateMinionsInPlay(updatedAllies);
-                        setTimeout(() => {
-                            nextWave(updatedAllies);
-                        }, 500);
+                        nextWave(updatedAllies);
                     }, 500);
-                    return;
-                }
-                if (events.length) {
-                    play(events);
-                } else {
-                    setTimeout(() => {
-                        setEvents([]);
-                        updateMinionsInPlay(updatedAllies);
-                    }, 500);
-                }
-            }, 500);
-        };
+                }, 500);
+                return;
+            }
+            if (updatedEvents.length) {
+                setTimeout(() => {
+                    setEvents(updatedEvents);
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    setEvents([]);
+                    updateMinionsInPlay(updatedAllies);
+                }, 500);
+            }
+        }, 500);
 
-        const { updatedAllies, updatedEnemies } = events[events.length - 1];
-        setEnemies(cleanUpDeadCharacters(updatedEnemies));
-        setAllies(cleanUpDeadCharacters(updatedAllies));
-        play(events.slice());
     }, [events]);
 
     const nextWave = (mostRecentAllies) => {
@@ -500,13 +508,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 const playEnemyActions = () => {
                     const event = enemyActions.shift();
                     if (event) {
-                        setEvents([event]);
+                        handleNewEvents([event]);
                     }
 
                     if (enemyActions.length) {
                         setTimeout(() => {
                             playEnemyActions();
-                        }, 1500);
+                        }, 1500); // This has no way of knowing that the events have finished playing
                     } else {
                         setTimeout(() => {
                             const { winCondition } = waves[currentWave] || {};
@@ -549,8 +557,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return false;
         }
 
+        const abilityArea = ability.area || 0;
         const { actions = [] } = ability;
-        const { area = 0 } = actions[0] || {};
+        const { area = abilityArea } = actions[0] || {};
         return i >= index - area && i <= index + area;
     };
 
@@ -671,7 +680,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 </div>
                             </div>
                             <div className={classes.rightContainer}>
-                                <EndTurnButton disabled={disableActions} highlight={noMoreMoves} onClick={handleEndTurn} />
+                                <EndTurnButton disabled={disableActions || events.length > 0} highlight={noMoreMoves} onClick={handleEndTurn} />
                             </div>
                         </div>
                         <div className={classes.abilityContainer}>

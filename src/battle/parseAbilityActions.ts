@@ -1,9 +1,10 @@
+import { getRandomInt, getRandomItem } from './../utils';
 import { cloneDeep } from "lodash";
 import { Action, ACTION_TYPES, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
-import { calculateDamage, cleanUpDeadCharacters } from "./utils";
+import { calculateDamage, cleanUpDeadCharacters, getValidTargetIndices } from "./utils";
 
 /**
  * The results of an action being applied.
@@ -97,7 +98,7 @@ const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number 
 };
 
 export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
-    const { area = 0, target: targetType, movement } = action;
+    const { area = 0, movement } = action;
 
     const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
         enemies,
@@ -107,14 +108,8 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
     const isInArea = (character, i) => {
         return character && i >= targetIndex - area && i <= targetIndex + area;
     };
-    let targets = [];
-    if (targetType === TARGET_TYPES.SELF) {
-        targets = [caster];
-    } else if (targetType === TARGET_TYPES.FRIENDLY) {
-        targets = friendly.filter(isInArea);
-    } else if (targetType === TARGET_TYPES.HOSTILE) {
-        targets = hostile.filter(isInArea);
-    }
+    let targets = side === "allies" ? allies : enemies;
+    targets = targets.filter(isInArea);
 
     const updatedTargetsMap = targets
         .map((target) => applyActionToTarget({ target, action, actor: caster }))
@@ -257,11 +252,25 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
     const mostRecentAllies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
 
     actions.forEach((action: Action) => {
+        let index = targetIndex;
+        if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+            const targetIndices = getValidTargetIndices(mostRecentEnemies()).filter((i) => {
+                if (ability.area) {
+                    return i >= targetIndex - ability.area && i <= targetIndex + ability.area;
+                }
+                return true;
+            })
+            index = getRandomItem(targetIndices);
+        }
+
+        if (typeof index !== "number") {
+            return;
+        }
         results.push(
             parseAction({
                 enemies: mostRecentEnemies(),
                 allies: mostRecentAllies(),
-                targetIndex,
+                targetIndex: index,
                 action,
                 casterId,
                 side,

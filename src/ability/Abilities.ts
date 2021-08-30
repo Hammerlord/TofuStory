@@ -113,10 +113,22 @@ export const rampage: Ability = {
     name: "Rampage",
     resourceCost: 3,
     image: risingrage,
+    area: 1,
+    description: 'Deal {{damage}} damage x 3 to random enemies in the area',
     actions: [
         {
-            damage: 9,
-            target: TARGET_TYPES.HOSTILE,
+            damage: 4,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+        {
+            damage: 4,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+        {
+            damage: 4,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
     ],

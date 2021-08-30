@@ -68,7 +68,8 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
         return side === "allies" && (!allies[index] || allies[index].HP === 0);
     }
 
-    const { target, area = 0 } = actions[0] || {};
+    const abilityArea = ability.area || 0;
+    const { target, area = abilityArea } = actions[0] || {};
 
     if (side === "allies") {
         if (target === TARGET_TYPES.SELF) {
@@ -82,7 +83,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
             }
             return true;
         }
-    } else if (side === "enemies" && target === TARGET_TYPES.HOSTILE) {
+    } else if (side === "enemies" && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         if (area === 0) {
             return Boolean(enemies[index]) && enemies[index].HP > 0;
         }
@@ -126,4 +127,18 @@ export const calculateDamage = ({ actor, action }: { actor?: Combatant; action: 
     }
 
     return actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + (action.damage || 0);
+};
+
+/**
+ * @param characters
+ * @returns indices of characters that are alive
+ */
+export const getValidTargetIndices = (characters: (Combatant | null)[]): number[] => {
+    const indices = [];
+    characters.forEach((character: Combatant | null, i: number) => {
+        if (character && character.HP > 0) {
+            indices.push(i);
+        }
+    });
+    return indices;
 };
