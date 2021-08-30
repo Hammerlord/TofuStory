@@ -68,7 +68,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
         return side === "allies" && (!allies[index] || allies[index].HP === 0);
     }
 
-    const { target, area = 1 } = actions[0] || {};
+    const { target, area = 0 } = actions[0] || {};
 
     if (side === "allies") {
         if (target === TARGET_TYPES.SELF) {
@@ -76,7 +76,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
-            if (area === 1) {
+            if (area === 0) {
                 // No sense in letting a single target ability whiff on an empty slot, for now
                 return Boolean(allies[index]) && allies[index].HP > 0;
             }

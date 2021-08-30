@@ -236,7 +236,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
         const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
-            if (isValidTarget({ ability: selectedAbility, side: "allies", allies, index, enemies })) {
+            if (showReticle("allies", index)) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "allies" });
             } else {
                 setSelectedAbilityIndex(null);
@@ -257,7 +257,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
-            if (isValidTarget({ ability: selectedAbility, side: "enemies", allies, index, enemies })) {
+            if (showReticle("enemies", index)) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
             } else {
                 setSelectedAbilityIndex(null);
@@ -265,8 +265,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
-        if (isEligibleToAttack(allies[selectedAllyIndex])) {
+        if (showReticle("enemies", index)) {
             handleAllyAttack({ index });
+        } else {
+            setSelectedAllyIndex(null);
         }
     };
 
@@ -555,9 +557,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const showReticle = (side, index) => {
         if (isEligibleToAttack(allies[selectedAllyIndex])) {
             if (typeof hoveredEnemyIndex === "number") {
-                return side === "enemies" && index === hoveredEnemyIndex;
+                return side === "enemies" && enemies[index] && index === hoveredEnemyIndex;
             }
-            return side === "enemies";
+            return side === "enemies" && enemies[index];
         }
 
         const ability = hand[selectedAbilityIndex];
@@ -575,12 +577,20 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             }
         }
 
-        if (typeof hoveredEnemyIndex === "number") {
-            return isTargeted(index, side);
-        }
-
         if (!isValidTarget({ ability, side, index, allies, enemies })) {
             return false;
+        }
+
+        if (typeof hoveredEnemyIndex === "number") {
+            if (isValidTarget({ ability, side: "enemies", index: hoveredEnemyIndex, allies, enemies })) {
+                return isTargeted(index, side);
+            }
+        }
+
+        if (typeof hoveredAllyIndex === "number") {
+            if (isValidTarget({ ability, side: "allies", index: hoveredAllyIndex, allies, enemies })) {
+                return isTargeted(index, side);
+            }
         }
 
         return true;
