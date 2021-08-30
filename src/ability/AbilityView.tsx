@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
+import { calculateDamage } from "../battle/utils";
+import { Combatant } from "../character/types";
 import Icon from "../icon/Icon";
 import { Shield, Blood, CrossedSwords, Dizzy, Heart, Cactus } from "../images";
 import { Fury } from "../resource/ResourcesView";
@@ -30,9 +32,7 @@ const useAreaStyles = createUseStyles({
 
 const Area = ({ area }) => {
     const classes = useAreaStyles();
-    const areaIndicator = Array.from({ length: area }).map((_, i) => (
-        <span className={classes.area} key={i} />
-    ));
+    const areaIndicator = Array.from({ length: area }).map((_, i) => <span className={classes.area} key={i} />);
     return (
         <span>
             {areaIndicator}
@@ -106,15 +106,21 @@ const useStyles = createUseStyles({
     iconPlaceholder: {
         width: "24px",
     },
+    highlightText: {
+        "& .text": {
+            color: "#42f57b",
+        },
+    },
 });
 
 interface AbilityViewProps {
     onClick?: (event: any) => void;
     isSelected?: boolean;
     ability: Ability;
+    player?: Combatant;
 }
 
-const AbilityView = forwardRef(({ onClick, isSelected, ability }: AbilityViewProps, ref) => {
+const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], resourceCost, name, minion, image } = ability;
     const { area } = actions[0] || {};
@@ -129,9 +135,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability }: AbilityViewPro
                 resourceGain: (acc.resourceGain || 0) + resources,
             };
         }, {}) as any;
-    const damage = actions
-        .filter(({ target }) => target === TARGET_TYPES.HOSTILE)
-        .reduce((acc, { damage = 0 }) => acc + damage, 0);
+    const damage = actions.reduce((acc, action) => acc + calculateDamage({ actor: player, action }), 0);
+    const damageFromEffects = player?.effects.reduce((acc, { damage = 0 }) => acc + damage, 0) || 0;
 
     const allEffects = actions.reduce((acc, { effects = [] }) => {
         acc.push(...effects);
@@ -155,11 +160,17 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability }: AbilityViewPro
             className={classNames(classes.root, {
                 [classes.selectedAbility]: isSelected,
             })}
-            style={{ borderTop: `3px solid ${getAbilityColor(ability)}`}}
+            style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
         >
             <span className={classes.header} ref={ref as any}>
                 {damage ? (
-                    <Icon icon={<CrossedSwords />} text={damage} />
+                    <Icon
+                        icon={<CrossedSwords />}
+                        text={damage}
+                        className={classNames({
+                            [classes.highlightText]: damageFromEffects > 0,
+                        })}
+                    />
                 ) : (
                     <div className={classes.iconPlaceholder} />
                 )}{" "}
@@ -204,8 +215,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability }: AbilityViewPro
                     )}
                     {healthPerResourcesSpent > 0 && (
                         <li>
-                            Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per{" "}
-                            <Fury /> spent {healthPerResourcesSpentDuration === 0 && "this turn"}
+                            Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per <Fury /> spent{" "}
+                            {healthPerResourcesSpentDuration === 0 && "this turn"}
                         </li>
                     )}
                     {thornsDuration > 0 && (

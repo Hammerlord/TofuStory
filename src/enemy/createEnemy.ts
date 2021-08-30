@@ -1,16 +1,11 @@
 import { cloneDeep } from "lodash";
+import uuid from "uuid";
 import { Combatant } from "../character/types";
 import { getRandomItem, shuffle } from "./../utils";
 import {
-    realtofu,
-    theraretofu,
-    thefaketofu,
-    createSyntheticAttack,
-    smalltofu,
-    bigBeefy,
-    theRegalTofu,
+    bigBeefy, createSyntheticAttack,
+    smalltofu, thefaketofu, theraretofu, theRegalTofu
 } from "./tofu";
-import uuid from "uuid";
 
 export const createCombatant = (combatant): Combatant => {
     if (!combatant) {
@@ -26,7 +21,7 @@ export const createCombatant = (combatant): Combatant => {
         casting: null,
         abilities: [
             ...(combatant.abilities || []),
-            ...Array.from({ length: 3 }).map(() => createSyntheticAttack(combatant)),
+            ...Array.from({ length: 3 }).map(createSyntheticAttack),
         ],
     };
 };

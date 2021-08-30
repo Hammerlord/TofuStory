@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { getActionType, isAttack } from "../ability/utils";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
@@ -240,7 +239,7 @@ const CombatantView = forwardRef(
         }, [combatant]);
 
         useEffect(() => {
-            if (isAttack(event.action) && event.target && portraitRef.current) {
+            if (event?.action?.type === ACTION_TYPES.ATTACK && event.target && portraitRef.current) {
                 const getTargetPoint = (rect) => {
                     const { x, y, height, width } = rect;
                     return {
@@ -323,7 +322,7 @@ const CombatantView = forwardRef(
                                 <span
                                     ref={portraitRef}
                                     className={classNames(classes.portrait, {
-                                        [classes.applyingEffect]: getActionType(event.action) === ACTION_TYPES.EFFECT,
+                                        [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
                                         [classes.casting]: oldState.casting,
                                     })}
                                 >
@@ -368,7 +367,7 @@ const CombatantView = forwardRef(
                                                 <Bleed key={i} amount={bleed.duration} />
                                             ))}
                                         </div>
-                                        {getActionType(event.action) === ACTION_TYPES.NONE && (
+                                        {event?.action?.type === ACTION_TYPES.NONE && (
                                             <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />
                                         )}
                                     </>

@@ -15,7 +15,7 @@ import {
     warleap,
     Wolf,
 } from "../images";
-import { Ability, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -25,6 +25,7 @@ export const bash: Ability = {
         {
             damage: 1,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
     ],
 };
@@ -37,6 +38,7 @@ export const charge: Ability = {
         {
             damage: 1,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
             effects: [
                 {
                     name: "Stun",
@@ -56,6 +58,7 @@ export const cleave: Ability = {
         {
             damage: 2,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
             area: 1,
         },
     ],
@@ -69,6 +72,7 @@ export const slam: Ability = {
         {
             damage: 3,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
     ],
 };
@@ -82,6 +86,7 @@ export const anger: Ability = {
             damage: 2,
             resources: 3,
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
@@ -94,10 +99,12 @@ export const shieldStrike: Ability = {
         {
             damage: 2,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
         {
             armor: 3,
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
@@ -110,6 +117,7 @@ export const rampage: Ability = {
         {
             damage: 9,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
     ],
 };
@@ -122,6 +130,7 @@ export const block: Ability = {
         {
             armor: 2,
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
@@ -135,6 +144,7 @@ export const rend: Ability = {
             damage: 2,
             area: 1,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
             effects: [
                 {
                     name: "Bleed",
@@ -162,6 +172,7 @@ export const bloodthirst: Ability = {
                 },
             ],
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
@@ -172,6 +183,7 @@ export const sprint: Ability = {
         {
             cards: -1,
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
@@ -197,6 +209,7 @@ export const spikedArmor: Ability = {
             armor: 4,
             target: TARGET_TYPES.FRIENDLY,
             effects: [spikedArmorEffect],
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };

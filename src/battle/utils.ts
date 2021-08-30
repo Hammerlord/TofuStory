@@ -1,5 +1,5 @@
 import { shuffle } from "./../utils";
-import { Ability, TARGET_TYPES } from "./../ability/types";
+import { Ability, Action, ACTION_TYPES, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
@@ -118,4 +118,12 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
 
         return null;
     });
+};
+
+export const calculateDamage = ({ actor, action }: { actor?: Combatant; action: Action }): number => {
+    if (!actor || action.type !== ACTION_TYPES.ATTACK) {
+        return action.damage || 0;
+    }
+
+    return actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + (action.damage || 0);
 };

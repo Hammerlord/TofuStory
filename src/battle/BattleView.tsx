@@ -674,6 +674,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 refs={abilityRefs}
                                 isAbilitySelected={(i: number) => isPlayerTurn && selectedAbilityIndex === i}
                                 onAbilityClick={handleAbilityClick}
+                                player={player}
                             />
                         </div>
                     </div>

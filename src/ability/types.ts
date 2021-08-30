@@ -58,6 +58,7 @@ interface Minion {
 
 export interface Action {
     damage?: number;
+    type: ACTION_TYPES;
     healing?: number;
     armor?: number;
     target?: TARGET_TYPES;
@@ -82,10 +83,8 @@ export interface Ability {
 }
 
 export enum ACTION_TYPES {
-    DAMAGE = "damage",
-    CASTING = "casting",
+    ATTACK = "damage",
     EFFECT = "effect",
-    ARMOR = "armor",
     NONE = "none",
     MOVEMENT = "movement",
 }

@@ -1,7 +1,7 @@
 import { cleanUpDeadCharacters } from "./../battle/utils";
 import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
-import { Effect } from "./../ability/types";
+import { ACTION_TYPES, Effect } from "./../ability/types";
 import { getRandomItem, shuffle } from "./../utils";
 import { applyActionToTarget, Event } from "../battle/parseAbilityActions";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
@@ -237,6 +237,7 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
             action: {
                 damage: bleedDamage,
                 description: "Enemies took bleed damage.",
+                type: ACTION_TYPES.NONE,
             },
         });
     });

@@ -1,10 +1,10 @@
-import { smalltofu, realtofu, thefaketofu, theRegalTofu } from './tofu';
-import { TARGET_TYPES, Ability, EFFECT_TYPES } from './../ability/types';
+import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 export const loaf: Ability = {
     name: "Loaf",
     actions: [
         {
             description: "{{caster}} is loafing around.",
+            type: ACTION_TYPES.NONE,
         },
     ],
 };
@@ -16,6 +16,7 @@ export const move: Ability = {
             movement: 1,
             description: "{{caster}} has moved.",
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.MOVEMENT,
         },
     ],
 };
@@ -27,20 +28,25 @@ export const rally: Ability = {
             area: 1,
             target: TARGET_TYPES.FRIENDLY, // Todo this should be self and the area should work
             armor: 2,
+            type: ACTION_TYPES.EFFECT,
         },
     ],
 };
 
 export const tantrum: Ability = {
     name: "Tantrum",
-    description: "{{ caster }} will tantrum for increased damage.",
+    description: "{{ caster }} will tantrum, dealing 2 hits per move.",
     resourceCost: 5,
     channelDuration: 3,
     castTime: 1,
     actions: [
         {
-            damage: 5,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
     ],
 };
@@ -54,6 +60,7 @@ export const shiningLaser: Ability = {
         {
             damage: 10,
             target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
         },
     ],
 };
@@ -65,6 +72,7 @@ export const whip: Ability = {
         {
             damage: 1,
             target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
             area: 3,
             effects: [
                 {

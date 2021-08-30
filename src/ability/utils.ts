@@ -1,27 +1,4 @@
-import { Ability, Action, ACTION_TYPES, TARGET_TYPES } from "./types";
-
-export const getActionType = (action: Action): ACTION_TYPES => {
-    if (!action) {
-        return;
-    }
-
-    const { damage, healing, resources, armor, movement, effects } = action;
-    if (damage) {
-        return ACTION_TYPES.DAMAGE;
-    } else if (healing || resources || effects?.length > 0 || armor) {
-        return ACTION_TYPES.EFFECT;
-    } else if (armor) { // TODO
-        return ACTION_TYPES.ARMOR;
-    } else if (movement) {
-        return ACTION_TYPES.MOVEMENT;
-    }
-
-    return ACTION_TYPES.NONE;
-};
-
-export const isAttack = (action: Action): boolean => {
-    return getActionType(action) === ACTION_TYPES.DAMAGE;
-};
+import { Ability, TARGET_TYPES } from "./types";
 
 const RED = "rgb(221, 46, 68)";
 const BLUE = "rgb(23, 111, 189)";

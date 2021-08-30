@@ -1,11 +1,11 @@
-import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
-import { hardy, thorns } from "./../ability/Effects";
-import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
-import matty from "../images/matty.png";
+import { Ability, ACTION_TYPES, TARGET_TYPES } from "../ability/types";
+import { BigBeefy, regalTofu } from "../images";
 import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
-import { BigBeefy, regalTofu } from "../images";
+import matty from "../images/matty.png";
+import { hardy, thorns } from "./../ability/Effects";
+import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
 
 export interface Enemy {
     name: string;
@@ -85,13 +85,16 @@ export const theCruelTofu = {
     abilities: [whip],
 };
 
-export const createSyntheticAttack = (enemy) => {
+/**
+ * Creates a basic "attack" ability for monsters. Due for a revamp...
+ */
+export const createSyntheticAttack = () => {
     return {
         name: "Attack",
         actions: [
             {
-                damage: enemy.damage || 1,
                 target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
             },
         ],
     };

@@ -1,9 +1,9 @@
-import { cleanUpDeadCharacters } from "./utils";
 import { cloneDeep } from "lodash";
-import { Action, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
-import { Combatant } from "../character/types";
+import { Action, ACTION_TYPES, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
+import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
+import { calculateDamage, cleanUpDeadCharacters } from "./utils";
 
 /**
  * The results of an action being applied.
@@ -67,9 +67,9 @@ const applyEffects = ({ target, effects }): Combatant => {
     return target;
 };
 
-export const applyActionToTarget = ({ target, action }: { target: Combatant; action: Action }): Combatant => {
-    const { damage = 0, healing = 0, armor = 0, effects = [], resources = 0 } = action;
-
+export const applyActionToTarget = ({ target, actor, action }: { target: Combatant; actor?: Combatant; action: Action }): Combatant => {
+    const { healing = 0, armor = 0, effects = [], resources = 0 } = action;
+    const damage = calculateDamage({ actor, action });
     const updatedArmor = Math.max(0, target.armor - damage + armor);
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);
@@ -87,7 +87,7 @@ export const applyActionToTarget = ({ target, action }: { target: Combatant; act
 };
 
 const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number => {
-    if (!action.damage) {
+    if (action.type !== ACTION_TYPES.ATTACK) {
         return 0;
     }
 
@@ -117,7 +117,7 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
     }
 
     const updatedTargetsMap = targets
-        .map((target) => applyActionToTarget({ target, action }))
+        .map((target) => applyActionToTarget({ target, action, actor: caster }))
         .reduce((acc, current) => {
             acc[current.id] = current;
             return acc;
@@ -129,6 +129,7 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
             target: updatedTargetsMap[casterId] || caster,
             action: {
                 damage: thornsDamage,
+                type: ACTION_TYPES.NONE,
             },
         });
     }
@@ -183,6 +184,7 @@ export const applyAuraPerTurnEffects = (characters) => {
         const action = {
             armor: armorPerTurn,
             healing: healingPerTurn,
+            type: ACTION_TYPES.EFFECT,
         };
         results.push({
             characters: recentCharacters.map((character, j) => {
@@ -303,8 +305,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
 
 export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
     const caster = allies.find((ally) => ally?.id === casterId) || {};
-    const { effects, damage = 0, id } = caster;
-    const totalDamage = effects.reduce((acc: number, { damage = 0 }) => acc + damage, 0) + damage;
+    const { id } = caster;
     return useAllyAbility({
         enemies,
         targetIndex: index,
@@ -312,8 +313,8 @@ export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
         ability: {
             actions: [
                 {
-                    damage: totalDamage,
                     target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
                 },
             ],
         },

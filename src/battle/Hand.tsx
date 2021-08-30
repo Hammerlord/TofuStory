@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AbilityView from "../ability/AbilityView";
 import { Ability } from "../ability/types";
 
-const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, refs }) => {
+const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs }) => {
     const [oldHand, setOldHand] = useState([]);
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
@@ -44,6 +44,7 @@ const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, refs }) => {
                     isSelected={isAbilitySelected(i)}
                     key={i}
                     ability={ability}
+                    player={player}
                     ref={refs[i]}
                 />
             ))}
