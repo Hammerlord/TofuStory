@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import AbilityView from "../ability/AbilityView";
-import { Ability, Action } from "../ability/types";
+import { Ability } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -30,6 +29,7 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "relative",
         backgroundImage: `url(${victoria})`,
+        backgroundSize: "100% 100%",
         overflow: "hidden",
     },
     battlefieldContainer: {
