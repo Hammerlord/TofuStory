@@ -153,7 +153,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const classes = useStyles();
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        if (!ally) {
+        if (!ally || ally.isPlayer) {
             return false;
         }
         const damageFromEffects = ally.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
