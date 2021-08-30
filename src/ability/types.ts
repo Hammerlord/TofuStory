@@ -11,18 +11,34 @@ export enum EFFECT_TYPES {
     BUFF = "buff",
 }
 
+export interface EffectCondition {
+    types: EFFECT_TYPES[];
+    comparator: 'eq';
+}
+
 export interface Effect {
     name?: string;
     type: EFFECT_TYPES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
     duration?: number;
     damage?: number;
+    description?: string;
     healthPerResourcesSpent?: number;
     icon?: string;
     thorns?: number;
     isAuraEffect?: boolean;
     healingPerTurn?: number;
     armorPerTurn?: number;
+    immunities?: EFFECT_TYPES[];
+    onReceiveEffect?: {
+        conditions?: EffectCondition[]; // OR if multiple conditions are present
+        target?: { // Stat changes to apply to the target (owner of this effect)
+            effects?: Effect[];
+        },
+        actor?: { // Stat changes to apply to the character who triggered this event
+            effects?: Effect[];
+        }
+    },
 }
 
 export interface Aura extends Effect {

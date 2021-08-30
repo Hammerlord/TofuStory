@@ -1,5 +1,5 @@
 import { puppetree, puppetree2, puppetree3 } from '../images';
-import { thorns } from './../ability/Effects';
+import { hardy, thorns } from './../ability/Effects';
 import { loaf, tantrum } from './abilities';
 
 export const basicDummy = {
@@ -24,5 +24,6 @@ export const ragingDummy = {
     image: puppetree3,
     maxHP: 20,
     abilities: [tantrum],
+    effects: [hardy],
     damage: 2,
 };

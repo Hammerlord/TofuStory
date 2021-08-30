@@ -1,5 +1,5 @@
 import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
-import { thorns } from "./../ability/Effects";
+import { hardy, thorns } from "./../ability/Effects";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import matty from "../images/matty.png";
 import realtofuPortrait from "../images/item118.png";
@@ -52,6 +52,7 @@ export const theraretofu = {
     damage: 2,
     resources: 2,
     abilities: [loaf, move, shiningLaser],
+    effects: [hardy],
 };
 
 export const bigBeefy = {
@@ -62,6 +63,7 @@ export const bigBeefy = {
     damage: 2,
     resources: 2,
     abilities: [tantrum],
+    effects: [hardy],
 };
 
 export const theRegalTofu = {
@@ -71,6 +73,7 @@ export const theRegalTofu = {
     armor: 0,
     damage: 3,
     abilities: [rally],
+    effects: [hardy],
 };
 
 export const theCruelTofu = {

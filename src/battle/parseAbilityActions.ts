@@ -1,6 +1,6 @@
-import { cleanUpDeadCharacters } from './utils';
+import { cleanUpDeadCharacters } from "./utils";
 import { cloneDeep } from "lodash";
-import { Action, TARGET_TYPES } from "../ability/types";
+import { Action, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Aura, Effect } from "./../ability/types";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -17,6 +17,56 @@ export interface Event {
     targetSide?: "allies" | "enemies";
 }
 
+const triggerReceiveEffects = (target, incomingEffect: Effect) => {
+    const updatedTarget = {
+        ...cloneDeep(target),
+    };
+    target.effects.forEach((targetEffect: Effect) => {
+        if (!targetEffect.onReceiveEffect) {
+            return false;
+        }
+
+        const { conditions, target: applyToTarget } = targetEffect.onReceiveEffect;
+        if (
+            conditions.some((condition: EffectCondition) => {
+                const { types, comparator } = condition;
+                return types.some((type) => {
+                    switch (comparator) {
+                        case "eq":
+                            return incomingEffect.type === type;
+                        default:
+                            return false;
+                    }
+                });
+            })
+        ) {
+            updatedTarget.effects.push(...(applyToTarget.effects || []).map(cloneDeep));
+        }
+    });
+
+    return updatedTarget;
+};
+
+const applyEffects = ({ target, effects }): Combatant => {
+    if (target.HP <= 0) {
+        return target;
+    }
+
+    target = cloneDeep(target) as Combatant;
+    const isImmuneTo = (effect: Effect) => {
+        return target.effects.some((targetEffect: Effect) => targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type));
+    };
+
+    effects.forEach((effect: Effect) => {
+        if (!isImmuneTo(effect)) {
+            target.effects.push(effect);
+            target = triggerReceiveEffects(target, effect);
+        }
+    });
+
+    return target;
+};
+
 export const applyActionToTarget = ({ target, action }: { target: Combatant; action: Action }): Combatant => {
     const { damage = 0, healing = 0, armor = 0, effects = [], resources = 0 } = action;
 
@@ -24,14 +74,16 @@ export const applyActionToTarget = ({ target, action }: { target: Combatant; act
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
-    const updatedEffects: Effect[] = HP === 0 ? [] : [...target.effects, ...(effects.map(cloneDeep) as Effect[])];
-    return {
-        ...target,
-        HP,
-        armor: updatedArmor,
-        effects: updatedEffects,
-        resources: (target.resources || 0) + resources,
-    };
+
+    return applyEffects({
+        target: {
+            ...target,
+            HP,
+            armor: updatedArmor,
+            resources: (target.resources || 0) + resources,
+        },
+        effects,
+    });
 };
 
 const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number => {

@@ -85,6 +85,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
                     </div>
                 )}
                 {thorns > 0 && <div>Reflects 1 damage to attackers</div>}
+                <div>{effect.description}</div>
                 {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}
             </div>
         </div>

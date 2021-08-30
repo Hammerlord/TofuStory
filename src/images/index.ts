@@ -15,6 +15,9 @@ export { default as Cactus } from "./1f335.svg";
 export { default as Fireworks } from "./1f386.svg";
 export { default as Warning } from "./26a0.svg";
 export { default as Hourglass } from "./231b.svg";
+export { default as Helmet } from "./1fa96.svg";
+export { default as Crossmark } from "./274c.svg";
+export { default as NoStun} from "./nostun.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
