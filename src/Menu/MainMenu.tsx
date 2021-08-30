@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckEditor from "../ability/DeckEditor";
 import BattlefieldContainer from "../battle/BattleView";
-import warmush from "../images/warmush.png";
+import { warmush } from "./../images";
 import {
     anger,
     bash,
@@ -20,6 +20,7 @@ import {
     spikedArmor,
     warBanner,
     snailMinion,
+    yell,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -114,6 +115,7 @@ const MainMenu = () => {
         cleave,
         cleave,
         charge,
+        yell,
     ]);
 
     const classes = useStyles();

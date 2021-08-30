@@ -300,7 +300,12 @@ const CombatantView = forwardRef(
         const isStunned = hasAilment(EFFECT_TYPES.STUN);
         const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
         const damageFromEffects = oldState?.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
-        const totalDamage = (oldState?.damage || 0) + damageFromEffects;
+        let totalDamage = (oldState?.damage || 0) + damageFromEffects;
+        if (oldState?.damage > 0) {
+            totalDamage = Math.max(1, totalDamage);
+        } else {
+            totalDamage = Math.max(0, totalDamage);
+        }
 
         return (
             <div

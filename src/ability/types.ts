@@ -2,7 +2,7 @@ export enum TARGET_TYPES {
     HOSTILE = "hostile",
     SELF = "self",
     FRIENDLY = "friendly",
-    RANDOM_HOSTILE = "random-hostile"
+    RANDOM_HOSTILE = "random-hostile",
 }
 
 export enum EFFECT_TYPES {
@@ -10,11 +10,12 @@ export enum EFFECT_TYPES {
     BLEED = "bleed",
     FREEZE = "freeze",
     BUFF = "buff",
+    DEBUFF = "debuff",
 }
 
 export interface EffectCondition {
     types: EFFECT_TYPES[];
-    comparator: 'eq';
+    comparator: "eq";
 }
 
 export interface Effect {
@@ -33,13 +34,15 @@ export interface Effect {
     immunities?: EFFECT_TYPES[];
     onReceiveEffect?: {
         conditions?: EffectCondition[]; // OR if multiple conditions are present
-        target?: { // Stat changes to apply to the target (owner of this effect)
+        target?: {
+            // Stat changes to apply to the target (owner of this effect)
             effects?: Effect[];
-        },
-        actor?: { // Stat changes to apply to the character who triggered this event
+        };
+        actor?: {
+            // Stat changes to apply to the character who triggered this event
             effects?: Effect[];
-        }
-    },
+        };
+    };
 }
 
 export interface Aura extends Effect {

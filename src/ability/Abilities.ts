@@ -14,6 +14,7 @@ import {
     snail as snailPortrait,
     warleap,
     Wolf,
+    warmush,
 } from "../images";
 import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -114,7 +115,7 @@ export const rampage: Ability = {
     resourceCost: 3,
     image: risingrage,
     area: 1,
-    description: 'Deal {{damage}} damage x 3 to random enemies in the area',
+    description: "Deal {{damage}} damage x 3 to random enemies in the area",
     actions: [
         {
             damage: 4,
@@ -254,4 +255,26 @@ export const snailMinion: Ability = {
         damage: 1,
     },
     actions: [],
+};
+
+export const yell: Ability = {
+    name: "Yell",
+    resourceCost: 1,
+    image: warmush,
+    description: "Decrease enemy attack power by 2 (minimum 1)",
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    damage: -2,
+                    duration: 2,
+                    type: EFFECT_TYPES.DEBUFF,
+                    icon: warmush,
+                },
+            ],
+        },
+    ],
 };

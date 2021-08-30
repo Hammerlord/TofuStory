@@ -126,7 +126,12 @@ export const calculateDamage = ({ actor, action }: { actor?: Combatant; action: 
         return action.damage || 0;
     }
 
-    return actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + (action.damage || 0);
+    const damage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + (action.damage || 0);
+    if (actor.damage > 0) {
+        return Math.max(1, damage);
+    }
+
+    return Math.max(0, damage);
 };
 
 /**

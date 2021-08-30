@@ -370,7 +370,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 updatedMinionsInPlay.findIndex(({ minion }) => ally.name === minion.name),
                 1
             );
-            recoveredCards.push(card);
+            if (card) {
+                recoveredCards.push(card);
+            }
         });
 
         if (recoveredCards.length) {
