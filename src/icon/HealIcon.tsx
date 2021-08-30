@@ -69,7 +69,10 @@ const HealIcon = ({ statChanges }) => {
                 () => setShow(false),
                 ANIMATION_DURATION * 1000
             );
-            return () => clearTimeout(timeout);
+            return () => {
+                clearTimeout(timeout);
+                setShow(false);
+            };
         }
     }, [statChanges]);
 
