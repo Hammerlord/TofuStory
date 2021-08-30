@@ -205,7 +205,7 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
     const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
     const getRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
     randomizedIndices.forEach((i) => {
-        const enemy = enemies[i];
+        const enemy = getRecentEnemies()[i];
         if (!enemy || enemy.HP === 0) {
             return;
         }
