@@ -70,10 +70,12 @@ const useStyles = createUseStyles({
         height: " 80%",
         width: "80%",
     },
-    HP: {
+    leftContainer: {
         position: "absolute",
         left: "-8px",
         bottom: "-8px",
+        display: "flex",
+        flexDirection: "column",
     },
     rightContainer: {
         position: "absolute",
@@ -386,7 +388,11 @@ const CombatantView = forwardRef(
                                 </span>
                                 {oldState.HP > 0 && (
                                     <>
-                                        <Icon className={classes.HP} icon={<Heart />} size={"lg"} text={oldState.HP} />
+                                        <div className={classes.leftContainer}>
+                                            {oldState.armor > 0 && <Armor amount={oldState.armor} />}
+                                            <Icon icon={<Heart />} size={"lg"} text={oldState.HP} />
+                                        </div>
+
                                         <div className={classes.rightContainer}>
                                             {totalDamage > 0 && (
                                                 <Icon
@@ -398,7 +404,6 @@ const CombatantView = forwardRef(
                                                     })}
                                                 />
                                             )}
-                                            {oldState.armor > 0 && <Armor amount={oldState.armor} />}
                                         </div>
 
                                         {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}

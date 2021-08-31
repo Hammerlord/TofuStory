@@ -1,3 +1,4 @@
+import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -27,6 +28,26 @@ const useStyles = createUseStyles({
     hidden: {
         opacity: 0,
     },
+    tooltip: {
+        display: "flex",
+        fontSize: "0.8rem",
+        padding: "8px",
+        fontFamily: "Barlow",
+        fontWeight: "500",
+        lineHeight: "24px",
+    },
+    tooltipTitle: {
+        fontSize: "1.1rem",
+        marginBottom: "4px",
+    },
+    container: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+    iconContainer: {
+        marginRight: "16px",
+    },
 });
 
 interface ArmorInterface {
@@ -51,15 +72,32 @@ const Armor = ({ amount, className }: ArmorInterface) => {
     const classes = useStyles();
 
     return (
-        <Icon
-            size="lg"
-            icon={<Shield />}
-            text={amount}
-            className={classNames(className, {
-                [classes.refresh]: amount > oldAmount,
-                [classes.hidden]: amount === 0,
-            })}
-        />
+        <Tooltip
+            title={
+                <div className={classes.tooltip}>
+                    <div className={classes.iconContainer}>
+                        <Icon size="lg" icon={<Shield />} />
+                    </div>
+                    <div className={classes.container}>
+                        <div className={classes.tooltipTitle}>Armor</div>
+                        <div>Blocks damage from incoming attacks</div>
+                    </div>
+                </div>
+            }
+            arrow
+        >
+            <span>
+                <Icon
+                    size="lg"
+                    icon={<Shield />}
+                    text={amount}
+                    className={classNames(className, {
+                        [classes.refresh]: amount > oldAmount,
+                        [classes.hidden]: amount === 0,
+                    })}
+                />
+            </span>
+        </Tooltip>
     );
 };
 
