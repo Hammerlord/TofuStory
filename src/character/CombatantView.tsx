@@ -357,13 +357,7 @@ const CombatantView = forwardRef(
                                 </div>
                             )}
                             <div className={classes.combatantContainer}>
-                                <span
-                                    ref={portraitRef}
-                                    className={classNames(classes.portrait, {
-                                        [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
-                                        [classes.casting]: oldState.casting,
-                                    })}
-                                >
+                                <span ref={portraitRef} className={classNames(classes.portrait)}>
                                     {event?.action?.type === ACTION_TYPES.RANGE_ATTACK && event?.action?.icon && (
                                         <span className={classes.center}>
                                             <img src={event?.action?.icon} ref={projectileRef} className={classNames(classes.projectile)} />{" "}
@@ -373,6 +367,8 @@ const CombatantView = forwardRef(
                                         src={oldState.image}
                                         className={classNames(classes.portraitImage, {
                                             [classes.dead]: oldState.HP === 0,
+                                            [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
+                                            [classes.casting]: oldState.casting,
                                         })}
                                     />
                                     {
