@@ -123,7 +123,7 @@ interface AbilityViewProps {
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
-    const { actions = [], resourceCost, name, minion, image, description } = ability;
+    const { actions = [], resourceCost, name, minion, image, description, removeAfterTurn } = ability;
     const { area = ability.area } = actions[0] || {};
     const { selfHealing, selfArmor, selfDamage, resourceGain } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
@@ -156,7 +156,13 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
 
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
-    const interpolatedDescription = Handlebars.compile(description || '')({ damage: baseDamage });
+    const cardsToAddCount = actions.reduce((acc, { addCards = [] }) => {
+        addCards.forEach(({ name }) => {
+            acc[name] = (acc[name] || 0) + 1;
+        });
+        return acc;
+    }, {});
+    const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
     return (
         <div
@@ -228,6 +234,18 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                             Gain <Icon icon={<Cactus />} text={thornsDuration} />
                         </li>
                     )}
+                    {Object.keys(cardsToAddCount).length > 0 && (
+                        <li>
+                            Gain{" "}
+                            {Object.entries(cardsToAddCount).map(([name, count]) => (
+                                <span key={name}>
+                                    {name} x{count}{" "}
+                                </span>
+                            ))}{" "}
+                            for use this turn only
+                        </li>
+                    )}
+                    {removeAfterTurn && <li>Removed after your turn</li>}
                     {interpolatedDescription && <li>{interpolatedDescription}</li>}
                 </ul>
                 {minion && (

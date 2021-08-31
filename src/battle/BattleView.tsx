@@ -122,6 +122,7 @@ interface BattleNotification {
 
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
+const MAX_HAND_SIZE = 10;
 
 const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
@@ -134,7 +135,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [allies, setAllies] = useState(initialAllies.slice());
     const [allyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [enemyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
-    const [abilityRefs] = useState(Array.from({ length: 10 }).map(() => React.createRef())); // Let's assume the max hand size is 10 for now...
+    const [abilityRefs] = useState(Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()));
     const [events, setEvents] = useState([]);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
@@ -187,12 +188,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, minion } = card as Ability;
+        const { resourceCost = 0, minion, removeAfterTurn } = card as Ability;
 
         setSelectedAbilityIndex(null);
         if (minion) {
             setMinionCardsInPlay((prev) => [card, ...prev]);
-        } else {
+        } else if (!removeAfterTurn) {
             setDiscard((prev) => [card, ...prev]);
         }
 
@@ -388,10 +389,16 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const updatedEvents = events.slice();
         const event = updatedEvents.shift() as Event;
-        const { updatedEnemies, updatedAllies } = event;
+        const { updatedEnemies, updatedAllies, action, casterId } = event;
         setTimeout(() => {
             const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
             const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
+            if (action) {
+                if (casterId === player.id) {
+                    const { addCards = [] } = action;
+                    setHand([...hand, ...addCards]);
+                }
+            }
             if (playerDead) {
                 setTimeout(() => {
                     setEvents([]);
@@ -420,7 +427,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 }, 500);
             }
         }, 500);
-
     }, [events]);
 
     const nextWave = (mostRecentAllies) => {
@@ -491,7 +497,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setAllies(updatedAllies);
         setIsPlayerTurn(false);
         setHand([]);
-        const newDiscard = [...hand, ...discard];
+        const newDiscard = [...hand.filter((ability) => !ability.removeAfterTurn), ...discard];
         setDiscard(newDiscard);
     };
 
@@ -682,7 +688,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 </div>
                             </div>
                             <div className={classes.rightContainer}>
-                                <EndTurnButton disabled={disableActions || events.length > 0} highlight={noMoreMoves} onClick={handleEndTurn} />
+                                <EndTurnButton
+                                    disabled={disableActions || events.length > 0}
+                                    highlight={noMoreMoves}
+                                    onClick={handleEndTurn}
+                                />
                             </div>
                         </div>
                         <div className={classes.abilityContainer}>

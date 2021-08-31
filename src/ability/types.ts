@@ -71,8 +71,7 @@ export interface Action {
     description?: string;
     movement?: number;
     resources?: number;
-    /** The number of cards to draw. Only applicable to player */
-    cards?: number;
+    addCards?: Ability[];
 }
 
 export interface Ability {
@@ -85,10 +84,13 @@ export interface Ability {
     castTime?: number;
     description?: string;
     area?: number;
+    removeAfterTurn?: boolean;
+    reusable?: boolean;
 }
 
 export enum ACTION_TYPES {
-    ATTACK = "damage",
+    ATTACK = "attack",
+    RANGE_ATTACK = "ranged-attack",
     EFFECT = "effect",
     NONE = "none",
     MOVEMENT = "movement",

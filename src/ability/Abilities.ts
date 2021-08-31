@@ -15,6 +15,7 @@ import {
     warleap,
     Wolf,
     warmush,
+    bricks,
 } from "../images";
 import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -190,17 +191,6 @@ export const bloodthirst: Ability = {
     ],
 };
 
-export const sprint: Ability = {
-    name: "Sprint",
-    actions: [
-        {
-            cards: -1,
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-        },
-    ],
-};
-
 export const wolf: Ability = {
     name: "Wolf",
     resourceCost: 2,
@@ -275,6 +265,19 @@ export const yell: Ability = {
                     icon: warmush,
                 },
             ],
+        },
+    ],
+};
+
+export const bunchOBricks: Ability = {
+    name: "Bunch o' Bricks",
+    resourceCost: 1,
+    image: bricks,
+    actions: [
+        {
+            addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
         },
     ],
 };

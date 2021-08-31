@@ -21,6 +21,7 @@ import {
     warBanner,
     snailMinion,
     yell,
+    bunchOBricks,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -116,6 +117,7 @@ const MainMenu = () => {
         cleave,
         charge,
         yell,
+        bunchOBricks,
     ]);
 
     const classes = useStyles();

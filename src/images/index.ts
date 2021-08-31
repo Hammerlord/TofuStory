@@ -42,3 +42,4 @@ export { default as snail } from "./snail.png";
 export { default as clear } from "./clear.png";
 export { default as victoria } from "./bg.png";
 export { default as warmush } from "./warmush.png";
+export { default as bricks } from "./bricks.png";
