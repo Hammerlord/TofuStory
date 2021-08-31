@@ -22,6 +22,7 @@ import {
     snailMinion,
     yell,
     bunchOBricks,
+    hammerang,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -118,6 +119,7 @@ const MainMenu = () => {
         charge,
         yell,
         bunchOBricks,
+        hammerang,
     ]);
 
     const classes = useStyles();

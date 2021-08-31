@@ -16,6 +16,7 @@ import {
     Wolf,
     warmush,
     bricks,
+    hammer,
 } from "../images";
 import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -279,5 +280,20 @@ export const bunchOBricks: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
+    ],
+};
+
+export const hammerang: Ability = {
+    name: "Hammerang",
+    resourceCost: 1,
+    reusable: true, // Hmm... beware of any ability that reduces resource cost
+    image: hammer,
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: hammer,
+        }
     ],
 };

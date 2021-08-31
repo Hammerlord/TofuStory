@@ -188,11 +188,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, minion, removeAfterTurn } = card as Ability;
+        const { resourceCost = 0, minion, removeAfterTurn, reusable } = card as Ability;
 
         setSelectedAbilityIndex(null);
         if (minion) {
             setMinionCardsInPlay((prev) => [card, ...prev]);
+        } else if (reusable) {
+            newHand.push(card);
         } else if (!removeAfterTurn) {
             setDiscard((prev) => [card, ...prev]);
         }

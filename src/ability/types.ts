@@ -72,6 +72,7 @@ export interface Action {
     movement?: number;
     resources?: number;
     addCards?: Ability[];
+    icon?: string; // Used as a projectile
 }
 
 export interface Ability {

@@ -10,7 +10,7 @@ import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import { ClickIndicator, CrossedSwords, Dizzy, Heart, Zzz } from "../images";
+import { ClickIndicator, CrossedSwords, Dizzy, hammer, Heart, Zzz } from "../images";
 import Reticle from "./Reticle";
 
 const useStyles = createUseStyles({
@@ -53,13 +53,12 @@ const useStyles = createUseStyles({
         width: "100%",
         margin: "0 auto",
         alignSelf: "flex-end",
-
-        "& > img": {
-            minWidth: "50%",
-            minHeight: "40%",
-            objectFit: "contain",
-            maxHeight: "17vh",
-        },
+    },
+    portraitImage: {
+        minWidth: "50%",
+        minHeight: "40%",
+        objectFit: "contain",
+        maxHeight: "17vh",
     },
     combatantContainer: {
         display: "flex",
@@ -211,13 +210,73 @@ const useStyles = createUseStyles({
         animation: "$deadAnimation 1s forwards",
         transitionTimignFunction: "ease-in-out",
     },
+    projectile: {
+        maxWidth: "40%",
+        objectFit: "contain",
+        marginTop: "40%",
+        WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+    },
 });
+
+const toAndBack = ({ to, from, spin = false }) => {
+    if (!to || !from) {
+        return;
+    }
+    const getTargetPoint = (rect) => {
+        const { x, y, height, width } = rect;
+        return {
+            x: x + width / 2,
+            y: y + height / 2,
+        };
+    };
+    const { x, y } = getTargetPoint(from.getBoundingClientRect());
+    const { x: x2, y: y2 } = getTargetPoint(to.getBoundingClientRect());
+    const increments = 60;
+    const moveIncrementX = (x2 - x) / increments;
+    const moveIncrementY = (y2 - y) / increments;
+    let i = 1;
+    let direction = 1;
+    const spinIncrement = 360 / increments;
+    const move = () => {
+        if (!from) {
+            return;
+        }
+        const xPos = i * moveIncrementX;
+        const yPos = i * moveIncrementY;
+        from.style.transform = `translateX(${xPos}px) translateY(${yPos}px)${spin ? ` rotate(${spinIncrement * i}deg)` : ""}`;
+
+        if (direction === 1) {
+            ++i;
+
+            if (i > increments) {
+                direction = -1;
+            }
+
+            setTimeout(() => {
+                move();
+            });
+        } else {
+            --i;
+
+            if (i > 0) {
+                setTimeout(() => {
+                    move();
+                });
+            } else {
+                from.style.transform = "unset";
+            }
+        }
+    };
+    move();
+};
 
 const CombatantView = forwardRef(
     ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, ...other }: any, ref) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
         const [portraitRef] = useState(createRef() as React.RefObject<any>);
+        const [projectileRef] = useState(createRef() as React.RefObject<any>);
         const classes = useStyles();
 
         useEffect(() => {
@@ -239,52 +298,16 @@ const CombatantView = forwardRef(
         }, [combatant]);
 
         useEffect(() => {
-            let timeout;
-            if (event?.action?.type === ACTION_TYPES.ATTACK && event.target && portraitRef.current) {
-                const getTargetPoint = (rect) => {
-                    const { x, y, height, width } = rect;
-                    return {
-                        x: x + width / 2,
-                        y: y + height / 2,
-                    };
-                };
-                const { x, y } = getTargetPoint(portraitRef.current.getBoundingClientRect());
-                const { x: x2, y: y2 } = getTargetPoint(event.target.getBoundingClientRect());
-                const increments = 50;
-                const moveIncrementX = (x2 - x) / increments;
-                const moveIncrementY = (y2 - y) / increments;
-                let i = 1;
-                let direction = 1;
-                const move = () => {
-                    const xPos = i * moveIncrementX;
-                    const yPos = i * moveIncrementY;
-                    portraitRef.current.style.transform = `translateX(${xPos}px) translateY(${yPos}px)`;
-
-                    if (direction === 1) {
-                        ++i;
-
-                        if (i > increments) {
-                            direction = -1;
-                        }
-
-                        timeout = setTimeout(() => {
-                            move();
-                        });
-                    } else {
-                        --i;
-
-                        if (i > 0) {
-                            timeout = setTimeout(() => {
-                                move();
-                            });
-                        } else {
-                            portraitRef.current.style.transform = "unset";
-                        }
-                    }
-                };
-                move();
+            if (!event?.target) {
+                return;
+            }
+            if (event.action?.type === ACTION_TYPES.ATTACK && portraitRef.current) {
+                toAndBack({ to: event.target, from: portraitRef.current });
+            } else if (event.action?.type === ACTION_TYPES.RANGE_ATTACK && projectileRef.current) {
+                toAndBack({ to: event.target, from: projectileRef.current, spin: true }); // We don't want every projectile to return to the owner
             }
 
+            let timeout;
             return () => {
                 if (portraitRef?.current?.style) {
                     portraitRef.current.style.transform = "unset";
@@ -339,13 +362,17 @@ const CombatantView = forwardRef(
                                         [classes.casting]: oldState.casting,
                                     })}
                                 >
+                                    {event?.action?.type === ACTION_TYPES.RANGE_ATTACK && event?.action?.icon && (
+                                        <span className={classes.center}>
+                                            <img src={event?.action?.icon} ref={projectileRef} className={classNames(classes.projectile)} />{" "}
+                                        </span>
+                                    )}
                                     <img
                                         src={oldState.image}
-                                        className={classNames({
+                                        className={classNames(classes.portraitImage, {
                                             [classes.dead]: oldState.HP === 0,
                                         })}
                                     />
-
                                     {
                                         <span className={classes.center}>
                                             <HitIcon statChanges={statChanges} />
