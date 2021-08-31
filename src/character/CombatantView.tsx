@@ -43,6 +43,7 @@ const useStyles = createUseStyles({
         bottom: "100%",
         transform: "translateX(-50%)",
         position: "absolute",
+        width: "100%",
     },
     inner: {
         height: "100%",

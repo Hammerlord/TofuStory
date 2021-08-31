@@ -33,10 +33,11 @@ const useStyles = createUseStyles({
         overflow: "hidden",
     },
     battlefieldContainer: {
-        height: "100%",
+        height: "77%",
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
+        marginTop: "4vh",
     },
     battlefield: {
         textAlign: "center",
@@ -46,12 +47,14 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
-        paddingTop: "15vh",
+        paddingTop: "13vh",
+        borderRadius: "16px",
+        border: "6px solid rgba(0, 0, 0, 0.25)",
     },
     waves: {
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: -6,
+        left: -6,
     },
     combatantContainer: {
         position: "relative",
@@ -79,6 +82,7 @@ const useStyles = createUseStyles({
         bottom: "16px",
         left: "50%",
         transform: "translateX(-50%)",
+        textAlign: "center",
     },
     resource: {
         margin: "0 1px",
@@ -88,7 +92,7 @@ const useStyles = createUseStyles({
         margin: "auto",
         justifyContent: "space-evenly",
         marginTop: "16px",
-        minHeight: "250px",
+        minHeight: "265px",
     },
     playerContainer: {
         position: "relative",
@@ -697,19 +701,19 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 />
                             </div>
                         </div>
-                        <div className={classes.abilityContainer}>
-                            {Array.from({ length: player.resources }).map((_, i) => (
-                                <Fury key={i} className={classes.resource} />
-                            ))}
-                            <Hand
-                                className={classes.abilities}
-                                hand={hand}
-                                refs={abilityRefs}
-                                isAbilitySelected={(i: number) => isPlayerTurn && selectedAbilityIndex === i}
-                                onAbilityClick={handleAbilityClick}
-                                player={player}
-                            />
-                        </div>
+                    </div>
+                    <div className={classes.abilityContainer}>
+                        {Array.from({ length: player.resources }).map((_, i) => (
+                            <Fury key={i} className={classes.resource} />
+                        ))}
+                        <Hand
+                            className={classes.abilities}
+                            hand={hand}
+                            refs={abilityRefs}
+                            isAbilitySelected={(i: number) => isPlayerTurn && selectedAbilityIndex === i}
+                            onAbilityClick={handleAbilityClick}
+                            player={player}
+                        />
                     </div>
                 </div>
             </TargetLineCanvas>
