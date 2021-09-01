@@ -23,6 +23,8 @@ import {
     yell,
     bunchOBricks,
     hammerang,
+    overpower,
+    chanceStrike,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -67,6 +69,16 @@ const allCards = [
     wolf,
     snailMinion,
     snailMinion,
+    overpower,
+    overpower,
+    chanceStrike,
+    chanceStrike,
+    yell,
+    yell,
+    bunchOBricks,
+    bunchOBricks,
+    hammerang,
+    hammerang,
 ];
 
 const useStyles = createUseStyles({
@@ -120,6 +132,8 @@ const MainMenu = () => {
         yell,
         bunchOBricks,
         hammerang,
+        overpower,
+        chanceStrike,
     ]);
 
     const classes = useStyles();

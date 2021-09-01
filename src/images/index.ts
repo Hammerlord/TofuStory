@@ -44,3 +44,6 @@ export { default as victoria } from "./bg.png";
 export { default as warmush } from "./warmush.png";
 export { default as bricks } from "./bricks.png";
 export { default as hammer } from "./hammer.png";
+export { default as chanceattack } from "./chanceattack.png";
+export { default as ironwill } from "./ironwill.png";
+export { default as puncture } from "./puncture.png";

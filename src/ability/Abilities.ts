@@ -17,8 +17,10 @@ import {
     warmush,
     bricks,
     hammer,
+    chanceattack,
+    puncture,
 } from "../images";
-import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -294,6 +296,54 @@ export const hammerang: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: hammer,
-        }
+        },
+    ],
+};
+
+export const overpower: Ability = {
+    name: "Overpower",
+    resourceCost: 1,
+    description: "+3 damage on targets affected by a debuff",
+    image: puncture,
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF],
+                    },
+                ],
+                damage: 3,
+            },
+        },
+    ],
+};
+
+export const chanceStrike: Ability = {
+    name: "Chance Strike",
+    resourceCost: 1,
+    image: chanceattack,
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    name: "Bleed",
+                    type: EFFECT_TYPES.BLEED,
+                    duration: 2,
+                },
+            ],
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            addCards: [overpower].map((card) => ({ ...card, removeAfterTurn: true })),
+        },
     ],
 };

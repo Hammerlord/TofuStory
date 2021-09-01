@@ -60,6 +60,51 @@ interface Minion {
     aura?: Aura;
 }
 
+export enum CONDITION_TYPE {
+    INCREMENTING = "incrementing",
+    DECREMENTING = "decrementing",
+    FLAT = "flat",
+}
+
+export interface Bonus {
+    /**
+     * Flat amount to increase or decrease. Should be an integer.
+     */
+    damage?: number;
+    healing?: number;
+    armor?: number;
+    effects?: Effect[];
+
+    /**
+     * A multiplier on the bonus amount
+     */
+    scale?: {
+        calculationTarget: "actor" | "target";
+        basedOn: "numDebuffs" | "numBuffs";
+        max?: number;
+    };
+
+    /**
+     * Conditions to pass for the bonus to apply.
+     * Multiple conditions are evaluated as "OR".
+     */
+    conditions?: Conditions[];
+}
+
+export interface Conditions {
+    calculationTarget: "actor" | "target";
+    /** Equals | Less than | Greater than -- Only used in pass/fail check */
+    comparator?: "eq" | "lt" | "gt";
+
+    /** Unique effects, not stacks */
+    numDebuffs?: number;
+    numBuffs?: number;
+    hasEffectType?: EFFECT_TYPES[];
+    /** Unique effects, not stacks */
+    numEffects?: number;
+    healthPercentage?: number;
+}
+
 export interface Action {
     damage?: number;
     type: ACTION_TYPES;
@@ -73,6 +118,7 @@ export interface Action {
     resources?: number;
     addCards?: Ability[];
     icon?: string; // Used as a projectile
+    bonus?: Bonus;
 }
 
 export interface Ability {
