@@ -345,7 +345,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const refreshPlayerResources = (allies) => {
         return updatePlayer(
             (player) => ({
-                resources: Math.min(player.maxResources, player.resources + player.resourcesPerTurn),
+                resources:
+                    Math.min(player.maxResources, player.resourcesPerTurn) +
+                    player.effects.reduce((acc, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0),
             }),
             allies
         );

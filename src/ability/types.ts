@@ -31,6 +31,7 @@ export interface Effect {
     isAuraEffect?: boolean;
     healingPerTurn?: number;
     armorPerTurn?: number;
+    resourcesPerTurn?: number;
     immunities?: EFFECT_TYPES[];
     armorReceived?: number;
     damageReceived?: number;

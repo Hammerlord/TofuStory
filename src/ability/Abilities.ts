@@ -20,6 +20,7 @@ import {
     chanceattack,
     puncture,
     ironwill as ironwillImage,
+    hyperbody,
 } from "../images";
 import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -360,9 +361,34 @@ export const ironWill: Ability = {
             armor: 1,
             effects: [
                 {
+                    name: "Iron Will",
+                    icon: ironwillImage,
+                    description: "Receiving +1 armor from armor sources",
                     type: EFFECT_TYPES.BUFF,
                     armorReceived: 1,
                     duration: 0,
+                },
+            ],
+        },
+    ],
+};
+
+export const hyperBody: Ability = {
+    name: "Hyper Body",
+    resourceCost: 1,
+    image: hyperbody,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [
+                {
+                    name: "Hyper Body",
+                    icon: hyperbody,
+                    description: "Gaining +1 resource per turn",
+                    type: EFFECT_TYPES.BUFF,
+                    resourcesPerTurn: 1,
+                    duration: 3,
                 },
             ],
         },

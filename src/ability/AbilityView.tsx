@@ -152,6 +152,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
         allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
     const armorReceivedEffect = allEffects.find(({ armorReceived = 0 }) => armorReceived > 0);
+    const resourcesPerTurnEffect = allEffects.find(({ resourcesPerTurn = 0 }) => resourcesPerTurn > 0);
 
     const { target: targetType } = actions[0] || {};
 
@@ -251,6 +252,12 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                             ) : (
                                 <Icon icon={<Hourglass />} text={armorReceivedEffect.duration} />
                             )}
+                        </li>
+                    )}
+                    {resourcesPerTurnEffect && (
+                        <li>
+                            Gain <Fury text={`+${resourcesPerTurnEffect.resourcesPerTurn}`} /> per turn for{" "}
+                            <Icon icon={<Hourglass />} text={resourcesPerTurnEffect.resourcesPerTurn} />
                         </li>
                     )}
                     {Object.keys(cardsToAddCount).length > 0 && (

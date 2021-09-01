@@ -26,6 +26,7 @@ import {
     overpower,
     chanceStrike,
     ironWill,
+    hyperBody,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -81,6 +82,7 @@ const allCards = [
     hammerang,
     hammerang,
     ironWill,
+    hyperBody,
 ];
 
 const useStyles = createUseStyles({
@@ -137,6 +139,7 @@ const MainMenu = () => {
         overpower,
         chanceStrike,
         ironWill,
+        hyperBody,
     ]);
 
     const classes = useStyles();
