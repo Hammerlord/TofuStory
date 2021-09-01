@@ -123,12 +123,12 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
 
 export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
     const actionDamage = action.damage || 0;
-    if (!actor || action.type !== ACTION_TYPES.ATTACK || !target) {
+    if (!actor || action.type !== ACTION_TYPES.ATTACK) {
         return actionDamage;
     }
 
     const damage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + actionDamage;
-    const damageReceived = target.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0);
+    const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const totalDamage = damage + damageReceived;
     if (actor.damage > 0 || actionDamage > 0) {
         return Math.max(1, totalDamage); // An actor/ability that can do damage must do at least 1 damage
