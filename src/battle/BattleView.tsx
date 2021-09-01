@@ -359,7 +359,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         drawCards();
         setAlliesAttackedThisTurn([]);
         const updatedAllies = refreshPlayerResources(allies);
-        setAllies(updatedAllies);
+        setAllies(updatedAllies.map(updateEffects));
         handleNewEvents(
             applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
                 updatedAllies: characters,
