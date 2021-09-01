@@ -11,6 +11,8 @@ export enum EFFECT_TYPES {
     FREEZE = "freeze",
     BUFF = "buff",
     DEBUFF = "debuff",
+    BURN = "burn",
+    CHILL = "chill",
 }
 
 export interface EffectCondition {

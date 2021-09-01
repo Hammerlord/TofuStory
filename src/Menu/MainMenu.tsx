@@ -27,6 +27,10 @@ import {
     chanceStrike,
     ironWill,
     hyperBody,
+    lightningCharge,
+    blizzardCharge,
+    flameCharge,
+    frostFire,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -83,6 +87,10 @@ const allCards = [
     hammerang,
     ironWill,
     hyperBody,
+    blizzardCharge,
+    flameCharge,
+    lightningCharge,
+    frostFire,
 ];
 
 const useStyles = createUseStyles({
@@ -116,21 +124,16 @@ const MainMenu = () => {
     });
     const [deck, setDeck] = useState([
         snailMinion,
-        snailMinion,
         spikedArmor,
-        spikedArmor,
-        warBanner,
         warBanner,
         block,
         block,
         bloodthirst,
-        rend,
         bash,
         bash,
         bash,
         anger,
         rampage,
-        cleave,
         cleave,
         charge,
         yell,
@@ -140,6 +143,10 @@ const MainMenu = () => {
         chanceStrike,
         ironWill,
         hyperBody,
+        blizzardCharge,
+        flameCharge,
+        lightningCharge,
+        frostFire,
     ]);
 
     const classes = useStyles();

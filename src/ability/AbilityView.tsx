@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { calculateDamage } from "../battle/utils";
 import { Combatant } from "../character/types";
 import Icon from "../icon/Icon";
-import { Blood, Cactus, CrossedSwords, Dizzy, Heart, Hourglass, Shield } from "../images";
+import { Blood, Cactus, CrossedSwords, Dizzy, Fire, Heart, Hourglass, Shield, Snowflake } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
@@ -149,6 +149,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const bleedDuration = allEffects.find(({ type }) => type === EFFECT_TYPES.BLEED)?.duration || 0;
     const thornsDuration = allEffects.find(({ thorns = 0 }) => thorns > 0)?.duration || 0;
     const stun = allEffects.find(({ type }) => type === EFFECT_TYPES.STUN);
+    const chill = allEffects.find(({ type }) => type === EFFECT_TYPES.CHILL);
+    const burn = allEffects.find(({ type }) => type === EFFECT_TYPES.BURN);
     const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
         allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
     const armorReceivedEffect = allEffects.find(({ armorReceived = 0 }) => armorReceived > 0);
@@ -203,6 +205,16 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     {stun && (
                         <li>
                             Inflict <Icon icon={<Dizzy />} />
+                        </li>
+                    )}
+                    {burn && (
+                        <li>
+                            Inflict <Icon icon={<Fire />} />
+                        </li>
+                    )}
+                    {chill && (
+                        <li>
+                            Inflict <Icon icon={<Snowflake />} />
                         </li>
                     )}
                     {resourceGain > 0 && (

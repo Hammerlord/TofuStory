@@ -18,6 +18,7 @@ export { default as Hourglass } from "./231b.svg";
 export { default as Helmet } from "./1fa96.svg";
 export { default as Crossmark } from "./274c.svg";
 export { default as NoStun } from "./nostun.svg";
+export { default as Snowflake } from "./2744.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -48,3 +49,7 @@ export { default as chanceattack } from "./chanceattack.png";
 export { default as ironwill } from "./ironwill.png";
 export { default as puncture } from "./puncture.png";
 export { default as hyperbody } from "./hyperbody.png";
+export { default as blizzardcharge } from "./blizzardcharge.png";
+export { default as flamecharge } from "./flamecharge.png";
+export { default as lightningcharge } from "./lightningcharge.png";
+export { default as advancedcharge } from "./advancedcharge.png";

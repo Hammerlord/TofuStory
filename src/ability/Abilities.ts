@@ -21,6 +21,12 @@ import {
     puncture,
     ironwill as ironwillImage,
     hyperbody,
+    flamecharge,
+    blizzardcharge,
+    lightningcharge,
+    advancedcharge,
+    Fire,
+    Snowflake,
 } from "../images";
 import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -316,7 +322,7 @@ export const overpower: Ability = {
                 conditions: [
                     {
                         calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF],
+                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL],
                     },
                 ],
                 damage: 3,
@@ -391,6 +397,101 @@ export const hyperBody: Ability = {
                     duration: 3,
                 },
             ],
+        },
+    ],
+};
+
+export const flameCharge: Ability = {
+    name: "Flame Charge",
+    resourceCost: 1,
+    image: flamecharge,
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    name: "Burn",
+                    type: EFFECT_TYPES.BURN,
+                    duration: 5,
+                    icon: Fire,
+                },
+            ],
+        },
+    ],
+};
+
+export const blizzardCharge: Ability = {
+    name: "Blizzard Charge",
+    resourceCost: 1,
+    image: blizzardcharge,
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                damage: 2,
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectType: [EFFECT_TYPES.BURN],
+                    },
+                ],
+            },
+            effects: [
+                {
+                    name: "Chill",
+                    icon: Snowflake,
+                    type: EFFECT_TYPES.CHILL,
+                    duration: 5,
+                    damage: -1,
+                },
+            ],
+        },
+    ],
+};
+
+export const lightningCharge: Ability = {
+    name: "Lightning Charge",
+    resourceCost: 1,
+    image: lightningcharge,
+    actions: [
+        {
+            area: 1,
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectType: [EFFECT_TYPES.CHILL],
+                    },
+                ],
+            },
+            effects: [
+                {
+                    name: "Stun",
+                    type: EFFECT_TYPES.STUN,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const frostFire: Ability = {
+    name: "Frostfire Within",
+    resourceCost: 0,
+    image: advancedcharge,
+    actions: [
+        {
+            addCards: [flameCharge, blizzardCharge].map((card) => ({ ...card, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
         },
     ],
 };
