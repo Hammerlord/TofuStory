@@ -123,7 +123,7 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
 
 export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
     const actionDamage = action.damage || 0;
-    if (!actor || action.type !== ACTION_TYPES.ATTACK) {
+    if (!actor || action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK) {
         return actionDamage;
     }
 
