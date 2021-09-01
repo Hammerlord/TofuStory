@@ -1,4 +1,4 @@
-import { bigBeefy, theraretofu } from "./../enemy/tofu";
+import { bigBeefy, realtofu, theraretofu } from "./../enemy/tofu";
 import { createCombatant } from "./../enemy/createEnemy";
 import { Wave } from "./tutorial";
 import { smalltofu, thefaketofu, theRegalTofu } from "../enemy/tofu";
@@ -9,6 +9,9 @@ export const challenge: Wave[] = [
     },
     {
         createEnemies: () => [null, thefaketofu, theRegalTofu, thefaketofu, null].map(createCombatant),
+    },
+    {
+        createEnemies: () => [realtofu, thefaketofu, realtofu, thefaketofu, realtofu].map(createCombatant),
     },
     {
         createEnemies: () => [smalltofu, null, bigBeefy, null, smalltofu].map(createCombatant),
