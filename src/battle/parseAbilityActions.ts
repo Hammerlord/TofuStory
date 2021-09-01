@@ -4,7 +4,7 @@ import { Action, ACTION_TYPES, EffectCondition, EFFECT_TYPES, TARGET_TYPES } fro
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
-import { calculateDamage, cleanUpDeadCharacters, getValidTargetIndices } from "./utils";
+import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getValidTargetIndices } from "./utils";
 
 /**
  * The results of an action being applied.
@@ -95,8 +95,9 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
 
 export const applyActionToTarget = ({ target, actor, action }: { target: Combatant; actor?: Combatant; action: Action }): Combatant => {
     action = calculateBonus({ target, actor, action });
-    const { healing = 0, armor = 0, effects = [], resources = 0 } = action;
-    const damage = calculateDamage({ actor, action });
+    const { healing = 0, effects = [], resources = 0 } = action;
+    const damage = calculateDamage({ actor, target, action });
+    const armor = calculateArmor({ actor, target, action });
     const updatedArmor = Math.max(0, target.armor - damage + armor);
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);

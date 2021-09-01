@@ -32,6 +32,9 @@ export interface Effect {
     healingPerTurn?: number;
     armorPerTurn?: number;
     immunities?: EFFECT_TYPES[];
+    armorReceived?: number;
+    damageReceived?: number;
+    healingReceived?: number;
     onReceiveEffect?: {
         conditions?: EffectCondition[]; // OR if multiple conditions are present
         target?: {

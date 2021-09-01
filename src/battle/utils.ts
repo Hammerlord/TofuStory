@@ -121,17 +121,25 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
     });
 };
 
-export const calculateDamage = ({ actor, action }: { actor?: Combatant; action: Action }): number => {
-    if (!actor || action.type !== ACTION_TYPES.ATTACK) {
-        return action.damage || 0;
+export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
+    const actionDamage = action.damage || 0;
+    if (!actor || action.type !== ACTION_TYPES.ATTACK || !target) {
+        return actionDamage;
     }
 
-    const damage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + (action.damage || 0);
-    if (actor.damage > 0) {
-        return Math.max(1, damage);
+    const damage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + actionDamage;
+    const damageReceived = target.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0);
+    const totalDamage = damage + damageReceived;
+    if (actor.damage > 0 || actionDamage > 0) {
+        return Math.max(1, totalDamage); // An actor/ability that can do damage must do at least 1 damage
     }
 
-    return Math.max(0, damage);
+    return Math.max(0, totalDamage);
+};
+
+export const calculateArmor = ({ actor, target, action }): number => {
+    const armor = target.effects.reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) + (action.armor || 0);
+    return Math.max(0, armor);
 };
 
 /**

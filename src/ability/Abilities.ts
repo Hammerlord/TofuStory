@@ -19,6 +19,7 @@ import {
     hammer,
     chanceattack,
     puncture,
+    ironwill as ironwillImage,
 } from "../images";
 import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -344,6 +345,26 @@ export const chanceStrike: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             addCards: [overpower].map((card) => ({ ...card, removeAfterTurn: true })),
+        },
+    ],
+};
+
+export const ironWill: Ability = {
+    name: "Iron Will",
+    resourceCost: 1,
+    image: ironwillImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            armor: 1,
+            effects: [
+                {
+                    type: EFFECT_TYPES.BUFF,
+                    armorReceived: 1,
+                    duration: 0,
+                },
+            ],
         },
     ],
 };

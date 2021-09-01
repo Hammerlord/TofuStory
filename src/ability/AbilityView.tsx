@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { calculateDamage } from "../battle/utils";
 import { Combatant } from "../character/types";
 import Icon from "../icon/Icon";
-import { Blood, Cactus, CrossedSwords, Dizzy, Heart, Shield } from "../images";
+import { Blood, Cactus, CrossedSwords, Dizzy, Heart, Hourglass, Shield } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
@@ -151,6 +151,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const stun = allEffects.find(({ type }) => type === EFFECT_TYPES.STUN);
     const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
         allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
+    const armorReceivedEffect = allEffects.find(({ armorReceived = 0 }) => armorReceived > 0);
 
     const { target: targetType } = actions[0] || {};
 
@@ -232,6 +233,24 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     {thornsDuration > 0 && (
                         <li>
                             Gain <Icon icon={<Cactus />} text={thornsDuration} />
+                        </li>
+                    )}
+                    {armorReceivedEffect && (
+                        <li>
+                            <Icon
+                                icon={<Shield />}
+                                text={
+                                    armorReceivedEffect.armorReceived < 0
+                                        ? `-${armorReceivedEffect.armorReceived}`
+                                        : `+${armorReceivedEffect.armorReceived}`
+                                }
+                            />{" "}
+                            from armor sources{" "}
+                            {armorReceivedEffect.duration === 0 ? (
+                                "this turn"
+                            ) : (
+                                <Icon icon={<Hourglass />} text={armorReceivedEffect.duration} />
+                            )}
                         </li>
                     )}
                     {Object.keys(cardsToAddCount).length > 0 && (
