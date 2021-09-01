@@ -29,7 +29,6 @@ const useStyles = createUseStyles({
         },
     },
     inner: {
-        maxWidth: "70rem",
         background: "#f5ebcb",
         display: "flex",
         width: "100%",
