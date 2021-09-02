@@ -148,22 +148,20 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 <AbilityView ability={ability} />
             </div>
         ));
+        const isEphemeral = Object.values(cardsToAddMap).some((ability: Ability) => ability.removeAfterTurn);
+        if (isEphemeral) {
+            tooltips.push(
+                <AbilityTooltipSection
+                    description={"Ephemeral abilities disappear at the end of your turn."}
+                    key={"ephemeral"}
+                />
+            );
+        }
         tooltips.push(
             <div className={classes.cards} key={"cards"}>
                 {cards}
             </div>
         );
-
-        const isEphemeral = Object.values(cardsToAddMap).some((ability: Ability) => ability.removeAfterTurn);
-        if (isEphemeral) {
-            tooltips.push(
-                <AbilityTooltipSection
-                    title={"Ephemeral"}
-                    description={"Ephemeral abilities are removed from battle upon play or at the end of your turn."}
-                    key={"ephemeral"}
-                />
-            );
-        }
     }
 
     return (
