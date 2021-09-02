@@ -58,6 +58,7 @@ const useTooltipStyles = createUseStyles({
         "&&": {
             maxWidth: "400px",
             background: "none",
+            minHeight: "200px",
         },
     },
     container: {
@@ -68,7 +69,6 @@ const useTooltipStyles = createUseStyles({
     cards: {
         display: "flex",
         background: "rgba(50, 50, 50, 0.9)",
-        marginBottom: 8,
         borderRadius: "8px",
         padding: "16px",
         "& > .card-container:not(:last-child)": {
@@ -151,10 +151,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         const isEphemeral = Object.values(cardsToAddMap).some((ability: Ability) => ability.removeAfterTurn);
         if (isEphemeral) {
             tooltips.push(
-                <AbilityTooltipSection
-                    description={"Ephemeral abilities disappear at the end of your turn."}
-                    key={"ephemeral"}
-                />
+                <AbilityTooltipSection description={"Ephemeral abilities disappear at the end of your turn."} key={"ephemeral"} />
             );
         }
         tooltips.push(
@@ -165,7 +162,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     }
 
     return (
-        <Tooltip title={tooltips} placement={"right"} classes={{ tooltip: classes.tooltip }} enterDelay={1000}>
+        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={1000}>
             {children}
         </Tooltip>
     );
