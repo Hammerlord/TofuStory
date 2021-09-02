@@ -25,7 +25,7 @@ const BonusView = ({ ability }) => {
             {bonuses.map(({ damage = 0, healing = 0, armor = 0, conditions = [] }, i) => {
                 const conditionText = conditions?.map(({ hasEffectType = [] }) => {
                     if (hasEffectType.length) {
-                        return <span key={i}>on targets affected by {hasEffectType.map(getIconForEffectType)}{i < conditions.length - 1 ? ' or ' : ''}</span>;
+                        return <span key={i}>on targets with {hasEffectType.map(getIconForEffectType)}{i < conditions.length - 1 ? ' or ' : ''}</span>;
                     }
                 });
                 return (

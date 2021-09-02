@@ -24,7 +24,7 @@ const Buffs = ({ ability }) => {
             )}
             {thornsDuration > 0 && (
                 <div>
-                    Gain <Icon icon={<Cactus />} /> for <Icon icon={<Hourglass />} text={thornsDuration} />
+                    Gain <Icon icon={<Cactus />} /> <Icon icon={<Hourglass />} text={thornsDuration} />
                 </div>
             )}
             {armorReceived > 0 && (
@@ -35,7 +35,7 @@ const Buffs = ({ ability }) => {
             )}
             {resourcesPerTurn > 0 && (
                 <div>
-                    Gain <Fury text={`+${resourcesPerTurn}`} /> per turn for <Icon icon={<Hourglass />} text={resourcesPerTurnDuration} />
+                    Gain <Fury text={`+${resourcesPerTurn}`} /> per turn <Icon icon={<Hourglass />} text={resourcesPerTurnDuration} />
                 </div>
             )}
         </>

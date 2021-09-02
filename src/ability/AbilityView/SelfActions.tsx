@@ -25,7 +25,7 @@ const SelfActions = ({ ability }) => {
             )}
             {(armor > 0 || resourceGain > 0) && (
                     <div>
-                        Gain
+                        Gain{" "}
                         {armor > 0 && <Icon icon={<Shield />} text={armor} />}
                         {resourceGain > 0 && <Fury text={resourceGain} />}
                     </div>
