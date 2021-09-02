@@ -11,6 +11,7 @@ import { Ability, ACTION_TYPES } from "../types";
 import { getAbilityColor } from "../utils";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
+import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
@@ -149,6 +150,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 <SelfActions ability={ability} />
                 <Buffs ability={ability} />
                 <CardsToAdd ability={ability} />
+                <BonusView ability={ability} />
                 {removeAfterTurn && <div>Ephemeral</div>}
                 {interpolatedDescription && <div>{interpolatedDescription}</div>}
                 {minion && (

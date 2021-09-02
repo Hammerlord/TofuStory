@@ -19,6 +19,7 @@ export { default as Helmet } from "./1fa96.svg";
 export { default as Crossmark } from "./274c.svg";
 export { default as NoStun } from "./nostun.svg";
 export { default as Snowflake } from "./2744.svg";
+export { default as ArrowDown } from "./2b07.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";

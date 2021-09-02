@@ -312,7 +312,6 @@ export const hammerang: Ability = {
 export const overpower: Ability = {
     name: "Overpower",
     resourceCost: 1,
-    description: "+3 damage on targets affected by a debuff",
     image: puncture,
     actions: [
         {
