@@ -33,12 +33,14 @@ export const getDebuffDurations = (
                     ...acc,
                     burnDuration: (acc.burnDuration || 0) + duration,
                 };
-            default:
+            case EFFECT_TYPES.DEBUFF:
                 return {
                     ...acc,
                     damage: (acc.damage || 0) + damage,
                     debuffDuration: (acc.debuffDuration || 0) + duration,
                 };
+            default:
+                return acc;
         }
     }, {});
 };
