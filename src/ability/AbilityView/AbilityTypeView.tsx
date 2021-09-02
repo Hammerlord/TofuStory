@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { TARGET_TYPES } from "./types";
+import { TARGET_TYPES } from "../types";
 
 const SIZE = "5px";
 const useStyles = createUseStyles({
@@ -9,10 +9,10 @@ const useStyles = createUseStyles({
         fontSize: "0.7rem",
         textTransform: "uppercase",
         marginTop: "4px",
-        borderTop: "0.5px solid rgba(0, 0, 0, 0.15)"
+        borderTop: "0.5px solid rgba(0, 0, 0, 0.15)",
     },
     inner: {
-        lineHeight: "24px"
+        lineHeight: "24px",
     },
     diamond: {
         width: 0,
@@ -57,7 +57,7 @@ const AbilityTypeView = ({ targetType, minion }) => {
     let typeLabel;
     if (minion) {
         typeLabel = "Summon";
-    } else if (targetType === TARGET_TYPES.HOSTILE) {
+    } else if (targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE) {
         typeLabel = "Offensive";
     } else if (targetType === TARGET_TYPES.FRIENDLY) {
         typeLabel = "Support - Ally";
@@ -70,8 +70,7 @@ const AbilityTypeView = ({ targetType, minion }) => {
         <span
             className={classNames(classes.diamond, {
                 [classes.offensive]: targetType === TARGET_TYPES.HOSTILE,
-                [classes.support]:
-                    targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
+                [classes.support]: targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
                 [classes.minion]: Boolean(minion),
             })}
         />
@@ -80,9 +79,9 @@ const AbilityTypeView = ({ targetType, minion }) => {
     return (
         <div className={classes.root}>
             <span className={classes.inner}>
-            {diamond}
-            <span>{typeLabel}</span>
-            {diamond}
+                {diamond}
+                <span>{typeLabel}</span>
+                {diamond}
             </span>
         </div>
     );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AbilityView from "../ability/AbilityView";
+import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 
 const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs }) => {

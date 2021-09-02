@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import AbilityView from "./AbilityView";
+import AbilityView from "./AbilityView/AbilityView";
 
 const useStyles = createUseStyles({
     root: {

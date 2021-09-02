@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
-import Icon from "../icon/Icon";
-import { CrossedSwords, Fireworks, Heart, Shield } from "../images";
-import { Aura } from "./types";
+import Icon from "../../icon/Icon";
+import { CrossedSwords, Fireworks, Heart, Shield } from "../../images";
+import { Aura } from "../types";
 
 const useStyles = createUseStyles({
     root: {
