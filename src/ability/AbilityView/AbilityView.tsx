@@ -52,25 +52,27 @@ const Area = ({ area }) => {
 const useStyles = createUseStyles({
     root: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
-        width: "140px",
+        width: "150px",
         minHeight: "250px",
-        padding: "12px",
+        padding: "8px",
         paddingTop: "6px",
         paddingBottom: "2px",
         cursor: "pointer",
         background: "#d9ca96",
         transition: "transform 0.25s",
-        borderRadius: "2px",
+        borderRadius: "4px",
         textAlign: "center",
         position: "relative",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
     },
     header: {
         display: "flex",
         justifyContent: "space-between",
-        marginBottom: "4px",
+        textShadow: "0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white",
+        lineHeight: "16px",
         zIndex: 1,
     },
     name: {
@@ -78,15 +80,33 @@ const useStyles = createUseStyles({
         fontSize: "1.1rem",
     },
     portraitContainer: {
-        height: "60px",
-    },
-    portrait: {
-        height: "64px",
-        objectFit: "contain",
         position: "absolute",
+        top: "30px",
         left: "50%",
         transform: "translateX(-50%)",
-        top: "35px",
+        height: "90px",
+        width: "calc(100% - 16px)",
+    },
+    portrait: {
+        height: "100%",
+        width: "100%",
+        objectFit: "contain",
+    },
+    footer: {
+        position: "relative",
+    },
+    minionStats: {
+        position: "absolute",
+        bottom: 24,
+        width: "100%",
+    },
+    minionHP: {
+        left: 0,
+        position: "absolute",
+    },
+    minionDamage: {
+        right: 0,
+        position: "absolute",
     },
     selectedAbility: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
@@ -94,11 +114,14 @@ const useStyles = createUseStyles({
         transform: "translateY(-16px)",
     },
     body: {
-        minHeight: "40px",
-        marginTop: "8px",
+        minHeight: "75px",
+        marginTop: "70px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
         fontSize: "0.9rem",
-        "& div": {
-            marginBottom: "4px",
+        "& > div:not(:last-child)": {
+            marginBottom: "8px",
         },
 
         "& .icon-root": {
@@ -140,11 +163,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 {damageIcon}
                 <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
             </span>
-            {cardImage && (
-                <div className={classes.portraitContainer}>
-                    <img src={cardImage} className={classes.portrait} />
-                </div>
-            )}
+            <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
             <div className={classes.body}>
                 <Debuffs ability={ability} />
                 <SelfActions ability={ability} />
@@ -153,19 +172,21 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 <BonusView ability={ability} />
                 {removeAfterTurn && <div>Ephemeral</div>}
                 {interpolatedDescription && <div>{interpolatedDescription}</div>}
-                {minion && (
-                    <div>
-                        <Icon icon={<Heart />} text={minion.maxHP} />
-                        <Icon icon={<CrossedSwords />} text={minion.damage} />
-                    </div>
-                )}
                 {aura && <AuraView aura={aura} />}
-                {actions.length > 0 && (
+            </div>
+            <div className={classes.footer}>
+                {actions.length > 0 && area > 0 && (
                     <div>
                         Area: <Area area={area} />
                     </div>
                 )}
                 <AbilityTypeView targetType={targetType} minion={minion} />
+                {minion && (
+                    <div className={classes.minionStats}>
+                        <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
+                        <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
+                    </div>
+                )}
             </div>
         </div>
     );

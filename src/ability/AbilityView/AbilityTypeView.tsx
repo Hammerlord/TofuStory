@@ -9,7 +9,6 @@ const useStyles = createUseStyles({
         fontSize: "0.7rem",
         textTransform: "uppercase",
         marginTop: "4px",
-        borderTop: "0.5px solid rgba(0, 0, 0, 0.15)",
     },
     inner: {
         lineHeight: "24px",
@@ -69,7 +68,7 @@ const AbilityTypeView = ({ targetType, minion }) => {
     const diamond = (
         <span
             className={classNames(classes.diamond, {
-                [classes.offensive]: targetType === TARGET_TYPES.HOSTILE,
+                [classes.offensive]: targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE,
                 [classes.support]: targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
                 [classes.minion]: Boolean(minion),
             })}
