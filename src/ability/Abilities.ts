@@ -27,6 +27,7 @@ import {
     advancedcharge,
     Fire,
     Snowflake,
+    slashblast,
 } from "../images";
 import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
@@ -66,7 +67,7 @@ export const charge: Ability = {
 export const cleave: Ability = {
     name: "Cleave",
     resourceCost: 1,
-    image: axe,
+    image: slashblast,
     actions: [
         {
             damage: 2,
@@ -495,3 +496,4 @@ export const frostFire: Ability = {
         },
     ],
 };
+

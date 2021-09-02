@@ -53,3 +53,4 @@ export { default as blizzardcharge } from "./blizzardcharge.png";
 export { default as flamecharge } from "./flamecharge.png";
 export { default as lightningcharge } from "./lightningcharge.png";
 export { default as advancedcharge } from "./advancedcharge.png";
+export { default as slashblast } from "./slashblast.png";
