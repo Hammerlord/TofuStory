@@ -80,7 +80,7 @@ const Debuffs = ({ ability }) => {
             )}{" "}
             {damage && (
                 <>
-                    <Icon icon={<CrossedSwords />} text={`${damage < 0 ? "-" : "+"}${damage}`} />
+                    <Icon icon={<CrossedSwords />} text={`${damage > 0 ? "+" : ""}${damage}`} />
                     <Icon icon={<Hourglass />} text={debuffDuration} />
                 </>
             )}
