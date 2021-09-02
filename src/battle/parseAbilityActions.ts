@@ -97,7 +97,7 @@ export const applyActionToTarget = ({ target, actor, action }: { target: Combata
     action = calculateBonus({ target, actor, action });
     const { healing = 0, effects = [], resources = 0 } = action;
     const damage = calculateDamage({ actor, target, action });
-    const armor = calculateArmor({ actor, target, action });
+    const armor = calculateArmor({ target, action });
     const updatedArmor = Math.max(0, target.armor - damage + armor);
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);

@@ -137,8 +137,9 @@ export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; 
     return Math.max(0, totalDamage);
 };
 
-export const calculateArmor = ({ actor, target, action }): number => {
-    const armor = target.effects.reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) + (action.armor || 0);
+export const calculateArmor = ({ target, action }): number => {
+    const targetArmor = target?.effects.reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
+    const armor = targetArmor + (action.armor || 0);
     return Math.max(0, armor);
 };
 
