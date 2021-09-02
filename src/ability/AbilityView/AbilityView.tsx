@@ -9,6 +9,7 @@ import { CrossedSwords, Heart } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
 import { Ability, ACTION_TYPES } from "../types";
 import { getAbilityColor } from "../utils";
+import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import AuraView from "./AuraView";
 import BonusView from "./BonusView";
@@ -67,6 +68,8 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         justifyContent: "space-between",
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+        color: "rgba(0, 0, 0, 0.9)",
+        fontFamily: "Barlow",
     },
     header: {
         display: "flex",
@@ -131,6 +134,26 @@ const useStyles = createUseStyles({
     iconPlaceholder: {
         width: "24px",
     },
+    bold: {
+        fontWeight: "bold",
+    },
+    "@keyframes fade": {
+        '0%': {
+            opacity: 0.95,
+        },
+        '60%': {
+            opacity: 0.95,
+        },
+        '100%': {
+            opacity: 0.8,
+        },
+    },
+    ephemeral: {
+        animationName: "$fade",
+        animationDuration: `2s`,
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+    },
 });
 
 interface AbilityViewProps {
@@ -152,43 +175,46 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const damageIcon = baseDamage ? <DamageIcon ability={ability} player={player} /> : <div className={classes.iconPlaceholder} />;
 
     return (
-        <div
-            onClick={onClick}
-            className={classNames(classes.root, {
-                [classes.selectedAbility]: isSelected,
-            })}
-            style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
-        >
-            <span className={classes.header} ref={ref as any}>
-                {damageIcon}
-                <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
-            </span>
-            <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
-            <div className={classes.body}>
-                <Debuffs ability={ability} />
-                <SelfActions ability={ability} />
-                <Buffs ability={ability} />
-                <CardsToAdd ability={ability} />
-                <BonusView ability={ability} />
-                {removeAfterTurn && <div>Ephemeral</div>}
-                {interpolatedDescription && <div>{interpolatedDescription}</div>}
-                {aura && <AuraView aura={aura} />}
+        <AbilityTooltip ability={ability}>
+            <div
+                onClick={onClick}
+                className={classNames(classes.root, {
+                    [classes.selectedAbility]: isSelected,
+                    [classes.ephemeral]: removeAfterTurn,
+                })}
+                style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
+            >
+                <span className={classes.header} ref={ref as any}>
+                    {damageIcon}
+                    <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
+                </span>
+                <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
+                <div className={classes.body}>
+                    {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
+                    <Debuffs ability={ability} />
+                    <SelfActions ability={ability} />
+                    <Buffs ability={ability} />
+                    <CardsToAdd ability={ability} />
+                    <BonusView ability={ability} />
+                    {interpolatedDescription && <div>{interpolatedDescription}</div>}
+                    {aura && <AuraView aura={aura} />}
+                </div>
+                <div className={classes.footer}>
+                    {actions.length > 0 && area > 0 && (
+                        <div>
+                            Area: <Area area={area} />
+                        </div>
+                    )}
+                    <AbilityTypeView targetType={targetType} minion={minion} />
+                    {minion && (
+                        <div className={classes.minionStats}>
+                            <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
+                            <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className={classes.footer}>
-                {actions.length > 0 && area > 0 && (
-                    <div>
-                        Area: <Area area={area} />
-                    </div>
-                )}
-                <AbilityTypeView targetType={targetType} minion={minion} />
-                {minion && (
-                    <div className={classes.minionStats}>
-                        <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
-                        <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
-                    </div>
-                )}
-            </div>
-        </div>
+        </AbilityTooltip>
     );
 });
 

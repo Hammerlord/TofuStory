@@ -3,7 +3,7 @@ import { Ability } from "../types";
 
 const useStyles = createUseStyles({
     cardIcon: {
-        maxWidth: "16px",
+        maxWidth: "24px",
     },
 });
 
