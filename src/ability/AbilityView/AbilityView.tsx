@@ -117,15 +117,12 @@ const useStyles = createUseStyles({
         transform: "translateY(-16px)",
     },
     body: {
-        minHeight: "75px",
-        marginTop: "70px",
+        minHeight: "80px",
+        marginTop: "80px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-around",
         fontSize: "0.9rem",
-        "& > div:not(:last-child)": {
-            marginBottom: "8px",
-        },
 
         "& .icon-root": {
             verticalAlign: "bottom",

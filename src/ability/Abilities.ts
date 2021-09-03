@@ -213,11 +213,11 @@ export const spikedArmor: Ability = {
 
 export const warBanner: Ability = {
     name: "War Banner",
-    resourceCost: 2,
+    resourceCost: 1,
     minion: {
         name: "War Banner",
         image: flag,
-        maxHP: 3,
+        maxHP: 1,
         damage: 0,
         aura: {
             damage: 1,
@@ -225,6 +225,7 @@ export const warBanner: Ability = {
             area: 1,
             type: EFFECT_TYPES.BUFF,
         },
+        effects: [stealth],
     },
     actions: [],
 };

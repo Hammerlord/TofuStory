@@ -6,11 +6,11 @@ import { Aura } from "../types";
 const useStyles = createUseStyles({
     root: {
         border: "1px solid rgba(0, 0, 0, 0.2)",
-        borderRadius: "1px",
-        paddingTop: "16px",
+        borderRadius: "4px",
+        paddingTop: "12px",
         marginTop: "16px",
         paddingBottom: "8px",
-        width: "100%",
+        width: "calc(100% - 2px)", // Minus borders
         position: "relative",
     },
     auraLabel: {
@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
         color: "white",
         border: "1px solid rgba(0, 0, 0, 0.1)",
         padding: "2px 6px",
-        borderRadius: "1px",
+        borderRadius: "4px",
         fontSize: "0.7rem",
     },
 });

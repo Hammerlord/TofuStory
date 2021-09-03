@@ -8,7 +8,6 @@ const useStyles = createUseStyles({
         textAlign: "center",
         fontSize: "0.7rem",
         textTransform: "uppercase",
-        marginTop: "4px",
     },
     inner: {
         lineHeight: "24px",
