@@ -28,7 +28,7 @@ const BonusView = ({ ability }) => {
                         return <span key={i}>to targets with {hasEffectType.map(getIconForEffectType)}{i < conditions.length - 1 ? ' or ' : ''}</span>;
                     }
                     if (healthPercentage !== undefined) {
-                        return <span key={i}>to targets at {healthPercentage}% HP</span>;
+                        return <span key={i}>to targets at {healthPercentage * 100}% HP</span>;
                     }
                 });
                 return (

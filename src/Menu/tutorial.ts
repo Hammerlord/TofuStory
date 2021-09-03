@@ -1,5 +1,5 @@
 import { Ability } from "./../ability/types";
-import { slam, bash, cleave, block, warLeap, snailMinion } from "../ability/Abilities";
+import { slam, bash, slashBlast, block, warLeap, snailMinion } from "../ability/Abilities";
 import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
 import { createCombatant } from "../enemy/createEnemy";
 
@@ -27,9 +27,9 @@ const tutorial: Wave[] = [
     },
     {
         name: "Area attacks",
-        description: "Target multiple enemies with Area attacks like Cleave.",
+        description: "Target multiple enemies with Area attacks like Slash Blast.",
         createEnemies: () => [null, basicDummy, basicDummy, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, bash, bash, cleave, cleave],
+        presetDeck: [bash, bash, bash, slashBlast, slashBlast],
     },
     {
         name: "Supportive abilities",
@@ -61,7 +61,7 @@ const tutorial: Wave[] = [
         name: "Defeat the Raging Dummy",
         description: "Defeat the Raging Dummy and its minions!",
         createEnemies: () => [null, basicDummy, ragingDummy, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, bash, slam, cleave, block, block, snailMinion, snailMinion, warLeap],
+        presetDeck: [bash, bash, slam, slashBlast, block, block, snailMinion, snailMinion, warLeap],
     },
 ];
 

@@ -15,9 +15,8 @@ import {
     ironwill as ironwillImage,
     lightningcharge,
     mace,
-    puncture,
+    puncture as punctureImage,
     rage,
-    rend as rendImage,
     risingrage,
     shieldred,
     shout,
@@ -68,8 +67,8 @@ export const warLeap: Ability = {
     ],
 };
 
-export const cleave: Ability = {
-    name: "Cleave",
+export const slashBlast: Ability = {
+    name: "Slash Blast",
     resourceCost: 1,
     image: slashblast,
     actions: [
@@ -161,26 +160,6 @@ export const block: Ability = {
             armor: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-        },
-    ],
-};
-
-export const rend: Ability = {
-    name: "Rend",
-    resourceCost: 2,
-    image: rendImage,
-    actions: [
-        {
-            damage: 2,
-            area: 1,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            effects: [
-                {
-                    ...wound,
-                    duration: 3,
-                },
-            ],
         },
     ],
 };
@@ -311,24 +290,22 @@ export const hammerang: Ability = {
     ],
 };
 
-export const overpower: Ability = {
-    name: "Overpower",
+export const puncture: Ability = {
+    name: "Puncture",
     resourceCost: 1,
-    image: puncture,
+    image: punctureImage,
     actions: [
         {
-            damage: 2,
+            damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL],
-                    },
-                ],
-                damage: 3,
-            },
+            effects: [
+                {
+                    ...wound,
+                    duration: 3,
+                },
+            ],
+            area: 1,
         },
     ],
 };
@@ -339,20 +316,18 @@ export const chanceStrike: Ability = {
     image: chanceattack,
     actions: [
         {
-            damage: 1,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            effects: [
-                {
-                    ...wound,
-                    duration: 2,
-                },
-            ],
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            addCards: [overpower].map((card) => ({ ...card, removeAfterTurn: true })),
+            bonus: {
+                damage: 2,
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL],
+                    },
+                ],
+            },
         },
     ],
 };

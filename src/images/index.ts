@@ -29,7 +29,6 @@ export { default as block } from "./block.png";
 export { default as shieldred } from "./shieldred.png";
 export { default as woodenclub } from "./woodenclub.png";
 export { default as shout } from "./shout.png";
-export { default as rend } from "./rend.png";
 export { default as warleap } from "./warleap.png";
 export { default as brick } from "./brick.png";
 export { default as mace } from "./item384.png";
