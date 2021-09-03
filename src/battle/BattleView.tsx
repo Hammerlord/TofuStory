@@ -15,7 +15,7 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { applyPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyPerTurnEffects, calculateActionArea, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, cleanUpDeadCharacters, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
@@ -592,13 +592,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const ability = hand[selectedAbilityIndex];
         const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
-        if (!ability || index === null || !isValidTarget({ ability, side, index: i, enemies, allies })) {
+        if (!ability || index === null || !isValidTarget({ ability, side, index: i, enemies, allies, actor: player })) {
             return false;
         }
 
-        const abilityArea = ability.area || 0;
         const { actions = [] } = ability;
-        const { area = abilityArea } = actions[0] || {};
+        const area = calculateActionArea({ action: actions[0], actor: player }) || ability.area || 0;
         return i >= index - area && i <= index + area;
     };
 
@@ -625,23 +624,20 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             }
         }
 
-        if (!isValidTarget({ ability, side, index, allies, enemies })) {
-            return false;
-        }
-
+        const actor = player;
         if (typeof hoveredEnemyIndex === "number") {
-            if (isValidTarget({ ability, side: "enemies", index: hoveredEnemyIndex, allies, enemies })) {
+            if (isValidTarget({ ability, side: "enemies", index: hoveredEnemyIndex, allies, enemies, actor })) {
                 return isTargeted(index, side);
             }
         }
 
         if (typeof hoveredAllyIndex === "number") {
-            if (isValidTarget({ ability, side: "allies", index: hoveredAllyIndex, allies, enemies })) {
+            if (isValidTarget({ ability, side: "allies", index: hoveredAllyIndex, allies, enemies, actor })) {
                 return isTargeted(index, side);
             }
         }
 
-        return true;
+        return isValidTarget({ ability, side, index, allies, enemies, actor });
     };
 
     const origination = useMemo(() => {

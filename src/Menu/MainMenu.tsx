@@ -11,6 +11,7 @@ import {
     frostFire, hammerang, hyperBody, ironWill, lightningCharge, puncture, rampage,
     shieldStrike,
     slam, slashBlast, spikedArmor,
+    sweepingReach,
     warBanner, warLeap, yell
 } from "./../ability/Abilities";
 import { warmush } from "./../images";
@@ -71,6 +72,7 @@ const allCards = [
     brandish,
     brandish,
     comboFury,
+    sweepingReach,
 ];
 
 const useStyles = createUseStyles({
@@ -104,11 +106,11 @@ const MainMenu = () => {
         turnHistory: [],
     });
     const [deck, setDeck] = useState([
-        bunchOBricks,
         evilEye,
         brandish,
         brandish,
         comboFury,
+        sweepingReach,
     ]);
 
     const classes = useStyles();

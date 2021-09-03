@@ -27,6 +27,7 @@ import {
     spikes,
     warleap,
     warmush,
+    weaponbooster,
     Wolf,
 } from "../images";
 import { burn, stealth, stun, thorns, wound } from "./Effects";
@@ -518,6 +519,31 @@ export const comboFury: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+        },
+    ],
+};
+
+export const sweepingReach: Ability = {
+    name: "Sweeping Reach",
+    resourceCost: 2,
+    image: weaponbooster,
+    description: "Increases the area of your next attack by 1",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Sweeping Reach",
+                    type: EFFECT_TYPES.BUFF,
+                    icon: weaponbooster,
+                    description: "Increases the area of your next offensive ability by 1",
+                    attackAreaIncrease: 1,
+                    onAttack: {
+                        removeEffect: true,
+                    },
+                },
+            ],
         },
     ],
 };

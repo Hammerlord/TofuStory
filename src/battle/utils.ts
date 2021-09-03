@@ -1,6 +1,7 @@
 import { shuffle } from "./../utils";
 import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
+import { calculateActionArea } from "./parseAbilityActions";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -60,7 +61,7 @@ export const canUseAbility = (character, ability: Ability | undefined): boolean 
     return resourceCost <= (character.resources || 0);
 };
 
-export const isValidTarget = ({ ability, side, allies, enemies, index }): boolean => {
+export const isValidTarget = ({ ability, side, allies, enemies, index, actor }): boolean => {
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
 
@@ -68,8 +69,8 @@ export const isValidTarget = ({ ability, side, allies, enemies, index }): boolea
         return side === "allies" && (!allies[index] || allies[index].HP === 0);
     }
 
-    const abilityArea = ability.area || 0;
-    const { target, area = abilityArea } = actions[0] || {};
+    const { target } = actions[0] || {};
+    const area = calculateActionArea({ action: actions[0], actor }) || ability.area || 0;
 
     if (side === "allies") {
         if (target === TARGET_TYPES.SELF) {

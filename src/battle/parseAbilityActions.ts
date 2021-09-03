@@ -153,14 +153,29 @@ const removeStealth = (character: Combatant): Combatant => {
     };
 };
 
-export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
-    const { area = 0, movement } = action;
+export const calculateActionArea = ({ action, actor }: { action?: Action; actor: Combatant }): number => {
+    if (!action) {
+        return 0;
+    }
+    const { type, area = 0 } = action;
+    const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
+    let totalArea = area;
+    actor.effects.forEach(({ attackAreaIncrease = 0 }) => {
+        if (isAttack) {
+            totalArea += attackAreaIncrease;
+        }
+    });
+    return totalArea;
+};
 
+export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
+    const { movement } = action;
     const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
         enemies,
         allies,
         casterId,
     });
+    const area = calculateActionArea({ action, actor: caster });
     const isInArea = (character, i) => {
         return character && i >= targetIndex - area && i <= targetIndex + area;
     };
@@ -372,6 +387,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
     // All actions should be based on the most recent version of enemies/allies
     const mostRecentEnemies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
     const mostRecentAllies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
+    const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === casterId);
 
     actions.forEach((action: Action) => {
         let index = targetIndex;
@@ -400,38 +416,82 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
         );
     });
 
-    const caster = mostRecentAllies().find((ally) => ally?.id === casterId);
-    if (!caster) {
+    if (!mostRecentCaster()) {
         // If it's dead, return here
         return results;
     }
 
-    const healthPerResourcesSpent = caster.effects.reduce((acc, { healthPerResourcesSpent = 0 }) => {
+    const hpPerResourceUpdatedCharacters = handleHealthPerResourcesSpent({
+        actor: mostRecentCaster(),
+        resourceCost,
+        characters: mostRecentAllies(),
+    });
+    if (hpPerResourceUpdatedCharacters) {
+        results.push({
+            updatedAllies: hpPerResourceUpdatedCharacters,
+            updatedEnemies: mostRecentEnemies(),
+            casterId: null,
+        } as Event);
+    }
+
+    const abilityActionEventUpdatedCharacters = handleOnAbilityActionEvents({
+        actor: mostRecentCaster(),
+        characters: mostRecentAllies(),
+        ability,
+    });
+    if (abilityActionEventUpdatedCharacters) {
+        results.push({
+            updatedAllies: abilityActionEventUpdatedCharacters,
+            updatedEnemies: mostRecentEnemies(),
+            casterId: null,
+        } as Event);
+    }
+
+    return results;
+};
+
+const handleOnAbilityActionEvents = ({ actor, characters, ability }): Combatant[] => {
+    const isAttackUsed = ability.actions.some(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK);
+    return characters.map((character) => {
+        if (character?.id !== actor.id) {
+            return character;
+        }
+
+        return {
+            ...cloneDeep(character),
+            effects: character.effects.filter((effect: Effect) => {
+                const { onAttack } = effect;
+                if (onAttack && isAttackUsed) {
+                    // Only handling this very specific thing atm...
+                    const { removeEffect } = onAttack;
+                    return !removeEffect;
+                }
+                return true;
+            }),
+        };
+    });
+};
+
+const handleHealthPerResourcesSpent = ({ actor, characters, resourceCost = 0 }): Combatant[] => {
+    const healthPerResourcesSpent = actor.effects.reduce((acc, { healthPerResourcesSpent = 0 }) => {
         return acc + healthPerResourcesSpent;
     }, 0);
 
     if (healthPerResourcesSpent > 0) {
         const healing = healthPerResourcesSpent * resourceCost;
         if (healing > 0) {
-            const newHP = Math.min(caster.maxHP || Infinity, caster.HP + healing);
-            const updatedAllies = mostRecentAllies().map((character) => {
-                if (character?.id === caster.id) {
+            const newHP = Math.min(actor.maxHP || Infinity, actor.HP + healing);
+            return characters.map((character) => {
+                if (character?.id === actor.id) {
                     return {
-                        ...cloneDeep(caster),
+                        ...cloneDeep(actor),
                         HP: newHP,
                     };
                 }
-
                 return character;
-            });
-            results.push({
-                updatedAllies,
-                updatedEnemies: mostRecentEnemies().map(cloneDeep),
-                casterId: null,
             });
         }
     }
-    return results;
 };
 
 export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {

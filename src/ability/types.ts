@@ -31,6 +31,7 @@ export interface Effect {
     healthPerResourcesSpent?: number;
     icon?: string;
     thorns?: number;
+    attackAreaIncrease?: number;
     isAuraEffect?: boolean;
     healingPerTurn?: number;
     armorPerTurn?: number;
@@ -42,6 +43,9 @@ export interface Effect {
     /** The target for this is random */
     healTargetPerTurn?: number;
     damageTargetPerTurn?: number;
+    onAttack?: {
+        removeEffect: boolean;
+    },
     onReceiveEffect?: {
         conditions?: EffectCondition[]; // OR if multiple conditions are present
         target?: {
