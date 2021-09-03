@@ -1,15 +1,12 @@
 import Icon from "../../icon/Icon";
 import { Blood, CrossedSwords, Dizzy, Fire, Hourglass, Snowflake } from "../../images";
 import { Ability, Effect, EFFECT_TYPES } from "../types";
+import { getAllEffects } from "./utils";
 
 export const getDebuffDurations = (
     ability: Ability
 ): { bleedDuration: number; stunDuration: number; chillDuration: number; burnDuration: number; damage: number; debuffDuration: number } => {
-    const allEffects = ability.actions.reduce((acc, { effects = [] }) => {
-        acc.push(...effects);
-        return acc;
-    }, []);
-
+    const allEffects = getAllEffects(ability);
     return allEffects.reduce((acc, effect: Effect) => {
         const { type, duration = 0, damage = 0 } = effect;
         switch (type) {
@@ -42,7 +39,7 @@ export const getDebuffDurations = (
             default:
                 return acc;
         }
-    }, {});
+    }, {} as any);
 };
 
 const Debuffs = ({ ability }) => {

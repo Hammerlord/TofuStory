@@ -7,7 +7,6 @@ import {
     chanceattack,
     evileyeminion,
     evileyeskill,
-    Fire,
     flag,
     flamecharge,
     hammer,
@@ -24,13 +23,12 @@ import {
     shout,
     slashblast,
     snail as snailPortrait,
-    Snowflake,
     spikes,
     warleap,
     warmush,
     Wolf,
 } from "../images";
-import { spikedArmorEffect, stealth } from "./Effects";
+import { burn, stealth, stun, thorns, wound } from "./Effects";
 import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
@@ -55,13 +53,7 @@ export const charge: Ability = {
             damage: 1,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [
-                {
-                    name: "Stun",
-                    type: EFFECT_TYPES.STUN,
-                    duration: 1,
-                },
-            ],
+            effects: [stun],
         },
     ],
 };
@@ -175,8 +167,7 @@ export const rend: Ability = {
             type: ACTION_TYPES.ATTACK,
             effects: [
                 {
-                    name: "Bleed",
-                    type: EFFECT_TYPES.BLEED,
+                    ...wound,
                     duration: 3,
                 },
             ],
@@ -225,7 +216,7 @@ export const spikedArmor: Ability = {
         {
             armor: 4,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [spikedArmorEffect],
+            effects: [{ ...thorns, duration: 3 }],
             type: ACTION_TYPES.EFFECT,
         },
     ],
@@ -265,7 +256,6 @@ export const yell: Ability = {
     name: "Yell",
     resourceCost: 1,
     image: warmush,
-    description: "Decrease enemy attack power by 2 (minimum 1)",
     actions: [
         {
             area: 1,
@@ -344,8 +334,7 @@ export const chanceStrike: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
-                    name: "Bleed",
-                    type: EFFECT_TYPES.BLEED,
+                    ...wound,
                     duration: 2,
                 },
             ],
@@ -414,10 +403,8 @@ export const flameCharge: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
-                    name: "Burn",
-                    type: EFFECT_TYPES.BURN,
+                    ...burn,
                     duration: 5,
-                    icon: Fire,
                 },
             ],
         },
@@ -442,15 +429,7 @@ export const blizzardCharge: Ability = {
                     },
                 ],
             },
-            effects: [
-                {
-                    name: "Chill",
-                    icon: Snowflake,
-                    type: EFFECT_TYPES.CHILL,
-                    duration: 5,
-                    damage: -1,
-                },
-            ],
+            effects: [],
         },
     ],
 };
@@ -474,13 +453,7 @@ export const lightningCharge: Ability = {
                     },
                 ],
             },
-            effects: [
-                {
-                    name: "Stun",
-                    type: EFFECT_TYPES.STUN,
-                    duration: 1,
-                },
-            ],
+            effects: [stun],
         },
     ],
 };

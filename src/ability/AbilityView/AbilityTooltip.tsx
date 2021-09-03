@@ -3,9 +3,10 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
 import { Blood, Cactus, Dizzy, Fire, Fireworks, Snowflake } from "../../images";
-import { Ability } from "../types";
+import { Ability, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
 import { getDebuffDurations } from "./Debuffs";
+import { getAllEffects } from "./utils";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -82,16 +83,16 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         acc[card.name] = card;
         return acc;
     }, {});
-    const { bleedDuration, stunDuration, chillDuration, burnDuration } = getDebuffDurations(ability);
-    const allEffects = ability.actions.reduce((acc, { effects = [] }) => {
-        acc.push(...effects);
-        return acc;
-    }, []);
-    const thornsDuration = allEffects.find(({ thorns = 0 }) => thorns > 0)?.duration || 0;
+
     const aura = ability.minion?.aura;
     const classes = useTooltipStyles();
 
-    const tooltips = [];
+    // We generally only want to display stuff that needs an explanation, like stealth, chill, etc...
+    const effectsToDisplay = getAllEffects(ability).filter(({ type }) => type !== EFFECT_TYPES.BUFF && type !== EFFECT_TYPES.DEBUFF);
+    const tooltips = effectsToDisplay.map((effect) => {
+        return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
+    });
+
     if (aura) {
         tooltips.push(
             <AbilityTooltipSection
@@ -100,56 +101,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 description={"Grants effects to allies who are directly adjacent to this minion's placement."}
                 key={"aura"}
             />
-        );
-    }
-
-    if (bleedDuration > 0) {
-        tooltips.push(
-            <AbilityTooltipSection
-                icon={<Blood />}
-                title={"Bleed"}
-                description={"Afflicted targets take 1 damage at the end of their turn."}
-                key={"bleed"}
-            />
-        );
-    }
-
-    if (stunDuration > 0) {
-        tooltips.push(
-            <AbilityTooltipSection
-                icon={<Dizzy />}
-                title={"Stun"}
-                description={"Afflicted targets are unable to act during their turn."}
-                key={"stun"}
-            />
-        );
-    }
-
-    if (chillDuration > 0) {
-        tooltips.push(
-            <AbilityTooltipSection
-                icon={<Snowflake />}
-                title={"Chill"}
-                description={"Reduces afflicted targets' attack power by 1."}
-                key={"chill"}
-            />
-        );
-    }
-
-    if (burnDuration > 0) {
-        tooltips.push(
-            <AbilityTooltipSection
-                icon={<Fire />}
-                title={"Burn"}
-                description={"Afflicted targets take 1 damage at the end of their turn."}
-                key={"burn"}
-            />
-        );
-    }
-
-    if (thornsDuration > 0) {
-        tooltips.push(
-            <AbilityTooltipSection icon={<Cactus />} title={"Thorns"} description={"Reflects 1 damage to attackers"} key={"thorns"} />
         );
     }
 

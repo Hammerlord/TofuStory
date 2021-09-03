@@ -1,19 +1,12 @@
 import { Effect, EFFECT_TYPES } from "./types";
-import { Cactus, Cloudy, Crossmark, Helmet, NoStun, spikes } from "../images";
+import { Blood, Cactus, Cloudy, Crossmark, Dizzy, Fire, Helmet, NoStun, Snowflake, spikes } from "../images";
 
 export const thorns: Effect = {
     name: "Thorns",
     icon: Cactus,
+    description: "Reflects 1 damage to attackers",
     thorns: 1,
     duration: Infinity,
-    type: EFFECT_TYPES.BUFF,
-};
-
-export const spikedArmorEffect: Effect = {
-    name: "Spiked Armor",
-    icon: Cactus,
-    thorns: 1,
-    duration: 3,
     type: EFFECT_TYPES.BUFF,
 };
 
@@ -51,4 +44,37 @@ export const stealth: Effect = {
     icon: Cloudy,
     description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
     duration: 3,
+};
+
+export const stun: Effect = {
+    name: "Stun",
+    type: EFFECT_TYPES.STUN,
+    duration: 1,
+    description: "Afflicted targets are unable to act during their turn.",
+    icon: Dizzy,
+};
+
+export const wound: Effect = {
+    name: "Wound",
+    type: EFFECT_TYPES.BLEED,
+    duration: 3,
+    icon: Blood,
+    description: "Wounded targets take 1 damage at the end of their turn.",
+};
+
+export const burn: Effect = {
+    name: "Burn",
+    type: EFFECT_TYPES.BURN,
+    duration: 3,
+    icon: Fire,
+    description: "Burned targets take 2 damage at the end of their turn.",
+};
+
+export const chill: Effect = {
+    name: "Chill",
+    icon: Snowflake,
+    type: EFFECT_TYPES.CHILL,
+    duration: 5,
+    damage: -1,
+    description: "Chilled targets have their attack power reduced by 1."
 };
