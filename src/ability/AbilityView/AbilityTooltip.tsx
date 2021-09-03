@@ -2,7 +2,7 @@ import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { Blood, Dizzy, Fire, Fireworks, Snowflake } from "../../images";
+import { Blood, Cactus, Dizzy, Fire, Fireworks, Snowflake } from "../../images";
 import { Ability } from "../types";
 import AbilityView from "./AbilityView";
 import { getDebuffDurations } from "./Debuffs";
@@ -83,6 +83,11 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         return acc;
     }, {});
     const { bleedDuration, stunDuration, chillDuration, burnDuration } = getDebuffDurations(ability);
+    const allEffects = ability.actions.reduce((acc, { effects = [] }) => {
+        acc.push(...effects);
+        return acc;
+    }, []);
+    const thornsDuration = allEffects.find(({ thorns = 0 }) => thorns > 0)?.duration || 0;
     const aura = ability.minion?.aura;
     const classes = useTooltipStyles();
 
@@ -139,6 +144,12 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 description={"Afflicted targets take 1 damage at the end of their turn."}
                 key={"burn"}
             />
+        );
+    }
+
+    if (thornsDuration > 0) {
+        tooltips.push(
+            <AbilityTooltipSection icon={<Cactus />} title={"Thorns"} description={"Reflects 1 damage to attackers"} key={"thorns"} />
         );
     }
 
