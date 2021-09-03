@@ -59,7 +59,7 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
     return (enemy.resources || 0) >= resourceCost;
 };
 
-const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
+const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
     const results = [];
 
     ability.actions.forEach((action) => {
@@ -73,7 +73,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
         if (movement) {
             targetIndex = getRandomItem(
                 getPossibleMoveIndices({
-                    currentLocationIndex: recentEnemies.findIndex((enemy) => enemy?.id === casterId),
+                    currentLocationIndex: recentEnemies.findIndex((enemy) => enemy?.id === actorId),
                     enemies: recentEnemies,
                     movement,
                 })
@@ -89,7 +89,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
 
         results.push(
             parseAction({
-                casterId,
+                actorId,
                 enemies: recentEnemies,
                 allies: recentAllies,
                 targetIndex,
@@ -102,11 +102,11 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
     return results;
 };
 
-const handleCastTick = ({ allies, enemies, casterId, casting }): Event[] => {
+const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
     const { castTime = 0, channelDuration = 0 } = casting;
     let updatedCasting = { ...casting };
     enemies = enemies.map((enemy) => {
-        if (enemy?.id !== casterId) {
+        if (enemy?.id !== actorId) {
             return cloneDeep(enemy);
         }
         if (castTime > 0) {
@@ -124,7 +124,7 @@ const handleCastTick = ({ allies, enemies, casterId, casting }): Event[] => {
     });
 
     if (!updatedCasting || !updatedCasting.castTime) {
-        return useAbilityActions({ allies, enemies, casterId, ability: updatedCasting });
+        return useAbilityActions({ allies, enemies, actorId, ability: updatedCasting });
     }
 
     // Return the enemy with the newly updated casting state as-is, don't use the ability
@@ -155,7 +155,7 @@ const useAbility = ({ caster, allies, enemies }): Event[] => {
     }
 
     if (!ability.castTime) {
-        return useAbilityActions({ allies, enemies, casterId: id, ability });
+        return useAbilityActions({ allies, enemies, actorId: id, ability });
     } else {
         // Return the enemy with the newly updated casting state as-is, don't use the ability
         return [
@@ -167,11 +167,11 @@ const useAbility = ({ caster, allies, enemies }): Event[] => {
     }
 };
 
-const enemyMove = ({ casterId, allies, enemies }): Event[] => {
-    const caster = enemies.find((e) => e && e.id === casterId);
+const enemyMove = ({ actorId, allies, enemies }): Event[] => {
+    const caster = enemies.find((e) => e && e.id === actorId);
     const { casting } = caster;
     if (casting) {
-        return handleCastTick({ allies, enemies, casterId, casting });
+        return handleCastTick({ allies, enemies, actorId, casting });
     }
 
     return useAbility({ caster, allies, enemies });
@@ -203,7 +203,7 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
 
         results.push(
             ...enemyMove({
-                casterId: enemy.id,
+                actorId: enemy.id,
                 allies: getRecentAllies(),
                 enemies: getRecentEnemies(),
             })

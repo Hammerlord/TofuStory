@@ -14,7 +14,7 @@ export interface Event {
     action?: Action;
     updatedAllies: Combatant[];
     updatedEnemies: Combatant[];
-    casterId?: string;
+    actorId?: string;
     targetIndex?: number;
     targetSide?: "allies" | "enemies";
 }
@@ -168,12 +168,12 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
     return totalArea;
 };
 
-export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
+export const parseAction = ({ enemies, allies, action, targetIndex, actorId, side }): Event => {
     const { movement } = action;
     const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
         enemies,
         allies,
-        casterId,
+        actorId,
     });
     const area = calculateActionArea({ action, actor: caster });
     const isInArea = (character, i) => {
@@ -190,13 +190,13 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
         }, {});
 
     if (action.type === ACTION_TYPES.ATTACK) {
-        updatedTargetsMap[casterId] = removeStealth(updatedTargetsMap[casterId] || caster);
+        updatedTargetsMap[actorId] = removeStealth(updatedTargetsMap[actorId] || caster);
     }
 
     const thornsDamage = calculateThornsDamage(action, targets);
     if (thornsDamage > 0) {
-        updatedTargetsMap[casterId] = applyActionToTarget({
-            target: updatedTargetsMap[casterId] || caster,
+        updatedTargetsMap[actorId] = applyActionToTarget({
+            target: updatedTargetsMap[actorId] || caster,
             action: {
                 damage: thornsDamage,
                 type: ACTION_TYPES.NONE,
@@ -209,7 +209,7 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
     };
 
     if (movement) {
-        const index = friendly.findIndex((combatant) => combatant?.id === casterId);
+        const index = friendly.findIndex((combatant) => combatant?.id === actorId);
         [friendly[index], friendly[targetIndex]] = [friendly[targetIndex], friendly[index]];
     }
 
@@ -219,19 +219,19 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
         action,
         updatedAllies: renewPersistentAuras(updatedAllies.map(getUpdatedCharacter)),
         updatedEnemies: renewPersistentAuras(updatedEnemies.map(getUpdatedCharacter)),
-        casterId,
+        actorId,
         targetIndex,
         targetSide: side,
     };
 };
 
-const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
-    const casterSide = allies.find((ally) => ally?.id === casterId) ? "allies" : "enemies";
+const getFriendlyOrHostile = ({ actorId, enemies, allies }) => {
+    const casterSide = allies.find((ally) => ally?.id === actorId) ? "allies" : "enemies";
     const [friendly, hostile] = casterSide === "allies" ? [allies, enemies] : [enemies, allies];
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
-        caster: friendly.find((character) => character?.id === casterId),
+        caster: friendly.find((character) => character?.id === actorId),
         casterSide,
     };
 };
@@ -263,14 +263,14 @@ const applyAuraPerTurnEffect = (characters: (Combatant | null)[], actorIndex: nu
             return cloneDeep(character);
         }),
         action,
-        casterId: id,
+        actorId: id,
     };
 };
 
 export const applyPerTurnEffects = (
     actors: (Combatant | null)[],
     targets: (Combatant | null)[]
-): { actors: (Combatant | null)[]; targets: (Combatant | null)[]; action: Action; casterId: string }[] => {
+): { actors: (Combatant | null)[]; targets: (Combatant | null)[]; action: Action; actorId: string }[] => {
     const results = [];
 
     actors.forEach((character: Combatant | null, i) => {
@@ -280,12 +280,12 @@ export const applyPerTurnEffects = (
 
         const appliedAuraEffects = applyAuraPerTurnEffect(results[results.length - 1]?.actors || actors, i);
         if (appliedAuraEffects) {
-            const { characters, action, casterId } = appliedAuraEffects;
+            const { characters, action, actorId } = appliedAuraEffects;
             results.push({
                 actors: characters,
                 targets,
                 action,
-                casterId,
+                actorId,
             });
         }
 
@@ -325,7 +325,7 @@ export const applyPerTurnEffects = (
                         });
                     }),
                     targets,
-                    casterId: character.id,
+                    actorId: character.id,
                     action,
                 });
             }
@@ -368,7 +368,7 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     return updated;
 };
 
-export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, casterId }): Event[] => {
+export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, actorId }): Event[] => {
     const { minion, actions, resourceCost } = ability;
     const results = [];
 
@@ -380,14 +380,14 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
                     return i === targetIndex ? createCombatant(minion) : cloneDeep(ally);
                 })
             ),
-            casterId,
+            actorId,
         });
     }
 
     // All actions should be based on the most recent version of enemies/allies
     const mostRecentEnemies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
     const mostRecentAllies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
-    const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === casterId);
+    const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === actorId);
 
     actions.forEach((action: Action) => {
         let index = targetIndex;
@@ -410,7 +410,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
                 allies: mostRecentAllies(),
                 targetIndex: index,
                 action,
-                casterId,
+                actorId,
                 side,
             })
         );
@@ -430,7 +430,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
         results.push({
             updatedAllies: hpPerResourceUpdatedCharacters,
             updatedEnemies: mostRecentEnemies(),
-            casterId: null,
+            actorId: null,
         } as Event);
     }
 
@@ -443,7 +443,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
         results.push({
             updatedAllies: abilityActionEventUpdatedCharacters,
             updatedEnemies: mostRecentEnemies(),
-            casterId: null,
+            actorId: null,
         } as Event);
     }
 
@@ -494,8 +494,8 @@ const handleHealthPerResourcesSpent = ({ actor, characters, resourceCost = 0 }):
     }
 };
 
-export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
-    const caster = allies.find((ally) => ally?.id === casterId) || {};
+export const useAttack = ({ enemies, allies, index, actorId }): Event[] => {
+    const caster = allies.find((ally) => ally?.id === actorId) || {};
     const { id } = caster;
     return useAllyAbility({
         enemies,
@@ -510,6 +510,6 @@ export const useAttack = ({ enemies, allies, index, casterId }): Event[] => {
             ],
         },
         allies,
-        casterId: id,
+        actorId: id,
     });
 };

@@ -216,7 +216,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                     allies
                 ),
                 side,
-                casterId: player.id,
+                actorId: player.id,
             })
         );
     };
@@ -234,8 +234,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 }
 
                 const newActions = [];
-                events.forEach(({ action, casterId }) => {
-                    if (action && casterId === character.id) {
+                events.forEach(({ action, actorId }) => {
+                    if (action && actorId === character.id) {
                         newActions.push(action);
                     }
                 });
@@ -257,7 +257,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 allies,
                 enemies,
                 index,
-                casterId: id,
+                actorId: id,
             })
         );
     };
@@ -318,10 +318,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return { action, target };
         }
 
-        const { casterId, targetSide, targetIndex } = (events[0] as Event) || {};
+        const { actorId, targetSide, targetIndex } = (events[0] as Event) || {};
 
         // Returns the ability if the character is using it.
-        if (casterId === character?.id) {
+        if (actorId === character?.id) {
             action = events[0].action;
         }
 
@@ -420,12 +420,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const updatedEvents = events.slice();
         const event = updatedEvents.shift() as Event;
-        const { updatedEnemies, updatedAllies, action, casterId } = event;
+        const { updatedEnemies, updatedAllies, action, actorId } = event;
         setTimeout(() => {
             const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
             const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
             if (action) {
-                if (casterId === player.id) {
+                if (actorId === player.id) {
                     const { addCards = [] } = action;
                     setHand([...hand, ...addCards]);
                 }
