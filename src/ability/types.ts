@@ -112,6 +112,7 @@ export interface Conditions {
     hasEffectType?: EFFECT_TYPES[];
     /** Unique effects, not stacks */
     numEffects?: number;
+    /** This should be a decimal value up to 1 */
     healthPercentage?: number;
 }
 

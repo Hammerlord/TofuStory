@@ -1,5 +1,5 @@
 import { Ability } from "./../ability/types";
-import { slam, bash, cleave, block, charge, snailMinion } from "../ability/Abilities";
+import { slam, bash, cleave, block, warLeap, snailMinion } from "../ability/Abilities";
 import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
 import { createCombatant } from "../enemy/createEnemy";
 
@@ -23,7 +23,7 @@ const tutorial: Wave[] = [
             "When you're out of moves, click End Turn to proceed.",
         ],
         createEnemies: () => [null, basicDummy, null, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, charge, slam],
+        presetDeck: [bash, warLeap, slam],
     },
     {
         name: "Area attacks",
@@ -61,7 +61,7 @@ const tutorial: Wave[] = [
         name: "Defeat the Raging Dummy",
         description: "Defeat the Raging Dummy and its minions!",
         createEnemies: () => [null, basicDummy, ragingDummy, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, bash, slam, cleave, block, block, snailMinion, snailMinion, charge],
+        presetDeck: [bash, bash, slam, cleave, block, block, snailMinion, snailMinion, warLeap],
     },
 ];
 

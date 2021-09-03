@@ -1,6 +1,6 @@
 import { getRandomInt, getRandomItem } from "./../utils";
 import { cloneDeep } from "lodash";
-import { Action, ACTION_TYPES, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, Conditions, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -69,6 +69,19 @@ const applyEffects = ({ target, effects }): Combatant => {
     return target;
 };
 
+const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: "eq" | "lt" | "gt" }): boolean => {
+    switch (comparator) {
+        case "eq":
+            return val === otherVal;
+        case "lt":
+            return val < otherVal;
+        case "gt":
+            return val > otherVal;
+        default:
+            return false;
+    }
+};
+
 const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
     if (!action.bonus) {
         return action;
@@ -76,10 +89,15 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
 
     const { bonus, damage = 0, healing = 0, armor = 0, effects = [] } = action;
     const { conditions = [] } = bonus;
-    const passesCondition = ({ calculationTarget, hasEffectType }) => {
+    const passesCondition = ({ calculationTarget, hasEffectType = [], healthPercentage, comparator }: Conditions): boolean => {
         const combatant: Combatant = calculationTarget === "target" ? target : actor;
         if (combatant) {
-            return combatant.effects.some(({ type }) => hasEffectType.includes(type));
+            const meetsHealthPercentage =
+                healthPercentage === undefined
+                    ? true
+                    : passesValueComparison({ val: Math.floor(combatant.HP / combatant.maxHP), otherVal: healthPercentage, comparator });
+            const meetsEffectType = hasEffectType.length === 0 ? true : combatant.effects.some(({ type }) => hasEffectType.includes(type));
+            return meetsEffectType && meetsHealthPercentage;
         }
     };
     if (!conditions.length || conditions.some(passesCondition)) {

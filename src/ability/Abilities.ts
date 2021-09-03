@@ -44,8 +44,8 @@ export const bash: Ability = {
     ],
 };
 
-export const charge: Ability = {
-    name: "Charge",
+export const warLeap: Ability = {
+    name: "War Leap",
     resourceCost: 1,
     image: warleap,
     actions: [
@@ -54,6 +54,16 @@ export const charge: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        healthPercentage: 1,
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
         },
     ],
 };

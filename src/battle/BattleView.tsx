@@ -227,7 +227,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
-        console.log('event', events);
         setAllies(cleanUpDeadCharacters(lastEvent.updatedAllies));
         setEnemies(cleanUpDeadCharacters(lastEvent.updatedEnemies));
         setEvents(events);
