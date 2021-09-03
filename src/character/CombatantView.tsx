@@ -10,7 +10,7 @@ import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import { ClickIndicator, CrossedSwords, Dizzy, hammer, Heart, Zzz } from "../images";
+import { ClickIndicator, Cloud, CrossedSwords, Dizzy, hammer, Heart, Zzz } from "../images";
 import Reticle from "./Reticle";
 
 const useStyles = createUseStyles({
@@ -100,6 +100,27 @@ const useStyles = createUseStyles({
         to: {
             transform: "translateY(8px)",
         },
+    },
+
+    "@keyframes stealthCloud": {
+        from: {
+            opacity: 0.5,
+            transform: "translateY(-8px)",
+        },
+        to: {
+            opacity: 0.1,
+            transform: "translateY(0px)",
+        },
+    },
+    stealth: {
+        animationName: "$stealthCloud",
+        animationDuration: "1s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        top: "15%",
     },
     targetAffectedIndicatorContainer: {
         position: "absolute",
@@ -319,11 +340,12 @@ const CombatantView = forwardRef(
             };
         }, [event.action]);
 
-        const hasAilment = (type: EFFECT_TYPES) => {
+        const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
-        const isStunned = hasAilment(EFFECT_TYPES.STUN);
+        const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
+        const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
         const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
         const damageFromEffects = oldState?.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
         let totalDamage = (oldState?.damage || 0) + damageFromEffects;
@@ -382,6 +404,11 @@ const CombatantView = forwardRef(
                                             <HealIcon statChanges={statChanges} />
                                         </span>
                                     }
+                                    {isStealthed && (
+                                        <div className={classNames(classes.stealth)}>
+                                            <Cloud />
+                                        </div>
+                                    )}
                                 </span>
                                 {oldState.HP > 0 && (
                                     <>

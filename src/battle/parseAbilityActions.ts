@@ -4,7 +4,8 @@ import { Action, ACTION_TYPES, EffectCondition, EFFECT_TYPES, TARGET_TYPES } fro
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
-import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getValidTargetIndices } from "./utils";
+import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getHealableIndices, getValidTargetIndices } from "./utils";
+import { access } from "fs";
 
 /**
  * The results of an action being applied.
@@ -102,10 +103,13 @@ export const applyActionToTarget = ({ target, actor, action }: { target: Combata
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
+    // Check if stealth broken
+    const targetEffects = damage === 0 ? target.effects : target.effects.filter(({ type }) => type !== EFFECT_TYPES.STEALTH);
 
     return applyEffects({
         target: {
             ...target,
+            effects: targetEffects,
             HP,
             armor: updatedArmor,
             resources: (target.resources || 0) + resources,
@@ -122,6 +126,13 @@ const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number 
     return hitTargets.reduce((acc, { effects }) => {
         return acc + effects.reduce((acc, { thorns = 0 }) => acc + thorns, 0);
     }, 0);
+};
+
+const removeStealth = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        effects: character.effects.filter(({ type }) => type !== EFFECT_TYPES.STEALTH),
+    };
 };
 
 export const parseAction = ({ enemies, allies, action, targetIndex, casterId, side }): Event => {
@@ -144,6 +155,10 @@ export const parseAction = ({ enemies, allies, action, targetIndex, casterId, si
             acc[current.id] = current;
             return acc;
         }, {});
+
+    if (action.type === ACTION_TYPES.ATTACK) {
+        updatedTargetsMap[casterId] = removeStealth(updatedTargetsMap[casterId] || caster);
+    }
 
     const thornsDamage = calculateThornsDamage(action, targets);
     if (thornsDamage > 0) {
@@ -188,39 +203,101 @@ const getFriendlyOrHostile = ({ casterId, enemies, allies }) => {
     };
 };
 
-export const applyAuraPerTurnEffects = (characters) => {
-    const results: { characters: (Combatant | null)[]; action: Action; casterId }[] = [];
-
-    for (let i = 0; i < characters.length; ++i) {
-        const recentCharacters = results[results.length - 1]?.characters || characters;
-        const { aura, id, HP = 0 } = recentCharacters[i] || {};
-        if (!aura || HP <= 0) {
-            continue;
-        }
-
-        const { armorPerTurn = 0, healingPerTurn = 0, area = 0 } = aura as Aura;
-        if (armorPerTurn === 0 && healingPerTurn === 0) {
-            continue;
-        }
-
-        const action = {
-            armor: armorPerTurn,
-            healing: healingPerTurn,
-            type: ACTION_TYPES.EFFECT,
-        };
-        results.push({
-            characters: recentCharacters.map((character, j) => {
-                // Aura effects do not apply to the owner of the aura
-                const isAffectedByAura = character?.HP > 0 && j >= i - area && j <= i + area && j !== i;
-                if (isAffectedByAura) {
-                    return applyActionToTarget({ target: character, action });
-                }
-                return cloneDeep(character);
-            }),
-            action,
-            casterId: id,
-        });
+const applyAuraPerTurnEffect = (characters: (Combatant | null)[], actorIndex: number) => {
+    const i = actorIndex;
+    const { aura, id, HP = 0 } = characters[i] || {};
+    if (!aura || HP <= 0) {
+        return;
     }
+
+    const { armorPerTurn = 0, healingPerTurn = 0, area = 0 } = aura as Aura;
+    if (armorPerTurn === 0 && healingPerTurn === 0) {
+        return;
+    }
+
+    const action = {
+        armor: armorPerTurn,
+        healing: healingPerTurn,
+        type: ACTION_TYPES.EFFECT,
+    };
+    return {
+        characters: characters.map((character, j) => {
+            // Aura effects do not apply to the owner of the aura
+            const isAffectedByAura = character?.HP > 0 && j >= i - area && j <= i + area && j !== i;
+            if (isAffectedByAura) {
+                return applyActionToTarget({ target: character, action });
+            }
+            return cloneDeep(character);
+        }),
+        action,
+        casterId: id,
+    };
+};
+
+export const applyPerTurnEffects = (
+    actors: (Combatant | null)[],
+    targets: (Combatant | null)[]
+): { actors: (Combatant | null)[]; targets: (Combatant | null)[]; action: Action; casterId: string }[] => {
+    const results = [];
+
+    actors.forEach((character: Combatant | null, i) => {
+        if (!character) {
+            return character;
+        }
+
+        const appliedAuraEffects = applyAuraPerTurnEffect(results[results.length - 1]?.actors || actors, i);
+        if (appliedAuraEffects) {
+            const { characters, action, casterId } = appliedAuraEffects;
+            results.push({
+                actors: characters,
+                targets,
+                action,
+                casterId,
+            });
+        }
+
+        // TODO damageTargetPerTurn
+        const { healTargetPerTurn, damageTargetPerTurn } = character.effects.reduce(
+            (acc, effect: Effect) => {
+                const { healTargetPerTurn = 0, damageTargetPerTurn = 0 } = effect;
+                return {
+                    healTargetPerTurn: acc.healTargetPerTurn + healTargetPerTurn,
+                    damageTargetPerTurn: acc.damageTargetPerTurn + damageTargetPerTurn,
+                };
+            },
+            { healTargetPerTurn: 0, damageTargetPerTurn: 0 }
+        );
+
+        if (healTargetPerTurn > 0) {
+            const indices = getHealableIndices(actors);
+            if (indices.length > 0) {
+                const index = getRandomItem(indices);
+                const action = {
+                    type: ACTION_TYPES.EFFECT,
+                    healing: healTargetPerTurn,
+                };
+                results.push({
+                    actors: actors.map((actor, i) => {
+                        if (!actor || i !== index) {
+                            return actor;
+                        }
+
+                        return applyActionToTarget({
+                            target: actors[index],
+                            actor: character,
+                            action: {
+                                type: ACTION_TYPES.EFFECT,
+                                healing: healTargetPerTurn,
+                            },
+                        });
+                    }),
+                    targets,
+                    casterId: character.id,
+                    action,
+                });
+            }
+        }
+    });
 
     return results;
 };
@@ -281,7 +358,7 @@ export const useAllyAbility = ({ enemies, targetIndex, side, ability, allies, ca
     actions.forEach((action: Action) => {
         let index = targetIndex;
         if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-            const targetIndices = getValidTargetIndices(mostRecentEnemies()).filter((i) => {
+            const targetIndices = getValidTargetIndices(mostRecentEnemies(), { excludeStealth: true }).filter((i) => {
                 if (ability.area) {
                     return i >= targetIndex - ability.area && i <= targetIndex + ability.area;
                 }

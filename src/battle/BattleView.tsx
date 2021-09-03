@@ -15,7 +15,7 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { applyAuraPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyPerTurnEffects, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { canUseAbility, cleanUpDeadCharacters, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
@@ -227,6 +227,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
+        console.log('event', events);
         setAllies(cleanUpDeadCharacters(lastEvent.updatedAllies));
         setEnemies(cleanUpDeadCharacters(lastEvent.updatedEnemies));
         setEvents(events);
@@ -361,11 +362,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const updatedAllies = refreshPlayerResources(allies);
         setAllies(updatedAllies.map(updateEffects));
         handleNewEvents(
-            applyAuraPerTurnEffects(updatedAllies).map(({ characters, action, casterId }) => ({
-                updatedAllies: characters,
-                updatedEnemies,
-                action,
-                casterId,
+            applyPerTurnEffects(updatedAllies, updatedEnemies).map(({ actors, targets, ...other }) => ({
+                updatedAllies: actors,
+                updatedEnemies: targets,
+                ...other,
             }))
         );
     };

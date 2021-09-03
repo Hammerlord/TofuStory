@@ -1,35 +1,37 @@
-import { spikedArmorEffect } from "./Effects";
 import {
-    axe,
+    advancedcharge,
+    blizzardcharge,
     block as blockImage,
     brick,
+    bricks,
+    chanceattack,
+    evileyeminion,
+    evileyeskill,
+    Fire,
     flag,
+    flamecharge,
+    hammer,
+    Heart,
+    hyperbody,
+    ironwill as ironwillImage,
+    lightningcharge,
     mace,
+    puncture,
     rage,
     rend as rendImage,
     risingrage,
     shieldred,
     shout,
-    spikes,
-    snail as snailPortrait,
-    warleap,
-    Wolf,
-    warmush,
-    bricks,
-    hammer,
-    chanceattack,
-    puncture,
-    ironwill as ironwillImage,
-    hyperbody,
-    flamecharge,
-    blizzardcharge,
-    lightningcharge,
-    advancedcharge,
-    Fire,
-    Snowflake,
     slashblast,
+    snail as snailPortrait,
+    Snowflake,
+    spikes,
+    warleap,
+    warmush,
+    Wolf,
 } from "../images";
-import { Ability, ACTION_TYPES, CONDITION_TYPE, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { spikedArmorEffect, stealth } from "./Effects";
+import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -496,3 +498,25 @@ export const frostFire: Ability = {
     ],
 };
 
+export const evilEye: Ability = {
+    name: "Evil Eye",
+    resourceCost: 0,
+    image: evileyeskill,
+    minion: {
+        name: "Evil Eye",
+        image: evileyeminion,
+        damage: 0,
+        maxHP: 1,
+        effects: [
+            stealth,
+            {
+                type: EFFECT_TYPES.BUFF,
+                description: "Heals a random ally for 1 each turn.",
+                healTargetPerTurn: 1,
+                duration: Infinity,
+                icon: Heart,
+            },
+        ],
+    },
+    actions: [],
+};

@@ -31,6 +31,7 @@ import {
     blizzardCharge,
     flameCharge,
     frostFire,
+    evilEye,
 } from "./../ability/Abilities";
 import ChallengeMenu from "./ChallengeMenu";
 
@@ -91,6 +92,7 @@ const allCards = [
     flameCharge,
     lightningCharge,
     frostFire,
+    evilEye,
 ];
 
 const useStyles = createUseStyles({
@@ -147,6 +149,7 @@ const MainMenu = () => {
         flameCharge,
         lightningCharge,
         frostFire,
+        evilEye,
     ]);
 
     const classes = useStyles();

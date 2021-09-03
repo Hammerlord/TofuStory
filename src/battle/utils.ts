@@ -1,5 +1,5 @@
 import { shuffle } from "./../utils";
-import { Ability, Action, ACTION_TYPES, TARGET_TYPES } from "./../ability/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
@@ -123,7 +123,7 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
 
 export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
     const actionDamage = action.damage || 0;
-    if (!actor || action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK) {
+    if (!actor || (action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK)) {
         return actionDamage;
     }
 
@@ -147,12 +147,20 @@ export const calculateArmor = ({ target, action }): number => {
  * @param characters
  * @returns indices of characters that are alive
  */
-export const getValidTargetIndices = (characters: (Combatant | null)[]): number[] => {
+export const getValidTargetIndices = (characters: (Combatant | null)[], options: { excludeStealth?: boolean } = {}): number[] => {
     const indices = [];
     characters.forEach((character: Combatant | null, i: number) => {
         if (character && character.HP > 0) {
-            indices.push(i);
+            if (!options.excludeStealth || !character.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
+                indices.push(i);
+            }
         }
     });
     return indices;
+};
+
+export const getHealableIndices = (characters:(Combatant | null)[] ): number[] => {
+    const indices = getValidTargetIndices(characters);
+    // Injured targets only
+    return indices.filter(i => characters[i].HP < characters[i].maxHP);
 };

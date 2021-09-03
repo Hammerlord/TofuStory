@@ -20,6 +20,8 @@ export { default as Crossmark } from "./274c.svg";
 export { default as NoStun } from "./nostun.svg";
 export { default as Snowflake } from "./2744.svg";
 export { default as ArrowDown } from "./2b07.svg";
+export { default as Cloudy } from "./1f32b.svg";
+export { default as Cloud } from "./2601.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -55,3 +57,5 @@ export { default as flamecharge } from "./flamecharge.png";
 export { default as lightningcharge } from "./lightningcharge.png";
 export { default as advancedcharge } from "./advancedcharge.png";
 export { default as slashblast } from "./slashblast.png";
+export { default as evileyeskill } from "./evileye.png";
+export { default as evileyeminion } from "./evileyeminion.png";

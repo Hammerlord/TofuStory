@@ -82,7 +82,7 @@ const useAbilityActions = ({ ability, enemies, allies, casterId }) => {
             const validEnemyIndices = getValidTargetIndices(recentEnemies);
             targetIndex = getRandomItem(validEnemyIndices);
         } else if (target === TARGET_TYPES.HOSTILE) {
-            const validAllyIndices = getValidTargetIndices(recentAllies);
+            const validAllyIndices = getValidTargetIndices(recentAllies, { excludeStealth: true });
             targetIndex = getRandomItem(validAllyIndices);
             side = "allies";
         }

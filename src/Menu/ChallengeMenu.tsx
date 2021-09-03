@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
-import { createEnemies } from "../enemy/createEnemy";
+import createCombatant, { createEnemies } from "../enemy/createEnemy";
+import { smalltofu } from "../enemy/tofu";
 import { challenge } from "./challenges";
 import tutorial, { Wave } from "./tutorial";
 
@@ -25,10 +26,21 @@ const challenges: Challenge[] = [
     {
         name: "Random Tofus",
         description: "Fight some tofus and their minions. Fairness is not guaranteed.",
-        waves: [{
-            createEnemies: createEnemies,
-        }],
+        waves: [
+            {
+                createEnemies: createEnemies,
+            },
+        ],
         rewards: [],
+    },
+    {
+        name: "Test easy",
+        description: "",
+        waves: [
+            {
+                createEnemies: () => [null, null, smalltofu, null, null].map(createCombatant),
+            },
+        ],
     },
 ];
 
@@ -55,11 +67,7 @@ const ChallengeMenu = ({ onSelectChallenge }) => {
         <div>
             <h2 className={classes.title}>Challenges</h2>
             {challenges.map((challenge) => (
-                <div
-                    className={classes.challenge}
-                    key={challenge.description}
-                    onClick={() => onSelectChallenge(challenge)}
-                >
+                <div className={classes.challenge} key={challenge.description} onClick={() => onSelectChallenge(challenge)}>
                     <h3>{challenge.name}</h3>
                     {challenge.description}
                 </div>

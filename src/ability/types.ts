@@ -13,6 +13,7 @@ export enum EFFECT_TYPES {
     DEBUFF = "debuff",
     BURN = "burn",
     CHILL = "chill",
+    STEALTH = "stealth"
 }
 
 export interface EffectCondition {
@@ -38,6 +39,9 @@ export interface Effect {
     armorReceived?: number;
     damageReceived?: number;
     healingReceived?: number;
+    /** The target for this is random */
+    healTargetPerTurn?: number;
+    damageTargetPerTurn?: number;
     onReceiveEffect?: {
         conditions?: EffectCondition[]; // OR if multiple conditions are present
         target?: {

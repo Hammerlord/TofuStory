@@ -1,5 +1,5 @@
 import { Effect, EFFECT_TYPES } from "./types";
-import { Cactus, Crossmark, Helmet, NoStun, spikes } from "../images";
+import { Cactus, Cloudy, Crossmark, Helmet, NoStun, spikes } from "../images";
 
 export const thorns: Effect = {
     name: "Thorns",
@@ -43,4 +43,12 @@ export const hardy: Effect = {
     },
     duration: Infinity,
     type: EFFECT_TYPES.BUFF,
+};
+
+export const stealth: Effect = {
+    type: EFFECT_TYPES.STEALTH,
+    name: "Stealth",
+    icon: Cloudy,
+    description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+    duration: 3,
 };
