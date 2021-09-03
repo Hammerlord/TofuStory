@@ -1,3 +1,4 @@
+import React, { cloneElement } from "react";
 import Icon from "../../icon/Icon";
 import { Cactus, Cloudy, Heart, Hourglass, Shield } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
@@ -5,50 +6,74 @@ import { EFFECT_TYPES } from "../types";
 import { getAllEffects } from "./utils";
 
 const Buffs = ({ ability }) => {
-    const allEffects = getAllEffects(ability);
-    const thornsDuration = allEffects.find(({ thorns = 0 }) => thorns > 0)?.duration || 0;
-    const { healthPerResourcesSpent = 0, duration: healthPerResourcesSpentDuration = 0 } =
-        allEffects.find(({ healthPerResourcesSpent = 0 }) => healthPerResourcesSpent > 0) || {};
-    const { armorReceived, duration: armorReceivedDuration } = allEffects.find(({ armorReceived = 0 }) => armorReceived > 0) || {};
-    const { resourcesPerTurn, duration: resourcesPerTurnDuration } =
-        allEffects.find(({ resourcesPerTurn = 0 }) => resourcesPerTurn > 0) || {};
-    const stealthDuration = allEffects.find(({ type }) => type === EFFECT_TYPES.STEALTH)?.duration || 0;
-    const { healTargetPerTurn = 0 } = allEffects.find(({ healTargetPerTurn }) => healTargetPerTurn > 0) || {};
+    const buffs = getAllEffects(ability).filter(({ type }) => type === EFFECT_TYPES.BUFF || type === EFFECT_TYPES.STEALTH); // Need to separate effect types from buff/debuff
 
     return (
         <>
-            {healthPerResourcesSpent > 0 && (
-                <div>
-                    Gain <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per <Fury /> spent{" "}
-                    {healthPerResourcesSpentDuration === 0 && "this turn"}
-                </div>
-            )}
-            {thornsDuration > 0 && (
-                <div>
-                    Gain <Icon icon={<Cactus />} /> <Icon icon={<Hourglass />} text={thornsDuration} />
-                </div>
-            )}
-            {armorReceived > 0 && (
-                <div>
-                    <Icon icon={<Shield />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} /> from armor sources{" "}
-                    {armorReceivedDuration === 0 ? "this turn" : <Icon icon={<Hourglass />} text={armorReceivedDuration} />}
-                </div>
-            )}
-            {resourcesPerTurn > 0 && (
-                <div>
-                    Gain <Fury text={`+${resourcesPerTurn}`} /> per turn <Icon icon={<Hourglass />} text={resourcesPerTurnDuration} />
-                </div>
-            )}
-            {stealthDuration > 0 && (
-                <div>
-                    <Icon icon={<Cloudy />} /> Stealth
-                </div>
-            )}
-            {healTargetPerTurn > 0 && (
-                <div>
-                    Heals an injured ally for <Icon icon={<Heart />} text={healTargetPerTurn} /> per turn
-                </div>
-            )}
+            {buffs.map((effect, i) => {
+                const {
+                    healthPerResourcesSpent = 0,
+                    thorns = 0,
+                    armorReceived = 0,
+                    resourcesPerTurn = 0,
+                    healTargetPerTurn = 0,
+                    duration = Infinity,
+                } = effect;
+                const effectComponents = [];
+                if (healthPerResourcesSpent > 0) {
+                    effectComponents.push(
+                        <span>
+                            Gain <Icon icon={<Heart />} text={`+${healthPerResourcesSpent}`} /> per <Fury /> spent{" "}
+                        </span>
+                    );
+                }
+
+                if (thorns > 0) {
+                    effectComponents.push(
+                        <span>
+                            Gain <Icon icon={<Cactus />} />
+                        </span>
+                    );
+                }
+
+                if (armorReceived > 0) {
+                    effectComponents.push(
+                        <span>
+                            Gain <Icon icon={<Shield />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} /> from armor
+                            sources{" "}
+                        </span>
+                    );
+                }
+                if (resourcesPerTurn > 0) {
+                    effectComponents.push(
+                        <span>
+                            Gain <Fury text={`+${resourcesPerTurn}`} /> per turn
+                        </span>
+                    );
+                }
+                if (effect.type === EFFECT_TYPES.STEALTH) {
+                    effectComponents.push(
+                        <span>
+                            <Icon icon={<Cloudy />} /> Stealth
+                        </span>
+                    );
+                }
+                if (healTargetPerTurn > 0) {
+                    effectComponents.push(
+                        <span>
+                            Heals an injured ally for <Icon icon={<Heart />} text={healTargetPerTurn} /> per turn
+                        </span>
+                    );
+                }
+
+                if (effectComponents.length > 0) {
+                    effectComponents.push(
+                        duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
+                    );
+                }
+
+                return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;
+            })}
         </>
     );
 };
