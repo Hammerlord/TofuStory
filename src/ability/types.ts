@@ -45,7 +45,7 @@ export interface Effect {
     damageTargetPerTurn?: number;
     onAttack?: {
         removeEffect: boolean;
-    },
+    };
     onReceiveEffect?: {
         conditions?: EffectCondition[]; // OR if multiple conditions are present
         target?: {

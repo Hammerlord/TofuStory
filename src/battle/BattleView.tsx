@@ -207,7 +207,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         handleNewEvents(
             useAllyAbility({
                 ability: card,
-                targetIndex: index,
+                selectedIndex: index,
                 enemies,
                 allies: updatePlayer(
                     (player) => ({
@@ -318,15 +318,15 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return { action, target };
         }
 
-        const { actorId, targetSide, targetIndex } = (events[0] as Event) || {};
+        const { actorId, targetSide, selectedIndex } = (events[0] as Event) || {};
 
         // Returns the ability if the character is using it.
         if (actorId === character?.id) {
             action = events[0].action;
         }
 
-        if (typeof targetIndex === "number" && targetSide) {
-            target = (targetSide === "allies" ? allyRefs : enemyRefs)[targetIndex]?.current;
+        if (typeof selectedIndex === "number" && targetSide) {
+            target = (targetSide === "allies" ? allyRefs : enemyRefs)[selectedIndex]?.current;
         }
 
         return {

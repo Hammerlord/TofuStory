@@ -64,14 +64,14 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
 
     ability.actions.forEach((action) => {
         const { target, movement } = action;
-        let targetIndex;
+        let selectedIndex;
         // Each subsequent action should be based on the most recently updated enemies/player states.
         const recentEnemies = cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
         const recentAllies = cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
         let side = "enemies";
 
         if (movement) {
-            targetIndex = getRandomItem(
+            selectedIndex = getRandomItem(
                 getPossibleMoveIndices({
                     currentLocationIndex: recentEnemies.findIndex((enemy) => enemy?.id === actorId),
                     enemies: recentEnemies,
@@ -80,10 +80,10 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
             );
         } else if (target === TARGET_TYPES.FRIENDLY) {
             const validEnemyIndices = getValidTargetIndices(recentEnemies);
-            targetIndex = getRandomItem(validEnemyIndices);
+            selectedIndex = getRandomItem(validEnemyIndices);
         } else if (target === TARGET_TYPES.HOSTILE) {
             const validAllyIndices = getValidTargetIndices(recentAllies, { excludeStealth: true });
-            targetIndex = getRandomItem(validAllyIndices);
+            selectedIndex = getRandomItem(validAllyIndices);
             side = "allies";
         }
 
@@ -92,7 +92,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
                 actorId,
                 enemies: recentEnemies,
                 allies: recentAllies,
-                targetIndex,
+                selectedIndex,
                 action,
                 side,
             })
