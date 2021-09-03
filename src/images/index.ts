@@ -59,3 +59,4 @@ export { default as slashblast } from "./slashblast.png";
 export { default as evileyeskill } from "./evileye.png";
 export { default as evileyeminion } from "./evileyeminion.png";
 export { default as brandishImage } from "./brandish.png";
+export { default as combofuryImage } from "./combofury.png";

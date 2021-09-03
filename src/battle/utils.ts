@@ -1,5 +1,5 @@
 import { shuffle } from "./../utils";
-import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
@@ -121,13 +121,26 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
     });
 };
 
+const getMultiplier = ({ actor, action, target }: { actor: Combatant; action: Action; target: Combatant }): number => {
+    if (!action.multiplier) {
+        return 1;
+    }
+
+    if (action.multiplier === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
+        return actor.turnHistory.filter(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK).length + 1;
+    }
+
+    return 1;
+};
+
 export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
     const actionDamage = action.damage || 0;
     if (!actor || (action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK)) {
         return actionDamage;
     }
 
-    const damage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0) + actionDamage;
+    const actorDamage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0);
+    const damage = (actorDamage + actionDamage) * getMultiplier({ action, actor, target });
     const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const totalDamage = damage + damageReceived;
     if (actor.damage > 0 || actionDamage > 0) {
@@ -159,8 +172,8 @@ export const getValidTargetIndices = (characters: (Combatant | null)[], options:
     return indices;
 };
 
-export const getHealableIndices = (characters:(Combatant | null)[] ): number[] => {
+export const getHealableIndices = (characters: (Combatant | null)[]): number[] => {
     const indices = getValidTargetIndices(characters);
     // Injured targets only
-    return indices.filter(i => characters[i].HP < characters[i].maxHP);
+    return indices.filter((i) => characters[i].HP < characters[i].maxHP);
 };

@@ -6,6 +6,7 @@ import {
     brick,
     bricks,
     chanceattack,
+    combofuryImage,
     evileyeminion,
     evileyeskill,
     flag,
@@ -29,7 +30,7 @@ import {
     Wolf,
 } from "../images";
 import { burn, stealth, stun, thorns, wound } from "./Effects";
-import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./types";
+import { Ability, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -135,17 +136,17 @@ export const rampage: Ability = {
     description: "Deal {{damage}} damage x 3 to random enemies in the area",
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -496,6 +497,27 @@ export const brandish: Ability = {
             damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+};
+
+export const comboFury: Ability = {
+    name: "Combo Fury",
+    resourceCost: 1,
+    image: combofuryImage,
+    description: "Deals 1 damage for every attack you made this turn, hitting twice",
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+        },
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
         },
     ],
 };

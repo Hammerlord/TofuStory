@@ -13,7 +13,7 @@ export enum EFFECT_TYPES {
     DEBUFF = "debuff",
     BURN = "burn",
     CHILL = "chill",
-    STEALTH = "stealth"
+    STEALTH = "stealth",
 }
 
 export interface EffectCondition {
@@ -116,6 +116,10 @@ export interface Conditions {
     healthPercentage?: number;
 }
 
+export enum MULTIPLIER_TYPES {
+    ATTACKS_MADE_IN_TURN = "attacksMadeInTurn",
+}
+
 export interface Action {
     damage?: number;
     type: ACTION_TYPES;
@@ -130,6 +134,7 @@ export interface Action {
     addCards?: Ability[];
     icon?: string; // Used as a projectile
     bonus?: Bonus;
+    multiplier?: MULTIPLIER_TYPES;
 }
 
 export interface Ability {

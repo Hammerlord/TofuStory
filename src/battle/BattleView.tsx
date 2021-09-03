@@ -227,8 +227,24 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             return;
         }
 
-        setAllies(cleanUpDeadCharacters(lastEvent.updatedAllies));
-        setEnemies(cleanUpDeadCharacters(lastEvent.updatedEnemies));
+        const getUpdated = (characters) => {
+            return cleanUpDeadCharacters(characters).map((character) => {
+                if (!character) {
+                    return character;
+                }
+
+                const newActions = [];
+                events.forEach(({ action, casterId }) => {
+                    if (action && casterId === character.id) {
+                        newActions.push(action);
+                    }
+                });
+                return { ...character, turnHistory: character.turnHistory.concat(newActions) };
+            });
+        };
+
+        setAllies(getUpdated(lastEvent.updatedAllies));
+        setEnemies(getUpdated(lastEvent.updatedEnemies));
         setEvents(events);
     };
 
@@ -353,12 +369,20 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         );
     };
 
+    const clearTurnHistory = (character) => {
+        if (!character) {
+            return character;
+        }
+
+        return { ...character, turnHistory: [] };
+    };
+
     const handlePlayerTurnStart = () => {
         const updatedEnemies = enemies.map(updateEffects);
         setEnemies(updatedEnemies);
         drawCards();
         setAlliesAttackedThisTurn([]);
-        const updatedAllies = refreshPlayerResources(allies);
+        const updatedAllies = refreshPlayerResources(allies.map(clearTurnHistory));
         setAllies(updatedAllies.map(updateEffects));
         handleNewEvents(
             applyPerTurnEffects(updatedAllies, updatedEnemies).map(({ actors, targets, ...other }) => ({
@@ -518,7 +542,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             setShowTurnAnnouncement(false);
 
             if (!isPlayerTurn) {
-                const enemyActions = enemyTurn({ enemies, allies });
+                const enemyActions = enemyTurn({ enemies: enemies.map(clearTurnHistory), allies });
 
                 const playEnemyActions = () => {
                     const event = enemyActions.shift();

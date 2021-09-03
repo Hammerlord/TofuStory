@@ -1,4 +1,4 @@
-import { Effect, Aura } from './../ability/types';
+import { Effect, Aura, Action } from "./../ability/types";
 import { Ability } from "../ability/types";
 
 /** Interface of a battle participant */
@@ -13,11 +13,5 @@ export interface Combatant {
     damage?: number;
     aura?: Aura;
     casting?: Ability;
-}
-
-/** Player in combat */
-export interface CombatPlayer extends Combatant {
-    hand: Ability[];
-    deck: Ability[];
-    discard: Ability[];
+    turnHistory: Action[];
 }

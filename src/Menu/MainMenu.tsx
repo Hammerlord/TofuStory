@@ -7,7 +7,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import {
     anger,
     bash, blizzardCharge, block,
-    bloodthirst, brandish, bunchOBricks, chanceStrike, evilEye, flameCharge,
+    bloodthirst, brandish, bunchOBricks, chanceStrike, comboFury, evilEye, flameCharge,
     frostFire, hammerang, hyperBody, ironWill, lightningCharge, puncture, rampage,
     shieldStrike,
     slam, slashBlast, spikedArmor,
@@ -70,6 +70,7 @@ const allCards = [
     evilEye,
     brandish,
     brandish,
+    comboFury,
 ];
 
 const useStyles = createUseStyles({
@@ -100,35 +101,14 @@ const MainMenu = () => {
         maxResources: 3,
         armor: 0,
         effects: [],
+        turnHistory: [],
     });
     const [deck, setDeck] = useState([
-        spikedArmor,
-        warBanner,
-        block,
-        block,
-        bloodthirst,
-        bash,
-        bash,
-        bash,
-        anger,
-        rampage,
-        slashBlast,
-        warLeap,
-        yell,
         bunchOBricks,
-        hammerang,
-        puncture,
-        puncture,
-        chanceStrike,
-        ironWill,
-        hyperBody,
-        blizzardCharge,
-        flameCharge,
-        lightningCharge,
-        frostFire,
         evilEye,
         brandish,
         brandish,
+        comboFury,
     ]);
 
     const classes = useStyles();

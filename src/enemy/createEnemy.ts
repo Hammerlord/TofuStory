@@ -23,6 +23,7 @@ export const createCombatant = (combatant): Combatant => {
             ...(combatant.abilities || []),
             ...Array.from({ length: 3 }).map(createSyntheticAttack),
         ],
+        turnHistory: []
     };
 };
 
