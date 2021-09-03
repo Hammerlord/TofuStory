@@ -2,6 +2,7 @@ import {
     advancedcharge,
     blizzardcharge,
     block as blockImage,
+    brandishImage,
     brick,
     bricks,
     chanceattack,
@@ -384,13 +385,13 @@ export const flameCharge: Ability = {
     image: flamecharge,
     actions: [
         {
-            damage: 2,
+            damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
                     ...burn,
-                    duration: 5,
+                    duration: 3,
                 },
             ],
         },
@@ -422,7 +423,7 @@ export const blizzardCharge: Ability = {
 
 export const lightningCharge: Ability = {
     name: "Lightning Charge",
-    resourceCost: 1,
+    resourceCost: 2,
     image: lightningcharge,
     actions: [
         {
@@ -478,4 +479,23 @@ export const evilEye: Ability = {
         ],
     },
     actions: [],
+};
+
+export const brandish: Ability = {
+    name: "Brandish",
+    resourceCost: 1,
+    image: brandishImage,
+    description: "Hits twice",
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+    ],
 };

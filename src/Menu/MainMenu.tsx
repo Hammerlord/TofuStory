@@ -4,34 +4,16 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckEditor from "../ability/DeckEditor";
 import BattlefieldContainer from "../battle/BattleView";
-import { warmush } from "./../images";
 import {
     anger,
-    bash,
-    block,
-    bloodthirst,
-    warLeap,
-    slashBlast,
-    rampage,
+    bash, blizzardCharge, block,
+    bloodthirst, brandish, bunchOBricks, chanceStrike, evilEye, flameCharge,
+    frostFire, hammerang, hyperBody, ironWill, lightningCharge, puncture, rampage,
     shieldStrike,
-    slam,
-    wolf,
-    spikedArmor,
-    warBanner,
-    snailMinion,
-    yell,
-    bunchOBricks,
-    hammerang,
-    chanceStrike,
-    ironWill,
-    hyperBody,
-    lightningCharge,
-    blizzardCharge,
-    flameCharge,
-    frostFire,
-    evilEye,
-    puncture,
+    slam, slashBlast, spikedArmor,
+    warBanner, warLeap, yell
 } from "./../ability/Abilities";
+import { warmush } from "./../images";
 import ChallengeMenu from "./ChallengeMenu";
 
 enum PLAYER_STATE {
@@ -86,6 +68,8 @@ const allCards = [
     lightningCharge,
     frostFire,
     evilEye,
+    brandish,
+    brandish,
 ];
 
 const useStyles = createUseStyles({
@@ -143,6 +127,8 @@ const MainMenu = () => {
         lightningCharge,
         frostFire,
         evilEye,
+        brandish,
+        brandish,
     ]);
 
     const classes = useStyles();
