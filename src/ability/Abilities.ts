@@ -59,7 +59,7 @@ export const warLeap: Ability = {
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
             bonus: {
-                damage: 3,
+                damage: 4,
                 conditions: [
                     {
                         healthPercentage: 1,
@@ -92,7 +92,7 @@ export const slam: Ability = {
     image: mace,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -106,7 +106,7 @@ export const anger: Ability = {
     actions: [
         {
             damage: 2,
-            resources: 3,
+            resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -119,12 +119,12 @@ export const shieldStrike: Ability = {
     image: shieldred,
     actions: [
         {
-            damage: 2,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            armor: 3,
+            armor: 4,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -139,17 +139,17 @@ export const rampage: Ability = {
     description: "Deal {{damage}} damage x 3 to random enemies in the area",
     actions: [
         {
-            damage: 5,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 5,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 5,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -158,7 +158,7 @@ export const rampage: Ability = {
 
 export const block: Ability = {
     name: "Block",
-    resourceCost: 1,
+    resourceCost: 0,
     image: blockImage,
     actions: [
         {
@@ -171,7 +171,7 @@ export const block: Ability = {
 
 export const bloodthirst: Ability = {
     name: "Bloodthirst",
-    resourceCost: 0,
+    resourceCost: 1,
     image: shout,
     actions: [
         {
@@ -184,6 +184,7 @@ export const bloodthirst: Ability = {
                     icon: shout,
                 },
             ],
+            healing: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -288,7 +289,7 @@ export const hammerang: Ability = {
     image: hammer,
     actions: [
         {
-            damage: 2,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: hammer,
@@ -346,7 +347,7 @@ export const ironWill: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 1,
+            armor: 3,
             effects: [
                 {
                     name: "Iron Will",
