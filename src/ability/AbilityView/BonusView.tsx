@@ -1,6 +1,6 @@
 import Icon from "../../icon/Icon";
 import { ArrowDown, Blood, CrossedSwords, Dizzy, Fire, Heart, Shield, Snowflake } from "../../images";
-import { Conditions, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
+import { Condition, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
     const map = {
@@ -22,7 +22,7 @@ const BonusView = ({ ability }) => {
     return (
         <>
             {bonuses.map(({ damage = 0, healing = 0, armor = 0, conditions = [] }, i) => {
-                const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage }: Conditions) => {
+                const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage }: Condition) => {
                     if (hasEffectType.length) {
                         return (
                             <span key={i}>

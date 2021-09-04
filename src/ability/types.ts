@@ -23,14 +23,13 @@ export enum EFFECT_CLASSES {
 
 export interface EffectEventTrigger {
     removeEffect?: boolean;
-    conditions?: Conditions[]; // OR if multiple conditions are present
-    target?: {
+    conditions?: EffectCondition[]; // OR if multiple conditions are present
+    effectOwner?: {
         // Stat changes to apply to the target (owner of this effect)
         effects?: Effect[];
     };
-    actor?: {
+    externalParty?: {
         // Stat changes to apply to the character who triggered this event
-        // TODO confusing nomenclature
         effects?: Effect[];
     };
 }
@@ -61,7 +60,7 @@ export interface Effect {
     /** The target for this is random */
     healTargetPerTurn?: number;
     damageTargetPerTurn?: number;
-    conditions?: Conditions[];
+    conditions?: EffectCondition[];
     onAttack?: EffectEventTrigger;
     onFriendlyKilled?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
@@ -111,11 +110,10 @@ export interface Bonus {
      * Conditions to pass for the bonus to apply.
      * Multiple conditions are evaluated as "OR".
      */
-    conditions?: Conditions[];
+    conditions?: BonusCondition[];
 }
 
-export interface Conditions {
-    calculationTarget: "actor" | "target";
+export interface Condition {
     /** Equals | Less than | Greater than -- Only used in pass/fail check */
     comparator?: "eq" | "lt" | "gt";
 
@@ -128,6 +126,14 @@ export interface Conditions {
     numEffects?: number;
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
+}
+
+export interface BonusCondition extends Condition {
+    calculationTarget: "actor" | "target";
+}
+
+export interface EffectCondition extends Condition {
+    calculationTarget: "effectOwner" | "externalParty";
 }
 
 export enum MULTIPLIER_TYPES {

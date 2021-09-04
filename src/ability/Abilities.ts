@@ -33,7 +33,7 @@ import {
     Wolf,
 } from "../images";
 import { burn, stealth, stun, thorns, wound } from "./Effects";
-import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
+import { Ability, ACTION_TYPES, BonusCondition, Condition, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -335,7 +335,7 @@ export const chanceStrike: Ability = {
                     {
                         calculationTarget: "target",
                         hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    },
+                    } as BonusCondition,
                 ],
             },
         },

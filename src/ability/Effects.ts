@@ -1,5 +1,5 @@
+import { Anger, Blood, Cactus, Cloudy, Dizzy, Fire, Helmet, NoStun, Snowflake, weaponbooster } from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "./types";
-import { Blood, Cactus, Cloudy, CrossedSwords, Crossmark, Dizzy, Fire, Helmet, NoStun, Snowflake, spikes } from "../images";
 
 export const thorns: Effect = {
     name: "Thorns",
@@ -28,12 +28,12 @@ export const hardy: Effect = {
     onReceiveEffect: {
         conditions: [
             {
-                calculationTarget: "actor",
+                calculationTarget: "effectOwner",
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
         ],
-        target: {
+        effectOwner: {
             effects: [controlImmune],
         },
     },
@@ -94,6 +94,7 @@ export const cleave: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    icon: weaponbooster,
     description: "Area of this character's basic attacks increased by 1.",
 };
 
@@ -102,12 +103,14 @@ export const raging: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
+    icon: Anger,
+    description: "When this character drops below 40% HP, its damage increases by 2.",
     damage: 2,
     conditions: [
         {
             comparator: "lt",
-            healthPercentage: 50,
-            calculationTarget: "actor",
+            healthPercentage: 0.4,
+            calculationTarget: "effectOwner",
         },
     ],
 };

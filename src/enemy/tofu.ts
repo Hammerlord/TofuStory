@@ -4,7 +4,7 @@ import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
 import matty from "../images/matty.png";
-import { hardy, thorns } from "./../ability/Effects";
+import { hardy, raging, thorns } from "./../ability/Effects";
 import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
 
 export interface Enemy {
@@ -63,7 +63,7 @@ export const bigBeefy = {
     damage: 2,
     resources: 2,
     abilities: [tantrum],
-    effects: [hardy],
+    effects: [hardy, raging],
 };
 
 export const theRegalTofu = {

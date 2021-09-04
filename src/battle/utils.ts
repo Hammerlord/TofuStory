@@ -1,7 +1,7 @@
-import { shuffle } from "./../utils";
-import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
 import { Combatant } from "../character/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
 import { calculateActionArea } from "./parseAbilityActions";
+import { passesConditions } from "./passesConditions";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -147,25 +147,33 @@ export const calculateDamage = ({
     selectedIndex?: number;
     action: Action;
 }): number => {
-    const actionDamage: number = (() => {
+    const baseDamage: number = (() => {
         if (action.secondaryDamage && targetIndex !== selectedIndex) {
             return action.secondaryDamage;
         }
+
+        if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
+            return action.damage || actor?.damage || 0;
+        }
+
         return action.damage || 0;
     })();
-    if (!actor || (action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK)) {
-        return actionDamage;
+    if (!actor) {
+        return baseDamage;
     }
 
-    const damageFromEffects = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, 0);
-    const damage = (damageFromEffects + actionDamage) * getMultiplier({ action, actor, target });
+    const damageFromEffects = actor.effects.reduce((acc, { damage = 0, conditions }) => {
+        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
+            calculationTarget === "effectOwner" ? actor : target;
+        if (passesConditions({ getCalculationTarget, conditions })) {
+            return acc + damage;
+        }
+        return acc;
+    }, 0);
+
+    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
     const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
-    const totalDamage = damage + damageReceived;
-    if (actor.damage > 0 || actionDamage > 0) {
-        return Math.max(1, totalDamage); // An actor/ability that can do damage must do at least 1 damage
-    }
-
-    return Math.max(0, totalDamage);
+    return damage + damageReceived;
 };
 
 export const calculateArmor = ({ target, action }): number => {
