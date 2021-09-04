@@ -47,12 +47,12 @@ const DamageIcon = ({ ability, player }) => {
     }
 
     const hasMultiplier = numActionsWithDamage > 1;
-    const hasBonus = actions.find(({ bonus }) => bonus?.damage > 0);
+    const isAdditive = actions.find(({ bonus }) => bonus?.damage > 0) || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
 
     return (
         <Icon
             icon={<CrossedSwords />}
-            text={`${baseDamage}${hasMultiplier ? "x" : ""}${hasBonus ? "+" : ""}`}
+            text={`${baseDamage}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames({
                 [classes.highlightText]: damageBonusFromEffects > 0,
             })}

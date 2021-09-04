@@ -135,13 +135,13 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
     },
     "@keyframes fade": {
-        '0%': {
+        "0%": {
             opacity: 0.95,
         },
-        '60%': {
+        "60%": {
             opacity: 0.95,
         },
-        '100%': {
+        "100%": {
             opacity: 0.8,
         },
     },
@@ -163,8 +163,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], resourceCost, name, minion, image, description, removeAfterTurn } = ability;
-    const { area = ability.area } = actions[0] || {};
-    const { target: targetType } = actions[0] || {};
+    const { area = ability.area, target: targetType, secondaryDamage } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
@@ -195,6 +194,11 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <BonusView ability={ability} />
                     {interpolatedDescription && <div>{interpolatedDescription}</div>}
                     {aura && <AuraView aura={aura} />}
+                    {secondaryDamage > 0 && (
+                        <div>
+                            Deal <Icon icon={<CrossedSwords />} text={secondaryDamage} /> to secondary targets
+                        </div>
+                    )}
                 </div>
                 <div className={classes.footer}>
                     {actions.length > 0 && area > 0 && (
