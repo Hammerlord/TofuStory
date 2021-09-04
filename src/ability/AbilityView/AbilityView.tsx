@@ -21,30 +21,41 @@ import SelfActions from "./SelfActions";
 
 const useAreaStyles = createUseStyles({
     area: {
-        width: "12px",
-        height: "12px",
+        width: "14px",
+        height: "14px",
         backgroundColor: "rgba(0, 0, 0, 0.25)",
         display: "inline-block",
+        fontSize: "0.7rem",
+        color: "white",
+        verticalAlign: "bottom",
+
         "&:not(:last-child)": {
             marginRight: "4px",
         },
     },
     mainTarget: {
-        width: "12px",
-        height: "12px",
+        width: "14px",
+        height: "14px",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         display: "inline-block",
         marginRight: "4px",
+        color: "white",
+        fontSize: "0.7rem",
+        verticalAlign: "bottom",
     },
 });
 
-const Area = ({ area }) => {
+const Area = ({ area, damage, secondaryDamage }) => {
     const classes = useAreaStyles();
-    const areaIndicator = Array.from({ length: area }).map((_, i) => <span className={classes.area} key={i} />);
+    const areaIndicator = Array.from({ length: area }).map((_, i) => (
+        <span className={classes.area} key={i}>
+            {secondaryDamage}
+        </span>
+    ));
     return (
         <span>
             {areaIndicator}
-            <span className={classes.mainTarget} />
+            <span className={classes.mainTarget}>{secondaryDamage && damage}</span>
             {areaIndicator}
         </span>
     );
@@ -163,7 +174,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], resourceCost, name, minion, image, description, removeAfterTurn } = ability;
-    const { area = ability.area, target: targetType, secondaryDamage } = actions[0] || {};
+    const { area = ability.area, target: targetType, damage, secondaryDamage } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
@@ -194,16 +205,11 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <BonusView ability={ability} />
                     {interpolatedDescription && <div>{interpolatedDescription}</div>}
                     {aura && <AuraView aura={aura} />}
-                    {secondaryDamage > 0 && (
-                        <div>
-                            Deal <Icon icon={<CrossedSwords />} text={secondaryDamage} /> to secondary targets
-                        </div>
-                    )}
                 </div>
                 <div className={classes.footer}>
                     {actions.length > 0 && area > 0 && (
                         <div>
-                            Area: <Area area={area} />
+                            Area: <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />
                         </div>
                     )}
                     <AbilityTypeView targetType={targetType} minion={minion} />
