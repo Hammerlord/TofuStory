@@ -1,13 +1,12 @@
 import Icon from "../../icon/Icon";
 import { ArrowDown, Blood, CrossedSwords, Dizzy, Fire, Heart, Shield, Snowflake } from "../../images";
-import { EFFECT_TYPES } from "../types";
+import { Conditions, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
     const map = {
         [EFFECT_TYPES.BLEED]: <Icon icon={Blood} key={key} />,
         [EFFECT_TYPES.STUN]: <Icon icon={Dizzy} key={key} />,
         [EFFECT_TYPES.CHILL]: <Icon icon={Snowflake} key={key} />,
-        [EFFECT_TYPES.DEBUFF]: <Icon icon={ArrowDown} key={key} />,
         [EFFECT_TYPES.BURN]: <Icon icon={Fire} key={key} />,
     };
     return map[effectType];
@@ -23,12 +22,19 @@ const BonusView = ({ ability }) => {
     return (
         <>
             {bonuses.map(({ damage = 0, healing = 0, armor = 0, conditions = [] }, i) => {
-                const conditionText = conditions?.map(({ hasEffectType = [], healthPercentage }) => {
+                const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage }: Conditions) => {
                     if (hasEffectType.length) {
                         return (
                             <span key={i}>
                                 to targets afflicted by {hasEffectType.map(getIconForEffectType)}
                                 {i < conditions.length - 1 ? " or " : ""}
+                            </span>
+                        );
+                    }
+                    if (hasEffectClass) {
+                        return (
+                            <span key={i}>
+                                to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
                             </span>
                         );
                     }

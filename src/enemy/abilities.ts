@@ -1,4 +1,4 @@
-import { Ability, ACTION_TYPES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 export const loaf: Ability = {
     name: "Loaf",
     actions: [
@@ -66,6 +66,19 @@ export const shiningLaser: Ability = {
     ],
 };
 
+export const stomp: Ability = {
+    name: "Stomp",
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 2,
+            area: 1,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+    ],
+};
+
 export const whip: Ability = {
     name: "Whip",
     resourceCost: 3,
@@ -78,7 +91,8 @@ export const whip: Ability = {
             effects: [
                 {
                     damage: 1,
-                    type: EFFECT_TYPES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
                     duration: 4,
                 },
             ],

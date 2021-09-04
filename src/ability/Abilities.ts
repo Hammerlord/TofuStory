@@ -33,7 +33,7 @@ import {
     Wolf,
 } from "../images";
 import { burn, stealth, stun, thorns, wound } from "./Effects";
-import { Ability, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
+import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -178,7 +178,8 @@ export const bloodthirst: Ability = {
             effects: [
                 {
                     name: "Bloodthirst",
-                    type: EFFECT_TYPES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     healthPerResourcesSpent: 2,
                     icon: shout,
@@ -229,7 +230,8 @@ export const warBanner: Ability = {
             damage: 1,
             armorPerTurn: 1,
             area: 1,
-            type: EFFECT_TYPES.BUFF,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
         },
         effects: [stealth],
     },
@@ -261,7 +263,8 @@ export const yell: Ability = {
                 {
                     damage: -2,
                     duration: 2,
-                    type: EFFECT_TYPES.DEBUFF,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
                     icon: warmush,
                 },
             ],
@@ -331,7 +334,7 @@ export const chanceStrike: Ability = {
                 conditions: [
                     {
                         calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN, EFFECT_TYPES.DEBUFF, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL],
+                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
                     },
                 ],
             },
@@ -353,7 +356,8 @@ export const ironWill: Ability = {
                     name: "Iron Will",
                     icon: ironwillImage,
                     description: "Receiving +1 armor from armor sources",
-                    type: EFFECT_TYPES.BUFF,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
                     armorReceived: 1,
                     duration: 0,
                 },
@@ -375,7 +379,8 @@ export const hyperBody: Ability = {
                     name: "Hyper Body",
                     icon: hyperbody,
                     description: "Gaining +1 resource per turn",
-                    type: EFFECT_TYPES.BUFF,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
                     resourcesPerTurn: 1,
                     duration: 3,
                 },
@@ -475,7 +480,8 @@ export const evilEye: Ability = {
         effects: [
             stealth,
             {
-                type: EFFECT_TYPES.BUFF,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
                 description: "Heals a random ally for 1 each turn.",
                 healTargetPerTurn: 1,
                 duration: Infinity,
@@ -538,7 +544,8 @@ export const sweepingReach: Ability = {
             effects: [
                 {
                     name: "Sweeping Reach",
-                    type: EFFECT_TYPES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
                     icon: weaponbooster,
                     description: "Increases the area of your next offensive ability by 1",
                     attackAreaIncrease: 1,

@@ -2,11 +2,11 @@ import React, { cloneElement } from "react";
 import Icon from "../../icon/Icon";
 import { Cactus, Cloudy, Heart, Hourglass, Shield } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
-import { EFFECT_TYPES } from "../types";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 import { getAllEffects } from "./utils";
 
 const Buffs = ({ ability }) => {
-    const buffs = getAllEffects(ability).filter(({ type }) => type === EFFECT_TYPES.BUFF || type === EFFECT_TYPES.STEALTH); // Need to separate effect types from buff/debuff
+    const buffs = getAllEffects(ability).filter((effect: Effect) => effect.class === EFFECT_CLASSES.BUFF);
 
     return (
         <>

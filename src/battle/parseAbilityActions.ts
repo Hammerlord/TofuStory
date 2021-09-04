@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomItem } from "./../utils";
 import { cloneDeep } from "lodash";
-import { Action, ACTION_TYPES, Conditions, EffectCondition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, Conditions, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
+import { getRandomItem } from "./../utils";
 import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getHealableIndices, getValidTargetIndices } from "./utils";
 
 /**
@@ -29,9 +29,9 @@ const triggerReceiveEffects = (target, incomingEffect: Effect) => {
 
         const { conditions, target: applyToTarget } = targetEffect.onReceiveEffect;
         if (
-            conditions.some((condition: EffectCondition) => {
-                const { types, comparator } = condition;
-                return types.some((type) => {
+            conditions.some((condition: Conditions) => {
+                const { hasEffectType, comparator } = condition;
+                return hasEffectType.some((type) => {
                     switch (comparator) {
                         case "eq":
                             return incomingEffect.type === type;
@@ -81,6 +81,19 @@ const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherV
     }
 };
 
+export const passesConditions = ({ target, actor, conditions }): boolean => {
+    const passesCondition = ({ hasEffectType, healthPercentage, comparator, calculationTarget }: Conditions) => {
+        const combatant: Combatant = calculationTarget === "target" ? target : actor;
+        const meetsHealthPercentage =
+            healthPercentage === undefined
+                ? true
+                : passesValueComparison({ val: Math.floor(combatant.HP / combatant.maxHP), otherVal: healthPercentage, comparator });
+        const meetsEffectType = hasEffectType.length === 0 ? true : combatant.effects.some(({ type }) => hasEffectType.includes(type));
+        return meetsEffectType && meetsHealthPercentage;
+    };
+    return !conditions.length || conditions.some(passesCondition);
+};
+
 const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
     if (!action.bonus) {
         return action;
@@ -88,19 +101,8 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
     const { conditions = [] } = bonus;
-    const passesCondition = ({ calculationTarget, hasEffectType = [], healthPercentage, comparator }: Conditions): boolean => {
-        const combatant: Combatant = calculationTarget === "target" ? target : actor;
-        if (combatant) {
-            const meetsHealthPercentage =
-                healthPercentage === undefined
-                    ? true
-                    : passesValueComparison({ val: Math.floor(combatant.HP / combatant.maxHP), otherVal: healthPercentage, comparator });
-            const meetsEffectType = hasEffectType.length === 0 ? true : combatant.effects.some(({ type }) => hasEffectType.includes(type));
-            return meetsEffectType && meetsHealthPercentage;
-        }
-    };
 
-    if (!conditions.length || conditions.some(passesCondition)) {
+    if (passesConditions({ target, actor, conditions })) {
         return {
             ...action,
             damage: damage + (bonus.damage || 0),

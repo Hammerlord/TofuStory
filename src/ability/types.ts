@@ -6,24 +6,39 @@ export enum TARGET_TYPES {
 }
 
 export enum EFFECT_TYPES {
+    NONE = "none",
     STUN = "stun",
     BLEED = "bleed",
     FREEZE = "freeze",
-    BUFF = "buff",
-    DEBUFF = "debuff",
     BURN = "burn",
     CHILL = "chill",
     STEALTH = "stealth",
+    RAGE = "rage",
 }
 
-export interface EffectCondition {
-    types: EFFECT_TYPES[];
-    comparator: "eq";
+export enum EFFECT_CLASSES {
+    BUFF = "buff",
+    DEBUFF = "debuff",
+}
+
+export interface EffectEventTrigger {
+    removeEffect?: boolean;
+    conditions?: Conditions[]; // OR if multiple conditions are present
+    target?: {
+        // Stat changes to apply to the target (owner of this effect)
+        effects?: Effect[];
+    };
+    actor?: {
+        // Stat changes to apply to the character who triggered this event
+        // TODO confusing nomenclature
+        effects?: Effect[];
+    };
 }
 
 export interface Effect {
     name?: string;
     type: EFFECT_TYPES;
+    class: EFFECT_CLASSES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
     duration?: number;
     damage?: number;
@@ -32,6 +47,7 @@ export interface Effect {
     icon?: string;
     thorns?: number;
     attackAreaIncrease?: number;
+    basicAttackAreaIncrease?: number;
     isAuraEffect?: boolean;
     healingPerTurn?: number;
     armorPerTurn?: number;
@@ -40,23 +56,16 @@ export interface Effect {
     armorReceived?: number;
     damageReceived?: number;
     healingReceived?: number;
+    /** Only a single instance of this effect type can be on the character */
+    unique?: boolean;
     /** The target for this is random */
     healTargetPerTurn?: number;
     damageTargetPerTurn?: number;
-    onAttack?: {
-        removeEffect: boolean;
-    };
-    onReceiveEffect?: {
-        conditions?: EffectCondition[]; // OR if multiple conditions are present
-        target?: {
-            // Stat changes to apply to the target (owner of this effect)
-            effects?: Effect[];
-        };
-        actor?: {
-            // Stat changes to apply to the character who triggered this event
-            effects?: Effect[];
-        };
-    };
+    conditions?: Conditions[];
+    onAttack?: EffectEventTrigger;
+    onFriendlyKilled?: EffectEventTrigger;
+    onReceiveAttack?: EffectEventTrigger;
+    onReceiveEffect?: EffectEventTrigger;
 }
 
 export interface Aura extends Effect {
@@ -114,6 +123,7 @@ export interface Conditions {
     numDebuffs?: number;
     numBuffs?: number;
     hasEffectType?: EFFECT_TYPES[];
+    hasEffectClass?: EFFECT_CLASSES.BUFF | EFFECT_CLASSES.DEBUFF;
     /** Unique effects, not stacks */
     numEffects?: number;
     /** This should be a decimal value up to 1 */

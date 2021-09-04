@@ -78,6 +78,17 @@ const useTooltipStyles = createUseStyles({
     },
 });
 
+const requiresExplanation = ({ type }): boolean => {
+    return [
+        EFFECT_TYPES.BLEED,
+        EFFECT_TYPES.BURN,
+        EFFECT_TYPES.CHILL,
+        EFFECT_TYPES.FREEZE,
+        EFFECT_TYPES.STEALTH,
+        EFFECT_TYPES.STUN,
+    ].includes(type);
+};
+
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
     const cardsToAddMap = (ability.actions.find((action) => action.addCards?.length)?.addCards || []).reduce((acc, card) => {
         acc[card.name] = card;
@@ -87,8 +98,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const aura = ability.minion?.aura;
     const classes = useTooltipStyles();
 
-    // We generally only want to display stuff that needs an explanation, like stealth, chill, etc...
-    const effectsToDisplay = getAllEffects(ability).filter(({ type }) => type !== EFFECT_TYPES.BUFF && type !== EFFECT_TYPES.DEBUFF);
+    const effectsToDisplay = getAllEffects(ability).filter(requiresExplanation);
     const tooltips = effectsToDisplay.map((effect) => {
         return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
     });
