@@ -23,6 +23,7 @@ export const move: Ability = {
 
 export const rally: Ability = {
     name: "Rally",
+    resourceCost: 3,
     actions: [
         {
             area: 1,

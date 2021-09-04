@@ -648,6 +648,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     }, [disableActions, selectedAllyIndex, selectedAbilityIndex]);
 
     const targetLineColor = getAbilityColor(hand[selectedAbilityIndex]);
+    const shouldShowResourceBar = (combatant) => {
+        return combatant?.abilities.some(({ resourceCost }) => resourceCost > 0);
+    };
 
     return (
         <div className={classes.root}>
@@ -683,6 +686,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                         isHighlighted={false}
                                         showReticle={showReticle("enemies", i)}
                                         ref={enemyRefs[i]}
+                                        showResourceBar={shouldShowResourceBar(enemy)}
                                     />
                                 ))}
                             </div>

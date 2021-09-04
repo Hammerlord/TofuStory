@@ -1,8 +1,8 @@
-import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Shield } from "../images";
+import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
 const ANIMATION_DURATION = 0.5;
@@ -28,17 +28,12 @@ const useStyles = createUseStyles({
     hidden: {
         opacity: 0,
     },
-    tooltip: {
-        display: "flex",
-        fontSize: "0.8rem",
-        padding: "8px",
-        fontFamily: "Barlow",
-        fontWeight: "500",
-        lineHeight: "24px",
-    },
     tooltipTitle: {
         fontSize: "1.1rem",
         marginBottom: "4px",
+    },
+    tooltipContents: {
+        display: "flex",
     },
     container: {
         display: "flex",
@@ -74,7 +69,7 @@ const Armor = ({ amount, className }: ArmorInterface) => {
     return (
         <Tooltip
             title={
-                <div className={classes.tooltip}>
+                <div className={classes.tooltipContents}>
                     <div className={classes.iconContainer}>
                         <Icon size="lg" icon={<Shield />} />
                     </div>

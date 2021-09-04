@@ -1,20 +1,15 @@
-import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Effect } from "../ability/types";
 
 import { CrossedSwords, Fireworks, Heart, Shield } from "../images";
 import { Fury } from "../resource/ResourcesView";
+import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
 const useStyles = createUseStyles({
-    tooltip: {
+    tooltipContents: {
         display: "flex",
-        fontSize: "0.8rem",
-        padding: "8px",
-        fontFamily: "Barlow",
-        fontWeight: "500",
-        lineHeight: "24px",
     },
     tooltipTitle: {
         fontSize: "1.1rem",
@@ -39,14 +34,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
 
     let name = effect.name;
     let icon: string | JSX.Element = effect.icon;
-    const {
-        thorns = 0,
-        healthPerResourcesSpent = 0,
-        healingPerTurn = 0,
-        armorPerTurn = 0,
-        type,
-        damage,
-    } = effect;
+    const { thorns = 0, healthPerResourcesSpent = 0, healingPerTurn = 0, armorPerTurn = 0, type, damage } = effect;
     if (isAura) {
         name = "Aura";
         icon = <Fireworks />;
@@ -57,7 +45,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
     }
 
     const tooltipContent = (
-        <div className={classes.tooltip}>
+        <div className={classes.tooltipContents}>
             <div className={classNames(classes.iconContainer)}>
                 <Icon icon={icon} size={"lg"} />
             </div>
@@ -91,7 +79,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
         </div>
     );
     return (
-        <Tooltip title={tooltipContent} arrow classes={{ tooltip: classes.tooltip }}>
+        <Tooltip title={tooltipContent}>
             <span>
                 <Icon icon={icon} text={effect.duration < Infinity && effect.duration} />
             </span>

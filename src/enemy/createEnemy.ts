@@ -2,10 +2,7 @@ import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { Combatant } from "../character/types";
 import { getRandomItem, shuffle } from "./../utils";
-import {
-    bigBeefy, createSyntheticAttack,
-    smalltofu, thefaketofu, theraretofu, theRegalTofu
-} from "./tofu";
+import { bigBeefy, createSyntheticAttack, smalltofu, thefaketofu, theraretofu, theRegalTofu } from "./tofu";
 
 export const createCombatant = (combatant): Combatant => {
     if (!combatant) {
@@ -18,12 +15,10 @@ export const createCombatant = (combatant): Combatant => {
         effects: combatant.effects?.map(cloneDeep) || [],
         armor: 0,
         resources: combatant.resources || 0,
+        maxResources: combatant.maxResources || 5,
         casting: null,
-        abilities: [
-            ...(combatant.abilities || []),
-            ...Array.from({ length: 3 }).map(createSyntheticAttack),
-        ],
-        turnHistory: []
+        abilities: [...(combatant.abilities || []), ...Array.from({ length: 3 }).map(createSyntheticAttack)],
+        turnHistory: [],
     };
 };
 

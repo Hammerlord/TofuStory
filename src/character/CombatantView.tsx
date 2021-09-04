@@ -1,3 +1,4 @@
+import { LinearProgress } from "@material-ui/core";
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -11,6 +12,7 @@ import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicator, Cloud, CrossedSwords, Dizzy, hammer, Heart, Zzz } from "../images";
+import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 
 const useStyles = createUseStyles({
@@ -296,7 +298,7 @@ const toAndBack = ({ to, from, spin = false }) => {
 };
 
 const CombatantView = forwardRef(
-    ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, ...other }: any, ref) => {
+    ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, showResourceBar, ...other }: any, ref) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
         const [portraitRef] = useState(createRef() as React.RefObject<any>);
@@ -317,6 +319,8 @@ const CombatantView = forwardRef(
 
             setTimeout(() => {
                 setStatChanges(statChanges);
+                console.log(combatant);
+
                 setOldState(combatant);
             }, 300);
         }, [combatant]);
@@ -377,6 +381,7 @@ const CombatantView = forwardRef(
                                 <div className={classes.header}>
                                     {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
                                     <span>{oldState.name}</span>
+                                    {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
                                 </div>
                             )}
                             <div className={classes.combatantContainer}>

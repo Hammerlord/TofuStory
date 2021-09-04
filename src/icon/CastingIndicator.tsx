@@ -1,17 +1,12 @@
-import { Tooltip } from "@material-ui/core";
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
 import { Hourglass, Warning } from "../images";
+import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
 const useStyles = createUseStyles({
-    tooltip: {
+    tooltipContents: {
         display: "flex",
-        fontSize: "0.8rem",
-        padding: "8px",
-        fontFamily: "Barlow",
-        fontWeight: "500",
-        lineHeight: "24px",
     },
     tooltipTitle: {
         fontSize: "1.1rem",
@@ -39,7 +34,7 @@ const CastingIndicator = ({ casting, combatant }) => {
         <div>
             <Tooltip
                 title={
-                    <div className={classes.tooltip}>
+                    <div className={classes.tooltipContents}>
                         <div className={classes.iconContainer}>
                             <Icon icon={<Warning />} size="lg" />
                         </div>
@@ -63,7 +58,7 @@ const CastingIndicator = ({ casting, combatant }) => {
             {castTime > 0 && (
                 <Tooltip
                     title={
-                        <div className={classes.tooltip}>
+                        <div className={classes.tooltipContents}>
                             <div className={classes.iconContainer}>
                                 <Icon icon={<Hourglass />} size="lg" />
                             </div>
