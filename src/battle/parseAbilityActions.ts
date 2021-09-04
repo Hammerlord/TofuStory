@@ -81,12 +81,24 @@ const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherV
     }
 };
 
-const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
+const calculateBonus = ({
+    action,
+    target,
+    actor,
+    targetIndex,
+    selectedIndex,
+}: {
+    action: Action;
+    target: Combatant;
+    actor: Combatant;
+    targetIndex: number;
+    selectedIndex: number;
+}): Action => {
     if (!action.bonus) {
         return action;
     }
 
-    const { bonus, damage = 0, healing = 0, armor = 0, effects = [] } = action;
+    const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
     const { conditions = [] } = bonus;
     const passesCondition = ({ calculationTarget, hasEffectType = [], healthPercentage, comparator }: Conditions): boolean => {
         const combatant: Combatant = calculationTarget === "target" ? target : actor;
@@ -99,10 +111,12 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
             return meetsEffectType && meetsHealthPercentage;
         }
     };
+
     if (!conditions.length || conditions.some(passesCondition)) {
         return {
             ...action,
             damage: damage + (bonus.damage || 0),
+            secondaryDamage: secondaryDamage && secondaryDamage + (bonus.damage || 0),
             healing: healing + (bonus.healing || 0),
             armor: armor + (bonus.armor || 0),
             effects: [...effects, ...(bonus.effects || [])],
@@ -124,7 +138,7 @@ export const applyActionToTarget = ({
     actor?: Combatant;
     action: Action;
 }): Combatant => {
-    action = calculateBonus({ target, actor, action });
+    action = calculateBonus({ target, actor, action, targetIndex, selectedIndex });
     const { healing = 0, effects = [], resources = 0 } = action;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action });
     const armor = calculateArmor({ target, action });

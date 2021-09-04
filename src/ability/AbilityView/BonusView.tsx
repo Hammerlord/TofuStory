@@ -25,7 +25,12 @@ const BonusView = ({ ability }) => {
             {bonuses.map(({ damage = 0, healing = 0, armor = 0, conditions = [] }, i) => {
                 const conditionText = conditions?.map(({ hasEffectType = [], healthPercentage }) => {
                     if (hasEffectType.length) {
-                        return <span key={i}>to targets with {hasEffectType.map(getIconForEffectType)}{i < conditions.length - 1 ? ' or ' : ''}</span>;
+                        return (
+                            <span key={i}>
+                                to targets afflicted by {hasEffectType.map(getIconForEffectType)}
+                                {i < conditions.length - 1 ? " or " : ""}
+                            </span>
+                        );
                     }
                     if (healthPercentage !== undefined) {
                         return <span key={i}>to targets at {healthPercentage * 100}% HP</span>;
@@ -33,7 +38,11 @@ const BonusView = ({ ability }) => {
                 });
                 return (
                     <div key={i}>
-                        {damage > 0 && <>Deal <Icon icon={CrossedSwords} text={`+${damage}`} /></>}{" "}
+                        {damage > 0 && (
+                            <>
+                                Deal <Icon icon={CrossedSwords} text={`+${damage}`} />
+                            </>
+                        )}{" "}
                         {healing > 0 && <Icon icon={Heart} text={`+${healing}`} />} {armor > 0 && <Icon icon={Shield} text={`+${armor}`} />}
                         {conditionText}
                     </div>

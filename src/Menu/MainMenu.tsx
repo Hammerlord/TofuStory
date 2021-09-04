@@ -27,6 +27,7 @@ import {
     shieldStrike,
     slam,
     slashBlast,
+    spearSweep,
     spikedArmor,
     sweepingReach,
     warBanner,
@@ -93,6 +94,7 @@ const allCards = [
     comboFury,
     sweepingReach,
     piercingDrive,
+    spearSweep,
 ];
 
 const useStyles = createUseStyles({
@@ -125,7 +127,7 @@ const MainMenu = () => {
         effects: [],
         turnHistory: [],
     });
-    const [deck, setDeck] = useState([evilEye, comboFury, sweepingReach, piercingDrive]);
+    const [deck, setDeck] = useState([evilEye, comboFury, piercingDrive, spearSweep]);
 
     const classes = useStyles();
 

@@ -25,6 +25,7 @@ import {
     shout,
     slashblast,
     snail as snailPortrait,
+    spearsweepImage,
     spikes,
     warleap,
     warmush,
@@ -560,6 +561,30 @@ export const piercingDrive: Ability = {
             secondaryDamage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                damage: 1,
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectType: [EFFECT_TYPES.STUN],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const spearSweep: Ability = {
+    name: "Spear Sweep",
+    resourceCost: 2,
+    image: spearsweepImage,
+    actions: [
+        {
+            area: 2,
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [stun],
         },
     ],
 };
