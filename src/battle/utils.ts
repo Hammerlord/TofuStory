@@ -134,8 +134,25 @@ const getMultiplier = ({ actor, action, target }: { actor: Combatant; action: Ac
     return 1;
 };
 
-export const calculateDamage = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
-    const actionDamage = action.damage || 0;
+export const calculateDamage = ({
+    actor,
+    target,
+    targetIndex,
+    selectedIndex,
+    action,
+}: {
+    actor?: Combatant;
+    target?: Combatant;
+    targetIndex?: number;
+    selectedIndex?: number;
+    action: Action;
+}): number => {
+    const actionDamage: number = (() => {
+        if (action.secondaryDamage && targetIndex !== selectedIndex) {
+            return action.secondaryDamage;
+        }
+        return action.damage || 0;
+    })();
     if (!actor || (action.type !== ACTION_TYPES.ATTACK && action.type !== ACTION_TYPES.RANGE_ATTACK)) {
         return actionDamage;
     }

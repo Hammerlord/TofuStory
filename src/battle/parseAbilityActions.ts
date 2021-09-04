@@ -5,7 +5,6 @@ import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
 import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getHealableIndices, getValidTargetIndices } from "./utils";
-import { access } from "fs";
 
 /**
  * The results of an action being applied.
@@ -112,10 +111,22 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
     return action;
 };
 
-export const applyActionToTarget = ({ target, actor, action }: { target: Combatant; actor?: Combatant; action: Action }): Combatant => {
+export const applyActionToTarget = ({
+    target,
+    targetIndex,
+    selectedIndex,
+    actor,
+    action,
+}: {
+    target: Combatant | null;
+    targetIndex: number;
+    selectedIndex?: number;
+    actor?: Combatant;
+    action: Action;
+}): Combatant => {
     action = calculateBonus({ target, actor, action });
     const { healing = 0, effects = [], resources = 0 } = action;
-    const damage = calculateDamage({ actor, target, action });
+    const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action });
     const armor = calculateArmor({ target, action });
     const updatedArmor = Math.max(0, target.armor - damage + armor);
     const healthDamage = Math.max(0, damage - target.armor);
@@ -123,7 +134,6 @@ export const applyActionToTarget = ({ target, actor, action }: { target: Combata
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
     // Check if stealth broken
     const targetEffects = damage === 0 ? target.effects : target.effects.filter(({ type }) => type !== EFFECT_TYPES.STEALTH);
-
     return applyEffects({
         target: {
             ...target,
@@ -136,14 +146,12 @@ export const applyActionToTarget = ({ target, actor, action }: { target: Combata
     });
 };
 
-const calculateThornsDamage = (action: Action, hitTargets: Combatant[]): number => {
+const calculateThornsDamage = (action: Action, hitTarget: Combatant): number => {
     if (action.type !== ACTION_TYPES.ATTACK) {
         return 0;
     }
 
-    return hitTargets.reduce((acc, { effects }) => {
-        return acc + effects.reduce((acc, { thorns = 0 }) => acc + thorns, 0);
-    }, 0);
+    return hitTarget?.effects.reduce((acc, { thorns = 0 }) => acc + thorns, 0);
 };
 
 const removeStealth = (character: Combatant): Combatant => {
@@ -168,71 +176,104 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
     return totalArea;
 };
 
-export const parseAction = ({ enemies, allies, action, selectedIndex, actorId, side }): Event => {
+export const parseAction = ({
+    enemies,
+    allies,
+    action,
+    selectedIndex,
+    actorId,
+    selectedSide,
+}: {
+    enemies: (Combatant | null)[];
+    allies: (Combatant | null)[];
+    action: Action;
+    selectedIndex: number;
+    actorId: string;
+    selectedSide: "allies" | "enemies";
+}): Event => {
     const { movement } = action;
-    const { friendly, hostile, caster, casterSide } = getFriendlyOrHostile({
+    let { friendly, hostile, actorSide } = orientate({
         enemies,
         allies,
         actorId,
     });
-    const area = calculateActionArea({ action, actor: caster });
+
+    const actor = friendly.find((character) => character?.id === actorId);
+    const area = calculateActionArea({ action, actor });
     const isInArea = (character, i) => {
         return character && i >= selectedIndex - area && i <= selectedIndex + area;
     };
-    let targets = side === "allies" ? allies : enemies;
-    targets = targets.filter(isInArea);
 
-    const updatedTargetsMap = targets
-        .map((target) => applyActionToTarget({ target, action, actor: caster }))
-        .reduce((acc, current) => {
-            acc[current.id] = current;
-            return acc;
-        }, {});
+    let thornsDamage = 0;
+
+    const updateTargets = (targets) => {
+        return targets.map((character, i: number) => {
+            if (isInArea(character, i)) {
+                thornsDamage += calculateThornsDamage(action, character);
+                return applyActionToTarget({ target: character, selectedIndex, targetIndex: i, action, actor }); // Actor possibly stale...
+            }
+
+            return character;
+        });
+    };
+
+    if (selectedSide !== actorSide) {
+        hostile = updateTargets(hostile);
+    } else {
+        friendly = updateTargets(friendly);
+    }
+
+    const updateActor = (fn) => {
+        friendly = friendly.map((character, i) => {
+            if (character?.id !== actorId) {
+                return character;
+            }
+
+            return fn(character, i);
+        });
+    };
+
+    if (thornsDamage > 0) {
+        updateActor((actor, i) =>
+            applyActionToTarget({
+                target: actor,
+                targetIndex: i,
+                action: {
+                    damage: thornsDamage,
+                    type: ACTION_TYPES.NONE,
+                },
+            })
+        );
+    }
 
     if (action.type === ACTION_TYPES.ATTACK) {
-        updatedTargetsMap[actorId] = removeStealth(updatedTargetsMap[actorId] || caster);
+        updateActor(removeStealth);
     }
-
-    const thornsDamage = calculateThornsDamage(action, targets);
-    if (thornsDamage > 0) {
-        updatedTargetsMap[actorId] = applyActionToTarget({
-            target: updatedTargetsMap[actorId] || caster,
-            action: {
-                damage: thornsDamage,
-                type: ACTION_TYPES.NONE,
-            },
-        });
-    }
-
-    const getUpdatedCharacter = (character) => {
-        return updatedTargetsMap[character?.id] || cloneDeep(character);
-    };
 
     if (movement) {
         const index = friendly.findIndex((combatant) => combatant?.id === actorId);
         [friendly[index], friendly[selectedIndex]] = [friendly[selectedIndex], friendly[index]];
     }
 
-    const [updatedAllies, updatedEnemies] = casterSide === "allies" ? [friendly, hostile] : [hostile, friendly];
+    const [updatedAllies, updatedEnemies] = actorSide === "allies" ? [friendly, hostile] : [hostile, friendly];
 
     return {
         action,
-        updatedAllies: renewPersistentAuras(updatedAllies.map(getUpdatedCharacter)),
-        updatedEnemies: renewPersistentAuras(updatedEnemies.map(getUpdatedCharacter)),
+        updatedAllies: renewPersistentAuras(updatedAllies),
+        updatedEnemies: renewPersistentAuras(updatedEnemies),
         actorId,
         selectedIndex,
-        targetSide: side,
+        targetSide: selectedSide,
     };
 };
 
-const getFriendlyOrHostile = ({ actorId, enemies, allies }) => {
-    const casterSide = allies.find((ally) => ally?.id === actorId) ? "allies" : "enemies";
-    const [friendly, hostile] = casterSide === "allies" ? [allies, enemies] : [enemies, allies];
+const orientate = ({ actorId, enemies, allies }) => {
+    const actorSide = allies.find((ally) => ally?.id === actorId) ? "allies" : "enemies";
+    const [friendly, hostile] = actorSide === "allies" ? [allies, enemies] : [enemies, allies];
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
-        caster: friendly.find((character) => character?.id === actorId),
-        casterSide,
+        actorSide,
     };
 };
 
@@ -258,7 +299,7 @@ const applyAuraPerTurnEffect = (characters: (Combatant | null)[], actorIndex: nu
             // Aura effects do not apply to the owner of the aura
             const isAffectedByAura = character?.HP > 0 && j >= i - area && j <= i + area && j !== i;
             if (isAffectedByAura) {
-                return applyActionToTarget({ target: character, action });
+                return applyActionToTarget({ target: character, targetIndex: j, action });
             }
             return cloneDeep(character);
         }),
@@ -304,19 +345,21 @@ export const applyPerTurnEffects = (
         if (healTargetPerTurn > 0) {
             const indices = getHealableIndices(actors);
             if (indices.length > 0) {
-                const index = getRandomItem(indices);
+                const selectedIndex = getRandomItem(indices);
                 const action = {
                     type: ACTION_TYPES.EFFECT,
                     healing: healTargetPerTurn,
                 };
                 results.push({
                     actors: actors.map((actor, i) => {
-                        if (!actor || i !== index) {
+                        if (!actor || i !== selectedIndex) {
                             return actor;
                         }
 
                         return applyActionToTarget({
-                            target: actors[index],
+                            target: actor,
+                            targetIndex: i,
+                            selectedIndex: selectedIndex,
                             actor: character,
                             action: {
                                 type: ACTION_TYPES.EFFECT,
@@ -411,7 +454,7 @@ export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, 
                 selectedIndex: index,
                 action,
                 actorId,
-                side,
+                selectedSide: side,
             })
         );
     });

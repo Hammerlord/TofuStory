@@ -126,6 +126,7 @@ export enum MULTIPLIER_TYPES {
 
 export interface Action {
     damage?: number;
+    secondaryDamage?: number;
     type: ACTION_TYPES;
     healing?: number;
     armor?: number;

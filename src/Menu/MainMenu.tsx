@@ -6,13 +6,32 @@ import DeckEditor from "../ability/DeckEditor";
 import BattlefieldContainer from "../battle/BattleView";
 import {
     anger,
-    bash, blizzardCharge, block,
-    bloodthirst, brandish, bunchOBricks, chanceStrike, comboFury, evilEye, flameCharge,
-    frostFire, hammerang, hyperBody, ironWill, lightningCharge, puncture, rampage,
+    bash,
+    blizzardCharge,
+    block,
+    bloodthirst,
+    brandish,
+    bunchOBricks,
+    chanceStrike,
+    comboFury,
+    evilEye,
+    flameCharge,
+    frostFire,
+    hammerang,
+    hyperBody,
+    ironWill,
+    lightningCharge,
+    piercingDrive,
+    puncture,
+    rampage,
     shieldStrike,
-    slam, slashBlast, spikedArmor,
+    slam,
+    slashBlast,
+    spikedArmor,
     sweepingReach,
-    warBanner, warLeap, yell
+    warBanner,
+    warLeap,
+    yell,
 } from "./../ability/Abilities";
 import { warmush } from "./../images";
 import ChallengeMenu from "./ChallengeMenu";
@@ -73,6 +92,7 @@ const allCards = [
     brandish,
     comboFury,
     sweepingReach,
+    piercingDrive,
 ];
 
 const useStyles = createUseStyles({
@@ -105,13 +125,7 @@ const MainMenu = () => {
         effects: [],
         turnHistory: [],
     });
-    const [deck, setDeck] = useState([
-        evilEye,
-        brandish,
-        brandish,
-        comboFury,
-        sweepingReach,
-    ]);
+    const [deck, setDeck] = useState([evilEye, comboFury, sweepingReach, piercingDrive]);
 
     const classes = useStyles();
 

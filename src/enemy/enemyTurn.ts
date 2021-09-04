@@ -68,7 +68,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
         // Each subsequent action should be based on the most recently updated enemies/player states.
         const recentEnemies = cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
         const recentAllies = cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
-        let side = "enemies";
+        let selectedSide = "enemies" as "enemies" | "allies";
 
         if (movement) {
             selectedIndex = getRandomItem(
@@ -84,7 +84,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
         } else if (target === TARGET_TYPES.HOSTILE) {
             const validAllyIndices = getValidTargetIndices(recentAllies, { excludeStealth: true });
             selectedIndex = getRandomItem(validAllyIndices);
-            side = "allies";
+            selectedSide = "allies";
         }
 
         results.push(
@@ -94,7 +94,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
                 allies: recentAllies,
                 selectedIndex,
                 action,
-                side,
+                selectedSide,
             })
         );
     });
@@ -225,6 +225,7 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
         totalBleedDamage += bleedDamage;
         return applyActionToTarget({
             target: enemy,
+            targetIndex: i,
             action: {
                 damage: bleedDamage,
                 description: "Enemies took bleed damage.",

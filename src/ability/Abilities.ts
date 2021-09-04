@@ -17,6 +17,7 @@ import {
     ironwill as ironwillImage,
     lightningcharge,
     mace,
+    piercingdriveImage,
     puncture as punctureImage,
     rage,
     risingrage,
@@ -544,6 +545,21 @@ export const sweepingReach: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+export const piercingDrive: Ability = {
+    name: "Piercing Drive",
+    resourceCost: 1,
+    image: piercingdriveImage,
+    actions: [
+        {
+            area: 1,
+            damage: 4,
+            secondaryDamage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
         },
     ],
 };
