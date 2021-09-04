@@ -157,8 +157,8 @@ export const calculateDamage = ({
         return actionDamage;
     }
 
-    const actorDamage = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, actor.damage || 0);
-    const damage = (actorDamage + actionDamage) * getMultiplier({ action, actor, target });
+    const damageFromEffects = actor.effects.reduce((acc, { damage = 0 }) => acc + damage, 0);
+    const damage = (damageFromEffects + actionDamage) * getMultiplier({ action, actor, target });
     const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const totalDamage = damage + damageReceived;
     if (actor.damage > 0 || actionDamage > 0) {

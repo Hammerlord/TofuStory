@@ -84,18 +84,3 @@ export const theCruelTofu = {
     damage: 3,
     abilities: [whip],
 };
-
-/**
- * Creates a basic "attack" ability for monsters. Due for a revamp...
- */
-export const createSyntheticAttack = () => {
-    return {
-        name: "Attack",
-        actions: [
-            {
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-            },
-        ],
-    };
-};

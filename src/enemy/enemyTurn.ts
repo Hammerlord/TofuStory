@@ -1,12 +1,14 @@
-import { cleanUpDeadCharacters, getValidTargetIndices } from "./../battle/utils";
-import { parseAction } from "./../battle/parseAbilityActions";
 import { cloneDeep } from "lodash";
-import { ACTION_TYPES, Effect } from "./../ability/types";
-import { getRandomItem, shuffle } from "./../utils";
-import { applyActionToTarget, Event } from "../battle/parseAbilityActions";
+import { partition } from "ramda";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
-import { Combatant } from "../character/types";
 import triggerDebuffDamage from "../battle/debuffDamage";
+import { Event } from "../battle/parseAbilityActions";
+import { Combatant } from "../character/types";
+import { ACTION_TYPES } from "./../ability/types";
+import { parseAction } from "./../battle/parseAbilityActions";
+import { cleanUpDeadCharacters, getValidTargetIndices } from "./../battle/utils";
+import { getRandomItem, shuffle } from "./../utils";
+import { loaf } from "./abilities";
 
 const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement = 0 }): number[] => {
     const min = Math.max(0, currentLocationIndex - movement);
@@ -41,23 +43,23 @@ const getPopulatedEnemyIndices = (enemies) => {
  * 2) Check the resource cost of the ability.
  */
 const canUseAbility = ({ enemy, ability, enemies }): boolean => {
-    const movementAction = ability.actions.find((action) => action.movement);
-    if (!movementAction) {
-        return true;
-    }
-    const index = enemies.findIndex((e: Combatant) => e && e.id === enemy.id);
-    if (
-        getPossibleMoveIndices({
-            currentLocationIndex: index,
-            enemies,
-            movement: movementAction.movement,
-        }).length === 0
-    ) {
+    const resourceCost = ability.resourceCost || 0;
+    if ((enemy.resources || 0) < resourceCost) {
         return false;
     }
+    const movementAction = ability.actions.find((action) => action.movement);
+    if (movementAction) {
+        const index = enemies.findIndex((e: Combatant) => e && e.id === enemy.id);
+        return (
+            getPossibleMoveIndices({
+                currentLocationIndex: index,
+                enemies,
+                movement: movementAction.movement,
+            }).length > 0
+        );
+    }
 
-    const resourceCost = ability.resourceCost || 0;
-    return (enemy.resources || 0) >= resourceCost;
+    return true;
 };
 
 const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
@@ -137,11 +139,58 @@ const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
     ];
 };
 
+const getSyntheticAttack = (actor) => {
+    return {
+        name: "Attack",
+        actions: [
+            {
+                damage: actor.damage,
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
+            },
+        ],
+    };
+};
+
+const pickAbility = ({ actor, enemies }): Ability => {
+    const [specialAbilities, regularAbilities] = partition(
+        (a) => a.resourceCost > 0,
+        actor.abilities.filter((a) => canUseAbility({ enemy: actor, ability: a, enemies }))
+    );
+
+    let ability: Ability;
+    if (specialAbilities.length > 0) {
+        if (actor.resources === actor.maxResources) {
+            ability = getRandomItem(specialAbilities);
+        } else {
+            // Otherwise it is just a chance
+            let mostExpensive = 0;
+            specialAbilities.forEach(({ resourceCost }) => {
+                if (resourceCost > mostExpensive) {
+                    mostExpensive = resourceCost;
+                }
+            });
+
+            if (Math.random() < actor.resources / (mostExpensive + 1)) {
+                ability = getRandomItem(specialAbilities);
+            }
+        }
+    }
+    if (!ability) {
+        if (actor.damage > 0) {
+            regularAbilities.push(...Array.from({ length: 3 }).map(() => getSyntheticAttack(actor)));
+        }
+
+        ability = getRandomItem(regularAbilities);
+    }
+
+    return ability || loaf;
+};
+
 const useAbility = ({ caster, allies, enemies }): Event[] => {
-    const { abilities, id } = caster;
+    const { id } = caster;
 
-    const ability: Ability = getRandomItem(abilities.filter((a) => canUseAbility({ enemy: caster, ability: a, enemies })));
-
+    const ability = pickAbility({ actor: caster, enemies }); // Needs to be upfront resource cost?
     if (ability.castTime > 0 || ability.channelDuration > 0) {
         enemies = enemies.map((enemy) => {
             if (enemy?.id === id) {
