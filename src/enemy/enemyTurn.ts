@@ -6,6 +6,7 @@ import { getRandomItem, shuffle } from "./../utils";
 import { applyActionToTarget, Event } from "../battle/parseAbilityActions";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
+import triggerDebuffDamage from "../battle/debuffDamage";
 
 const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement = 0 }): number[] => {
     const min = Math.max(0, currentLocationIndex - movement);
@@ -210,35 +211,18 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
         );
     });
 
-    let totalBleedDamage = 0;
-    const enemiesWithBleedsTriggered: Combatant[] = getRecentEnemies().map((enemy: Combatant, i: number) => {
-        if (!enemy) {
-            return enemy;
-        }
-        const bleedDamage: number = enemy.effects.reduce((acc: number, effect: Effect) => {
-            if (effect.type === EFFECT_TYPES.BLEED) {
-                acc += effect.damage || 1;
-            }
-            return acc;
-        }, 0);
+    const debuffsTriggered = triggerDebuffDamage(getRecentEnemies());
 
-        totalBleedDamage += bleedDamage;
-        return applyActionToTarget({
-            target: enemy,
-            targetIndex: i,
-            action: {
-                damage: bleedDamage,
-                description: "Enemies took bleed damage.",
-                type: ACTION_TYPES.NONE,
-            },
-        });
-    });
-
-    if (totalBleedDamage) {
-        results.push({
-            updatedEnemies: enemiesWithBleedsTriggered,
-            updatedAllies: getRecentAllies(),
-        } as Event);
+    if (debuffsTriggered.length) {
+        results.push(
+            ...debuffsTriggered.map(
+                (characters) =>
+                    ({
+                        updatedEnemies: characters,
+                        updatedAllies: getRecentAllies(),
+                    } as Event)
+            )
+        );
     }
 
     return results;

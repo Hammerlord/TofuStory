@@ -81,19 +81,7 @@ const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherV
     }
 };
 
-const calculateBonus = ({
-    action,
-    target,
-    actor,
-    targetIndex,
-    selectedIndex,
-}: {
-    action: Action;
-    target: Combatant;
-    actor: Combatant;
-    targetIndex: number;
-    selectedIndex: number;
-}): Action => {
+const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
     if (!action.bonus) {
         return action;
     }
@@ -138,7 +126,7 @@ export const applyActionToTarget = ({
     actor?: Combatant;
     action: Action;
 }): Combatant => {
-    action = calculateBonus({ target, actor, action, targetIndex, selectedIndex });
+    action = calculateBonus({ target, actor, action });
     const { healing = 0, effects = [], resources = 0 } = action;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action });
     const armor = calculateArmor({ target, action });
