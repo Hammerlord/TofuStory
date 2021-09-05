@@ -1,3 +1,4 @@
+import { compose } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
@@ -20,7 +21,6 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import {
     canUseAbility,
-    cleanUpDeadCharacters,
     clearTurnHistory,
     isValidTarget,
     refreshPlayerResources,
@@ -31,7 +31,6 @@ import {
     updatePlayer,
 } from "./utils";
 import WaveInfo from "./WaveInfo";
-import { compose } from "ramda";
 
 const CARDS_PER_DRAW = 5;
 
@@ -159,6 +158,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
+    const [flagTurnEnd, setFlagTurnEnd] = useState(false);
 
     const player = allies.find((ally: Combatant | null) => ally && ally.isPlayer);
 
@@ -425,8 +425,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const updatedEvents = events.slice();
         const event = updatedEvents.shift() as Event;
         const { updatedEnemies, updatedAllies, action, actorId } = event;
-        const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
-        const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
         let timeout;
         if (action) {
             if (actorId === player.id) {
@@ -434,41 +432,27 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setHand([...hand, ...addCards]);
             }
         }
+
+        const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
         if (playerDead) {
-            timeout = setTimeout(() => {
+            setTimeout(() => {
                 setEvents([]);
                 setBattleEndResult("Defeat");
             }, 1000);
             return;
         }
+
+        const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
         if (enemiesAllDead) {
-            timeout = setTimeout(() => {
+            setTimeout(() => {
                 setEvents([]);
                 nextWave();
             }, 1000);
             return;
         }
-        if (updatedEvents.length) {
-            timeout = setTimeout(() => {
-                setEvents(updatedEvents);
-            }, 1000);
-        } else {
-            timeout = setTimeout(() => {
-                setEvents([]);
-                if (!isPlayerTurn) {
-                    const { winCondition } = waves[currentWave] || {};
-                    if (currentRound + 1 >= winCondition?.surviveRounds) {
-                        nextWave();
-                        return;
-                    }
-
-                    if (event.updatedEnemies.some((enemy) => enemy?.HP > 0)) {
-                        setIsPlayerTurn(true);
-                        setCurrentRound(currentRound + 1);
-                    }
-                }
-            }, 1000);
-        }
+        timeout = setTimeout(() => {
+            setEvents(updatedEvents);
+        }, 1000);
 
         return () => {
             clearTimeout(timeout);
@@ -538,31 +522,53 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         nextWave();
     }, []);
 
-    const handleEndTurn = () => {
-        const updatedAllies = updateCharacters(allies, compose(tickDownDebuffs, removeEndedEffects));
-        setAllies(updatedAllies);
-        setIsPlayerTurn(false);
-        setHand([]);
-        const newDiscard = [...hand.filter((ability) => !ability.removeAfterTurn), ...discard];
-        setDiscard(newDiscard);
-    };
+    useEffect(() => {
+        if (events.length || !flagTurnEnd) {
+            return;
+        }
+
+        setFlagTurnEnd(false);
+        const playerDead = allies.find((ally) => ally?.isPlayer).HP <= 0;
+        const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
+        if (playerDead || enemiesAllDead) {
+            return;
+        }
+
+        if (isPlayerTurn) {
+            setIsPlayerTurn(!isPlayerTurn);
+            // end the player turn
+            const updatedAllies = updateCharacters(allies, compose(tickDownDebuffs, removeEndedEffects));
+            setAllies(updatedAllies);
+            setHand([]);
+            const newDiscard = [...hand.filter((ability) => !ability.removeAfterTurn), ...discard];
+            setDiscard(newDiscard);
+        } else {
+            // end the opponent turn
+            setCurrentRound(currentRound + 1);
+            const { winCondition } = waves[currentWave] || {};
+            if (currentRound + 1 >= winCondition?.surviveRounds) {
+                nextWave();
+            } else {
+                setIsPlayerTurn(!isPlayerTurn);
+            }
+        }
+    }, [flagTurnEnd, events]);
 
     useEffect(() => {
         if (currentWave === -1 || isPlayerTurn === null) {
             return;
         }
-        setShowTurnAnnouncement(true);
 
+        setShowTurnAnnouncement(true);
         setTimeout(() => {
             setShowTurnAnnouncement(false);
-
             if (isPlayerTurn) {
                 handlePlayerTurnStart();
-                return;
+            } else {
+                const enemyActions = enemyTurn({ enemies, allies });
+                handleNewEvents(enemyActions);
+                setFlagTurnEnd(true);
             }
-
-            const enemyActions = enemyTurn({ enemies, allies });
-            handleNewEvents(enemyActions);
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
 
@@ -713,9 +719,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                             </div>
                             <div className={classes.rightContainer}>
                                 <EndTurnButton
-                                    disabled={disableActions || events.length > 0}
+                                    disabled={disableActions}
                                     highlight={noMoreMoves}
-                                    onClick={handleEndTurn}
+                                    onClick={() => {
+                                        setFlagTurnEnd(true);
+                                    }}
                                 />
                             </div>
                         </div>
