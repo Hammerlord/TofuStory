@@ -8,17 +8,8 @@ import Map from "../Map/Map";
 import { Button } from "@material-ui/core";
 import DeckViewer from "./DeckViewer";
 import { createUseStyles } from "react-jss";
-
-enum PLAYER_STATE {
-    CLASS_SELECTION = 0,
-    ACTIVITY_MENU = 1,
-    EDIT_DECK = 2,
-    BATTLE = 3,
-}
-
-enum PLAYER_CLASSES {
-    WARRIOR = "Warrior",
-}
+import ClassSelection from "./ClassSelection";
+import { PLAYER_CLASSES } from "./playerClasses";
 
 const warriorStarterDeck = [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block];
 
@@ -49,19 +40,7 @@ const useStyles = createUseStyles({
 });
 
 const Main = () => {
-    const [player, setPlayer] = useState({
-        id: uuid.v4(),
-        class: PLAYER_CLASSES.WARRIOR,
-        image: warmush,
-        HP: 20,
-        maxHP: 20,
-        resourcesPerTurn: 3,
-        maxResources: 3,
-        armor: 0,
-        effects: [],
-        turnHistory: [],
-        isPlayer: true,
-    });
+    const [player, setPlayer] = useState(null);
     const [deck, setDeck] = useState(warriorStarterDeck);
     const [challenge, setChallenge] = useState(null);
     const [isRewardsOpen, setIsRewardsOpen] = useState(false);
@@ -76,6 +55,26 @@ const Main = () => {
         setIsRewardsOpen(true);
         //setPlayer(updatedPlayer);
     };
+
+    const handleSelectClass = (selectedClass: PLAYER_CLASSES) => {
+        setPlayer({
+            id: uuid.v4(),
+            class: selectedClass,
+            image: warmush,
+            HP: 20,
+            maxHP: 20,
+            resourcesPerTurn: 3,
+            maxResources: 3,
+            armor: 0,
+            effects: [],
+            turnHistory: [],
+            isPlayer: true,
+        });
+    };
+
+    if (!player) {
+        return <ClassSelection onSelectClass={handleSelectClass} />;
+    }
 
     return (
         <>
