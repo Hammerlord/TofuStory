@@ -25,7 +25,7 @@ export { default as Cloud } from "./2601.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
-export { default as block } from "./block.png";
+export { default as blockImage } from "./block.png";
 export { default as shieldred } from "./shieldred.png";
 export { default as woodenclub } from "./woodenclub.png";
 export { default as shout } from "./shout.png";
@@ -49,7 +49,7 @@ export { default as bricks } from "./bricks.png";
 export { default as hammer } from "./hammer.png";
 export { default as chanceattack } from "./chanceattack.png";
 export { default as ironwill } from "./ironwill.png";
-export { default as puncture } from "./puncture.png";
+export { default as punctureImage } from "./puncture.png";
 export { default as hyperbody } from "./hyperbody.png";
 export { default as blizzardcharge } from "./blizzardcharge.png";
 export { default as flamecharge } from "./flamecharge.png";

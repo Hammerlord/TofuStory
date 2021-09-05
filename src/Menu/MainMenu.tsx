@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckEditor from "../ability/DeckEditor";
 import BattlefieldContainer from "../battle/BattleView";
+import Rewards from "../battle/Rewards";
 import {
     anger,
     bash,
@@ -132,6 +133,7 @@ const MainMenu = () => {
     const classes = useStyles();
 
     const [activityState, setActivityState] = useState(PLAYER_STATE.ACTIVITY_MENU);
+    const [testingReward, setTestingReward] = useState(false);
     const [challenge, setChallenge] = useState(null);
 
     const handleSelectChallenge = (selectedChallenge) => {
@@ -157,8 +159,12 @@ const MainMenu = () => {
                         <div>
                             <button onClick={() => setActivityState(PLAYER_STATE.EDIT_DECK)}>Change deck</button>
                         </div>
+                        <div>
+                            <button onClick={() => setTestingReward(true)}>Test rewards</button>
+                        </div>
                         <ChallengeMenu onSelectChallenge={handleSelectChallenge} />
                     </div>
+                    {testingReward && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setTestingReward(false)} />}
                 </div>
             )}
             {activityState === PLAYER_STATE.EDIT_DECK && (

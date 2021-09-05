@@ -1,7 +1,7 @@
 import {
     advancedcharge,
     blizzardcharge,
-    block as blockImage,
+    blockImage,
     brandishImage,
     brick,
     bricks,
@@ -18,7 +18,7 @@ import {
     lightningcharge,
     mace,
     piercingdriveImage,
-    puncture as punctureImage,
+    punctureImage,
     rage,
     risingrage,
     shieldred,
