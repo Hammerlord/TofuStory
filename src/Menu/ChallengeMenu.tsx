@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import createCombatant, { createEnemies } from "../enemy/createEnemy";
-import { bigBeefy, smalltofu } from "../enemy/tofu";
+import { bigBeefy, smalltofu, theraretofu } from "../enemy/tofu";
 import { challenge } from "./challenges";
 import tutorial, { Wave } from "./tutorial";
 
@@ -38,7 +38,7 @@ const challenges: Challenge[] = [
         description: "",
         waves: [
             {
-                createEnemies: () => [null, null, bigBeefy, null, null].map(createCombatant),
+                createEnemies: () => [null, null, theraretofu, null, null].map(createCombatant),
             },
         ],
     },

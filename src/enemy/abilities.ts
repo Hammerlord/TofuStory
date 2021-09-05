@@ -55,7 +55,7 @@ export const tantrum: Ability = {
 export const shiningLaser: Ability = {
     name: "Shining Laser",
     description: "{{ caster }} is shining mightily!!!",
-    resourceCost: 4,
+    resourceCost: 5,
     castTime: 1,
     actions: [
         {

@@ -122,6 +122,7 @@ const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
 
         return {
             ...cloneDeep(enemy),
+            resources: enemy.resources - casting.resourceCost,
             casting: updatedCasting.channelDuration || updatedCasting.castTime ? updatedCasting : null,
         };
     });
