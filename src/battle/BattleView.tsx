@@ -153,6 +153,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [enemyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [abilityRefs] = useState(Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()));
     const [events, setEvents] = useState([]);
+    const [actionQueue, setActionQueue] = useState([]);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
@@ -241,7 +242,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
 
         const getUpdated = (characters) => {
-            return cleanUpDeadCharacters(characters).map((character) => {
+            return characters.map((character) => {
                 if (!character) {
                     return character;
                 }
@@ -256,10 +257,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             });
         };
 
+        setActionQueue((prev) => [...prev, ...events]);
         setAllies(getUpdated(lastEvent.updatedAllies));
         setEnemies(getUpdated(lastEvent.updatedEnemies));
-        setEvents(events);
     };
+
+    useEffect(() => {
+        if (events.length > 0 || actionQueue.length === 0) {
+            return;
+        }
+        setEvents(actionQueue);
+        setActionQueue([]);
+    }, [actionQueue, events]);
 
     const handleAllyAttack = ({ index }) => {
         const { id } = allies[selectedAllyIndex];
@@ -416,41 +425,55 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const updatedEvents = events.slice();
         const event = updatedEvents.shift() as Event;
         const { updatedEnemies, updatedAllies, action, actorId } = event;
-        setTimeout(() => {
-            const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
-            const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
-            if (action) {
-                if (actorId === player.id) {
-                    const { addCards = [] } = action;
-                    setHand([...hand, ...addCards]);
+        const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
+        const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
+        let timeout;
+        if (action) {
+            if (actorId === player.id) {
+                const { addCards = [] } = action;
+                setHand([...hand, ...addCards]);
+            }
+        }
+        if (playerDead) {
+            timeout = setTimeout(() => {
+                setEvents([]);
+                setBattleEndResult("Defeat");
+            }, 1000);
+            return;
+        }
+        if (enemiesAllDead) {
+            timeout = setTimeout(() => {
+                setEvents([]);
+                nextWave(updatedAllies);
+            }, 1000);
+            return;
+        }
+        if (updatedEvents.length) {
+            timeout = setTimeout(() => {
+                setEvents(updatedEvents);
+            }, 1000);
+        } else {
+            timeout = setTimeout(() => {
+                setEvents([]);
+                if (!isPlayerTurn) {
+                    const { winCondition } = waves[currentWave] || {};
+                    if (currentRound + 1 >= winCondition?.surviveRounds) {
+                        nextWave(event.updatedAllies || allies);
+                        return;
+                    }
+
+                    if (event.updatedEnemies.some((enemy) => enemy?.HP > 0)) {
+                        setIsPlayerTurn(true);
+                        setCurrentRound(currentRound + 1);
+                    }
                 }
-            }
-            if (playerDead) {
-                setTimeout(() => {
-                    setEvents([]);
-                    setBattleEndResult("Defeat");
-                }, 1000);
-                return;
-            }
-            if (enemiesAllDead) {
-                setTimeout(() => {
-                    setEvents([]);
-                    setTimeout(() => {
-                        nextWave(updatedAllies);
-                    }, 500);
-                }, 500);
-                return;
-            }
-            if (updatedEvents.length) {
-                setTimeout(() => {
-                    setEvents(updatedEvents);
-                }, 500);
-            } else {
-                setTimeout(() => {
-                    setEvents([]);
-                }, 500);
-            }
-        }, 500);
+            }, 1000);
+        }
+
+        return () => {
+            clearTimeout(timeout);
+            setEvents(updatedEvents);
+        };
     }, [events]);
 
     const nextWave = (mostRecentAllies) => {
@@ -534,39 +557,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setTimeout(() => {
             setShowTurnAnnouncement(false);
 
-            if (!isPlayerTurn) {
-                const enemyActions = enemyTurn({ enemies, allies });
-
-                const playEnemyActions = () => {
-                    const event = enemyActions.shift();
-                    if (event) {
-                        handleNewEvents([event]);
-                    }
-
-                    if (enemyActions.length) {
-                        setTimeout(() => {
-                            playEnemyActions();
-                        }, 1500); // This has no way of knowing that the events have finished playing
-                    } else {
-                        setTimeout(() => {
-                            const { winCondition } = waves[currentWave] || {};
-                            if (currentRound + 1 >= winCondition?.surviveRounds) {
-                                nextWave(event?.updatedAllies || allies);
-                                return;
-                            }
-
-                            if (!event || event?.updatedEnemies.some((enemy) => enemy?.HP > 0)) {
-                                setIsPlayerTurn(true);
-                                setCurrentRound(currentRound + 1);
-                            }
-                        }, 1000);
-                    }
-                };
-
-                playEnemyActions();
-            } else {
+            if (isPlayerTurn) {
                 handlePlayerTurnStart();
+                return;
             }
+
+            const enemyActions = enemyTurn({ enemies, allies });
+            handleNewEvents(enemyActions);
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
 

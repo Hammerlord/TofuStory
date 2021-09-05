@@ -408,8 +408,8 @@ export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, 
     }
 
     // All actions should be based on the most recent version of enemies/allies
-    const mostRecentEnemies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
-    const mostRecentAllies = () => cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
+    const mostRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
+    const mostRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
     const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === actorId);
 
     actions.forEach((action: Action) => {
@@ -475,7 +475,8 @@ export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, 
 
 const handleOnAbilityActionEvents = ({ actor, characters, ability }): Combatant[] => {
     const isAttackUsed = ability.actions.some(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK);
-    return characters.map((character) => {
+    let procced = false;
+    const updated = characters.map((character) => {
         if (character?.id !== actor.id) {
             return character;
         }
@@ -487,12 +488,16 @@ const handleOnAbilityActionEvents = ({ actor, characters, ability }): Combatant[
                 if (onAttack && isAttackUsed) {
                     // Only handling this very specific thing atm...
                     const { removeEffect } = onAttack;
+                    procced = true;
                     return !removeEffect;
                 }
                 return true;
             }),
         };
     });
+    if (procced) {
+        return updated;
+    }
 };
 
 const handleHealthPerResourcesSpent = ({ actor, characters, resourceCost = 0 }): Combatant[] => {

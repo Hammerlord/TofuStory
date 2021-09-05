@@ -34,8 +34,7 @@ const tutorial: Wave[] = [
     {
         name: "Supportive abilities",
         description: "Use Block on yourself to defend against attacks.",
-        createEnemies: () =>
-            [basicDummy, basicDummy, basicDummy, basicDummy, basicDummy].map(createCombatant),
+        createEnemies: () => [basicDummy, basicDummy, basicDummy, basicDummy, basicDummy].map(createCombatant),
         presetDeck: [block, block, block],
         winCondition: {
             surviveRounds: 1,
