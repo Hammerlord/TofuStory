@@ -361,8 +361,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     const [minionCardsInPlay, discardSansMinionsInPlay] = (() => {
         // Treat minions in play as if they do not exist in the discard
-        const countMinions = allies.reduce((acc, ally) => {
-            if (!ally || ally.isPlayer) {
+        const countMinions = (events[0]?.updatedAllies || allies).reduce((acc, ally) => {
+            if (!ally || ally.isPlayer || ally.HP === 0) {
                 return acc;
             }
             return {
