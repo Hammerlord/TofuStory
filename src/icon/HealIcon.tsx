@@ -8,14 +8,13 @@ const ANIMATION_DURATION = 1;
 
 const useStyles = createUseStyles({
     text: {
-        fontSize: "18px",
+        fontSize: "20px",
         color: "#42f57b",
         position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        textShadow:
-            "0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black",
+        textShadow: "0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black",
         fontWeight: "bold",
         zIndex: "3",
     },
@@ -39,6 +38,10 @@ const useStyles = createUseStyles({
         animationDuration: `${ANIMATION_DURATION}s`,
         animationIterationCount: "infinite",
         boxShadow: "0 0 5px 3px rgba(255, 245, 200, 0.5)",
+        "& svg": {
+            WebkitFilter: "drop-shadow(0 0 2px #fff2c4) drop-shadow(0 0 2px #fff2c4)",
+            filter: "drop-shadow(0 0 2px #fff2c4) drop-shadow(0 0 2px #fff2c4)",
+        },
     },
 });
 
@@ -65,10 +68,7 @@ const HealIcon = ({ statChanges }) => {
                     };
                 })
             );
-            const timeout = setTimeout(
-                () => setShow(false),
-                ANIMATION_DURATION * 1000
-            );
+            const timeout = setTimeout(() => setShow(false), ANIMATION_DURATION * 1000);
             return () => {
                 clearTimeout(timeout);
                 setShow(false);
@@ -83,12 +83,7 @@ const HealIcon = ({ statChanges }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon
-                    key={i}
-                    icon={<Sparkles />}
-                    className={classes.icon}
-                    style={style}
-                />
+                <Icon key={i} icon={<Sparkles />} className={classes.icon} style={style} />
             ))}
             <span className={classes.text}>{statChanges.healing}</span>
         </div>
