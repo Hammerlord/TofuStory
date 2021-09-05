@@ -1,5 +1,5 @@
 import { Combatant } from "../character/types";
-import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
 import { calculateActionArea } from "./parseAbilityActions";
 import { passesConditions } from "./passesConditions";
 
@@ -22,21 +22,64 @@ export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCha
     return updatedStatChanges;
 };
 
+export const refreshPlayerResources = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        resources:
+            Math.min(character.maxResources, character.resourcesPerTurn) +
+            character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0),
+    };
+};
+
+export const addEnemyResources = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        resources: Math.min(character.maxResources, character.resources + character.resourcesPerTurn),
+    };
+};
+
+export const clearTurnHistory = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        turnHistory: [],
+    };
+};
+
 /**
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
-export const updateEffects = (target: Combatant) => {
-    if (!target) {
-        return target;
-    }
-
+export const tickDownDebuffs = (target: Combatant) => {
     return {
         ...target,
         effects: target.effects
-            .map((effect) => ({
-                ...effect,
-                duration: (effect.duration || Infinity) - 1,
-            }))
+            .map((effect) => {
+                if (effect.class === EFFECT_CLASSES.DEBUFF) {
+                    return {
+                        ...effect,
+                        duration: (effect.duration || Infinity) - 1,
+                    };
+                }
+
+                return effect;
+            })
+            .filter(({ duration = Infinity }) => duration > 0),
+    };
+};
+
+export const tickDownBuffs = (target: Combatant) => {
+    return {
+        ...target,
+        effects: target.effects
+            .map((effect) => {
+                if (effect.class === EFFECT_CLASSES.BUFF) {
+                    return {
+                        ...effect,
+                        duration: (effect.duration || Infinity) - 1,
+                    };
+                }
+
+                return effect;
+            })
             .filter(({ duration = Infinity }) => duration > 0),
     };
 };
@@ -112,6 +155,16 @@ export const updatePlayer = (statChanges: Function, allies: (Combatant | null)[]
     });
 
     return updatedAllies;
+};
+
+export const updateCharacters = (characters: (Combatant | null)[], updateFn): (Combatant | null)[] => {
+    return characters.map((character) => {
+        if (!character) {
+            return character;
+        }
+
+        return updateFn(character);
+    });
 };
 
 /**

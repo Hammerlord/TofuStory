@@ -14,4 +14,6 @@ export interface Combatant {
     aura?: Aura;
     casting?: Ability;
     turnHistory: Action[];
+    maxResources?: number;
+    resourcesPerTurn?: number;
 }

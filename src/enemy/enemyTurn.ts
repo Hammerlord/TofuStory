@@ -1,12 +1,20 @@
 import { cloneDeep } from "lodash";
-import { partition } from "ramda";
+import { compose, partition } from "ramda";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import triggerDebuffDamage from "../battle/debuffDamage";
 import { Event } from "../battle/parseAbilityActions";
 import { Combatant } from "../character/types";
 import { ACTION_TYPES } from "./../ability/types";
 import { parseAction } from "./../battle/parseAbilityActions";
-import { cleanUpDeadCharacters, getValidTargetIndices } from "./../battle/utils";
+import {
+    addEnemyResources,
+    cleanUpDeadCharacters,
+    clearTurnHistory,
+    getValidTargetIndices,
+    tickDownBuffs,
+    tickDownDebuffs,
+    updateCharacters,
+} from "./../battle/utils";
 import { getRandomItem, shuffle } from "./../utils";
 import { loaf } from "./abilities";
 
@@ -231,16 +239,7 @@ const enemyMove = ({ actorId, allies, enemies }): Event[] => {
 const enemyTurn = ({ enemies, allies }): Event[] => {
     const results = [
         {
-            updatedEnemies: enemies.map((enemy) => {
-                if (!enemy) {
-                    return enemy;
-                }
-
-                return {
-                    ...cloneDeep(enemy),
-                    resources: Math.min(enemy.resources + 1, enemy.maxResources),
-                };
-            }),
+            updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources)),
             updatedAllies: allies,
         },
     ];
@@ -278,6 +277,11 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
             )
         );
     }
+
+    results.push({
+        updatedEnemies: updateCharacters(getRecentEnemies(), tickDownDebuffs),
+        updatedAllies: getRecentAllies(),
+    });
 
     return results;
 };

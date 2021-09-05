@@ -18,8 +18,20 @@ import Notification from "./Notification";
 import { applyPerTurnEffects, calculateActionArea, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
-import { canUseAbility, cleanUpDeadCharacters, isValidTarget, removeEndedEffects, updateEffects, updatePlayer } from "./utils";
+import {
+    canUseAbility,
+    cleanUpDeadCharacters,
+    clearTurnHistory,
+    isValidTarget,
+    refreshPlayerResources,
+    removeEndedEffects,
+    tickDownBuffs,
+    tickDownDebuffs,
+    updateCharacters,
+    updatePlayer,
+} from "./utils";
 import WaveInfo from "./WaveInfo";
+import { compose } from "ramda";
 
 const CARDS_PER_DRAW = 5;
 
@@ -364,34 +376,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         setDiscard(newDiscard);
     };
 
-    const refreshPlayerResources = (allies) => {
-        return updatePlayer(
-            (player) => ({
-                resources:
-                    Math.min(player.maxResources, player.resourcesPerTurn) +
-                    player.effects.reduce((acc, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0),
-            }),
-            allies
-        );
-    };
-
-    const clearTurnHistory = (character) => {
-        if (!character) {
-            return character;
-        }
-
-        return { ...character, turnHistory: [] };
-    };
-
     const handlePlayerTurnStart = () => {
-        const updatedEnemies = enemies.map(updateEffects);
-        setEnemies(updatedEnemies);
         drawCards();
         setAlliesAttackedThisTurn([]);
-        const updatedAllies = refreshPlayerResources(allies.map(clearTurnHistory));
-        setAllies(updatedAllies.map(updateEffects));
+        const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources));
+        setAllies(updatedAllies);
         handleNewEvents(
-            applyPerTurnEffects(updatedAllies, updatedEnemies).map(({ actors, targets, ...other }) => ({
+            applyPerTurnEffects(updatedAllies, enemies).map(({ actors, targets, ...other }) => ({
                 updatedAllies: actors,
                 updatedEnemies: targets,
                 ...other,
@@ -530,7 +521,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     }, []);
 
     const handleEndTurn = () => {
-        const updatedAllies = allies.map(removeEndedEffects);
+        const updatedAllies = updateCharacters(allies, compose(tickDownDebuffs, removeEndedEffects));
         setAllies(updatedAllies);
         setIsPlayerTurn(false);
         setHand([]);
@@ -548,7 +539,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             setShowTurnAnnouncement(false);
 
             if (!isPlayerTurn) {
-                const enemyActions = enemyTurn({ enemies: enemies.map(clearTurnHistory), allies });
+                const enemyActions = enemyTurn({ enemies, allies });
 
                 const playEnemyActions = () => {
                     const event = enemyActions.shift();
@@ -572,7 +563,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                                 setIsPlayerTurn(true);
                                 setCurrentRound(currentRound + 1);
                             }
-                        }, 2000);
+                        }, 1000);
                     }
                 };
 
