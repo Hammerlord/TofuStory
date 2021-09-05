@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import Overlay from "./Overlay";
+import Overlay from "../view/Overlay";
 
 interface BattleEndOverlay {
     result: "Victory" | "Defeat" | "Draw";

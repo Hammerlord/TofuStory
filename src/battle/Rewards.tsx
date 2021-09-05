@@ -34,7 +34,7 @@ import {
 } from "../ability/Abilities";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { shuffle } from "../utils";
-import Overlay from "./Overlay";
+import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
     inner: {
