@@ -510,13 +510,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
 
         if (nextWaveIndex > 0) {
-            setShowWaveClear(true);
             setTimeout(() => {
-                setShowWaveClear(false);
+                setShowWaveClear(true);
                 setTimeout(() => {
+                    setShowWaveClear(false);
                     setup();
-                }, 500);
-            }, 2000);
+                }, 2500);
+            }, 500);
         } else {
             setup();
         }
