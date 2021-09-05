@@ -451,12 +451,14 @@ const CombatantView = forwardRef(
                                     </>
                                 )}
                             </div>
-                            <div className={classes.effectsContainer}>
-                                {oldState.effects?.map((effect, i) => (
-                                    <EffectIcon effect={effect} key={i} />
-                                ))}
-                                {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} />}
-                            </div>
+                            {oldState.HP > 0 && (
+                                <div className={classes.effectsContainer}>
+                                    {oldState.effects?.map((effect, i) => (
+                                        <EffectIcon effect={effect} key={i} />
+                                    ))}
+                                    {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} />}
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
