@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
         top: "50%",
         transform: "translateX(-50%) translateY(-50%)",
         color: "white",
-        textAlign: "center"
+        textAlign: "center",
     },
     continue: {
         fontSize: "20px",

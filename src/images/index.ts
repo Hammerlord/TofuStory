@@ -63,3 +63,4 @@ export { default as combofuryImage } from "./combofury.png";
 export { default as weaponbooster } from "./weaponbooster.png";
 export { default as piercingdriveImage } from "./piercingdrive.png";
 export { default as spearsweepImage } from "./spearsweep.png";
+export { default as map } from "./victoria island.png";
