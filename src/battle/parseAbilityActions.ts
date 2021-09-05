@@ -299,7 +299,8 @@ export const applyPerTurnEffects = (
             return character;
         }
 
-        const appliedAuraEffects = applyAuraPerTurnEffect(results[results.length - 1]?.actors || actors, i);
+        const friendly = results[results.length - 1]?.actors || actors;
+        const appliedAuraEffects = applyAuraPerTurnEffect(friendly, i);
         if (appliedAuraEffects) {
             const { characters, action, actorId } = appliedAuraEffects;
             results.push({
@@ -323,7 +324,7 @@ export const applyPerTurnEffects = (
         );
 
         if (healTargetPerTurn > 0) {
-            const indices = getHealableIndices(actors);
+            const indices = getHealableIndices(friendly);
             if (indices.length > 0) {
                 const selectedIndex = getRandomItem(indices);
                 const action = {
@@ -331,7 +332,7 @@ export const applyPerTurnEffects = (
                     healing: healTargetPerTurn,
                 };
                 results.push({
-                    actors: actors.map((actor, i) => {
+                    actors: friendly.map((actor, i) => {
                         if (!actor || i !== selectedIndex) {
                             return actor;
                         }
