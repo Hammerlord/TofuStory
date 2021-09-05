@@ -66,6 +66,20 @@ export const shiningLaser: Ability = {
     ],
 };
 
+export const megaHeal: Ability = {
+    name: "Mega Heal!!!",
+    description: "{{ caster }} is about to unleash a Mega Heal!!",
+    resourceCost: 3,
+    castTime: 1,
+    actions: [
+        {
+            healing: 10,
+            target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+};
+
 export const stomp: Ability = {
     name: "Stomp",
     resourceCost: 1,

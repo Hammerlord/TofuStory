@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability } from "../ability/types";
+import { Ability, EFFECT_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -168,15 +168,19 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const noMoreMoves =
         allies.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
 
+    const warn = (text: string) => {
+        setNotification({
+            severity: "warning",
+            text,
+            id: uuid.v4(),
+        });
+    };
+
     const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
         e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         setSelectedAllyIndex(null);
         if (!canUseAbility(player, hand[i])) {
-            setNotification({
-                severity: "warning",
-                text: `Need more resources to use ${hand[i].name}.`,
-                id: uuid.v4(),
-            });
+            warn(`Need more resources to use ${hand[i].name}.`);
             return;
         }
 
@@ -285,7 +289,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         }
     };
 
-    const handleEnemyClick = (e: React.ChangeEvent, index) => {
+    const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
         e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
 
         const selectedAbility = hand[selectedAbilityIndex];
@@ -293,6 +297,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         if (selectedAbility) {
             if (showReticle("enemies", index)) {
                 handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
+            } else if (enemies[index] && enemies[index].effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
+                warn("That character is stealthed and cannot be targeted directly.");
             } else {
                 setSelectedAbilityIndex(null);
             }
@@ -581,24 +587,28 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         battleEndResult || showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemies.every((enemy) => !enemy || enemy.HP <= 0);
 
     const isTargeted = (i: number | null, side: "allies" | "enemies"): boolean => {
-        if (disableActions) {
+        const isValidIndex = (index: any) => typeof index === "number";
+        const noHover = !isValidIndex(hoveredAllyIndex) && !isValidIndex(hoveredEnemyIndex);
+        const mismatchingSide =
+            (isValidIndex(hoveredAllyIndex) && side === "enemies") || (isValidIndex(hoveredEnemyIndex) && side === "allies");
+        if (disableActions || noHover || mismatchingSide) {
             return false;
         }
 
-        const ally = allies[selectedAllyIndex];
-        if (ally) {
+        if (allies[selectedAllyIndex]) {
             return side === "enemies" && hoveredEnemyIndex === i;
         }
 
+        const hoveredIndex = isValidIndex(hoveredAllyIndex) ? hoveredAllyIndex : hoveredEnemyIndex;
         const ability = hand[selectedAbilityIndex];
-        const index = side === "allies" ? hoveredAllyIndex : hoveredEnemyIndex;
-        if (!ability || index === null || !isValidTarget({ ability, side, index: i, enemies, allies, actor: player })) {
+
+        if (!ability || !isValidTarget({ ability, side, index: hoveredIndex, enemies, allies, actor: player })) {
             return false;
         }
 
         const { actions = [] } = ability;
         const area = calculateActionArea({ action: actions[0], actor: player }) || ability.area || 0;
-        return i >= index - area && i <= index + area;
+        return i >= hoveredIndex - area && i <= hoveredIndex + area;
     };
 
     const showReticle = (side, index) => {

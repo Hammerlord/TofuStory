@@ -4,8 +4,8 @@ import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
 import matty from "../images/matty.png";
-import { hardy, raging, thorns } from "./../ability/Effects";
-import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
+import { hardy, raging, stealth, thorns } from "./../ability/Effects";
+import { loaf, megaHeal, move, rally, shiningLaser, tantrum, whip } from "./abilities";
 
 export interface Enemy {
     name: string;
@@ -41,7 +41,8 @@ export const realtofu = {
     maxHP: 5,
     armor: 0,
     damage: 3,
-    abilities: [loaf, move],
+    abilities: [loaf, move, megaHeal],
+    effects: [stealth],
 };
 
 export const theraretofu = {

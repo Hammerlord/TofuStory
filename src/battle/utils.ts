@@ -85,8 +85,13 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
             return true;
         }
     } else if (side === "enemies" && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
+        const targetedEnemy = enemies[index];
+        const hasStealth = targetedEnemy?.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
+        if (hasStealth) {
+            return false;
+        }
         if (area === 0) {
-            return Boolean(enemies[index]) && enemies[index].HP > 0;
+            return targetedEnemy?.HP > 0;
         }
         return true;
     }
