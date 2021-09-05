@@ -166,7 +166,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
     const [alliesAttackedThisTurn, setAlliesAttackedThisTurn] = useState([]);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
-    const [minionCardsInPlay, setMinionCardsInPlay] = useState([]);
     const classes = useStyles();
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
@@ -208,12 +207,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, minion, removeAfterTurn, reusable } = card as Ability;
+        const { resourceCost = 0, removeAfterTurn, reusable } = card as Ability;
 
         setSelectedAbilityIndex(null);
-        if (minion) {
-            setMinionCardsInPlay((prev) => [card, ...prev]);
-        } else if (reusable) {
+        if (reusable) {
             newHand.push(card);
         } else if (!removeAfterTurn) {
             setDiscard((prev) => [card, ...prev]);
@@ -353,22 +350,43 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
     };
 
+    const [minionCardsInPlay, discardSansMinionsInPlay] = (() => {
+        // Treat minions in play as if they do not exist in the discard
+        const countMinions = allies.reduce((acc, ally) => {
+            if (!ally || ally.isPlayer) {
+                return acc;
+            }
+            return {
+                ...acc,
+                [ally.name]: (acc[ally.name] || 0) + 1,
+            };
+        }, {});
+
+        const a = [];
+        const b = [];
+        discard.forEach((card) => {
+            if (countMinions[card.name] > 0) {
+                countMinions[card.name] -= 1;
+                a.push(card);
+            } else {
+                b.push(card);
+            }
+        });
+
+        return [a, b];
+    })();
+
     const drawCards = () => {
         let newDeck = deck.slice();
-        let newDiscard = discard.slice();
-        let newHand = hand.slice();
-        for (let i = 0; i < CARDS_PER_DRAW; ++i) {
-            if (!newDeck.length && newDiscard.length) {
-                newDeck = shuffle(newDiscard);
-                newDiscard = [];
-            }
-
-            if (newDeck.length === 0) {
-                break;
-            }
-
-            const card = newDeck.shift();
-            newHand = [...newHand, card];
+        let newHand = [];
+        let newDiscard = discardSansMinionsInPlay;
+        if (newDeck.length < CARDS_PER_DRAW) {
+            newHand = newDeck.slice();
+            newDeck = shuffle(discardSansMinionsInPlay);
+            newDiscard = minionCardsInPlay;
+            newHand.push(...newDeck.splice(0, CARDS_PER_DRAW - newHand.length));
+        } else {
+            newHand = newDeck.splice(0, CARDS_PER_DRAW - newHand.length);
         }
 
         setDeck(newDeck);
@@ -388,26 +406,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 ...other,
             }))
         );
-    };
-
-    const updateMinionsInPlay = (updatedAllies) => {
-        const deadAllies = updatedAllies.filter((ally) => ally?.HP <= 0);
-        const updatedMinionsInPlay = minionCardsInPlay.slice();
-        const recoveredCards = [];
-        deadAllies.forEach((ally) => {
-            const [card] = updatedMinionsInPlay.splice(
-                updatedMinionsInPlay.findIndex(({ minion }) => ally.name === minion.name),
-                1
-            );
-            if (card) {
-                recoveredCards.push(card);
-            }
-        });
-
-        if (recoveredCards.length) {
-            setDiscard((prev) => [...recoveredCards, ...prev]);
-            setMinionCardsInPlay(updatedMinionsInPlay);
-        }
     };
 
     useEffect(() => {
@@ -437,7 +435,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             if (enemiesAllDead) {
                 setTimeout(() => {
                     setEvents([]);
-                    updateMinionsInPlay(updatedAllies);
                     setTimeout(() => {
                         nextWave(updatedAllies);
                     }, 500);
@@ -451,7 +448,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             } else {
                 setTimeout(() => {
                     setEvents([]);
-                    updateMinionsInPlay(updatedAllies);
                 }, 500);
             }
         }, 500);
@@ -695,7 +691,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
-                                <Deck deck={deck} discard={discard} />
+                                <Deck deck={deck} discard={discardSansMinionsInPlay} />
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>
