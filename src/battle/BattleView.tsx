@@ -444,7 +444,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         if (enemiesAllDead) {
             timeout = setTimeout(() => {
                 setEvents([]);
-                nextWave(updatedAllies);
+                nextWave();
             }, 1000);
             return;
         }
@@ -458,7 +458,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 if (!isPlayerTurn) {
                     const { winCondition } = waves[currentWave] || {};
                     if (currentRound + 1 >= winCondition?.surviveRounds) {
-                        nextWave(event.updatedAllies || allies);
+                        nextWave();
                         return;
                     }
 
@@ -476,7 +476,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         };
     }, [events]);
 
-    const nextWave = (mostRecentAllies) => {
+    const nextWave = () => {
         const nextWaveIndex = currentWave + 1;
         setCurrentWave(nextWaveIndex);
         if (!waves[nextWaveIndex]) {
@@ -492,7 +492,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setDeck(shuffle(presetDeck.slice()));
                 setHand([]);
                 setDiscard([]);
-                mostRecentAllies = mostRecentAllies.map((ally) => (!ally || ally.isPlayer ? ally : null)); // Clean up minions
+                setAllies(allies.map((ally) => (!ally || ally.isPlayer ? ally : null))); // Clean up minions
                 if (isPlayerTurn) {
                     setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
                 }
@@ -502,7 +502,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setDiscard(discard);
             }
 
-            setAllies(mostRecentAllies);
             setIsPlayerTurn(true);
 
             if (description) {
@@ -536,7 +535,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
     };
 
     useEffect(() => {
-        nextWave(allies);
+        nextWave();
     }, []);
 
     const handleEndTurn = () => {
