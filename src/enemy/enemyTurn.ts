@@ -228,23 +228,27 @@ const enemyMove = ({ actorId, allies, enemies }): Event[] => {
 };
 
 const enemyTurn = ({ enemies, allies }): Event[] => {
-    enemies = enemies.map((enemy) => {
-        if (!enemy) {
-            return enemy;
-        }
+    const results = [
+        {
+            updatedEnemies: enemies.map((enemy) => {
+                if (!enemy) {
+                    return enemy;
+                }
 
-        return {
-            ...cloneDeep(enemy),
-            resources: enemy.resources + 1,
-        };
-    });
+                return {
+                    ...cloneDeep(enemy),
+                    resources: Math.min(enemy.resources + 1, enemy.maxResources),
+                };
+            }),
+            updatedAllies: allies,
+        },
+    ];
 
-    const randomizedIndices = shuffle(getPopulatedEnemyIndices(enemies)); // Randomize enemy move order
-
-    const results = [];
     // Each subsequent move should be based on the most recently updated enemies/player states.
     const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
     const getRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
+
+    const randomizedIndices = shuffle(getPopulatedEnemyIndices(getRecentEnemies())); // Randomize enemy move order
     randomizedIndices.forEach((i) => {
         const enemy = getRecentEnemies()[i];
         if (!enemy || enemy.HP === 0) {
