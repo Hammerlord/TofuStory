@@ -7,7 +7,7 @@ const useStyles = createUseStyles({
         left: 0,
         top: 0,
         position: "fixed",
-        background: "rgba(0, 0, 0, 0.25)",
+        background: "rgba(20, 20, 20, 0.5)",
         zIndex: "3",
     },
 });
