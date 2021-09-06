@@ -66,3 +66,4 @@ export { default as spearsweepImage } from "./spearsweep.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";
+export { default as perionbg } from "./perionbg.jpg";
