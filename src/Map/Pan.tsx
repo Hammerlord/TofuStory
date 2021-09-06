@@ -53,22 +53,24 @@ const Pan = ({ children }) => {
             }}
         >
             {children}
-            <div style={{ position: "absolute", left: 0, top: 0, width: `100%`, height: `100%` }}>
-                {positions.map(([x, y], i) => (
-                    <div
-                        key={i}
-                        style={{
-                            position: "absolute",
-                            backgroundColor: "red",
-                            width: "2vh",
-                            height: "2vh",
-                            transform: `translate(${x}px, ${y}px)`,
-                        }}
-                    >
-                        {i + 1}
-                    </div>
-                ))}
-            </div>
+            {enableDraw && (
+                <div style={{ position: "absolute", left: 0, top: 0, width: `100%`, height: `100%` }}>
+                    {positions.map(([x, y], i) => (
+                        <div
+                            key={i}
+                            style={{
+                                position: "absolute",
+                                backgroundColor: "red",
+                                width: "2vh",
+                                height: "2vh",
+                                transform: `translate(${x}px, ${y}px)`,
+                            }}
+                        >
+                            {i + 1}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
