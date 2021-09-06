@@ -9,9 +9,7 @@ import { Button } from "@material-ui/core";
 import DeckViewer from "./DeckViewer";
 import { createUseStyles } from "react-jss";
 import ClassSelection from "./ClassSelection";
-import { PLAYER_CLASSES } from "./playerClasses";
-
-const warriorStarterDeck = [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block];
+import { PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -41,13 +39,19 @@ const useStyles = createUseStyles({
 
 const Main = () => {
     const [player, setPlayer] = useState(null);
-    const [deck, setDeck] = useState(warriorStarterDeck);
+    const [deck, setDeck] = useState([]);
     const [challenge, setChallenge] = useState(null);
     const [isRewardsOpen, setIsRewardsOpen] = useState(false);
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
+    const [location, setLocation] = useState(0);
     const classes = useStyles();
 
-    const handleClickNode = (location, event) => {};
+    const handleSelectNode = (newLocation: number, node) => {
+        if (!location || newLocation === location + 1) {
+            setLocation(location);
+            setChallenge(challenge);
+        }
+    };
 
     const handleBattleEnd = ({ loot, updatedPlayer }) => {
         setChallenge(null);
@@ -79,7 +83,7 @@ const Main = () => {
     return (
         <>
             <div className={classes.mapContainer}>
-                <Map />
+                <Map onSelectNode={handleSelectNode} currentLocation={location} playerImage={player.image} />
             </div>
             {challenge && (
                 <BattlefieldContainer

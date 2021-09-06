@@ -3,10 +3,16 @@ import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { anonymushroom, classwarrior, warmush } from "../images";
-import { PLAYER_CLASSES } from "./playerClasses";
+import { PLAYER_CLASSES } from "./types";
+import { bash, block, slam, slashBlast, warLeap } from "../ability/Abilities";
+import AbilityView from "../ability/AbilityView/AbilityView";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: warmush,
+};
+
+const decks = {
+    [PLAYER_CLASSES.WARRIOR]: [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block],
 };
 
 const useStyles = createUseStyles({
@@ -55,17 +61,55 @@ const useStyles = createUseStyles({
     iconContainer: {
         marginBottom: "8px",
     },
+    abilityContainer: {
+        margin: "16px",
+        marginTop: "32px",
+        display: "inline-block",
+    },
+    abilities: {
+        width: "70rem",
+        marginBottom: "24px",
+    },
 });
 
 const ClassSelection = ({ onSelectClass }) => {
     const [selectedClass, setSelectedClass] = useState(null);
+    const [confirmed, setConfirmed] = useState(false);
     const classes = useStyles();
 
     const handleSelectClass = () => {
         if (selectedClass) {
-            onSelectClass(selectedClass);
+            onSelectClass({ selectedClass, deck: decks[selectedClass] });
         }
     };
+
+    const handleConfirm = () => {
+        if (selectedClass) {
+            setConfirmed(true);
+        }
+    };
+
+    if (confirmed) {
+        return (
+            <div className={classes.root}>
+                <div className={classes.inner}>
+                    <h2>You have learned</h2>
+                    <div className={classes.abilities}>
+                        {decks[selectedClass]
+                            .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
+                            .map((ability, i) => (
+                                <div className={classes.abilityContainer} key={i}>
+                                    <AbilityView ability={ability} key={i} />
+                                </div>
+                            ))}
+                    </div>
+                    <Button variant="contained" color="primary" onClick={handleSelectClass}>
+                        Continue
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={classes.root}>
@@ -94,7 +138,7 @@ const ClassSelection = ({ onSelectClass }) => {
                     <div className={classes.classCard}>Not yet available</div>
                     <div className={classes.classCard}>Not yet available</div>
                 </div>
-                <Button variant="contained" color="primary" onClick={handleSelectClass}>
+                <Button variant="contained" color="primary" onClick={handleConfirm}>
                     Select!
                 </Button>
             </div>
