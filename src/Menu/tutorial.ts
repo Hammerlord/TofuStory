@@ -1,12 +1,11 @@
 import { Ability } from "./../ability/types";
 import { slam, bash, slashBlast, block, warLeap, snailMinion } from "../ability/Abilities";
 import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
-import { createCombatant } from "../enemy/createEnemy";
 
 export interface Wave {
     name?: string;
     description?: string | string[];
-    createEnemies: Function;
+    enemies: Array<any>;
     presetDeck?: Ability[];
     rewards?: Array<any>;
     winCondition?: {
@@ -19,22 +18,22 @@ const tutorial: Wave[] = [
         name: "Basic attacks",
         description: [
             "Select an ability and an enemy to use it on.",
-            "After usage, the ability goes on Cooldown until you reach the end of your Deck.",
+            "After usage, the ability goes on cooldown until you reach the end of your deck.",
             "When you're out of moves, click End Turn to proceed.",
         ],
-        createEnemies: () => [null, basicDummy, null, basicDummy, null].map(createCombatant),
-        presetDeck: [bash, warLeap, slam],
+        enemies: [null, basicDummy, null, basicDummy, null],
+        presetDeck: [bash, bash, slam],
     },
     {
         name: "Area attacks",
         description: "Target multiple enemies with Area attacks like Slash Blast.",
-        createEnemies: () => [null, basicDummy, basicDummy, basicDummy, null].map(createCombatant),
+        enemies: [null, basicDummy, basicDummy, basicDummy, null],
         presetDeck: [bash, bash, bash, slashBlast, slashBlast],
     },
     {
         name: "Supportive abilities",
         description: "Use Block on yourself to defend against attacks.",
-        createEnemies: () => [basicDummy, basicDummy, basicDummy, basicDummy, basicDummy].map(createCombatant),
+        enemies: [basicDummy, basicDummy, basicDummy, basicDummy, basicDummy],
         presetDeck: [block, block, block],
         winCondition: {
             surviveRounds: 1,
@@ -47,19 +46,19 @@ const tutorial: Wave[] = [
             "Once you have placed the minion, select it and use it to attack.",
             "Minions will only return to your Cooldown deck when they are knocked out.",
         ],
-        createEnemies: () => [null, null, basicDummy, null, null].map(createCombatant),
+        enemies: [null, null, basicDummy, null, null],
         presetDeck: [snailMinion, snailMinion, snailMinion],
     },
     {
         name: "Enemy affixes",
         description: "This dummy has Thorns. Hover over the icon to see what it does.",
-        createEnemies: () => [null, null, spikedDummy, null, null].map(createCombatant),
+        enemies: [null, null, spikedDummy, null, null],
         presetDeck: [bash, slam, snailMinion, snailMinion],
     },
     {
         name: "Defeat the Raging Dummy",
         description: "Defeat the Raging Dummy and its minions!",
-        createEnemies: () => [null, basicDummy, ragingDummy, basicDummy, null].map(createCombatant),
+        enemies: [null, basicDummy, ragingDummy, basicDummy, null],
         presetDeck: [bash, bash, slam, slashBlast, block, block, snailMinion, snailMinion, warLeap],
     },
 ];

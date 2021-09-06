@@ -79,7 +79,7 @@ const ClassSelection = ({ onSelectClass }) => {
 
     const handleSelectClass = () => {
         if (selectedClass) {
-            onSelectClass({ selectedClass, deck: decks[selectedClass] });
+            onSelectClass(selectedClass, decks[selectedClass]);
         }
     };
 
@@ -93,7 +93,7 @@ const ClassSelection = ({ onSelectClass }) => {
         return (
             <div className={classes.root}>
                 <div className={classes.inner}>
-                    <h2>You have learned</h2>
+                    <h2>You gained abilities</h2>
                     <div className={classes.abilities}>
                         {decks[selectedClass]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))

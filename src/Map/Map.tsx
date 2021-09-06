@@ -1,20 +1,22 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { map } from "../images";
-import { challenge } from "../Menu/challenges";
-import tutorial, { Wave } from "../Menu/tutorial";
+import { CrossedSwords, map } from "../images";
 import Overlay from "../view/Overlay";
+import { generateWaves } from "./encounters";
 import Pan from "./Pan";
 
-/**
- * Node in a route tree.
- */
+export enum NODE_TYPES {
+    encounter = "encounter",
+    event = "event",
+    restingZone = "restingZone",
+}
+
 export interface RouteNode {
     x: number;
     y: number;
-    encounter?: Wave[];
-    routeEvent?: object;
-    next: RouteNode[];
+    type: NODE_TYPES;
+    difficulty?: "low" | "medium" | "high";
+    //next: RouteNode[];
 }
 
 const useStyles = createUseStyles({
@@ -57,38 +59,37 @@ const useStyles = createUseStyles({
 });
 
 // Assuming a map width of 2880 -- TODO make this relative
-const route = [
-    { x: 1702, y: 351 },
-    { x: 1722, y: 462 },
-    { x: 1614, y: 467 },
-    { x: 1500, y: 447 },
-    { x: 1398, y: 493 },
-    { x: 1369, y: 556 },
-    { x: 1285, y: 509 },
+const route: RouteNode[] = [
+    { x: 1702, y: 351, type: NODE_TYPES.encounter, difficulty: "low" },
+    { x: 1722, y: 462, type: NODE_TYPES.encounter, difficulty: "low" },
+    { x: 1614, y: 467, type: NODE_TYPES.encounter, difficulty: "medium" },
+    { x: 1500, y: 447, type: NODE_TYPES.restingZone },
+    { x: 1398, y: 493, type: NODE_TYPES.encounter, difficulty: "medium" },
+    { x: 1285, y: 509, type: NODE_TYPES.encounter, difficulty: "high" },
 ];
-
-const testRoute = () => {
-    const numPossibleNodes = [1, 1, 2];
-};
 
 const Map = ({ onSelectNode, currentLocation, playerImage }) => {
     const classes = useStyles();
+    const [generatedRoute] = useState(
+        route.map((node) => {
+            if (node.type === NODE_TYPES.encounter) {
+                return { ...node, waves: generateWaves({ difficulty: node.difficulty }) };
+            }
+            return node;
+        })
+    );
     const handleClickMap = (e) => {
         e.preventDefault();
     };
 
-    const handleClickNode = (i: number) => {
-        console.log("clicked", i);
-
-        if (i === 0) {
-            onSelectNode(i, tutorial);
-        } else {
-            onSelectNode(i, challenge);
+    const handleClickNode = (node, i: number) => {
+        if (i - (currentLocation || 0) === 1) {
+            onSelectNode(node, i);
         }
     };
 
-    const placePlayerMarker = (i) => {
-        if (!currentLocation) {
+    const placePlayerMarker = (i: number) => {
+        if (currentLocation < 0) {
             return i === 0;
         }
 
@@ -101,44 +102,33 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
                 <Pan>
                     <img src={map} className={classes.image} onMouseDown={handleClickMap} />
                     <svg className={classes.routeContainer}>
-                        {route.map(({ x, y }, i) => (
+                        {generatedRoute.map((node, i) => (
                             <Fragment key={i}>
-                                <div
-                                    style={{
-                                        transform: `translate(${x}px, ${y}px)`,
-                                    }}
-                                    className={classes.routeNode}
-                                    onClick={() => handleClickNode(i)}
-                                >
-                                    {i + 1}
-                                </div>
                                 {i < route.length - 1 && (
                                     <line
-                                        x1={x}
-                                        y1={y}
+                                        x1={node.x}
+                                        y1={node.y}
                                         x2={route[i + 1]?.x}
                                         y2={route[i + 1]?.y}
                                         stroke="black"
+                                        strokeWidth={2}
                                         style={{ position: "absolute" }}
                                     />
                                 )}
-                                <circle
-                                    cx={x}
-                                    cy={y}
-                                    r="18"
-                                    fill={"rgba(50, 50, 50, 0.95)"}
-                                    className={classes.routeNode}
-                                    onClick={() => handleClickNode(i)}
-                                />
+                                <g x={node.x - 8} y={node.y - 8} onClick={() => handleClickNode(node, i)} className={classes.routeNode}>
+                                    <circle cx={node.x} cy={node.y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
+                                    {node.type === NODE_TYPES.encounter && (
+                                        <CrossedSwords width={16} height={16} x={node.x - 8} y={node.y - 8} />
+                                    )}
+                                </g>
                                 {placePlayerMarker(i) && (
                                     <image
                                         href={playerImage}
                                         className={classes.playerLocationMarker}
                                         height="36"
                                         width="36"
-                                        style={{
-                                            transform: `translate(${x - 18}px, ${y - 50}px)`,
-                                        }}
+                                        x={node.x - 18}
+                                        y={node.y - 50}
                                     />
                                 )}
                             </Fragment>

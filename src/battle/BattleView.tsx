@@ -6,8 +6,10 @@ import { Ability, EFFECT_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
+import createCombatant from "../enemy/createEnemy";
 import enemyTurn from "../enemy/enemyTurn";
 import { victoria } from "../images";
+import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
@@ -470,8 +472,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
         const setup = () => {
             setCurrentRound(0);
-            const { presetDeck, description, createEnemies } = waves[nextWaveIndex];
-            setEnemies(createEnemies());
+            const { presetDeck, description, enemies } = waves[nextWaveIndex] as Wave;
+            setEnemies(enemies.map(createCombatant));
             if (presetDeck) {
                 setDeck(shuffle(presetDeck.slice()));
                 setHand([]);

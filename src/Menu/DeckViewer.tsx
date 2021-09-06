@@ -1,12 +1,11 @@
-import { Button } from "@material-ui/core";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 
 const useStyles = createUseStyles({
     root: {
         background: "rgba(75, 75, 75, 0.95)",
-        width: "calc(100% - 20vw)",
-        height: "calc(100% - 20vh)",
+        width: "calc(80vw)",
+        height: "calc(80vh)",
         position: "absolute",
         marginTop: "80px",
         zIndex: 5,

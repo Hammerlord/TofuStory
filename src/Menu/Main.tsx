@@ -4,12 +4,14 @@ import uuid from "uuid";
 import { bash, block, slam, slashBlast, warLeap } from "../ability/Abilities";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
-import Map from "../Map/Map";
+import Map, { NODE_TYPES } from "../Map/Map";
 import { Button } from "@material-ui/core";
 import DeckViewer from "./DeckViewer";
 import { createUseStyles } from "react-jss";
 import ClassSelection from "./ClassSelection";
 import { PLAYER_CLASSES } from "./types";
+import { Ability } from "../ability/types";
+import Camp from "../Map/Camp";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -35,32 +37,43 @@ const useStyles = createUseStyles({
     mapContainer: {
         zIndex: -1,
     },
+    activityContainer: {
+        position: "fixed",
+        zIndex: 5,
+        width: "100%",
+        height: "100%",
+    },
 });
 
 const Main = () => {
     const [player, setPlayer] = useState(null);
     const [deck, setDeck] = useState([]);
-    const [challenge, setChallenge] = useState(null);
+    const [encounter, setEncounter] = useState(null);
+    const [isResting, setIsResting] = useState(false);
     const [isRewardsOpen, setIsRewardsOpen] = useState(false);
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
-    const [location, setLocation] = useState(0);
+    const [location, setLocation] = useState(-1);
     const classes = useStyles();
 
-    const handleSelectNode = (newLocation: number, node) => {
+    const handleSelectNode = (node, newLocation: number) => {
         if (!location || newLocation === location + 1) {
-            setLocation(location);
-            setChallenge(challenge);
+            setLocation(newLocation);
+            if (node.type === NODE_TYPES.encounter) {
+                setEncounter(node);
+            } else {
+                setIsResting(true);
+            }
         }
     };
 
     const handleBattleEnd = ({ loot, updatedPlayer }) => {
-        setChallenge(null);
+        setEncounter(null);
         // Obviously, only if we won
         setIsRewardsOpen(true);
         //setPlayer(updatedPlayer);
     };
 
-    const handleSelectClass = (selectedClass: PLAYER_CLASSES) => {
+    const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
@@ -74,27 +87,34 @@ const Main = () => {
             turnHistory: [],
             isPlayer: true,
         });
+        setDeck(deck);
     };
 
     if (!player) {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
+    const isActivityOpen = encounter || isRewardsOpen || isAbilitiesOpen || isResting;
+
     return (
         <>
             <div className={classes.mapContainer}>
                 <Map onSelectNode={handleSelectNode} currentLocation={location} playerImage={player.image} />
             </div>
-            {challenge && (
-                <BattlefieldContainer
-                    initialAllies={[null, null, player, null, null]}
-                    onBattleEnd={handleBattleEnd}
-                    waves={challenge.waves}
-                    initialDeck={deck}
-                />
+            {isActivityOpen && (
+                <div className={classes.activityContainer}>
+                    {encounter && (
+                        <BattlefieldContainer
+                            initialAllies={[null, null, player, null, null]}
+                            onBattleEnd={handleBattleEnd}
+                            waves={encounter.waves}
+                            initialDeck={deck}
+                        />
+                    )}
+                    {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}
+                    {isResting && <Camp onExit={() => setIsResting(false)} />}
+                </div>
             )}
-            {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}
-            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
             <div className={classes.headerBar}>
                 <img src={player.image} className={classes.playerPortrait} />{" "}
                 <div className={classes.stats}>
@@ -103,6 +123,7 @@ const Main = () => {
                         {deck.length} abilities
                     </Button>
                 </div>
+                {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
             </div>
         </>
     );

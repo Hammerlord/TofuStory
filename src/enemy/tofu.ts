@@ -23,7 +23,7 @@ export const smalltofu = {
     armor: 0,
     damage: 1,
     abilities: [loaf, move],
-    effects: [thorns],
+    effects: [],
 };
 
 export const thefaketofu = {
@@ -38,17 +38,17 @@ export const thefaketofu = {
 export const realtofu = {
     name: "Real Tofu",
     image: realtofuPortrait,
-    maxHP: 5,
+    maxHP: 8,
     armor: 0,
-    damage: 3,
-    abilities: [loaf, move, megaHeal],
-    effects: [stealth],
+    damage: 2,
+    abilities: [loaf, move],
+    effects: [],
 };
 
 export const theraretofu = {
     name: "Rare Tofu",
     image: theraretofuPortrait,
-    maxHP: 10,
+    maxHP: 15,
     armor: 0,
     damage: 2,
     resources: 2,
