@@ -158,7 +158,7 @@ export const rampage: Ability = {
 
 export const block: Ability = {
     name: "Block",
-    resourceCost: 0,
+    resourceCost: 1,
     image: blockImage,
     actions: [
         {
@@ -350,7 +350,7 @@ export const ironWill: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 3,
+            armor: 2,
             effects: [
                 {
                     name: "Iron Will",
@@ -359,7 +359,7 @@ export const ironWill: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 1,
-                    duration: 0,
+                    duration: 3,
                 },
             ],
         },
