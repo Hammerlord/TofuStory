@@ -389,15 +389,16 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
 
     const drawCards = () => {
         let newDeck = deck.slice();
-        let newHand = [];
+        let newHand = hand.slice();
+        const cardsToDraw = CARDS_PER_DRAW - hand.length;
         let newDiscard = discardSansMinionsInPlay;
-        if (newDeck.length < CARDS_PER_DRAW) {
-            newHand = newDeck.slice();
+        if (newDeck.length < cardsToDraw) {
+            newHand.push(...newDeck.slice());
             newDeck = shuffle(discardSansMinionsInPlay);
             newDiscard = minionCardsInPlay;
-            newHand.push(...newDeck.splice(0, CARDS_PER_DRAW - newHand.length));
+            newHand.push(...newDeck.splice(0, cardsToDraw - (newHand.length - hand.length)));
         } else {
-            newHand = newDeck.splice(0, CARDS_PER_DRAW - newHand.length);
+            newHand.push(...newDeck.splice(0, cardsToDraw));
         }
 
         setDeck(newDeck);
@@ -479,15 +480,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
                 setHand([]);
                 setDiscard([]);
                 setAllies(allies.map((ally) => (!ally || ally.isPlayer ? ally : null))); // Clean up minions
-                if (isPlayerTurn) {
-                    setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
-                }
-            } else {
-                setDeck(deck);
-                setHand(hand);
-                setDiscard(discard);
             }
 
+            if (isPlayerTurn) {
+                setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
+            }
             setIsPlayerTurn(true);
 
             if (description) {
