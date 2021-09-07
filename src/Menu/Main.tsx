@@ -12,6 +12,7 @@ import ClassSelection from "./ClassSelection";
 import { PLAYER_CLASSES } from "./types";
 import { Ability } from "../ability/types";
 import Camp from "../Map/Camp";
+import { thorns } from "../ability/Effects";
 
 const useStyles = createUseStyles({
     headerBar: {

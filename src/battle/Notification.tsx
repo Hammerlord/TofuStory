@@ -7,7 +7,7 @@ const useStyles = createUseStyles({
         padding: "8px 32px",
         position: "fixed",
         left: "50%",
-        top: "4%",
+        top: "10%",
         transform: "translateX(-50%)",
         zIndex: 4,
         cursor: "pointer",
@@ -63,11 +63,7 @@ const Notification = ({ children, severity = "info", id, onClick, duration = 700
         return null;
     }
     return (
-        <div
-            style={{ opacity: opacity }}
-            className={classNames(classes.root, severity)}
-            onClick={onClick}
-        >
+        <div style={{ opacity: opacity }} className={classNames(classes.root, severity)} onClick={onClick}>
             {children}
         </div>
     );

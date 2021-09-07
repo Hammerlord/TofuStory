@@ -46,11 +46,11 @@ const useStyles = createUseStyles({
         overflow: "hidden",
     },
     battlefieldContainer: {
-        height: "77%",
+        height: "69%",
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
-        marginTop: "4vh",
+        marginTop: "9vh",
     },
     battlefield: {
         textAlign: "center",
@@ -60,7 +60,7 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "relative",
         background: "#f5ebcb",
-        paddingTop: "13vh",
+        paddingTop: "10vh",
         borderRadius: "16px",
         border: "6px solid rgba(0, 0, 0, 0.25)",
     },
@@ -71,7 +71,7 @@ const useStyles = createUseStyles({
     },
     combatantContainer: {
         position: "relative",
-        height: "20vh",
+        height: "19vh",
         width: "90%",
         maxWidth: "60rem",
         margin: "auto",
