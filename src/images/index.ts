@@ -22,6 +22,7 @@ export { default as Snowflake } from "./2744.svg";
 export { default as ArrowDown } from "./2b07.svg";
 export { default as Cloudy } from "./1f32b.svg";
 export { default as Cloud } from "./2601.svg";
+export { default as Camping } from "./1f3d5.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -67,3 +68,5 @@ export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";
 export { default as perionbg } from "./perionbg.jpg";
+export { default as campfire } from "./campfire.png";
+export { default as perioncamp } from "./perioncamp.png";

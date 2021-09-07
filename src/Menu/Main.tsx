@@ -56,13 +56,11 @@ const Main = () => {
     const classes = useStyles();
 
     const handleSelectNode = (node, newLocation: number) => {
-        if (!location || newLocation === location + 1) {
-            setLocation(newLocation);
-            if (node.type === NODE_TYPES.encounter) {
-                setEncounter(node);
-            } else {
-                setIsResting(true);
-            }
+        setLocation(newLocation);
+        if (node.type === NODE_TYPES.encounter) {
+            setEncounter(node);
+        } else {
+            setIsResting(true);
         }
     };
 
@@ -112,7 +110,7 @@ const Main = () => {
                         />
                     )}
                     {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}
-                    {isResting && <Camp onExit={() => setIsResting(false)} />}
+                    {isResting && <Camp onExit={() => setIsResting(false)} player={player} deck={deck} updateDeck={setDeck} />}
                 </div>
             )}
             <div className={classes.headerBar}>

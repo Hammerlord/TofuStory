@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CrossedSwords, map } from "../images";
+import { Camping, CrossedSwords, map } from "../images";
 import Overlay from "../view/Overlay";
 import { generateWaves } from "./encounters";
 import Pan from "./Pan";
@@ -83,9 +83,9 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
     };
 
     const handleClickNode = (node, i: number) => {
-        if (i - (currentLocation || 0) === 1) {
-            onSelectNode(node, i);
-        }
+        //if (i - (currentLocation || 0) === 1) {
+        onSelectNode(node, i);
+        //}
     };
 
     const placePlayerMarker = (i: number) => {
@@ -119,6 +119,9 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
                                     <circle cx={node.x} cy={node.y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
                                     {node.type === NODE_TYPES.encounter && (
                                         <CrossedSwords width={16} height={16} x={node.x - 8} y={node.y - 8} />
+                                    )}
+                                    {node.type === NODE_TYPES.restingZone && (
+                                        <Camping width={16} height={16} x={node.x - 8} y={node.y - 8} />
                                     )}
                                 </g>
                                 {placePlayerMarker(i) && (
