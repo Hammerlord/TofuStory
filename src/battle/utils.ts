@@ -235,6 +235,9 @@ export const calculateDamage = ({
 };
 
 export const calculateArmor = ({ target, action }): number => {
+    if (!action.armor) {
+        return 0;
+    }
     const targetArmor = target?.effects.reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmor + (action.armor || 0);
     return Math.max(0, armor);
