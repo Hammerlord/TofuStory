@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { passesConditions } from "../battle/passesConditions";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
@@ -11,7 +10,8 @@ import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import { ClickIndicator, Cloud, CrossedSwords, Dizzy, Heart, Zzz } from "../images";
+import { ClickIndicator, Cloud, Dizzy, Zzz } from "../images";
+import AttackPower from "./AttackPower";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
@@ -215,6 +215,11 @@ const useStyles = createUseStyles({
             color: "#42f57b",
         },
     },
+    negativeText: {
+        "& .text": {
+            color: "#ff9b94",
+        },
+    },
     effectsContainer: {
         position: "absolute",
         bottom: "-8px",
@@ -350,19 +355,6 @@ const CombatantView = forwardRef(
         const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
         const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
         const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
-        const damageFromEffects = oldState?.effects?.reduce((acc: number, { damage = 0, conditions = [] }) => {
-            const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
-                if (calculationTarget === "effectOwner") {
-                    return oldState;
-                }
-            };
-            if (passesConditions({ getCalculationTarget, conditions })) {
-                return acc + damage;
-            }
-
-            return acc;
-        }, 0);
-        const totalDamage = (oldState?.damage || 0) + damageFromEffects;
 
         return (
             <div
@@ -428,16 +420,7 @@ const CombatantView = forwardRef(
                                         </div>
 
                                         <div className={classes.rightContainer}>
-                                            {totalDamage > 0 && (
-                                                <Icon
-                                                    icon={<CrossedSwords />}
-                                                    size={"lg"}
-                                                    text={totalDamage}
-                                                    className={classNames({
-                                                        [classes.highlightText]: damageFromEffects > 0,
-                                                    })}
-                                                />
-                                            )}
+                                            <AttackPower combatant={oldState} />
                                         </div>
 
                                         {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}

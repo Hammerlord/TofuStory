@@ -1,18 +1,16 @@
+import { Button } from "@material-ui/core";
 import { useState } from "react";
-import { warmush } from "../images";
+import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { bash, block, slam, slashBlast, warLeap } from "../ability/Abilities";
+import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
-import Map, { NODE_TYPES } from "../Map/Map";
-import { Button } from "@material-ui/core";
-import DeckViewer from "./DeckViewer";
-import { createUseStyles } from "react-jss";
-import ClassSelection from "./ClassSelection";
-import { PLAYER_CLASSES } from "./types";
-import { Ability } from "../ability/types";
+import { warmush } from "../images";
 import Camp from "../Map/Camp";
-import { thorns } from "../ability/Effects";
+import Map, { NODE_TYPES } from "../Map/Map";
+import ClassSelection from "./ClassSelection";
+import DeckViewer from "./DeckViewer";
+import { PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
     headerBar: {

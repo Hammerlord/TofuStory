@@ -231,7 +231,11 @@ export const calculateDamage = ({
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
     const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
-    return damage + damageReceived;
+    const total = damage + damageReceived;
+    if (total < 0) {
+        return 0;
+    }
+    return total;
 };
 
 export const calculateArmor = ({ target, action }): number => {
