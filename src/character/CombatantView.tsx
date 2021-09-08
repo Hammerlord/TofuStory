@@ -12,6 +12,7 @@ import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicator, Cloud, CrossedSwords, Dizzy, Heart, Zzz } from "../images";
+import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 
@@ -423,7 +424,7 @@ const CombatantView = forwardRef(
                                     <>
                                         <div className={classes.leftContainer}>
                                             {oldState.armor > 0 && <Armor amount={oldState.armor} />}
-                                            <Icon icon={<Heart />} size={"lg"} text={oldState.HP} />
+                                            <Health HP={oldState.HP} maxHP={oldState.maxHP} />
                                         </div>
 
                                         <div className={classes.rightContainer}>

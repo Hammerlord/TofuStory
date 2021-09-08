@@ -24,12 +24,18 @@ const useStyles = createUseStyles({
             height: "36px",
             minWidth: "36px",
             minHeight: "36px",
+            "& .text": {
+                fontSize: "18px",
+            },
         },
         "&.xl": {
             width: "48px",
             height: "48px",
             minWidth: "48px",
             minHeight: "48px",
+            "& .text": {
+                fontSize: "18px",
+            },
         },
     },
     inner: {
@@ -48,7 +54,7 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        textShadow: "0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black",
+        textShadow: "0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black",
         fontSize: "16px",
         fontWeight: "bold",
         zIndex: "3",
@@ -65,15 +71,7 @@ interface IconInterface {
     style?: any;
 }
 
-const Icon = ({
-    text,
-    icon,
-    background,
-    size = "md",
-    className,
-    style,
-    ...other
-}: IconInterface) => {
+const Icon = ({ text, icon, background, size = "md", className, style, ...other }: IconInterface) => {
     const classes = useStyles();
     size = ["sm", "md", "lg", "xl"].includes(size) ? size : undefined;
     let iconNode;
@@ -82,17 +80,17 @@ const Icon = ({
         iconNode = <img src={icon} className={classNames(classes.icon, "icon")} />;
     } else if (typeof icon === "function") {
         const Icon = icon;
-        iconNode = <span className={classNames(classes.icon, "icon")}><Icon/></span>;
+        iconNode = (
+            <span className={classNames(classes.icon, "icon")}>
+                <Icon />
+            </span>
+        );
     } else {
         iconNode = <span className={classNames(classes.icon, "icon")}>{icon}</span>;
     }
 
     return (
-        <span
-            className={classNames("icon-root", classes.root, className, size)}
-            style={{ background, ...style }}
-            {...other}
-        >
+        <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other}>
             <span className={classNames(classes.inner)}>
                 {iconNode}
                 <span className={classNames("text", classes.text)}>{text}</span>
