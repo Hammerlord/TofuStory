@@ -87,6 +87,13 @@ const Main = () => {
         setDeck(deck);
     };
 
+    const handleUpdatePlayerHP = (newHP: number) => {
+        setPlayer({
+            ...player,
+            HP: newHP < 0 ? 0 : newHP,
+        });
+    };
+
     if (!player) {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
@@ -106,6 +113,7 @@ const Main = () => {
                             onBattleEnd={handleBattleEnd}
                             waves={encounter.waves}
                             initialDeck={deck}
+                            updatePlayerHP={handleUpdatePlayerHP}
                         />
                     )}
                     {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}

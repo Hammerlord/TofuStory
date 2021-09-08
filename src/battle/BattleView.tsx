@@ -141,7 +141,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }) => {
+const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, updatePlayerHP }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
@@ -436,9 +436,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
             }
         }
 
-        const playerDead = updatedAllies.find((ally) => ally?.isPlayer).HP <= 0;
-        if (playerDead) {
+        const playerHP = updatedAllies.find((ally) => ally?.isPlayer).HP;
+
+        if (playerHP <= 0) {
             setTimeout(() => {
+                updatePlayerHP(player.HP);
                 setEvents([]);
                 setBattleEndResult("Defeat");
             }, 1000);
@@ -448,12 +450,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies }
         const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
         if (enemiesAllDead) {
             setTimeout(() => {
+                updatePlayerHP(player.HP);
                 setEvents([]);
                 nextWave();
             }, 1000);
             return;
         }
         timeout = setTimeout(() => {
+            updatePlayerHP(player.HP);
             setEvents(updatedEvents);
         }, 1000);
 
