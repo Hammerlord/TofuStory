@@ -437,10 +437,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         }
 
         const playerHP = updatedAllies.find((ally) => ally?.isPlayer).HP;
+        updatePlayerHP(playerHP);
 
         if (playerHP <= 0) {
             setTimeout(() => {
-                updatePlayerHP(player.HP);
                 setEvents([]);
                 setBattleEndResult("Defeat");
             }, 1000);
@@ -450,14 +450,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
         if (enemiesAllDead) {
             setTimeout(() => {
-                updatePlayerHP(player.HP);
                 setEvents([]);
                 nextWave();
             }, 1000);
             return;
         }
         timeout = setTimeout(() => {
-            updatePlayerHP(player.HP);
             setEvents(updatedEvents);
         }, 1000);
 

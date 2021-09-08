@@ -117,7 +117,15 @@ const Main = () => {
                         />
                     )}
                     {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}
-                    {isResting && <Camp onExit={() => setIsResting(false)} player={player} deck={deck} updateDeck={setDeck} />}
+                    {isResting && (
+                        <Camp
+                            onExit={() => setIsResting(false)}
+                            player={player}
+                            deck={deck}
+                            updateDeck={setDeck}
+                            updatePlayer={setPlayer}
+                        />
+                    )}
                 </div>
             )}
             <div className={classes.headerBar}>

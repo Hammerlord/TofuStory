@@ -1,6 +1,6 @@
 import { Button } from "@material-ui/core";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { campfire, perioncamp } from "../images";
 import CardGrid from "../Menu/CardGrid";
@@ -76,11 +76,20 @@ const useStyles = createUseStyles({
         overflow: "auto",
     },
 });
-const Camp = ({ onExit, deck, player, updateDeck }) => {
+
+const HEALTH_REGAINED = 0.25;
+const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
     const [selectedAbilityIndexToRemove, setSelectedAbilityIndexToRemove] = useState(null);
+
+    useEffect(() => {
+        updatePlayer({
+            ...player,
+            HP: Math.min(player.HP + player.maxHP * HEALTH_REGAINED, player.maxHP),
+        });
+    }, []);
 
     const handleRemoveAbility = () => {
         if (selectedAbilityIndexToRemove === null) {
@@ -122,6 +131,7 @@ const Camp = ({ onExit, deck, player, updateDeck }) => {
         <div className={classes.root}>
             <div className={classes.inner}>
                 <h3>Camp</h3>
+                <p>You've regained {HEALTH_REGAINED * 100}% of your HP.</p>
                 <div className={classes.scene}>
                     <img src={player.image} className={classes.player} />
                     <img src={campfire} className={classes.bonfire} />
