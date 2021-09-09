@@ -75,7 +75,10 @@ const Armor = ({ amount, className }: ArmorInterface) => {
                     </div>
                     <div className={classes.container}>
                         <div className={classes.tooltipTitle}>Armor</div>
-                        <div>Blocks damage from incoming attacks</div>
+                        <div>
+                            Blocks damage from incoming attacks. When the character's turn starts, the current amount of armor reduces by
+                            half.
+                        </div>
                     </div>
                 </div>
             }

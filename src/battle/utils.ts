@@ -5,10 +5,8 @@ import { passesConditions } from "./passesConditions";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
-    const oldEffectiveHP = oldCharacter.HP + oldCharacter.armor;
-    const newEffectiveHP = newCharacter.HP + newCharacter.armor;
-    if (newEffectiveHP < oldEffectiveHP) {
-        updatedStatChanges.damage = oldEffectiveHP - newEffectiveHP;
+    if (newCharacter.HP < oldCharacter.HP) {
+        updatedStatChanges.damage = oldCharacter.HP - newCharacter.HP;
     }
 
     if (newCharacter.HP > oldCharacter.HP) {
@@ -81,6 +79,13 @@ export const tickDownBuffs = (target: Combatant) => {
                 return effect;
             })
             .filter(({ duration = Infinity }) => duration > 0),
+    };
+};
+
+export const halveArmor = (target: Combatant): Combatant => {
+    return {
+        ...target,
+        armor: Math.floor(target.armor / 2),
     };
 };
 

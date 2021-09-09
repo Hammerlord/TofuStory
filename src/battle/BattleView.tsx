@@ -24,6 +24,7 @@ import TurnAnnouncement from "./TurnNotification";
 import {
     canUseAbility,
     clearTurnHistory,
+    halveArmor,
     isValidTarget,
     refreshPlayerResources,
     removeEndedEffects,
@@ -409,7 +410,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     const handlePlayerTurnStart = () => {
         drawCards();
         setAlliesAttackedThisTurn([]);
-        const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources));
+        const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources, halveArmor));
         setAllies(updatedAllies);
         handleNewEvents(
             applyPerTurnEffects(updatedAllies, enemies).map(({ actors, targets, ...other }) => ({
