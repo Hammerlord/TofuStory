@@ -392,7 +392,7 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     return updated;
 };
 
-export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, actorId }): Event[] => {
+export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, side, ability, allies, actorId }): Event[] => {
     const { minion, actions, resourceCost } = ability;
     const results = [];
 
@@ -401,7 +401,7 @@ export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, 
             updatedEnemies: enemies.map(cloneDeep),
             updatedAllies: renewPersistentAuras(
                 allies.map((ally: Combatant | null, i: number) => {
-                    return i === selectedIndex ? createCombatant(minion) : cloneDeep(ally);
+                    return i === initialSelectedIndex ? createCombatant(minion) : cloneDeep(ally);
                 })
             ),
             actorId,
@@ -414,15 +414,18 @@ export const useAllyAbility = ({ enemies, selectedIndex, side, ability, allies, 
     const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === actorId);
 
     actions.forEach((action: Action) => {
-        let index = selectedIndex;
+        let index = initialSelectedIndex;
         if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
             const targetIndices = getValidTargetIndices(mostRecentEnemies(), { excludeStealth: true }).filter((i) => {
                 if (ability.area) {
-                    return i >= selectedIndex - ability.area && i <= selectedIndex + ability.area;
+                    return i >= initialSelectedIndex - ability.area && i <= initialSelectedIndex + ability.area;
                 }
                 return true;
             });
             index = getRandomItem(targetIndices);
+        } else if (action.target === TARGET_TYPES.SELF) {
+            index = mostRecentAllies().findIndex((ally) => ally?.id === actorId);
+            side = "allies";
         }
 
         if (typeof index !== "number") {
