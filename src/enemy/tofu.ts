@@ -1,22 +1,13 @@
-import { Ability, ACTION_TYPES, TARGET_TYPES } from "../ability/types";
+import { Enemy } from "./enemy";
 import { BigBeefy, regalTofu } from "../images";
 import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
 import matty from "../images/matty.png";
-import { hardy, raging, stealth, thorns } from "./../ability/Effects";
-import { loaf, megaHeal, move, rally, shiningLaser, tantrum, whip } from "./abilities";
+import { hardy, raging } from "./../ability/Effects";
+import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
 
-export interface Enemy {
-    name: string;
-    image: string;
-    maxHP: number;
-    HP: number;
-    armor: number;
-    abilities: Ability[];
-}
-
-export const smalltofu = {
+export const smalltofu: Enemy = {
     name: "Small Tofu",
     image: smalltofuPortrait,
     maxHP: 3,
@@ -26,16 +17,16 @@ export const smalltofu = {
     effects: [],
 };
 
-export const thefaketofu = {
+export const thefaketofu: Enemy = {
     name: "Fake Tofu",
     image: matty,
     maxHP: 5,
     armor: 0,
-    damage: 2, // The damage that appears
+    damage: 2,
     abilities: [loaf, move],
 };
 
-export const realtofu = {
+export const realtofu: Enemy = {
     name: "Real Tofu",
     image: realtofuPortrait,
     maxHP: 8,
@@ -45,7 +36,7 @@ export const realtofu = {
     effects: [],
 };
 
-export const theraretofu = {
+export const theraretofu: Enemy = {
     name: "Rare Tofu",
     image: theraretofuPortrait,
     maxHP: 15,
@@ -56,7 +47,7 @@ export const theraretofu = {
     effects: [hardy],
 };
 
-export const bigBeefy = {
+export const bigBeefy: Enemy = {
     name: "Big Beefy",
     image: BigBeefy,
     maxHP: 30,
@@ -67,7 +58,7 @@ export const bigBeefy = {
     effects: [hardy, raging],
 };
 
-export const theRegalTofu = {
+export const theRegalTofu: Enemy = {
     name: "The Regal Tofu",
     image: regalTofu,
     maxHP: 10,
@@ -77,7 +68,7 @@ export const theRegalTofu = {
     effects: [hardy],
 };
 
-export const theCruelTofu = {
+export const theCruelTofu: Enemy = {
     name: "The Cruel Tofu",
     image: regalTofu, // TODO
     maxHP: 30,

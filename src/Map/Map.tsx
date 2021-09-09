@@ -1,23 +1,11 @@
-import { Fragment, useState } from "react";
+import { createRef, Fragment, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Camping, CrossedSwords, map } from "../images";
 import Overlay from "../view/Overlay";
 import { generateWaves } from "./encounters";
 import Pan from "./Pan";
-
-export enum NODE_TYPES {
-    encounter = "encounter",
-    event = "event",
-    restingZone = "restingZone",
-}
-
-export interface RouteNode {
-    x: number;
-    y: number;
-    type: NODE_TYPES;
-    difficulty?: "low" | "medium" | "high";
-    //next: RouteNode[];
-}
+import { routeLithToKerning } from "./routes";
+import { NODE_TYPES, RouteNode } from "./types";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -58,32 +46,45 @@ const useStyles = createUseStyles({
     },
 });
 
-// Assuming a map width of 2880 -- TODO make this relative
-const route: RouteNode[] = [
-    { x: 1702, y: 351, type: NODE_TYPES.encounter, difficulty: "low" },
-    { x: 1722, y: 462, type: NODE_TYPES.encounter, difficulty: "low" },
-    { x: 1614, y: 467, type: NODE_TYPES.encounter, difficulty: "medium" },
-    { x: 1500, y: 447, type: NODE_TYPES.restingZone },
-    { x: 1398, y: 493, type: NODE_TYPES.encounter, difficulty: "medium" },
-    { x: 1285, y: 509, type: NODE_TYPES.encounter, difficulty: "high" },
-];
+const NODE_ICON_SIZE = 16;
 
 const Map = ({ onSelectNode, currentLocation, playerImage }) => {
     const classes = useStyles();
     const [generatedRoute] = useState(
-        route.map((node) => {
+        routeLithToKerning.nodes.map((node) => {
             if (node.type === NODE_TYPES.encounter) {
-                return { ...node, waves: generateWaves({ difficulty: node.difficulty }) };
+                return { ...node, waves: generateWaves({ difficulty: node.difficulty, encounters: routeLithToKerning.encounters }) };
             }
             return node;
         })
     );
+
+    const [containerRef] = useState(useRef(createRef() as any));
+    const [positions, setPositions] = useState([]);
+    const [enableDraw] = useState(false);
+    const [container, setContainer] = useState({});
+
+    const handleImageLoad = () => {
+        setContainer(containerRef.current.getBoundingClientRect());
+    };
+
+    useEffect(() => {
+        const onResize = () => {
+            if (containerRef.current?.getBoundingClientRect) {
+                setContainer(containerRef.current.getBoundingClientRect());
+            }
+        };
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [containerRef.current]);
+
     const handleClickMap = (e) => {
         e.preventDefault();
     };
 
     const handleClickNode = (node, i: number) => {
         //if (i - (currentLocation || 0) === 1) {
+        console.log(node);
         onSelectNode(node, i);
         //}
     };
@@ -96,46 +97,104 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
         return currentLocation === i;
     };
 
+    // This is just for generating routes
+    const handleDraw = (e) => {
+        if (enableDraw && e.button === 0) {
+            const { left, width, top, height } = containerRef.current.getBoundingClientRect();
+            const newPositions = [...positions, [(e.clientX - left) / width, (e.clientY - top) / height]];
+            console.log(newPositions);
+            setPositions(newPositions);
+        }
+    };
+
+    const handleErase = (e, i) => {
+        if (enableDraw && e.button === 2) {
+            const newPositions = positions.slice();
+            newPositions.splice(i, 1);
+            setPositions(newPositions);
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    };
+    const route = generatedRoute; // TODO
+
     return (
         <Overlay>
             <div className={classes.root}>
                 <Pan>
-                    <img src={map} className={classes.image} onMouseDown={handleClickMap} />
-                    <svg className={classes.routeContainer}>
-                        {generatedRoute.map((node, i) => (
-                            <Fragment key={i}>
-                                {i < route.length - 1 && (
-                                    <line
-                                        x1={node.x}
-                                        y1={node.y}
-                                        x2={route[i + 1]?.x}
-                                        y2={route[i + 1]?.y}
-                                        stroke="black"
-                                        strokeWidth={2}
-                                        style={{ position: "absolute" }}
-                                    />
-                                )}
-                                <g x={node.x - 8} y={node.y - 8} onClick={() => handleClickNode(node, i)} className={classes.routeNode}>
-                                    <circle cx={node.x} cy={node.y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
-                                    {node.type === NODE_TYPES.encounter && (
-                                        <CrossedSwords width={16} height={16} x={node.x - 8} y={node.y - 8} />
+                    <img src={map} className={classes.image} onMouseDown={handleClickMap} ref={containerRef} onLoad={handleImageLoad} />
+                    <svg className={classes.routeContainer} onClick={handleDraw}>
+                        {route.map((node, i) => {
+                            const { width = 0, height = 0 } = container as { width: number; height: number };
+                            if (!width || !height || enableDraw) {
+                                return;
+                            }
+                            const x = node.x * width;
+                            const y = node.y * height;
+
+                            return (
+                                <Fragment key={i}>
+                                    {i < route.length - 1 && (
+                                        <line
+                                            x1={x}
+                                            y1={y}
+                                            x2={route[i + 1]?.x * width}
+                                            y2={route[i + 1]?.y * height}
+                                            stroke="black"
+                                            strokeWidth={2}
+                                            style={{ position: "absolute" }}
+                                        />
                                     )}
-                                    {node.type === NODE_TYPES.restingZone && (
-                                        <Camping width={16} height={16} x={node.x - 8} y={node.y - 8} />
+                                    <g x={x - 8} y={y - 8} onClick={() => handleClickNode(node, i)} className={classes.routeNode}>
+                                        <circle cx={x} cy={y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
+                                        {node.type === NODE_TYPES.encounter && (
+                                            <CrossedSwords
+                                                width={NODE_ICON_SIZE}
+                                                height={NODE_ICON_SIZE}
+                                                x={x - NODE_ICON_SIZE / 2}
+                                                y={y - NODE_ICON_SIZE / 2}
+                                            />
+                                        )}
+                                        {node.type === NODE_TYPES.restingZone && (
+                                            <Camping
+                                                width={NODE_ICON_SIZE}
+                                                height={NODE_ICON_SIZE}
+                                                x={x - NODE_ICON_SIZE / 2}
+                                                y={y - NODE_ICON_SIZE / 2}
+                                            />
+                                        )}
+                                    </g>
+                                    {placePlayerMarker(i) && (
+                                        <image
+                                            href={playerImage}
+                                            className={classes.playerLocationMarker}
+                                            height="36"
+                                            width="36"
+                                            x={node.x - 18}
+                                            y={node.y - 50}
+                                        />
                                     )}
-                                </g>
-                                {placePlayerMarker(i) && (
-                                    <image
-                                        href={playerImage}
-                                        className={classes.playerLocationMarker}
-                                        height="36"
-                                        width="36"
-                                        x={node.x - 18}
-                                        y={node.y - 50}
+                                </Fragment>
+                            );
+                        })}
+                        {enableDraw &&
+                            positions.map(([x, y], i) => {
+                                const { width = 0, height = 0 } = container as { width: number; height: number };
+                                if (!width || !height) {
+                                    return;
+                                }
+                                console.log("pos", x * width, y * height);
+                                return (
+                                    <circle
+                                        onMouseDown={(e) => handleErase(e, i)}
+                                        key={i}
+                                        cx={x * width}
+                                        cy={y * height}
+                                        r={9}
+                                        fill={"red"}
                                     />
-                                )}
-                            </Fragment>
-                        ))}
+                                );
+                            })}
                     </svg>
                 </Pan>
             </div>

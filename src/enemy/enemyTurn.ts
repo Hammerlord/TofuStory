@@ -89,6 +89,8 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
                     movement,
                 })
             );
+        } else if (target === TARGET_TYPES.SELF) {
+            selectedIndex = recentEnemies.findIndex((enemy) => enemy?.id === actorId);
         } else if (target === TARGET_TYPES.FRIENDLY) {
             const validEnemyIndices = getValidTargetIndices(recentEnemies);
             selectedIndex = getRandomItem(validEnemyIndices);
@@ -200,18 +202,17 @@ const useAbility = ({ caster, allies, enemies }): Event[] => {
     const { id } = caster;
 
     const ability = pickAbility({ actor: caster, enemies }); // Needs to be upfront resource cost?
-    if (ability.castTime > 0 || ability.channelDuration > 0) {
-        enemies = enemies.map((enemy) => {
-            if (enemy?.id === id) {
-                return {
-                    ...cloneDeep(enemy),
-                    casting: cloneDeep(ability),
-                };
-            }
+    enemies = enemies.map((enemy) => {
+        if (enemy?.id === id) {
+            return {
+                ...enemy,
+                casting: ability.castTime > 0 || ability.channelDuration > 0 ? cloneDeep(ability) : null,
+                resources: enemy.resources - (ability.resourceCost || 0),
+            };
+        }
 
-            return enemy;
-        });
-    }
+        return enemy;
+    });
 
     if (!ability.castTime) {
         return useAbilityActions({ allies, enemies, actorId: id, ability });

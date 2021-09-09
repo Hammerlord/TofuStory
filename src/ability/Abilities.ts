@@ -24,7 +24,7 @@ import {
     shieldred,
     shout,
     slashblast,
-    snail as snailPortrait,
+    snailImage as snailPortrait,
     spearsweepImage,
     spikes,
     warleap,

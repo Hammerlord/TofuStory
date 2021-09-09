@@ -26,7 +26,7 @@ const testEncounters = {
     ],
 };
 
-export const generateWaves = ({ difficulty }): Wave[] => {
+export const generateWaves = ({ difficulty, encounters }): Wave[] => {
     let possibleNumWaves = [];
     if (difficulty === "low") {
         possibleNumWaves = [2, 3];
@@ -37,5 +37,5 @@ export const generateWaves = ({ difficulty }): Wave[] => {
     }
 
     const numWaves = getRandomItem(possibleNumWaves);
-    return Array.from({ length: numWaves }).map(() => ({ enemies: getRandomItem(testEncounters[difficulty]) }));
+    return Array.from({ length: numWaves }).map(() => ({ enemies: getRandomItem(encounters[difficulty]) }));
 };
