@@ -415,7 +415,7 @@ const CombatantView = forwardRef(
                                 {oldState.HP > 0 && (
                                     <>
                                         <div className={classes.leftContainer}>
-                                            {oldState.armor > 0 && <Armor amount={oldState.armor} />}
+                                            <Armor amount={oldState.armor} />
                                             <Health HP={oldState.HP} maxHP={oldState.maxHP} />
                                         </div>
 
