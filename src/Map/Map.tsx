@@ -53,7 +53,7 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
     const [generatedRoute] = useState(
         routeLithToKerning.nodes.map((node) => {
             if (node.type === NODE_TYPES.encounter) {
-                return { ...node, waves: generateWaves({ difficulty: node.difficulty, encounters: routeLithToKerning.encounters }) };
+                return { ...node, waves: generateWaves(node, routeLithToKerning.enemies) };
             }
             return node;
         })
@@ -84,7 +84,6 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
 
     const handleClickNode = (node, i: number) => {
         //if (i - (currentLocation || 0) === 1) {
-        console.log(node);
         onSelectNode(node, i);
         //}
     };
@@ -183,7 +182,6 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
                                 if (!width || !height) {
                                     return;
                                 }
-                                console.log("pos", x * width, y * height);
                                 return (
                                     <circle
                                         onMouseDown={(e) => handleErase(e, i)}
