@@ -1,6 +1,6 @@
 import React, { cloneElement } from "react";
 import Icon from "../../icon/Icon";
-import { Cactus, Cloudy, Heart, Hourglass, Shield } from "../../images";
+import { Cactus, Cloudy, CrossedSwords, Heart, Hourglass, Shield } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 import { getAllEffects } from "./utils";
@@ -17,6 +17,7 @@ const Buffs = ({ ability }) => {
                     armorReceived = 0,
                     resourcesPerTurn = 0,
                     healTargetPerTurn = 0,
+                    damage = 0,
                     duration = Infinity,
                 } = effect;
                 const effectComponents = [];
@@ -66,6 +67,13 @@ const Buffs = ({ ability }) => {
                     );
                 }
 
+                if (damage > 0) {
+                    effectComponents.push(
+                        <span>
+                            Gain <Icon icon={<CrossedSwords />} text={`+${damage}`} />
+                        </span>
+                    );
+                }
                 if (effectComponents.length > 0) {
                     effectComponents.push(
                         duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
