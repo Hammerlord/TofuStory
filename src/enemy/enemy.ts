@@ -46,7 +46,7 @@ export const shroom: Enemy = {
     name: "Shroom",
     maxHP: 7,
     image: shroomImage,
-    damage: 3,
+    damage: 2,
 };
 
 export const redSnail: Enemy = {
@@ -70,7 +70,7 @@ export const redSnail: Enemy = {
 
 export const orangeMushroom: Enemy = {
     name: "Orange Mushroom",
-    maxHP: 30,
+    maxHP: 25,
     image: orangeMushroomImage,
     damage: 3,
 };
