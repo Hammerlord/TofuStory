@@ -77,7 +77,10 @@ export { default as classwarrior } from "./classwarrior.png";
 export { default as perionbg } from "./perionbg.jpg";
 export { default as campfire } from "./campfire.png";
 export { default as perioncamp } from "./perioncamp.png";
+export { default as hasteImage } from "./haste.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";
+export { default as leetSin } from "./leetsin.png";
 export { default as mapleleaves } from "./mapleleaves.png";
+export { default as subi } from "./subi.png";

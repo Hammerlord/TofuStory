@@ -52,10 +52,13 @@ const getPopulatedEnemyIndices = (enemies) => {
  * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
  * Otherwise, pick a different ability.
  * 2) Check the resource cost of the ability.
+ * 3) Check if there is space for a minion.
+ * 4) If the ability applies a buff that the actor already has, don't use it.
+ * 5) If the ability only heals, do not use it at full health.
  */
-const canUseAbility = ({ enemy, ability, enemies }): boolean => {
+const canUseAbility = ({ actor, ability, enemies }): boolean => {
     const resourceCost = ability.resourceCost || 0;
-    if ((enemy.resources || 0) < resourceCost) {
+    if ((actor.resources || 0) < resourceCost) {
         return false;
     }
 
@@ -63,9 +66,19 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
         return enemies.some((combatant) => !combatant);
     }
 
+    const abilityEffects = ability.actions.reduce((acc, { effects = [] }) => {
+        return [...acc, ...effects];
+    }, []);
+    if (actor.effects.some(({ name }) => abilityEffects.some((effect) => effect.name === name))) {
+        return false;
+    }
+    if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
+        return actor.HP < actor.maxHP;
+    }
+
     const movementAction = ability.actions.find((action) => action.movement);
     if (movementAction) {
-        const index = enemies.findIndex((e: Combatant) => e && e.id === enemy.id);
+        const index = enemies.findIndex((e: Combatant) => e && e.id === actor.id);
         return (
             getPossibleMoveIndices({
                 currentLocationIndex: index,
@@ -191,7 +204,7 @@ const getSyntheticAttack = (actor) => {
 const pickAbility = ({ actor, enemies }): Ability => {
     const [specialAbilities, regularAbilities] = partition(
         (a) => a.resourceCost > 0,
-        actor.abilities.filter((a) => canUseAbility({ enemy: actor, ability: a, enemies }))
+        actor.abilities.filter((a) => canUseAbility({ actor, ability: a, enemies }))
     );
 
     let ability: Ability;

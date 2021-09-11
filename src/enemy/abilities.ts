@@ -1,3 +1,4 @@
+import { hasteImage } from "../images";
 import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 export const loaf: Ability = {
     name: "Loaf",
@@ -108,6 +109,30 @@ export const whip: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 4,
+                },
+            ],
+        },
+    ],
+};
+
+export const enemyHaste: Ability = {
+    name: "Haste",
+    resourceCost: 1,
+    image: hasteImage,
+    actions: [
+        {
+            area: 1,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Haste",
+                    description: "Gaining +1 energy per turn",
+                    resourcesPerTurn: 1,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 3,
+                    icon: hasteImage,
                 },
             ],
         },

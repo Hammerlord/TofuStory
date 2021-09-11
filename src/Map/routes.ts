@@ -1,4 +1,4 @@
-import { snail } from "../enemy/enemy";
+import { snail, thiefAssassin } from "../enemy/enemy";
 import { blueSnail, noobA, noobB, orangeMushroom, redSnail, shroom } from "./../enemy/enemy";
 import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES, RouteNode } from "./types";
 
@@ -86,6 +86,12 @@ export const routeLithToKerning = {
             y: 0.5558987029030266,
             type: NODE_TYPES.encounter,
             difficulty: ENCOUNTER_DIFFICULTY.ELITE,
+        },
+        {
+            x: 0.1877818778187782,
+            y: 0.4992147419118417,
+            type: NODE_TYPES.encounter,
+            encounters: [[null, null, thiefAssassin, null, null]],
         },
     ] as RouteNode[],
 };

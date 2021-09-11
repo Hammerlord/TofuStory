@@ -1,7 +1,18 @@
+import { stealth } from "./../ability/Effects";
 import { ACTION_TYPES, TARGET_TYPES } from "./../ability/types";
-import { loaf } from "./abilities";
+import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
-import { bluesnailImage, noobClubA, noobClubB, orangeMushroomImage, redsnailImage, shroomImage, snailImage } from "../images";
+import {
+    bluesnailImage,
+    leetSin,
+    noobClubA,
+    noobClubB,
+    orangeMushroomImage,
+    redsnailImage,
+    shroomImage,
+    snailImage,
+    subi,
+} from "../images";
 
 export interface Enemy {
     name: string;
@@ -132,6 +143,61 @@ export const noobB: Enemy = {
                 },
             ],
         },
+        {
+            name: "Potion",
+            resourceCost: 4,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    healing: 5,
+                },
+            ],
+        },
+    ],
+};
+
+export const thiefAssassin: Enemy = {
+    name: "XxLeetSinxX",
+    maxHP: 40,
+    image: leetSin,
+    damage: 2,
+    abilities: [
+        {
+            name: "Dark Sight",
+            resourceCost: 2,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stealth,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Lucky Seven",
+            resourceCost: 2,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 0,
+                    icon: subi,
+                },
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 0,
+                    icon: subi,
+                },
+            ],
+        },
+        enemyHaste,
         {
             name: "Potion",
             resourceCost: 4,

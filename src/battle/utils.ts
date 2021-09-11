@@ -32,7 +32,12 @@ export const refreshPlayerResources = (character: Combatant): Combatant => {
 export const addEnemyResources = (character: Combatant): Combatant => {
     return {
         ...character,
-        resources: Math.min(character.maxResources, character.resources + character.resourcesPerTurn),
+        resources: Math.min(
+            character.maxResources,
+            character.resources +
+                character.resourcesPerTurn +
+                character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
+        ),
     };
 };
 
