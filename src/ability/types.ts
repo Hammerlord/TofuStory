@@ -153,6 +153,10 @@ export interface Action {
     movement?: number;
     resources?: number;
     addCards?: Ability[];
+    drawCards?: {
+        amount: number;
+        reduceResourceCost?: number;
+    };
     icon?: string; // Used as a projectile
     bonus?: Bonus;
     multiplier?: MULTIPLIER_TYPES;

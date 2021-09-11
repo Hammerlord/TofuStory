@@ -22,6 +22,7 @@ import {
     piercingDrive,
     puncture,
     rampage,
+    rush,
     sharpen,
     shieldStrike,
     slam,
@@ -97,6 +98,7 @@ const warriorAbilities = [
     sweepingReach,
     piercingDrive,
     spearSweep,
+    rush,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

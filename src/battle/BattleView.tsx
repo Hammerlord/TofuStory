@@ -401,18 +401,17 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         return [a, b];
     })();
 
-    const drawCards = () => {
+    const drawCards = (amount: number) => {
         let newDeck = deck.slice();
         let newHand = hand.slice();
-        const cardsToDraw = CARDS_PER_DRAW - hand.length;
         let newDiscard = discardSansMinionsInPlay;
-        if (newDeck.length < cardsToDraw) {
+        if (newDeck.length < amount) {
             newHand.push(...newDeck.slice());
             newDeck = shuffle(discardSansMinionsInPlay);
             newDiscard = minionCardsInPlay;
-            newHand.push(...newDeck.splice(0, cardsToDraw - (newHand.length - hand.length)));
+            newHand.push(...newDeck.splice(0, amount - (newHand.length - hand.length)));
         } else {
-            newHand.push(...newDeck.splice(0, cardsToDraw));
+            newHand.push(...newDeck.splice(0, amount));
         }
 
         setDeck(newDeck);
@@ -421,7 +420,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     };
 
     const handlePlayerTurnStart = () => {
-        drawCards();
+        drawCards(CARDS_PER_DRAW - hand.length);
         setAlliesAttackedThisTurn([]);
         const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources, halveArmor));
         setAllies(updatedAllies);
@@ -445,8 +444,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         let timeout;
         if (action) {
             if (actorId === player.id) {
-                const { addCards = [] } = action;
-                setHand([...hand, ...addCards]);
+                // Mutually exclusive properties ee
+                const { addCards = [], drawCards: cardsToDraw } = action;
+                if (addCards.length) {
+                    setHand([...hand, ...addCards]);
+                } else if (cardsToDraw?.amount) {
+                    drawCards(cardsToDraw.amount);
+                }
             }
         }
 

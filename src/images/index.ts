@@ -79,6 +79,7 @@ export { default as campfire } from "./campfire.png";
 export { default as perioncamp } from "./perioncamp.png";
 export { default as hasteImage } from "./haste.png";
 export { default as weaponmasteryImage } from "./weaponmastery.png";
+export { default as rushImage } from "./rush.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";

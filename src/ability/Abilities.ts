@@ -21,6 +21,7 @@ import {
     punctureImage,
     rage,
     risingrage,
+    rushImage,
     shieldred,
     shout,
     slashblast,
@@ -632,6 +633,28 @@ export const sharpen: Ability = {
                     duration: 0,
                 },
             ],
+        },
+    ],
+};
+
+export const rush: Ability = {
+    name: "Rush",
+    resourceCost: 2,
+    description: "Draw a card.",
+    image: rushImage,
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 1,
+                reduceResourceCost: 1,
+            },
         },
     ],
 };
