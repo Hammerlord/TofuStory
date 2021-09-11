@@ -59,7 +59,7 @@ export const tickDownDebuffs = (target: Combatant) => {
                 if (effect.class === EFFECT_CLASSES.DEBUFF) {
                     return {
                         ...effect,
-                        duration: (effect.duration || Infinity) - 1,
+                        duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
                     };
                 }
 
@@ -77,7 +77,7 @@ export const tickDownBuffs = (target: Combatant) => {
                 if (effect.class === EFFECT_CLASSES.BUFF) {
                     return {
                         ...effect,
-                        duration: (effect.duration || Infinity) - 1,
+                        duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
                     };
                 }
 
