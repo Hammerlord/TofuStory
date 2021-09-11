@@ -27,25 +27,20 @@ const generateEliteTriad = (possibleEnemies: Enemy[][]) => {
     ]);
 };
 
-const generateNumWaves = (difficulty: ENCOUNTER_DIFFICULTY) => {
-    let possibleNumWaves = [];
+const getLayoutDifficulty = (waveNum: number, numWaves: number, difficulty: ENCOUNTER_DIFFICULTY): ENEMY_DIFFICULTY => {
+    let waveDifficulties;
+
     if (difficulty === "easy") {
-        possibleNumWaves = [2, 3];
+        waveDifficulties = [["easy"], ["easy"], ["easy", "normal"]];
     } else if (difficulty === "normal") {
-        possibleNumWaves = [1, 2, 2];
+        waveDifficulties = [
+            ["easy", "normal"],
+            ["normal", "normal", "hard"],
+            ["normal", "hard"],
+        ];
     } else {
-        possibleNumWaves = [1];
+        waveDifficulties = [["easy", "normal"], ["normal", "hard"], ["hard"]];
     }
-
-    return getRandomItem(possibleNumWaves);
-};
-
-const getLayoutDifficulty = (waveNum: number, numWaves: number): ENEMY_DIFFICULTY => {
-    const waveDifficulties = [
-        ["easy", "normal"],
-        ["normal", "normal", "hard"],
-        ["normal", "hard"],
-    ];
 
     const divisor = numWaves - 1 || 1;
     const index = Math.floor((waveNum / divisor) * (waveDifficulties.length - 1));
@@ -59,14 +54,14 @@ export const generateWaves = (node: RouteNode, possibleEnemies): Wave[] => {
         });
     }
     const difficulty: ENCOUNTER_DIFFICULTY = Array.isArray(node.difficulty) ? getRandomItem(node.difficulty) : node.difficulty;
-    const numWaves = generateNumWaves(difficulty);
+    const numWaves = getRandomItem([1, 2, 3]);
 
     const generateEnemies = (i: number) => {
         if (difficulty === ENCOUNTER_DIFFICULTY.ELITE_TRIAD || difficulty === ENCOUNTER_DIFFICULTY.ELITE) {
             return generateEliteTriad(possibleEnemies);
         }
 
-        const layoutDifficulty = getLayoutDifficulty(i, numWaves);
+        const layoutDifficulty = getLayoutDifficulty(i, numWaves, difficulty);
         const layout = getRandomItem(enemyLayouts[layoutDifficulty]);
         return layout.map((enemyDifficulty: ENEMY_DIFFICULTY) => {
             if (!enemyDifficulty) {
