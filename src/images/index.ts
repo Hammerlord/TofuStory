@@ -80,3 +80,4 @@ export { default as perioncamp } from "./perioncamp.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";
+export { default as mapleleaves } from "./mapleleaves.png";

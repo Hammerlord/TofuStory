@@ -8,7 +8,7 @@ import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import createCombatant from "../enemy/createEnemy";
 import enemyTurn from "../enemy/enemyTurn";
-import { victoria } from "../images";
+import { mapleleaves, victoria } from "../images";
 import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
@@ -64,6 +64,19 @@ const useStyles = createUseStyles({
         paddingTop: "10vh",
         borderRadius: "16px",
         border: "6px solid rgba(0, 0, 0, 0.25)",
+
+        "&:before": {
+            content: "' '",
+            backgroundImage: `url(${mapleleaves})`,
+            width: "100%",
+            height: "100%",
+            opacity: 0.04,
+            display: "block",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            backgroundPosition: "50% 0",
+        },
     },
     waves: {
         position: "absolute",
