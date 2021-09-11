@@ -155,7 +155,7 @@ export interface Action {
     addCards?: Ability[];
     drawCards?: {
         amount: number;
-        reduceResourceCost?: number;
+        effects: AbilityEffects;
     };
     icon?: string; // Used as a projectile
     bonus?: Bonus;
@@ -177,6 +177,13 @@ export interface Ability {
     reusable?: boolean;
 }
 
+/**
+ * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
+ */
+export interface HandAbility extends Ability {
+    effects: AbilityEffects;
+}
+
 export enum ACTION_TYPES {
     ATTACK = "attack",
     RANGE_ATTACK = "ranged-attack",
@@ -192,4 +199,9 @@ export enum ANIMATION_TYPES {
     ONE_WAY = "one-way",
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
+}
+
+export interface AbilityEffects {
+    resourceCost?: number;
+    damage?: number;
 }

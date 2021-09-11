@@ -2,7 +2,7 @@ import { compose } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability, EFFECT_TYPES } from "../ability/types";
+import { Ability, EFFECT_TYPES, HandAbility } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -224,13 +224,17 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, removeAfterTurn, reusable } = card as Ability;
+        const { resourceCost = 0, removeAfterTurn, reusable, effects } = card as HandAbility;
+        const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
 
         setSelectedAbilityIndex(null);
         if (reusable) {
-            newHand.push(card);
+            newHand.push({
+                ...card,
+                effects: {},
+            });
         } else if (!removeAfterTurn) {
-            setDiscard((prev) => [card, ...prev]);
+            setDiscard((prev) => [...prepareForDiscard([card]), ...prev]);
         }
 
         setHand(newHand);
@@ -241,7 +245,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                 enemies,
                 allies: updatePlayer(
                     (player) => ({
-                        resources: player.resources - resourceCost,
+                        resources: player.resources - totalResourceCost,
                     }),
                     allies
                 ),
@@ -401,21 +405,40 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         return [a, b];
     })();
 
-    const drawCards = (amount: number) => {
+    const prepareForDiscard = (cards: HandAbility[]): Ability[] => {
+        return cards
+            .filter((ability) => !ability.removeAfterTurn)
+            .map((hand) => {
+                const copy = {
+                    ...hand,
+                };
+                delete copy.effects;
+                return copy;
+            });
+    };
+
+    const drawCards = (amount: number, effects = {}) => {
         let newDeck = deck.slice();
         let newHand = hand.slice();
         let newDiscard = discardSansMinionsInPlay;
+        const cardsToDraw = [];
         if (newDeck.length < amount) {
-            newHand.push(...newDeck.slice());
+            cardsToDraw.push(...newDeck.slice());
             newDeck = shuffle(discardSansMinionsInPlay);
             newDiscard = minionCardsInPlay;
-            newHand.push(...newDeck.splice(0, amount - (newHand.length - hand.length)));
+            cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
         } else {
-            newHand.push(...newDeck.splice(0, amount));
+            cardsToDraw.push(...newDeck.splice(0, amount));
         }
 
         setDeck(newDeck);
-        setHand(newHand);
+        setHand([
+            ...newHand,
+            ...cardsToDraw.map((card) => ({
+                ...card,
+                effects,
+            })),
+        ]);
         setDiscard(newDiscard);
     };
 
@@ -449,7 +472,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                 if (addCards.length) {
                     setHand([...hand, ...addCards]);
                 } else if (cardsToDraw?.amount) {
-                    drawCards(cardsToDraw.amount);
+                    drawCards(cardsToDraw.amount, cardsToDraw.effects);
                 }
             }
         }
@@ -559,7 +582,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
             const updatedAllies = updateCharacters(allies, compose(tickDownDebuffs, removeEndedEffects));
             setAllies(updatedAllies);
             setHand([]);
-            const newDiscard = [...hand.filter((ability) => !ability.removeAfterTurn), ...discard];
+            const newDiscard = [...prepareForDiscard(hand), ...discard];
             setDiscard(newDiscard);
         } else {
             // end the opponent turn

@@ -6,7 +6,7 @@ import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
 import { CrossedSwords, Heart } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
-import { Ability } from "../types";
+import { Ability, HandAbility } from "../types";
 import { getAbilityColor } from "../utils";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
@@ -16,6 +16,8 @@ import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import Debuffs from "./Debuffs";
+import DrawCards from "./DrawCards";
+import ResourceIcon from "./ResourceIcon";
 import SelfActions from "./SelfActions";
 
 const useAreaStyles = createUseStyles({
@@ -166,13 +168,13 @@ const useStyles = createUseStyles({
 interface AbilityViewProps {
     onClick?: (event: any) => void;
     isSelected?: boolean;
-    ability: Ability;
+    ability: Ability | HandAbility;
     player?: Combatant;
 }
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
-    const { actions = [], resourceCost, name, minion, image, description, removeAfterTurn } = ability;
+    const { actions = [], name, minion, image, description, removeAfterTurn } = ability;
     const { area = ability.area, target: targetType, damage, secondaryDamage } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
@@ -192,7 +194,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
             >
                 <span className={classes.header} ref={ref as any}>
                     {damageIcon}
-                    <span className={classes.name}>{name}</span> <Fury text={resourceCost} />
+                    <span className={classes.name}>{name}</span> <ResourceIcon ability={ability} />
                 </span>
                 <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
                 <div className={classes.body}>
@@ -202,6 +204,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <Buffs ability={ability} />
                     <CardsToAdd ability={ability} />
                     <BonusView ability={ability} />
+                    <DrawCards ability={ability} />
                     {interpolatedDescription && <div>{interpolatedDescription}</div>}
                     {aura && <AuraView aura={aura} />}
                 </div>

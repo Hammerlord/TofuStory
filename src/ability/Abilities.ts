@@ -639,12 +639,11 @@ export const sharpen: Ability = {
 
 export const rush: Ability = {
     name: "Rush",
-    resourceCost: 2,
-    description: "Draw a card.",
+    resourceCost: 1,
     image: rushImage,
     actions: [
         {
-            damage: 3,
+            damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -653,7 +652,9 @@ export const rush: Ability = {
             target: TARGET_TYPES.SELF,
             drawCards: {
                 amount: 1,
-                reduceResourceCost: 1,
+                effects: {
+                    resourceCost: -1,
+                },
             },
         },
     ],
