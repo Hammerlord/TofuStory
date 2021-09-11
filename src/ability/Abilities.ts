@@ -32,7 +32,7 @@ import {
     weaponbooster,
     Wolf,
 } from "../images";
-import { burn, stealth, stun, thorns, wound } from "./Effects";
+import { burn, chill, stealth, stun, thorns, wound } from "./Effects";
 import { Ability, ACTION_TYPES, BonusCondition, Condition, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
 
 export const bash: Ability = {
@@ -426,7 +426,12 @@ export const blizzardCharge: Ability = {
                     },
                 ],
             },
-            effects: [],
+            effects: [
+                {
+                    ...chill,
+                    duration: 3,
+                },
+            ],
         },
     ],
 };
