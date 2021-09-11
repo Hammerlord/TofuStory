@@ -19,7 +19,7 @@ const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
     };
 };
 
-const generateEliteTriad = (possibleEnemies: MapEnemies) => {
+const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
     const affix = getRandomItem([thorns, raging]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
@@ -38,7 +38,7 @@ const generateEliteTriad = (possibleEnemies: MapEnemies) => {
     ]);
 };
 
-const generateElite = (possibleEnemies: MapEnemies) => {
+const generateElite = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
     const affix = getRandomItem([thorns, raging]);
     const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
@@ -78,15 +78,15 @@ export const generateWaves = (node: RouteNode, possibleEnemies: MapEnemies): Wav
         });
     }
     const difficulty: ENCOUNTER_DIFFICULTY = Array.isArray(node.difficulty) ? getRandomItem(node.difficulty) : node.difficulty;
+    if (difficulty === ENCOUNTER_DIFFICULTY.ELITE_TRIAD) {
+        return [{ enemies: generateEliteTriad(possibleEnemies) }];
+    } else if (difficulty === ENCOUNTER_DIFFICULTY.ELITE) {
+        return [{ enemies: generateElite(possibleEnemies) }];
+    }
+
     const numWaves = getRandomItem([1, 2, 3]);
 
     const generateEnemies = (i: number) => {
-        if (difficulty === ENCOUNTER_DIFFICULTY.ELITE_TRIAD) {
-            return generateEliteTriad(possibleEnemies);
-        } else if (difficulty === ENCOUNTER_DIFFICULTY.ELITE) {
-            return generateElite(possibleEnemies);
-        }
-
         const layoutDifficulty = getLayoutDifficulty(i, numWaves, difficulty);
         const layout = getRandomItem(enemyLayouts[layoutDifficulty]);
         return layout.map((enemyDifficulty: ENEMY_DIFFICULTY) => {
