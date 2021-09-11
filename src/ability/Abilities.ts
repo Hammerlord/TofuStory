@@ -33,7 +33,17 @@ import {
     Wolf,
 } from "../images";
 import { burn, chill, stealth, stun, thorns, wound } from "./Effects";
-import { Ability, ACTION_TYPES, BonusCondition, Condition, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./types";
+import {
+    Ability,
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    BonusCondition,
+    Condition,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+} from "./types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -295,6 +305,7 @@ export const hammerang: Ability = {
             damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.YOYO,
             icon: hammer,
         },
     ],

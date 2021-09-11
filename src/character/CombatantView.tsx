@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
@@ -11,6 +11,7 @@ import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicator, Cloud, Dizzy, Zzz } from "../images";
+import { travel } from "./animations";
 import AttackPower from "./AttackPower";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
@@ -251,58 +252,6 @@ const useStyles = createUseStyles({
     },
 });
 
-const toAndBack = ({ to, from, spin = false }) => {
-    if (!to || !from) {
-        return;
-    }
-    const getTargetPoint = (rect) => {
-        const { x, y, height, width } = rect;
-        return {
-            x: x + width / 2,
-            y: y + height / 2,
-        };
-    };
-    const { x, y } = getTargetPoint(from.getBoundingClientRect());
-    const { x: x2, y: y2 } = getTargetPoint(to.getBoundingClientRect());
-    const increments = 60;
-    const moveIncrementX = (x2 - x) / increments;
-    const moveIncrementY = (y2 - y) / increments;
-    let i = 1;
-    let direction = 1;
-    const spinIncrement = 360 / increments;
-    const move = () => {
-        if (!from) {
-            return;
-        }
-        const xPos = i * moveIncrementX;
-        const yPos = i * moveIncrementY;
-        from.style.transform = `translateX(${xPos}px) translateY(${yPos}px)${spin ? ` rotate(${spinIncrement * i}deg)` : ""}`;
-
-        if (direction === 1) {
-            ++i;
-
-            if (i > increments) {
-                direction = -1;
-            }
-
-            setTimeout(() => {
-                move();
-            });
-        } else {
-            --i;
-
-            if (i > 0) {
-                setTimeout(() => {
-                    move();
-                });
-            } else {
-                from.style.transform = "unset";
-            }
-        }
-    };
-    move();
-};
-
 const CombatantView = forwardRef(
     ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, showResourceBar, ...other }: any, ref) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
@@ -333,16 +282,20 @@ const CombatantView = forwardRef(
             if (!event?.target) {
                 return;
             }
-            if (event.action?.type === ACTION_TYPES.ATTACK && portraitRef.current) {
-                toAndBack({ to: event.target, from: portraitRef.current });
-            } else if (event.action?.type === ACTION_TYPES.RANGE_ATTACK && projectileRef.current) {
-                toAndBack({ to: event.target, from: projectileRef.current, spin: true }); // We don't want every projectile to return to the owner
+            const { type, animation } = event?.action || {};
+            if (type === ACTION_TYPES.ATTACK && portraitRef.current) {
+                travel({ to: event.target, from: portraitRef.current, returnToOrigin: true });
+            } else if (type === ACTION_TYPES.RANGE_ATTACK && projectileRef.current) {
+                travel({ to: event.target, from: projectileRef.current, spin: true, returnToOrigin: animation === ANIMATION_TYPES.YOYO });
             }
 
             let timeout;
             return () => {
                 if (portraitRef?.current?.style) {
                     portraitRef.current.style.transform = "unset";
+                }
+                if (projectileRef?.current?.style) {
+                    projectileRef.current.style.transform = "unset";
                 }
                 clearTimeout(timeout);
             };

@@ -156,6 +156,7 @@ export interface Action {
     icon?: string; // Used as a projectile
     bonus?: Bonus;
     multiplier?: MULTIPLIER_TYPES;
+    animation?: ANIMATION_TYPES;
 }
 
 export interface Ability {
@@ -180,4 +181,11 @@ export enum ACTION_TYPES {
     MOVEMENT = "movement",
     BLEED = "bleed",
     BURN = "burn",
+}
+
+export enum ANIMATION_TYPES {
+    // 'icon' travels from actor to target
+    ONE_WAY = "one-way",
+    // 'icon' travels from actor to target and back
+    YOYO = "yoyo",
 }
