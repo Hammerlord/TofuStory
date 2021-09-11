@@ -7,6 +7,7 @@ const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
     useEffect(() => {
+        let timeout;
         if (hand.length > 0 && oldHand.length === 0) {
             // Just a rudimentary card draw "animation" for now
 
@@ -15,7 +16,7 @@ const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs
                 currentHand = [...currentHand, newHand.shift()];
                 setOldHand(currentHand);
                 if (newHand.length) {
-                    setTimeout(() => {
+                    timeout = setTimeout(() => {
                         addCard(newHand);
                     }, 200);
                 } else {
@@ -28,6 +29,11 @@ const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs
         } else {
             setOldHand(hand);
         }
+
+        return () => {
+            clearTimeout(timeout);
+            setOldHand(hand);
+        };
     }, [hand]);
 
     const handleAbilityClick = (event, i: number) => {
