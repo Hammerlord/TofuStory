@@ -30,6 +30,7 @@ import {
     warleap,
     warmush,
     weaponbooster,
+    weaponmasteryImage,
     Wolf,
 } from "../images";
 import { burn, chill, stealth, stun, thorns, wound } from "./Effects";
@@ -609,6 +610,28 @@ export const spearSweep: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [stun],
+        },
+    ],
+};
+
+export const sharpen: Ability = {
+    name: "Sharpen",
+    resourceCost: 0,
+    image: weaponmasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Sharpen",
+                    icon: weaponmasteryImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 1,
+                    duration: 0,
+                },
+            ],
         },
     ],
 };
