@@ -230,14 +230,17 @@ export const calculateDamage = ({
         return baseDamage;
     }
 
-    const damageFromEffects = actor.effects.reduce((acc, { damage = 0, conditions }) => {
-        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
-            calculationTarget === "effectOwner" ? actor : target;
-        if (passesConditions({ getCalculationTarget, conditions })) {
-            return acc + damage;
-        }
-        return acc;
-    }, 0);
+    let damageFromEffects = 0;
+    if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
+        damageFromEffects = actor.effects.reduce((acc, { damage = 0, conditions }) => {
+            const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
+                calculationTarget === "effectOwner" ? actor : target;
+            if (passesConditions({ getCalculationTarget, conditions })) {
+                return acc + damage;
+            }
+            return acc;
+        }, 0);
+    }
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
     const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
