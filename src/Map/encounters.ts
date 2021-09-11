@@ -6,9 +6,20 @@ import { tantrum } from "./../enemy/abilities";
 import { Wave } from "./../Menu/tutorial";
 import { getRandomItem } from "./../utils";
 import { enemyLayouts } from "./routes";
-import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, RouteNode } from "./types";
+import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, RouteNode } from "./types";
+import { Ability } from "../ability/types";
 
-const generateEliteTriad = (possibleEnemies: Enemy[][]) => {
+const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
+    return {
+        name: "Call Minion",
+        minion: {
+            ...getRandomItem(summonableEnemies),
+        },
+        actions: [],
+    };
+};
+
+const generateEliteTriad = (possibleEnemies: MapEnemies) => {
     const affix = getRandomItem([thorns, raging]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
@@ -25,6 +36,19 @@ const generateEliteTriad = (possibleEnemies: Enemy[][]) => {
         [enemy, null, enemy, enemy, null],
         [enemy, null, null, enemy, enemy],
     ]);
+};
+
+const generateElite = (possibleEnemies: MapEnemies) => {
+    const affix = getRandomItem([thorns, raging]);
+    const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
+    const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
+    const enemy = {
+        ...baseEnemy,
+        maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 10),
+        abilities: [...(baseEnemy.abilities || []), ability],
+        effects: [hardy, affix],
+    };
+    return [null, getRandomItem(possibleEnemies.easy), enemy, getRandomItem(possibleEnemies.easy), null];
 };
 
 const getLayoutDifficulty = (waveNum: number, numWaves: number, difficulty: ENCOUNTER_DIFFICULTY): ENEMY_DIFFICULTY => {
@@ -47,7 +71,7 @@ const getLayoutDifficulty = (waveNum: number, numWaves: number, difficulty: ENCO
     return getRandomItem(waveDifficulties[index]);
 };
 
-export const generateWaves = (node: RouteNode, possibleEnemies): Wave[] => {
+export const generateWaves = (node: RouteNode, possibleEnemies: MapEnemies): Wave[] => {
     if (node.encounters) {
         return node.encounters.map((encounter) => {
             return { enemies: encounter.map(createCombatant) };
@@ -57,8 +81,10 @@ export const generateWaves = (node: RouteNode, possibleEnemies): Wave[] => {
     const numWaves = getRandomItem([1, 2, 3]);
 
     const generateEnemies = (i: number) => {
-        if (difficulty === ENCOUNTER_DIFFICULTY.ELITE_TRIAD || difficulty === ENCOUNTER_DIFFICULTY.ELITE) {
+        if (difficulty === ENCOUNTER_DIFFICULTY.ELITE_TRIAD) {
             return generateEliteTriad(possibleEnemies);
+        } else if (difficulty === ENCOUNTER_DIFFICULTY.ELITE) {
+            return generateElite(possibleEnemies);
         }
 
         const layoutDifficulty = getLayoutDifficulty(i, numWaves, difficulty);

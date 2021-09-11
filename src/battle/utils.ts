@@ -268,6 +268,16 @@ export const getValidTargetIndices = (characters: (Combatant | null)[], options:
     return indices;
 };
 
+export const getEmptyIndices = (characters: (Combatant | null)[]): number[] => {
+    const indices = [];
+    characters.forEach((character: Combatant | null, i: number) => {
+        if (!character || character.HP <= 0) {
+            indices.push(i);
+        }
+    });
+    return indices;
+};
+
 export const getHealableIndices = (characters: (Combatant | null)[]): number[] => {
     const indices = getValidTargetIndices(characters);
     // Injured targets only

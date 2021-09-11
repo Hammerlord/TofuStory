@@ -1,3 +1,4 @@
+import { createCombatant } from "./createEnemy";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
@@ -10,6 +11,7 @@ import {
     addEnemyResources,
     cleanUpDeadCharacters,
     clearTurnHistory,
+    getEmptyIndices,
     getValidTargetIndices,
     halveArmor,
     tickDownBuffs,
@@ -56,6 +58,11 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
     if ((enemy.resources || 0) < resourceCost) {
         return false;
     }
+
+    if (ability.minion) {
+        return enemies.some((combatant) => !combatant);
+    }
+
     const movementAction = ability.actions.find((action) => action.movement);
     if (movementAction) {
         const index = enemies.findIndex((e: Combatant) => e && e.id === enemy.id);
@@ -71,8 +78,25 @@ const canUseAbility = ({ enemy, ability, enemies }): boolean => {
     return true;
 };
 
-const useAbilityActions = ({ ability, enemies, allies, actorId }) => {
+const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
     const results = [];
+    if (ability.minion) {
+        const indices = getEmptyIndices(enemies);
+        if (indices.length > 0) {
+            const index = getRandomItem(indices);
+            results.push({
+                updatedAllies: allies,
+                updatedEnemies: enemies.map((enemy, i) => {
+                    if (i === index) {
+                        return {
+                            ...createCombatant(ability.minion),
+                        };
+                    }
+                    return enemy;
+                }),
+            });
+        }
+    }
 
     ability.actions.forEach((action) => {
         const { target, movement } = action;
