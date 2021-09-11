@@ -23,6 +23,8 @@ export { default as ArrowDown } from "./2b07.svg";
 export { default as Cloudy } from "./1f32b.svg";
 export { default as Cloud } from "./2601.svg";
 export { default as Camping } from "./1f3d5.svg";
+export { default as Medal } from "./1f3c5.svg";
+export { default as MilitaryMedal } from "./1f396.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";

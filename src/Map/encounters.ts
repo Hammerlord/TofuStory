@@ -1,7 +1,7 @@
 import { createCombatant } from "./../enemy/createEnemy";
 import { concat } from "ramda";
 import { Enemy } from "../enemy/enemy";
-import { hardy, raging, thorns } from "./../ability/Effects";
+import { elite, eliteSquad, hardy, raging, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { Wave } from "./../Menu/tutorial";
 import { getRandomItem } from "./../utils";
@@ -25,9 +25,9 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
     const enemy = {
         ...baseEnemy,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 10),
+        maxHP: Math.floor(baseEnemy.maxHP * 1.2 + 10),
         abilities: [...(baseEnemy.abilities || []), ability],
-        effects: [hardy, affix],
+        effects: [eliteSquad, affix],
     };
 
     return getRandomItem([
@@ -44,9 +44,9 @@ const generateElite = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
     const enemy = {
         ...baseEnemy,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 10),
+        maxHP: Math.floor(baseEnemy.maxHP * 1.5 + 10),
         abilities: [...(baseEnemy.abilities || []), ability],
-        effects: [hardy, affix],
+        effects: [elite, affix],
     };
     return [null, getRandomItem(possibleEnemies.easy), enemy, getRandomItem(possibleEnemies.easy), null];
 };

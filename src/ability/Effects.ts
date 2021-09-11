@@ -1,4 +1,4 @@
-import { Anger, Blood, Cactus, Cloudy, Dizzy, Fire, Helmet, NoStun, Snowflake, weaponbooster } from "../images";
+import { Anger, Blood, Cactus, Cloudy, Dizzy, Fire, Helmet, Medal, MilitaryMedal, NoStun, Snowflake, weaponbooster } from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "./types";
 
 export const thorns: Effect = {
@@ -113,4 +113,49 @@ export const raging: Effect = {
             calculationTarget: "effectOwner",
         },
     ],
+};
+
+export const eliteSquad: Effect = {
+    name: "Elite Squadmember",
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: Medal,
+    description:
+        "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
+    onReceiveEffect: {
+        conditions: [
+            {
+                calculationTarget: "effectOwner",
+                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                comparator: "eq",
+            },
+        ],
+        effectOwner: {
+            effects: [controlImmune],
+        },
+    },
+};
+
+export const elite: Effect = {
+    name: "Elite",
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    damage: 1,
+    description:
+        "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
+    icon: MilitaryMedal,
+    onReceiveEffect: {
+        conditions: [
+            {
+                calculationTarget: "effectOwner",
+                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                comparator: "eq",
+            },
+        ],
+        effectOwner: {
+            effects: [controlImmune],
+        },
+    },
 };
