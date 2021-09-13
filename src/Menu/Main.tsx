@@ -7,8 +7,10 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import { warmush } from "../images";
 import Camp from "../Map/Camp";
+import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
+import ScenePlayer from "../scene/ScenePlayer";
 import ClassSelection from "./ClassSelection";
 import DeckViewer from "./DeckViewer";
 import { PLAYER_CLASSES } from "./types";
@@ -42,15 +44,18 @@ const useStyles = createUseStyles({
         zIndex: 5,
         width: "100%",
         height: "100%",
+        "& > *": {
+            position: "fixed",
+        },
     },
 });
 
 const Main = () => {
     const [player, setPlayer] = useState(null);
     const [deck, setDeck] = useState([]);
+    const [scene, setScene] = useState(null);
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [isRewardsOpen, setIsRewardsOpen] = useState(false);
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
     const [location, setLocation] = useState(-1);
     const classes = useStyles();
@@ -64,11 +69,8 @@ const Main = () => {
         }
     };
 
-    const handleBattleEnd = ({ loot, updatedPlayer }) => {
+    const handleBattleEnd = () => {
         setEncounter(null);
-        // Obviously, only if we won
-        setIsRewardsOpen(true);
-        //setPlayer(updatedPlayer);
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
@@ -99,7 +101,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isRewardsOpen || isAbilitiesOpen || isResting;
+    const isActivityOpen = encounter || isAbilitiesOpen || isResting || scene || true;
 
     return (
         <>
@@ -108,16 +110,27 @@ const Main = () => {
             </div>
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
+                    <LithHarbor player={player} onExit={() => {}} onClickScene={setScene} />
+                    {scene && (
+                        <ScenePlayer
+                            scene={scene}
+                            player={player}
+                            onExit={() => setScene(null)}
+                            updateInventory={() => {}}
+                            onBattle={setEncounter}
+                        />
+                    )}
                     {encounter && (
                         <BattlefieldContainer
                             initialAllies={[null, null, player, null, null]}
                             onBattleEnd={handleBattleEnd}
                             waves={encounter.waves}
+                            rewards={encounter.rewards}
                             initialDeck={deck}
+                            onUpdateDeck={setDeck}
                             updatePlayerHP={handleUpdatePlayerHP}
                         />
                     )}
-                    {isRewardsOpen && <Rewards deck={deck} updateDeck={setDeck} onClose={() => setIsRewardsOpen(false)} />}
                     {isResting && (
                         <Camp
                             onExit={() => setIsResting(false)}

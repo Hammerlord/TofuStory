@@ -155,7 +155,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, updatePlayerHP }) => {
+const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, updatePlayerHP, onUpdateDeck, rewards }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
@@ -785,7 +785,15 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                     </div>
                 </div>
             </TargetLineCanvas>
-            {battleEndResult && <BattleEndOverlay result={battleEndResult} onClickContinue={onBattleEnd} />}
+            {battleEndResult && (
+                <BattleEndOverlay
+                    result={battleEndResult}
+                    onClickContinue={onBattleEnd}
+                    onUpdateDeck={onUpdateDeck}
+                    deck={initialDeck}
+                    rewards={rewards}
+                />
+            )}
             {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>

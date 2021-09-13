@@ -1,5 +1,5 @@
-import { stealth } from "./../ability/Effects";
-import { ACTION_TYPES, TARGET_TYPES } from "./../ability/types";
+import { stealth, elite } from "./../ability/Effects";
+import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./../ability/types";
 import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
 import {
@@ -12,6 +12,7 @@ import {
     shroomImage,
     snailImage,
     subi,
+    olafImage,
 } from "../images";
 
 export interface Enemy {
@@ -186,12 +187,14 @@ export const thiefAssassin: Enemy = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
                     damage: 0,
                     icon: subi,
                 },
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
                     damage: 0,
                     icon: subi,
                 },
@@ -210,4 +213,30 @@ export const thiefAssassin: Enemy = {
             ],
         },
     ],
+};
+
+export const olaf = {
+    name: "Olaf",
+    maxHP: 25,
+    effects: [elite],
+    abilities: [
+        {
+            name: "Double Punch",
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 0,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 0,
+                },
+            ],
+        },
+    ],
+    damage: 2,
+    image: olafImage,
 };

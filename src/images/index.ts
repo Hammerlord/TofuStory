@@ -25,6 +25,7 @@ export { default as Cloud } from "./2601.svg";
 export { default as Camping } from "./1f3d5.svg";
 export { default as Medal } from "./1f3c5.svg";
 export { default as MilitaryMedal } from "./1f396.svg";
+export { default as WorldMap } from "./1f5fa.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -80,6 +81,15 @@ export { default as perioncamp } from "./perioncamp.png";
 export { default as hasteImage } from "./haste.png";
 export { default as weaponmasteryImage } from "./weaponmastery.png";
 export { default as rushImage } from "./rush.png";
+export { default as hotdog } from "./hotdog.png";
+export { default as johnImage } from "./john.png";
+export { default as teoImage } from "./teo.png";
+export { default as olafImage } from "./olaf.png";
+export { default as lithHarbor } from "./lithharbor.jpg";
+export { default as lithHarbor1 } from "./lithharbor1.png";
+export { default as lithHarborBalcony } from "./lithharbor2.png";
+export { default as lithHarborShark } from "./lithharborshark.png";
+export { default as lithHarborExit } from "./lithharborexit.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";

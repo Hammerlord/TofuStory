@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
 import Overlay from "../view/Overlay";
+import Rewards from "./Rewards";
 
 interface BattleEndOverlay {
     result: "Victory" | "Defeat" | "Draw";
@@ -13,22 +14,29 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%) translateY(-50%)",
         color: "white",
         textAlign: "center",
+        width: "100%",
+        height: "100%",
     },
     continue: {
         fontSize: "20px",
     },
 });
 
-const BattleEndOverlay = ({ result, onClickContinue }) => {
+const BattleEndOverlay = ({ result, onClickContinue, rewards, deck, onUpdateDeck }) => {
     const classes = useStyles();
+
     return (
         <Overlay>
-            <div className={classes.inner}>
-                <h2>{result}</h2>
+            {result === "Victory" && (
+                <div className={classes.inner}>
+                    <Rewards deck={deck} updateDeck={onUpdateDeck} onClose={() => onClickContinue()} />
+                </div>
+            )}
+            {result === "Defeat" && (
                 <button className={classes.continue} onClick={onClickContinue}>
                     Continue
                 </button>
-            </div>
+            )}
         </Overlay>
     );
 };
