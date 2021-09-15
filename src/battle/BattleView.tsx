@@ -224,7 +224,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, removeAfterTurn, reusable, effects } = card as HandAbility;
+        const { resourceCost = 0, removeAfterTurn, reusable, effects = {} } = card as HandAbility;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
 
         setSelectedAbilityIndex(null);
@@ -470,7 +470,13 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                 // Mutually exclusive properties ee
                 const { addCards = [], drawCards: cardsToDraw, cards } = action;
                 if (addCards.length) {
-                    setHand([...hand, ...addCards]);
+                    setHand([
+                        ...hand,
+                        ...addCards.map((card) => ({
+                            ...card,
+                            effects: {},
+                        })),
+                    ]);
                 } else if (cardsToDraw?.amount) {
                     drawCards(cardsToDraw.amount, cardsToDraw.effects);
                 } else if (cards?.effects) {
