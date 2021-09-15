@@ -6,6 +6,8 @@ import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import { warmush } from "../images";
+import { halfEatenHotdog } from "../item/items";
+import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
@@ -13,6 +15,7 @@ import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import ClassSelection from "./ClassSelection";
 import DeckViewer from "./DeckViewer";
+import Inventory from "./Inventory";
 import { PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
@@ -53,6 +56,7 @@ const useStyles = createUseStyles({
 const Main = () => {
     const [player, setPlayer] = useState(null);
     const [deck, setDeck] = useState([]);
+    const [inventory, setInventory] = useState([]);
     const [scene, setScene] = useState(null);
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
@@ -97,6 +101,19 @@ const Main = () => {
         });
     };
 
+    const handleUseItem = (index: number) => {
+        const newInventory = inventory.slice();
+        const [item] = newInventory.splice(index, 1);
+        if (item.type === ITEM_TYPES.CONSUMABLE) {
+            const healing = item.HP || 0;
+            setPlayer({
+                ...player,
+                HP: Math.min(player.maxHP, player.HP + healing),
+            });
+        }
+        setInventory(newInventory);
+    };
+
     if (!player) {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
@@ -116,7 +133,8 @@ const Main = () => {
                             scene={scene}
                             player={player}
                             onExit={() => setScene(null)}
-                            updateInventory={() => {}}
+                            inventory={inventory}
+                            updateInventory={setInventory}
                             onBattle={setEncounter}
                         />
                     )}
@@ -151,6 +169,7 @@ const Main = () => {
                     </Button>
                 </div>
                 {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
+                <Inventory inventory={inventory} onUseItem={handleUseItem} />
             </div>
         </>
     );

@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
 import { hotdog, johnImage, lithHarborSharkFull, teoImage } from "../images";
+import { halfEatenHotdog } from "../item/items";
 import { Scene, ScriptNode } from "./types";
 
 const teo = {
@@ -98,13 +99,7 @@ export const lithEventsTeoJohn: Scene = {
                         {
                             speaker: teo,
                             dialog: ["[Teo tosses something at you.]"],
-                            items: [
-                                {
-                                    name: "Half-eaten Hot Dog",
-                                    HP: 10,
-                                    image: hotdog,
-                                },
-                            ],
+                            items: [halfEatenHotdog],
                         },
                         {
                             dialog: ["(Something tells you that being misunderstood by people is going to be a pattern...)"],

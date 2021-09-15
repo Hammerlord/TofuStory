@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { Item } from "../item/types";
 import { Scene, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
@@ -127,12 +128,14 @@ const useStyles = createUseStyles({
 const ScenePlayer = ({
     scene,
     player,
+    inventory,
     updateInventory,
     onBattle,
     onExit,
 }: {
     scene: Scene;
     player: any;
+    inventory: Item[];
     updateInventory: Function;
     onBattle: Function;
     onExit: Function;
@@ -166,7 +169,7 @@ const ScenePlayer = ({
     };
 
     const handleClickItems = () => {
-        updateInventory(items);
+        updateInventory([...inventory, ...items]);
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {

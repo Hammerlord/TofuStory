@@ -1,4 +1,5 @@
 import { Enemy } from "../enemy/enemy";
+import { Item } from "../item/types";
 
 export interface Scene {
     script: ScriptNode[];
@@ -24,9 +25,5 @@ export interface ScriptNode {
     };
     dialog: string[];
     responses?: ScriptResponse[];
-    items?: {
-        name: string;
-        image: string;
-        HP?: number;
-    }[];
+    items?: Item[];
 }
