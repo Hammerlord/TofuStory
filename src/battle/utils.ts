@@ -1,5 +1,14 @@
 import { Combatant } from "../character/types";
-import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "./../ability/types";
+import {
+    Ability,
+    Action,
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    HandAbility,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+} from "./../ability/types";
 import { calculateActionArea } from "./parseAbilityActions";
 import { passesConditions } from "./passesConditions";
 
@@ -109,9 +118,10 @@ export const removeEndedEffects = (target: Combatant) => {
  * Player conditional helpers
  */
 
-export const canUseAbility = (character, ability: Ability | undefined): boolean => {
-    const { resourceCost = 0 } = ability;
-    return resourceCost <= (character.resources || 0);
+export const canUseAbility = (character, ability: HandAbility | undefined): boolean => {
+    const { resourceCost = 0, effects = {} } = ability;
+    const { resourceCost: temporaryResourceCost = 0 } = effects;
+    return resourceCost + temporaryResourceCost <= (character.resources || 0);
 };
 
 export const isValidTarget = ({ ability, side, allies, enemies, index, actor }): boolean => {

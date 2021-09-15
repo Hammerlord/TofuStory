@@ -5,6 +5,7 @@ import { createUseStyles } from "react-jss";
 import {
     anger,
     bash,
+    berserk,
     blizzardCharge,
     block,
     bloodthirst,
@@ -99,6 +100,7 @@ const warriorAbilities = [
     piercingDrive,
     spearSweep,
     rush,
+    berserk,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

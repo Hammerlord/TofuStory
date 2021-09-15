@@ -118,7 +118,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isAbilitiesOpen || isResting || scene || true;
+    const isActivityOpen = encounter || isAbilitiesOpen || isResting || scene;
 
     return (
         <>
@@ -127,7 +127,6 @@ const Main = () => {
             </div>
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
-                    <LithHarbor player={player} onExit={() => {}} onClickScene={setScene} />
                     {scene && (
                         <ScenePlayer
                             scene={scene}

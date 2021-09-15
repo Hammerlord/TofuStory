@@ -18,6 +18,7 @@ import {
     lightningcharge,
     mace,
     piercingdriveImage,
+    powerstanceImage,
     punctureImage,
     rage,
     risingrage,
@@ -654,6 +655,24 @@ export const rush: Ability = {
                 amount: 1,
                 effects: {
                     resourceCost: -1,
+                },
+            },
+        },
+    ],
+};
+
+export const berserk: Ability = {
+    name: "Berserk",
+    resourceCost: 3,
+    image: powerstanceImage,
+    description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            cards: {
+                effects: {
+                    resourceCost: -3,
                 },
             },
         },

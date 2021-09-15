@@ -152,6 +152,9 @@ export interface Action {
     description?: string;
     movement?: number;
     resources?: number;
+    cards?: {
+        effects: AbilityEffects;
+    };
     addCards?: Ability[];
     drawCards?: {
         amount: number;

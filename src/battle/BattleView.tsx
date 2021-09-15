@@ -468,11 +468,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         if (action) {
             if (actorId === player.id) {
                 // Mutually exclusive properties ee
-                const { addCards = [], drawCards: cardsToDraw } = action;
+                const { addCards = [], drawCards: cardsToDraw, cards } = action;
                 if (addCards.length) {
                     setHand([...hand, ...addCards]);
                 } else if (cardsToDraw?.amount) {
                     drawCards(cardsToDraw.amount, cardsToDraw.effects);
+                } else if (cards?.effects) {
+                    setHand(
+                        hand.map((card) => ({
+                            ...card,
+                            effects: { ...card.effects, ...cards?.effects },
+                        }))
+                    );
                 }
             }
         }

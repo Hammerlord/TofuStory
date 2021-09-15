@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { anonymushroom, classwarrior, warmush } from "../images";
 import { PLAYER_CLASSES } from "./types";
-import { bash, block, slam, slashBlast, warLeap } from "../ability/Abilities";
+import { bash, berserk, block, slam, slashBlast, warLeap } from "../ability/Abilities";
 import AbilityView from "../ability/AbilityView/AbilityView";
 
 const portraits = {
