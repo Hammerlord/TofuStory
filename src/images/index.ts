@@ -85,11 +85,12 @@ export { default as hotdog } from "./hotdog.png";
 export { default as johnImage } from "./john.png";
 export { default as teoImage } from "./teo.png";
 export { default as olafImage } from "./olaf.png";
-export { default as lithHarbor } from "./lithharbor.jpg";
-export { default as lithHarbor1 } from "./lithharbor1.png";
-export { default as lithHarborBalcony } from "./lithharbor2.png";
-export { default as lithHarborShark } from "./lithharborshark.png";
-export { default as lithHarborExit } from "./lithharborexit.png";
+export { default as lithHarbor } from "./lithHarbor.jpg";
+export { default as lithHarborSharkFull } from "./lithHarborSharkFull.png";
+export { default as lithHarborBalconyFull } from "./lithHarborBalconyFull.png";
+export { default as lithHarborBalcony } from "./lithHarborBalcony.png";
+export { default as lithHarborShark } from "./lithHarborShark.png";
+export { default as lithHarborExit } from "./lithHarborExit.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";

@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { lithHarbor, lithHarborBalcony, lithHarborExit, lithHarborShark, WorldMap } from "../images";
 import { lithEventsOlaf } from "../scene/olaf";
@@ -26,33 +27,22 @@ const useStyles = createUseStyles({
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
     },
-    shark: {
-        background: `url(${lithHarborShark}) no-repeat`,
+    node: {
         backgroundSize: "contain",
-        width: "400px",
-        height: "400px",
+        backgroundRepeat: "no-repeat",
+        width: "350px",
+        height: "350px",
         margin: "auto",
         position: "relative",
         cursor: "pointer",
+        "& > img": {
+            maxWidth: "100%",
+            maxHeight: "100%",
+        },
     },
-    balcony: {
-        background: `url(${lithHarborBalcony}) no-repeat`,
-        backgroundSize: "contain",
-        width: "600px",
-        height: "300px",
-        margin: "auto",
-        position: "relative",
-        cursor: "pointer",
-    },
-    exit: {
-        background: `url(${lithHarborExit}) no-repeat`,
-        backgroundSize: "contain",
-        width: "295px",
-        height: "400px",
-        margin: "auto",
-        position: "relative",
-        cursor: "pointer",
-    },
+    shark: {},
+    balcony: {},
+    exit: {},
     eventsContainer: {
         display: "flex",
     },
@@ -86,21 +76,24 @@ const LithHarbor = ({ player, onExit, onClickScene }) => {
                 <div className={classes.inner}>
                     <h2>Lith Harbor</h2>
                     <div className={classes.eventsContainer}>
-                        <div className={classes.balcony} onClick={() => onClickScene(lithEventsOlaf)}>
+                        <div className={classNames(classes.node, classes.balcony)} onClick={() => onClickScene(lithEventsOlaf)}>
                             Event
+                            <img src={lithHarborBalcony} />
                             <div className={classes.event}>?</div>
                         </div>
-                        <div className={classes.shark} onClick={() => onClickScene(lithEventsTeoJohn)}>
+                        <div className={classNames(classes.node, classes.shark)} onClick={() => onClickScene(lithEventsTeoJohn)}>
                             Event
+                            <img src={lithHarborShark} />
                             <div className={classes.event}>?</div>
                         </div>
-                        <div className={classes.exit} onClick={onExit}>
+                        <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
+                            Exit to World Map
+                            <img src={lithHarborExit} />
                             <div className={classes.event}>
                                 <div className={classes.eventInner}>
                                     <WorldMap />
                                 </div>
                             </div>
-                            Exit to World Map
                         </div>
                     </div>
                 </div>

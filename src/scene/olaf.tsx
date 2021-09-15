@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { olaf } from "../enemy/enemy";
-import { lithHarborBalcony, olafImage, puppetree } from "../images";
+import { lithHarborBalconyFull, olafImage, puppetree } from "../images";
 import { Wave } from "../Menu/tutorial";
 import { Scene } from "./types";
 
@@ -13,7 +13,7 @@ const olafNPC = {
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${lithHarborBalcony}) no-repeat`,
+        background: `url(${lithHarborBalconyFull}) no-repeat`,
         width: "896px",
         height: "520px",
     },

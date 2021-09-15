@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { hotdog, johnImage, lithHarbor1, teoImage } from "../images";
+import { hotdog, johnImage, lithHarborSharkFull, teoImage } from "../images";
 import { Scene, ScriptNode } from "./types";
 
 const teo = {
@@ -15,7 +15,7 @@ const john = {
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${lithHarbor1}) no-repeat`,
+        background: `url(${lithHarborSharkFull}) no-repeat`,
         width: "700px",
         height: "506px",
     },
