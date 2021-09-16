@@ -7,6 +7,8 @@ import {
     bricks,
     chanceattack,
     combofuryImage,
+    darkimpaleImage,
+    divinechargeImage,
     evileyeminion,
     evileyeskill,
     flag,
@@ -40,7 +42,7 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
-    BonusCondition,
+    AbilityCondition,
     Condition,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -349,7 +351,7 @@ export const chanceStrike: Ability = {
                     {
                         calculationTarget: "target",
                         hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    } as BonusCondition,
+                    } as AbilityCondition,
                 ],
             },
         },
@@ -675,6 +677,54 @@ export const berserk: Ability = {
                     resourceCost: -3,
                 },
             },
+        },
+    ],
+};
+
+export const darkImpale: Ability = {
+    name: "Dark Impale",
+    resourceCost: 2,
+    image: darkimpaleImage,
+    actions: [
+        {
+            damage: 3,
+            secondaryDamage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    ...wound,
+                    duration: 2,
+                },
+            ],
+            area: 2,
+        },
+    ],
+};
+
+export const divineCharge: Ability = {
+    name: "Divine Charge",
+    resourceCost: 2,
+    image: divinechargeImage,
+    description: "Hits again if the primary target is stunned",
+    actions: [
+        {
+            damage: 4,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+        },
+        {
+            damage: 4,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            conditions: [
+                {
+                    calculationTarget: "target",
+                    hasEffectType: [EFFECT_TYPES.STUN],
+                },
+            ],
         },
     ],
 };

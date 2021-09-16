@@ -1,4 +1,4 @@
-import { BonusCondition, EffectCondition } from "../ability/types";
+import { AbilityCondition, EffectCondition } from "../ability/types";
 import { Combatant } from "../character/types";
 
 const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: "eq" | "lt" | "gt" }): boolean => {
@@ -19,9 +19,9 @@ export const passesConditions = ({
     conditions = [],
 }: {
     getCalculationTarget: (calculationTarget: "target" | "actor" | "effectOwner" | "externalParty") => Combatant | undefined;
-    conditions: (BonusCondition | EffectCondition)[];
+    conditions: (AbilityCondition | EffectCondition)[];
 }): boolean => {
-    const passesCondition = (condition: BonusCondition | EffectCondition) => {
+    const passesCondition = (condition: AbilityCondition | EffectCondition) => {
         const { hasEffectType = [], healthPercentage, comparator, calculationTarget } = condition;
         const combatant: Combatant = getCalculationTarget(calculationTarget);
         if (!combatant) {

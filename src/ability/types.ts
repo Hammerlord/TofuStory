@@ -110,7 +110,7 @@ export interface Bonus {
      * Conditions to pass for the bonus to apply.
      * Multiple conditions are evaluated as "OR".
      */
-    conditions?: BonusCondition[];
+    conditions?: AbilityCondition[];
 }
 
 export interface Condition {
@@ -128,7 +128,7 @@ export interface Condition {
     healthPercentage?: number;
 }
 
-export interface BonusCondition extends Condition {
+export interface AbilityCondition extends Condition {
     calculationTarget: "actor" | "target";
 }
 
@@ -164,6 +164,7 @@ export interface Action {
     bonus?: Bonus;
     multiplier?: MULTIPLIER_TYPES;
     animation?: ANIMATION_TYPES;
+    conditions?: AbilityCondition[];
 }
 
 export interface Ability {

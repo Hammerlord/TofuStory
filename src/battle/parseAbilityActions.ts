@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { Action, ACTION_TYPES, BonusCondition, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, AbilityCondition, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -413,7 +413,15 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
     const mostRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
     const mostRecentCaster = () => mostRecentAllies().find((ally) => ally?.id === actorId);
 
-    actions.forEach((action: Action) => {
+    const getCalculationTarget = (targetType: "actor" | "target") => {
+        if (targetType === "actor") {
+            return mostRecentCaster();
+        }
+
+        return side === "allies" ? mostRecentAllies()[initialSelectedIndex] : mostRecentEnemies()[initialSelectedIndex];
+    };
+    const eligibleActions = actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions }));
+    eligibleActions.forEach((action: Action) => {
         let index = initialSelectedIndex;
         if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
             const targetIndices = getValidTargetIndices(mostRecentEnemies(), { excludeStealth: true }).filter((i) => {

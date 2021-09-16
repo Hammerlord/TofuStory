@@ -13,6 +13,8 @@ import {
     bunchOBricks,
     chanceStrike,
     comboFury,
+    darkImpale,
+    divineCharge,
     evilEye,
     flameCharge,
     frostFire,
@@ -101,6 +103,8 @@ const warriorAbilities = [
     spearSweep,
     rush,
     berserk,
+    darkImpale,
+    divineCharge,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

@@ -65,8 +65,9 @@ export const wound: Effect = {
     type: EFFECT_TYPES.BLEED,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
+    damageReceived: 1,
     icon: Blood,
-    description: "Wounded targets take 1 damage at the end of their turn.",
+    description: "Wounded targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
 };
 
 export const burn: Effect = {
