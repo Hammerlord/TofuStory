@@ -128,15 +128,13 @@ const useStyles = createUseStyles({
 const ScenePlayer = ({
     scene,
     player,
-    inventory,
-    updateInventory,
+    updatePlayer,
     onBattle,
     onExit,
 }: {
     scene: Scene;
     player: any;
-    inventory: Item[];
-    updateInventory: Function;
+    updatePlayer: Function;
     onBattle: Function;
     onExit: Function;
 }) => {
@@ -169,7 +167,10 @@ const ScenePlayer = ({
     };
 
     const handleClickItems = () => {
-        updateInventory([...inventory, ...items]);
+        updatePlayer({
+            ...player,
+            items: [...player.items, ...items],
+        });
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {

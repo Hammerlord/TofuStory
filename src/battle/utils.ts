@@ -162,21 +162,6 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
     return false;
 };
 
-export const updatePlayer = (statChanges: Function, allies: (Combatant | null)[]): (Combatant | null)[] => {
-    const updatedAllies = allies.map((ally) => {
-        if (!ally || !ally.isPlayer) {
-            return ally;
-        }
-
-        return {
-            ...ally,
-            ...statChanges(ally),
-        };
-    });
-
-    return updatedAllies;
-};
-
 export const updateCharacters = (characters: (Combatant | null)[], updateFn): (Combatant | null)[] => {
     return characters.map((character) => {
         if (!character) {

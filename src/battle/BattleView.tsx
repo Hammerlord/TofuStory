@@ -2,13 +2,15 @@ import { compose } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability, EFFECT_TYPES, HandAbility } from "../ability/types";
+import { Ability, ACTION_TYPES, EFFECT_TYPES, HandAbility } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import createCombatant from "../enemy/createEnemy";
 import enemyTurn from "../enemy/enemyTurn";
 import { mapleleaves, victoria } from "../images";
+import { Item } from "../item/types";
+import Header from "../Menu/Header";
 import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
@@ -18,7 +20,7 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { applyPerTurnEffects, calculateActionArea, Event, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyPerTurnEffects, calculateActionArea, Event, parseAction, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import {
@@ -31,7 +33,6 @@ import {
     tickDownBuffs,
     tickDownDebuffs,
     updateCharacters,
-    updatePlayer,
 } from "./utils";
 import WaveInfo from "./WaveInfo";
 
@@ -155,7 +156,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, updatePlayerHP, onUpdateDeck, rewards }) => {
+const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updatePlayer, onUpdateDeck, rewards }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
@@ -163,7 +164,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     const [currentWave, setCurrentWave] = useState(-1);
     const [currentRound, setCurrentRound] = useState(0);
     const [enemies, setEnemies] = useState([]);
-    const [allies, setAllies] = useState(initialAllies.slice());
+    const [allies, setAllies] = useState([null, null, player, null, null]);
     const [allyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [enemyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [abilityRefs] = useState(Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()));
@@ -175,9 +176,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [battleEndResult, setBattleEndResult] = useState(undefined);
     const [flagTurnEnd, setFlagTurnEnd] = useState(false);
-
-    const player = allies.find((ally: Combatant | null) => ally && ally.isPlayer);
-
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [hoveredAllyIndex, setHoveredAllyIndex] = useState(null);
     const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
@@ -243,12 +241,15 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                 ability: card,
                 selectedIndex: index,
                 enemies,
-                allies: updatePlayer(
-                    (player) => ({
-                        resources: player.resources - totalResourceCost,
-                    }),
-                    allies
-                ),
+                allies: updateCharacters(allies, (character: Combatant) => {
+                    if (character.id === player.id) {
+                        return {
+                            ...character,
+                            resources: character.resources - totalResourceCost,
+                        };
+                    }
+                    return character;
+                }),
                 side,
                 actorId: player.id,
             })
@@ -490,10 +491,10 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
             }
         }
 
-        const playerHP = updatedAllies.find((ally) => ally?.isPlayer).HP;
-        updatePlayerHP(playerHP);
+        const newPlayer = updatedAllies.find((ally) => ally?.isPlayer);
+        updatePlayer(newPlayer);
 
-        if (playerHP <= 0) {
+        if (newPlayer.HP <= 0) {
             setTimeout(() => {
                 setEvents([]);
                 setBattleEndResult("Defeat");
@@ -706,6 +707,28 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
         return combatant?.abilities.some(({ resourceCost }) => resourceCost > 0);
     };
 
+    const canUseItem = isPlayerTurn && !events.length;
+    let handleUseItem;
+    if (canUseItem) {
+        handleUseItem = (index: number) => {
+            const item: Item = player.items[index];
+            handleNewEvents([
+                parseAction({
+                    enemies,
+                    allies,
+                    action: {
+                        healing: item.healing || 0,
+                        resources: item.resources || 0,
+                        type: ACTION_TYPES.EFFECT,
+                    },
+                    selectedIndex: allies.findIndex((ally) => ally?.isPlayer),
+                    actorId: player.id,
+                    selectedSide: "allies",
+                }),
+            ]);
+        };
+    }
+
     return (
         <div className={classes.root}>
             {info && (
@@ -807,6 +830,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, initialAllies, 
                     rewards={rewards}
                 />
             )}
+            <Header player={player} deck={initialDeck} onUseItem={handleUseItem} />
             {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>

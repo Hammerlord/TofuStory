@@ -86,11 +86,13 @@ const Inventory = ({ inventory, onUseItem }) => {
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.itemName}>{selectedItem.name}</div>
-                            {selectedItem.HP > 0 && `Recover ${selectedItem.HP} HP.`}
+                            {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
                             <div className={classes.useButtonContainer}>
-                                <Button variant="contained" color="primary" onClick={handleItemUse}>
-                                    Use
-                                </Button>
+                                {onUseItem && (
+                                    <Button variant="contained" color="primary" onClick={handleItemUse}>
+                                        Use
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </ClickAwayListener>

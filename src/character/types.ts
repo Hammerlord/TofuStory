@@ -1,5 +1,6 @@
 import { Effect, Aura, Action } from "./../ability/types";
 import { Ability } from "../ability/types";
+import { Item } from "../item/types";
 
 /** Interface of a battle participant */
 export interface Combatant {
@@ -8,6 +9,7 @@ export interface Combatant {
     armor: number;
     effects: Effect[];
     id: string;
+    image: string;
     resources: number;
     isPlayer: boolean;
     damage?: number;
@@ -16,4 +18,5 @@ export interface Combatant {
     turnHistory: Action[];
     maxResources?: number;
     resourcesPerTurn?: number;
+    items: Item[];
 }

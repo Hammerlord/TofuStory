@@ -32,7 +32,6 @@ const useStyles = createUseStyles({
 const Main = () => {
     const [player, setPlayer] = useState(null);
     const [deck, setDeck] = useState([]);
-    const [inventory, setInventory] = useState([halfEatenHotdog]);
     const [scene, setScene] = useState(null);
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
@@ -61,32 +60,27 @@ const Main = () => {
             maxHP: 20,
             resourcesPerTurn: 3,
             maxResources: 3,
+            resources: 3,
             armor: 0,
             effects: [],
             turnHistory: [],
+            items: [halfEatenHotdog],
             isPlayer: true,
         });
         setDeck(deck);
     };
 
-    const handleUpdatePlayerHP = (newHP: number) => {
-        setPlayer({
-            ...player,
-            HP: newHP < 0 ? 0 : newHP,
-        });
-    };
-
     const handleUseItem = (index: number) => {
-        const newInventory = inventory.slice();
+        const newInventory = player.items.slice();
         const [item] = newInventory.splice(index, 1);
         if (item.type === ITEM_TYPES.CONSUMABLE) {
             const healing = item.HP || 0;
             setPlayer({
                 ...player,
                 HP: Math.min(player.maxHP, player.HP + healing),
+                inventory: newInventory,
             });
         }
-        setInventory(newInventory);
     };
 
     if (!player) {
@@ -97,44 +91,51 @@ const Main = () => {
 
     return (
         <>
-            <div className={classes.mapContainer}>
-                <Map onSelectNode={handleSelectNode} currentLocation={location} playerImage={player.image} />
-            </div>
+            {!isActivityOpen && (
+                <div className={classes.mapContainer}>
+                    <Map onSelectNode={handleSelectNode} currentLocation={location} playerImage={player.image} />
+                    <Header player={player} deck={deck} onUseItem={handleUseItem} />
+                </div>
+            )}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
                     {scene && (
-                        <ScenePlayer
-                            scene={scene}
-                            player={player}
-                            onExit={() => setScene(null)}
-                            inventory={inventory}
-                            updateInventory={setInventory}
-                            onBattle={setEncounter}
-                        />
+                        <>
+                            <ScenePlayer
+                                scene={scene}
+                                player={player}
+                                updatePlayer={setPlayer}
+                                onExit={() => setScene(null)}
+                                onBattle={setEncounter}
+                            />
+                            <Header player={player} deck={deck} />
+                        </>
                     )}
                     {encounter && (
                         <BattlefieldContainer
-                            initialAllies={[null, null, player, null, null]}
+                            player={player}
+                            updatePlayer={setPlayer}
                             onBattleEnd={handleBattleEnd}
                             waves={encounter.waves}
                             rewards={encounter.rewards}
                             initialDeck={deck}
                             onUpdateDeck={setDeck}
-                            updatePlayerHP={handleUpdatePlayerHP}
                         />
                     )}
                     {isResting && (
-                        <Camp
-                            onExit={() => setIsResting(false)}
-                            player={player}
-                            deck={deck}
-                            updateDeck={setDeck}
-                            updatePlayer={setPlayer}
-                        />
+                        <>
+                            <Camp
+                                onExit={() => setIsResting(false)}
+                                player={player}
+                                deck={deck}
+                                updateDeck={setDeck}
+                                updatePlayer={setPlayer}
+                            />
+                            <Header player={player} deck={deck} onUseItem={handleUseItem} />
+                        </>
                     )}
                 </div>
             )}
-            <Header inventory={inventory} player={player} deck={deck} onUseItem={handleUseItem} />
         </>
     );
 };

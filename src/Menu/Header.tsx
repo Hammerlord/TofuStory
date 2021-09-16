@@ -1,6 +1,9 @@
 import { Button } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { Ability } from "../ability/types";
+import { Combatant } from "../character/types";
+import { Item } from "../item/types";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 
@@ -27,7 +30,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Header = ({ player, inventory, deck, onUseItem }) => {
+const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[]; onUseItem?: Function }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
 
@@ -41,7 +44,7 @@ const Header = ({ player, inventory, deck, onUseItem }) => {
                 </Button>
             </div>
             {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
-            <Inventory inventory={inventory} onUseItem={onUseItem} />
+            <Inventory inventory={player.items} onUseItem={onUseItem} />
         </div>
     );
 };
