@@ -49,6 +49,13 @@ const Main = () => {
 
     const handleBattleEnd = () => {
         setEncounter(null);
+        setPlayer((prev) => ({
+            ...prev,
+            resources: 0,
+            armor: 0,
+            effects: [],
+            turnHistory: [],
+        }));
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
