@@ -448,6 +448,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         setAlliesAttackedThisTurn([]);
         const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources, halveArmor));
         setAllies(updatedAllies);
+        updatePlayer(updatedAllies.find((ally) => ally?.id === player.id));
         handleNewEvents(
             applyPerTurnEffects(updatedAllies, enemies).map(({ actors, targets, ...other }) => ({
                 updatedAllies: actors,
