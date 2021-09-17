@@ -19,6 +19,7 @@ const Buffs = ({ ability }) => {
                     healTargetPerTurn = 0,
                     damage = 0,
                     duration = Infinity,
+                    onAttack = {},
                 } = effect;
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
@@ -75,9 +76,13 @@ const Buffs = ({ ability }) => {
                     );
                 }
                 if (effectComponents.length > 0) {
-                    effectComponents.push(
-                        duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
-                    );
+                    if (onAttack.removeEffect) {
+                        effectComponents.push(<>for your next attack</>);
+                    } else {
+                        effectComponents.push(
+                            duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
+                        );
+                    }
                 }
 
                 return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;

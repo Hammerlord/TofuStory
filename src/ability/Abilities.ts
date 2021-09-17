@@ -635,6 +635,9 @@ export const sharpen: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     damage: 1,
                     duration: 0,
+                    onAttack: {
+                        removeEffect: true,
+                    },
                 },
             ],
         },
