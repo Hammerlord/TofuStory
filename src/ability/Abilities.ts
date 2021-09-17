@@ -6,6 +6,7 @@ import {
     brick,
     bricks,
     chanceattack,
+    closecombatImage,
     combofuryImage,
     darkimpaleImage,
     divinechargeImage,
@@ -725,6 +726,22 @@ export const divineCharge: Ability = {
                     hasEffectType: [EFFECT_TYPES.STUN],
                 },
             ],
+        },
+    ],
+};
+
+export const closeCombat: Ability = {
+    name: "Close Combat",
+    resourceCost: 2,
+    image: closecombatImage,
+    description: "Pulls enemies toward the selected target",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            vacuum: 2,
+            area: 2,
+            effects: [stun],
         },
     ],
 };

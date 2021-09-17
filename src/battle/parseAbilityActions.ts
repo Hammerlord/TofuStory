@@ -156,6 +156,39 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
     return totalArea;
 };
 
+const applyVacuum = ({
+    characters,
+    index,
+    area,
+    distance,
+}: {
+    characters: (Combatant | null)[];
+    index: number;
+    area: number;
+    distance: number;
+}) => {
+    const newCharacters = characters.slice();
+    for (let i = 1; i <= area; ++i) {
+        if (newCharacters[index + i]) {
+            for (let j = 0; j < i && j < distance; ++j) {
+                if (!newCharacters[index + j]) {
+                    newCharacters[index + j] = newCharacters[index + i];
+                    newCharacters[index + i] = null;
+                }
+            }
+        }
+        if (newCharacters[index - i]) {
+            for (let j = 0; j < i && j < distance; ++j) {
+                if (!newCharacters[index - j]) {
+                    newCharacters[index - j] = newCharacters[index - i];
+                    newCharacters[index - i] = null;
+                }
+            }
+        }
+    }
+    return newCharacters;
+};
+
 export const parseAction = ({
     enemies,
     allies,
@@ -171,7 +204,7 @@ export const parseAction = ({
     actorId: string;
     selectedSide: "allies" | "enemies";
 }): Event => {
-    const { movement } = action;
+    const { movement, vacuum } = action;
     let { friendly, hostile, actorSide } = orientate({
         enemies,
         allies,
@@ -186,7 +219,10 @@ export const parseAction = ({
 
     let thornsDamage = 0;
 
-    const updateTargets = (targets) => {
+    const updateTargets = (targets: (Combatant | null)[]) => {
+        if (vacuum) {
+            targets = applyVacuum({ characters: targets, index: selectedIndex, area, distance: vacuum });
+        }
         return targets.map((character, i: number) => {
             if (isInArea(character, i)) {
                 thornsDamage += calculateThornsDamage(action, character);

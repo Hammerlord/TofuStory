@@ -152,6 +152,9 @@ export interface Action {
     description?: string;
     movement?: number;
     resources?: number;
+    /** Displaces characters toward the target index */
+    vacuum?: number;
+    /** Effects on the cards currently in the hand */
     cards?: {
         effects: AbilityEffects;
     };
