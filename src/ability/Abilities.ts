@@ -43,10 +43,9 @@ import {
 import { burn, chill, stealth, stun, thorns, wound } from "./Effects";
 import {
     Ability,
+    AbilityCondition,
     ACTION_TYPES,
     ANIMATION_TYPES,
-    AbilityCondition,
-    Condition,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     MULTIPLIER_TYPES,
@@ -238,7 +237,7 @@ export const spikedArmor: Ability = {
 
 export const warBanner: Ability = {
     name: "War Banner",
-    resourceCost: 1,
+    resourceCost: 2,
     minion: {
         name: "War Banner",
         image: flag,
@@ -251,7 +250,12 @@ export const warBanner: Ability = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
         },
-        effects: [stealth],
+        effects: [
+            {
+                ...stealth,
+                duration: 2,
+            },
+        ],
     },
     actions: [],
 };
@@ -270,7 +274,7 @@ export const snailMinion: Ability = {
 
 export const yell: Ability = {
     name: "Yell",
-    resourceCost: 1,
+    resourceCost: 2,
     image: warmush,
     actions: [
         {
@@ -310,7 +314,7 @@ export const hammerang: Ability = {
     image: hammer,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
@@ -349,7 +353,7 @@ export const chanceStrike: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 2,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -378,7 +382,7 @@ export const ironWill: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 1,
-                    duration: 3,
+                    duration: 2,
                 },
             ],
         },
@@ -392,7 +396,7 @@ export const hyperBody: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
+            target: TARGET_TYPES.SELF,
             effects: [
                 {
                     name: "Hyper Body",
@@ -414,7 +418,7 @@ export const flameCharge: Ability = {
     image: flamecharge,
     actions: [
         {
-            damage: 1,
+            damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -437,7 +441,7 @@ export const blizzardCharge: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 2,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -558,7 +562,7 @@ export const comboFury: Ability = {
 
 export const sweepingReach: Ability = {
     name: "Sweeping Reach",
-    resourceCost: 2,
+    resourceCost: 1,
     image: weaponbooster,
     description: "Increases the area of your next attack by 1",
     actions: [
