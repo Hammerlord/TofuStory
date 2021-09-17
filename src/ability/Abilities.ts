@@ -705,18 +705,18 @@ export const darkImpale: Ability = {
 
 export const divineCharge: Ability = {
     name: "Divine Charge",
-    resourceCost: 2,
+    resourceCost: 1,
     image: divinechargeImage,
     description: "Hits again if the primary target is stunned",
     actions: [
         {
-            damage: 4,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
         },
         {
-            damage: 4,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
