@@ -13,7 +13,7 @@ import {
     clearTurnHistory,
     getEmptyIndices,
     getValidTargetIndices,
-    halveArmor,
+    checkHalveArmor,
     tickDownBuffs,
     tickDownDebuffs,
     updateCharacters,
@@ -278,7 +278,7 @@ const enemyMove = ({ actorId, allies, enemies }): Event[] => {
 const enemyTurn = ({ enemies, allies }): Event[] => {
     const results = [
         {
-            updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, halveArmor)),
+            updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor)),
             updatedAllies: allies,
         },
     ];

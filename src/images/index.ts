@@ -76,6 +76,8 @@ export { default as powerstanceImage } from "./powerstance.png";
 export { default as darkimpaleImage } from "./darkimpale.png";
 export { default as divinechargeImage } from "./divinecharge.png";
 export { default as closecombatImage } from "./closecombat.png";
+export { default as selfRecoveryImage } from "./selfrecovery.png";
+export { default as shieldmasteryImage } from "./shieldmastery.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";

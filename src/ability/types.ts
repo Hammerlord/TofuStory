@@ -52,6 +52,7 @@ export interface Effect {
     armorPerTurn?: number;
     resourcesPerTurn?: number;
     immunities?: EFFECT_TYPES[];
+    preventArmorDecay?: boolean;
     armorReceived?: number;
     damageReceived?: number;
     healingReceived?: number;

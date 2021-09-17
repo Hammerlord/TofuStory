@@ -12,6 +12,7 @@ import {
     brandish,
     bunchOBricks,
     chanceStrike,
+    closeCombat,
     comboFury,
     darkImpale,
     divineCharge,
@@ -25,8 +26,10 @@ import {
     piercingDrive,
     puncture,
     rampage,
+    recovery,
     rush,
     sharpen,
+    shieldMastery,
     shieldStrike,
     slam,
     slashBlast,
@@ -105,6 +108,9 @@ const warriorAbilities = [
     berserk,
     darkImpale,
     divineCharge,
+    closeCombat,
+    recovery,
+    shieldMastery,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

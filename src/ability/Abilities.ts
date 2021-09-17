@@ -26,6 +26,8 @@ import {
     rage,
     risingrage,
     rushImage,
+    selfRecoveryImage,
+    shieldmasteryImage,
     shieldred,
     shout,
     slashblast,
@@ -745,6 +747,50 @@ export const closeCombat: Ability = {
             vacuum: 2,
             area: 2,
             effects: [stun],
+        },
+    ],
+};
+
+export const recovery: Ability = {
+    name: "Recovery",
+    resourceCost: 2,
+    image: selfRecoveryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    healingPerTurn: 2,
+                    duration: 4,
+                },
+            ],
+        },
+    ],
+};
+
+export const shieldMastery: Ability = {
+    name: "Shield Mastery",
+    resourceCost: 2,
+    image: shieldmasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            armor: 8,
+            effects: [
+                {
+                    name: "Shield Mastery",
+                    icon: shieldmasteryImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    armorReceived: 2,
+                    duration: 1,
+                },
+            ],
         },
     ],
 };

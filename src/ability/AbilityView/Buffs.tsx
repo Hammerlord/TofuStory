@@ -20,6 +20,7 @@ const Buffs = ({ ability }) => {
                     damage = 0,
                     duration = Infinity,
                     onAttack = {},
+                    preventArmorDecay,
                 } = effect;
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
@@ -75,6 +76,15 @@ const Buffs = ({ ability }) => {
                         </span>
                     );
                 }
+
+                if (preventArmorDecay) {
+                    if (effectComponents.length > 0) {
+                        effectComponents.push(<span>and prevents armor decay</span>);
+                    } else {
+                        effectComponents.push(<span>Prevents armor decay</span>);
+                    }
+                }
+
                 if (effectComponents.length > 0) {
                     if (onAttack.removeEffect) {
                         effectComponents.push(<>for your next attack</>);

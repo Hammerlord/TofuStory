@@ -96,7 +96,10 @@ export const tickDownBuffs = (target: Combatant) => {
     };
 };
 
-export const halveArmor = (target: Combatant): Combatant => {
+export const checkHalveArmor = (target: Combatant): Combatant => {
+    if (target.effects.some((effect) => effect.preventArmorDecay)) {
+        return target;
+    }
     return {
         ...target,
         armor: Math.floor(target.armor / 2),
