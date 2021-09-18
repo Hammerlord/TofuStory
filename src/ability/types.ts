@@ -167,7 +167,7 @@ export interface Action {
     addCards?: Ability[];
     drawCards?: {
         amount: number;
-        effects: AbilityEffects;
+        effects?: AbilityEffects;
     };
     icon?: string; // Used as a projectile
     bonus?: Bonus;

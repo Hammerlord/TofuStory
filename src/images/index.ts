@@ -83,6 +83,7 @@ export { default as darkThirstImage } from "./darkthirst.png";
 export { default as blastImage } from "./blast.png";
 export { default as darkspearImage } from "./darkspear.png";
 export { default as magiccrashImage } from "./magiccrash.png";
+export { default as warriormasteryImage } from "./warriormastery.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";

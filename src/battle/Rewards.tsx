@@ -18,6 +18,7 @@ import {
     darkImpale,
     darkSpear,
     darkThirst,
+    dash,
     divineCharge,
     evilEye,
     flameCharge,
@@ -119,6 +120,7 @@ const warriorAbilities = [
     darkThirst,
     darkSpear,
     magicCrash,
+    dash,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

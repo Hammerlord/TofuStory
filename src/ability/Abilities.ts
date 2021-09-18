@@ -40,6 +40,7 @@ import {
     spikes,
     warleap,
     warmush,
+    warriormasteryImage,
     weaponbooster,
     weaponmasteryImage,
     Wolf,
@@ -886,6 +887,21 @@ export const magicCrash: Ability = {
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             effects: [{ ...silence }],
+        },
+    ],
+};
+
+export const dash: Ability = {
+    name: "Dash",
+    resourceCost: 0,
+    image: warriormasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 2,
+            },
         },
     ],
 };
