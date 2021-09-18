@@ -5,7 +5,14 @@ import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem } from "./../utils";
 import { passesConditions } from "./passesConditions";
-import { calculateArmor, calculateDamage, cleanUpDeadCharacters, getHealableIndices, getValidTargetIndices } from "./utils";
+import {
+    calculateArmor,
+    calculateDamage,
+    cleanUpDeadCharacters,
+    getCharacterStatChanges,
+    getHealableIndices,
+    getValidTargetIndices,
+} from "./utils";
 
 /**
  * The results of an action being applied.
@@ -189,6 +196,14 @@ const applyVacuum = ({
     return newCharacters;
 };
 
+/**
+ * Get percentage of damage that should be returned as health
+ */
+const calculateLeechPercentage = (actor: Combatant) => {
+    const leechFromEffects = actor.effects.reduce((acc, { leech = 0 }) => acc + leech, 0);
+    return leechFromEffects;
+};
+
 export const parseAction = ({
     enemies,
     allies,
@@ -218,6 +233,14 @@ export const parseAction = ({
     };
 
     let thornsDamage = 0;
+    let totalDamageDealt = 0;
+
+    const tallyDamageDealt = (oldChar: Combatant, newChar: Combatant) => {
+        const damageDealt = oldChar.HP + oldChar.armor - (newChar.HP + newChar.armor);
+        if (damageDealt > 0) {
+            totalDamageDealt += damageDealt;
+        }
+    };
 
     const updateTargets = (targets: (Combatant | null)[]) => {
         if (vacuum) {
@@ -226,7 +249,9 @@ export const parseAction = ({
         return targets.map((character, i: number) => {
             if (isInArea(character, i)) {
                 thornsDamage += calculateThornsDamage(action, character);
-                return applyActionToTarget({ target: character, selectedIndex, targetIndex: i, action, actor }); // Actor possibly stale...
+                const newCharacter = applyActionToTarget({ target: character, selectedIndex, targetIndex: i, action, actor }); // Actor possibly stale...
+                tallyDamageDealt(character, newCharacter);
+                return newCharacter;
             }
 
             return character;
@@ -257,6 +282,20 @@ export const parseAction = ({
                 action: {
                     damage: thornsDamage,
                     type: ACTION_TYPES.NONE,
+                },
+            })
+        );
+    }
+
+    const leech = Math.ceil(calculateLeechPercentage(actor) * totalDamageDealt);
+    if (leech > 0) {
+        updateActor((actor, i) =>
+            applyActionToTarget({
+                target: actor,
+                targetIndex: i,
+                action: {
+                    type: ACTION_TYPES.NONE,
+                    healing: leech,
                 },
             })
         );

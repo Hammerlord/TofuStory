@@ -34,7 +34,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
 
     let name = effect.name;
     let icon: string | JSX.Element = effect.icon;
-    const { thorns = 0, healthPerResourcesSpent = 0, healingPerTurn = 0, armorPerTurn = 0, type, damage } = effect;
+    const { thorns = 0, healthPerResourcesSpent = 0, healingPerTurn = 0, armorPerTurn = 0, type, damage, leech = 0 } = effect;
     if (isAura) {
         name = "Aura";
         icon = <Fireworks />;
@@ -72,6 +72,7 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
                         <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per <Fury /> spent
                     </div>
                 )}
+                {leech > 0 && <div>Leeching {leech * 100}% of damage as health (rounded up)</div>}
                 {thorns > 0 && <div>Reflects 1 damage to attackers</div>}
                 <div>{effect.description}</div>
                 {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}

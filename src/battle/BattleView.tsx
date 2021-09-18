@@ -25,13 +25,14 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import {
     canUseAbility,
-    clearTurnHistory,
     checkHalveArmor,
+    clearTurnHistory,
     isValidTarget,
     refreshPlayerResources,
     removeEndedEffects,
     tickDownBuffs,
     tickDownDebuffs,
+    updateCardEffects,
     updateCharacters,
 } from "./utils";
 import WaveInfo from "./WaveInfo";
@@ -235,7 +236,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             setDiscard((prev) => [...prepareForDiscard([card]), ...prev]);
         }
 
-        setHand(newHand);
+        setHand(
+            newHand.map((card: HandAbility) => {
+                if (card.onAbilityUse) {
+                    return updateCardEffects(card, card.onAbilityUse);
+                }
+                return card;
+            })
+        );
         handleNewEvents(
             useAllyAbility({
                 ability: card,
@@ -437,7 +445,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             ...newHand,
             ...cardsToDraw.map((card) => ({
                 ...card,
-                effects,
+                effects: { ...effects },
             })),
         ]);
         setDiscard(newDiscard);

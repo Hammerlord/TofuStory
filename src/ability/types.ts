@@ -61,6 +61,8 @@ export interface Effect {
     /** The target for this is random */
     healTargetPerTurn?: number;
     damageTargetPerTurn?: number;
+    /** A percentage of damage will be returned as HP to the effect owner */
+    leech?: number;
     conditions?: EffectCondition[];
     onAttack?: EffectEventTrigger;
     onFriendlyKilled?: EffectEventTrigger;
@@ -183,6 +185,10 @@ export interface Ability {
     area?: number;
     removeAfterTurn?: boolean;
     reusable?: boolean;
+    /** An effect applied to this ability when another ability is used */
+    onAbilityUse?: {
+        resourceCost?: number;
+    };
 }
 
 /**

@@ -21,6 +21,7 @@ const Buffs = ({ ability }) => {
                     duration = Infinity,
                     onAttack = {},
                     preventArmorDecay,
+                    leech = 0,
                 } = effect;
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
@@ -82,6 +83,14 @@ const Buffs = ({ ability }) => {
                         effectComponents.push(<span>and prevents armor decay</span>);
                     } else {
                         effectComponents.push(<span>Prevents armor decay</span>);
+                    }
+                }
+
+                if (leech > 0) {
+                    if (effectComponents.length > 0) {
+                        effectComponents.push(<span>and leech {leech * 100}% damage as HP</span>);
+                    } else {
+                        effectComponents.push(<span>Leech {leech * 100}% damage as HP</span>);
                     }
                 }
 

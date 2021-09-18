@@ -6,6 +6,7 @@ import {
     anger,
     bash,
     berserk,
+    blast,
     blizzardCharge,
     block,
     bloodthirst,
@@ -111,6 +112,7 @@ const warriorAbilities = [
     closeCombat,
     recovery,
     shieldMastery,
+    blast,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

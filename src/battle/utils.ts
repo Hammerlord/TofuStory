@@ -289,3 +289,11 @@ export const getHealableIndices = (characters: (Combatant | null)[]): number[] =
     // Injured targets only
     return indices.filter((i) => characters[i].HP < characters[i].maxHP);
 };
+
+export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?: number }): HandAbility => {
+    const newCard = { ...card };
+    Object.entries(newEffects).forEach(([key, value]) => {
+        newCard.effects[key] = (newCard.effects[key] || 0) + value;
+    });
+    return newCard;
+};

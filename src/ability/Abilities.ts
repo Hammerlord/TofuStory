@@ -1,5 +1,6 @@
 import {
     advancedcharge,
+    blastImage,
     blizzardcharge,
     blockImage,
     brandishImage,
@@ -9,6 +10,7 @@ import {
     closecombatImage,
     combofuryImage,
     darkimpaleImage,
+    darkThirstImage,
     divinechargeImage,
     evileyeminion,
     evileyeskill,
@@ -793,6 +795,56 @@ export const shieldMastery: Ability = {
                     preventArmorDecay: true,
                     armorReceived: 2,
                     duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const blast: Ability = {
+    name: "Blast",
+    resourceCost: 3,
+    image: blastImage,
+    description: "Reduce cost by 1 for every ability used this turn, until Blast is used or discarded",
+    onAbilityUse: {
+        resourceCost: -1,
+    },
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+                {
+                    ...chill,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const darkThirst: Ability = {
+    name: "Dark Thirst",
+    resourceCost: 1,
+    image: darkThirstImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Dark Thirst",
+                    icon: darkThirstImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 1,
+                    duration: 1,
+                    leech: 0.5,
                 },
             ],
         },
