@@ -14,6 +14,7 @@ import {
     getHealableIndices,
     getValidTargetIndices,
     isSilenced,
+    updateCharacters,
 } from "./utils";
 
 /**
@@ -469,6 +470,55 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     return updated;
 };
 
+const getKOedCharacters = (prevChars, newChars) => {
+    if (!prevChars) {
+        return newChars.filter((char: Combatant | null) => char?.HP === 0);
+    }
+
+    const wasPreviouslyAlive = (char: Combatant | null) => {
+        const prev = prevChars.find((prevChar: Combatant | null) => prevChar?.id === char.id);
+        return !prev || prev.HP > 0;
+    };
+    return newChars.filter((char: Combatant | null) => char?.HP === 0 && wasPreviouslyAlive(char));
+};
+
+/**
+ * KO event only
+ */
+const procActionEvents = (prevChars, newChars): (Combatant | null)[] => {
+    const KOed = getKOedCharacters(prevChars, newChars);
+    if (KOed.length === 0 || newChars.every((char) => !char || char.HP === 0)) {
+        return;
+    }
+
+    return updateCharacters(newChars, (character, i) => {
+        const aggregatedEffects = character.effects.reduce((acc, effect: Effect) => {
+            const { healing = 0, armor = 0, effects = [] } = effect.onFriendlyKilled?.effectOwner || {};
+            const newEffects = [];
+            for (let i = 0; i < KOed.length; ++i) {
+                newEffects.push(...effects);
+            }
+            return {
+                healing: (acc.healing || 0) + healing * KOed.length,
+                armor: (acc.armor || 0) + armor * KOed.length,
+                effects: [...(acc.effects || []), ...newEffects],
+            };
+        }, {});
+
+        if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects.length) {
+            return applyActionToTarget({
+                target: character,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    ...aggregatedEffects,
+                },
+                targetIndex: i,
+            });
+        }
+        return character;
+    });
+};
+
 export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, side, ability, allies, actorId }): Event[] => {
     const { minion, actions, resourceCost } = ability;
     const results = [];
@@ -526,6 +576,13 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
                 selectedSide: side,
             })
         );
+        const enemyActionEventProcs = procActionEvents(results[results.length - 2] || enemies, mostRecentEnemies());
+        if (enemyActionEventProcs) {
+            results.push({
+                updatedEnemies: enemyActionEventProcs,
+                updatedAllies: mostRecentAllies(),
+            });
+        }
     });
 
     if (!mostRecentCaster()) {

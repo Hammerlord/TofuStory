@@ -6,6 +6,7 @@ import {
     Dizzy,
     Fire,
     Helmet,
+    JapaneseOgre,
     Medal,
     MilitaryMedal,
     NoStun,
@@ -129,6 +130,30 @@ export const raging: Effect = {
             calculationTarget: "effectOwner",
         },
     ],
+};
+
+export const avenger: Effect = {
+    name: "Avenger",
+    canBeSilenced: true,
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: JapaneseOgre,
+    description: "Grows powerful when one of its allies falls in combat.",
+    onFriendlyKilled: {
+        effectOwner: {
+            armor: 5,
+            effects: [
+                {
+                    name: "Vengeful",
+                    damage: 2,
+                    icon: JapaneseOgre,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                },
+            ],
+        },
+    },
 };
 
 export const eliteSquad: Effect = {
