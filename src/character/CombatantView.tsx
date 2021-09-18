@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { getCharacterStatChanges, isSilenced } from "../battle/utils";
+import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
 import CastingIndicator from "../icon/CastingIndicator";

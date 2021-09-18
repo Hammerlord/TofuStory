@@ -1,18 +1,21 @@
+import { getMultiplier } from "../../battle/utils";
+import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
 import { CrossedSwords, Heart, Shield } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
 import { Ability, Action, TARGET_TYPES } from "../types";
 
-const SelfActions = ({ ability }: { ability: Ability }) => {
+const SelfActions = ({ ability, player }: { ability: Ability; player?: Combatant }) => {
     const { healing, armor, damage, resourceGain } = ability.actions
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
-        .reduce((acc: any, current: Action) => {
-            const { healing = 0, damage = 0, armor = 0, resources = 0 } = current;
+        .reduce((acc: any, action: Action) => {
+            const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
+            const multiplier = getMultiplier({ action, actor: player });
             return {
-                healing: (acc.healing || 0) + healing,
-                armor: (acc.armor || 0) + armor,
-                damage: (acc.damage || 0) + damage,
-                resourceGain: (acc.resourceGain || 0) + resources,
+                healing: (acc.healing || 0) + healing * multiplier,
+                armor: (acc.armor || 0) + armor * multiplier,
+                damage: (acc.damage || 0) + damage * multiplier,
+                resourceGain: (acc.resourceGain || 0) + resources * multiplier,
             };
         }, {}) as any;
 

@@ -200,8 +200,8 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
     });
 };
 
-const getMultiplier = ({ actor, action, target }: { actor: Combatant; action: Action; target: Combatant }): number => {
-    if (!action.multiplier) {
+export const getMultiplier = ({ actor, action }: { actor?: Combatant; action: Action }): number => {
+    if (!action.multiplier || !actor) {
         return 1;
     }
 
@@ -264,7 +264,7 @@ export const calculateDamage = ({
         }, 0);
     }
 
-    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
+    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor });
     const damageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const total = damage + damageReceived;
     if (total < 0) {

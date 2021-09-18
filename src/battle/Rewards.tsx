@@ -25,9 +25,11 @@ import {
     frostFire,
     hammerang,
     hyperBody,
+    ironBody,
     ironWill,
     lightningCharge,
     magicCrash,
+    parry,
     piercingDrive,
     puncture,
     rampage,
@@ -121,6 +123,8 @@ const warriorAbilities = [
     darkSpear,
     magicCrash,
     dash,
+    parry,
+    ironBody,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

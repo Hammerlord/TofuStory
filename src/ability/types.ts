@@ -28,6 +28,7 @@ export interface EffectEventTrigger {
     effectOwner?: {
         // Stat changes to apply to the target (owner of this effect)
         effects?: Effect[];
+        armor?: number;
     };
     externalParty?: {
         // Stat changes to apply to the character who triggered this event

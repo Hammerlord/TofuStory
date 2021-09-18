@@ -13,6 +13,7 @@ import {
     darkspearImage,
     darkThirstImage,
     divinechargeImage,
+    endureImage,
     evileyeminion,
     evileyeskill,
     flag,
@@ -20,6 +21,7 @@ import {
     hammer,
     Heart,
     hyperbody,
+    ironbodyImage,
     ironwill as ironwillImage,
     lightningcharge,
     mace,
@@ -902,6 +904,44 @@ export const dash: Ability = {
             drawCards: {
                 amount: 2,
             },
+        },
+    ],
+};
+
+export const parry: Ability = {
+    name: "Parry",
+    resourceCost: 1,
+    image: endureImage,
+    description: "(+1 armor for every attack made this turn)",
+    actions: [
+        {
+            armor: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+        },
+    ],
+};
+
+export const ironBody: Ability = {
+    name: "Iron Body",
+    resourceCost: 1,
+    image: ironbodyImage,
+    actions: [
+        {
+            armor: 3,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Iron Body",
+                    icon: ironbodyImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    duration: 2,
+                },
+            ],
         },
     ],
 };

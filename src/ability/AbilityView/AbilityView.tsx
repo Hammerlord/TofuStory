@@ -203,7 +203,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 <div className={classes.body}>
                     {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                     <Debuffs ability={ability} />
-                    <SelfActions ability={ability} />
+                    <SelfActions ability={ability} player={player} />
                     <Buffs ability={ability} />
                     <CardsToAdd ability={ability} />
                     <BonusView ability={ability} />

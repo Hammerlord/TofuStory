@@ -16,15 +16,15 @@ export const getDamageStatistics = ({
         }
         return acc;
     }, 0);
-    const numActionsWithDamage = actions.filter(
-        (action) => action.type === ACTION_TYPES.ATTACK || (action.type === ACTION_TYPES.RANGE_ATTACK && action.damage)
+    const numAttackActions = actions.filter(
+        (action) => action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK
     ).length;
-    const baseDamage = Math.floor(totalDamage / (numActionsWithDamage || 1));
+    const baseDamage = Math.floor(totalDamage / (numAttackActions || 1));
     const damageBonusFromEffects = player?.effects.reduce((acc, { damage = 0 }) => acc + damage, 0) || 0;
     return {
         baseDamage,
         totalDamage,
-        numActionsWithDamage,
+        numActionsWithDamage: numAttackActions,
         damageBonusFromEffects,
     };
 };
