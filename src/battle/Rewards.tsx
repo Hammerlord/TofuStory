@@ -16,6 +16,8 @@ import {
     closeCombat,
     comboFury,
     darkImpale,
+    darkSpear,
+    darkThirst,
     divineCharge,
     evilEye,
     flameCharge,
@@ -24,6 +26,7 @@ import {
     hyperBody,
     ironWill,
     lightningCharge,
+    magicCrash,
     piercingDrive,
     puncture,
     rampage,
@@ -113,6 +116,9 @@ const warriorAbilities = [
     recovery,
     shieldMastery,
     blast,
+    darkThirst,
+    darkSpear,
+    magicCrash,
 ];
 
 const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {

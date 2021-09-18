@@ -23,6 +23,7 @@ import {
     ironwill as ironwillImage,
     lightningcharge,
     mace,
+    magiccrashImage,
     piercingdriveImage,
     powerstanceImage,
     punctureImage,
@@ -870,6 +871,21 @@ export const darkSpear: Ability = {
                     } as AbilityCondition,
                 ],
             },
+        },
+    ],
+};
+
+export const magicCrash: Ability = {
+    name: "Magic Crash",
+    resourceCost: 2,
+    image: magiccrashImage,
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            effects: [{ ...silence }],
         },
     ],
 };
