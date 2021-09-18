@@ -1,11 +1,19 @@
 import Icon from "../../icon/Icon";
-import { Blood, CrossedSwords, Dizzy, Fire, Hourglass, Snowflake } from "../../images";
+import { Blood, CrossedSwords, Dizzy, Fire, Hourglass, Snowflake, SpeechBubble } from "../../images";
 import { Ability, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 import { getAllEffects } from "./utils";
 
 export const getDebuffDurations = (
     ability: Ability
-): { bleedDuration: number; stunDuration: number; chillDuration: number; burnDuration: number; damage: number; debuffDuration: number } => {
+): {
+    bleedDuration: number;
+    stunDuration: number;
+    chillDuration: number;
+    burnDuration: number;
+    damage: number;
+    debuffDuration: number;
+    silenceDuration: number;
+} => {
     const allEffects = getAllEffects(ability).filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
     return allEffects.reduce((acc, effect: Effect) => {
         const { type, duration = 0, damage = 0 } = effect;
@@ -30,6 +38,11 @@ export const getDebuffDurations = (
                     ...acc,
                     burnDuration: (acc.burnDuration || 0) + duration,
                 };
+            case EFFECT_TYPES.SILENCE:
+                return {
+                    ...acc,
+                    silenceDuration: (acc.silenceDuration || 0) + duration,
+                };
             default:
                 return {
                     ...acc,
@@ -41,9 +54,11 @@ export const getDebuffDurations = (
 };
 
 const Debuffs = ({ ability }) => {
-    const { bleedDuration, stunDuration, chillDuration, burnDuration, damage, debuffDuration } = getDebuffDurations(ability);
+    const { bleedDuration, stunDuration, chillDuration, burnDuration, damage, debuffDuration, silenceDuration } =
+        getDebuffDurations(ability);
 
-    const hasDebuff = bleedDuration > 0 || stunDuration > 0 || burnDuration > 0 || chillDuration > 0 || debuffDuration > 0;
+    const hasDebuff =
+        bleedDuration > 0 || stunDuration > 0 || burnDuration > 0 || chillDuration > 0 || debuffDuration > 0 || silenceDuration > 0;
     if (!hasDebuff) {
         return null;
     }
@@ -77,6 +92,12 @@ const Debuffs = ({ ability }) => {
                 <>
                     <Icon icon={<CrossedSwords />} text={`${damage > 0 ? "+" : ""}${damage}`} />
                     <Icon icon={<Hourglass />} text={debuffDuration} />
+                </>
+            )}
+            {silenceDuration > 0 && (
+                <>
+                    <Icon icon={<SpeechBubble />} />
+                    <Icon icon={<Hourglass />} text={silenceDuration} />
                 </>
             )}
         </div>

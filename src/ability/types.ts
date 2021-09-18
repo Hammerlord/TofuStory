@@ -14,6 +14,7 @@ export enum EFFECT_TYPES {
     CHILL = "chill",
     STEALTH = "stealth",
     RAGE = "rage",
+    SILENCE = "silence",
 }
 
 export enum EFFECT_CLASSES {
@@ -68,6 +69,7 @@ export interface Effect {
     onFriendlyKilled?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
+    canBeSilenced?: boolean;
 }
 
 export interface Aura extends Effect {

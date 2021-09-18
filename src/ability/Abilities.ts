@@ -43,7 +43,7 @@ import {
     weaponmasteryImage,
     Wolf,
 } from "../images";
-import { burn, chill, stealth, stun, thorns, wound } from "./Effects";
+import { burn, chill, healingOverTime, silence, stealth, stun, thorns, wound } from "./Effects";
 import {
     Ability,
     AbilityCondition,
@@ -768,10 +768,7 @@ export const recovery: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    healingPerTurn: 2,
-                    duration: 4,
+                    ...healingOverTime,
                 },
             ],
         },
@@ -862,6 +859,7 @@ export const darkSpear: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
+            effects: [{ ...silence }],
             bonus: {
                 damage: 5,
                 conditions: [

@@ -86,6 +86,7 @@ const requiresExplanation = ({ type }): boolean => {
         EFFECT_TYPES.FREEZE,
         EFFECT_TYPES.STEALTH,
         EFFECT_TYPES.STUN,
+        EFFECT_TYPES.SILENCE,
     ].includes(type);
 };
 

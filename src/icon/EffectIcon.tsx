@@ -2,12 +2,16 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Effect } from "../ability/types";
 
-import { CrossedSwords, Fireworks, Heart, Shield } from "../images";
+import { CrossedSwords, Fireworks, Heart, Shield, SpeechBubble } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
 const useStyles = createUseStyles({
+    root: {
+        position: "relative",
+        display: "inline-block",
+    },
     tooltipContents: {
         display: "flex",
     },
@@ -23,9 +27,34 @@ const useStyles = createUseStyles({
     iconContainer: {
         marginRight: "16px",
     },
+    disabled: {
+        opacity: 0.7,
+    },
+    "@keyframes fade": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 0.8,
+        },
+    },
+    silenced: {
+        marginTop: 8,
+        color: "#ff9b94",
+    },
+    silenceIcon: {
+        animationName: "$fade",
+        animationDuration: "1.5s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+        position: "absolute",
+        display: "inline-block",
+        left: 0,
+        top: 0,
+    },
 });
 
-const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) => {
+const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: boolean; silence?: boolean }) => {
     if (!effect) {
         return null;
     }
@@ -43,6 +72,8 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
     if (!icon) {
         return null;
     }
+
+    const isSilenced = (effect.canBeSilenced || isAura) && silence;
 
     const tooltipContent = (
         <div className={classes.tooltipContents}>
@@ -76,13 +107,21 @@ const EffectIcon = ({ effect, isAura }: { effect: Effect; isAura?: boolean }) =>
                 {thorns > 0 && <div>Reflects 1 damage to attackers</div>}
                 <div>{effect.description}</div>
                 {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}
+                {isSilenced && <div className={classes.silenced}>Silenced</div>}
             </div>
         </div>
     );
     return (
         <Tooltip title={tooltipContent}>
-            <span>
-                <Icon icon={icon} text={effect.duration < Infinity && effect.duration} />
+            <span className={classes.root}>
+                <Icon
+                    icon={icon}
+                    text={effect.duration < Infinity && effect.duration}
+                    className={classNames({
+                        [classes.disabled]: isSilenced,
+                    })}
+                />
+                {isSilenced && <Icon icon={<SpeechBubble />} className={classes.silenceIcon} />}
             </span>
         </Tooltip>
     );

@@ -10,8 +10,10 @@ import {
     calculateDamage,
     cleanUpDeadCharacters,
     getCharacterStatChanges,
+    getEnabledEffects,
     getHealableIndices,
     getValidTargetIndices,
+    isSilenced,
 } from "./utils";
 
 /**
@@ -138,7 +140,7 @@ const calculateThornsDamage = (action: Action, hitTarget: Combatant): number => 
         return 0;
     }
 
-    return hitTarget?.effects.reduce((acc, { thorns = 0 }) => acc + thorns, 0);
+    return getEnabledEffects(hitTarget).reduce((acc, { thorns = 0 }) => acc + thorns, 0);
 };
 
 const removeStealth = (character: Combatant): Combatant => {
@@ -335,7 +337,7 @@ const orientate = ({ actorId, enemies, allies }) => {
 const applyAuraPerTurnEffect = (characters: (Combatant | null)[], actorIndex: number) => {
     const i = actorIndex;
     const { aura, id, HP = 0 } = characters[i] || {};
-    if (!aura || HP <= 0) {
+    if (!aura || HP <= 0 || isSilenced(characters[i])) {
         return;
     }
 

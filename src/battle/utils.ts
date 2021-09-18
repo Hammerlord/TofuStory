@@ -3,6 +3,7 @@ import {
     Ability,
     Action,
     ACTION_TYPES,
+    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     HandAbility,
@@ -38,7 +39,18 @@ export const refreshPlayerResources = (character: Combatant): Combatant => {
     };
 };
 
+export const isSilenced = (character: Combatant): boolean => {
+    if (!character) {
+        return false;
+    }
+
+    return character.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+};
+
 export const addEnemyResources = (character: Combatant): Combatant => {
+    if (isSilenced(character)) {
+        return character;
+    }
     return {
         ...character,
         resources: Math.min(
@@ -200,6 +212,18 @@ const getMultiplier = ({ actor, action, target }: { actor: Combatant; action: Ac
     return 1;
 };
 
+export const getEnabledEffects = (character: Combatant | null): Effect[] => {
+    if (!character) {
+        return [];
+    }
+
+    if (isSilenced(character)) {
+        return character.effects.filter((effect: Effect) => !effect.canBeSilenced);
+    }
+
+    return character.effects;
+};
+
 export const calculateDamage = ({
     actor,
     target,
@@ -230,7 +254,7 @@ export const calculateDamage = ({
 
     let damageFromEffects = 0;
     if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
-        damageFromEffects = actor.effects.reduce((acc, { damage = 0, conditions }) => {
+        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, conditions }) => {
             const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
                 calculationTarget === "effectOwner" ? actor : target;
             if (passesConditions({ getCalculationTarget, conditions })) {
@@ -241,7 +265,7 @@ export const calculateDamage = ({
     }
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
-    const damageReceived = target?.effects.reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
+    const damageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const total = damage + damageReceived;
     if (total < 0) {
         return 0;
@@ -253,7 +277,7 @@ export const calculateArmor = ({ target, action }): number => {
     if (!action.armor) {
         return 0;
     }
-    const targetArmor = target?.effects.reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
+    const targetArmor = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmor + (action.armor || 0);
     return Math.max(0, armor);
 };

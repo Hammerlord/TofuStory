@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { passesConditions } from "../battle/passesConditions";
 import { CrossedSwords } from "../images";
 import Icon from "../icon/Icon";
+import { getEnabledEffects } from "../battle/utils";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -23,7 +24,7 @@ const AttackPower = ({ combatant }) => {
         return null;
     }
 
-    const damageFromEffects = combatant.effects?.reduce((acc: number, { damage = 0, conditions = [] }) => {
+    const damageFromEffects = getEnabledEffects(combatant).reduce((acc: number, { damage = 0, conditions = [] }) => {
         const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
             if (calculationTarget === "effectOwner") {
                 return combatant;

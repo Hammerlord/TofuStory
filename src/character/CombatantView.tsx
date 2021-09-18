@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { getCharacterStatChanges } from "../battle/utils";
+import { getCharacterStatChanges, isSilenced } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
 import CastingIndicator from "../icon/CastingIndicator";
@@ -307,6 +307,7 @@ const CombatantView = forwardRef(
 
         const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
         const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
+        const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
 
         return (
@@ -391,9 +392,9 @@ const CombatantView = forwardRef(
                             {oldState.HP > 0 && (
                                 <div className={classes.effectsContainer}>
                                     {oldState.effects?.map((effect, i) => (
-                                        <EffectIcon effect={effect} key={i} />
+                                        <EffectIcon effect={effect} key={i} silence={isSilenced} />
                                     ))}
-                                    {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} />}
+                                    {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} silence={isSilenced} />}
                                 </div>
                             )}
                         </>

@@ -1,10 +1,24 @@
-import { Anger, Blood, Cactus, Cloudy, Dizzy, Fire, Helmet, Medal, MilitaryMedal, NoStun, Snowflake, weaponbooster } from "../images";
+import {
+    Anger,
+    Blood,
+    Cactus,
+    Cloudy,
+    Dizzy,
+    Fire,
+    Helmet,
+    Medal,
+    MilitaryMedal,
+    NoStun,
+    Snowflake,
+    SpeechBubble,
+    weaponbooster,
+} from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "./types";
 
 export const thorns: Effect = {
     name: "Thorns",
+    canBeSilenced: true,
     icon: Cactus,
-    description: "Reflects 1 damage to attackers",
     thorns: 1,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
@@ -101,6 +115,7 @@ export const cleave: Effect = {
 
 export const raging: Effect = {
     name: "Raging",
+    canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
@@ -159,4 +174,21 @@ export const elite: Effect = {
             effects: [controlImmune],
         },
     },
+};
+
+export const healingOverTime: Effect = {
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    healingPerTurn: 2,
+    duration: 4,
+};
+
+export const silence: Effect = {
+    name: "Silence",
+    duration: 2,
+    description: "Disables certain buffs and prevents resource generation.",
+    type: EFFECT_TYPES.SILENCE,
+    class: EFFECT_CLASSES.DEBUFF,
+    icon: SpeechBubble,
 };
