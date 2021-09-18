@@ -4,7 +4,7 @@ import { Camping, CrossedSwords, map } from "../images";
 import Overlay from "../view/Overlay";
 import { generateWaves } from "./encounters";
 import Pan from "./Pan";
-import { routeLithToKerning } from "./routes";
+import { routeKerningToPerion, routeLithToKerning } from "./routes";
 import { NODE_TYPES, RouteNode } from "./types";
 
 const useStyles = createUseStyles({
@@ -48,12 +48,12 @@ const useStyles = createUseStyles({
 
 const NODE_ICON_SIZE = 16;
 
-const Map = ({ onSelectNode, currentLocation, playerImage }) => {
+const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, playerImage }) => {
     const classes = useStyles();
     const [generatedRoute] = useState(
-        routeLithToKerning.nodes.map((node) => {
+        route.nodes.map((node) => {
             if (node.type === NODE_TYPES.encounter) {
-                return { ...node, waves: generateWaves(node, routeLithToKerning.enemies) };
+                return { ...node, waves: generateWaves(node, route.enemies) };
             }
             return node;
         })
@@ -115,7 +115,6 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
             e.preventDefault();
         }
     };
-    const route = generatedRoute; // TODO
 
     return (
         <Overlay>
@@ -123,7 +122,7 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
                 <Pan>
                     <img src={map} className={classes.image} onMouseDown={handleClickMap} ref={containerRef} onLoad={handleImageLoad} />
                     <svg className={classes.routeContainer} onClick={handleDraw}>
-                        {route.map((node, i) => {
+                        {generatedRoute.map((node, i) => {
                             const { width = 0, height = 0 } = container as { width: number; height: number };
                             if (!width || !height || enableDraw) {
                                 return;
@@ -133,12 +132,12 @@ const Map = ({ onSelectNode, currentLocation, playerImage }) => {
 
                             return (
                                 <Fragment key={i}>
-                                    {i < route.length - 1 && (
+                                    {i < generatedRoute.length - 1 && (
                                         <line
                                             x1={x}
                                             y1={y}
-                                            x2={route[i + 1]?.x * width}
-                                            y2={route[i + 1]?.y * height}
+                                            x2={generatedRoute[i + 1]?.x * width}
+                                            y2={generatedRoute[i + 1]?.y * height}
                                             stroke="black"
                                             strokeWidth={2}
                                             style={{ position: "absolute" }}

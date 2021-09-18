@@ -1,4 +1,4 @@
-import { snail, thiefAssassin } from "../enemy/enemy";
+import { axeStump, fireBoar, octopus, snail, stump, thiefAssassin, wildBoar } from "../enemy/enemy";
 import { blueSnail, noobA, noobB, orangeMushroom, redSnail, shroom } from "./../enemy/enemy";
 import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES, RouteNode } from "./types";
 
@@ -92,6 +92,52 @@ export const routeLithToKerning = {
             y: 0.4992147419118417,
             type: NODE_TYPES.encounter,
             encounters: [[null, null, thiefAssassin, null, null]],
+        },
+    ] as RouteNode[],
+};
+
+export const routeKerningToPerion = {
+    enemies: {
+        easy: [blueSnail, octopus],
+        normal: [stump, redSnail, wildBoar],
+        hard: [axeStump, orangeMushroom],
+        hardest: [fireBoar],
+    } as MapEnemies,
+    nodes: [
+        {
+            x: 0.18263888888888888,
+            y: 0.3499464292311671,
+            type: NODE_TYPES.encounter,
+            difficulty: ENCOUNTER_DIFFICULTY.EASY,
+        },
+        {
+            x: 0.22256944444444443,
+            y: 0.3291388037093139,
+            type: NODE_TYPES.encounter,
+            difficulty: ENCOUNTER_DIFFICULTY.EASY,
+        },
+        {
+            x: 0.27847222222222223,
+            y: 0.33481361066981935,
+            type: NODE_TYPES.restingZone,
+        },
+        {
+            x: 0.3138888888888889,
+            y: 0.29840026600657626,
+            type: NODE_TYPES.encounter,
+            difficulty: [ENCOUNTER_DIFFICULTY.EASY, ENCOUNTER_DIFFICULTY.NORMAL],
+        },
+        {
+            x: 0.31875,
+            y: 0.24827280452211178,
+            type: NODE_TYPES.encounter,
+            difficulty: ENCOUNTER_DIFFICULTY.ELITE_TRIAD,
+        },
+        {
+            x: 0.3371527777777778,
+            y: 0.2113865592788266,
+            type: NODE_TYPES.encounter,
+            difficulty: ENCOUNTER_DIFFICULTY.ELITE,
         },
     ] as RouteNode[],
 };

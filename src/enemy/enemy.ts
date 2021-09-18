@@ -1,4 +1,4 @@
-import { stealth, elite } from "./../ability/Effects";
+import { stealth, elite, burn, thorns, hardy } from "./../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./../ability/types";
 import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
@@ -13,6 +13,11 @@ import {
     snailImage,
     subi,
     olafImage,
+    octopusImage,
+    wildboarImage,
+    stumpImage,
+    fireboarImage,
+    axestumpImage,
 } from "../images";
 
 export interface Enemy {
@@ -47,7 +52,7 @@ export const blueSnail: Enemy = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -73,7 +78,7 @@ export const redSnail: Enemy = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -85,6 +90,7 @@ export const orangeMushroom: Enemy = {
     maxHP: 25,
     image: orangeMushroomImage,
     damage: 3,
+    effects: [hardy],
 };
 
 export const noobA: Enemy = {
@@ -239,4 +245,90 @@ export const olaf = {
     ],
     damage: 2,
     image: olafImage,
+};
+
+export const octopus: Enemy = {
+    name: "Octopus",
+    image: octopusImage,
+    maxHP: 12,
+    damage: 2,
+};
+
+export const wildBoar: Enemy = {
+    name: "Wild Boar",
+    image: wildboarImage,
+    maxHP: 17,
+    damage: 2,
+    abilities: [
+        {
+            name: "Wild Charge",
+            resourceCost: 4,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const stump = {
+    name: "Stump",
+    image: stumpImage,
+    maxHP: 15,
+    armor: 5,
+    damage: 2,
+    effects: [hardy],
+};
+
+export const axeStump = {
+    name: "Axe Stump",
+    image: axestumpImage,
+    maxHP: 20,
+    armor: 10,
+    damage: 3,
+    abilities: [
+        {
+            name: "Barbs",
+            resourceCost: 4,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    armor: 3,
+                    effects: [
+                        {
+                            ...thorns,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [hardy],
+};
+
+export const fireBoar = {
+    name: "Fire Boar",
+    image: fireboarImage,
+    maxHP: 30,
+    damage: 3,
+    abilities: [
+        {
+            name: "Blazing Charge",
+            resourceCost: 4,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                    effects: [{ ...burn, duration: 1 }],
+                },
+            ],
+        },
+    ],
+    effects: [hardy],
 };
