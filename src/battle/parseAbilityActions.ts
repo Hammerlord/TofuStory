@@ -492,7 +492,7 @@ const procActionEvents = (prevChars, newChars): (Combatant | null)[] => {
     }
 
     return updateCharacters(newChars, (character, i) => {
-        const aggregatedEffects = character.effects.reduce((acc, effect: Effect) => {
+        const aggregatedEffects = getEnabledEffects(character).reduce((acc, effect: Effect) => {
             const { healing = 0, armor = 0, effects = [] } = effect.onFriendlyKilled?.effectOwner || {};
             const newEffects = [];
             for (let i = 0; i < KOed.length; ++i) {
@@ -503,7 +503,7 @@ const procActionEvents = (prevChars, newChars): (Combatant | null)[] => {
                 armor: (acc.armor || 0) + armor * KOed.length,
                 effects: [...(acc.effects || []), ...newEffects],
             };
-        }, {});
+        }, {} as any);
 
         if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects.length) {
             return applyActionToTarget({
