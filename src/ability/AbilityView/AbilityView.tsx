@@ -21,6 +21,9 @@ import ResourceIcon from "./ResourceIcon";
 import SelfActions from "./SelfActions";
 
 const useAreaStyles = createUseStyles({
+    root: {
+        fontSize: "0.8rem",
+    },
     area: {
         width: "14px",
         height: "14px",
@@ -54,11 +57,11 @@ const Area = ({ area, damage, secondaryDamage }) => {
         </span>
     ));
     return (
-        <span>
-            {areaIndicator}
+        <div className={classes.root}>
+            Area: {areaIndicator}
             <span className={classes.mainTarget}>{secondaryDamage && damage}</span>
             {areaIndicator}
-        </span>
+        </div>
     );
 };
 
@@ -71,7 +74,7 @@ const useStyles = createUseStyles({
         paddingTop: "6px",
         paddingBottom: "2px",
         cursor: "pointer",
-        background: "#d9ca96",
+        background: "#c7b89d",
         transition: "transform 0.25s",
         borderRadius: "4px",
         textAlign: "center",
@@ -80,7 +83,7 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         justifyContent: "space-between",
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
-        color: "rgba(0, 0, 0, 0.9)",
+        color: "rgba(0, 0, 0, 0.95)",
         fontFamily: "Barlow",
     },
     header: {
@@ -209,11 +212,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     {aura && <AuraView aura={aura} />}
                 </div>
                 <div className={classes.footer}>
-                    {actions.length > 0 && area > 0 && (
-                        <div>
-                            Area: <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />
-                        </div>
-                    )}
+                    {actions.length > 0 && area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
                     <AbilityTypeView targetType={targetType} minion={minion} />
                     {minion && (
                         <div className={classes.minionStats}>
