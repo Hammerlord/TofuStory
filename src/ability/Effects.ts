@@ -1,4 +1,5 @@
 import {
+    AlternateJapaneseOgre,
     Anger,
     Blood,
     Cactus,
@@ -132,26 +133,28 @@ export const raging: Effect = {
     ],
 };
 
+const vengeful: Effect = {
+    name: "Vengeful",
+    canBeSilenced: true,
+    duration: 2,
+    damage: 3,
+    icon: JapaneseOgre,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+};
+
 export const avenger: Effect = {
     name: "Avenger",
     canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: JapaneseOgre,
+    icon: AlternateJapaneseOgre,
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyKilled: {
         effectOwner: {
             armor: 5,
-            effects: [
-                {
-                    name: "Vengeful",
-                    damage: 2,
-                    icon: JapaneseOgre,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                },
-            ],
+            effects: [vengeful],
         },
     },
 };

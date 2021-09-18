@@ -28,6 +28,7 @@ export { default as MilitaryMedal } from "./1f396.svg";
 export { default as WorldMap } from "./1f5fa.svg";
 export { default as SpeechBubble } from "./1f4ac.svg";
 export { default as JapaneseOgre } from "./1f479.svg";
+export { default as AlternateJapaneseOgre } from "./1f479-alternate.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
