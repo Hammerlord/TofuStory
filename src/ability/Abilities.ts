@@ -10,6 +10,7 @@ import {
     closecombatImage,
     combofuryImage,
     darkimpaleImage,
+    darkspearImage,
     darkThirstImage,
     divinechargeImage,
     evileyeminion,
@@ -847,6 +848,30 @@ export const darkThirst: Ability = {
                     leech: 0.5,
                 },
             ],
+        },
+    ],
+};
+
+export const darkSpear: Ability = {
+    name: "Dark Spear",
+    resourceCost: 3,
+    image: darkspearImage,
+    actions: [
+        {
+            damage: 7,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            bonus: {
+                damage: 5,
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        armor: 0,
+                        comparator: "gt",
+                    } as AbilityCondition,
+                ],
+            },
         },
     ],
 };

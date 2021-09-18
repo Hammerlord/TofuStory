@@ -129,6 +129,7 @@ export interface Condition {
     numEffects?: number;
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
+    armor?: number;
 }
 
 export interface AbilityCondition extends Condition {

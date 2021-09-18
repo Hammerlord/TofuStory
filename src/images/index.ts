@@ -80,6 +80,7 @@ export { default as selfRecoveryImage } from "./selfrecovery.png";
 export { default as shieldmasteryImage } from "./shieldmastery.png";
 export { default as darkThirstImage } from "./darkthirst.png";
 export { default as blastImage } from "./blast.png";
+export { default as darkspearImage } from "./darkspear.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";

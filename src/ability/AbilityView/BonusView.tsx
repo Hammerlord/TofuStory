@@ -1,5 +1,5 @@
 import Icon from "../../icon/Icon";
-import { ArrowDown, Blood, CrossedSwords, Dizzy, Fire, Heart, Shield, Snowflake } from "../../images";
+import { Blood, CrossedSwords, Dizzy, Fire, Heart, Shield, Snowflake } from "../../images";
 import { Condition, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
@@ -19,29 +19,47 @@ const BonusView = ({ ability }) => {
         return null;
     }
 
+    const comparatorMap = {
+        eq: "at",
+        gt: "with more than",
+        lt: "with less than",
+    };
     return (
         <>
             {bonuses.map(({ damage = 0, healing = 0, armor = 0, conditions = [] }, i) => {
-                const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage }: Condition) => {
-                    if (hasEffectType.length) {
-                        return (
-                            <span key={i}>
-                                to targets afflicted by {hasEffectType.map(getIconForEffectType)}
-                                {i < conditions.length - 1 ? " or " : ""}
-                            </span>
-                        );
+                const conditionText = conditions?.map(
+                    ({ hasEffectType = [], hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
+                        if (hasEffectType.length) {
+                            return (
+                                <span key={i}>
+                                    to targets afflicted by {hasEffectType.map(getIconForEffectType)}
+                                    {i < conditions.length - 1 ? " or " : ""}
+                                </span>
+                            );
+                        }
+                        if (hasEffectClass) {
+                            return (
+                                <span key={i}>
+                                    to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
+                                </span>
+                            );
+                        }
+                        if (healthPercentage !== undefined) {
+                            return (
+                                <span key={i}>
+                                    to targets {comparatorMap[comparator]} {healthPercentage * 100}% HP
+                                </span>
+                            );
+                        }
+                        if (armor !== undefined) {
+                            return (
+                                <span key={i}>
+                                    to <Icon icon={<Shield />} /> targets
+                                </span>
+                            );
+                        }
                     }
-                    if (hasEffectClass) {
-                        return (
-                            <span key={i}>
-                                to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
-                            </span>
-                        );
-                    }
-                    if (healthPercentage !== undefined) {
-                        return <span key={i}>to targets at {healthPercentage * 100}% HP</span>;
-                    }
-                });
+                );
                 return (
                     <div key={i}>
                         {damage > 0 && (
