@@ -383,7 +383,7 @@ export const applyPerTurnEffects = (
     const results = [];
 
     actors.forEach((character: Combatant | null, i) => {
-        if (!character) {
+        if (!character || character.HP <= 0) {
             return character;
         }
 
