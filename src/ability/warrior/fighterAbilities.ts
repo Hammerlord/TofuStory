@@ -4,23 +4,23 @@ import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, MULTIPLIER_TYP
 
 export const rampage: Ability = {
     name: "Rampage",
-    resourceCost: 3,
+    resourceCost: 2,
     image: risingrage,
     area: 1,
     description: "Deal {{damage}} damage x 3 to random enemies in the area",
     actions: [
         {
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
