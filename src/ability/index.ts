@@ -1,6 +1,6 @@
 import { PLAYER_CLASSES } from "../Menu/types";
 import { darkImpale, darkSpear, darkThirst, evilEye, piercingDrive, spearSweep } from "./warrior/darkKnightAbilities";
-import { rampage, puncture, brandish, comboFury, chanceStrike, parry } from "./warrior/fighterAbilities";
+import { intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry } from "./warrior/fighterAbilities";
 import {
     bash,
     block,
@@ -79,7 +79,7 @@ export const JOB_CARD_MAP = {
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         description: "Go on the cutting-edge offensive with multi-hit combos",
         onJobUp: [brandish, puncture],
-        all: [rampage, puncture, brandish, comboFury, chanceStrike, parry],
+        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         description: "Drive back hordes of enemies with wide-reaching spear techniques",

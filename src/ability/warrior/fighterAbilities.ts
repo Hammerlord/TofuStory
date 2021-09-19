@@ -1,13 +1,13 @@
-import { brandishImage, chanceattack, combofuryImage, endureImage, punctureImage, risingrage } from "../../images";
+import { brandishImage, chanceattack, combofuryImage, endureImage, intrepidSlashImage, punctureImage, risingrage } from "../../images";
 import { wound } from "../Effects";
 import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 
-export const rampage: Ability = {
-    name: "Rampage",
+export const intrepidSlash: Ability = {
+    name: "Intrepid Slash",
     resourceCost: 2,
-    image: risingrage,
+    image: intrepidSlashImage,
     area: 1,
-    description: "Deal {{damage}} damage x 3 to random enemies in the area",
+    description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [
         {
             damage: 3,
