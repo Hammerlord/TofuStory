@@ -208,8 +208,8 @@ export const healingOverTime: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    healingPerTurn: 2,
-    duration: 4,
+    healingPerTurn: 1,
+    duration: 5,
 };
 
 export const silence: Effect = {

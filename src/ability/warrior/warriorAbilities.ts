@@ -419,7 +419,7 @@ export const closeCombat: Ability = {
 
 export const recovery: Ability = {
     name: "Recovery",
-    resourceCost: 2,
+    resourceCost: 1,
     image: selfRecoveryImage,
     actions: [
         {

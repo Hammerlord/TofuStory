@@ -22,6 +22,7 @@ const Buffs = ({ ability }) => {
                     onAttack = {},
                     preventArmorDecay,
                     leech = 0,
+                    healingPerTurn = 0,
                 } = effect;
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
@@ -92,6 +93,14 @@ const Buffs = ({ ability }) => {
                     } else {
                         effectComponents.push(<span>Leech {leech * 100}% damage as HP</span>);
                     }
+                }
+
+                if (healingPerTurn > 0) {
+                    effectComponents.push(
+                        <span>
+                            Heal for <Icon icon={<Heart />} text={healingPerTurn} /> per turn
+                        </span>
+                    );
                 }
 
                 if (effectComponents.length > 0) {
