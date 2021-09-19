@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
+import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
 import { halfEatenHotdog } from "../item/items";
@@ -38,6 +39,8 @@ const Main = () => {
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
+    // TESTING: Allow selection of one reward at the start
+    const [rewardsOpen, setRewardsOpen] = useState(true);
     const classes = useStyles();
 
     const handleSelectNode = (node, newLocation: number) => {
@@ -156,6 +159,9 @@ const Main = () => {
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}
+            {!isSelectingSecondaryJob && rewardsOpen && (
+                <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
+            )}
         </>
     );
 };
