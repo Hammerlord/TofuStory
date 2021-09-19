@@ -101,7 +101,7 @@ export const noobA: Enemy = {
     abilities: [
         {
             name: "Club!",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -131,7 +131,7 @@ export const noobB: Enemy = {
     abilities: [
         {
             name: "Flurry",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -152,7 +152,7 @@ export const noobB: Enemy = {
         },
         {
             name: "Potion",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -209,7 +209,7 @@ export const thiefAssassin: Enemy = {
         enemyHaste,
         {
             name: "Potion",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -262,7 +262,7 @@ export const wildBoar: Enemy = {
     abilities: [
         {
             name: "Wild Charge",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -292,7 +292,7 @@ export const axeStump: Enemy = {
     abilities: [
         {
             name: "Barbs",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -319,7 +319,7 @@ export const fireBoar: Enemy = {
     abilities: [
         {
             name: "Blazing Charge",
-            resourceCost: 4,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
