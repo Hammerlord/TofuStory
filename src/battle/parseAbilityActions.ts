@@ -470,7 +470,7 @@ const renewPersistentAuras = (characters: (Combatant | null)[]) => {
     return updated;
 };
 
-const getKOedCharacters = (prevChars, newChars) => {
+const getKOedCharacters = (prevChars: (Combatant | null)[], newChars: (Combatant | null)[]) => {
     if (!prevChars) {
         return newChars.filter((char: Combatant | null) => char?.HP === 0);
     }
@@ -576,7 +576,9 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
                 selectedSide: side,
             })
         );
-        const enemyActionEventProcs = procActionEvents(results[results.length - 2] || enemies, mostRecentEnemies());
+
+        const previousEnemies = results[results.length - 2]?.updatedEnemies || enemies;
+        const enemyActionEventProcs = procActionEvents(previousEnemies, mostRecentEnemies());
         if (enemyActionEventProcs) {
             results.push({
                 updatedEnemies: enemyActionEventProcs,
