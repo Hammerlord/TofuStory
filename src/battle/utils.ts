@@ -253,6 +253,7 @@ export const calculateDamage = ({
     }
 
     let damageFromEffects = 0;
+    let increaseDamageReceived = 0;
     if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
         damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, conditions }) => {
             const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
@@ -262,11 +263,11 @@ export const calculateDamage = ({
             }
             return acc;
         }, 0);
+        increaseDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     }
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, character: actor });
-    const damageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
-    const total = damage + damageReceived;
+    const total = damage + increaseDamageReceived;
     if (total < 0) {
         return 0;
     }
