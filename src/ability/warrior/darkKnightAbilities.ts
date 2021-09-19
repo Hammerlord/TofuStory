@@ -13,7 +13,7 @@ import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, 
 
 export const evilEye: Ability = {
     name: "Evil Eye",
-    resourceCost: 0,
+    resourceCost: 1,
     image: evileyeskill,
     minion: {
         name: "Evil Eye",
