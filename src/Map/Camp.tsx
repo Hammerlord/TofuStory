@@ -87,7 +87,7 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     useEffect(() => {
         updatePlayer({
             ...player,
-            HP: Math.min(player.HP + player.maxHP * HEALTH_REGAINED, player.maxHP),
+            HP: Math.min(Math.floor(player.HP + player.maxHP * HEALTH_REGAINED), player.maxHP),
         });
     }, []);
 
