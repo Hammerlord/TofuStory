@@ -72,7 +72,9 @@ const JobUp = ({ player, onSelectClass }) => {
     const [selectedJob, setSelectedJob] = useState(null);
 
     const handleClickSelect = () => {
-        onSelectClass({ job: selectedJob, jobUpAbilities: JOB_CARD_MAP[selectedJob].onJobUp });
+        //onSelectClass({ job: selectedJob, jobUpAbilities: JOB_CARD_MAP[selectedJob].onJobUp });
+        // Testing
+        onSelectClass({ job: selectedJob, jobUpAbilities: JOB_CARD_MAP[selectedJob].all });
     };
 
     return (

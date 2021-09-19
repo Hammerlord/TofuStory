@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
-import JobUp from "../character/jobUp";
+import JobUp from "../character/JobUp";
 import { warmush } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { ITEM_TYPES } from "../item/types";
