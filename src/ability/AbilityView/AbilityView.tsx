@@ -85,6 +85,7 @@ const useStyles = createUseStyles({
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
         color: "rgba(0, 0, 0, 0.95)",
         fontFamily: "Barlow",
+        lineHeight: "16px",
     },
     header: {
         display: "flex",

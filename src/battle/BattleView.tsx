@@ -832,6 +832,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             </TargetLineCanvas>
             {battleEndResult && (
                 <BattleEndOverlay
+                    player={player}
                     result={battleEndResult}
                     onClickContinue={onBattleEnd}
                     onUpdateDeck={onUpdateDeck}

@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
+import JobUp from "../character/jobUp";
 import { warmush } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { ITEM_TYPES } from "../item/types";
@@ -36,6 +37,7 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
     const classes = useStyles();
 
     const handleSelectNode = (node, newLocation: number) => {
@@ -62,6 +64,7 @@ const Main = () => {
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
+            secondaryClass: null,
             image: warmush,
             HP: 20,
             maxHP: 20,
@@ -88,6 +91,15 @@ const Main = () => {
                 inventory: newInventory,
             });
         }
+    };
+
+    const handleOnSelectClass = ({ job, jobUpAbilities }) => {
+        setDeck([...deck, ...jobUpAbilities]);
+        setPlayer({
+            ...player,
+            secondaryClass: job,
+        });
+        setIsSelectingSecondaryJob(false);
     };
 
     if (!player) {
@@ -143,6 +155,7 @@ const Main = () => {
                     )}
                 </div>
             )}
+            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}
         </>
     );
 };

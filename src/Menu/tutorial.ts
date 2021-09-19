@@ -1,5 +1,5 @@
 import { Ability } from "./../ability/types";
-import { slam, bash, slashBlast, block, warLeap, snailMinion } from "../ability/Abilities";
+import { slam, bash, slashBlast, block, warLeap, snailMinion } from "../ability/warrior/warriorAbilities";
 import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
 
 export interface Wave {

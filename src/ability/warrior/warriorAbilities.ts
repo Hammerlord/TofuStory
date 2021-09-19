@@ -1,63 +1,32 @@
 import {
-    advancedcharge,
-    blastImage,
-    blizzardcharge,
     blockImage,
-    brandishImage,
     brick,
     bricks,
-    chanceattack,
     closecombatImage,
-    combofuryImage,
-    darkimpaleImage,
-    darkspearImage,
-    darkThirstImage,
-    divinechargeImage,
-    endureImage,
-    evileyeminion,
-    evileyeskill,
     flag,
-    flamecharge,
     hammer,
-    Heart,
     hyperbody,
     ironbodyImage,
     ironwill as ironwillImage,
-    lightningcharge,
     mace,
     magiccrashImage,
-    piercingdriveImage,
     powerstanceImage,
-    punctureImage,
     rage,
-    risingrage,
     rushImage,
     selfRecoveryImage,
-    shieldmasteryImage,
     shieldred,
     shout,
     slashblast,
     snailImage as snailPortrait,
-    spearsweepImage,
     spikes,
     warleap,
     warmush,
     warriormasteryImage,
     weaponbooster,
     weaponmasteryImage,
-    Wolf,
-} from "../images";
-import { burn, chill, healingOverTime, silence, stealth, stun, thorns, wound } from "./Effects";
-import {
-    Ability,
-    AbilityCondition,
-    ACTION_TYPES,
-    ANIMATION_TYPES,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    MULTIPLIER_TYPES,
-    TARGET_TYPES,
-} from "./types";
+} from "../../images";
+import { healingOverTime, silence, stealth, stun, thorns } from "../Effects";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -155,31 +124,6 @@ export const shieldStrike: Ability = {
     ],
 };
 
-export const rampage: Ability = {
-    name: "Rampage",
-    resourceCost: 3,
-    image: risingrage,
-    area: 1,
-    description: "Deal {{damage}} damage x 3 to random enemies in the area",
-    actions: [
-        {
-            damage: 4,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-        {
-            damage: 4,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-        {
-            damage: 4,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-    ],
-};
-
 export const block: Ability = {
     name: "Block",
     resourceCost: 1,
@@ -214,18 +158,6 @@ export const bloodthirst: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
-};
-
-export const wolf: Ability = {
-    name: "Wolf",
-    resourceCost: 2,
-    minion: {
-        name: "Wolf",
-        image: Wolf,
-        maxHP: 3,
-        damage: 1,
-    },
-    actions: [],
 };
 
 export const spikedArmor: Ability = {
@@ -330,48 +262,6 @@ export const hammerang: Ability = {
     ],
 };
 
-export const puncture: Ability = {
-    name: "Puncture",
-    resourceCost: 1,
-    image: punctureImage,
-    actions: [
-        {
-            damage: 1,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            effects: [
-                {
-                    ...wound,
-                    duration: 3,
-                },
-            ],
-            area: 1,
-        },
-    ],
-};
-
-export const chanceStrike: Ability = {
-    name: "Chance Strike",
-    resourceCost: 1,
-    image: chanceattack,
-    actions: [
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                damage: 4,
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    } as AbilityCondition,
-                ],
-            },
-        },
-    ],
-};
-
 export const ironWill: Ability = {
     name: "Iron Will",
     resourceCost: 1,
@@ -419,154 +309,6 @@ export const hyperBody: Ability = {
     ],
 };
 
-export const flameCharge: Ability = {
-    name: "Flame Charge",
-    resourceCost: 1,
-    image: flamecharge,
-    actions: [
-        {
-            damage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            effects: [
-                {
-                    ...burn,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
-};
-
-export const blizzardCharge: Ability = {
-    name: "Blizzard Charge",
-    resourceCost: 1,
-    image: blizzardcharge,
-    actions: [
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                damage: 3,
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.BURN],
-                    },
-                ],
-            },
-            effects: [
-                {
-                    ...chill,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
-};
-
-export const lightningCharge: Ability = {
-    name: "Lightning Charge",
-    resourceCost: 2,
-    image: lightningcharge,
-    actions: [
-        {
-            area: 1,
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                damage: 3,
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.CHILL],
-                    },
-                ],
-            },
-            effects: [stun],
-        },
-    ],
-};
-
-export const frostFire: Ability = {
-    name: "Frostfire Within",
-    resourceCost: 0,
-    image: advancedcharge,
-    actions: [
-        {
-            addCards: [flameCharge, blizzardCharge].map((card) => ({ ...card, removeAfterTurn: true })),
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-        },
-    ],
-};
-
-export const evilEye: Ability = {
-    name: "Evil Eye",
-    resourceCost: 0,
-    image: evileyeskill,
-    minion: {
-        name: "Evil Eye",
-        image: evileyeminion,
-        damage: 0,
-        maxHP: 1,
-        effects: [
-            stealth,
-            {
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                description: "Heals a random ally for 1 each turn.",
-                healTargetPerTurn: 1,
-                duration: Infinity,
-                icon: Heart,
-            },
-        ],
-    },
-    actions: [],
-};
-
-export const brandish: Ability = {
-    name: "Brandish",
-    resourceCost: 1,
-    image: brandishImage,
-    description: "Hits twice",
-    actions: [
-        {
-            damage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            damage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
-    ],
-};
-
-export const comboFury: Ability = {
-    name: "Combo Fury",
-    resourceCost: 1,
-    image: combofuryImage,
-    description: "Deals 1 damage for every attack you made this turn, hitting twice",
-    actions: [
-        {
-            damage: 1,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-        },
-        {
-            damage: 1,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-        },
-    ],
-};
-
 export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
@@ -589,45 +331,6 @@ export const sweepingReach: Ability = {
                     },
                 },
             ],
-        },
-    ],
-};
-
-export const piercingDrive: Ability = {
-    name: "Piercing Drive",
-    resourceCost: 1,
-    image: piercingdriveImage,
-    actions: [
-        {
-            area: 1,
-            damage: 4,
-            secondaryDamage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                damage: 1,
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectType: [EFFECT_TYPES.STUN],
-                    },
-                ],
-            },
-        },
-    ],
-};
-
-export const spearSweep: Ability = {
-    name: "Spear Sweep",
-    resourceCost: 2,
-    image: spearsweepImage,
-    actions: [
-        {
-            area: 2,
-            damage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            effects: [stun],
         },
     ],
 };
@@ -698,54 +401,6 @@ export const berserk: Ability = {
     ],
 };
 
-export const darkImpale: Ability = {
-    name: "Dark Impale",
-    resourceCost: 2,
-    image: darkimpaleImage,
-    actions: [
-        {
-            damage: 3,
-            secondaryDamage: 1,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            effects: [
-                {
-                    ...wound,
-                    duration: 2,
-                },
-            ],
-            area: 2,
-        },
-    ],
-};
-
-export const divineCharge: Ability = {
-    name: "Divine Charge",
-    resourceCost: 1,
-    image: divinechargeImage,
-    description: "Hits again if the primary target is stunned",
-    actions: [
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-        },
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            conditions: [
-                {
-                    calculationTarget: "target",
-                    hasEffectType: [EFFECT_TYPES.STUN],
-                },
-            ],
-        },
-    ],
-};
-
 export const closeCombat: Ability = {
     name: "Close Combat",
     resourceCost: 2,
@@ -779,105 +434,6 @@ export const recovery: Ability = {
     ],
 };
 
-export const shieldMastery: Ability = {
-    name: "Shield Mastery",
-    resourceCost: 2,
-    image: shieldmasteryImage,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            armor: 8,
-            effects: [
-                {
-                    name: "Shield Mastery",
-                    icon: shieldmasteryImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    preventArmorDecay: true,
-                    armorReceived: 2,
-                    duration: 1,
-                },
-            ],
-        },
-    ],
-};
-
-export const blast: Ability = {
-    name: "Blast",
-    resourceCost: 3,
-    image: blastImage,
-    description: "Reduce cost by 1 for every ability used this turn, until Blast is used or discarded",
-    onAbilityUse: {
-        resourceCost: -1,
-    },
-    actions: [
-        {
-            damage: 2,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            effects: [
-                {
-                    ...burn,
-                    duration: 3,
-                },
-                {
-                    ...chill,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
-};
-
-export const darkThirst: Ability = {
-    name: "Dark Thirst",
-    resourceCost: 1,
-    image: darkThirstImage,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Dark Thirst",
-                    icon: darkThirstImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    damage: 1,
-                    duration: 1,
-                    leech: 0.5,
-                },
-            ],
-        },
-    ],
-};
-
-export const darkSpear: Ability = {
-    name: "Dark Spear",
-    resourceCost: 3,
-    image: darkspearImage,
-    actions: [
-        {
-            damage: 7,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            effects: [{ ...silence }],
-            bonus: {
-                damage: 5,
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        armor: 0,
-                        comparator: "gt",
-                    } as AbilityCondition,
-                ],
-            },
-        },
-    ],
-};
-
 export const magicCrash: Ability = {
     name: "Magic Crash",
     resourceCost: 2,
@@ -904,21 +460,6 @@ export const dash: Ability = {
             drawCards: {
                 amount: 2,
             },
-        },
-    ],
-};
-
-export const parry: Ability = {
-    name: "Parry",
-    resourceCost: 1,
-    image: endureImage,
-    description: "(+1 armor for every attack made this turn)",
-    actions: [
-        {
-            armor: 1,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
         },
     ],
 };

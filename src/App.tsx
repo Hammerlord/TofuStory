@@ -4,6 +4,7 @@ import Main from "./Menu/Main";
 const useStyles = createUseStyles({
     app: {
         fontFamily: "Barlow, Arial",
+        userSelect: "none",
         "& button": {
             fontFamily: "Barlow, Arial",
             cursor: "pointer",

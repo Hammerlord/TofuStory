@@ -2,51 +2,7 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import {
-    anger,
-    bash,
-    berserk,
-    blast,
-    blizzardCharge,
-    block,
-    bloodthirst,
-    brandish,
-    bunchOBricks,
-    chanceStrike,
-    closeCombat,
-    comboFury,
-    darkImpale,
-    darkSpear,
-    darkThirst,
-    dash,
-    divineCharge,
-    evilEye,
-    flameCharge,
-    frostFire,
-    hammerang,
-    hyperBody,
-    ironBody,
-    ironWill,
-    lightningCharge,
-    magicCrash,
-    parry,
-    piercingDrive,
-    puncture,
-    rampage,
-    recovery,
-    rush,
-    sharpen,
-    shieldMastery,
-    shieldStrike,
-    slam,
-    slashBlast,
-    spearSweep,
-    spikedArmor,
-    sweepingReach,
-    warBanner,
-    warLeap,
-    yell,
-} from "../ability/Abilities";
+import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { shuffle } from "../utils";
 import Overlay from "../view/Overlay";
@@ -81,57 +37,12 @@ const useStyles = createUseStyles({
     },
 });
 
-const warriorAbilities = [
-    bash,
-    slashBlast,
-    warLeap,
-    slam,
-    anger,
-    rampage,
-    shieldStrike,
-    block,
-    puncture,
-    bloodthirst,
-    warBanner,
-    spikedArmor,
-    chanceStrike,
-    yell,
-    bunchOBricks,
-    hammerang,
-    sharpen,
-    ironWill,
-    hyperBody,
-    blizzardCharge,
-    flameCharge,
-    lightningCharge,
-    frostFire,
-    evilEye,
-    brandish,
-    comboFury,
-    sweepingReach,
-    piercingDrive,
-    spearSweep,
-    rush,
-    berserk,
-    darkImpale,
-    divineCharge,
-    closeCombat,
-    recovery,
-    shieldMastery,
-    blast,
-    darkThirst,
-    darkSpear,
-    magicCrash,
-    dash,
-    parry,
-    ironBody,
-];
-
-const Rewards = ({ deck, potentialAbilities = warriorAbilities, updateDeck, onClose }) => {
+const Rewards = ({ deck, player, updateDeck, onClose }) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
     useEffect(() => {
+        const potentialAbilities = JOB_CARD_MAP[player.class].concat(JOB_CARD_MAP[player.secondaryClass] || []);
         const shuffled = shuffle(potentialAbilities);
         // Use deck to determine which abilities have a higher chance to roll
         setRolledAbiliies(shuffled.slice(0, 3));

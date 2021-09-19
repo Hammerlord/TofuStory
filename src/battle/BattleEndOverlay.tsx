@@ -22,14 +22,14 @@ const useStyles = createUseStyles({
     },
 });
 
-const BattleEndOverlay = ({ result, onClickContinue, rewards, deck, onUpdateDeck }) => {
+const BattleEndOverlay = ({ result, onClickContinue, rewards, deck, onUpdateDeck, player }) => {
     const classes = useStyles();
 
     return (
         <Overlay>
             {result === "Victory" && (
                 <div className={classes.inner}>
-                    <Rewards deck={deck} updateDeck={onUpdateDeck} onClose={() => onClickContinue()} />
+                    <Rewards deck={deck} player={player} updateDeck={onUpdateDeck} onClose={() => onClickContinue()} />
                 </div>
             )}
             {result === "Defeat" && (
