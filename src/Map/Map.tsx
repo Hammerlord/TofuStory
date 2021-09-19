@@ -35,15 +35,6 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))",
         cursor: "pointer",
     },
-    playerLocationMarker: {
-        maxWidth: "36px",
-        maxHeight: "36px",
-        position: "absolute",
-        "& img": {
-            maxWidth: "36px",
-            maxHeight: "36px",
-        },
-    },
 });
 
 const NODE_ICON_SIZE = 16;
@@ -161,17 +152,8 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
                                                 y={y - NODE_ICON_SIZE / 2}
                                             />
                                         )}
+                                        {placePlayerMarker(i) && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
                                     </g>
-                                    {placePlayerMarker(i) && (
-                                        <image
-                                            href={playerImage}
-                                            className={classes.playerLocationMarker}
-                                            height="36"
-                                            width="36"
-                                            x={node.x - 18}
-                                            y={node.y - 50}
-                                        />
-                                    )}
                                 </Fragment>
                             );
                         })}
