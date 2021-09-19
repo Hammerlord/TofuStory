@@ -505,7 +505,7 @@ const procActionEvents = (prevChars, newChars): (Combatant | null)[] => {
             };
         }, {} as any);
 
-        if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects.length) {
+        if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects?.length) {
             return applyActionToTarget({
                 target: character,
                 action: {
