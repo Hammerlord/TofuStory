@@ -130,7 +130,7 @@ export const block: Ability = {
     image: blockImage,
     actions: [
         {
-            armor: 2,
+            armor: 3,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
