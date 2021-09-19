@@ -111,9 +111,9 @@ export const comboFury: Ability = {
 
 export const parry: Ability = {
     name: "Parry",
-    resourceCost: 1,
+    resourceCost: 0,
     image: endureImage,
-    description: "(+1 armor for every attack made this turn)",
+    description: "(Armor multiplied by the number of attacks made this turn)",
     actions: [
         {
             armor: 1,

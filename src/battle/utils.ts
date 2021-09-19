@@ -200,13 +200,13 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
     });
 };
 
-export const getMultiplier = ({ actor, action }: { actor?: Combatant; action: Action }): number => {
-    if (!action.multiplier || !actor) {
+export const getMultiplier = ({ character, action }: { character?: Combatant; action: Action }): number => {
+    if (!action.multiplier || !character) {
         return 1;
     }
 
     if (action.multiplier === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
-        return actor.turnHistory.filter(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK).length + 1;
+        return character.turnHistory.filter(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK).length + 1;
     }
 
     return 1;
@@ -264,7 +264,7 @@ export const calculateDamage = ({
         }, 0);
     }
 
-    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor });
+    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, character: actor });
     const damageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     const total = damage + damageReceived;
     if (total < 0) {
@@ -279,7 +279,7 @@ export const calculateArmor = ({ target, action }): number => {
     }
     const targetArmor = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmor + (action.armor || 0);
-    return Math.max(0, armor);
+    return Math.max(0, armor * getMultiplier({ action, character: target }));
 };
 
 /**

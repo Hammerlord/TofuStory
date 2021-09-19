@@ -270,25 +270,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             return;
         }
 
-        const getUpdated = (characters) => {
-            return characters.map((character) => {
-                if (!character) {
-                    return character;
-                }
-
-                const newActions = [];
-                events.forEach(({ action, actorId }) => {
-                    if (action && actorId === character.id) {
-                        newActions.push(action);
-                    }
-                });
-                return { ...character, turnHistory: character.turnHistory.concat(newActions) };
-            });
-        };
-
         setActionQueue((prev) => [...prev, ...events]);
-        setAllies(getUpdated(lastEvent.updatedAllies));
-        setEnemies(getUpdated(lastEvent.updatedEnemies));
+        setAllies(lastEvent.updatedAllies);
+        setEnemies(lastEvent.updatedEnemies);
     };
 
     useEffect(() => {

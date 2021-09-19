@@ -308,6 +308,16 @@ export const parseAction = ({
         updateActor(removeStealth);
     }
 
+    friendly = friendly.map((char) => {
+        if (char?.id === actorId) {
+            return {
+                ...char,
+                turnHistory: [...char.turnHistory, action],
+            };
+        }
+        return char;
+    });
+
     if (movement) {
         const index = friendly.findIndex((combatant) => combatant?.id === actorId);
         [friendly[index], friendly[selectedIndex]] = [friendly[selectedIndex], friendly[index]];
