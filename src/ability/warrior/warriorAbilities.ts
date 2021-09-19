@@ -428,6 +428,7 @@ export const recovery: Ability = {
             effects: [
                 {
                     ...healingOverTime,
+                    icon: selfRecoveryImage,
                 },
             ],
         },

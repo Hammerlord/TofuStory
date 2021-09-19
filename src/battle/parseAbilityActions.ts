@@ -382,7 +382,7 @@ export const applyPerTurnEffects = (
 ): { actors: (Combatant | null)[]; targets: (Combatant | null)[]; action: Action; actorId: string }[] => {
     const results = [];
 
-    actors.forEach((character: Combatant | null, i) => {
+    actors.forEach((character: Combatant | null, i: number) => {
         if (!character || character.HP <= 0) {
             return character;
         }
@@ -400,15 +400,16 @@ export const applyPerTurnEffects = (
         }
 
         // TODO damageTargetPerTurn
-        const { healTargetPerTurn, damageTargetPerTurn } = character.effects.reduce(
+        const { healTargetPerTurn, damageTargetPerTurn, healingPerTurn } = character.effects.reduce(
             (acc, effect: Effect) => {
-                const { healTargetPerTurn = 0, damageTargetPerTurn = 0 } = effect;
+                const { healTargetPerTurn = 0, damageTargetPerTurn = 0, healingPerTurn = 0 } = effect;
                 return {
                     healTargetPerTurn: acc.healTargetPerTurn + healTargetPerTurn,
                     damageTargetPerTurn: acc.damageTargetPerTurn + damageTargetPerTurn,
+                    healingPerTurn: acc.healingPerTurn + healingPerTurn,
                 };
             },
-            { healTargetPerTurn: 0, damageTargetPerTurn: 0 }
+            { healTargetPerTurn: 0, damageTargetPerTurn: 0, healingPerTurn: 0 }
         );
 
         if (healTargetPerTurn > 0) {
@@ -430,10 +431,7 @@ export const applyPerTurnEffects = (
                             targetIndex: i,
                             selectedIndex: selectedIndex,
                             actor: character,
-                            action: {
-                                type: ACTION_TYPES.EFFECT,
-                                healing: healTargetPerTurn,
-                            },
+                            action,
                         });
                     }),
                     targets,
@@ -441,6 +439,31 @@ export const applyPerTurnEffects = (
                     action,
                 });
             }
+        }
+
+        if (healingPerTurn > 0) {
+            const action = {
+                type: ACTION_TYPES.EFFECT,
+                healing: healingPerTurn,
+            };
+            results.push({
+                actors: friendly.map((actor, j) => {
+                    if (!actor || j !== i) {
+                        return actor;
+                    }
+
+                    return applyActionToTarget({
+                        target: actor,
+                        targetIndex: i,
+                        selectedIndex: j,
+                        actor: character,
+                        action,
+                    });
+                }),
+                targets,
+                actorId: character.id,
+                action,
+            });
         }
     });
 
