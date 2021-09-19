@@ -251,7 +251,7 @@ export const octopus: Enemy = {
     name: "Octopus",
     image: octopusImage,
     maxHP: 12,
-    damage: 2,
+    damage: 1,
 };
 
 export const wildBoar: Enemy = {
@@ -274,16 +274,16 @@ export const wildBoar: Enemy = {
     ],
 };
 
-export const stump = {
+export const stump: Enemy = {
     name: "Stump",
     image: stumpImage,
     maxHP: 15,
     armor: 5,
-    damage: 2,
+    damage: 1,
     effects: [hardy],
 };
 
-export const axeStump = {
+export const axeStump: Enemy = {
     name: "Axe Stump",
     image: axestumpImage,
     maxHP: 20,
@@ -311,7 +311,7 @@ export const axeStump = {
     effects: [hardy],
 };
 
-export const fireBoar = {
+export const fireBoar: Enemy = {
     name: "Fire Boar",
     image: fireboarImage,
     maxHP: 30,
