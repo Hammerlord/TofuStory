@@ -42,7 +42,7 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
     useEffect(() => {
-        const potentialAbilities = JOB_CARD_MAP[player.class].concat(JOB_CARD_MAP[player.secondaryClass] || []);
+        const potentialAbilities = JOB_CARD_MAP[player.class].all.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
         const shuffled = shuffle(potentialAbilities);
         // Use deck to determine which abilities have a higher chance to roll
         setRolledAbiliies(shuffled.slice(0, 3));
