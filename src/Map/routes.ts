@@ -98,8 +98,8 @@ export const routeLithToKerning = {
 
 export const routeKerningToPerion = {
     enemies: {
-        easy: [blueSnail, octopus],
-        normal: [stump, redSnail, wildBoar],
+        easy: [stump, octopus],
+        normal: [blueSnail, redSnail, wildBoar],
         hard: [axeStump, orangeMushroom],
         hardest: [fireBoar],
     } as MapEnemies,
