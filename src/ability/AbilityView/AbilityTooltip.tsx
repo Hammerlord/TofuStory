@@ -135,7 +135,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     }
 
     return (
-        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={1000}>
+        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500}>
             {children}
         </Tooltip>
     );
