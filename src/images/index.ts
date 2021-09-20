@@ -29,6 +29,7 @@ export { default as WorldMap } from "./1f5fa.svg";
 export { default as SpeechBubble } from "./1f4ac.svg";
 export { default as JapaneseOgre } from "./1f479.svg";
 export { default as AlternateJapaneseOgre } from "./1f479-alternate.svg";
+export { default as MoneyBag } from "./1f4b0.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -119,3 +120,9 @@ export { default as noobClubB } from "./noobclub-b.png";
 export { default as leetSin } from "./leetsin.png";
 export { default as mapleleaves } from "./mapleleaves.png";
 export { default as subi } from "./subi.png";
+export { default as goldrichieImage } from "./goldrichie.png";
+export { default as wizardImage } from "./guardwizard.png";
+export { default as archerImage } from "./guardarcher.png";
+export { default as warriorImage } from "./guardwarrior.png";
+export { default as banditImage } from "./guardbandit.png";
+export { default as mesoCoinImage } from "./meso.png";

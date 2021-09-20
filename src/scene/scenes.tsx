@@ -35,15 +35,3 @@ const lithEventsNoob2 = [
         ],
     },
 ];
-
-const lithEventsKim = [
-    {
-        dialog: [
-            "Ahh! A monster!",
-            "I knew I should have hired an adventurer, but every last one of them says they 'hate escort quests'!",
-            "Well, I can't help that I'm a merchant in need of escorting! If I could dash and jump around like those youngsters, I wouldn't need to hire anyone, now would I?",
-            "...Wait, you want to trade? Please tell me you want to trade, Mr., um, Mushroom sir.",
-        ],
-        responses: ["'Trade' with Mr. Kim.", "Leave"],
-    },
-];

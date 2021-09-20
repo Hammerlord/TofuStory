@@ -1,6 +1,6 @@
 import { createRef, Fragment, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Camping, CrossedSwords, map } from "../images";
+import { Camping, CrossedSwords, map, MoneyBag } from "../images";
 import Overlay from "../view/Overlay";
 import { generateWaves } from "./encounters";
 import Pan from "./Pan";
@@ -43,7 +43,7 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
     const classes = useStyles();
     const [generatedRoute] = useState(
         route.nodes.map((node) => {
-            if (node.type === NODE_TYPES.encounter) {
+            if (node.type === NODE_TYPES.ENCOUNTER) {
                 return { ...node, waves: generateWaves(node, route.enemies) };
             }
             return node;
@@ -136,7 +136,7 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
                                     )}
                                     <g x={x - 8} y={y - 8} onClick={() => handleClickNode(node, i)} className={classes.routeNode}>
                                         <circle cx={x} cy={y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
-                                        {node.type === NODE_TYPES.encounter && (
+                                        {node.type === NODE_TYPES.ENCOUNTER && (
                                             <CrossedSwords
                                                 width={NODE_ICON_SIZE}
                                                 height={NODE_ICON_SIZE}
@@ -144,8 +144,16 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
                                                 y={y - NODE_ICON_SIZE / 2}
                                             />
                                         )}
-                                        {node.type === NODE_TYPES.restingZone && (
+                                        {node.type === NODE_TYPES.RESTING_ZONE && (
                                             <Camping
+                                                width={NODE_ICON_SIZE}
+                                                height={NODE_ICON_SIZE}
+                                                x={x - NODE_ICON_SIZE / 2}
+                                                y={y - NODE_ICON_SIZE / 2}
+                                            />
+                                        )}
+                                        {node.type === NODE_TYPES.SHOP && (
+                                            <MoneyBag
                                                 width={NODE_ICON_SIZE}
                                                 height={NODE_ICON_SIZE}
                                                 x={x - NODE_ICON_SIZE / 2}

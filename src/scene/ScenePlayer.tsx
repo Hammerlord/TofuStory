@@ -131,12 +131,14 @@ const ScenePlayer = ({
     updatePlayer,
     onBattle,
     onExit,
+    onShop,
 }: {
     scene: Scene;
     player: any;
     updatePlayer: Function;
     onBattle: Function;
     onExit: Function;
+    onShop: Function;
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
@@ -153,13 +155,16 @@ const ScenePlayer = ({
         }
     };
 
-    const handleClickResponse = ({ next, encounter, isExit }: ScriptResponse) => {
+    const handleClickResponse = ({ next, encounter, isExit, shop }: ScriptResponse) => {
         if (next) {
             setScript(next);
             setDialogIndex(0);
         }
         if (encounter) {
             onBattle(encounter);
+        }
+        if (shop) {
+            onShop(shop);
         }
         if (isExit) {
             onExit();
@@ -221,6 +226,7 @@ const ScenePlayer = ({
                                     <span>
                                         {response.text} {response.isExit && "[Leave]"}
                                         {response.encounter && "[Fight]"}
+                                        {response.shop && "[Shop]"}
                                     </span>
                                 </div>
                             ))}

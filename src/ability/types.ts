@@ -2,6 +2,7 @@ export enum TARGET_TYPES {
     HOSTILE = "hostile",
     SELF = "self",
     FRIENDLY = "friendly",
+    FRIENDLY_EXCLUDE_SELF = "friendly-excluding-self",
     RANDOM_HOSTILE = "random-hostile",
 }
 

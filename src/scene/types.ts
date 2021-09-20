@@ -16,6 +16,12 @@ export interface ScriptResponse {
     };
     next?: ScriptNode[];
     notoriety?: number;
+    shop?: {
+        merchant: {
+            name: string;
+        };
+        hasDiscount?: boolean;
+    };
 }
 
 export interface ScriptNode {
@@ -26,4 +32,11 @@ export interface ScriptNode {
     dialog: string[];
     responses?: ScriptResponse[];
     items?: Item[];
+}
+
+export interface MerchantScenes {
+    intro: Scene;
+    robbed: Scene;
+    notorious: Scene;
+    helped: Scene;
 }

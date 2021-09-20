@@ -12,8 +12,10 @@ import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
+import { MerchantScenes } from "../scene/types";
 import ClassSelection from "./ClassSelection";
 import Header from "./Header";
+import Shop from "./Shop";
 import { PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
@@ -38,15 +40,35 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
-    const [rewardsOpen, setRewardsOpen] = useState(true);
+    const [rewardsOpen, setRewardsOpen] = useState(false);
+    const [shop, setShop] = useState(null);
+    const [visitedNPCs, setVisitedNPCs] = useState({});
     const classes = useStyles();
+
+    const handleShopNode = ({ npc }: { npc: { id: string; scenes: MerchantScenes } }) => {
+        const { id, scenes } = npc;
+        if (!visitedNPCs[id]) {
+            setScene(scenes.intro);
+            setVisitedNPCs((prev) => ({
+                ...prev,
+                [id]: {
+                    ...prev[id],
+                    spoken: 1,
+                },
+            }));
+            return;
+        }
+        const { spoken = 0, fought = 0, helped = 0 } = visitedNPCs[id] || {}; //TODO
+    };
 
     const handleSelectNode = (node, newLocation: number) => {
         setLocation(newLocation);
-        if (node.type === NODE_TYPES.encounter) {
+        if (node.type === NODE_TYPES.ENCOUNTER) {
             setEncounter(node);
+        } else if (node.type === NODE_TYPES.SHOP) {
+            handleShopNode(node);
         } else {
             setIsResting(true);
         }
@@ -129,6 +151,7 @@ const Main = () => {
                                 updatePlayer={setPlayer}
                                 onExit={() => setScene(null)}
                                 onBattle={setEncounter}
+                                onShop={setShop}
                             />
                             <Header player={player} deck={deck} />
                         </>
@@ -156,6 +179,7 @@ const Main = () => {
                             <Header player={player} deck={deck} onUseItem={handleUseItem} />
                         </>
                     )}
+                    {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}

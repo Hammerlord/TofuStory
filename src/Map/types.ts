@@ -1,9 +1,11 @@
 import { Enemy } from "../enemy/enemy";
+import { MerchantScenes } from "../scene/types";
 
 export enum NODE_TYPES {
-    encounter = "encounter",
-    event = "event",
-    restingZone = "restingZone",
+    ENCOUNTER = "encounter",
+    EVENT = "event",
+    RESTING_ZONE = "restingZone",
+    SHOP = "shop",
 }
 
 export interface RouteNode {
@@ -11,7 +13,11 @@ export interface RouteNode {
     y: number;
     type: NODE_TYPES;
     difficulty?: ENCOUNTER_DIFFICULTY | ENCOUNTER_DIFFICULTY[];
-    encounters: Enemy[][];
+    encounters?: Enemy[][];
+    npc: {
+        id: string;
+        scenes: MerchantScenes;
+    };
     //next: RouteNode[];
 }
 
