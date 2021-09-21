@@ -12,11 +12,11 @@ import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
-import { MerchantScenes } from "../scene/types";
+import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
-import { PLAYER_CLASSES } from "./types";
+import { NPCTracker, PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
     mapContainer: {
@@ -47,20 +47,29 @@ const Main = () => {
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const classes = useStyles();
 
-    const handleShopNode = ({ npc }: { npc: { id: string; scenes: MerchantScenes } }) => {
-        const { id, scenes } = npc;
-        if (!visitedNPCs[id]) {
+    const handleShopNode = ({ npc }: { npc: NPC }) => {
+        const { character, scenes } = npc;
+        const visited = visitedNPCs[character] as NPCTracker;
+        if (!visited) {
             setScene(scenes.intro);
             setVisitedNPCs((prev) => ({
                 ...prev,
-                [id]: {
-                    ...prev[id],
+                [character]: {
+                    ...prev[character],
                     spoken: 1,
                 },
             }));
             return;
         }
-        const { spoken = 0, fought = 0, helped = 0 } = visitedNPCs[id] || {}; //TODO
+
+        // @ts-ignore - Using defaults if it doesn't exist
+        const { spoken = 0, fought = 0, helped = 0 } = visited || {}; //TODO
+        if (fought > 0) {
+            setScene(scenes.fought);
+            return;
+        }
+
+        setScene(scenes.notorious);
     };
 
     const handleSelectNode = (node, newLocation: number) => {
@@ -127,6 +136,22 @@ const Main = () => {
         setIsSelectingSecondaryJob(false);
     };
 
+    const handleSceneBattle = (encounter) => {
+        const { characters, ...other } = encounter;
+        setEncounter(other);
+        const newVisited = characters.reduce((acc, character: string) => {
+            return {
+                ...acc,
+                [character]: {
+                    ...visitedNPCs[character],
+                    fought: (visitedNPCs[character]?.fought || 0) + 1,
+                },
+            };
+        }, visitedNPCs);
+        console.log("newvisited");
+        setVisitedNPCs(newVisited);
+    };
+
     if (!player) {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
@@ -150,7 +175,7 @@ const Main = () => {
                                 player={player}
                                 updatePlayer={setPlayer}
                                 onExit={() => setScene(null)}
-                                onBattle={setEncounter}
+                                onBattle={handleSceneBattle}
                                 onShop={setShop}
                             />
                             <Header player={player} deck={deck} />

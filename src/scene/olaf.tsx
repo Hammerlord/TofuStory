@@ -61,7 +61,8 @@ const Olaf = ({ player }) => {
     );
 };
 
-const olafFight: { waves: Wave[] } = {
+const olafFight: { characters: string[]; waves: Wave[] } = {
+    characters: [olafNPC.name],
     waves: [
         {
             enemies: [null, null, olaf, null, null],
@@ -85,6 +86,7 @@ const postFight = [
 
 export const lithEventsOlaf: Scene = {
     scene: Olaf,
+    characters: [olafNPC.name],
     script: [
         {
             speaker: olafNPC,
@@ -146,7 +148,10 @@ export const lithEventsOlaf: Scene = {
                                 "Ha ha! What's with the tough act, little creature?",
                                 "Just warning you, I'm not one of those newbie adventurers you can pick on.",
                             ],
-                            responses: [{ text: "Fight!", encounter: olafFight, notoriety: 1, next: postFight }],
+                            responses: [
+                                { text: "Fight!", encounter: olafFight, notoriety: 1, next: postFight },
+                                { text: "Leave before you attract any more attention.", isExit: true },
+                            ],
                         },
                     ],
                 },

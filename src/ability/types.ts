@@ -2,7 +2,6 @@ export enum TARGET_TYPES {
     HOSTILE = "hostile",
     SELF = "self",
     FRIENDLY = "friendly",
-    FRIENDLY_EXCLUDE_SELF = "friendly-excluding-self",
     RANDOM_HOSTILE = "random-hostile",
 }
 
@@ -177,6 +176,7 @@ export interface Action {
     multiplier?: MULTIPLIER_TYPES;
     animation?: ANIMATION_TYPES;
     conditions?: AbilityCondition[];
+    excludePrimaryTarget?: boolean;
 }
 
 export interface Ability {
@@ -195,6 +195,7 @@ export interface Ability {
     onAbilityUse?: {
         resourceCost?: number;
     };
+    dialog?: string;
 }
 
 /**

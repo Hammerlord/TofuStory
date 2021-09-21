@@ -1,14 +1,13 @@
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { rally } from "../enemy/abilities";
-import { MerchantScenes, ScriptNode } from "./types";
-import { TARGET_TYPES } from "../ability/types";
-import { ACTION_TYPES } from "../ability/types";
+import { Enemy } from "../enemy/enemy";
+import { goldrichieImage, warriorImage, weaponmasteryImage, wizardImage } from "../images";
 import { Wave } from "../Menu/tutorial";
-import { goldrichieImage, warriorImage, wizardImage } from "../images";
+import { NPC } from "./types";
 
-const goldRichie = {
+const goldRichie: Enemy = {
     name: "Gold Richie",
     image: goldrichieImage,
-    HP: 10,
     maxHP: 10,
     damage: 0,
     abilities: [
@@ -25,7 +24,8 @@ const goldRichie = {
     ],
 };
 
-const goldRichieFight1: { waves: Wave[] } = {
+const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
+    characters: [goldRichie.name],
     waves: [
         {
             enemies: [null, null, goldRichie, null, null],
@@ -33,11 +33,11 @@ const goldRichieFight1: { waves: Wave[] } = {
     ],
 };
 
-const goldRichie2 = {
+const goldRichie2: Enemy = {
     name: "Gold Richie",
     image: goldrichieImage,
-    HP: 10,
     maxHP: 10,
+    armor: 15,
     damage: 0,
     abilities: [
         {
@@ -51,18 +51,22 @@ const goldRichie2 = {
             ],
         },
         {
+            name: "Bolster",
+            dialog: "The one who personally defeats that mushroom gets a hefty bonus!",
             actions: [
                 {
-                    name: "Bolster",
-                    dialog: "The one who personally defeats that mushroom gets a hefty bonus!",
                     type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.FRIENDLY_EXCLUDE_SELF,
+                    target: TARGET_TYPES.SELF,
+                    excludePrimaryTarget: true,
                     area: 3,
                     effects: [
                         {
+                            icon: weaponmasteryImage,
                             name: "Bolster",
                             damage: 1,
                             duration: 3,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.BUFF,
                         },
                     ],
                 },
@@ -88,19 +92,21 @@ const adventurerIceWizard = {
     damage: 3,
 };
 
-const goldRichieFight2: { waves: Wave[] } = {
+const goldRichieFight2: { characters: string[]; waves: Wave[] } = {
+    characters: [goldRichie.name],
     waves: [
         {
-            enemies: [null, adventurerFighter, goldRichie, adventurerIceWizard, null],
+            enemies: [null, adventurerFighter, goldRichie2, adventurerIceWizard, null],
         },
     ],
 };
 
-export const goldRichieMerchant = {
-    id: goldRichie.name,
+export const goldRichieMerchant: NPC = {
+    character: goldRichie.name,
     scenes: {
         intro: {
             scene: () => <div />,
+            characters: [goldRichie.name],
             script: [
                 {
                     speaker: goldRichie,
@@ -124,13 +130,14 @@ export const goldRichieMerchant = {
                             },
                         },
                         { text: "Offer to help Gold Richie reach his destination", isExit: true },
-                        { text: "Mug Gold Richie", encounter: goldRichieFight1 }, // accept function?
+                        { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, notoriety: 1 }, // accept function?
                     ],
                 },
             ],
         },
-        robbed: {
+        fought: {
             scene: () => <div />,
+            characters: [goldRichie.name],
             script: [
                 {
                     speaker: goldRichie,
@@ -146,7 +153,7 @@ export const goldRichieMerchant = {
                     speaker: goldRichie,
                     dialog: ["Guards!"],
                     responses: [
-                        { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2 },
+                        { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, notoriety: 1 },
                         { text: "Give up all your mesos", isExit: true },
                     ],
                 },
@@ -154,7 +161,7 @@ export const goldRichieMerchant = {
         },
         notorious: {
             scene: () => <div />,
-
+            characters: [goldRichie.name],
             script: [
                 {
                     speaker: goldRichie,
@@ -175,7 +182,7 @@ export const goldRichieMerchant = {
         },
         helped: {
             scene: () => <div />,
-
+            characters: [goldRichie.name],
             script: [
                 {
                     speaker: goldRichie,
@@ -197,5 +204,5 @@ export const goldRichieMerchant = {
                 },
             ],
         },
-    } as MerchantScenes,
+    },
 };

@@ -184,6 +184,19 @@ const ScenePlayer = ({
     };
 
     const SceneBackdrop = scene.scene;
+    const getResponseAffix = (response: ScriptResponse) => {
+        if (response.encounter) {
+            return "[Fight]";
+        }
+
+        if (response.isExit) {
+            return "[Leave]";
+        }
+
+        if (response.shop) {
+            return "[Shop]";
+        }
+    };
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
@@ -224,9 +237,7 @@ const ScenePlayer = ({
                                     onClick={() => handleClickResponse(response)}
                                 >
                                     <span>
-                                        {response.text} {response.isExit && "[Leave]"}
-                                        {response.encounter && "[Fight]"}
-                                        {response.shop && "[Shop]"}
+                                        {response.text} {getResponseAffix(response)}
                                     </span>
                                 </div>
                             ))}

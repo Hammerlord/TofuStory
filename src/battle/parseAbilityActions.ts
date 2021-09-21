@@ -231,8 +231,13 @@ export const parseAction = ({
 
     const actor = friendly.find((character) => character?.id === actorId);
     const area = calculateActionArea({ action, actor });
-    const isInArea = (character, i) => {
-        return character && i >= selectedIndex - area && i <= selectedIndex + area;
+    const isInArea = (character, i: number): boolean => {
+        const inArea = character && i >= selectedIndex - area && i <= selectedIndex + area;
+        if (action.excludePrimaryTarget) {
+            return inArea && i !== selectedIndex;
+        }
+
+        return inArea;
     };
 
     let thornsDamage = 0;

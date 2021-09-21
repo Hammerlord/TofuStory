@@ -2,6 +2,7 @@ import { Enemy } from "../enemy/enemy";
 import { Item } from "../item/types";
 
 export interface Scene {
+    characters: string[]; // Character names to mark who you have interacted with
     script: ScriptNode[];
     scene: ({ player }: { player: any }) => JSX.Element;
 }
@@ -10,6 +11,7 @@ export interface ScriptResponse {
     text: string;
     isExit?: boolean;
     encounter?: {
+        characters: string[];
         waves: {
             enemies: Enemy[];
         }[];
@@ -34,9 +36,12 @@ export interface ScriptNode {
     items?: Item[];
 }
 
-export interface MerchantScenes {
-    intro: Scene;
-    robbed: Scene;
-    notorious: Scene;
-    helped: Scene;
+export interface NPC {
+    character: string;
+    scenes: {
+        intro: Scene;
+        fought: Scene;
+        notorious: Scene;
+        helped: Scene;
+    };
 }
