@@ -1,3 +1,4 @@
+import { Enemy } from "./enemy";
 import { createCombatant } from "./createEnemy";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
@@ -178,7 +179,10 @@ const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
     ];
 };
 
-const getSyntheticAttack = (actor) => {
+const getBasicAttack = (actor: Enemy): Ability => {
+    if (actor.attack) {
+        return actor.attack;
+    }
     return {
         name: "Attack",
         actions: [
@@ -217,7 +221,7 @@ const pickAbility = ({ actor, enemies }): Ability => {
     }
     if (!ability) {
         if (actor.damage > 0) {
-            regularAbilities.push(...Array.from({ length: 3 }).map(() => getSyntheticAttack(actor)));
+            regularAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
         }
 
         ability = getRandomItem(regularAbilities);

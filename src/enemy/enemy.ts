@@ -30,6 +30,8 @@ export interface Enemy {
     damage: number;
     effects?: Effect[];
     resources?: number;
+    /** Enemy basic attack. If not provided, one will be generated for the enemy. */
+    attack?: Ability;
 }
 
 export const snail: Enemy = {
@@ -169,6 +171,18 @@ export const thiefAssassin: Enemy = {
     maxHP: 40,
     image: leetSin,
     damage: 2,
+    attack: {
+        name: "Attack",
+        actions: [
+            {
+                type: ACTION_TYPES.RANGE_ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                animation: ANIMATION_TYPES.ONE_WAY,
+                damage: 2,
+                icon: subi,
+            },
+        ],
+    },
     abilities: [
         {
             name: "Dark Sight",
