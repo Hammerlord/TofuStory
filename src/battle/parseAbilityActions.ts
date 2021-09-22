@@ -1,15 +1,14 @@
 import { cloneDeep } from "lodash";
-import { Action, ACTION_TYPES, AbilityCondition, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem } from "./../utils";
 import { passesConditions } from "./passesConditions";
+import { BATTLEFIELD_SIDES } from "./types";
 import {
     calculateArmor,
     calculateDamage,
-    cleanUpDeadCharacters,
-    getCharacterStatChanges,
     getEnabledEffects,
     getHealableIndices,
     getValidTargetIndices,
@@ -26,7 +25,7 @@ export interface Event {
     updatedEnemies: Combatant[];
     actorId?: string;
     selectedIndex?: number;
-    targetSide?: "allies" | "enemies";
+    targetSide?: BATTLEFIELD_SIDES;
 }
 
 const triggerReceiveEffects = (target, incomingEffect: Effect) => {
@@ -220,7 +219,7 @@ export const parseAction = ({
     action: Action;
     selectedIndex: number;
     actorId: string;
-    selectedSide: "allies" | "enemies";
+    selectedSide: BATTLEFIELD_SIDES;
 }): Event => {
     const { movement, vacuum } = action;
     let { friendly, hostile, actorSide } = orientate({
@@ -328,7 +327,7 @@ export const parseAction = ({
         [friendly[index], friendly[selectedIndex]] = [friendly[selectedIndex], friendly[index]];
     }
 
-    const [updatedAllies, updatedEnemies] = actorSide === "allies" ? [friendly, hostile] : [hostile, friendly];
+    const [updatedAllies, updatedEnemies] = actorSide === BATTLEFIELD_SIDES.ALLIES ? [friendly, hostile] : [hostile, friendly];
 
     return {
         action,
@@ -341,8 +340,8 @@ export const parseAction = ({
 };
 
 const orientate = ({ actorId, enemies, allies }) => {
-    const actorSide = allies.find((ally) => ally?.id === actorId) ? "allies" : "enemies";
-    const [friendly, hostile] = actorSide === "allies" ? [allies, enemies] : [enemies, allies];
+    const actorSide = allies.find((ally) => ally?.id === actorId) ? BATTLEFIELD_SIDES.ALLIES : BATTLEFIELD_SIDES.ENEMIES;
+    const [friendly, hostile] = actorSide === BATTLEFIELD_SIDES.ALLIES ? [allies, enemies] : [enemies, allies];
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
@@ -583,7 +582,7 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
             return mostRecentCaster();
         }
 
-        return side === "allies" ? mostRecentAllies()[initialSelectedIndex] : mostRecentEnemies()[initialSelectedIndex];
+        return side === BATTLEFIELD_SIDES.ALLIES ? mostRecentAllies()[initialSelectedIndex] : mostRecentEnemies()[initialSelectedIndex];
     };
     const eligibleActions = actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions }));
     eligibleActions.forEach((action: Action) => {
@@ -598,7 +597,7 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
             index = getRandomItem(targetIndices);
         } else if (action.target === TARGET_TYPES.SELF) {
             index = mostRecentAllies().findIndex((ally) => ally?.id === actorId);
-            side = "allies";
+            side = BATTLEFIELD_SIDES.ALLIES;
         }
 
         if (typeof index !== "number") {
@@ -714,7 +713,7 @@ export const useAttack = ({ enemies, allies, index, actorId }): Event[] => {
     return useAllyAbility({
         enemies,
         selectedIndex: index,
-        side: "enemies",
+        side: BATTLEFIELD_SIDES.ENEMIES,
         ability: {
             actions: [
                 {

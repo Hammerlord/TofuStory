@@ -1,6 +1,5 @@
 import { Combatant } from "../character/types";
 import {
-    Ability,
     Action,
     ACTION_TYPES,
     Effect,
@@ -12,6 +11,7 @@ import {
 } from "./../ability/types";
 import { calculateActionArea } from "./parseAbilityActions";
 import { passesConditions } from "./passesConditions";
+import { BATTLEFIELD_SIDES } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -144,13 +144,13 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
     const { actions = [], minion } = ability;
 
     if (minion) {
-        return side === "allies" && (!allies[index] || allies[index].HP === 0);
+        return side === BATTLEFIELD_SIDES.ALLIES && (!allies[index] || allies[index].HP === 0);
     }
 
     const { target } = actions[0] || {};
     const area = calculateActionArea({ action: actions[0], actor }) || ability.area || 0;
 
-    if (side === "allies") {
+    if (side === BATTLEFIELD_SIDES.ALLIES) {
         if (target === TARGET_TYPES.SELF) {
             return allies[index]?.isPlayer;
         }
@@ -162,7 +162,7 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
             }
             return true;
         }
-    } else if (side === "enemies" && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
+    } else if (side === BATTLEFIELD_SIDES.ENEMIES && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         const targetedEnemy = enemies[index];
         const hasStealth = targetedEnemy?.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
         if (hasStealth) {

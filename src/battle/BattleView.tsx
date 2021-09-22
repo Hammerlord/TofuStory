@@ -2,7 +2,7 @@ import { compose } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability, ACTION_TYPES, EFFECT_TYPES, HandAbility } from "../ability/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, HandAbility } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -23,6 +23,7 @@ import Notification from "./Notification";
 import { applyPerTurnEffects, calculateActionArea, Event, parseAction, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
+import { BATTLEFIELD_SIDES, BattleNotification } from "./types";
 import {
     canUseAbility,
     checkHalveArmor,
@@ -147,12 +148,6 @@ const useStyles = createUseStyles({
     },
 });
 
-interface BattleNotification {
-    id: string; // For rerendering the same message if applicable
-    text: string;
-    severity: "warning" | "info" | "error";
-}
-
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
@@ -220,7 +215,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
     };
 
-    const handleAbilityUse = async ({ index, selectedAbilityIndex, side }) => {
+    const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
         const { resourceCost = 0, removeAfterTurn, reusable, effects = {} } = card as HandAbility;
@@ -247,7 +242,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         handleNewEvents(
             useAllyAbility({
                 ability: card,
-                selectedIndex: index,
+                selectedIndex,
                 enemies,
                 allies: updateCharacters(allies, (character: Combatant) => {
                     if (character.id === player.id) {
@@ -305,8 +300,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
         const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
-            if (showReticle("allies", index)) {
-                handleAbilityUse({ index, selectedAbilityIndex, side: "allies" });
+            if (showReticle(BATTLEFIELD_SIDES.ALLIES, index)) {
+                handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ALLIES });
             } else {
                 setSelectedAbilityIndex(null);
             }
@@ -326,8 +321,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
-            if (showReticle("enemies", index)) {
-                handleAbilityUse({ index, selectedAbilityIndex, side: "enemies" });
+            if (showReticle(BATTLEFIELD_SIDES.ENEMIES, index)) {
+                handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMIES });
             } else if (enemies[index] && enemies[index].effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
                 warn("That character is stealthed and cannot be targeted directly.");
             } else {
@@ -336,7 +331,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             return;
         }
 
-        if (showReticle("enemies", index)) {
+        if (showReticle(BATTLEFIELD_SIDES.ENEMIES, index)) {
             handleAllyAttack({ index });
         } else {
             setSelectedAllyIndex(null);
@@ -348,7 +343,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         setSelectedAbilityIndex(null);
     };
 
-    const getEvent = (character) => {
+    /**
+     * Returns the action if the character is using it. This is used in animations...
+     * @param character
+     */
+    const getEvent = (character: Combatant | null): { action: Action; target: Combatant | null } => {
         let action;
         let target;
         if (!events.length) {
@@ -357,13 +356,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
 
         const { actorId, targetSide, selectedIndex } = (events[0] as Event) || {};
 
-        // Returns the ability if the character is using it.
         if (actorId === character?.id) {
             action = events[0].action;
         }
 
         if (typeof selectedIndex === "number" && targetSide) {
-            target = (targetSide === "allies" ? allyRefs : enemyRefs)[selectedIndex]?.current;
+            target = (targetSide === BATTLEFIELD_SIDES.ALLIES ? allyRefs : enemyRefs)[selectedIndex]?.current;
         }
 
         return {
@@ -628,17 +626,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const disableActions =
         battleEndResult || showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemies.every((enemy) => !enemy || enemy.HP <= 0);
 
-    const isTargeted = (i: number | null, side: "allies" | "enemies"): boolean => {
+    const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
         const noHover = !isValidIndex(hoveredAllyIndex) && !isValidIndex(hoveredEnemyIndex);
         const mismatchingSide =
-            (isValidIndex(hoveredAllyIndex) && side === "enemies") || (isValidIndex(hoveredEnemyIndex) && side === "allies");
+            (isValidIndex(hoveredAllyIndex) && side === BATTLEFIELD_SIDES.ENEMIES) ||
+            (isValidIndex(hoveredEnemyIndex) && side === BATTLEFIELD_SIDES.ALLIES);
         if (disableActions || noHover || mismatchingSide) {
             return false;
         }
 
         if (allies[selectedAllyIndex]) {
-            return side === "enemies" && hoveredEnemyIndex === i;
+            return side === BATTLEFIELD_SIDES.ENEMIES && hoveredEnemyIndex === i;
         }
 
         const hoveredIndex = isValidIndex(hoveredAllyIndex) ? hoveredAllyIndex : hoveredEnemyIndex;
@@ -653,12 +652,16 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         return i >= hoveredIndex - area && i <= hoveredIndex + area;
     };
 
-    const showReticle = (side, index) => {
+    const showReticle = (side: BATTLEFIELD_SIDES, index: number): boolean => {
         if (isEligibleToAttack(allies[selectedAllyIndex])) {
-            if (typeof hoveredEnemyIndex === "number") {
-                return side === "enemies" && enemies[index] && index === hoveredEnemyIndex;
+            if (side === BATTLEFIELD_SIDES.ENEMIES && enemies[index]) {
+                if (typeof hoveredEnemyIndex === "number") {
+                    return index === hoveredEnemyIndex;
+                }
+                return true;
             }
-            return side === "enemies" && enemies[index];
+
+            return false;
         }
 
         const ability = hand[selectedAbilityIndex];
@@ -668,7 +671,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
 
         const { minion } = ability;
         if (minion) {
-            if (side === "allies" && !allies[index]) {
+            if (side === BATTLEFIELD_SIDES.ALLIES && !allies[index]) {
                 if (typeof hoveredAllyIndex === "number") {
                     return index === hoveredAllyIndex;
                 }
@@ -678,14 +681,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
 
         const actor = player;
         if (typeof hoveredEnemyIndex === "number") {
-            if (isValidTarget({ ability, side: "enemies", index: hoveredEnemyIndex, allies, enemies, actor })) {
-                return isTargeted(index, side);
+            if (isValidTarget({ ability, side: BATTLEFIELD_SIDES.ENEMIES, index: hoveredEnemyIndex, allies, enemies, actor })) {
+                return isTargeted(side, index);
             }
         }
 
         if (typeof hoveredAllyIndex === "number") {
-            if (isValidTarget({ ability, side: "allies", index: hoveredAllyIndex, allies, enemies, actor })) {
-                return isTargeted(index, side);
+            if (isValidTarget({ ability, side: BATTLEFIELD_SIDES.ALLIES, index: hoveredAllyIndex, allies, enemies, actor })) {
+                return isTargeted(side, index);
             }
         }
 
@@ -720,7 +723,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                     },
                     selectedIndex: allies.findIndex((ally) => ally?.isPlayer),
                     actorId: player.id,
-                    selectedSide: "allies",
+                    selectedSide: BATTLEFIELD_SIDES.ALLIES,
                 }),
             ]);
         };
@@ -754,11 +757,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                                         isSelected={false}
                                         onMouseEnter={() => setHoveredEnemyIndex(i)}
                                         onMouseLeave={() => setHoveredEnemyIndex(null)}
-                                        isTargeted={isTargeted(i, "enemies")}
+                                        isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMIES, i)}
                                         key={i}
                                         event={getEvent(enemy)}
                                         isHighlighted={false}
-                                        showReticle={showReticle("enemies", i)}
+                                        showReticle={showReticle(BATTLEFIELD_SIDES.ENEMIES, i)}
                                         ref={enemyRefs[i]}
                                         showResourceBar={shouldShowResourceBar(enemy)}
                                     />
@@ -781,11 +784,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                                                 isSelected={selectedAllyIndex === i}
                                                 onMouseEnter={() => setHoveredAllyIndex(i)}
                                                 onMouseLeave={() => setHoveredAllyIndex(null)}
-                                                isTargeted={isTargeted(i, "allies")}
+                                                isTargeted={isTargeted(BATTLEFIELD_SIDES.ALLIES, i)}
                                                 key={i}
                                                 event={getEvent(ally)}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
-                                                showReticle={showReticle("allies", i)}
+                                                showReticle={showReticle(BATTLEFIELD_SIDES.ALLIES, i)}
                                                 ref={allyRefs[i]}
                                             />
                                         );

@@ -1,3 +1,4 @@
+import { BATTLEFIELD_SIDES } from "./../battle/types";
 import { Enemy } from "./enemy";
 import { createCombatant } from "./createEnemy";
 import { cloneDeep } from "lodash";
@@ -108,7 +109,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
         // Each subsequent action should be based on the most recently updated enemies/player states.
         const recentEnemies = cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
         const recentAllies = cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
-        let selectedSide = "enemies" as "enemies" | "allies";
+        let selectedSide = BATTLEFIELD_SIDES.ENEMIES;
 
         if (movement) {
             selectedIndex = getRandomItem(
@@ -126,7 +127,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
         } else if (target === TARGET_TYPES.HOSTILE) {
             const validAllyIndices = getValidTargetIndices(recentAllies, { excludeStealth: true });
             selectedIndex = getRandomItem(validAllyIndices);
-            selectedSide = "allies";
+            selectedSide = BATTLEFIELD_SIDES.ALLIES;
         }
 
         results.push(
