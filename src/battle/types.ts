@@ -23,6 +23,7 @@ export interface Event {
     actorId?: string;
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
+    id: string;
 }
 
 export interface EventGroup {

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -28,7 +28,19 @@ const useStyles = createUseStyles({
     },
 });
 
-const Notification = ({ children, severity = "info", id, onClick, duration = 7000 }) => {
+const Notification = ({
+    children,
+    severity = "info",
+    id,
+    onClick,
+    duration = 7000,
+}: {
+    children: JSX.Element | string;
+    severity?: "warning" | "info" | "error";
+    id: string;
+    onClick?: MouseEventHandler<HTMLDivElement>;
+    duration?: number;
+}) => {
     const [opacity, setOpacity] = useState(0);
     const [fadeOut, setFadeOut] = useState(false);
     const classes = useStyles();

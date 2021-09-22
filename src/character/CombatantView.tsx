@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { createRef, forwardRef, useEffect, useState } from "react";
+import { createRef, forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges } from "../battle/utils";
@@ -258,6 +258,7 @@ const CombatantView = forwardRef(
         const [oldState, setOldState] = useState(combatant);
         const [portraitRef] = useState(createRef() as React.RefObject<any>);
         const [projectileRef] = useState(createRef() as React.RefObject<any>);
+        const prevActionRef = useRef();
         const classes = useStyles();
 
         useEffect(() => {
@@ -279,9 +280,10 @@ const CombatantView = forwardRef(
         }, [combatant]);
 
         useEffect(() => {
-            if (!event?.target) {
+            if (!event?.target || !event?.action || prevActionRef?.current === event.id) {
                 return;
             }
+            prevActionRef.current = event.id;
             const { type, animation } = event?.action || {};
             if (type === ACTION_TYPES.ATTACK && portraitRef.current) {
                 travel({ to: event.target, from: portraitRef.current, returnToOrigin: true });
@@ -299,7 +301,7 @@ const CombatantView = forwardRef(
                 }
                 clearTimeout(timeout);
             };
-        }, [event.action]);
+        }, [event.id]);
 
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);

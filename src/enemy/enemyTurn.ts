@@ -1,26 +1,27 @@
-import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
-import { Enemy } from "./enemy";
-import { createCombatant } from "./createEnemy";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
+import uuid from "uuid";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import triggerDebuffDamage from "../battle/debuffDamage";
 import { Combatant } from "../character/types";
 import { ACTION_TYPES } from "./../ability/types";
 import { parseAction } from "./../battle/parseAbilityActions";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
 import {
     addEnemyResources,
+    checkHalveArmor,
     cleanUpDeadCharacters,
     clearTurnHistory,
     getEmptyIndices,
     getValidTargetIndices,
-    checkHalveArmor,
     tickDownBuffs,
     tickDownDebuffs,
     updateCharacters,
 } from "./../battle/utils";
-import { getRandomItem, shuffle } from "./../utils";
+import { getRandomItem } from "./../utils";
 import { loaf } from "./abilities";
+import { createCombatant } from "./createEnemy";
+import { Enemy } from "./enemy";
 
 const getPossibleMoveIndices = ({ currentLocationIndex, enemies, movement = 0 }): number[] => {
     const min = Math.max(0, currentLocationIndex - movement);
@@ -178,6 +179,7 @@ const handleCastTick = ({ allies, enemies, actorId, casting }): EventGroup => {
             {
                 updatedAllies: allies,
                 updatedEnemies: enemies,
+                id: uuid.v4(),
             },
         ],
     };
@@ -263,6 +265,7 @@ const useAbility = ({ actor, allies, enemies }): EventGroup => {
                 {
                     updatedAllies: allies,
                     updatedEnemies: enemies,
+                    id: uuid.v4(),
                 },
             ],
         };
@@ -285,6 +288,7 @@ const enemyTurn = ({ enemies, allies }): EventGroup[] => {
                 {
                     updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor)),
                     updatedAllies: allies,
+                    id: uuid.v4(),
                 },
             ],
         },
@@ -318,6 +322,7 @@ const enemyTurn = ({ enemies, allies }): EventGroup[] => {
         events: postTurn.map((updatedEnemies) => ({
             updatedEnemies,
             updatedAllies: getLastEvent().updatedAllies,
+            id: uuid.v4(),
         })),
     });
 

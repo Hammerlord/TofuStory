@@ -9,14 +9,17 @@ export const travel = ({ to, from, spin = false, returnToOrigin = false }) => {
             y: y + height / 2,
         };
     };
+    from.style.transform = "unset";
     const { x, y } = getTargetPoint(from.getBoundingClientRect());
     const { x: x2, y: y2 } = getTargetPoint(to.getBoundingClientRect());
+
     const increments = 60;
     const moveIncrementX = (x2 - x) / increments;
     const moveIncrementY = (y2 - y) / increments;
     let i = 1;
     let direction = 1;
     const spinIncrement = 360 / increments;
+
     const move = () => {
         if (!from) {
             return;

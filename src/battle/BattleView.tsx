@@ -146,6 +146,11 @@ const useStyles = createUseStyles({
         top: 0,
         pointerEvents: "none",
     },
+    notificationAbility: {
+        maxWidth: "24px",
+        maxHeight: "24px",
+        verticalAlign: "bottom",
+    },
 });
 
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
@@ -168,6 +173,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const [eventGroups, setEventGroups] = useState([]);
     const [actionQueue, setActionQueue] = useState([]);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
+    const [abilityNotification, setAbilityNotification] = useState(null);
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
@@ -348,14 +354,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
      * Returns the action if the character is using it. This is used in animations...
      * @param character
      */
-    const getEvent = (character: Combatant | null): { action: Action; target: Combatant | null } => {
+    const getEvent = (character: Combatant | null): { action?: Action; target: Combatant | null; id?: string } => {
         let action;
         let target;
         if (!events.length) {
             return { action, target };
         }
 
-        const { actorId, targetSide, selectedIndex } = (events[0] as Event) || {};
+        const { actorId, targetSide, selectedIndex, id } = (events[0] as Event) || {};
 
         if (actorId === character?.id) {
             action = events[0].action;
@@ -368,6 +374,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         return {
             action,
             target,
+            id,
         };
     };
 
@@ -444,6 +451,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             applyPerTurnEffects(updatedAllies, enemies).map(({ actors, targets, ...other }) => ({
                 updatedAllies: actors,
                 updatedEnemies: targets,
+                id: uuid.v4(),
                 ...other,
             }))
         );
@@ -604,23 +612,38 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
 
     useEffect(() => {
         // Handle event groups; this is currently only applicable to enemies
-        if (events.length) {
-            return;
-        }
-
-        if (!eventGroups.length) {
-            if (isPlayerTurn === false) {
-                setFlagTurnEnd(true);
-            }
+        if (events.length || isPlayerTurn || !eventGroups.length) {
             return;
         }
 
         const newEventGroups = eventGroups.slice();
         const group = newEventGroups.shift();
-        setTimeout(() => {
-            handleNewEvents(group.events);
+        const updateEvents = () => {
+            setEvents(group.events);
             setEventGroups(newEventGroups);
-        }, 500);
+            const last = group.events[group.events.length - 1];
+            setEnemies(last.updatedEnemies);
+            setAllies(last.updatedAllies);
+            if (!newEventGroups.length && isPlayerTurn === false) {
+                setFlagTurnEnd(true);
+            }
+        };
+        if (group.ability) {
+            // Add a delay between enemy abilities or they're too fast
+            setTimeout(() => {
+                setAbilityNotification({
+                    text: (
+                        <>
+                            <img src={group.ability.image} className={classes.notificationAbility} /> {group.ability.name}
+                        </>
+                    ),
+                    id: uuid.v4(),
+                });
+                updateEvents();
+            }, 1000);
+        } else {
+            updateEvents();
+        }
     }, [eventGroups, events]);
 
     useEffect(() => {
@@ -634,7 +657,8 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             if (isPlayerTurn) {
                 handlePlayerTurnStart();
             } else {
-                setEventGroups(enemyTurn({ enemies, allies }));
+                const eventGroups = enemyTurn({ enemies, allies });
+                setEventGroups(eventGroups);
             }
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
@@ -755,6 +779,11 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             {notification && (
                 <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
                     {notification.text}
+                </Notification>
+            )}
+            {abilityNotification && (
+                <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1100}>
+                    {abilityNotification.text}
                 </Notification>
             )}
             <TargetLineCanvas originationRef={origination} color={targetLineColor}>

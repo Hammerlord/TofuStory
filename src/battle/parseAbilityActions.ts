@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import uuid from "uuid";
 import { Action, ACTION_TYPES, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
@@ -324,6 +325,7 @@ export const parseAction = ({
         actorId,
         selectedIndex,
         targetSide: selectedSide,
+        id: uuid.v4(),
     };
 };
 
