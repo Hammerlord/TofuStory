@@ -5,7 +5,7 @@ import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem } from "./../utils";
 import { passesConditions } from "./passesConditions";
-import { BATTLEFIELD_SIDES } from "./types";
+import { BATTLEFIELD_SIDES, Event } from "./types";
 import {
     calculateArmor,
     calculateDamage,
@@ -15,18 +15,6 @@ import {
     isSilenced,
     updateCharacters,
 } from "./utils";
-
-/**
- * The results of an action being applied.
- */
-export interface Event {
-    action?: Action;
-    updatedAllies: Combatant[];
-    updatedEnemies: Combatant[];
-    actorId?: string;
-    selectedIndex?: number;
-    targetSide?: BATTLEFIELD_SIDES;
-}
 
 const triggerReceiveEffects = (target, incomingEffect: Effect) => {
     const updatedTarget = {

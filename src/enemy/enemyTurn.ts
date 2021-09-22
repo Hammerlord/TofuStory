@@ -1,11 +1,10 @@
-import { BATTLEFIELD_SIDES } from "./../battle/types";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
 import { Enemy } from "./enemy";
 import { createCombatant } from "./createEnemy";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import triggerDebuffDamage from "../battle/debuffDamage";
-import { Event } from "../battle/parseAbilityActions";
 import { Combatant } from "../character/types";
 import { ACTION_TYPES } from "./../ability/types";
 import { parseAction } from "./../battle/parseAbilityActions";
@@ -145,7 +144,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
     return results;
 };
 
-const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
+const handleCastTick = ({ allies, enemies, actorId, casting }): EventGroup => {
     const { castTime = 0, channelDuration = 0 } = casting;
     let updatedCasting = { ...casting };
     enemies = enemies.map((enemy) => {
@@ -168,16 +167,20 @@ const handleCastTick = ({ allies, enemies, actorId, casting }): Event[] => {
     });
 
     if (!updatedCasting || !updatedCasting.castTime) {
-        return useAbilityActions({ allies, enemies, actorId, ability: updatedCasting });
+        return {
+            events: useAbilityActions({ allies, enemies, actorId, ability: updatedCasting }),
+        };
     }
 
     // Return the enemy with the newly updated casting state as-is, don't use the ability
-    return [
-        {
-            updatedAllies: allies,
-            updatedEnemies: enemies,
-        },
-    ];
+    return {
+        events: [
+            {
+                updatedAllies: allies,
+                updatedEnemies: enemies,
+            },
+        ],
+    };
 };
 
 const getBasicAttack = (actor: Enemy): Ability => {
@@ -231,10 +234,10 @@ const pickAbility = ({ actor, enemies }): Ability => {
     return ability || loaf;
 };
 
-const useAbility = ({ caster, allies, enemies }): Event[] => {
-    const { id } = caster;
+const useAbility = ({ actor, allies, enemies }): EventGroup => {
+    const { id } = actor;
 
-    const ability = pickAbility({ actor: caster, enemies }); // Needs to be upfront resource cost?
+    const ability = pickAbility({ actor, enemies }); // Needs to be upfront resource cost?
     enemies = enemies.map((enemy) => {
         if (enemy?.id === id) {
             return {
@@ -248,79 +251,74 @@ const useAbility = ({ caster, allies, enemies }): Event[] => {
     });
 
     if (!ability.castTime) {
-        return useAbilityActions({ allies, enemies, actorId: id, ability });
+        return {
+            ability,
+            events: useAbilityActions({ allies, enemies, actorId: id, ability }),
+        };
     } else {
         // Return the enemy with the newly updated casting state as-is, don't use the ability
-        return [
-            {
-                updatedAllies: allies,
-                updatedEnemies: enemies,
-            },
-        ];
+        return {
+            ability,
+            events: [
+                {
+                    updatedAllies: allies,
+                    updatedEnemies: enemies,
+                },
+            ],
+        };
     }
 };
 
-const enemyMove = ({ actorId, allies, enemies }): Event[] => {
-    const caster = enemies.find((e) => e && e.id === actorId);
-    const { casting } = caster;
+const enemyMove = ({ actor, allies, enemies }): EventGroup => {
+    const { casting, id } = actor;
     if (casting) {
-        return handleCastTick({ allies, enemies, actorId, casting });
+        return handleCastTick({ allies, enemies, actorId: id, casting });
     }
 
-    return useAbility({ caster, allies, enemies });
+    return useAbility({ actor, allies, enemies });
 };
 
-const enemyTurn = ({ enemies, allies }): Event[] => {
+const enemyTurn = ({ enemies, allies }): EventGroup[] => {
     const results = [
         {
-            updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor)),
-            updatedAllies: allies,
+            events: [
+                {
+                    updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor)),
+                    updatedAllies: allies,
+                },
+            ],
         },
     ];
 
     // Each subsequent move should be based on the most recently updated enemies/player states.
-    const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies;
-    const getRecentAllies = () => results[results.length - 1]?.updatedAllies;
+    const getLastEvent = (): Event => {
+        const lastResult = results[results.length - 1];
+        return lastResult.events[lastResult.events.length - 1];
+    };
 
     const acted = {};
     const filterEligibleToAct = (characters) => {
         return characters.filter((char: Combatant | null) => char?.HP > 0 && !isBusy(char) && !acted[char.id]);
     };
 
-    const act = () => {
-        const enemies = getRecentEnemies();
-        const enemy = getRandomItem(filterEligibleToAct(enemies)); // Randomize enemy move order
+    const makeEnemyMove = () => {
+        const { updatedEnemies, updatedAllies } = getLastEvent();
+        const enemy = getRandomItem(filterEligibleToAct(updatedEnemies));
         if (enemy) {
             acted[enemy.id] = true;
-            results.push(
-                ...enemyMove({
-                    actorId: enemy.id,
-                    allies: getRecentAllies(),
-                    enemies,
-                })
-            );
-            act();
+            results.push(enemyMove({ actor: enemy, allies: updatedAllies, enemies: updatedEnemies }));
+            makeEnemyMove();
         }
     };
-    act();
+    makeEnemyMove();
 
-    const debuffsTriggered = triggerDebuffDamage(getRecentEnemies());
-
-    if (debuffsTriggered.length) {
-        results.push(
-            ...debuffsTriggered.map(
-                (characters) =>
-                    ({
-                        updatedEnemies: characters,
-                        updatedAllies: getRecentAllies(),
-                    } as Event)
-            )
-        );
-    }
-
+    const postTurn: (Combatant | null)[][] = triggerDebuffDamage(getLastEvent().updatedEnemies);
+    postTurn.push((postTurn[postTurn.length - 1] || getLastEvent().updatedEnemies).map(tickDownDebuffs));
     results.push({
-        updatedEnemies: updateCharacters(getRecentEnemies(), tickDownDebuffs),
-        updatedAllies: getRecentAllies(),
+        events: postTurn.map((updatedEnemies) => ({
+            updatedEnemies,
+            updatedAllies: getLastEvent().updatedAllies,
+        })),
     });
 
     return results;

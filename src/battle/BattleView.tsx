@@ -20,10 +20,10 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { applyPerTurnEffects, calculateActionArea, Event, parseAction, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyPerTurnEffects, calculateActionArea, parseAction, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
-import { BATTLEFIELD_SIDES, BattleNotification } from "./types";
+import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
 import {
     canUseAbility,
     checkHalveArmor,
@@ -165,6 +165,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const [enemyRefs] = useState(Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()));
     const [abilityRefs] = useState(Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()));
     const [events, setEvents] = useState([]);
+    const [eventGroups, setEventGroups] = useState([]);
     const [actionQueue, setActionQueue] = useState([]);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
@@ -601,11 +602,26 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
     }, [flagTurnEnd, events]);
 
-    const handleEnemyTurn = () => {
-        const enemyActions = enemyTurn({ enemies, allies });
-        handleNewEvents(enemyActions);
-        setFlagTurnEnd(true);
-    };
+    useEffect(() => {
+        // Handle event groups; this is currently only applicable to enemies
+        if (events.length) {
+            return;
+        }
+
+        if (!eventGroups.length) {
+            if (isPlayerTurn === false) {
+                setFlagTurnEnd(true);
+            }
+            return;
+        }
+
+        const newEventGroups = eventGroups.slice();
+        const group = newEventGroups.shift();
+        setTimeout(() => {
+            handleNewEvents(group.events);
+            setEventGroups(newEventGroups);
+        }, 500);
+    }, [eventGroups, events]);
 
     useEffect(() => {
         if (currentWave === -1 || isPlayerTurn === null) {
@@ -618,7 +634,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             if (isPlayerTurn) {
                 handlePlayerTurnStart();
             } else {
-                handleEnemyTurn();
+                setEventGroups(enemyTurn({ enemies, allies }));
             }
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);

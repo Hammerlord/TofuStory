@@ -73,6 +73,9 @@ export const clearTurnHistory = (character: Combatant): Combatant => {
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
 export const tickDownDebuffs = (target: Combatant) => {
+    if (!target) {
+        return target;
+    }
     return {
         ...target,
         effects: target.effects

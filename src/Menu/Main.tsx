@@ -40,7 +40,7 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
@@ -148,7 +148,6 @@ const Main = () => {
                 },
             };
         }, visitedNPCs);
-        console.log("newvisited");
         setVisitedNPCs(newVisited);
     };
 

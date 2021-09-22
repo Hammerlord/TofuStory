@@ -5,7 +5,7 @@ import { applyActionToTarget } from "./parseAbilityActions";
 const BLEED_DAMAGE = 1;
 const BURN_DAMAGE = 2;
 
-const triggerDebuffDamage = (characters) => {
+const triggerDebuffDamage = (characters: (Combatant | null)[]): (Combatant | null)[][] => {
     let totalBleedDamage = 0;
     let totalBurnDamage = 0;
 
