@@ -603,6 +603,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
     }, [flagTurnEnd, events]);
 
+    const handleEnemyTurn = () => {
+        const enemyActions = enemyTurn({ enemies, allies });
+        handleNewEvents(enemyActions);
+        setFlagTurnEnd(true);
+    };
+
     useEffect(() => {
         if (currentWave === -1 || isPlayerTurn === null) {
             return;
@@ -614,9 +620,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             if (isPlayerTurn) {
                 handlePlayerTurnStart();
             } else {
-                const enemyActions = enemyTurn({ enemies, allies });
-                handleNewEvents(enemyActions);
-                setFlagTurnEnd(true);
+                handleEnemyTurn();
             }
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);

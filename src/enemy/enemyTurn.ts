@@ -38,16 +38,6 @@ const isBusy = (enemy: Combatant): boolean => {
     return enemy?.effects?.some((effect) => effect.type === EFFECT_TYPES.STUN);
 };
 
-const getPopulatedEnemyIndices = (enemies) => {
-    const indices = [];
-    enemies.forEach((enemy, i) => {
-        if (enemy && !isBusy(enemy)) {
-            indices.push(i);
-        }
-    });
-    return indices;
-};
-
 /**
  * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
  * Otherwise, pick a different ability.
@@ -284,24 +274,30 @@ const enemyTurn = ({ enemies, allies }): Event[] => {
     ];
 
     // Each subsequent move should be based on the most recently updated enemies/player states.
-    const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies || enemies;
-    const getRecentAllies = () => results[results.length - 1]?.updatedAllies || allies;
+    const getRecentEnemies = () => results[results.length - 1]?.updatedEnemies;
+    const getRecentAllies = () => results[results.length - 1]?.updatedAllies;
 
-    const randomizedIndices = shuffle(getPopulatedEnemyIndices(getRecentEnemies())); // Randomize enemy move order
-    randomizedIndices.forEach((i) => {
-        const enemy = getRecentEnemies()[i];
-        if (!enemy || enemy.HP === 0) {
-            return;
+    const acted = {};
+    const filterEligibleToAct = (characters) => {
+        return characters.filter((char: Combatant | null) => char?.HP > 0 && !isBusy(char) && !acted[char.id]);
+    };
+
+    const act = () => {
+        const enemies = getRecentEnemies();
+        const enemy = getRandomItem(filterEligibleToAct(enemies)); // Randomize enemy move order
+        if (enemy) {
+            acted[enemy.id] = true;
+            results.push(
+                ...enemyMove({
+                    actorId: enemy.id,
+                    allies: getRecentAllies(),
+                    enemies,
+                })
+            );
+            act();
         }
-
-        results.push(
-            ...enemyMove({
-                actorId: enemy.id,
-                allies: getRecentAllies(),
-                enemies: getRecentEnemies(),
-            })
-        );
-    });
+    };
+    act();
 
     const debuffsTriggered = triggerDebuffDamage(getRecentEnemies());
 
