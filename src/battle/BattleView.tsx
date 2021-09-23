@@ -147,7 +147,7 @@ const useStyles = createUseStyles({
         pointerEvents: "none",
     },
     notificationAbility: {
-        maxWidth: "24px",
+        width: "24px",
         maxHeight: "24px",
         verticalAlign: "bottom",
     },
@@ -634,13 +634,16 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 setAbilityNotification({
                     text: (
                         <>
-                            <img src={group.ability.image} className={classes.notificationAbility} /> {group.ability.name}
+                            {group.ability.image && <img src={group.ability.image} className={classes.notificationAbility} />}{" "}
+                            {group.ability.name}
                         </>
                     ),
                     id: uuid.v4(),
                 });
-                updateEvents();
             }, 1000);
+            setTimeout(() => {
+                updateEvents();
+            }, 1200);
         } else {
             updateEvents();
         }
@@ -782,7 +785,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 </Notification>
             )}
             {abilityNotification && (
-                <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1100}>
+                <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1250}>
                     {abilityNotification.text}
                 </Notification>
             )}
