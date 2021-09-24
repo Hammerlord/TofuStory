@@ -11,6 +11,7 @@ import { ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
+import CardGame from "../scene/CardGame";
 import ScenePlayer from "../scene/ScenePlayer";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
@@ -40,7 +41,7 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
@@ -155,7 +156,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isResting || scene;
+    const isActivityOpen = encounter || isResting || scene || true;
 
     return (
         <>
@@ -204,6 +205,7 @@ const Main = () => {
                         </>
                     )}
                     {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
+                    <CardGame onExit={() => {}} />
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}
