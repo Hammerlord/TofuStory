@@ -1,10 +1,11 @@
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
+import Burn from "../icon/Burn";
 import CastingIndicator from "../icon/CastingIndicator";
 import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
@@ -311,6 +312,12 @@ const CombatantView = forwardRef(
         const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
+        const burn = oldState?.effects?.reduce((acc: number, effect: Effect) => {
+            if (effect.type === EFFECT_TYPES.BURN) {
+                return acc + effect.duration;
+            }
+            return acc;
+        }, 0);
 
         return (
             <div
@@ -367,6 +374,11 @@ const CombatantView = forwardRef(
                                             <Cloud />
                                         </div>
                                     )}
+                                    {burn > 0 && (
+                                        <span className={classes.center}>
+                                            <Burn amount={burn} />
+                                        </span>
+                                    )}
                                 </span>
                                 {oldState.HP > 0 && (
                                     <>
@@ -382,7 +394,7 @@ const CombatantView = forwardRef(
                                         {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}
                                         <div className={classes.bleed}>
                                             {bleeds.map((bleed, i: number) => (
-                                                <Bleed key={i} amount={bleed.duration} />
+                                                <Bleed key={i} />
                                             ))}
                                         </div>
                                         {event?.action?.type === ACTION_TYPES.NONE && (

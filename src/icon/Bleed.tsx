@@ -8,15 +8,15 @@ const ANIMATION_DURATION = 3;
 
 const useStyles = createUseStyles({
     "@keyframes animation": {
-        '0%': {
+        "0%": {
             opacity: 1,
             transform: "translateY(-15%)",
         },
-        '75%': {
+        "75%": {
             opacity: 1,
             transform: "translateY(-15%)",
         },
-        '100%': {
+        "100%": {
             opacity: 0,
             transform: "translateY(25%)",
         },
@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Bleed = ({ amount }) => {
+const Bleed = ({ amount }: { amount?: number }) => {
     const [oldAmount, setOldAmount] = useState(0);
     useEffect(() => {
         let timeout;
