@@ -302,13 +302,13 @@ const CombatantView = forwardRef(
                                             [classes.casting]: oldState.casting,
                                         })}
                                     />
+                                    {oldState.HP > 0 && <Effects combatant={oldState} healing={statChanges?.healing} />}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
                                 </span>
                                 {oldState.HP > 0 && (
                                     <>
-                                        <Effects combatant={combatant} healing={statChanges?.healing} />
                                         <div className={classes.leftContainer}>
                                             <Armor amount={oldState.armor} />
                                             <Health HP={oldState.HP} maxHP={oldState.maxHP} />
