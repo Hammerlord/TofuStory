@@ -67,6 +67,9 @@ const Area = ({ area, damage, secondaryDamage }) => {
 
 const useStyles = createUseStyles({
     root: {
+        position: "relative",
+    },
+    inner: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
         width: "150px",
         minHeight: "250px",
@@ -167,6 +170,12 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
     },
+    refContainer: {
+        pointerEvents: "none",
+        position: "absolute",
+        top: "4px",
+        left: "50%",
+    },
 });
 
 interface AbilityViewProps {
@@ -188,40 +197,43 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
 
     return (
         <AbilityTooltip ability={ability}>
-            <div
-                onClick={onClick}
-                className={classNames(classes.root, {
-                    [classes.selectedAbility]: isSelected,
-                    [classes.ephemeral]: removeAfterTurn,
-                })}
-                style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
-            >
-                <span className={classes.header} ref={ref as any}>
-                    {damageIcon}
-                    <span className={classes.name}>{name}</span> <ResourceIcon ability={ability} />
-                </span>
-                <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
-                <div className={classes.body}>
-                    {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
-                    <Debuffs ability={ability} />
-                    <SelfActions ability={ability} player={player} />
-                    <Buffs ability={ability} />
-                    <CardsToAdd ability={ability} />
-                    <BonusView ability={ability} />
-                    <DrawCards ability={ability} />
-                    {interpolatedDescription && <div>{interpolatedDescription}</div>}
-                    {aura && <AuraView aura={aura} />}
+            <div className={classes.root}>
+                <div
+                    onClick={onClick}
+                    className={classNames(classes.inner, {
+                        [classes.selectedAbility]: isSelected,
+                        [classes.ephemeral]: removeAfterTurn,
+                    })}
+                    style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
+                >
+                    <span className={classes.header}>
+                        {damageIcon}
+                        <span className={classes.name}>{name}</span> <ResourceIcon ability={ability} />
+                    </span>
+                    <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
+                    <div className={classes.body}>
+                        {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
+                        <Debuffs ability={ability} />
+                        <SelfActions ability={ability} player={player} />
+                        <Buffs ability={ability} />
+                        <CardsToAdd ability={ability} />
+                        <BonusView ability={ability} />
+                        <DrawCards ability={ability} />
+                        {interpolatedDescription && <div>{interpolatedDescription}</div>}
+                        {aura && <AuraView aura={aura} />}
+                    </div>
+                    <div className={classes.footer}>
+                        {actions.length > 0 && area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
+                        <AbilityTypeView targetType={targetType} minion={minion} />
+                        {minion && (
+                            <div className={classes.minionStats}>
+                                <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
+                                <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div className={classes.footer}>
-                    {actions.length > 0 && area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
-                    <AbilityTypeView targetType={targetType} minion={minion} />
-                    {minion && (
-                        <div className={classes.minionStats}>
-                            <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
-                            <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
-                        </div>
-                    )}
-                </div>
+                <div className={classes.refContainer} ref={ref as any} />
             </div>
         </AbilityTooltip>
     );
