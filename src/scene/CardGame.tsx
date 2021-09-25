@@ -41,6 +41,7 @@ const useStyles = createUseStyles({
         display: "inline-block",
         margin: "4px",
         verticalAlign: "bottom",
+        cursor: "pointer",
         "&.flip $cardInner": {
             transform: "rotateY(180deg)",
         },
@@ -106,6 +107,7 @@ const CardGame = ({ onExit }) => {
     const [flippedCardIndex, setFlippedCardIndex] = useState(null);
     const [selectedCardIndices, setSelectedCardIndices] = useState([null, null]);
     const [isPlayerTurn, setIsPlayerTurn] = useState(null);
+    const [disableUI, setDisableUI] = useState(true);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [matchedCards, setMatchedCards] = useState([]);
     const [playerScore, setPlayerScore] = useState(0);
@@ -113,7 +115,6 @@ const CardGame = ({ onExit }) => {
     const [opponentSelections, setOpponentSelections] = useState([]);
     const classes = useStyles();
     const cardsRemaining = cardLayout.length - matchedCards.filter((_, i) => matchedCards[i]).length;
-    console.log(cardsRemaining);
 
     useEffect(() => {
         // Intro
@@ -190,6 +191,8 @@ const CardGame = ({ onExit }) => {
                 setShowTurnAnnouncement(false);
                 if (!isPlayerTurn) {
                     handleOpponentTurn();
+                } else {
+                    setDisableUI(false);
                 }
             }, 1000);
         }, 500);
@@ -215,6 +218,7 @@ const CardGame = ({ onExit }) => {
                     return newMatches;
                 });
             } else {
+                setDisableUI(true);
                 setTimeout(() => {
                     setIsPlayerTurn((prev) => !prev);
                 }, 500);
@@ -233,12 +237,7 @@ const CardGame = ({ onExit }) => {
     };
 
     const handleClickCard = (index: number) => {
-        if (
-            !isPlayerTurn ||
-            showTurnAnnouncement ||
-            matchedCards[index] ||
-            selectedCardIndices.every((index) => typeof index === "number")
-        ) {
+        if (disableUI || matchedCards[index] || selectedCardIndices.every((index) => typeof index === "number")) {
             return;
         }
         handleSelectCard(index);
