@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Sparkles } from "../images";
-import { getRandomArbitrary, getRandomInt } from "../utils";
-import Icon from "./Icon";
+import { Sparkles } from "../../images";
+import { getRandomArbitrary, getRandomInt } from "../../utils";
+import Icon from "./../../icon/Icon";
 
 const ANIMATION_DURATION = 1;
 
@@ -45,13 +45,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const HealIcon = ({ statChanges }) => {
+const Healing = ({ amount }: { amount: number }) => {
     const classes = useStyles();
     const [particles, setParticles] = useState([]);
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        if (statChanges.healing > 0) {
+        if (amount > 0) {
             const numParticles = 5;
             setShow(true);
             setParticles(
@@ -74,7 +74,7 @@ const HealIcon = ({ statChanges }) => {
                 setShow(false);
             };
         }
-    }, [statChanges]);
+    }, [amount]);
 
     if (!show) {
         return null;
@@ -85,9 +85,9 @@ const HealIcon = ({ statChanges }) => {
             {particles.map((style, i) => (
                 <Icon key={i} icon={<Sparkles />} className={classes.icon} style={style} />
             ))}
-            <span className={classes.text}>{statChanges.healing}</span>
+            <span className={classes.text}>{amount}</span>
         </div>
     );
 };
 
-export default HealIcon;
+export default Healing;

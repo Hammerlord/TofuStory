@@ -4,17 +4,14 @@ import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
-import Bleed from "../icon/Bleed";
-import Burn from "../icon/Burn";
 import CastingIndicator from "../icon/CastingIndicator";
-import Chill from "../icon/Chill";
 import EffectIcon from "../icon/EffectIcon";
-import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import { ClickIndicator, Cloud, Dizzy, Zzz } from "../images";
+import { ClickIndicator, Zzz } from "../images";
 import { travel } from "./animations";
 import AttackPower from "./AttackPower";
+import Effects from "./effects/Effects";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
@@ -99,35 +96,6 @@ const useStyles = createUseStyles({
         height: "100%",
         width: "100%",
     },
-    "@keyframes upAndDown": {
-        from: {
-            transform: "translateY(0)",
-        },
-        to: {
-            transform: "translateY(8px)",
-        },
-    },
-
-    "@keyframes stealthCloud": {
-        from: {
-            opacity: 0.5,
-            transform: "translateY(-8px)",
-        },
-        to: {
-            opacity: 0.1,
-            transform: "translateY(0px)",
-        },
-    },
-    stealth: {
-        animationName: "$stealthCloud",
-        animationDuration: "1s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        top: "15%",
-    },
     targetAffectedIndicatorContainer: {
         position: "absolute",
         top: "-48px",
@@ -194,24 +162,6 @@ const useStyles = createUseStyles({
         animationDuration: "1s",
         animationName: "$applyEffect",
         transition: "1s filter linear, 1s -webkit-filter linear",
-    },
-    stun: {
-        width: "48px",
-        height: "48px",
-        position: "absolute",
-        left: "40%",
-        top: "16px",
-        animationName: "$upAndDown",
-        animationDuration: "1s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
-    },
-    bleed: {
-        display: "flex",
-        position: "absolute",
-        top: "-8px",
-        left: "50%",
-        transform: "translateX(-50%)",
     },
     highlightText: {
         "& .text": {
@@ -310,22 +260,7 @@ const CombatantView = forwardRef(
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
-        const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
-        const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
-        const bleeds = oldState?.effects?.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
-        const burn = oldState?.effects?.reduce((acc: number, effect: Effect) => {
-            if (effect.type === EFFECT_TYPES.BURN) {
-                return acc + effect.duration;
-            }
-            return acc;
-        }, 0);
-        const chill = oldState?.effects?.reduce((acc: number, effect: Effect) => {
-            if (effect.type === EFFECT_TYPES.CHILL) {
-                return acc + effect.duration;
-            }
-            return acc;
-        }, 0);
 
         return (
             <div
@@ -367,34 +302,13 @@ const CombatantView = forwardRef(
                                             [classes.casting]: oldState.casting,
                                         })}
                                     />
-                                    {
-                                        <span className={classes.center}>
-                                            <HitIcon statChanges={statChanges} />
-                                        </span>
-                                    }
-                                    {
-                                        <span className={classes.center}>
-                                            <HealIcon statChanges={statChanges} />
-                                        </span>
-                                    }
-                                    {isStealthed && (
-                                        <div className={classNames(classes.stealth)}>
-                                            <Cloud />
-                                        </div>
-                                    )}
-                                    {burn > 0 && (
-                                        <span className={classes.center}>
-                                            <Burn amount={burn} />
-                                        </span>
-                                    )}
-                                    {chill > 0 && (
-                                        <span className={classes.center}>
-                                            <Chill amount={5} />
-                                        </span>
-                                    )}
+                                    <span className={classes.center}>
+                                        <HitIcon statChanges={statChanges} />
+                                    </span>
                                 </span>
                                 {oldState.HP > 0 && (
                                     <>
+                                        <Effects combatant={combatant} healing={statChanges?.healing} />
                                         <div className={classes.leftContainer}>
                                             <Armor amount={oldState.armor} />
                                             <Health HP={oldState.HP} maxHP={oldState.maxHP} />
@@ -402,13 +316,6 @@ const CombatantView = forwardRef(
 
                                         <div className={classes.rightContainer}>
                                             <AttackPower combatant={oldState} />
-                                        </div>
-
-                                        {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}
-                                        <div className={classes.bleed}>
-                                            {bleeds.map((bleed, i: number) => (
-                                                <Bleed key={i} />
-                                            ))}
                                         </div>
                                         {event?.action?.type === ACTION_TYPES.NONE && (
                                             <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />

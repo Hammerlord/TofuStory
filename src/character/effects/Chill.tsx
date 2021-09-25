@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Fire, Snowflake } from "../images";
-import { getRandomArbitrary, getRandomInt } from "../utils";
-import Icon from "./Icon";
+import Icon from "../../icon/Icon";
+import { Snowflake } from "../../images";
+import { getRandomArbitrary, getRandomInt } from "../../utils";
 
 const ANIMATION_DURATION = 2;
 

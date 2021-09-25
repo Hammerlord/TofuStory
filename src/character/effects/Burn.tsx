@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Fire } from "../images";
-import { getRandomArbitrary, getRandomInt } from "../utils";
-import Icon from "./Icon";
+import { Fire } from "../../images";
+import { getRandomArbitrary, getRandomInt } from "../../utils";
+import Icon from "../../icon/Icon";
 
 const ANIMATION_DURATION = 2;
 
