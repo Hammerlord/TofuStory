@@ -7,6 +7,7 @@ import Armor from "../icon/Armor";
 import Bleed from "../icon/Bleed";
 import Burn from "../icon/Burn";
 import CastingIndicator from "../icon/CastingIndicator";
+import Chill from "../icon/Chill";
 import EffectIcon from "../icon/EffectIcon";
 import HealIcon from "../icon/HealIcon";
 import HitIcon from "../icon/HitIcon";
@@ -318,6 +319,12 @@ const CombatantView = forwardRef(
             }
             return acc;
         }, 0);
+        const chill = oldState?.effects?.reduce((acc: number, effect: Effect) => {
+            if (effect.type === EFFECT_TYPES.CHILL) {
+                return acc + effect.duration;
+            }
+            return acc;
+        }, 0);
 
         return (
             <div
@@ -377,6 +384,11 @@ const CombatantView = forwardRef(
                                     {burn > 0 && (
                                         <span className={classes.center}>
                                             <Burn amount={burn} />
+                                        </span>
+                                    )}
+                                    {chill > 0 && (
+                                        <span className={classes.center}>
+                                            <Chill amount={5} />
                                         </span>
                                     )}
                                 </span>
