@@ -558,7 +558,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 }, 2500);
             }, 500);
         } else {
-            setup();
+            setTimeout(() => {
+                setup();
+            }, 1000);
         }
     };
 
@@ -575,6 +577,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     };
 
     useEffect(() => {
+        // Setup
         nextWave();
     }, []);
 

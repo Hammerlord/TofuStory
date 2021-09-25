@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
@@ -11,13 +12,14 @@ import { ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
-import CardGame from "../scene/CardGame";
 import ScenePlayer from "../scene/ScenePlayer";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
+
+const TRANSITION_TIME = 0.25; // Seconds
 
 const useStyles = createUseStyles({
     mapContainer: {
@@ -32,6 +34,45 @@ const useStyles = createUseStyles({
             position: "fixed",
         },
     },
+    "@keyframes fadeIn": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 1,
+        },
+    },
+    "@keyframes fadeOut": {
+        "0%": {
+            opacity: 1,
+        },
+        "100%": {
+            opacity: 0,
+        },
+    },
+    transitionOverlay: {
+        width: "100%",
+        height: "100%",
+        background: "rgba(25, 25, 25, 1)",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        pointerEvents: "none",
+        zIndex: "1000",
+        opacity: 0,
+        "&.show": {
+            animationName: "$fadeIn",
+            animationDuration: `${TRANSITION_TIME}s`,
+            pointerEvents: "auto",
+            animationTimingFunction: "ease-in",
+            animationFillMode: "forwards",
+        },
+        "&.hide": {
+            animationName: "$fadeOut",
+            animationDuration: `${TRANSITION_TIME}s`,
+            pointerEvents: "none",
+        },
+    },
 });
 
 const Main = () => {
@@ -41,11 +82,12 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
+    const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const classes = useStyles();
 
     const handleShopNode = ({ npc }: { npc: NPC }) => {
@@ -73,26 +115,42 @@ const Main = () => {
         setScene(scenes.notorious);
     };
 
+    const handleTransition = (callback: Function = () => {}) => {
+        setShowTransitionOverlay(true);
+        setTimeout(() => {
+            callback();
+            setTimeout(() => {
+                setShowTransitionOverlay(false);
+            }, TRANSITION_TIME * 1000);
+        }, TRANSITION_TIME * 1000);
+    };
+
     const handleSelectNode = (node, newLocation: number) => {
-        setLocation(newLocation);
-        if (node.type === NODE_TYPES.ENCOUNTER) {
-            setEncounter(node);
-        } else if (node.type === NODE_TYPES.SHOP) {
-            handleShopNode(node);
-        } else {
-            setIsResting(true);
-        }
+        const callback = () => {
+            setLocation(newLocation);
+            if (node.type === NODE_TYPES.ENCOUNTER) {
+                setEncounter(node);
+            } else if (node.type === NODE_TYPES.SHOP) {
+                handleShopNode(node);
+            } else {
+                setIsResting(true);
+            }
+        };
+        handleTransition(callback);
     };
 
     const handleBattleEnd = () => {
-        setEncounter(null);
-        setPlayer((prev) => ({
-            ...prev,
-            resources: 0,
-            armor: 0,
-            effects: [],
-            turnHistory: [],
-        }));
+        const callback = () => {
+            setEncounter(null);
+            setPlayer((prev) => ({
+                ...prev,
+                resources: 0,
+                armor: 0,
+                effects: [],
+                turnHistory: [],
+            }));
+        };
+        handleTransition(callback);
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
@@ -128,7 +186,7 @@ const Main = () => {
         }
     };
 
-    const handleOnSelectClass = ({ job, jobUpAbilities }) => {
+    const handleJobUp = ({ job, jobUpAbilities }) => {
         setDeck([...deck, ...jobUpAbilities]);
         setPlayer({
             ...player,
@@ -138,18 +196,22 @@ const Main = () => {
     };
 
     const handleSceneBattle = (encounter) => {
-        const { characters, ...other } = encounter;
-        setEncounter(other);
-        const newVisited = characters.reduce((acc, character: string) => {
-            return {
-                ...acc,
-                [character]: {
-                    ...visitedNPCs[character],
-                    fought: (visitedNPCs[character]?.fought || 0) + 1,
-                },
-            };
-        }, visitedNPCs);
-        setVisitedNPCs(newVisited);
+        const callback = () => {
+            const { characters, ...other } = encounter;
+            setEncounter(other);
+            const newVisited = characters.reduce((acc, character: string) => {
+                return {
+                    ...acc,
+                    [character]: {
+                        ...visitedNPCs[character],
+                        fought: (visitedNPCs[character]?.fought || 0) + 1,
+                    },
+                };
+            }, visitedNPCs);
+            setVisitedNPCs(newVisited);
+        };
+
+        handleTransition(callback);
     };
 
     if (!player) {
@@ -207,10 +269,17 @@ const Main = () => {
                     {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
                 </div>
             )}
-            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}
+            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {!isSelectingSecondaryJob && rewardsOpen && (
                 <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
             )}
+
+            <div
+                className={classNames(classes.transitionOverlay, {
+                    show: showTransitionOverlay,
+                    hide: showTransitionOverlay === false,
+                })}
+            />
         </>
     );
 };
