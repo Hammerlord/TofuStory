@@ -156,7 +156,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isResting || scene || true;
+    const isActivityOpen = encounter || isResting || scene;
 
     return (
         <>
@@ -205,7 +205,6 @@ const Main = () => {
                         </>
                     )}
                     {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
-                    <CardGame onExit={() => {}} />
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleOnSelectClass} />}
