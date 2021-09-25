@@ -114,6 +114,7 @@ export { default as lithHarborBalconyFull } from "./lithHarborBalconyFull.png";
 export { default as lithHarborBalcony } from "./lithHarborBalcony.png";
 export { default as lithHarborShark } from "./lithHarborShark.png";
 export { default as lithHarborExit } from "./lithHarborExit.png";
+export { default as stolenFenceImage } from "./stolenfence.png";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";

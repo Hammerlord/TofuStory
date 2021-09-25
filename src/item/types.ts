@@ -1,6 +1,7 @@
 export enum ITEM_TYPES {
     CONSUMABLE = "consumable",
     MATERIAL = "material",
+    EQUIPMENT = "equipment",
 }
 
 export interface Item {
@@ -11,4 +12,6 @@ export interface Item {
     resources?: number;
     type: ITEM_TYPES;
     image: string;
+    armorReceived?: number;
+    sellPrice?: number;
 }
