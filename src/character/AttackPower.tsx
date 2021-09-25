@@ -4,6 +4,7 @@ import { passesConditions } from "../battle/passesConditions";
 import { CrossedSwords } from "../images";
 import Icon from "../icon/Icon";
 import { getEnabledEffects } from "../battle/utils";
+import Tooltip from "../view/Tooltip";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -24,17 +25,16 @@ const AttackPower = ({ combatant }) => {
         return null;
     }
 
-    const damageFromEffects = getEnabledEffects(combatant).reduce((acc: number, { damage = 0, conditions = [] }) => {
+    const damageEffects = getEnabledEffects(combatant).filter(({ damage = 0, conditions = [] }) => {
         const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
             if (calculationTarget === "effectOwner") {
                 return combatant;
             }
         };
-        if (passesConditions({ getCalculationTarget, conditions })) {
-            return acc + damage;
-        }
-
-        return acc;
+        return damage !== 0 && passesConditions({ getCalculationTarget, conditions });
+    });
+    const damageFromEffects = damageEffects.reduce((acc: number, { damage }) => {
+        return acc + damage;
     }, 0);
 
     const totalDamage = (() => {
@@ -48,16 +48,38 @@ const AttackPower = ({ combatant }) => {
         return total;
     })();
 
+    const tooltip = (
+        <div>
+            The base attack power of this character.
+            {damageEffects.length > 0 && (
+                <>
+                    <hr />
+                    <div>Modifiers:</div>
+                </>
+            )}
+            {damageEffects.map(({ icon, name: effectName, damage }, i) => (
+                <div key={i}>
+                    <Icon icon={icon} /> {effectName} {damage < 0 ? "-" : "+"}
+                    {damage}
+                </div>
+            ))}
+        </div>
+    );
+
     return (
-        <Icon
-            icon={<CrossedSwords />}
-            size={"lg"}
-            text={totalDamage}
-            className={classNames({
-                [classes.bonus]: damageFromEffects > 0,
-                [classes.negative]: damageFromEffects < 0,
-            })}
-        />
+        <Tooltip title={tooltip}>
+            <span>
+                <Icon
+                    icon={<CrossedSwords />}
+                    size={"lg"}
+                    text={totalDamage}
+                    className={classNames({
+                        [classes.bonus]: damageFromEffects > 0,
+                        [classes.negative]: damageFromEffects < 0,
+                    })}
+                />
+            </span>
+        </Tooltip>
     );
 };
 
