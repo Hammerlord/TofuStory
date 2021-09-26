@@ -48,6 +48,7 @@ const Deck = ({ deck, discard }) => {
 
     const getCountMap = (items: { name: string }[]) => {
         return items
+            .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
             .reduce((acc, item) => {
                 acc[item.name] = (acc[item.name] || 0) + 1;

@@ -34,7 +34,7 @@ const useStyles = createUseStyles({
 
 const DeckViewer = ({ deck, onClose }) => {
     const classes = useStyles();
-    deck = deck.sort((a, b) => {
+    deck = deck.slice().sort((a, b) => {
         return a.resourceCost || 0 - (b.resourceCost || 0);
     });
     return (
