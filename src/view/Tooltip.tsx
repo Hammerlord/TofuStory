@@ -8,21 +8,21 @@ const useStyles = createUseStyles({
             fontFamily: "Barlow",
             fontWeight: "500",
             lineHeight: "24px",
-            background: "rgba(50, 50, 50, 0.9)",
+            background: "rgba(25, 25, 25, 0.9)",
             borderRadius: "8px",
             padding: "16px",
         },
 
         "& .MuiTooltip-Arrow::before": {
-            background: "rgba(50, 50, 50, 0.9)",
+            background: "rgba(25, 25, 25, 0.9)",
         },
     },
 });
 
-const Tooltip = ({ children, title, ...other }) => {
-    const classes = useStyles();
+const Tooltip = ({ children, title, classes = {}, ...other }: any) => {
+    const selectors = useStyles();
     return (
-        <MuiTooltip arrow classes={{ popper: classes.tooltip }} title={title} {...other}>
+        <MuiTooltip arrow classes={{ popper: selectors.tooltip, ...classes }} title={title} {...other}>
             {children}
         </MuiTooltip>
     );

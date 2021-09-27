@@ -10,8 +10,10 @@ import { warmush } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
+import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
+import RopeQuest from "../scene/kpq/RopeQuest";
 import ScenePlayer from "../scene/ScenePlayer";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
@@ -80,6 +82,7 @@ const Main = () => {
     const [deck, setDeck] = useState([]);
     const [scene, setScene] = useState(null);
     const [encounter, setEncounter] = useState(null);
+    const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [location, setLocation] = useState(-1);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
@@ -141,6 +144,11 @@ const Main = () => {
 
     const handleBattleEnd = () => {
         const callback = () => {
+            if (encounterVictoryCallback) {
+                encounterVictoryCallback();
+                setEncounterVictoryCallback(null);
+            }
+
             setEncounter(null);
             setPlayer((prev) => ({
                 ...prev,
@@ -195,10 +203,11 @@ const Main = () => {
         setIsSelectingSecondaryJob(false);
     };
 
-    const handleSceneBattle = (encounter) => {
+    const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            const { characters, ...other } = encounter;
+            const { characters = [], ...other } = encounter;
             setEncounter(other);
+            setEncounterVictoryCallback(() => onVictory);
             const newVisited = characters.reduce((acc, character: string) => {
                 return {
                     ...acc,
@@ -218,7 +227,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isResting || scene;
+    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || true;
 
     return (
         <>
@@ -230,6 +239,7 @@ const Main = () => {
             )}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
+                    <KerningCity onClickScene={setScene} player={player} onExit={() => setScene(null)} />
                     {scene && (
                         <>
                             <ScenePlayer
@@ -267,13 +277,12 @@ const Main = () => {
                         </>
                     )}
                     {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
+                    {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
+                    {!isSelectingSecondaryJob && rewardsOpen && (
+                        <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
+                    )}
                 </div>
             )}
-            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
-            {!isSelectingSecondaryJob && rewardsOpen && (
-                <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
-            )}
-
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

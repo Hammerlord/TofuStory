@@ -105,10 +105,10 @@ export const goldRichieMerchant: NPC = {
     character: goldRichie.name,
     scenes: {
         intro: {
-            scene: () => <div />,
             characters: [goldRichie.name],
             script: [
                 {
+                    scene: () => <div />,
                     speaker: goldRichie,
                     dialog: ["Ahh! A monster!"],
                 },
@@ -136,10 +136,10 @@ export const goldRichieMerchant: NPC = {
             ],
         },
         fought: {
-            scene: () => <div />,
             characters: [goldRichie.name],
             script: [
                 {
+                    scene: () => <div />,
                     speaker: goldRichie,
                     dialog: ["You again! The mushroom with the weird cap!"],
                 },
@@ -160,10 +160,10 @@ export const goldRichieMerchant: NPC = {
             ],
         },
         notorious: {
-            scene: () => <div />,
             characters: [goldRichie.name],
             script: [
                 {
+                    scene: () => <div />,
                     speaker: goldRichie,
                     dialog: [
                         "We meet again! I heard you've made something of a name for yourself.",
@@ -181,10 +181,10 @@ export const goldRichieMerchant: NPC = {
             ],
         },
         helped: {
-            scene: () => <div />,
             characters: [goldRichie.name],
             script: [
                 {
+                    scene: () => <div />,
                     speaker: goldRichie,
                     dialog: ["Ah, Sir Mushroom! [Gold Richie squints.] Or... lady, whichever it is."],
                 },

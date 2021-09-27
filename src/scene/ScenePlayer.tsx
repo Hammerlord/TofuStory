@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Item } from "../item/types";
 import { Scene, ScriptResponse } from "./types";
@@ -58,10 +58,11 @@ const useStyles = createUseStyles({
         minHeight: "100px",
         marginRight: "24px",
         textAlign: "center",
+        fontSize: "1rem",
     },
     portrait: {
         minHeight: "70px",
-        minWidth: "50px",
+        minWidth: "80px",
     },
     dialog: {
         width: "100%",
@@ -87,7 +88,7 @@ const useStyles = createUseStyles({
         opacity: 0,
         animationName: "$fade",
         animationTimingFunction: "ease-in",
-        animationDelay: "1.5s",
+        animationDelay: "1s",
         animationDuration: "0.5s",
         animationFillMode: "forwards",
     },
@@ -142,8 +143,19 @@ const ScenePlayer = ({
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
+    const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
+    const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const classes = useStyles();
-    const { speaker, dialog, items, responses } = script[dialogIndex] || {};
+    const { speaker, dialog = [], items, responses, puzzle } = script[dialogIndex] || {};
+
+    useEffect(() => {
+        const newScene = script[dialogIndex]?.scene;
+        if (newScene && newScene !== Backdrop) {
+            setBackdrop(() => newScene || null);
+        }
+
+        setPuzzle(() => puzzle || null);
+    }, [dialogIndex]);
 
     const handleClickDialog = () => {
         if (!responses && !items) {
@@ -156,18 +168,22 @@ const ScenePlayer = ({
     };
 
     const handleClickResponse = ({ next, encounter, isExit, shop }: ScriptResponse) => {
-        if (next) {
-            setScript(next);
-            setDialogIndex(0);
-        }
+        const callback = () => {
+            if (next) {
+                setScript(next);
+                setDialogIndex(0);
+            }
+            if (shop) {
+                onShop(shop);
+            }
+            if (isExit) {
+                onExit();
+            }
+        };
         if (encounter) {
-            onBattle(encounter);
-        }
-        if (shop) {
-            onShop(shop);
-        }
-        if (isExit) {
-            onExit();
+            onBattle(encounter, callback);
+        } else {
+            callback();
         }
     };
 
@@ -183,7 +199,6 @@ const ScenePlayer = ({
         }
     };
 
-    const SceneBackdrop = scene.scene;
     const getResponseAffix = (response: ScriptResponse) => {
         if (response.encounter) {
             return "[Fight]";
@@ -197,12 +212,11 @@ const ScenePlayer = ({
             return "[Shop]";
         }
     };
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
-                <div className={classes.sceneContainer}>
-                    <SceneBackdrop player={player} />
-                </div>
+                <div className={classes.sceneContainer}>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
                 <div className={classes.wrapper}>
                     <div className={classes.dialogContainer}>
                         <div className={classes.portraitContainer}>
@@ -257,6 +271,7 @@ const ScenePlayer = ({
                     )}
                 </div>
             </div>
+            {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
         </div>
     );
 };

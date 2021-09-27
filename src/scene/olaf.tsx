@@ -85,10 +85,10 @@ const postFight = [
 ];
 
 export const lithEventsOlaf: Scene = {
-    scene: Olaf,
     characters: [olafNPC.name],
     script: [
         {
+            scene: Olaf,
             speaker: olafNPC,
             dialog: ["Wha? Who destroyed all the training dummies!?", "They were supposed to last for the next batch of islanders!"],
         },

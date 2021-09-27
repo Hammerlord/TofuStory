@@ -57,10 +57,10 @@ const TeoJohn = ({ player }) => {
 };
 
 export const lithEventsTeoJohn: Scene = {
-    scene: TeoJohn,
     characters: [teo.name, john.name],
     script: [
         {
+            scene: TeoJohn,
             speaker: teo,
             dialog: ["Oh hey, John, wouldja look over there."],
         },

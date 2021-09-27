@@ -4,7 +4,6 @@ import { Item } from "../item/types";
 export interface Scene {
     characters: string[]; // Character names to mark who you have interacted with
     script: ScriptNode[];
-    scene: ({ player }: { player: any }) => JSX.Element;
 }
 
 export interface ScriptResponse {
@@ -31,9 +30,12 @@ export interface ScriptNode {
         name: string;
         image: string;
     };
+    scene?: ({ player }: { player: any }) => JSX.Element;
+    puzzle?: ({ player, onComplete }: { player: any; onComplete: Function }) => JSX.Element;
     dialog: string[];
     responses?: ScriptResponse[];
     items?: Item[];
+    healthRecovery?: number; // Percentage
 }
 
 export interface NPC {
