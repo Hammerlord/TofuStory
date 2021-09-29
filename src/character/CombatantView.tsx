@@ -194,7 +194,7 @@ const useStyles = createUseStyles({
     },
     dead: {
         animation: "$deadAnimation 1s forwards",
-        transitionTimignFunction: "ease-in-out",
+        transitionTimingFunction: "ease-in-out",
     },
     projectile: {
         maxWidth: "40%",

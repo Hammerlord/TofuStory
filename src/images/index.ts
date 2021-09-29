@@ -30,6 +30,7 @@ export { default as SpeechBubble } from "./1f4ac.svg";
 export { default as JapaneseOgre } from "./1f479.svg";
 export { default as AlternateJapaneseOgre } from "./1f479-alternate.svg";
 export { default as MoneyBag } from "./1f4b0.svg";
+export { default as Lock } from "./1f512.svg";
 
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
@@ -148,6 +149,7 @@ export { default as lakelisImage } from "./lakelis.png";
 export { default as ligatorImage } from "./ligator.gif";
 export { default as greenmushroomImage } from "./greenmushroom.gif";
 export { default as hornymushroomImage } from "./hornymushroom.gif";
+export { default as treasureChest2Image } from "./treasurechest2.png";
 
 export { default as bluemushroomCard } from "./bluemushroomcard.png";
 export { default as bluesnailCard } from "./bluesnailcard.png";

@@ -37,7 +37,7 @@ const Notification = ({
 }: {
     children: JSX.Element | string;
     severity?: "warning" | "info" | "error";
-    id: string;
+    id?: string;
     onClick?: MouseEventHandler<HTMLDivElement>;
     duration?: number;
 }) => {

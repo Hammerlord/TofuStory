@@ -13,6 +13,7 @@ import Camp from "../Map/Camp";
 import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
+import UnattendedTreasureBox from "../scene/UnattendedTreasureBox";
 import KittenBarrels from "../scene/kpq/KittenBarrels";
 import KittenBarrelsQuest from "../scene/kpq/KittenBarrelsQuest";
 import RopeQuest from "../scene/kpq/RopeQuest";
