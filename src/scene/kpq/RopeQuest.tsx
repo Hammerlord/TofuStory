@@ -2,15 +2,8 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ClickIndicator, ropequestBG, shoImage, shoRopeImage, stefaImage, stefaRopeImage, swampBG, wessImage } from "../../images";
-import { getRandomInt } from "../../utils";
 import Tooltip from "../../view/Tooltip";
-
-const getCorrectCombination = (length = 4) => {
-    const nums = Array.from({ length }).map((_, i) => true);
-    const index = getRandomInt(0, nums.length - 1);
-    nums[index] = null;
-    return nums;
-};
+import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({
     root: {
@@ -106,7 +99,7 @@ const useStyles = createUseStyles({
  * 3  4
  */
 const RopeQuest = ({ player, onComplete }) => {
-    const [correctCombination] = useState(getCorrectCombination());
+    const [correctCombination] = useState(generateCombination());
     const [answer, setAnswer] = useState([null, null, null, null]);
     const [selectedPartyMember, setSelectedPartyMember] = useState(null);
     const [blockUI, setBlockUI] = useState(false);

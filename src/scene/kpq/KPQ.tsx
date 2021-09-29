@@ -4,6 +4,8 @@ import { Enemy } from "../../enemy/enemy";
 import { greenmushroomImage, hornymushroomImage, kingslimeImage, ligatorImage } from "../../images";
 import { Scene } from "../types";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
+import KittenBarrels from "./KittenBarrels";
+import KittenBarrelsQuest from "./KittenBarrelsQuest";
 import KPQSewer from "./KPQSewer";
 import KPQSewer2 from "./KPQSewer2";
 import RopeQuest from "./RopeQuest";
@@ -423,9 +425,17 @@ export const KPQ: Scene = {
                                                                                         },
                                                                                         {
                                                                                             speaker: bowman,
-                                                                                            dialog: ["Good job, guys. Let's move on."],
+                                                                                            dialog: [
+                                                                                                "Good job, team. That was easy, right? Well, consider that a primer to the next puzzle--because there's more.",
+                                                                                                "Let's move on.",
+                                                                                            ],
                                                                                         },
                                                                                         {
+                                                                                            speaker: magician,
+                                                                                            dialog: ["Uh huh..."],
+                                                                                        },
+                                                                                        {
+                                                                                            scene: KittenBarrels,
                                                                                             speaker: magician,
                                                                                             dialog: ["You've gotta be kidding me."],
                                                                                         },
@@ -439,13 +449,17 @@ export const KPQ: Scene = {
                                                                                         },
                                                                                         {
                                                                                             speaker: thief,
-                                                                                            dialog: ["At least it's cute?"],
+                                                                                            dialog: ["At least they're cute?"],
                                                                                         },
                                                                                         {
                                                                                             speaker: magician,
                                                                                             dialog: [
-                                                                                                "Whatever. It looks like the same puzzle as before, just with an extra step. Let's get to--",
+                                                                                                "Whatever. It looks like the same puzzle as before, just with an extra step. Let's get this over with.",
                                                                                             ],
+                                                                                        },
+                                                                                        {
+                                                                                            puzzle: KittenBarrelsQuest,
+                                                                                            dialog: [],
                                                                                         },
                                                                                         {
                                                                                             dialog: ["[The chamber rumbles.]"],
@@ -582,7 +596,7 @@ export const KPQ: Scene = {
                                                                                                             dialog: [
                                                                                                                 "... A prisoner...",
                                                                                                                 "That is...",
-                                                                                                                "... One trapped in their own existence...",
+                                                                                                                "... One trapped in their own existence... part of a greater cycle...",
                                                                                                                 "[The King Slime pauses.]",
                                                                                                                 "... Not quite...",
                                                                                                             ],
@@ -619,7 +633,7 @@ export const KPQ: Scene = {
                                                                                                             speaker: bowman,
                                                                                                             dialog: [
                                                                                                                 "Wait, those vibrations... I think it's speaking.",
-                                                                                                                "[The bowman stares at you.] You... talked with it?",
+                                                                                                                "[The bowman stares at you.] You... talked with it? How? Unless--",
                                                                                                             ],
                                                                                                         },
                                                                                                         {

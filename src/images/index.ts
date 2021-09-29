@@ -123,6 +123,8 @@ export { default as kpqSwamp } from "./swampkpq.png";
 export { default as kpqSwamp2 } from "./swampkpq2.png";
 export { default as ropequestBG } from "./ropequest.png";
 export { default as swampBG } from "./swampBG.jpg";
+export { default as kittenBarrelsImage } from "./kittenbarrels.png";
+export { default as sleepywoodBG } from "./sleepywoodBG.jpg";
 
 export { default as noobClubA } from "./noobclub-a.png";
 export { default as noobClubB } from "./noobclub-b.png";
