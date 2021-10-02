@@ -23,6 +23,7 @@ import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
+import TreasureBox from "../scene/TreasureBox2";
 
 const TRANSITION_TIME = 0.25; // Seconds
 

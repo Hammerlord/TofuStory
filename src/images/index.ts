@@ -61,6 +61,7 @@ export { default as stumpImage } from "./stump.png";
 export { default as fireboarImage } from "./fireboar.png";
 export { default as octopusImage } from "./octopus.png";
 export { default as wildboarImage } from "./wildboar.png";
+export { default as slimeImage } from "./slime.png";
 export { default as clear } from "./clear.png";
 export { default as victoria } from "./bg.png";
 export { default as warmush } from "./warmush.png";
