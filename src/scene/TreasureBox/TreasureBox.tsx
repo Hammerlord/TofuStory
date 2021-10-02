@@ -144,7 +144,7 @@ const TreasureBox = ({
     onExit: any;
     treasure?: Item[];
     title?: string;
-    Puzzle?: ({ onComplete: Function, complete: boolean }) => JSX.Element;
+    Puzzle?: ({ onComplete: Function, completed: boolean }) => JSX.Element;
 }) => {
     const classes = useStyles();
     const [completed, setCompleted] = useState(!Puzzle);
@@ -196,7 +196,7 @@ const TreasureBox = ({
                 </div>
                 {Puzzle && (
                     <div className={classes.puzzleContainer}>
-                        <Puzzle onComplete={() => setCompleted(true)} complete={completed} />
+                        <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
                     </div>
                 )}
             </div>

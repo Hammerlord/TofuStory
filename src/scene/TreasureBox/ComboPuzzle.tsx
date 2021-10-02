@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const ComboPuzzle = ({ onComplete, completed }) => {
+const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const classes = useStyles();
     const column = [snailImage, bluesnailImage, shroomImage];
     const [currentCombo, setCurrentCombo] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)));

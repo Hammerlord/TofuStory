@@ -43,7 +43,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const ReelLockPuzzle = ({ onComplete, completed }) => {
+const ReelLockPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const [columns] = useState(
         (() => {
             const column = shuffle([snailImage, bluesnailImage, shroomImage, redsnailImage, slimeImage, orangeMushroomImage, pigImage]);

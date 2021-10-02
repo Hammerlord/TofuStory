@@ -28,10 +28,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const RedBluePuzzle = ({ onComplete, completed }) => {
+const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const [answer, setAnswer] = useState(Array.from({ length: 6 }).map(() => Math.random() < 0.5));
 
     const onClickTile = (index: number) => {
+        if (completed) {
+            return;
+        }
         const newAnswer = answer.slice();
         for (let i = index - 1; i <= index + 1; ++i) {
             if (newAnswer[i] !== undefined) {
