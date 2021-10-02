@@ -1,9 +1,9 @@
+import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bluesnailImage, Lock, shroomImage, snailImage, treasureChest2Image } from "../../images";
+import { Lock, treasureChest2Image } from "../../images";
 import { Item } from "../../item/types";
-import { getRandomInt, shuffle } from "../../utils";
 import BannerNotice from "../../view/BannerNotice";
 
 const useStyles = createUseStyles({
@@ -61,6 +61,35 @@ const useStyles = createUseStyles({
             transform: "rotate(-1deg) translateY(0)",
         },
     },
+    "@keyframes fadeOut": {
+        "0%": {
+            opacity: "100%",
+        },
+        "100%": {
+            opacity: "0%",
+        },
+    },
+    treasureContainer: {
+        background:
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 30%, rgba(0,212,255,0) 100%)",
+        color: "white",
+        padding: "16px 8px",
+        minWidth: "300px",
+        zIndex: 10,
+        marginBottom: 16,
+    },
+    treasure: {
+        listStyle: "none",
+        padding: 0,
+        marginBottom: 0,
+    },
+    item: {
+        margin: 0,
+        lineHeight: "16px",
+    },
+    itemName: {
+        verticalAlign: "top",
+    },
     treasureChest: {
         width: 200,
         height: 150,
@@ -74,6 +103,14 @@ const useStyles = createUseStyles({
             transitionTimingFunction: "ease-in-out",
             animationIterationCount: "infinite",
             cursor: "pointer",
+        },
+        "&.fadeout": {
+            animationDuration: "0.5s",
+            animationName: "$fadeOut",
+            transitionTimingFunction: "ease-out",
+            animationIterationCount: "unset",
+            cursor: "unset",
+            animationFillMode: "forwards",
         },
     },
     lockContainer: {
@@ -104,10 +141,10 @@ const TreasureBox = ({
     title = "Treasure Box",
     Puzzle,
 }: {
-    onExit: Function;
+    onExit: any;
     treasure?: Item[];
     title?: string;
-    Puzzle?: ({ onComplete: Function }) => JSX.Element;
+    Puzzle?: ({ onComplete: Function, complete: boolean }) => JSX.Element;
 }) => {
     const classes = useStyles();
     const [completed, setCompleted] = useState(!Puzzle);
@@ -130,9 +167,27 @@ const TreasureBox = ({
                         src={treasureChest2Image}
                         className={classNames(classes.treasureChest, {
                             open: completed,
+                            fadeout: isChestOpened,
                         })}
                         onClick={handleClickChest}
                     />
+                    {isChestOpened && (
+                        <div className={classes.center}>
+                            <div className={classNames(classes.treasureContainer)}>
+                                You obtain:
+                                <ul className={classes.treasure}>
+                                    {treasure.map((item: Item) => (
+                                        <li key={item.name} className={classes.item}>
+                                            <img src={item.image} /> <span className={classes.itemName}>{item.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <Button variant="contained" color="primary" onClick={onExit}>
+                                Exit
+                            </Button>
+                        </div>
+                    )}
                     {!completed && (
                         <div className={classes.lockContainer}>
                             <Lock className={classes.lock} />
@@ -141,7 +196,7 @@ const TreasureBox = ({
                 </div>
                 {Puzzle && (
                     <div className={classes.puzzleContainer}>
-                        <Puzzle onComplete={() => setCompleted(true)} />
+                        <Puzzle onComplete={() => setCompleted(true)} complete={completed} />
                     </div>
                 )}
             </div>
