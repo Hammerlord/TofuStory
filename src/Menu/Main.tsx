@@ -13,17 +13,12 @@ import Camp from "../Map/Camp";
 import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
 import { NODE_TYPES } from "../Map/types";
-import UnattendedTreasureBox from "../scene/UnattendedTreasureBox";
-import KittenBarrels from "../scene/kpq/KittenBarrels";
-import KittenBarrelsQuest from "../scene/kpq/KittenBarrelsQuest";
-import RopeQuest from "../scene/kpq/RopeQuest";
 import ScenePlayer from "../scene/ScenePlayer";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
-import TreasureBox from "../scene/TreasureBox2";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
