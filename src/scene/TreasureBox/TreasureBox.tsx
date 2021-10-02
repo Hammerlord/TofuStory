@@ -100,12 +100,12 @@ const useStyles = createUseStyles({
 
 const TreasureBox = ({
     onExit,
-    treasure,
+    treasure = [],
     title = "Treasure Box",
     Puzzle,
 }: {
     onExit: Function;
-    treasure: Item[];
+    treasure?: Item[];
     title?: string;
     Puzzle?: ({ onComplete: Function }) => JSX.Element;
 }) => {
