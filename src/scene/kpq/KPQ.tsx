@@ -1,7 +1,4 @@
-import { elite, raging, thorns } from "../../ability/Effects";
-import { ACTION_TYPES } from "../../ability/types";
-import { Enemy } from "../../enemy/enemy";
-import { greenmushroomImage, hornymushroomImage, kingslimeImage, ligatorImage } from "../../images";
+import { eliteLigator, greenMushroom, hornyMushroom, kingSlimeEnemy, ligator } from "../../enemy/enemy";
 import { Scene } from "../types";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
 import KittenBarrels from "./KittenBarrels";
@@ -11,57 +8,6 @@ import KPQSewer2 from "./KPQSewer2";
 import RopeQuest from "./RopeQuest";
 import SewerEntrance from "./SewerEntrance";
 import SewerEntrance2 from "./SewerEntrance2";
-
-const ligator: Enemy = {
-    name: "Ligator",
-    image: ligatorImage,
-    maxHP: 2,
-    damage: 2,
-};
-
-const eliteLigator: Enemy = {
-    name: "Ligator",
-    image: ligatorImage,
-    maxHP: 2,
-    damage: 2,
-    effects: [elite, raging],
-};
-
-const greenMushroom: Enemy = {
-    name: "Green Mushroom",
-    image: greenmushroomImage,
-    maxHP: 15,
-    damage: 1,
-};
-
-const hornyMushroom: Enemy = {
-    name: "Horny Mushroom",
-    image: hornymushroomImage,
-    maxHP: 20,
-    damage: 2,
-    effects: [thorns],
-};
-
-export const kingSlimeEnemy: Enemy = {
-    name: "King Slime",
-    image: kingslimeImage,
-    maxHP: 50,
-    damage: 2,
-    effects: [elite],
-    abilities: [
-        {
-            name: "Earthquake",
-            actions: [
-                {
-                    resources: 3,
-                    type: ACTION_TYPES.ATTACK,
-                    damage: 4,
-                    area: 2,
-                },
-            ],
-        },
-    ],
-};
 
 const ligatorFight1 = {
     characters: [],

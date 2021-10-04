@@ -4,8 +4,8 @@ import { Camping, CrossedSwords, map, MoneyBag } from "../images";
 import Overlay from "../view/Overlay";
 import { generateWaves } from "./encounters";
 import Pan from "./Pan";
-import { routeKerningToPerion, routeLithToKerning } from "./routes";
-import { NODE_TYPES, RouteNode } from "./types";
+import { routeKerningToPerion } from "./routes/routes";
+import { NODE_TYPES } from "./types";
 
 const useStyles = createUseStyles({
     imageContainer: {

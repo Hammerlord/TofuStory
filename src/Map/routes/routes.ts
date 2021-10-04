@@ -1,42 +1,20 @@
-import { axeStump, fireBoar, octopus, snail, stump, thiefAssassin, wildBoar } from "../enemy/enemy";
-import { goldRichieMerchant } from "../scene/GoldRichie";
-import { blueSnail, noobA, noobB, orangeMushroom, redSnail, shroom } from "./../enemy/enemy";
-import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES, RouteNode } from "./types";
-
-const { EASY, NORMAL, HARD, HARDEST } = ENEMY_DIFFICULTY;
-export const enemyLayouts = {
-    easy: [
-        [null, EASY, EASY, EASY, null],
-        [null, EASY, EASY, EASY, EASY],
-        [NORMAL, NORMAL, null, null, null],
-        [EASY, NORMAL, EASY, null, null],
-        [null, EASY, NORMAL, EASY, null],
-        [null, NORMAL, NORMAL, null, null],
-        [null, NORMAL, EASY, NORMAL, null],
-        [NORMAL, null, null, null, NORMAL],
-        [null, null, HARD, null, null],
-    ] as ENEMY_DIFFICULTY[][],
-    normal: [
-        [null, NORMAL, EASY, NORMAL, EASY],
-        [null, NORMAL, null, NORMAL, null],
-        [EASY, NORMAL, null, NORMAL, EASY],
-        [NORMAL, NORMAL, null, NORMAL, NORMAL],
-        [null, HARD, null, NORMAL, null],
-        [null, NORMAL, HARD, null, null],
-        [null, NORMAL, NORMAL, NORMAL, null],
-        [EASY, EASY, EASY, EASY, EASY],
-        [EASY, EASY, NORMAL, EASY, EASY],
-    ] as ENEMY_DIFFICULTY[][],
-    hard: [
-        [EASY, NORMAL, HARD, NORMAL, EASY],
-        [null, NORMAL, HARD, NORMAL, null],
-        [NORMAL, NORMAL, null, null, HARD],
-        [null, HARD, null, HARD, null],
-        [HARD, null, null, null, HARD],
-        [EASY, null, HARDEST, null, EASY],
-        [null, null, HARDEST, null, null],
-    ] as ENEMY_DIFFICULTY[][],
-};
+import {
+    axeStump,
+    blueSnail,
+    fireBoar,
+    noobA,
+    noobB,
+    octopus,
+    orangeMushroom,
+    redSnail,
+    shroom,
+    snail,
+    stump,
+    thiefAssassin,
+    wildBoar,
+} from "../../enemy/enemy";
+import { goldRichieMerchant } from "../../scene/GoldRichie";
+import { ENCOUNTER_DIFFICULTY, MapEnemies, NODE_TYPES, RouteNode } from "../types";
 
 export const routeLithToKerning = {
     location: "",

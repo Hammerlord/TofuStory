@@ -1,4 +1,4 @@
-import { stealth, elite, burn, thorns, hardy } from "./../ability/Effects";
+import { stealth, elite, burn, thorns, hardy, raging } from "./../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./../ability/types";
 import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
@@ -18,6 +18,10 @@ import {
     stumpImage,
     fireboarImage,
     axestumpImage,
+    ligatorImage,
+    greenmushroomImage,
+    hornymushroomImage,
+    kingslimeImage,
 } from "../images";
 
 export interface Enemy {
@@ -97,7 +101,7 @@ export const orangeMushroom: Enemy = {
 
 export const noobA: Enemy = {
     name: "Beginner A",
-    maxHP: 35,
+    maxHP: 25,
     image: noobClubA,
     damage: 2,
     abilities: [
@@ -127,7 +131,7 @@ export const noobA: Enemy = {
 
 export const noobB: Enemy = {
     name: "Beginner B",
-    maxHP: 35,
+    maxHP: 25,
     image: noobClubB,
     damage: 2,
     abilities: [
@@ -168,7 +172,7 @@ export const noobB: Enemy = {
 
 export const thiefAssassin: Enemy = {
     name: "XxLeetSinxX",
-    maxHP: 40,
+    maxHP: 30,
     image: leetSin,
     damage: 2,
     attack: {
@@ -264,14 +268,14 @@ export const olaf = {
 export const octopus: Enemy = {
     name: "Octopus",
     image: octopusImage,
-    maxHP: 12,
+    maxHP: 7,
     damage: 1,
 };
 
 export const wildBoar: Enemy = {
     name: "Wild Boar",
     image: wildboarImage,
-    maxHP: 17,
+    maxHP: 12,
     damage: 2,
     abilities: [
         {
@@ -291,7 +295,7 @@ export const wildBoar: Enemy = {
 export const stump: Enemy = {
     name: "Stump",
     image: stumpImage,
-    maxHP: 15,
+    maxHP: 10,
     armor: 5,
     damage: 1,
     effects: [hardy],
@@ -300,9 +304,9 @@ export const stump: Enemy = {
 export const axeStump: Enemy = {
     name: "Axe Stump",
     image: axestumpImage,
-    maxHP: 20,
+    maxHP: 17,
     armor: 10,
-    damage: 3,
+    damage: 2,
     abilities: [
         {
             name: "Barbs",
@@ -328,7 +332,7 @@ export const axeStump: Enemy = {
 export const fireBoar: Enemy = {
     name: "Fire Boar",
     image: fireboarImage,
-    maxHP: 30,
+    maxHP: 25,
     damage: 3,
     abilities: [
         {
@@ -338,11 +342,62 @@ export const fireBoar: Enemy = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 5,
                     effects: [{ ...burn, duration: 1 }],
                 },
             ],
         },
     ],
     effects: [hardy],
+};
+
+export const ligator: Enemy = {
+    name: "Ligator",
+    image: ligatorImage,
+    maxHP: 15,
+    damage: 2,
+};
+
+export const eliteLigator: Enemy = {
+    name: "Ligator",
+    image: ligatorImage,
+    maxHP: 30,
+    damage: 2,
+    effects: [elite, raging],
+};
+
+export const greenMushroom: Enemy = {
+    name: "Green Mushroom",
+    image: greenmushroomImage,
+    maxHP: 15,
+    damage: 1,
+};
+
+export const hornyMushroom: Enemy = {
+    name: "Horny Mushroom",
+    image: hornymushroomImage,
+    maxHP: 20,
+    damage: 2,
+    effects: [thorns],
+};
+
+export const kingSlimeEnemy: Enemy = {
+    name: "King Slime",
+    image: kingslimeImage,
+    maxHP: 50,
+    damage: 2,
+    effects: [elite],
+    abilities: [
+        {
+            name: "Earthquake",
+            actions: [
+                {
+                    resources: 3,
+                    type: ACTION_TYPES.ATTACK,
+                    damage: 4,
+                    area: 2,
+                },
+            ],
+        },
+    ],
 };

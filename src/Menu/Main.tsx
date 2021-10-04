@@ -226,7 +226,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || true;
+    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen;
 
     return (
         <>

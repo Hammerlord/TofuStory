@@ -1,13 +1,13 @@
-import { createCombatant } from "./../enemy/createEnemy";
 import { concat } from "ramda";
+import { Ability } from "../ability/types";
 import { Enemy } from "../enemy/enemy";
-import { avenger, elite, eliteSquad, hardy, raging, thorns } from "./../ability/Effects";
+import { avenger, elite, eliteSquad, raging, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
+import { createCombatant } from "./../enemy/createEnemy";
 import { Wave } from "./../Menu/tutorial";
 import { getRandomItem } from "./../utils";
-import { enemyLayouts } from "./routes";
+import { enemyLayouts } from "./routes/layouts";
 import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, RouteNode } from "./types";
-import { Ability } from "../ability/types";
 
 const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
     return {
