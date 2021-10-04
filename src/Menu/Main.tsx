@@ -238,7 +238,6 @@ const Main = () => {
             )}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
-                    <KerningCity onClickScene={setScene} player={player} onExit={() => setScene(null)} />
                     {scene && (
                         <>
                             <ScenePlayer
