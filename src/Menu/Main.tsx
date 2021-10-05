@@ -10,8 +10,9 @@ import { warmush } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
-import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
+import generateTravelRoute from "../Map/routes/generateTravelRoute";
+import { routeLith, toLith } from "../Map/routes/routes";
 import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import { NPC } from "../scene/types";
@@ -83,8 +84,8 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [location, setLocation] = useState(-1);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
+    const [locationNode, setLocationNode] = useState(toLith);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
@@ -127,9 +128,9 @@ const Main = () => {
         }, TRANSITION_TIME * 1000);
     };
 
-    const handleSelectNode = (node, newLocation: number) => {
+    const handleSelectNode = (node) => {
         const callback = () => {
-            setLocation(newLocation);
+            setLocationNode(node);
             if (node.type === NODE_TYPES.ENCOUNTER) {
                 setEncounter(node);
             } else if (node.type === NODE_TYPES.SHOP) {
@@ -232,7 +233,12 @@ const Main = () => {
         <>
             {!isActivityOpen && (
                 <div className={classes.mapContainer}>
-                    <Map onSelectNode={handleSelectNode} currentLocation={location} playerImage={player.image} />
+                    <Map
+                        onSelectNode={handleSelectNode}
+                        generatedRoute={generateTravelRoute({ route: routeLith, notoreity: 0 })}
+                        currentNode={locationNode}
+                        playerImage={player.image}
+                    />
                     <Header player={player} deck={deck} onUseItem={handleUseItem} />
                 </div>
             )}

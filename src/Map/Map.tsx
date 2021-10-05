@@ -2,9 +2,7 @@ import { createRef, Fragment, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Camping, CrossedSwords, map, MoneyBag } from "../images";
 import Overlay from "../view/Overlay";
-import { generateWaves } from "./encounters";
 import Pan from "./Pan";
-import { routeKerningToPerion } from "./routes/routes";
 import { NODE_TYPES } from "./types";
 
 const useStyles = createUseStyles({
@@ -34,22 +32,14 @@ const useStyles = createUseStyles({
         WebkitFilter: "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))",
         filter: "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))",
         cursor: "pointer",
+        zIndex: 3,
     },
 });
 
 const NODE_ICON_SIZE = 16;
 
-const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, playerImage }) => {
+const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
     const classes = useStyles();
-    const [generatedRoute] = useState(
-        route.nodes.map((node) => {
-            if (node.type === NODE_TYPES.ENCOUNTER) {
-                return { ...node, waves: generateWaves(node, route.enemies) };
-            }
-            return node;
-        })
-    );
-
     const [containerRef] = useState(useRef(createRef() as any));
     const [positions, setPositions] = useState([]);
     const [enableDraw] = useState(false);
@@ -73,18 +63,10 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
         e.preventDefault();
     };
 
-    const handleClickNode = (node, i: number) => {
+    const handleClickNode = (node) => {
         //if (i - (currentLocation || 0) === 1) {
-        onSelectNode(node, i);
+        onSelectNode(node);
         //}
-    };
-
-    const placePlayerMarker = (i: number) => {
-        if (currentLocation < 0) {
-            return i === 0;
-        }
-
-        return currentLocation === i;
     };
 
     // This is just for generating routes
@@ -107,64 +89,61 @@ const Map = ({ onSelectNode, currentLocation, route = routeKerningToPerion, play
         }
     };
 
+    // prev and current are the output of generateTravelRoute
+    const drawRouteNode = ({ prev, current, routeNodes, lines }: any) => {
+        const { width = 0, height = 0 } = container as { width: number; height: number };
+        const x = current.x * width;
+        const y = current.y * height;
+
+        console.log("prev", prev);
+
+        if (prev) {
+            lines.push(
+                <line
+                    key={`${current.id}-line`}
+                    x1={prev.x * width}
+                    y1={prev.y * height}
+                    x2={x}
+                    y2={y}
+                    stroke="black"
+                    strokeWidth={2}
+                    style={{ position: "absolute", zIndex: 1 }}
+                />
+            );
+        }
+
+        routeNodes.push(
+            <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
+                <circle cx={x} cy={y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
+                {(current.type === NODE_TYPES.ENCOUNTER || current.type === NODE_TYPES.ELITE_ENCOUNTER) && (
+                    <CrossedSwords width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
+                )}
+                {current.type === NODE_TYPES.RESTING_ZONE && (
+                    <Camping width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
+                )}
+                {current.type === NODE_TYPES.SHOP && (
+                    <MoneyBag width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
+                )}
+                {current.id === currentNode?.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
+            </g>
+        );
+        if (current.next) {
+            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines }));
+        }
+    };
+
+    const routeNodes = [];
+    const lines = [];
+    drawRouteNode({ current: generatedRoute, routeNodes, lines });
+
     return (
         <Overlay>
             <div className={classes.root}>
                 <Pan>
                     <img src={map} className={classes.image} onMouseDown={handleClickMap} ref={containerRef} onLoad={handleImageLoad} />
                     <svg className={classes.routeContainer} onClick={handleDraw}>
-                        {generatedRoute.map((node, i) => {
-                            const { width = 0, height = 0 } = container as { width: number; height: number };
-                            if (!width || !height || enableDraw) {
-                                return;
-                            }
-                            const x = node.x * width;
-                            const y = node.y * height;
-
-                            return (
-                                <Fragment key={i}>
-                                    {i < generatedRoute.length - 1 && (
-                                        <line
-                                            x1={x}
-                                            y1={y}
-                                            x2={generatedRoute[i + 1]?.x * width}
-                                            y2={generatedRoute[i + 1]?.y * height}
-                                            stroke="black"
-                                            strokeWidth={2}
-                                            style={{ position: "absolute" }}
-                                        />
-                                    )}
-                                    <g x={x - 8} y={y - 8} onClick={() => handleClickNode(node, i)} className={classes.routeNode}>
-                                        <circle cx={x} cy={y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
-                                        {node.type === NODE_TYPES.ENCOUNTER && (
-                                            <CrossedSwords
-                                                width={NODE_ICON_SIZE}
-                                                height={NODE_ICON_SIZE}
-                                                x={x - NODE_ICON_SIZE / 2}
-                                                y={y - NODE_ICON_SIZE / 2}
-                                            />
-                                        )}
-                                        {node.type === NODE_TYPES.RESTING_ZONE && (
-                                            <Camping
-                                                width={NODE_ICON_SIZE}
-                                                height={NODE_ICON_SIZE}
-                                                x={x - NODE_ICON_SIZE / 2}
-                                                y={y - NODE_ICON_SIZE / 2}
-                                            />
-                                        )}
-                                        {node.type === NODE_TYPES.SHOP && (
-                                            <MoneyBag
-                                                width={NODE_ICON_SIZE}
-                                                height={NODE_ICON_SIZE}
-                                                x={x - NODE_ICON_SIZE / 2}
-                                                y={y - NODE_ICON_SIZE / 2}
-                                            />
-                                        )}
-                                        {placePlayerMarker(i) && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
-                                    </g>
-                                </Fragment>
-                            );
-                        })}
+                        {lines}
+                        {routeNodes}
                         {enableDraw &&
                             positions.map(([x, y], i) => {
                                 const { width = 0, height = 0 } = container as { width: number; height: number };
