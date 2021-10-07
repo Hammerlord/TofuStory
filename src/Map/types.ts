@@ -19,7 +19,6 @@ export interface RouteNode {
     x: number;
     y: number;
     type: NODE_TYPES;
-    difficulty?: ENCOUNTER_DIFFICULTY;
     encounter?: Wave[];
     npc?: NPC;
     treasure?: {
@@ -34,12 +33,6 @@ export interface MapEnemies {
     normal: Enemy[];
     hard: Enemy[];
     hardest: Enemy[];
-}
-
-export enum ENCOUNTER_DIFFICULTY {
-    NORMAL = "normal",
-    ELITE = "elite",
-    ELITE_TRIAD = "eliteTriad",
 }
 
 export enum ENEMY_DIFFICULTY {

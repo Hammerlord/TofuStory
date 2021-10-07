@@ -1,21 +1,5 @@
-import { stolenFence } from "./../../item/items";
-import {
-    axeStump,
-    blueSnail,
-    fireBoar,
-    noobA,
-    noobB,
-    octopus,
-    orangeMushroom,
-    redSnail,
-    shroom,
-    snail,
-    stump,
-    thiefAssassin,
-    wildBoar,
-} from "../../enemy/enemy";
-import { goldRichieMerchant } from "../../scene/GoldRichie";
-import { ENCOUNTER_DIFFICULTY, MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
+import { axeStump, blueSnail, fireBoar, octopus, orangeMushroom, redSnail, shroom, snail, stump, wildBoar } from "../../enemy/enemy";
+import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const toLith: Route = {
     initialPlayerPosition: {

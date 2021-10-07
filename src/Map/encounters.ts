@@ -7,7 +7,7 @@ import { createCombatant } from "./../enemy/createEnemy";
 import { Wave } from "./../Menu/tutorial";
 import { getRandomItem, shuffle } from "./../utils";
 import { enemyLayouts } from "./routes/layouts";
-import { ENCOUNTER_DIFFICULTY, ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES, RouteNode } from "./types";
+import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";
 
 const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
     return {
@@ -71,7 +71,6 @@ const getWaveDifficulties = (numWaves: number): ENEMY_DIFFICULTY[] => {
 };
 
 export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.ELITE_ENCOUNTER, possibleEnemies: MapEnemies): Wave[] => {
-    console.log();
     if (encounterType === NODE_TYPES.ELITE_ENCOUNTER) {
         return [{ enemies: Math.random() < 0.5 ? generateElite(possibleEnemies) : generateEliteTriad(possibleEnemies) }];
     }
