@@ -12,7 +12,7 @@ import { ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { routeLith, toLith } from "../Map/routes/routes";
+import { routeLith } from "../Map/routes/routes";
 import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
@@ -85,7 +85,8 @@ const Main = () => {
     const [encounter, setEncounter] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [locationNode, setLocationNode] = useState(toLith);
+    const [route, setRoute] = useState(generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 }));
+    const [locationNode, setLocationNode] = useState(null);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
@@ -237,12 +238,7 @@ const Main = () => {
         <>
             {!isActivityOpen && (
                 <div className={classes.mapContainer}>
-                    <Map
-                        onSelectNode={handleSelectNode}
-                        generatedRoute={generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 })}
-                        currentNode={locationNode}
-                        playerImage={player.image}
-                    />
+                    <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
                     <Header player={player} deck={deck} onUseItem={handleUseItem} />
                 </div>
             )}
