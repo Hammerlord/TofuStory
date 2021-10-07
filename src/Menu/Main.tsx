@@ -15,6 +15,7 @@ import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { routeLith, toLith } from "../Map/routes/routes";
 import { NODE_TYPES } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
+import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
 import Header from "./Header";
@@ -89,6 +90,7 @@ const Main = () => {
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
+    const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const classes = useStyles();
@@ -131,12 +133,13 @@ const Main = () => {
     const handleSelectNode = (node) => {
         const callback = () => {
             setLocationNode(node);
-            if (node.type === NODE_TYPES.ENCOUNTER) {
-                setEncounter(node);
+            if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER) {
+                setEncounter({ waves: node.encounter, rewards: [] });
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
-            } else {
+                setTreasure(node.treasure);
+            } else if (node.type === NODE_TYPES.RESTING_ZONE) {
                 setIsResting(true);
             }
         };
@@ -228,7 +231,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen;
+    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || treasure;
 
     return (
         <>
@@ -285,6 +288,15 @@ const Main = () => {
                     {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
                     {!isSelectingSecondaryJob && rewardsOpen && (
                         <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
+                    )}
+                    {treasure && (
+                        <TreasureBox
+                            onExit={() => setTreasure(null)}
+                            onLoot={() => {}}
+                            items={treasure.items}
+                            mesos={treasure.mesos}
+                            Puzzle={treasure.puzzle}
+                        />
                     )}
                 </div>
             )}

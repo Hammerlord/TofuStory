@@ -54,7 +54,6 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                     --numEliteEncounters;
                 }
                 ++numEncountersSinceRestPoint;
-                console.log(numEncountersSinceRestPoint);
             } else if (type === NODE_TYPES.TREASURE) {
                 transformedNode.treasure = {
                     ...getRandomItem(treasure),

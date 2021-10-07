@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Lock, treasureChest2Image } from "../../images";
+import { Lock, mesoCoinImage, treasureChest2Image } from "../../images";
 import { Item } from "../../item/types";
 import BannerNotice from "../../view/BannerNotice";
 
@@ -137,13 +137,17 @@ const useStyles = createUseStyles({
 
 const TreasureBox = ({
     onExit,
-    treasure = [],
+    items = [],
+    mesos = 0,
     title = "Treasure Box",
+    onLoot,
     Puzzle,
 }: {
     onExit: any;
-    treasure?: Item[];
+    items?: Item[];
+    mesos?: number;
     title?: string;
+    onLoot: Function;
     Puzzle?: ({ onComplete: Function, completed: boolean }) => JSX.Element;
 }) => {
     const classes = useStyles();
@@ -151,9 +155,10 @@ const TreasureBox = ({
     const [isChestOpened, setIsChestOpened] = useState(false);
 
     const handleClickChest = () => {
-        if (!completed) return;
-
-        setIsChestOpened(true);
+        if (completed) {
+            setIsChestOpened(true);
+            onLoot({ mesos, items });
+        }
     };
 
     return (
@@ -176,11 +181,16 @@ const TreasureBox = ({
                             <div className={classNames(classes.treasureContainer)}>
                                 You obtain:
                                 <ul className={classes.treasure}>
-                                    {treasure.map((item: Item) => (
+                                    {items.map((item: Item) => (
                                         <li key={item.name} className={classes.item}>
                                             <img src={item.image} /> <span className={classes.itemName}>{item.name}</span>
                                         </li>
                                     ))}
+                                    {mesos > 0 && (
+                                        <li className={classes.item}>
+                                            <img src={mesoCoinImage} /> {mesos}
+                                        </li>
+                                    )}
                                 </ul>
                             </div>
                             <Button variant="contained" color="primary" onClick={onExit}>
