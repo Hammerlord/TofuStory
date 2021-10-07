@@ -1,6 +1,6 @@
 import { createRef, Fragment, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Camping, CrossedSwords, map, MoneyBag } from "../images";
+import { Camping, CrossedSwords, House, map, Medal, MoneyBag, QuestionMark, treasureChest2Image } from "../images";
 import Overlay from "../view/Overlay";
 import Pan from "./Pan";
 import { NODE_TYPES } from "./types";
@@ -36,7 +36,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const NODE_ICON_SIZE = 16;
+const NODE_ICON_SIZE = 24;
 
 const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
     const classes = useStyles();
@@ -64,9 +64,7 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
     };
 
     const handleClickNode = (node) => {
-        //if (i - (currentLocation || 0) === 1) {
         onSelectNode(node);
-        //}
     };
 
     // This is just for generating routes
@@ -95,12 +93,10 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
         const x = current.x * width;
         const y = current.y * height;
 
-        console.log("prev", prev);
-
         if (prev) {
             lines.push(
                 <line
-                    key={`${current.id}-line`}
+                    key={`${prev.id}-${current.id}-line`}
                     x1={prev.x * width}
                     y1={prev.y * height}
                     x2={x}
@@ -112,18 +108,24 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
             );
         }
 
+        const iconProps = {
+            width: NODE_ICON_SIZE,
+            height: NODE_ICON_SIZE,
+            x: x - NODE_ICON_SIZE / 2,
+            y: y - NODE_ICON_SIZE / 2,
+        };
+
         routeNodes.push(
             <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
-                <circle cx={x} cy={y} r="18" fill={"rgba(50, 50, 50, 0.95)"} />
-                {(current.type === NODE_TYPES.ENCOUNTER || current.type === NODE_TYPES.ELITE_ENCOUNTER) && (
-                    <CrossedSwords width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
-                )}
-                {current.type === NODE_TYPES.RESTING_ZONE && (
-                    <Camping width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
-                )}
-                {current.type === NODE_TYPES.SHOP && (
-                    <MoneyBag width={NODE_ICON_SIZE} height={NODE_ICON_SIZE} x={x - NODE_ICON_SIZE / 2} y={y - NODE_ICON_SIZE / 2} />
-                )}
+                <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
+                {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwords {...iconProps} />}
+                {current.type === NODE_TYPES.ELITE_ENCOUNTER && <Medal {...iconProps} />}
+                {current.type === NODE_TYPES.RESTING_ZONE && <Camping {...iconProps} />}
+                {current.type === NODE_TYPES.SHOP && <MoneyBag {...iconProps} />}
+                {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={treasureChest2Image} />}
+                {current.type === NODE_TYPES.EVENT && <QuestionMark {...iconProps} />}
+                {current.type === NODE_TYPES.TOWN && <House {...iconProps} />}
+
                 {current.id === currentNode?.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
             </g>
         );

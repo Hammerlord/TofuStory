@@ -93,7 +93,7 @@ const Main = () => {
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const classes = useStyles();
 
-    const handleShopNode = ({ npc }: { npc: NPC }) => {
+    const handleEventNode = ({ npc }: { npc: NPC }) => {
         const { character, scenes } = npc;
         const visited = visitedNPCs[character] as NPCTracker;
         if (!visited) {
@@ -133,8 +133,9 @@ const Main = () => {
             setLocationNode(node);
             if (node.type === NODE_TYPES.ENCOUNTER) {
                 setEncounter(node);
-            } else if (node.type === NODE_TYPES.SHOP) {
-                handleShopNode(node);
+            } else if (node.type === NODE_TYPES.EVENT) {
+                handleEventNode(node);
+            } else if (node.type === NODE_TYPES.TREASURE) {
             } else {
                 setIsResting(true);
             }
@@ -235,7 +236,7 @@ const Main = () => {
                 <div className={classes.mapContainer}>
                     <Map
                         onSelectNode={handleSelectNode}
-                        generatedRoute={generateTravelRoute({ route: routeLith, notoreity: 0 })}
+                        generatedRoute={generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 })}
                         currentNode={locationNode}
                         playerImage={player.image}
                     />

@@ -37,7 +37,6 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 types.push(NODE_TYPES.ENCOUNTER, NODE_TYPES.ENCOUNTER);
             }
 
-            console.log("types", types);
             return getRandomItem(types);
         };
 
@@ -78,6 +77,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 // First one is always a normal fight
                 initialNode = {
                     ...node,
+                    id: uuid.v4(),
                     type: NODE_TYPES.ENCOUNTER,
                     encounter: generateWaves(NODE_TYPES.ENCOUNTER, baseRoute.enemies || route.enemies),
                 };
