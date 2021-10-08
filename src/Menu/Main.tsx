@@ -181,6 +181,7 @@ const Main = () => {
             effects: [],
             turnHistory: [],
             items: [halfEatenHotdog],
+            mesos: 0,
             isPlayer: true,
         });
         setDeck(deck);
@@ -232,6 +233,14 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
+    const handleLootTreasureBox = ({ mesos, items }) => {
+        setPlayer((prev) => ({
+            ...prev,
+            mesos: (prev.mesos += mesos),
+            items: [...prev.items, ...items],
+        }));
+    };
+
     const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || treasure;
 
     return (
@@ -280,7 +289,16 @@ const Main = () => {
                             <Header player={player} deck={deck} onUseItem={handleUseItem} />
                         </>
                     )}
-                    {shop && <Shop player={player} mesos={0} {...shop} onExit={() => setShop(null)} deck={deck} updateDeck={setDeck} />}
+                    {shop && (
+                        <Shop
+                            player={player}
+                            mesos={player.mesos}
+                            {...shop}
+                            onExit={() => setShop(null)}
+                            deck={deck}
+                            updateDeck={setDeck}
+                        />
+                    )}
                     {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
                     {!isSelectingSecondaryJob && rewardsOpen && (
                         <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
@@ -288,7 +306,7 @@ const Main = () => {
                     {treasure && (
                         <TreasureBox
                             onExit={() => setTreasure(null)}
-                            onLoot={() => {}}
+                            onLoot={handleLootTreasureBox}
                             items={treasure.items}
                             mesos={treasure.mesos}
                             Puzzle={treasure.puzzle}
