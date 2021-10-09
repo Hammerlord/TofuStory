@@ -9,6 +9,7 @@ import {
 } from "../../images";
 import { burn, chill, stun } from "../Effects";
 import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { block } from "./warriorAbilities";
 
 export const flameCharge: Ability = {
     name: "Flame Charge",
@@ -123,13 +124,13 @@ export const divineCharge: Ability = {
 
 export const shieldMastery: Ability = {
     name: "Shield Mastery",
-    resourceCost: 2,
+    resourceCost: 1,
     image: shieldmasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            armor: 5,
+            target: TARGET_TYPES.SELF,
+            armor: 2,
             effects: [
                 {
                     name: "Shield Mastery",
@@ -141,6 +142,7 @@ export const shieldMastery: Ability = {
                     duration: 1,
                 },
             ],
+            addCards: [block, block].map((card) => ({ ...card, removeAfterTurn: true })),
         },
     ],
 };
