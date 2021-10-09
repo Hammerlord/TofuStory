@@ -94,6 +94,7 @@ const Main = () => {
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
+    const [town, setTown] = useState(null);
     const classes = useStyles();
 
     const handleEventNode = ({ npc }: { npc: NPC }) => {
@@ -142,6 +143,8 @@ const Main = () => {
                 setTreasure(node.treasure);
             } else if (node.type === NODE_TYPES.RESTING_ZONE) {
                 setIsResting(true);
+            } else if (node.type === NODE_TYPES.TOWN) {
+                setTown(node.town);
             }
         };
         handleTransition(callback);
