@@ -33,7 +33,9 @@ import {
     divineCharge,
     flameCharge,
     frostFire,
+    judgment,
     lightningCharge,
+    parashockGuard,
     shieldMastery,
 } from "./warrior/whiteknightAbilities";
 
@@ -89,6 +91,6 @@ export const JOB_CARD_MAP = {
     [WARRIOR_SECONDARY_JOBS.WHITE_KNIGHT]: {
         description: "Wield elemental fire, ice, lightning and holy light against foes",
         onJobUp: [flameCharge, blizzardCharge],
-        all: [flameCharge, blizzardCharge, lightningCharge, blast, divineCharge, frostFire, shieldMastery],
+        all: [flameCharge, blizzardCharge, lightningCharge, blast, divineCharge, frostFire, shieldMastery, judgment, parashockGuard],
     },
 };

@@ -146,6 +146,7 @@ export interface EffectCondition extends Condition {
 
 export enum MULTIPLIER_TYPES {
     ATTACKS_MADE_IN_TURN = "attacksMadeInTurn",
+    ARMOR = "armor",
 }
 
 export interface Action {
@@ -173,7 +174,10 @@ export interface Action {
     };
     icon?: string; // Used as a projectile
     bonus?: Bonus;
-    multiplier?: MULTIPLIER_TYPES;
+    multiplier?: {
+        type: MULTIPLIER_TYPES;
+        calculationTarget: "actor" | "target";
+    };
     animation?: ANIMATION_TYPES;
     conditions?: AbilityCondition[];
     excludePrimaryTarget?: boolean;

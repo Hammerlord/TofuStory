@@ -1,10 +1,13 @@
+import { MULTIPLIER_TYPES } from "./../types";
 import {
     advancedcharge,
     blastImage,
     blizzardcharge,
     divinechargeImage,
     flamecharge,
+    highPaladinImage,
     lightningcharge,
+    parashockGuardImage,
     shieldmasteryImage,
 } from "../../images";
 import { burn, chill, stun } from "../Effects";
@@ -170,6 +173,46 @@ export const blast: Ability = {
                     duration: 3,
                 },
             ],
+        },
+    ],
+};
+
+export const judgment: Ability = {
+    name: "Judgment",
+    resourceCost: 3,
+    image: highPaladinImage,
+    description:
+        "Deals 1 damage multiplied by armor \n Reduce cost by 1 for every ability used this turn, until Judgment is used or discarded",
+    onAbilityUse: {
+        resourceCost: -1,
+    },
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ARMOR,
+                calculationTarget: "actor",
+            },
+        },
+    ],
+};
+
+export const parashockGuard: Ability = {
+    name: "Parashock Guard",
+    resourceCost: 2,
+    image: parashockGuardImage,
+    description: "(Armor gained equal to your current armor)",
+    actions: [
+        {
+            armor: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ARMOR,
+                calculationTarget: "actor",
+            },
         },
     ],
 };

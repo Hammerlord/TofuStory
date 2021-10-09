@@ -98,13 +98,19 @@ export const comboFury: Ability = {
             damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: "actor",
+            },
         },
         {
             damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: "actor",
+            },
         },
     ],
 };
@@ -119,7 +125,10 @@ export const parry: Ability = {
             armor: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            multiplier: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: "actor",
+            },
         },
     ],
 };
