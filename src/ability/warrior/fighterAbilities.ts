@@ -1,6 +1,15 @@
-import { brandishImage, chanceattack, combofuryImage, endureImage, intrepidSlashImage, punctureImage, risingrage } from "../../images";
+import {
+    brandishImage,
+    chanceattack,
+    combofuryImage,
+    endureImage,
+    intrepidSlashImage,
+    punctureImage,
+    ragingblowImage,
+    risingrage,
+} from "../../images";
 import { wound } from "../Effects";
-import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { Ability, AbilityCondition, Action, ACTION_TYPES, EFFECT_CLASSES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 
 export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
@@ -132,3 +141,27 @@ export const parry: Ability = {
         },
     ],
 };
+
+const ragingBlowAction: Action = {
+    damage: 1,
+    type: ACTION_TYPES.ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+};
+
+export const ragingBlow: Ability = {
+    name: "Raging Blow",
+    resourceCost: 0,
+    image: ragingblowImage,
+    description: "Hits twice",
+    actions: [ragingBlowAction, ragingBlowAction],
+};
+
+ragingBlow.actions.push({
+    type: ACTION_TYPES.EFFECT,
+    target: TARGET_TYPES.SELF,
+    addCardsToDiscard: [
+        {
+            ...ragingBlow,
+        },
+    ],
+});

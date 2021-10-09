@@ -7,36 +7,63 @@ const useStyles = createUseStyles({
     },
 });
 
+const CardToAddCount = ({ count, card }) => {
+    const classes = useStyles();
+
+    return (
+        <span>
+            <img className={classes.cardIcon} src={card.image} /> {card.name} {count > 1 && <>x{count}</>}{" "}
+        </span>
+    );
+};
+
 const CardsToAdd = ({ ability }) => {
-    const cardsToAddCount = ability.actions.reduce((acc, { addCards = [] }) => {
+    const { addCards = {}, addCardsToDiscard = {} } = ability.actions.reduce((acc, { addCards = [], addCardsToDiscard = [] }) => {
+        if (!acc.addCards) {
+            acc.addCards = {};
+        }
         addCards.forEach((card) => {
-            acc[card.name] = {
-                count: (acc[card.name]?.count || 0) + 1,
+            acc.addCards[card.name] = {
+                count: (acc.addCards[card.name]?.count || 0) + 1,
+                card,
+            };
+        });
+
+        if (!acc.addCardsToDiscard) {
+            acc.addCardsToDiscard = {};
+        }
+        addCardsToDiscard.forEach((card) => {
+            acc.addCardsToDiscard[card.name] = {
+                count: (acc.addCardsToDiscard[card.name]?.count || 0) + 1,
                 card,
             };
         });
         return acc;
     }, {});
-    const classes = useStyles();
-
-    if (!Object.keys(cardsToAddCount).length) {
-        return null;
-    }
 
     return (
-        <div>
-            Add{" "}
-            {Object.entries(cardsToAddCount).map(([name, val]) => {
-                const { count, card } = val as { count: number; card: Ability };
-                return (
-                    <span key={name}>
-                        <img className={classes.cardIcon} src={card.image} /> {name} {count > 1 && <>x{count}</>}
-                        <br />
-                    </span>
-                );
-            })}
-            to your hand
-        </div>
+        <>
+            {Object.keys(addCards).length > 0 && (
+                <div>
+                    Add{" "}
+                    {Object.values(addCards).map((val) => {
+                        const { count, card } = val as { count: number; card: Ability };
+                        return <CardToAddCount card={card} count={count} key={card.name} />;
+                    })}
+                    to your hand
+                </div>
+            )}
+            {Object.keys(addCardsToDiscard).length > 0 && (
+                <div>
+                    Add{" "}
+                    {Object.values(addCardsToDiscard).map((val) => {
+                        const { count, card } = val as { count: number; card: Ability };
+                        return <CardToAddCount card={card} count={count} key={card.name} />;
+                    })}
+                    to your discard
+                </div>
+            )}
+        </>
     );
 };
 

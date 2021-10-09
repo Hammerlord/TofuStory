@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Action, ACTION_TYPES, Condition, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, Condition, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";

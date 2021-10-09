@@ -107,10 +107,10 @@ export interface Bonus {
     /**
      * A multiplier on the bonus amount
      */
-    scale?: {
+    multiplier?: {
+        type: MULTIPLIER_TYPES;
         calculationTarget: "actor" | "target";
-        basedOn: "numDebuffs" | "numBuffs";
-        max?: number;
+        value?: string; // Eg. if the type is ABILITIES_WITH_NAME, give the name value here
     };
 
     /**
@@ -149,6 +149,8 @@ export interface EffectCondition extends Condition {
 export enum MULTIPLIER_TYPES {
     ATTACKS_MADE_IN_TURN = "attacksMadeInTurn",
     ARMOR = "armor",
+    // This is for players only; count the number of cards they own with a particular name
+    ABILITIES_WITH_NAME = "abilitiesWithName",
 }
 
 export interface Action {
@@ -169,7 +171,10 @@ export interface Action {
     cards?: {
         effects: AbilityEffects;
     };
+    /** Adds cards to your current hand */
     addCards?: Ability[];
+    /** Adds cards to your current discard pile */
+    addCardsToDiscard?: Ability[];
     drawCards?: {
         amount: number;
         effects?: AbilityEffects;
