@@ -12,10 +12,9 @@ import { events, treasure } from "./eventList";
  * Given a route's raw data, generate a route tree traversable by the player.
  */
 const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: Route; notoreity: number; numRoutesComplete: number }) => {
-    const generateBranch = (baseRoute: Route) => {
+    const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0) => {
         let initialNode;
         let currentNode;
-        let numEncountersSinceRestPoint = 0;
         let numEvents = Math.floor(baseRoute.nodes.length / 4);
         let numTreasures = 1;
         let numEliteEncounters = baseRoute.elites ? 1 : 0;
@@ -34,7 +33,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 if (numEliteEncounters) {
                     types.push(NODE_TYPES.ELITE_ENCOUNTER);
                 }
-                types.push(NODE_TYPES.ENCOUNTER, NODE_TYPES.ENCOUNTER);
+                types.push(NODE_TYPES.ENCOUNTER);
             }
 
             return getRandomItem(types);
@@ -71,17 +70,30 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
             return transformedNode;
         };
 
+        const generateInitialNode = (baseNode) => {
+            if (numEncountersSinceRestPoint >= 2) {
+                numEncountersSinceRestPoint = 0;
+
+                return {
+                    ...baseNode,
+                    id: uuid.v4(),
+                    type: NODE_TYPES.RESTING_ZONE,
+                };
+            }
+
+            ++numEncountersSinceRestPoint;
+            return {
+                ...baseNode,
+                id: uuid.v4(),
+                type: NODE_TYPES.ENCOUNTER,
+                encounter: generateWaves(NODE_TYPES.ENCOUNTER, baseRoute.enemies || route.enemies),
+            };
+        };
+
         baseRoute.nodes.forEach((node) => {
             if (!initialNode) {
-                // First one is always a normal fight
-                initialNode = {
-                    ...node,
-                    id: uuid.v4(),
-                    type: NODE_TYPES.ENCOUNTER,
-                    encounter: generateWaves(NODE_TYPES.ENCOUNTER, baseRoute.enemies || route.enemies),
-                };
+                initialNode = generateInitialNode(node);
                 currentNode = initialNode;
-                ++numEncountersSinceRestPoint;
                 return;
             }
 
@@ -93,7 +105,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
         });
 
         if (baseRoute.next) {
-            currentNode.next = baseRoute.next.map(generateBranch);
+            currentNode.next = baseRoute.next.map((route) => generateBranch(route, numEncountersSinceRestPoint));
         }
 
         return initialNode;
