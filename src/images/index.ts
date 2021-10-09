@@ -101,6 +101,7 @@ export { default as ironbodyImage } from "./ironbody.png";
 export { default as intrepidSlashImage } from "./intrepidslash.png";
 export { default as highPaladinImage } from "./highpaladin.png";
 export { default as parashockGuardImage } from "./parashockguard.png";
+export { default as evileyeshockImage } from "./evileyeshock.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
 export { default as classwarrior } from "./classwarrior.png";

@@ -1,5 +1,5 @@
 import { PLAYER_CLASSES } from "../Menu/types";
-import { darkImpale, darkSpear, darkThirst, evilEye, piercingDrive, spearSweep } from "./warrior/darkKnightAbilities";
+import { darkImpale, darkSpear, darkThirst, evilEye, evilEyeShock, piercingDrive, spearSweep } from "./warrior/darkKnightAbilities";
 import { intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry } from "./warrior/fighterAbilities";
 import {
     bash,
@@ -86,7 +86,7 @@ export const JOB_CARD_MAP = {
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         description: "Drive back hordes of enemies with wide-reaching spear techniques",
         onJobUp: [evilEye, piercingDrive],
-        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep],
+        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep, evilEyeShock],
     },
     [WARRIOR_SECONDARY_JOBS.WHITE_KNIGHT]: {
         description: "Wield elemental fire, ice, lightning and holy light against foes",

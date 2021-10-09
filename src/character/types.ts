@@ -9,6 +9,7 @@ export interface Combatant {
     armor: number;
     effects: Effect[];
     id: string;
+    name: string;
     image: string;
     resources: number;
     isPlayer: boolean;

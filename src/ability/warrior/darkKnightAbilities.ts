@@ -3,6 +3,7 @@ import {
     darkspearImage,
     darkThirstImage,
     evileyeminion,
+    evileyeshockImage,
     evileyeskill,
     Heart,
     piercingdriveImage,
@@ -139,6 +140,29 @@ export const spearSweep: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [stun],
+        },
+    ],
+};
+
+export const evilEyeShock: Ability = {
+    name: "Evil Eye Shock",
+    resourceCost: 0,
+    image: evileyeshockImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            radiate: {
+                area: 1,
+                damage: 2,
+                effects: [stun],
+            },
+            conditions: [
+                {
+                    calculationTarget: "target",
+                    name: "Evil Eye",
+                },
+            ],
         },
     ],
 };

@@ -1,10 +1,9 @@
 import Icon from "../../icon/Icon";
 import { Blood, CrossedSwords, Dizzy, Fire, Hourglass, Snowflake, SpeechBubble } from "../../images";
-import { Ability, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
-import { getAllEffects } from "./utils";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 export const getDebuffDurations = (
-    ability: Ability
+    effects: Effect[]
 ): {
     bleedDuration: number;
     stunDuration: number;
@@ -14,8 +13,8 @@ export const getDebuffDurations = (
     debuffDuration: number;
     silenceDuration: number;
 } => {
-    const allEffects = getAllEffects(ability).filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
-    return allEffects.reduce((acc, effect: Effect) => {
+    const debuffs = effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
+    return debuffs.reduce((acc, effect: Effect) => {
         const { type, duration = 0, damage = 0 } = effect;
         switch (type) {
             case EFFECT_TYPES.BLEED:
@@ -53,9 +52,9 @@ export const getDebuffDurations = (
     }, {} as any);
 };
 
-const Debuffs = ({ ability }) => {
+const Debuffs = ({ effects }: { effects: Effect[] }) => {
     const { bleedDuration, stunDuration, chillDuration, burnDuration, damage, debuffDuration, silenceDuration } =
-        getDebuffDurations(ability);
+        getDebuffDurations(effects);
 
     const hasDebuff =
         bleedDuration > 0 || stunDuration > 0 || burnDuration > 0 || chillDuration > 0 || debuffDuration > 0 || silenceDuration > 0;

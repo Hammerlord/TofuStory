@@ -604,6 +604,22 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
             })
         );
 
+        if (action.radiate) {
+            results.push(
+                parseAction({
+                    enemies: mostRecentEnemies(),
+                    allies: mostRecentAllies(),
+                    selectedIndex: index,
+                    action: {
+                        type: ACTION_TYPES.EFFECT,
+                        ...action.radiate,
+                    },
+                    actorId: mostRecentAllies()[index]?.id,
+                    selectedSide: BATTLEFIELD_SIDES.ENEMIES,
+                })
+            );
+        }
+
         const previousEnemies = results[results.length - 2]?.updatedEnemies || enemies;
         const enemyActionEventProcs = procActionEvents(previousEnemies, mostRecentEnemies());
         if (enemyActionEventProcs) {

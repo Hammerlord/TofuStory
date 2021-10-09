@@ -134,6 +134,8 @@ export interface Condition {
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
     armor?: number;
+    /** Whether the name of the target matches the condition. This is always an "includes" check: */
+    name?: string;
 }
 
 export interface AbilityCondition extends Condition {
@@ -181,6 +183,12 @@ export interface Action {
     animation?: ANIMATION_TYPES;
     conditions?: AbilityCondition[];
     excludePrimaryTarget?: boolean;
+    /** Radiates damage/effects to opponents on the other side of the board. */
+    radiate?: {
+        damage?: number;
+        area?: number;
+        effects?: Effect[];
+    };
 }
 
 export interface Ability {

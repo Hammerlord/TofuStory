@@ -10,6 +10,7 @@ import { Ability, HandAbility } from "../types";
 import { getAbilityColor } from "../utils";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
+import Area from "./AreaView";
 import AuraView from "./AuraView";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
@@ -17,53 +18,10 @@ import CardsToAdd from "./CardsToAdd";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import Debuffs from "./Debuffs";
 import DrawCards from "./DrawCards";
+import RadiateView from "./RadiateView";
 import ResourceIcon from "./ResourceIcon";
 import SelfActions from "./SelfActions";
-
-const useAreaStyles = createUseStyles({
-    root: {
-        fontSize: "0.8rem",
-    },
-    area: {
-        width: "14px",
-        height: "14px",
-        backgroundColor: "rgba(0, 0, 0, 0.25)",
-        display: "inline-block",
-        fontSize: "0.7rem",
-        color: "white",
-        verticalAlign: "bottom",
-
-        "&:not(:last-child)": {
-            marginRight: "4px",
-        },
-    },
-    mainTarget: {
-        width: "14px",
-        height: "14px",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "inline-block",
-        marginRight: "4px",
-        color: "white",
-        fontSize: "0.7rem",
-        verticalAlign: "bottom",
-    },
-});
-
-const Area = ({ area, damage, secondaryDamage }) => {
-    const classes = useAreaStyles();
-    const areaIndicator = Array.from({ length: area }).map((_, i) => (
-        <span className={classes.area} key={i}>
-            {secondaryDamage}
-        </span>
-    ));
-    return (
-        <div className={classes.root}>
-            Area: {areaIndicator}
-            <span className={classes.mainTarget}>{secondaryDamage && damage}</span>
-            {areaIndicator}
-        </div>
-    );
-};
+import { getAllEffects } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -213,12 +171,13 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
                     <div className={classes.body}>
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
-                        <Debuffs ability={ability} />
+                        <Debuffs effects={getAllEffects(ability)} />
                         <SelfActions ability={ability} player={player} />
                         <Buffs ability={ability} />
                         <CardsToAdd ability={ability} />
                         <BonusView ability={ability} />
                         <DrawCards ability={ability} />
+                        <RadiateView ability={ability} />
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
                         {aura && <AuraView aura={aura} />}
                     </div>

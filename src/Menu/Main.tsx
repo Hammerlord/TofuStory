@@ -87,7 +87,7 @@ const Main = () => {
     const [isResting, setIsResting] = useState(false);
     const [route, setRoute] = useState(generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 }));
     const [locationNode, setLocationNode] = useState(null);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
     // TESTING: Allow selection of one reward at the start
     const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);

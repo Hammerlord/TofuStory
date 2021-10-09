@@ -159,11 +159,20 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
+            const getCalculationTarget = (targetType) => {
+                if (targetType === "actor") {
+                    return actor;
+                } else if (targetType === "target") {
+                    return allies[index];
+                }
+            };
+            const conditionsPassed = actions.every(({ conditions = [] }) => passesConditions({ getCalculationTarget, conditions }));
             if (area === 0) {
                 // No sense in letting a single target ability whiff on an empty slot, for now
-                return Boolean(allies[index]) && allies[index].HP > 0;
+                return Boolean(allies[index]) && allies[index].HP > 0 && conditionsPassed;
             }
-            return true;
+
+            return conditionsPassed;
         }
     } else if (side === BATTLEFIELD_SIDES.ENEMIES && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         const targetedEnemy = enemies[index];
