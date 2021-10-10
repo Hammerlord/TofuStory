@@ -88,6 +88,7 @@ export interface Effect {
         skill: string;
         damage: number;
     }[];
+    onlyVisibleWhenProcced?: boolean;
 }
 
 export interface Aura extends Effect {

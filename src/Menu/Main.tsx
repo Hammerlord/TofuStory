@@ -2,13 +2,13 @@ import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability } from "../ability/types";
+import { Ability, Effect } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { halfEatenHotdog } from "../item/items";
-import { ITEM_TYPES } from "../item/types";
+import { halfEatenHotdog, stolenFence } from "../item/items";
+import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
@@ -21,6 +21,7 @@ import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
+import { cloneDeep } from "lodash";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -77,6 +78,14 @@ const useStyles = createUseStyles({
         },
     },
 });
+
+const aggregateItemEffects = (items: Item[]): Effect[] => {
+    const effects = [];
+    items.forEach((item) => {
+        effects.push(...item.effects.map(cloneDeep));
+    });
+    return effects;
+};
 
 const Main = () => {
     const [player, setPlayer] = useState(null);
@@ -162,7 +171,7 @@ const Main = () => {
                 ...prev,
                 resources: 0,
                 armor: 0,
-                effects: [],
+                effects: aggregateItemEffects(prev.items),
                 turnHistory: [],
             }));
         };
@@ -170,6 +179,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
+        const starterItems = [stolenFence];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
@@ -181,9 +191,9 @@ const Main = () => {
             maxResources: 3,
             resources: 3,
             armor: 0,
-            effects: [],
+            effects: aggregateItemEffects(starterItems),
             turnHistory: [],
-            items: [halfEatenHotdog],
+            items: starterItems,
             mesos: 0,
             isPlayer: true,
         });
@@ -236,12 +246,16 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const handleLootTreasureBox = ({ mesos, items }) => {
-        setPlayer((prev) => ({
-            ...prev,
-            mesos: (prev.mesos += mesos),
-            items: [...prev.items, ...items],
-        }));
+    const handleLootTreasureBox = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
+        setPlayer((prev) => {
+            const newItems = [...prev.items, ...items];
+            return {
+                ...prev,
+                mesos: (prev.mesos += mesos),
+                effects: aggregateItemEffects(newItems),
+                items: newItems,
+            };
+        });
     };
 
     const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || treasure;

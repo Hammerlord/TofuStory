@@ -81,14 +81,14 @@ const Inventory = ({ inventory, onUseItem }) => {
                     />
                 </div>
             ))}
-            {selectedItem?.type === ITEM_TYPES.CONSUMABLE && menuAnchor && (
+            {menuAnchor && (
                 <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu}>
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.itemName}>{selectedItem.name}</div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
                             <div className={classes.useButtonContainer}>
-                                {onUseItem && (
+                                {selectedItem?.type === ITEM_TYPES.CONSUMABLE && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>
                                         Use
                                     </Button>

@@ -257,11 +257,15 @@ export const getEnabledEffects = (character: Combatant | null): Effect[] => {
         return [];
     }
 
-    if (isSilenced(character)) {
-        return character.effects.filter((effect: Effect) => !effect.canBeSilenced);
-    }
+    const silenced = isSilenced(character);
 
-    return character.effects;
+    const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
+        calculationTarget === "effectOwner" ? character : undefined;
+
+    return character.effects.filter((effect) => {
+        const disabled = silenced && effect.canBeSilenced;
+        return !disabled && passesConditions({ getCalculationTarget, conditions: effect.conditions });
+    });
 };
 
 export const isCharacterImmune = (character: Combatant | null) => {
@@ -323,22 +327,16 @@ export const calculateDamage = ({
     }
 
     let damageFromEffects = 0;
-    let increaseDamageReceived = 0;
+    let diffDamageReceived = 0;
     if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
-        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, conditions, skillBonus = [] }) => {
-            const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
-                calculationTarget === "effectOwner" ? actor : target;
-            if (!passesConditions({ getCalculationTarget, conditions })) {
-                return acc;
-            }
-
+        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, skillBonus = [] }) => {
             return acc + damage + getSkillDamage({ ability, skillBonus });
         }, 0);
-        increaseDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
+        diffDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     }
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target });
-    const total = damage + increaseDamageReceived;
+    const total = damage + diffDamageReceived;
     if (total < 0) {
         return 0;
     }

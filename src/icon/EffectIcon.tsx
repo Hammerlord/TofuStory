@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Effect } from "../ability/types";
+import { passesConditions } from "../battle/passesConditions";
+import { Combatant } from "../character/types";
 
 import { CrossedSwords, Fireworks, Heart, Shield, SpeechBubble } from "../images";
 import { Fury } from "../resource/ResourcesView";
@@ -54,7 +56,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: boolean; silence?: boolean }) => {
+const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura?: boolean; silence?: boolean; owner: Combatant }) => {
     if (!effect) {
         return null;
     }
@@ -72,6 +74,8 @@ const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: bool
         damage,
         leech = 0,
         skillBonus = [],
+        onlyVisibleWhenProcced,
+        conditions,
     } = effect;
     if (isAura) {
         name = "Aura";
@@ -83,6 +87,14 @@ const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: bool
     }
 
     const isSilenced = (effect.canBeSilenced || isAura) && silence;
+    const passedConditions = passesConditions({
+        getCalculationTarget: (calculationTarget) => (calculationTarget === "effectOwner" ? owner : undefined),
+        conditions,
+    });
+
+    if (!passedConditions && onlyVisibleWhenProcced) {
+        return null;
+    }
 
     const tooltipContent = (
         <div className={classes.tooltipContents}>
