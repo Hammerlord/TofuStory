@@ -106,6 +106,7 @@ export { default as evileyeshockImage } from "./evileyeshock.png";
 export { default as ragingblowImage } from "./ragingblow.png";
 export { default as worldreaverImage } from "./worldreaver.png";
 export { default as lordOfDarknessImage } from "./lordofdarkness.png";
+export { default as gungnirImage } from "./gungnir.png";
 export { default as upmattImage } from "./upMATT.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";

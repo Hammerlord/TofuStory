@@ -21,6 +21,7 @@ import {
     calculateDamage,
     getEnabledEffects,
     getHealableIndices,
+    getMultiplier,
     getValidTargetIndices,
     isCharacterImmune,
     isSilenced,
@@ -147,15 +148,17 @@ const calculateBonus = ({ action, target, actor }: { action: Action; target: Com
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
     const { conditions = [] } = bonus;
+    const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
 
     const getCalculationTarget = (conditionTarget: "target" | "actor") => (conditionTarget === "target" ? target : actor);
     if (passesConditions({ getCalculationTarget, conditions })) {
+        const bonusDamage = (bonus.damage || 0) * multiplier;
         return {
             ...action,
-            damage: damage + (bonus.damage || 0),
-            secondaryDamage: secondaryDamage && secondaryDamage + (bonus.damage || 0),
-            healing: healing + (bonus.healing || 0),
-            armor: armor + (bonus.armor || 0),
+            damage: damage + bonusDamage,
+            secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
+            healing: healing + (bonus.healing || 0) * multiplier,
+            armor: armor + (bonus.armor || 0) * multiplier,
             effects: [...effects, ...(bonus.effects || [])],
         } as Action;
     }
@@ -176,11 +179,12 @@ export const applyActionToTarget = ({
     action: Action;
 }): Combatant => {
     action = calculateBonus({ target, actor, action });
-    const { healing = 0, effects = [], resources = 0 } = action;
+    const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action });
+    const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
     const armor = calculateArmor({ target, action });
-    const updatedArmor = Math.max(0, target.armor - damage + armor);
-    const healthDamage = Math.max(0, damage - target.armor);
+    const updatedArmor = Math.max(0, baseArmor - damage + armor);
+    const healthDamage = Math.max(0, damage - baseArmor);
     let HP = Math.max(0, target.HP - healthDamage);
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
     const updatedTarget = triggerOnReceiveAction({

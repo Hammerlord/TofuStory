@@ -5,13 +5,14 @@ import {
     evileyeminion,
     evileyeshockImage,
     evileyeskill,
+    gungnirImage,
     Heart,
     lordOfDarknessImage,
     piercingdriveImage,
     spearsweepImage,
 } from "../../images";
 import { silence, stealth, stun, wound } from "../Effects";
-import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 
 export const evilEye: Ability = {
     name: "Evil Eye",
@@ -198,6 +199,31 @@ export const lordOfDarkness: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+export const gungnir: Ability = {
+    name: "Gungnir",
+    resourceCost: 3,
+    depletedOnUse: true,
+    image: gungnirImage,
+    description: "(Damage equal to half your max HP)",
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            destroyArmor: 1,
+            bonus: {
+                damage: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.MAX_HP,
+                    value: 0.5,
+                    calculationTarget: "actor",
+                },
+            },
         },
     ],
 };

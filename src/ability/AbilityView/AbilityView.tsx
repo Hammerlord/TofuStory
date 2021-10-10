@@ -146,7 +146,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse } = ability;
-    const { area = ability.area, target: targetType, damage, secondaryDamage } = actions[0] || {};
+    const { area = ability.area, target: targetType, damage, secondaryDamage, destroyArmor = 0 } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
@@ -176,9 +176,10 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         <SelfActions ability={ability} player={player} />
                         <Buffs ability={ability} />
                         <CardsToAdd ability={ability} />
-                        <BonusView ability={ability} />
+                        <BonusView ability={ability} player={player} />
                         <DrawCards ability={ability} />
                         <RadiateView ability={ability} />
+                        {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
                         {aura && <AuraView aura={aura} />}
                     </div>

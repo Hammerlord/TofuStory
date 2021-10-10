@@ -5,6 +5,7 @@ import {
     darkThirst,
     evilEye,
     evilEyeShock,
+    gungnir,
     lordOfDarkness,
     piercingDrive,
     spearSweep,
@@ -93,7 +94,7 @@ export const JOB_CARD_MAP = {
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         onJobUp: [evilEye, piercingDrive],
-        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep, evilEyeShock, lordOfDarkness],
+        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep, evilEyeShock, lordOfDarkness, gungnir],
     },
     [WARRIOR_SECONDARY_JOBS.WHITE_KNIGHT]: {
         onJobUp: [flameCharge, blizzardCharge],

@@ -107,6 +107,14 @@ export enum CONDITION_TYPE {
     FLAT = "flat",
 }
 
+export interface Multiplier {
+    type: MULTIPLIER_TYPES;
+    calculationTarget: "actor" | "target";
+    // Eg. if the type is maxHP, pass a percentage (number in range 0 <= 1) of the maxHP to scale from
+    // Eg. if the type is ABILITIES_WITH_NAME, give the name value here
+    value?: string | number;
+}
+
 export interface Bonus {
     /**
      * Flat amount to increase or decrease. Should be an integer.
@@ -119,11 +127,7 @@ export interface Bonus {
     /**
      * A multiplier on the bonus amount
      */
-    multiplier?: {
-        type: MULTIPLIER_TYPES;
-        calculationTarget: "actor" | "target";
-        value?: string; // Eg. if the type is ABILITIES_WITH_NAME, give the name value here
-    };
+    multiplier?: Multiplier;
 
     /**
      * Conditions to pass for the bonus to apply.
@@ -163,6 +167,7 @@ export enum MULTIPLIER_TYPES {
     ARMOR = "armor",
     // This is for players only; count the number of cards they own with a particular name
     ABILITIES_WITH_NAME = "abilitiesWithName",
+    MAX_HP = "maxHP",
 }
 
 export interface Action {
@@ -193,10 +198,7 @@ export interface Action {
     };
     icon?: string; // Used as a projectile
     bonus?: Bonus;
-    multiplier?: {
-        type: MULTIPLIER_TYPES;
-        calculationTarget: "actor" | "target";
-    };
+    multiplier?: Multiplier;
     animation?: ANIMATION_TYPES;
     conditions?: AbilityCondition[];
     excludePrimaryTarget?: boolean;
@@ -206,6 +208,8 @@ export interface Action {
         area?: number;
         effects?: Effect[];
     };
+    /** Percentage of armor on the target to remove */
+    destroyArmor?: number;
 }
 
 export interface Ability {

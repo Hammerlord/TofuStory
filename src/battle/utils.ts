@@ -222,25 +222,30 @@ export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
     });
 };
 
-export const getMultiplier = ({ actor, target, action }: { actor?: Combatant; target?: Combatant; action: Action }): number => {
+export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant; target?: Combatant; multiplier: any }): number => {
     const character = (() => {
-        const calculationTarget = action.multiplier?.calculationTarget;
+        const calculationTarget = multiplier?.calculationTarget;
         if (!calculationTarget) {
             return;
         }
 
         return calculationTarget === "actor" ? actor : target;
     })();
-    if (!action.multiplier || !character) {
+    if (!multiplier || !character) {
         return 1;
     }
 
-    if (action.multiplier.type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
+    if (multiplier.type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
         return character.turnHistory.filter(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK).length + 1;
     }
 
-    if (action.multiplier.type === MULTIPLIER_TYPES.ARMOR) {
+    if (multiplier.type === MULTIPLIER_TYPES.ARMOR) {
         return character.armor || 1;
+    }
+
+    if (multiplier.type === MULTIPLIER_TYPES.MAX_HP) {
+        const value = typeof multiplier.value === "number" ? multiplier.value : 1;
+        return Math.floor(character.maxHP * value);
     }
 
     return 1;
@@ -314,7 +319,7 @@ export const calculateDamage = ({
         increaseDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     }
 
-    const damage = (damageFromEffects + baseDamage) * getMultiplier({ action, actor, target });
+    const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target });
     const total = damage + increaseDamageReceived;
     if (total < 0) {
         return 0;
@@ -328,7 +333,7 @@ export const calculateArmor = ({ target, action }): number => {
     }
     const targetArmor = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmor + (action.armor || 0);
-    return Math.max(0, armor * getMultiplier({ action, target }));
+    return Math.max(0, armor * getMultiplier({ multiplier: action.multiplier, target }));
 };
 
 /**
