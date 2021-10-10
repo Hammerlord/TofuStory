@@ -6,8 +6,7 @@ import {
     intrepidSlashImage,
     punctureImage,
     ragingblowImage,
-    risingrage,
-    upmattImage,
+    risingrageImage,
     worldreaverImage,
 } from "../../images";
 import { immunity, wound } from "../Effects";
@@ -144,6 +143,20 @@ export const parry: Ability = {
     ],
 };
 
+const rageEffect = {
+    name: "Rage",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: ragingblowImage,
+    skillBonus: [
+        {
+            skill: "Rising Rage",
+            damage: 1,
+        },
+        { skill: "Raging Blow", damage: 1 },
+    ],
+};
+
 const ragingBlowAction: Action = {
     damage: 1,
     type: ACTION_TYPES.ATTACK,
@@ -152,10 +165,22 @@ const ragingBlowAction: Action = {
 
 export const ragingBlow: Ability = {
     name: "Raging Blow",
-    resourceCost: 0,
+    resourceCost: 1,
     image: ragingblowImage,
     description: "Hits twice",
-    actions: [ragingBlowAction, ragingBlowAction],
+    actions: [
+        ragingBlowAction,
+        ragingBlowAction,
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    ...rageEffect,
+                },
+            ],
+        },
+    ],
 };
 
 ragingBlow.actions.push({
@@ -191,6 +216,29 @@ export const worldReaver: Ability = {
             effects: [
                 {
                     ...immunity,
+                },
+            ],
+        },
+    ],
+};
+
+export const risingRage: Ability = {
+    name: "Rising Rage",
+    resourceCost: 0,
+    image: risingrageImage,
+    actions: [
+        {
+            area: 1,
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    ...rageEffect,
                 },
             ],
         },

@@ -138,6 +138,7 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
                 selectedIndex,
                 action,
                 selectedSide,
+                ability,
             })
         );
     });

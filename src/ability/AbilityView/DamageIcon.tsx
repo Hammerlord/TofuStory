@@ -12,7 +12,7 @@ export const getDamageStatistics = ({
     const { actions = [] } = ability;
     const totalDamage = actions.reduce((acc, action: Action) => {
         if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-            acc += player ? calculateDamage({ actor: player, action }) : action.damage || 0;
+            acc += player ? calculateDamage({ actor: player, action, ability }) : action.damage || 0;
         }
         return acc;
     }, 0);

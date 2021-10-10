@@ -1,5 +1,6 @@
 import { Combatant } from "../character/types";
 import {
+    Ability,
     Action,
     ACTION_TYPES,
     Effect,
@@ -273,18 +274,34 @@ export const isCharacterImmuneToAttacks = (character: Combatant | null) => {
     return character.effects.some(({ type }) => type === EFFECT_TYPES.ATTACK_IMMUNITY);
 };
 
+const getSkillDamage = ({ ability, skillBonus }) => {
+    if (!skillBonus) {
+        return 0;
+    }
+
+    for (const { skill, damage = 0 } of skillBonus) {
+        if (skill === ability?.name) {
+            return damage || 0;
+        }
+    }
+
+    return 0;
+};
+
 export const calculateDamage = ({
     actor,
     target,
     targetIndex,
     selectedIndex,
     action,
+    ability,
 }: {
     actor?: Combatant;
     target?: Combatant;
     targetIndex?: number;
     selectedIndex?: number;
     action: Action;
+    ability?: Ability;
 }): number => {
     if (isCharacterImmune(target) || isCharacterImmuneToAttacks(target)) {
         return 0;
@@ -308,13 +325,14 @@ export const calculateDamage = ({
     let damageFromEffects = 0;
     let increaseDamageReceived = 0;
     if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
-        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, conditions }) => {
+        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, conditions, skillBonus = [] }) => {
             const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
                 calculationTarget === "effectOwner" ? actor : target;
-            if (passesConditions({ getCalculationTarget, conditions })) {
-                return acc + damage;
+            if (!passesConditions({ getCalculationTarget, conditions })) {
+                return acc;
             }
-            return acc;
+
+            return acc + damage + getSkillDamage({ ability, skillBonus });
         }, 0);
         increaseDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     }

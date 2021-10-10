@@ -84,6 +84,10 @@ export interface Effect {
     turnsTriggerFrequency?: number;
     /** How many turns was this effect up on the character */
     uptime?: number;
+    skillBonus?: {
+        skill: string;
+        damage: number;
+    }[];
 }
 
 export interface Aura extends Effect {

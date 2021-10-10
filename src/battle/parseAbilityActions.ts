@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import {
+    Ability,
     Action,
     ACTION_TYPES,
     Condition,
@@ -171,16 +172,18 @@ export const applyActionToTarget = ({
     selectedIndex,
     actor,
     action,
+    ability,
 }: {
     target: Combatant | null;
     targetIndex: number;
     selectedIndex?: number;
     actor?: Combatant;
     action: Action;
+    ability?: Ability;
 }): Combatant => {
     action = calculateBonus({ target, actor, action });
     const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
-    const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action });
+    const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
     const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
     const armor = calculateArmor({ target, action });
     const updatedArmor = Math.max(0, baseArmor - damage + armor);
@@ -281,6 +284,7 @@ export const parseAction = ({
     selectedIndex,
     actorId,
     selectedSide,
+    ability,
 }: {
     enemies: (Combatant | null)[];
     allies: (Combatant | null)[];
@@ -288,6 +292,7 @@ export const parseAction = ({
     selectedIndex: number;
     actorId: string;
     selectedSide: BATTLEFIELD_SIDES;
+    ability?: Ability;
 }): Event => {
     const { movement, vacuum } = action;
     let { friendly, hostile, actorSide } = orientate({
@@ -324,7 +329,7 @@ export const parseAction = ({
         return targets.map((character, i: number) => {
             if (isInArea(character, i)) {
                 thornsDamage += calculateThornsDamage(action, character);
-                const newCharacter = applyActionToTarget({ target: character, selectedIndex, targetIndex: i, action, actor }); // Actor possibly stale...
+                const newCharacter = applyActionToTarget({ target: character, selectedIndex, targetIndex: i, action, actor, ability }); // Actor possibly stale...
                 tallyDamageDealt(character, newCharacter);
                 return newCharacter;
             }
@@ -712,6 +717,7 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
                 action,
                 actorId,
                 selectedSide: side,
+                ability,
             })
         );
 
@@ -727,6 +733,7 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
                     },
                     actorId: mostRecentAllies()[index]?.id,
                     selectedSide: BATTLEFIELD_SIDES.ENEMIES,
+                    ability,
                 })
             );
         }

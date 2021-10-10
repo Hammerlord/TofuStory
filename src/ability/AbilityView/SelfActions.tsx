@@ -10,7 +10,7 @@ const SelfActions = ({ ability, player }: { ability: Ability; player?: Combatant
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, action: Action) => {
             const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
-            const multiplier = getMultiplier({ action, actor: player });
+            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: player });
             return {
                 healing: (acc.healing || 0) + healing * multiplier,
                 armor: (acc.armor || 0) + armor * multiplier,

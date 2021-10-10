@@ -10,7 +10,17 @@ import {
     piercingDrive,
     spearSweep,
 } from "./warrior/darkKnightAbilities";
-import { intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver } from "./warrior/fighterAbilities";
+import {
+    intrepidSlash,
+    puncture,
+    brandish,
+    comboFury,
+    chanceStrike,
+    parry,
+    ragingBlow,
+    worldReaver,
+    risingRage,
+} from "./warrior/fighterAbilities";
 import {
     bash,
     block,
@@ -90,7 +100,7 @@ export const JOB_CARD_MAP = {
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],
-        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver],
+        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver, risingRage],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         onJobUp: [evilEye, piercingDrive],

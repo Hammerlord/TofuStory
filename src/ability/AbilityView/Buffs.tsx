@@ -23,6 +23,7 @@ const Buffs = ({ ability }) => {
                     preventArmorDecay,
                     leech = 0,
                     healingPerTurn = 0,
+                    skillBonus = [],
                 } = effect;
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
@@ -118,6 +119,19 @@ const Buffs = ({ ability }) => {
                             duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
                         );
                     }
+                }
+
+                if (skillBonus.length > 0) {
+                    effectComponents.push(
+                        <>
+                            Increase{" "}
+                            {...skillBonus.map(({ skill, damage = 0 }) => (
+                                <span key={skill}>
+                                    {skill} {damage > 0 && <Icon icon={<CrossedSwords />} text={`+${damage}`} />}
+                                </span>
+                            ))}
+                        </>
+                    );
                 }
 
                 return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;

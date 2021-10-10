@@ -46,7 +46,7 @@ export { default as mace } from "./item384.png";
 export { default as orangegem } from "./item355.gif";
 export { default as rage } from "./rage.png";
 export { default as axe } from "./axe.png";
-export { default as risingrage } from "./risingrage.png";
+export { default as risingrageImage } from "./risingrage.png";
 export { default as spikes } from "./item218.png";
 export { default as flag } from "./flag.png";
 export { default as regalTofu } from "./regaltofu.png";

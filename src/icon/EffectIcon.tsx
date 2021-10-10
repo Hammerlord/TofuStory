@@ -63,7 +63,16 @@ const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: bool
 
     let name = effect.name;
     let icon: string | JSX.Element = effect.icon;
-    const { thorns = 0, healthPerResourcesSpent = 0, healingPerTurn = 0, armorPerTurn = 0, type, damage, leech = 0 } = effect;
+    const {
+        thorns = 0,
+        healthPerResourcesSpent = 0,
+        healingPerTurn = 0,
+        armorPerTurn = 0,
+        type,
+        damage,
+        leech = 0,
+        skillBonus = [],
+    } = effect;
     if (isAura) {
         name = "Aura";
         icon = <Fireworks />;
@@ -108,6 +117,11 @@ const EffectIcon = ({ effect, isAura, silence }: { effect: Effect; isAura?: bool
                 <div>{effect.description}</div>
                 {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}
                 {isSilenced && <div className={classes.silenced}>Silenced</div>}
+                {skillBonus.map(({ skill, damage = 0 }) => (
+                    <div key={skill}>
+                        {skill} {damage > 0 && <Icon icon={<CrossedSwords />} text={`+${damage}`} />}
+                    </div>
+                ))}
             </div>
         </div>
     );
