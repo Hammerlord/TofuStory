@@ -267,14 +267,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     };
 
     const handleNewEvents = (events: Event[]) => {
-        const lastEvent = events[events.length - 1];
-        if (!lastEvent) {
-            return;
-        }
-
         setActionQueue((prev) => [...prev, ...events]);
-        setAllies(lastEvent.updatedAllies);
-        setEnemies(lastEvent.updatedEnemies);
     };
 
     useEffect(() => {
@@ -282,6 +275,9 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             return;
         }
         setEvents(actionQueue);
+        const lastEvent = actionQueue[actionQueue.length - 1];
+        setAllies(lastEvent.updatedAllies);
+        setEnemies(lastEvent.updatedEnemies);
         setActionQueue([]);
     }, [actionQueue, events]);
 
