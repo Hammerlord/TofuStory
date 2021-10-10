@@ -111,6 +111,16 @@ export const tickDownBuffs = (target: Combatant) => {
     };
 };
 
+export const tickEffectUptime = (target: Combatant) => {
+    return {
+        ...target,
+        effects: target.effects.map((effect) => ({
+            ...effect,
+            uptime: (effect.uptime || 0) + 1,
+        })),
+    };
+};
+
 export const checkHalveArmor = (target: Combatant): Combatant => {
     if (target.effects.some((effect) => effect.preventArmorDecay)) {
         return target;
@@ -253,6 +263,11 @@ export const isCharacterImmune = (character: Combatant | null) => {
     return character.effects.some(({ type }) => type === EFFECT_TYPES.IMMUNITY);
 };
 
+export const isCharacterImmuneToAttacks = (character: Combatant | null) => {
+    if (!character) return false;
+    return character.effects.some(({ type }) => type === EFFECT_TYPES.ATTACK_IMMUNITY);
+};
+
 export const calculateDamage = ({
     actor,
     target,
@@ -266,7 +281,7 @@ export const calculateDamage = ({
     selectedIndex?: number;
     action: Action;
 }): number => {
-    if (isCharacterImmune(target)) {
+    if (isCharacterImmune(target) || isCharacterImmuneToAttacks(target)) {
         return 0;
     }
 

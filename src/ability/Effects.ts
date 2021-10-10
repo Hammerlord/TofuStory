@@ -11,8 +11,10 @@ import {
     Medal,
     MilitaryMedal,
     NoStun,
+    orangegem as orangegemImage,
     Snowflake,
     SpeechBubble,
+    upmattImage,
     weaponbooster,
 } from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "./types";
@@ -115,6 +117,14 @@ export const cleave: Effect = {
     description: "Area of this character's basic attacks increased by 1.",
 };
 
+export const immunity: Effect = {
+    name: "Immunity",
+    icon: upmattImage,
+    type: EFFECT_TYPES.IMMUNITY,
+    class: EFFECT_CLASSES.BUFF,
+    duration: 1,
+};
+
 export const raging: Effect = {
     name: "Raging",
     canBeSilenced: true,
@@ -157,6 +167,27 @@ export const avenger: Effect = {
             effects: [vengeful],
         },
     },
+};
+
+export const shielding: Effect = {
+    name: "Shielding",
+    canBeSilenced: true,
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: orangegemImage,
+    description: "Periodically gaining a shield that wards off a single attack.",
+    turnsTriggerFrequency: 2,
+    applyEffects: [
+        {
+            name: "Attack Immunity",
+            icon: upmattImage,
+            type: EFFECT_TYPES.ATTACK_IMMUNITY,
+            class: EFFECT_CLASSES.BUFF,
+            duration: 2,
+            onReceiveAttack: { removeEffect: true },
+        },
+    ],
 };
 
 export const eliteSquad: Effect = {

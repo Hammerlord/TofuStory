@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Action, ACTION_TYPES, Condition, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, Condition, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -49,23 +49,45 @@ const triggerReceiveEffects = (target, incomingEffect: Effect) => {
 };
 
 const applyEffects = ({ target, effects }): Combatant => {
-    if (target.HP <= 0 || isCharacterImmune(target)) {
+    if (target.HP <= 0) {
         return target;
     }
 
     target = cloneDeep(target) as Combatant;
+    const targetIsImmune = isCharacterImmune(target);
     const isImmuneTo = (effect: Effect) => {
-        return target.effects.some((targetEffect: Effect) => targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type));
+        return target.effects.some(
+            (targetEffect: Effect) =>
+                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type) ||
+                (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF)
+        );
     };
 
     effects.forEach((effect: Effect) => {
         if (!isImmuneTo(effect)) {
+            effect = {
+                ...cloneDeep(effect),
+                uptime: 0,
+            };
+
             target.effects.push(effect);
             target = triggerReceiveEffects(target, effect);
         }
     });
 
     return target;
+};
+
+const triggerOnReceiveAction = ({ action, target }) => {
+    const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
+    return {
+        ...target,
+        effects: target.effects.filter((effect: Effect) => {
+            const removed =
+                (isAttack && effect.onReceiveAttack?.removeEffect) || (action.damage > 0 && effect.type === EFFECT_TYPES.STEALTH);
+            return !removed;
+        }),
+    };
 };
 
 const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
@@ -111,16 +133,17 @@ export const applyActionToTarget = ({
     const healthDamage = Math.max(0, damage - target.armor);
     let HP = Math.max(0, target.HP - healthDamage);
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
-    // Check if stealth broken
-    const targetEffects = damage === 0 ? target.effects : target.effects.filter(({ type }) => type !== EFFECT_TYPES.STEALTH);
-    return applyEffects({
+    const updatedTarget = triggerOnReceiveAction({
+        action,
         target: {
             ...target,
-            effects: targetEffects,
             HP,
             armor: updatedArmor,
             resources: (target.resources || 0) + resources,
         },
+    });
+    return applyEffects({
+        target: updatedTarget,
         effects,
     });
 };
@@ -371,6 +394,27 @@ const applyAuraPerTurnEffect = (characters: (Combatant | null)[], actorIndex: nu
     };
 };
 
+export const applyEffectOnTurnProcs = (character): Combatant | null => {
+    if (!(character?.HP > 0)) {
+        return character;
+    }
+    const effects = character.effects
+        .filter((effect: Effect) => {
+            // TODO silence
+            const { turnsTriggerFrequency = 0, uptime = 0 } = effect;
+            if (!effect.applyEffects?.length) {
+                return false;
+            }
+
+            return uptime % turnsTriggerFrequency === 0;
+        })
+        .reduce((acc, effect) => {
+            return [...acc, ...effect.applyEffects];
+        }, []);
+
+    return applyEffects({ target: character, effects });
+};
+
 export const applyPerTurnEffects = (
     actors: (Combatant | null)[],
     targets: (Combatant | null)[]
@@ -397,7 +441,18 @@ export const applyPerTurnEffects = (
         // TODO damageTargetPerTurn
         const { healTargetPerTurn, damageTargetPerTurn, healingPerTurn } = character.effects.reduce(
             (acc, effect: Effect) => {
-                const { healTargetPerTurn = 0, damageTargetPerTurn = 0, healingPerTurn = 0 } = effect;
+                const {
+                    healTargetPerTurn = 0,
+                    damageTargetPerTurn = 0,
+                    healingPerTurn = 0,
+                    turnsTriggerFrequency = 0,
+                    uptime = 0,
+                } = effect;
+
+                if (uptime % turnsTriggerFrequency !== 0) {
+                    return acc;
+                }
+
                 return {
                     healTargetPerTurn: acc.healTargetPerTurn + healTargetPerTurn,
                     damageTargetPerTurn: acc.damageTargetPerTurn + damageTargetPerTurn,

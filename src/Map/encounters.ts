@@ -1,7 +1,7 @@
 import { concat } from "ramda";
 import { Ability } from "../ability/types";
 import { Enemy } from "../enemy/enemy";
-import { avenger, elite, eliteSquad, raging, thorns } from "./../ability/Effects";
+import { avenger, elite, eliteSquad, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { createCombatant } from "./../enemy/createEnemy";
 import { Wave } from "./../Menu/tutorial";
@@ -20,7 +20,7 @@ const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
 };
 
 const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
     const enemy = {
@@ -39,7 +39,7 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
 };
 
 const generateElite = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
-    const affix = getRandomItem([thorns, raging]);
+    const affix = getRandomItem([thorns, raging, shielding]);
     const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
     const enemy = {

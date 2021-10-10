@@ -10,7 +10,7 @@ import {
     upmattImage,
     worldreaverImage,
 } from "../../images";
-import { wound } from "../Effects";
+import { immunity, wound } from "../Effects";
 import { Ability, AbilityCondition, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 
 export const intrepidSlash: Ability = {
@@ -190,11 +190,7 @@ export const worldReaver: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Immunity",
-                    icon: upmattImage,
-                    type: EFFECT_TYPES.IMMUNITY,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 1,
+                    ...immunity,
                 },
             ],
         },

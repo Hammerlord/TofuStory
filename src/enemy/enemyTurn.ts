@@ -5,7 +5,7 @@ import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
 import triggerDebuffDamage from "../battle/debuffDamage";
 import { Combatant } from "../character/types";
 import { ACTION_TYPES } from "./../ability/types";
-import { parseAction } from "./../battle/parseAbilityActions";
+import { applyEffectOnTurnProcs, parseAction } from "./../battle/parseAbilityActions";
 import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
 import {
     addEnemyResources,
@@ -286,7 +286,10 @@ const enemyTurn = ({ enemies, allies }): EventGroup[] => {
         {
             events: [
                 {
-                    updatedEnemies: updateCharacters(enemies, compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor)),
+                    updatedEnemies: updateCharacters(
+                        enemies,
+                        compose(tickDownBuffs, clearTurnHistory, addEnemyResources, checkHalveArmor, applyEffectOnTurnProcs)
+                    ),
                     updatedAllies: allies,
                     id: uuid.v4(),
                 },

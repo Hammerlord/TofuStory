@@ -43,6 +43,7 @@ export { default as shout } from "./shout.png";
 export { default as warleap } from "./warleap.png";
 export { default as brick } from "./brick.png";
 export { default as mace } from "./item384.png";
+export { default as orangegem } from "./item355.gif";
 export { default as rage } from "./rage.png";
 export { default as axe } from "./axe.png";
 export { default as risingrage } from "./risingrage.png";
