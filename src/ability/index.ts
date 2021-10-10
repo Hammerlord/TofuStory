@@ -1,5 +1,14 @@
 import { PLAYER_CLASSES } from "../Menu/types";
-import { darkImpale, darkSpear, darkThirst, evilEye, evilEyeShock, piercingDrive, spearSweep } from "./warrior/darkKnightAbilities";
+import {
+    darkImpale,
+    darkSpear,
+    darkThirst,
+    evilEye,
+    evilEyeShock,
+    lordOfDarkness,
+    piercingDrive,
+    spearSweep,
+} from "./warrior/darkKnightAbilities";
 import { intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver } from "./warrior/fighterAbilities";
 import {
     bash,
@@ -79,17 +88,14 @@ export const JOB_CARD_MAP = {
         ],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
-        description: "Go on the cutting-edge offensive with multi-hit combos",
         onJobUp: [brandish, puncture],
         all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
-        description: "Drive back hordes of enemies with wide-reaching spear techniques",
         onJobUp: [evilEye, piercingDrive],
-        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep, evilEyeShock],
+        all: [evilEye, darkImpale, darkThirst, darkSpear, piercingDrive, spearSweep, evilEyeShock, lordOfDarkness],
     },
     [WARRIOR_SECONDARY_JOBS.WHITE_KNIGHT]: {
-        description: "Wield elemental fire, ice, lightning and holy light against foes",
         onJobUp: [flameCharge, blizzardCharge],
         all: [flameCharge, blizzardCharge, lightningCharge, blast, divineCharge, frostFire, shieldMastery, judgment, parashockGuard],
     },

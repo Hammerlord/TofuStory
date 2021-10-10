@@ -1,6 +1,15 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Action, ACTION_TYPES, Condition, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../ability/types";
+import {
+    Action,
+    ACTION_TYPES,
+    Condition,
+    EffectEventTrigger,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+} from "../ability/types";
 import { Aura, Effect } from "./../ability/types";
 import { Combatant } from "./../character/types";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -78,16 +87,57 @@ const applyEffects = ({ target, effects }): Combatant => {
     return target;
 };
 
-const triggerOnReceiveAction = ({ action, target }) => {
+// [WIP] Conditions not considered
+// This should be its own set of events since eg. damage intake and consequent procs will be mixed together
+const triggerOnReceiveAction = ({ action, target, damage = 0 }) => {
     const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
-    return {
-        ...target,
-        effects: target.effects.filter((effect: Effect) => {
-            const removed =
-                (isAttack && effect.onReceiveAttack?.removeEffect) || (action.damage > 0 && effect.type === EFFECT_TYPES.STEALTH);
-            return !removed;
-        }),
+    let targetStatUpdates = {
+        effects: [],
+        armor: 0,
+        healing: 0,
     };
+
+    const handleEventTrigger = (effect: Effect, event: EffectEventTrigger) => {
+        const { parentEffect = {}, effectOwner = {} } = event;
+        const { effects = [], armor = 0, healing = 0 } = effectOwner;
+        const { damage = 0 } = parentEffect;
+        targetStatUpdates = {
+            effects: targetStatUpdates.effects.concat(effects),
+            armor: targetStatUpdates.armor + armor,
+            healing: targetStatUpdates.healing + healing,
+        };
+        return {
+            ...effect,
+            damage: (effect.damage || 0) + damage,
+        };
+    };
+
+    const updatedEffects = target.effects
+        .filter((effect: Effect) => {
+            const removed = (isAttack && effect.onReceiveAttack?.removeEffect) || (damage > 0 && effect.type === EFFECT_TYPES.STEALTH);
+            return !removed;
+        })
+        .map((effect: Effect) => {
+            if (isAttack && effect.onReceiveAttack) {
+                return handleEventTrigger(effect, effect.onReceiveAttack);
+            }
+
+            if (damage > 0 && effect.onReceiveDamage) {
+                return handleEventTrigger(effect, effect.onReceiveDamage);
+            }
+
+            return effect;
+        });
+
+    return applyEffects({
+        target: {
+            ...target,
+            armor: target.armor + targetStatUpdates.armor,
+            HP: Math.min(target.maxHP, target.HP + targetStatUpdates.healing),
+            effects: updatedEffects,
+        },
+        effects: targetStatUpdates.effects,
+    });
 };
 
 const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
@@ -135,6 +185,7 @@ export const applyActionToTarget = ({
     HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
     const updatedTarget = triggerOnReceiveAction({
         action,
+        damage,
         target: {
             ...target,
             HP,

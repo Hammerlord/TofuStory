@@ -6,6 +6,7 @@ import {
     evileyeshockImage,
     evileyeskill,
     Heart,
+    lordOfDarknessImage,
     piercingdriveImage,
     spearsweepImage,
 } from "../../images";
@@ -72,8 +73,12 @@ export const darkThirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     damage: 1,
-                    duration: 1,
+                    duration: 2,
                     leech: 0.5,
+                },
+                {
+                    ...wound,
+                    duration: 2,
                 },
             ],
         },
@@ -161,6 +166,36 @@ export const evilEyeShock: Ability = {
                 {
                     calculationTarget: "target",
                     name: "Evil Eye",
+                },
+            ],
+        },
+    ],
+};
+
+export const lordOfDarkness: Ability = {
+    name: "Lord of Darkness",
+    resourceCost: 2,
+    image: lordOfDarknessImage,
+    description: "Receiving damage increases attack power bonus by 1",
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Lord of Darkness",
+                    icon: lordOfDarknessImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 1,
+                    duration: 2,
+                    leech: 0.25,
+                    onReceiveDamage: {
+                        parentEffect: {
+                            damage: 1,
+                        },
+                    },
                 },
             ],
         },

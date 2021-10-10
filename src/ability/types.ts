@@ -27,6 +27,10 @@ export enum EFFECT_CLASSES {
 export interface EffectEventTrigger {
     removeEffect?: boolean;
     conditions?: EffectCondition[]; // OR if multiple conditions are present
+    parentEffect?: {
+        // Update the parent effect's stats
+        damage?: number;
+    };
     effectOwner?: {
         // Stat changes to apply to the target (owner of this effect)
         effects?: Effect[];
@@ -72,6 +76,7 @@ export interface Effect {
     onAttack?: EffectEventTrigger;
     onFriendlyKilled?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
+    onReceiveDamage?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
