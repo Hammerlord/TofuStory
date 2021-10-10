@@ -203,6 +203,7 @@ export const parashockGuard: Ability = {
     name: "Parashock Guard",
     resourceCost: 2,
     image: parashockGuardImage,
+    depletedOnUse: true,
     description: "(Armor gained equal to your current armor)",
     actions: [
         {

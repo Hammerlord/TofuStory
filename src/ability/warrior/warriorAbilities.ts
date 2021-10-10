@@ -387,6 +387,7 @@ export const berserk: Ability = {
     name: "Berserk",
     resourceCost: 3,
     image: powerstanceImage,
+    depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
     actions: [
         {
