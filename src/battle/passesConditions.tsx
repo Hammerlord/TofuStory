@@ -22,7 +22,7 @@ export const passesConditions = ({
     conditions: (AbilityCondition | EffectCondition)[];
 }): boolean => {
     const passesCondition = (condition: AbilityCondition | EffectCondition) => {
-        const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, name } = condition;
+        const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName } = condition;
         const combatant: Combatant = getCalculationTarget(calculationTarget);
         if (!combatant) {
             return false;
@@ -38,7 +38,7 @@ export const passesConditions = ({
         const meetsEffectClass =
             hasEffectClass === undefined ? true : combatant.effects.some(({ class: effectClass }) => effectClass === hasEffectClass);
 
-        const nameIncludes = name === undefined ? true : combatant.name?.includes(name);
+        const nameIncludes = characterName === undefined ? true : combatant.name?.includes(characterName);
         return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && nameIncludes;
     };
     return !conditions.length || conditions.some(passesCondition);

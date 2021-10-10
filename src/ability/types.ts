@@ -156,7 +156,7 @@ export interface Condition {
     healthPercentage?: number;
     armor?: number;
     /** Whether the name of the target matches the condition. This is always an "includes" check: */
-    name?: string;
+    characterName?: string;
 }
 
 export interface AbilityCondition extends Condition {

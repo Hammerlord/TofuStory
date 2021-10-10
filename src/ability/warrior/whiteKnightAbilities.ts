@@ -65,10 +65,14 @@ export const lightningCharge: Ability = {
     name: "Lightning Charge",
     resourceCost: 2,
     image: lightningcharge,
+    description: "Reduce cost by 1 for every ability used this turn, until Lightning Charge is used or discarded",
+    onAbilityUse: {
+        resourceCost: -1,
+    },
     actions: [
         {
             area: 1,
-            damage: 3,
+            damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
