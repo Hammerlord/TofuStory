@@ -102,25 +102,26 @@ export const divineCharge: Ability = {
     name: "Divine Charge",
     resourceCost: 1,
     image: divinechargeImage,
-    description: "Hits again if the primary target is stunned",
+    description: "+ Damage equal to the number of debuffs on the target",
     actions: [
         {
-            damage: 3,
+            damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
-        },
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            conditions: [
-                {
+            bonus: {
+                damage: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.DEBUFFS,
                     calculationTarget: "target",
-                    hasEffectType: [EFFECT_TYPES.STUN],
                 },
-            ],
+                conditions: [
+                    {
+                        calculationTarget: "target",
+                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                    },
+                ],
+            },
         },
     ],
 };

@@ -249,6 +249,10 @@ export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant
         return Math.floor(character.maxHP * value);
     }
 
+    if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
+        return character.effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
+    }
+
     return 1;
 };
 

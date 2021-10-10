@@ -173,6 +173,7 @@ export enum MULTIPLIER_TYPES {
     // This is for players only; count the number of cards they own with a particular name
     ABILITIES_WITH_NAME = "abilitiesWithName",
     MAX_HP = "maxHP",
+    DEBUFFS = "debuffs",
 }
 
 export interface Action {
