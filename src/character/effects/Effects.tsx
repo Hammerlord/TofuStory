@@ -70,6 +70,31 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
     },
+    "@keyframes immuneAnimation": {
+        from: {
+            width: "80%",
+            height: "80%",
+            opacity: "0.3",
+        },
+        to: {
+            opacity: "1",
+            width: "100%",
+            height: "100%",
+        },
+    },
+    immune: {
+        position: "absolute",
+        borderRadius: "100px",
+        border: "2px solid rgba(255, 255, 240, 0.9)",
+        boxShadow: "0 0 20px 4px rgb(255, 255, 220), 0 0 15px 4px rgb(255, 255, 220)",
+        top: "60%",
+        left: "50%",
+        transform: "translateX(-50%) translateY(-50%)",
+        animationName: "$immuneAnimation",
+        animationDuration: "2s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+    },
 });
 
 const Effects = ({ combatant, healing }) => {
@@ -85,6 +110,7 @@ const Effects = ({ combatant, healing }) => {
     const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
     const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
     const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
+    const isImmune = hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
     const bleeds = combatant.effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
     const burn = combatant.effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.BURN) {
@@ -110,6 +136,7 @@ const Effects = ({ combatant, healing }) => {
             }
             {isSilenced && <Icon icon={<SpeechBubble />} size="xl" className={classes.silence} />}
             {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}
+            {isImmune && <div className={classes.immune} />}
             {bleeds.length > 0 && (
                 <div className={classes.bleed}>
                     <Bleed />
