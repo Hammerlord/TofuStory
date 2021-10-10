@@ -1,6 +1,6 @@
 import React, { cloneElement } from "react";
 import Icon from "../../icon/Icon";
-import { Cactus, Cloudy, CrossedSwords, Heart, Hourglass, Shield } from "../../images";
+import { Cactus, Cloudy, CrossedSwords, Heart, Hourglass, Shield, upmattImage } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 import { getAllEffects } from "./utils";
@@ -60,6 +60,13 @@ const Buffs = ({ ability }) => {
                     effectComponents.push(
                         <span>
                             <Icon icon={<Cloudy />} /> Stealth
+                        </span>
+                    );
+                }
+                if (effect.type === EFFECT_TYPES.IMMUNITY) {
+                    effectComponents.push(
+                        <span>
+                            <Icon icon={upmattImage} /> Immunity
                         </span>
                     );
                 }

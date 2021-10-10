@@ -248,6 +248,11 @@ export const getEnabledEffects = (character: Combatant | null): Effect[] => {
     return character.effects;
 };
 
+export const isCharacterImmune = (character: Combatant | null) => {
+    if (!character) return false;
+    return character.effects.some(({ type }) => type === EFFECT_TYPES.IMMUNITY);
+};
+
 export const calculateDamage = ({
     actor,
     target,
@@ -261,6 +266,10 @@ export const calculateDamage = ({
     selectedIndex?: number;
     action: Action;
 }): number => {
+    if (isCharacterImmune(target)) {
+        return 0;
+    }
+
     const baseDamage: number = (() => {
         if (action.secondaryDamage && targetIndex !== selectedIndex) {
             return action.secondaryDamage;

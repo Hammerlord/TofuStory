@@ -13,6 +13,7 @@ import {
     getEnabledEffects,
     getHealableIndices,
     getValidTargetIndices,
+    isCharacterImmune,
     isSilenced,
     updateCharacters,
 } from "./utils";
@@ -48,7 +49,7 @@ const triggerReceiveEffects = (target, incomingEffect: Effect) => {
 };
 
 const applyEffects = ({ target, effects }): Combatant => {
-    if (target.HP <= 0) {
+    if (target.HP <= 0 || isCharacterImmune(target)) {
         return target;
     }
 

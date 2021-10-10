@@ -225,7 +225,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         const newHand = hand.slice();
         const [card] = newHand.splice(selectedAbilityIndex, 1);
-        const { resourceCost = 0, removeAfterTurn, reusable, effects = {} } = card as HandAbility;
+        const { resourceCost = 0, removeAfterTurn, reusable, depletedOnUse, effects = {} } = card as HandAbility;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
 
         setSelectedAbilityIndex(null);
@@ -234,7 +234,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 ...card,
                 effects: {},
             });
-        } else if (!removeAfterTurn) {
+        } else if (!removeAfterTurn && !depletedOnUse) {
             setDiscard((prev) => [...prepareForDiscard([card]), ...prev]);
         }
 

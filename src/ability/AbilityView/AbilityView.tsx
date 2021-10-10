@@ -145,7 +145,7 @@ interface AbilityViewProps {
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
-    const { actions = [], name, minion, image, description, removeAfterTurn } = ability;
+    const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse } = ability;
     const { area = ability.area, target: targetType, damage, secondaryDamage } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
@@ -171,6 +171,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
                     <div className={classes.body}>
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
+                        {depletedOnUse && <div className={classes.bold}>Depletes on use</div>}
                         <Debuffs effects={getAllEffects(ability)} />
                         <SelfActions ability={ability} player={player} />
                         <Buffs ability={ability} />

@@ -7,9 +7,11 @@ import {
     punctureImage,
     ragingblowImage,
     risingrage,
+    upmattImage,
+    worldreaverImage,
 } from "../../images";
 import { wound } from "../Effects";
-import { Ability, AbilityCondition, Action, ACTION_TYPES, EFFECT_CLASSES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { Ability, AbilityCondition, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 
 export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
@@ -165,3 +167,36 @@ ragingBlow.actions.push({
         },
     ],
 });
+
+export const worldReaver: Ability = {
+    name: "World Reaver",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: worldreaverImage,
+    description: "Deals 3 damage for every attack you made this turn",
+    actions: [
+        {
+            area: 1,
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: "actor",
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Immunity",
+                    icon: upmattImage,
+                    type: EFFECT_TYPES.IMMUNITY,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};

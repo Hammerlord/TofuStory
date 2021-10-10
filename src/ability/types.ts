@@ -15,6 +15,7 @@ export enum EFFECT_TYPES {
     STEALTH = "stealth",
     RAGE = "rage",
     SILENCE = "silence",
+    IMMUNITY = "immunity",
 }
 
 export enum EFFECT_CLASSES {
@@ -208,6 +209,7 @@ export interface Ability {
     area?: number;
     removeAfterTurn?: boolean;
     reusable?: boolean;
+    depletedOnUse?: boolean;
     /** An effect applied to this ability when another ability is used */
     onAbilityUse?: {
         resourceCost?: number;
