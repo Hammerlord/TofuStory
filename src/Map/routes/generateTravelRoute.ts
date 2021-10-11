@@ -3,7 +3,7 @@ import ComboPuzzle from "../../scene/TreasureBox/ComboPuzzle";
 import RedBluePuzzle from "../../scene/TreasureBox/RedBluePuzzle";
 import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
 import { NODE_TYPES, Route } from "../types";
-import { getRandomItem } from "./../../utils";
+import { getRandomInt, getRandomItem } from "./../../utils";
 import { generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
 import { events, treasure } from "./eventList";
@@ -54,8 +54,10 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 }
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.TREASURE) {
+                const { items, mesos } = getRandomItem(treasure);
                 transformedNode.treasure = {
-                    ...getRandomItem(treasure),
+                    items,
+                    mesos: getRandomInt(mesos.min, mesos.max),
                     puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, RedBluePuzzle]),
                 };
                 --numTreasures;

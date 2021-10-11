@@ -20,4 +20,5 @@ export interface Combatant {
     maxResources?: number;
     resourcesPerTurn?: number;
     items: Item[];
+    mesos?: number;
 }

@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Combatant } from "../character/types";
+import { mesoCoinImage } from "../images";
 import { Item } from "../item/types";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
@@ -29,6 +30,14 @@ const useStyles = createUseStyles({
     stats: {
         lineHeight: "56px",
     },
+    mesos: {
+        margin: "0 16px",
+        display: "inline-block",
+    },
+    mesoImage: {
+        verticalAlign: "middle",
+        marginRight: "8px",
+    },
 });
 
 const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[]; onUseItem?: Function }) => {
@@ -43,6 +52,10 @@ const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[
                 <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
                     {deck.length} abilities
                 </Button>
+                <div className={classes.mesos}>
+                    <img src={mesoCoinImage} className={classes.mesoImage} />
+                    {player.mesos}
+                </div>
             </div>
             {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
             <Inventory inventory={player.items} onUseItem={onUseItem} />
