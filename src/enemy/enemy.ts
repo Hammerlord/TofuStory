@@ -1,3 +1,4 @@
+import { slashBlast, block } from "./../ability/warrior/warriorAbilities";
 import { stealth, elite, burn, thorns, hardy, raging } from "./../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./../ability/types";
 import { enemyHaste, loaf } from "./abilities";
@@ -5,8 +6,8 @@ import { Ability, Effect } from "../ability/types";
 import {
     bluesnailImage,
     leetSin,
-    noobClubA,
-    noobClubB,
+    noobClubAImage,
+    noobClubBImage,
     orangeMushroomImage,
     redsnailImage,
     shroomImage,
@@ -22,6 +23,8 @@ import {
     greenmushroomImage,
     hornymushroomImage,
     kingslimeImage,
+    noobWarriorAImage,
+    noobWarriorBImage,
 } from "../images";
 
 export interface Enemy {
@@ -101,8 +104,8 @@ export const orangeMushroom: Enemy = {
 
 export const noobA: Enemy = {
     name: "Beginner A",
-    maxHP: 25,
-    image: noobClubA,
+    maxHP: 20,
+    image: noobClubAImage,
     damage: 2,
     abilities: [
         {
@@ -131,8 +134,8 @@ export const noobA: Enemy = {
 
 export const noobB: Enemy = {
     name: "Beginner B",
-    maxHP: 25,
-    image: noobClubB,
+    maxHP: 20,
+    image: noobClubBImage,
     damage: 2,
     abilities: [
         {
@@ -166,6 +169,40 @@ export const noobB: Enemy = {
                     healing: 5,
                 },
             ],
+        },
+    ],
+};
+
+export const noobAWarrior = {
+    name: "Beginner A",
+    maxHP: 40,
+    image: noobWarriorAImage,
+    damage: 3,
+    abilities: [
+        {
+            ...slashBlast,
+            resourceCost: 0,
+        },
+        {
+            ...block,
+            resourceCost: 0,
+        },
+    ],
+};
+
+export const noobBWarrior = {
+    name: "Beginner B",
+    maxHP: 40,
+    image: noobWarriorBImage,
+    damage: 3,
+    abilities: [
+        {
+            ...slashBlast,
+            resourceCost: 0,
+        },
+        {
+            ...block,
+            resourceCost: 0,
         },
     ],
 };

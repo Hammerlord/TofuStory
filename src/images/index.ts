@@ -143,8 +143,10 @@ export { default as swampBG } from "./swampBG.jpg";
 export { default as kittenBarrelsImage } from "./kittenbarrels.png";
 export { default as sleepywoodBG } from "./sleepywoodBG.jpg";
 
-export { default as noobClubA } from "./noobclub-a.png";
-export { default as noobClubB } from "./noobclub-b.png";
+export { default as noobClubAImage } from "./noobcluba.png";
+export { default as noobClubBImage } from "./noobclubb.png";
+export { default as noobWarriorAImage } from "./noobwarriora.png";
+export { default as noobWarriorBImage } from "./noobwarriorb.png";
 export { default as leetSin } from "./leetsin.png";
 export { default as mapleleaves } from "./mapleleaves.png";
 export { default as subi } from "./subi.png";

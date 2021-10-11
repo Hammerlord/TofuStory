@@ -1,7 +1,8 @@
 import { stolenFence } from "../../item/items";
 import { goldRichieMerchant } from "../../scene/GoldRichie";
+import { noob } from "../../scene/Noob";
 
-export const events = [goldRichieMerchant];
+export const events = [goldRichieMerchant, noob];
 
 export const treasure = [
     {

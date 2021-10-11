@@ -128,8 +128,8 @@ export const goldRichieMerchant: NPC = {
                             shop: {
                                 merchant: goldRichie,
                             },
+                            isExit: true,
                         },
-                        { text: "Offer to help Gold Richie reach his destination", isExit: true },
                         { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, notoriety: 1 }, // accept function?
                     ],
                 },
