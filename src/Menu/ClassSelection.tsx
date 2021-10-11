@@ -65,6 +65,7 @@ const useStyles = createUseStyles({
         margin: "16px",
         marginTop: "32px",
         display: "inline-block",
+        verticalAlign: "top",
     },
     abilities: {
         width: "70rem",

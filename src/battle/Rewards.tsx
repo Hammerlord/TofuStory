@@ -26,6 +26,7 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         margin: "64px 0",
+        verticalAlign: "top",
     },
     ability: {
         display: "inline-block",

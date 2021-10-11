@@ -29,6 +29,7 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         margin: "64px 0",
+        verticalAlign: "top",
     },
     ability: {
         margin: "0 24px",
