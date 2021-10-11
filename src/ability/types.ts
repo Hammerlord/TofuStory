@@ -92,6 +92,8 @@ export interface Effect {
         damage: number;
     }[];
     onlyVisibleWhenProcced?: boolean;
+    mesosGained?: number; // Percentage; 1 = 100%
+    maxHP?: number;
 }
 
 export interface Aura extends Effect {

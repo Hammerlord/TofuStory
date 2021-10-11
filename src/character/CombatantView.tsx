@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_TYPES } from "../ability/types";
-import { getCharacterStatChanges } from "../battle/utils";
+import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
 import EffectIcon from "../icon/EffectIcon";
@@ -311,7 +311,7 @@ const CombatantView = forwardRef(
                                     <>
                                         <div className={classes.leftContainer}>
                                             <Armor amount={oldState.armor} />
-                                            <Health HP={oldState.HP} maxHP={oldState.maxHP} />
+                                            <Health HP={oldState.HP} maxHP={getMaxHP(oldState)} />
                                         </div>
 
                                         <div className={classes.rightContainer}>

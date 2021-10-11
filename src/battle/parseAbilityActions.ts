@@ -27,6 +27,7 @@ import {
     isCharacterImmune,
     isSilenced,
     updateCharacters,
+    updateHP,
 } from "./utils";
 
 const triggerReceiveEffects = (target, incomingEffect: Effect) => {
@@ -135,7 +136,7 @@ const triggerOnReceiveAction = ({ action, target, damage = 0 }) => {
         target: {
             ...target,
             armor: target.armor + targetStatUpdates.armor,
-            HP: Math.min(target.maxHP, target.HP + targetStatUpdates.healing),
+            HP: updateHP(target, targetStatUpdates.healing),
             effects: updatedEffects,
         },
         effects: targetStatUpdates.effects,
@@ -189,7 +190,7 @@ export const applyActionToTarget = ({
     const updatedArmor = Math.max(0, baseArmor - damage + armor);
     const healthDamage = Math.max(0, damage - baseArmor);
     let HP = Math.max(0, target.HP - healthDamage);
-    HP = HP > 0 ? Math.min(target.maxHP, HP + healing) : 0;
+    HP = HP > 0 ? updateHP({ maxHP: target.maxHP, HP, effects: target.effects }, healing) : 0;
     const updatedTarget = triggerOnReceiveAction({
         action,
         damage,
@@ -830,12 +831,11 @@ const handleHealthPerResourcesSpent = ({ actor, characters, resourceCost = 0 }):
     if (healthPerResourcesSpent > 0) {
         const healing = healthPerResourcesSpent * resourceCost;
         if (healing > 0) {
-            const newHP = Math.min(actor.maxHP || Infinity, actor.HP + healing);
             return characters.map((character) => {
                 if (character?.id === actor.id) {
                     return {
                         ...cloneDeep(actor),
-                        HP: newHP,
+                        HP: updateHP(actor, healing),
                     };
                 }
                 return character;

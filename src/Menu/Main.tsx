@@ -7,7 +7,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { drakeBlood, halfEatenHotdog, safetyCharm, stolenFence } from "../item/items";
+import { amethyst, drakeBlood, halfEatenHotdog, safetyCharm, stolenFence } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -22,6 +22,7 @@ import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
 import { cloneDeep } from "lodash";
+import { updateHP } from "../battle/utils";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -179,7 +180,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [drakeBlood];
+        const starterItems = [drakeBlood, amethyst];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
@@ -207,7 +208,7 @@ const Main = () => {
             const healing = item.HP || 0;
             setPlayer({
                 ...player,
-                HP: Math.min(player.maxHP, player.HP + healing),
+                HP: updateHP(player, healing),
                 inventory: newInventory,
             });
         }

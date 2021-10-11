@@ -49,8 +49,21 @@ export const triggerWaveClearEffects = (character: Combatant): Combatant => {
     }, {} as any);
     return {
         ...character,
-        HP: Math.min(character.maxHP, character.HP + healingPerWaveClear),
+        HP: updateHP(character, healingPerWaveClear),
     };
+};
+
+export const getMaxHP = (character: { HP: number; maxHP: number; effects: Effect[] }): number => {
+    return character.maxHP + character.effects.reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
+};
+
+export const updateHP = (character: { HP: number; maxHP: number; effects: Effect[] }, amount: number): number => {
+    return Math.min(getMaxHP(character), character.HP + amount);
+};
+
+export const updateHPByPercentage = (character: { HP: number; maxHP: number; effects: Effect[] }, percentage: number): number => {
+    const maxHP = getMaxHP(character);
+    return Math.min(maxHP, character.HP + Math.floor(maxHP * percentage));
 };
 
 export const isSilenced = (character: Combatant): boolean => {
@@ -259,7 +272,7 @@ export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant
 
     if (multiplier.type === MULTIPLIER_TYPES.MAX_HP) {
         const value = typeof multiplier.value === "number" ? multiplier.value : 1;
-        return Math.floor(character.maxHP * value);
+        return Math.floor(getMaxHP(character) * value);
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
@@ -398,7 +411,7 @@ export const getEmptyIndices = (characters: (Combatant | null)[]): number[] => {
 export const getHealableIndices = (characters: (Combatant | null)[]): number[] => {
     const indices = getValidTargetIndices(characters);
     // Injured targets only
-    return indices.filter((i) => characters[i].HP < characters[i].maxHP);
+    return indices.filter((i) => characters[i].HP < getMaxHP(characters[i]));
 };
 
 export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?: number }): HandAbility => {

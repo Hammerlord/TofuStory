@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability } from "../ability/types";
+import { getMaxHP } from "../battle/utils";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import DeckViewer from "./DeckViewer";
@@ -38,7 +39,7 @@ const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[
         <div className={classes.headerBar}>
             <img src={player.image} className={classes.playerPortrait} />{" "}
             <div className={classes.stats}>
-                {player.HP} / {player.maxHP} HP{" "}
+                {player.HP} / {getMaxHP(player)} HP{" "}
                 <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
                     {deck.length} abilities
                 </Button>

@@ -1,5 +1,6 @@
 import { AbilityCondition, EffectCondition } from "../ability/types";
 import { Combatant } from "../character/types";
+import { getMaxHP } from "./utils";
 
 const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: "eq" | "lt" | "gt" }): boolean => {
     switch (comparator) {
@@ -31,7 +32,7 @@ export const passesConditions = ({
         const meetsHealthPercentage =
             healthPercentage === undefined
                 ? true
-                : passesValueComparison({ val: combatant.HP / combatant.maxHP, otherVal: healthPercentage, comparator });
+                : passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator });
 
         const meetsArmor = armor === undefined ? true : passesValueComparison({ val: combatant.armor, otherVal: armor, comparator });
         const meetsEffectType = hasEffectType === undefined ? true : combatant.effects.some(({ type }) => hasEffectType.includes(type));

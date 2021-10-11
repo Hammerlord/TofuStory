@@ -1,5 +1,5 @@
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { drakebloodImage, hotdog, safetyCharmImage, stolenFenceImage } from "../images";
+import { amethystImage, drakebloodImage, hotdog, lucksackImage, safetyCharmImage, stolenFenceImage } from "../images";
 import { Item, ITEM_TYPES } from "./types";
 
 export const halfEatenHotdog: Item = {
@@ -73,6 +73,40 @@ export const drakeBlood: Item = {
                     healing: 1,
                 },
             },
+        },
+    ],
+};
+
+export const luckSack: Item = {
+    name: "Luck Sack",
+    description: "Gain 20% more mesos",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: lucksackImage,
+    sellPrice: 10,
+    effects: [
+        {
+            name: "Luck Sack",
+            description: "Gaining 20% more mesos",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            mesosGained: 0.2,
+        },
+    ],
+};
+
+export const amethyst: Item = {
+    name: "Amethyst",
+    description: "Increases maximum HP by 5",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: amethystImage,
+    sellPrice: 10,
+    effects: [
+        {
+            name: "Amethyst",
+            description: "Increasing maximum HP by 5",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 5,
         },
     ],
 };

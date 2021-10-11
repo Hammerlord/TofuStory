@@ -13,6 +13,7 @@ import {
     cleanUpDeadCharacters,
     clearTurnHistory,
     getEmptyIndices,
+    getMaxHP,
     getValidTargetIndices,
     tickDownBuffs,
     tickDownDebuffs,
@@ -65,7 +66,7 @@ const canUseAbility = ({ actor, ability, enemies }): boolean => {
         return false;
     }
     if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
-        return actor.HP < actor.maxHP;
+        return actor.HP < getMaxHP(actor);
     }
 
     const movementAction = ability.actions.find((action) => action.movement);

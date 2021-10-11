@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { updateHPByPercentage } from "../battle/utils";
 import { campfire, perioncamp } from "../images";
 import CardGrid from "../Menu/CardGrid";
 const useStyles = createUseStyles({
@@ -87,7 +88,7 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     useEffect(() => {
         updatePlayer({
             ...player,
-            HP: Math.min(Math.floor(player.HP + player.maxHP * HEALTH_REGAINED), player.maxHP),
+            HP: updateHPByPercentage(player, HEALTH_REGAINED),
         });
     }, []);
 
