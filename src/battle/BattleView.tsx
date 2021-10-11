@@ -17,10 +17,11 @@ import { shuffle } from "../utils";
 import BattleEndOverlay from "./BattleEndOverlay";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
+import triggerDoTDamage from "./dotDamage";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { applyPerTurnEffects, calculateActionArea, parseAction, useAllyAbility, useAttack } from "./parseAbilityActions";
+import { applyPerTurnEffects, calculateActionArea, parseAction, procKOEvents, useAllyAbility, useAttack } from "./parseAbilityActions";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
@@ -277,9 +278,15 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
         setEvents(actionQueue);
         const lastEvent = actionQueue[actionQueue.length - 1];
+        const checkKO = procKOEvents({
+            oldAllies: allies,
+            newAllies: lastEvent.updatedAllies,
+            oldEnemies: enemies,
+            newEnemies: lastEvent.updatedEnemies,
+        });
         setAllies(lastEvent.updatedAllies);
         setEnemies(lastEvent.updatedEnemies);
-        setActionQueue([]);
+        setActionQueue(checkKO ? [checkKO] : []);
     }, [actionQueue, events]);
 
     const handleAllyAttack = ({ index }) => {
@@ -600,7 +607,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             return;
         }
 
-        setFlagTurnEnd(false);
         const playerDead = allies.find((ally) => ally?.isPlayer).HP <= 0;
         const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
         if (playerDead || enemiesAllDead) {
@@ -608,13 +614,31 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         }
 
         if (isPlayerTurn) {
-            setIsPlayerTurn(!isPlayerTurn);
+            const triggeredDotDamage = triggerDoTDamage(allies);
+            const updatedAllies = [];
+            if (triggeredDotDamage) {
+                updatedAllies.push(...triggeredDotDamage);
+            }
+
+            updatedAllies.push(
+                updateCharacters(updatedAllies[updatedAllies.length - 1] || allies, compose(tickDownDebuffs, removeEndedEffects))
+            );
+            handleNewEvents(
+                updatedAllies.map((updated) => ({
+                    updatedEnemies: enemies,
+                    updatedAllies: updated,
+                    id: uuid.v4(),
+                }))
+            );
+
             // end the player turn
-            const updatedAllies = updateCharacters(allies, compose(tickDownDebuffs, removeEndedEffects));
-            setAllies(updatedAllies);
             setHand([]);
             const newDiscard = [...prepareForDiscard(hand), ...discard];
             setDiscard(newDiscard);
+            setTimeout(() => {
+                setFlagTurnEnd(false);
+                setIsPlayerTurn(!isPlayerTurn);
+            }, 1000 * updatedAllies.length);
         } else {
             // end the opponent turn
             setCurrentRound(currentRound + 1);
@@ -624,6 +648,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             } else {
                 setIsPlayerTurn(!isPlayerTurn);
             }
+            setFlagTurnEnd(false);
         }
     }, [flagTurnEnd, events]);
 
@@ -684,7 +709,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     }, [isPlayerTurn]);
 
     const disableActions =
-        battleEndResult || showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemies.every((enemy) => !enemy || enemy.HP <= 0);
+        battleEndResult ||
+        showTurnAnnouncement ||
+        !isPlayerTurn ||
+        showWaveClear ||
+        enemies.every((enemy) => !enemy || enemy.HP <= 0) ||
+        flagTurnEnd;
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";

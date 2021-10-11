@@ -1,13 +1,14 @@
-import { EFFECT_TYPES, ACTION_TYPES, Effect } from "./../ability/types";
-import { Combatant } from "./../character/types";
+import { EFFECT_TYPES, ACTION_TYPES, Effect } from "../ability/types";
+import { Combatant } from "../character/types";
 import { applyActionToTarget } from "./parseAbilityActions";
 
 const BLEED_DAMAGE = 1;
 const BURN_DAMAGE = 2;
 
-const triggerDebuffDamage = (characters: (Combatant | null)[]): (Combatant | null)[][] => {
+const triggerDoTDamage = (characters: (Combatant | null)[]): (Combatant | null)[][] => {
     let totalBleedDamage = 0;
     let totalBurnDamage = 0;
+    let otherDoTDamage = 0;
 
     const bleedsTriggered = characters.map((character: Combatant, i: number): Combatant => {
         if (!character) {
@@ -15,7 +16,7 @@ const triggerDebuffDamage = (characters: (Combatant | null)[]): (Combatant | nul
         }
         const bleedDamage: number = character.effects.reduce((acc: number, effect: Effect) => {
             if (effect.type === EFFECT_TYPES.BLEED) {
-                acc += BLEED_DAMAGE;
+                acc += effect.damagePerTurn || BLEED_DAMAGE;
             }
             return acc;
         }, 0);
@@ -59,6 +60,31 @@ const triggerDebuffDamage = (characters: (Combatant | null)[]): (Combatant | nul
         return character;
     });
 
+    const otherDotDamageTriggered = characters.map((character: Combatant, i: number): Combatant => {
+        if (!character) {
+            return character;
+        }
+        const damage: number = character.effects.reduce((acc: number, effect: Effect) => {
+            if (effect.type === EFFECT_TYPES.NONE) {
+                acc += effect.damagePerTurn || 0;
+            }
+            return acc;
+        }, 0);
+
+        if (damage) {
+            otherDoTDamage += damage;
+            return applyActionToTarget({
+                target: character,
+                targetIndex: i,
+                action: {
+                    damage: damage,
+                    type: ACTION_TYPES.NONE,
+                },
+            });
+        }
+        return character;
+    });
+
     const ret = [];
     if (totalBleedDamage > 0) {
         ret.push(bleedsTriggered);
@@ -68,7 +94,11 @@ const triggerDebuffDamage = (characters: (Combatant | null)[]): (Combatant | nul
         ret.push(burnsTriggered);
     }
 
+    if (otherDoTDamage > 0) {
+        ret.push(otherDotDamageTriggered);
+    }
+
     return ret;
 };
 
-export default triggerDebuffDamage;
+export default triggerDoTDamage;

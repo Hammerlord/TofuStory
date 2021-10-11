@@ -59,6 +59,7 @@ export interface Effect {
     isAuraEffect?: boolean;
     healingPerTurn?: number;
     healingPerWaveClear?: number;
+    damagePerTurn?: number; // Damages the owner of this effect
     armorPerTurn?: number;
     resourcesPerTurn?: number;
     immunities?: EFFECT_TYPES[];
@@ -76,6 +77,7 @@ export interface Effect {
     conditions?: EffectCondition[];
     onAttack?: EffectEventTrigger;
     onFriendlyKilled?: EffectEventTrigger;
+    onHostileKilled?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;

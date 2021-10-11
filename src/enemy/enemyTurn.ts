@@ -2,10 +2,10 @@ import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import uuid from "uuid";
 import { Ability, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
-import triggerDebuffDamage from "../battle/debuffDamage";
+import triggerDoTDamage from "../battle/dotDamage";
 import { Combatant } from "../character/types";
 import { ACTION_TYPES } from "./../ability/types";
-import { applyEffectOnTurnProcs, parseAction } from "./../battle/parseAbilityActions";
+import { applyEffectOnTurnProcs, parseAction, procKOEvents } from "./../battle/parseAbilityActions";
 import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
 import {
     addEnemyResources,
@@ -130,17 +130,26 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
             selectedSide = BATTLEFIELD_SIDES.ALLIES;
         }
 
-        results.push(
-            parseAction({
-                actorId,
-                enemies: recentEnemies,
-                allies: recentAllies,
-                selectedIndex,
-                action,
-                selectedSide,
-                ability,
-            })
-        );
+        const event = parseAction({
+            actorId,
+            enemies: recentEnemies,
+            allies: recentAllies,
+            selectedIndex,
+            action,
+            selectedSide,
+            ability,
+        });
+
+        const checkKO = procKOEvents({
+            oldAllies: recentAllies,
+            newAllies: event.updatedAllies,
+            oldEnemies: recentEnemies,
+            newEnemies: event.updatedEnemies,
+        });
+        results.push(event);
+        if (checkKO) {
+            results.push(checkKO);
+        }
     });
 
     return results;
@@ -320,8 +329,22 @@ const enemyTurn = ({ enemies, allies }): EventGroup[] => {
     };
     makeEnemyMove();
 
-    const postTurn: (Combatant | null)[][] = triggerDebuffDamage(getLastEvent().updatedEnemies);
+    const postTurn: (Combatant | null)[][] = triggerDoTDamage(getLastEvent().updatedEnemies);
     postTurn.push((postTurn[postTurn.length - 1] || getLastEvent().updatedEnemies).map(tickDownDebuffs));
+    const checkKO = procKOEvents({
+        oldAllies: getLastEvent().updatedAllies,
+        newAllies: getLastEvent().updatedAllies,
+        oldEnemies: postTurn[postTurn.length - 1] || getLastEvent().updatedEnemies,
+        newEnemies: getLastEvent().updatedEnemies,
+    });
+    const postTurnEvents = postTurn.map((updatedEnemies) => ({
+        updatedEnemies,
+        updatedAllies: getLastEvent().updatedAllies,
+        id: uuid.v4(),
+    }));
+    if (checkKO) {
+        postTurnEvents.push(checkKO);
+    }
     results.push({
         events: postTurn.map((updatedEnemies) => ({
             updatedEnemies,

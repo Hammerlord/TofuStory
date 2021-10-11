@@ -1,5 +1,5 @@
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { hotdog, safetyCharmImage, stolenFenceImage } from "../images";
+import { drakebloodImage, hotdog, safetyCharmImage, stolenFenceImage } from "../images";
 import { Item, ITEM_TYPES } from "./types";
 
 export const halfEatenHotdog: Item = {
@@ -49,6 +49,30 @@ export const safetyCharm: Item = {
             class: EFFECT_CLASSES.BUFF,
             icon: safetyCharmImage,
             healingPerWaveClear: 2,
+        },
+    ],
+};
+
+export const drakeBlood: Item = {
+    name: "Drake Blood",
+    description: "Grants 1 attack power and 1 health per kill, but you take 1 damage per turn",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: drakebloodImage,
+    sellPrice: 10,
+    effects: [
+        {
+            name: "Drake Blood",
+            description: "Grants 1 attack power and 1 health per kill, but you take 1 damage per turn",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: drakebloodImage,
+            damagePerTurn: 1,
+            damage: 1,
+            onHostileKilled: {
+                effectOwner: {
+                    healing: 1,
+                },
+            },
         },
     ],
 };

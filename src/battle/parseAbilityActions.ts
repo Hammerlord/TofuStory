@@ -626,40 +626,62 @@ const getKOedCharacters = (prevChars: (Combatant | null)[], newChars: (Combatant
 };
 
 /**
- * KO event only
+ * This very specifically only handles "onFriendlyKilled" effects for enemies, and "onHostileKilled" effects for allies :/
  */
-const procActionEvents = (prevChars, newChars): (Combatant | null)[] => {
-    const KOed = getKOedCharacters(prevChars, newChars);
-    if (KOed.length === 0 || newChars.every((char) => !char || char.HP === 0)) {
+export const procKOEvents = ({ oldAllies, newAllies, oldEnemies, newEnemies }): Event | undefined => {
+    const KOedAllies = getKOedCharacters(oldAllies, newAllies);
+    const KOedEnemies = getKOedCharacters(oldEnemies, newEnemies);
+
+    if (KOedAllies.length === 0 && KOedEnemies.length === 0) {
         return;
     }
 
-    return updateCharacters(newChars, (character, i) => {
-        const aggregatedEffects = getEnabledEffects(character).reduce((acc, effect: Effect) => {
-            const { healing = 0, armor = 0, effects = [] } = effect.onFriendlyKilled?.effectOwner || {};
-            const newEffects = [];
-            for (let i = 0; i < KOed.length; ++i) {
-                newEffects.push(...effects);
-            }
-            return {
-                healing: (acc.healing || 0) + healing * KOed.length,
-                armor: (acc.armor || 0) + armor * KOed.length,
-                effects: [...(acc.effects || []), ...newEffects],
-            };
-        }, {} as any);
+    let triggered = false;
 
-        if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects?.length) {
-            return applyActionToTarget({
-                target: character,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    ...aggregatedEffects,
-                },
-                targetIndex: i,
-            });
-        }
-        return character;
-    });
+    const aggregateEffects = (getEventTrigger, KOed: Combatant[]) => {
+        return (character, i) => {
+            const aggregatedEffects = getEnabledEffects(character).reduce((acc, effect: Effect) => {
+                const { healing = 0, armor = 0, effects = [] } = getEventTrigger(effect) || {};
+                const newEffects = [];
+                for (let i = 0; i < KOed.length; ++i) {
+                    newEffects.push(...effects);
+                }
+                return {
+                    healing: (acc.healing || 0) + healing * KOed.length,
+                    armor: (acc.armor || 0) + armor * KOed.length,
+                    effects: [...(acc.effects || []), ...newEffects],
+                };
+            }, {} as any);
+
+            if (aggregatedEffects.healing || aggregatedEffects.armor || aggregatedEffects.effects?.length) {
+                triggered = true;
+                return applyActionToTarget({
+                    target: character,
+                    action: {
+                        type: ACTION_TYPES.EFFECT,
+                        ...aggregatedEffects,
+                    },
+                    targetIndex: i,
+                });
+            }
+            return character;
+        };
+    };
+
+    if (!triggered) {
+        return;
+    }
+
+    const enemies = updateCharacters(
+        newEnemies,
+        aggregateEffects((effect) => effect.onFriendlyKilled?.effectOwner, KOedEnemies)
+    );
+    const allies = updateCharacters(
+        newAllies,
+        aggregateEffects((effect) => effect.onHostileKilled?.effectOwner, KOedEnemies)
+    );
+
+    return { updatedEnemies: enemies, updatedAllies: allies, id: uuid.v4() };
 };
 
 export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, side, ability, allies, actorId }): Event[] => {
@@ -736,15 +758,6 @@ export const useAllyAbility = ({ enemies, selectedIndex: initialSelectedIndex, s
                     ability,
                 })
             );
-        }
-
-        const previousEnemies = results[results.length - 2]?.updatedEnemies || enemies;
-        const enemyActionEventProcs = procActionEvents(previousEnemies, mostRecentEnemies());
-        if (enemyActionEventProcs) {
-            results.push({
-                updatedEnemies: enemyActionEventProcs,
-                updatedAllies: mostRecentAllies(),
-            });
         }
     });
 
