@@ -276,17 +276,20 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         if (events.length > 0 || actionQueue.length === 0) {
             return;
         }
-        setEvents(actionQueue);
-        const lastEvent = actionQueue[actionQueue.length - 1];
         const checkKO = procKOEvents({
             oldAllies: allies,
-            newAllies: lastEvent.updatedAllies,
+            newAllies: actionQueue[actionQueue.length - 1].updatedAllies,
             oldEnemies: enemies,
-            newEnemies: lastEvent.updatedEnemies,
+            newEnemies: actionQueue[actionQueue.length - 1].updatedEnemies,
         });
-        setAllies(lastEvent.updatedAllies);
-        setEnemies(lastEvent.updatedEnemies);
-        setActionQueue(checkKO ? [checkKO] : []);
+        const newEvents = [...actionQueue];
+        if (checkKO) {
+            newEvents.push(checkKO);
+        }
+        setEvents(newEvents);
+        setAllies(newEvents[newEvents.length - 1].updatedAllies);
+        setEnemies(newEvents[newEvents.length - 1].updatedEnemies);
+        setActionQueue([]);
     }, [actionQueue, events]);
 
     const handleAllyAttack = ({ index }) => {
@@ -448,7 +451,14 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const handlePlayerTurnStart = () => {
         drawCards(CARDS_PER_DRAW - hand.length);
         setAlliesAttackedThisTurn([]);
-        const updatedAllies = updateCharacters(allies, compose(tickDownBuffs, clearTurnHistory, refreshPlayerResources, checkHalveArmor));
+        const updateFns = [refreshPlayerResources, checkHalveArmor];
+        if (currentRound > 0) {
+            updateFns.push(tickDownBuffs, clearTurnHistory);
+        } else {
+            updateFns.push(triggerWaveClearEffects);
+        }
+
+        const updatedAllies = updateCharacters(allies, compose(...updateFns));
         setAllies(updatedAllies);
         updatePlayer(updatedAllies.find((ally) => ally?.id === player.id));
         handleNewEvents(
@@ -463,12 +473,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
 
     useEffect(() => {
         if (!events.length) {
+            const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
+            if (enemiesAllDead) {
+                setTimeout(() => {
+                    nextWave();
+                }, 1000);
+            }
             return;
         }
 
         const updatedEvents = events.slice();
         const event = updatedEvents.shift() as Event;
-        const { updatedEnemies, updatedAllies, action, actorId } = event;
+        const { updatedAllies, action, actorId } = event;
         let timeout;
         if (action) {
             if (actorId === player.id) {
@@ -515,14 +531,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
             return;
         }
 
-        const enemiesAllDead = updatedEnemies.every((enemy) => !enemy || enemy.HP <= 0);
-        if (enemiesAllDead) {
-            setTimeout(() => {
-                setEvents([]);
-                nextWave();
-            }, 1000);
-            return;
-        }
         timeout = setTimeout(() => {
             setEvents(updatedEvents);
         }, 1000);
@@ -554,23 +562,19 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 setDiscard([]);
             }
 
+            if (isPlayerTurn) {
+                setIsPlayerTurn(null);
+            }
+            setIsPlayerTurn(true);
+
             if (description) {
                 showWaveDescription({ description, i: 0, delay: 2000 });
             }
         };
 
-        const noninitialSetup = () => {
-            drawCards(CARDS_PER_DRAW - hand.length);
-            setAlliesAttackedThisTurn([]);
-            const updatedAllies = updateCharacters(allies, compose(refreshPlayerResources, checkHalveArmor, triggerWaveClearEffects));
-            setAllies(updatedAllies);
-            updatePlayer(updatedAllies.find((ally) => ally?.id === player.id));
-        };
-
         if (isInitialSetup) {
             // We just started the fight / no wave clear has occurred
             setTimeout(() => {
-                setIsPlayerTurn(true);
                 setup();
             }, 1000);
         } else {
@@ -579,7 +583,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 setTimeout(() => {
                     setShowWaveClear(false);
                     setup();
-                    noninitialSetup();
                 }, 2500);
             }, 500);
         }
@@ -610,6 +613,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         const playerDead = allies.find((ally) => ally?.isPlayer).HP <= 0;
         const enemiesAllDead = enemies.every((enemy) => !enemy || enemy.HP <= 0);
         if (playerDead || enemiesAllDead) {
+            setFlagTurnEnd(false);
             return;
         }
 

@@ -668,10 +668,6 @@ export const procKOEvents = ({ oldAllies, newAllies, oldEnemies, newEnemies }): 
         };
     };
 
-    if (!triggered) {
-        return;
-    }
-
     const enemies = updateCharacters(
         newEnemies,
         aggregateEffects((effect) => effect.onFriendlyKilled?.effectOwner, KOedEnemies)
@@ -680,6 +676,10 @@ export const procKOEvents = ({ oldAllies, newAllies, oldEnemies, newEnemies }): 
         newAllies,
         aggregateEffects((effect) => effect.onHostileKilled?.effectOwner, KOedEnemies)
     );
+
+    if (!triggered) {
+        return;
+    }
 
     return { updatedEnemies: enemies, updatedAllies: allies, id: uuid.v4() };
 };
