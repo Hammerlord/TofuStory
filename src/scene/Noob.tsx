@@ -98,7 +98,7 @@ export const noob: NPC = {
                 },
                 {
                     speaker: noobBWarrior,
-                    dialog: ["Yeah. It was pretty strong...", "So strong that you even said we should become a {{ class }}, too."],
+                    dialog: ["Yeah. It was pretty strong...", "So strong that you even said we should become {{ classPlural }}, too."],
                 },
                 {
                     speaker: noobAWarrior,

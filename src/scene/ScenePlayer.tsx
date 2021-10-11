@@ -1,7 +1,8 @@
 import classNames from "classnames";
+import Handlebars from "handlebars";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Item } from "../item/types";
+import { PLAYER_CLASSES } from "../Menu/types";
 import { Scene, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
@@ -126,6 +127,14 @@ const useStyles = createUseStyles({
     },
 });
 
+const classesInterpolation = {
+    [PLAYER_CLASSES.WARRIOR]: "warrior",
+};
+
+const classesPluralInterpolation = {
+    [PLAYER_CLASSES.WARRIOR]: "warriors",
+};
+
 const ScenePlayer = ({
     scene,
     player,
@@ -213,6 +222,13 @@ const ScenePlayer = ({
         }
     };
 
+    const interpolateDialog = (text: string) => {
+        return Handlebars.compile(text)({
+            class: classesInterpolation[player.class],
+            classPlural: classesPluralInterpolation[player.class],
+        });
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
@@ -232,7 +248,7 @@ const ScenePlayer = ({
                         <div className={classes.dialog} onClick={handleClickDialog}>
                             <div>
                                 {dialog.map((line, i) => (
-                                    <p key={i}>{line}</p>
+                                    <p key={i}>{interpolateDialog(line)}</p>
                                 ))}
                             </div>
                             {!responses && !items && (
