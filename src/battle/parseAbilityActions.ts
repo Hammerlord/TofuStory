@@ -185,7 +185,7 @@ export const applyActionToTarget = ({
     const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
     const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
-    const armor = calculateArmor({ target, action });
+    const armor = calculateArmor({ target, action, actor });
     const updatedArmor = Math.max(0, baseArmor - damage + armor);
     const healthDamage = Math.max(0, damage - baseArmor);
     let HP = Math.max(0, target.HP - healthDamage);
