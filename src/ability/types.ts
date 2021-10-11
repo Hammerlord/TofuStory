@@ -36,6 +36,7 @@ export interface EffectEventTrigger {
         effects?: Effect[];
         armor?: number;
         healing?: number;
+        drawCards?: number;
     };
     externalParty?: {
         // Stat changes to apply to the character who triggered this event
@@ -81,6 +82,7 @@ export interface Effect {
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
+    onWaveStart?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */

@@ -1,4 +1,5 @@
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
+import { leatherSandals } from "../item/items";
 import { NPC, ScriptNode } from "./types";
 
 const noobEncounter1 = {
@@ -56,14 +57,14 @@ export const noob: NPC = {
                                                 },
                                                 {
                                                     speaker: noobA,
-                                                    dialog: [
-                                                        "WTF? Monsters aren't supposed to do that!",
-                                                        "[The beginners sprint off. One of them dropped something...]",
-                                                    ],
-                                                    items: [],
+                                                    dialog: ["WTF? Monsters aren't supposed to do that!"],
                                                 },
                                                 {
-                                                    dialog: [],
+                                                    dialog: ["[The beginners sprint off. One of them dropped something...]"],
+                                                    items: [leatherSandals],
+                                                },
+                                                {
+                                                    dialog: ["[The beginners are gone.]"],
                                                     responses: [
                                                         {
                                                             text: "Leave.",
@@ -75,7 +76,21 @@ export const noob: NPC = {
                                         },
                                         {
                                             text: "Leave them alone.",
-                                            isExit: true,
+                                            next: [
+                                                {
+                                                    dialog: ["[The beginners sprint off. One of them dropped something...]"],
+                                                    items: [leatherSandals],
+                                                },
+                                                {
+                                                    dialog: ["[The beginners are gone.]"],
+                                                    responses: [
+                                                        {
+                                                            text: "Leave.",
+                                                            isExit: true,
+                                                        },
+                                                    ],
+                                                },
+                                            ],
                                         },
                                     ],
                                 },

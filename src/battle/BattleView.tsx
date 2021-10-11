@@ -449,15 +449,18 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     };
 
     const handlePlayerTurnStart = () => {
-        drawCards(CARDS_PER_DRAW - hand.length);
-        setAlliesAttackedThisTurn([]);
+        let cardsToDraw = CARDS_PER_DRAW - hand.length;
+
         const updateFns = [refreshPlayerResources, checkHalveArmor];
         if (currentRound > 0) {
             updateFns.push(tickDownBuffs, clearTurnHistory);
         } else {
             updateFns.push(triggerWaveClearEffects);
+            cardsToDraw += player.effects.reduce((acc, effect: Effect) => acc + effect.onWaveStart?.effectOwner?.drawCards || 0, 0);
         }
 
+        drawCards(cardsToDraw);
+        setAlliesAttackedThisTurn([]);
         const updatedAllies = updateCharacters(allies, compose(...updateFns));
         setAllies(updatedAllies);
         updatePlayer(updatedAllies.find((ally) => ally?.id === player.id));

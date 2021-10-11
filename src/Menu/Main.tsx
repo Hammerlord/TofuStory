@@ -7,7 +7,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { amethyst, drakeBlood, halfEatenHotdog, safetyCharm, stolenFence } from "../item/items";
+import { amethyst, drakeBlood, halfEatenHotdog, leatherSandals, safetyCharm, stolenFence } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -180,7 +180,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [drakeBlood, amethyst];
+        const starterItems = [leatherSandals];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
