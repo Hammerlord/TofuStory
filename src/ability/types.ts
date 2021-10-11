@@ -58,6 +58,7 @@ export interface Effect {
     basicAttackAreaIncrease?: number;
     isAuraEffect?: boolean;
     healingPerTurn?: number;
+    healingPerWaveClear?: number;
     armorPerTurn?: number;
     resourcesPerTurn?: number;
     immunities?: EFFECT_TYPES[];

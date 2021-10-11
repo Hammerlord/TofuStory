@@ -40,6 +40,19 @@ export const refreshPlayerResources = (character: Combatant): Combatant => {
     };
 };
 
+export const triggerWaveClearEffects = (character: Combatant): Combatant => {
+    const { healingPerWaveClear = 0 } = character.effects.reduce((acc, effect: Effect) => {
+        return {
+            ...acc,
+            healingPerWaveClear: (acc.healingPerWaveClear || 0) + (effect.healingPerWaveClear || 0),
+        };
+    }, {} as any);
+    return {
+        ...character,
+        HP: Math.min(character.maxHP, character.HP + healingPerWaveClear),
+    };
+};
+
 export const isSilenced = (character: Combatant): boolean => {
     if (!character) {
         return false;

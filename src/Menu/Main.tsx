@@ -7,7 +7,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { halfEatenHotdog, stolenFence } from "../item/items";
+import { halfEatenHotdog, safetyCharm, stolenFence } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -179,7 +179,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [stolenFence];
+        const starterItems = [safetyCharm];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,

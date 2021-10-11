@@ -2,7 +2,7 @@ import { compose } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability, Action, ACTION_TYPES, EFFECT_TYPES, HandAbility } from "../ability/types";
+import { Ability, Action, ACTION_TYPES, Effect, EFFECT_TYPES, HandAbility } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -33,6 +33,7 @@ import {
     removeEndedEffects,
     tickDownBuffs,
     tickDownDebuffs,
+    triggerWaveClearEffects,
     updateCardEffects,
     updateCharacters,
 } from "./utils";
@@ -529,9 +530,12 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         const nextWaveIndex = currentWave + 1;
         setCurrentWave(nextWaveIndex);
         if (!waves[nextWaveIndex]) {
+            updatePlayer(triggerWaveClearEffects(player));
             setBattleEndResult("Victory");
             return;
         }
+
+        const isInitialSetup = nextWaveIndex === 0;
 
         const setup = () => {
             setCurrentRound(0);
@@ -541,31 +545,36 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                 setDeck(shuffle(presetDeck.slice()));
                 setHand([]);
                 setDiscard([]);
-                setAllies(allies.map((ally) => (!ally || ally.isPlayer ? ally : null))); // Clean up minions
             }
-
-            if (isPlayerTurn) {
-                setIsPlayerTurn(null); // Hack: trigger useEffect if it is already our turn
-            }
-            setIsPlayerTurn(true);
 
             if (description) {
                 showWaveDescription({ description, i: 0, delay: 2000 });
             }
         };
 
-        if (nextWaveIndex > 0) {
+        const noninitialSetup = () => {
+            drawCards(CARDS_PER_DRAW - hand.length);
+            setAlliesAttackedThisTurn([]);
+            const updatedAllies = updateCharacters(allies, compose(refreshPlayerResources, checkHalveArmor, triggerWaveClearEffects));
+            setAllies(updatedAllies);
+            updatePlayer(updatedAllies.find((ally) => ally?.id === player.id));
+        };
+
+        if (isInitialSetup) {
+            // We just started the fight / no wave clear has occurred
+            setTimeout(() => {
+                setIsPlayerTurn(true);
+                setup();
+            }, 1000);
+        } else {
             setTimeout(() => {
                 setShowWaveClear(true);
                 setTimeout(() => {
                     setShowWaveClear(false);
                     setup();
+                    noninitialSetup();
                 }, 2500);
             }, 500);
-        } else {
-            setTimeout(() => {
-                setup();
-            }, 1000);
         }
     };
 

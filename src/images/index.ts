@@ -128,6 +128,7 @@ export { default as lithHarborBalcony } from "./lithHarborBalcony.png";
 export { default as lithHarborShark } from "./lithHarborShark.png";
 export { default as lithHarborExit } from "./lithHarborExit.png";
 export { default as stolenFenceImage } from "./stolenfence.png";
+export { default as safetyCharmImage } from "./safetycharm.png";
 export { default as kerningBG } from "./kerningbg.jpg";
 export { default as kerningSewer } from "./kerningSewer.png";
 export { default as kerningSewerEntranceFull } from "./kerningSewerFull.png";

@@ -1,5 +1,5 @@
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { hotdog, stolenFenceImage } from "../images";
+import { hotdog, safetyCharmImage, stolenFenceImage } from "../images";
 import { Item, ITEM_TYPES } from "./types";
 
 export const halfEatenHotdog: Item = {
@@ -27,10 +27,28 @@ export const stolenFence: Item = {
             conditions: [
                 {
                     calculationTarget: "effectOwner",
-                    healthPercentage: 1,
+                    healthPercentage: 0.5,
                     comparator: "lt",
                 },
             ],
+        },
+    ],
+};
+
+export const safetyCharm: Item = {
+    name: "Safety Charm",
+    description: "Restores 2 HP on wave clear",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: safetyCharmImage,
+    sellPrice: 10,
+    effects: [
+        {
+            name: "Safety Charm",
+            description: "Restores 2 HP on wave clear",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: safetyCharmImage,
+            healingPerWaveClear: 2,
         },
     ],
 };
