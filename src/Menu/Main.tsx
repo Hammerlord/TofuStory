@@ -315,6 +315,7 @@ const Main = () => {
                             onExit={() => setShop(null)}
                             deck={deck}
                             updateDeck={setDeck}
+                            updatePlayer={setPlayer}
                         />
                     )}
                     {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}

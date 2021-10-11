@@ -54,7 +54,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Shop = ({ player, mesos = 0, updateDeck, deck, merchant, hasDiscount, onExit }) => {
+const Shop = ({ player, updatePlayer, updateDeck, deck, merchant, hasDiscount, onExit }) => {
     const [items, setItems] = useState([]);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
     const classes = useStyles();
@@ -72,18 +72,25 @@ const Shop = ({ player, mesos = 0, updateDeck, deck, merchant, hasDiscount, onEx
         wares.push(
             ...shuffle(potentialAbilities)
                 .slice(0, 5)
-                .map((ability) => ({ item: ability, price: 100 }))
+                .map((ability) => ({ item: ability, price: 0 }))
         );
         // Use deck to determine which abilities have a higher chance to roll
         setItems(shuffle(wares));
     }, []);
 
     const handleBuyClick = () => {
-        updateDeck([items[selectedItemIndex], ...deck]);
-        const newItems = items.slice();
-        newItems.splice(selectedItemIndex, 1);
-        setItems(newItems);
-        setSelectedItemIndex(null);
+        const { price, item } = items[selectedItemIndex];
+        if (player.mesos >= price) {
+            updateDeck([item, ...deck]);
+            updatePlayer({
+                ...player,
+                mesos: player.mesos - price,
+            });
+            const newItems = items.slice();
+            newItems.splice(selectedItemIndex, 1);
+            setItems(newItems);
+            setSelectedItemIndex(null);
+        }
     };
 
     return (
