@@ -19,12 +19,5 @@ interface FuryInterface {
 
 export const Fury = ({ text, className }: FuryInterface) => {
     const classes = useStyles();
-    return (
-        <Icon
-            className={classNames(classes.root, className)}
-            icon={<Fire />}
-            background={"#eb4034"}
-            text={text}
-        />
-    );
+    return <Icon className={classNames(classes.root, className)} icon={<Fire />} background={"#eb4034"} text={text} />;
 };

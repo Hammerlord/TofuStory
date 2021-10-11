@@ -2,11 +2,12 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
+import { getMultiplier } from "../../battle/utils";
 import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
-import { CrossedSwords, Heart } from "../../images";
+import { CrossedSwords, Heart, Shield } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
-import { Ability, HandAbility } from "../types";
+import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
 import { getAbilityColor } from "../utils";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
@@ -20,7 +21,6 @@ import Debuffs from "./Debuffs";
 import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import ResourceIcon from "./ResourceIcon";
-import SelfActions from "./SelfActions";
 import { getAllEffects } from "./utils";
 
 const useStyles = createUseStyles({
@@ -134,6 +134,11 @@ const useStyles = createUseStyles({
         top: "4px",
         left: "50%",
     },
+    highlightText: {
+        "& .text": {
+            color: "#42f57b",
+        },
+    },
 });
 
 interface AbilityViewProps {
@@ -151,7 +156,65 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
-    const damageIcon = baseDamage ? <DamageIcon ability={ability} player={player} /> : <div className={classes.iconPlaceholder} />;
+
+    let hasMultiplier = false;
+    let armorCornerIcon = false;
+    let healingCornerIcon = false;
+
+    const {
+        healing,
+        armor,
+        damage: selfDamage,
+        resourceGain,
+    } = ability.actions
+        .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
+        .reduce((acc: any, action: Action) => {
+            const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
+            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: player });
+            if (multiplier > 1) {
+                hasMultiplier = true;
+            }
+            return {
+                healing: (acc.healing || 0) + healing * multiplier,
+                armor: (acc.armor || 0) + armor * multiplier,
+                damage: (acc.damage || 0) + damage * multiplier,
+                resourceGain: (acc.resourceGain || 0) + resources * multiplier,
+            };
+        }, {}) as any;
+
+    const cornerIcon = (() => {
+        if (baseDamage > 0) {
+            return <DamageIcon ability={ability} player={player} />;
+        }
+
+        if (armor > 0) {
+            armorCornerIcon = true;
+            return (
+                <Icon
+                    icon={<Shield />}
+                    text={armor}
+                    className={classNames({
+                        [classes.highlightText]: hasMultiplier,
+                    })}
+                />
+            );
+        }
+
+        if (healing > 0) {
+            healingCornerIcon = true;
+            return (
+                <Icon
+                    icon={<Heart />}
+                    text={healing}
+                    className={classNames({
+                        [classes.highlightText]: hasMultiplier,
+                    })}
+                />
+            );
+        }
+
+        return <div className={classes.iconPlaceholder} />;
+    })();
 
     return (
         <AbilityTooltip ability={ability}>
@@ -165,7 +228,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                 >
                     <span className={classes.header}>
-                        {damageIcon}
+                        {cornerIcon}
                         <span className={classes.name}>{name}</span> <ResourceIcon ability={ability} />
                     </span>
                     <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
@@ -173,7 +236,25 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                         <Debuffs effects={getAllEffects(ability)} />
-                        <SelfActions ability={ability} player={player} />
+                        <>
+                            {!healingCornerIcon && healing > 0 && (
+                                <div>
+                                    Heal for <Icon icon={<Heart />} text={healing} />
+                                </div>
+                            )}
+                            {!armorCornerIcon && armor > 0 && (
+                                <div>
+                                    Gain <Icon icon={<Shield />} text={armor} />
+                                </div>
+                            )}
+                            {resourceGain > 0 && <div>{resourceGain > 0 && <Fury text={resourceGain} />}</div>}
+                            {selfDamage > 0 && (
+                                <div>
+                                    Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} />
+                                </div>
+                            )}
+                            {ability.reusable && <div>Returns to your hand after use</div>}
+                        </>
                         <Buffs ability={ability} />
                         <CardsToAdd ability={ability} />
                         <BonusView ability={ability} player={player} />
