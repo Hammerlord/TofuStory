@@ -2,10 +2,9 @@ import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { Blood, Cactus, Dizzy, Fire, Fireworks, Snowflake } from "../../images";
+import { Fireworks } from "../../images";
 import { Ability, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
-import { getDebuffDurations } from "./Debuffs";
 import { getAllEffects } from "./utils";
 
 const useSectionStyles = createUseStyles({
@@ -72,6 +71,7 @@ const useTooltipStyles = createUseStyles({
         background: "rgba(50, 50, 50, 0.9)",
         borderRadius: "8px",
         padding: "16px",
+        marginBottom: 8,
         "& > .card-container:not(:last-child)": {
             marginRight: 8,
         },
@@ -115,22 +115,47 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
-    if (Object.keys(cardsToAddMap).length > 0) {
-        const cards = Object.values(cardsToAddMap).map((ability: Ability, i) => (
-            <div className={"card-container"} key={i}>
-                <AbilityView ability={ability} />
-            </div>
-        ));
-        const isEphemeral = Object.values(cardsToAddMap).some((ability: Ability) => ability.removeAfterTurn);
-        if (isEphemeral) {
-            tooltips.push(
-                <AbilityTooltipSection description={"Ephemeral abilities disappear at the end of your turn."} key={"ephemeral"} />
-            );
+    let isEphemeral = ability.removeAfterTurn;
+    let isDeplete = ability.depletedOnUse;
+
+    const cardsToAdd = Object.values(cardsToAddMap);
+    if (cardsToAdd.length > 0) {
+        if (cardsToAdd.some((ability: Ability) => ability.removeAfterTurn)) {
+            isEphemeral = true;
         }
+
+        if (cardsToAdd.some((ability: Ability) => ability.depletedOnUse)) {
+            isDeplete = true;
+        }
+
         tooltips.push(
             <div className={classes.cards} key={"cards"}>
-                {cards}
+                {cardsToAdd.map((ability: Ability, i) => (
+                    <div className={"card-container"} key={i}>
+                        <AbilityView ability={ability} />
+                    </div>
+                ))}
             </div>
+        );
+    }
+
+    if (isEphemeral) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Ephemeral"
+                description={"Ephemeral abilities disappear at the end of your turn."}
+                key={"ephemeral"}
+            />
+        );
+    }
+
+    if (isDeplete) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Deplete"
+                description={"When used, deplete abilities are removed for the rest of the battle."}
+                key={"deplete"}
+            />
         );
     }
 
