@@ -22,19 +22,20 @@ const useStyles = createUseStyles({
         border: "1px solid rgba(255, 255, 255, 0.8)",
     },
     menu: {
-        background: "rgba(60, 56, 56, 0.75)",
+        background: "rgba(50, 46, 46, 0.9)",
         border: "1px solid rgba(255, 255, 255, 0.5)",
         borderRadius: "4px",
         fontFamily: "Barlow",
         zIndex: "1000",
         color: "white",
+        maxWidth: 300,
     },
     menuInner: {
         padding: "16px",
     },
     itemName: {
         fontSize: "18px",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.7)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.4)",
         paddingBottom: "8px",
         marginBottom: "8px",
     },
@@ -87,6 +88,7 @@ const Inventory = ({ inventory, onUseItem }) => {
                         <div className={classes.menuInner}>
                             <div className={classes.itemName}>{selectedItem.name}</div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
+                            {selectedItem.description}
                             <div className={classes.useButtonContainer}>
                                 {selectedItem?.type === ITEM_TYPES.CONSUMABLE && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>
