@@ -180,7 +180,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [leatherSandals];
+        const starterItems = [];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,
@@ -259,7 +259,7 @@ const Main = () => {
         });
     };
 
-    const isActivityOpen = encounter || isResting || scene || isSelectingSecondaryJob || shop || rewardsOpen || treasure;
+    const isActivityOpen = encounter || isResting || scene || shop || rewardsOpen || treasure;
 
     return (
         <>
@@ -318,7 +318,6 @@ const Main = () => {
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
                     {!isSelectingSecondaryJob && rewardsOpen && (
                         <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
                     )}
@@ -333,6 +332,7 @@ const Main = () => {
                     )}
                 </div>
             )}
+            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,
