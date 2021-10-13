@@ -158,6 +158,10 @@ export { default as archerImage } from "./guardarcher.png";
 export { default as warriorImage } from "./guardwarrior.png";
 export { default as banditImage } from "./guardbandit.png";
 export { default as mesoCoinImage } from "./meso.png";
+export { default as goldMesoImage } from "./mesocoin.png";
+export { default as mesoStackImage } from "./mesostack.png";
+export { default as mesoBagImage } from "./mesoBag.png";
+
 export { default as wessImage } from "./wess.png";
 export { default as shoImage } from "./sho.png";
 export { default as stefaImage } from "./stefa.png";

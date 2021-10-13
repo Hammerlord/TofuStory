@@ -236,19 +236,6 @@ export const updateCharacters = (characters: (Combatant | null)[], updateFn): (C
     });
 };
 
-/**
- * Clean up dead characters from previous events, or some staleness may occur.
- */
-export const cleanUpDeadCharacters = (characters: (Combatant | null)[]) => {
-    return characters.map((character) => {
-        if (!character || character.HP > 0) {
-            return character;
-        }
-
-        return null;
-    });
-};
-
 export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant; target?: Combatant; multiplier: any }): number => {
     const character = (() => {
         const calculationTarget = multiplier?.calculationTarget;

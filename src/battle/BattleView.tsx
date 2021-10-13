@@ -14,7 +14,6 @@ import Header from "../Menu/Header";
 import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
-import BattleEndOverlay from "./BattleEndOverlay";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import triggerDoTDamage from "./dotDamage";
@@ -159,7 +158,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updatePlayer, onUpdateDeck, rewards }) => {
+const BattlefieldContainer = ({ waves, onBattleWon, initialDeck, player, updatePlayer, rewards }) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);
@@ -179,7 +178,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
-    const [battleEndResult, setBattleEndResult] = useState(undefined);
     const [flagTurnEnd, setFlagTurnEnd] = useState(false);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [hoveredAllyIndex, setHoveredAllyIndex] = useState(null);
@@ -527,10 +525,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         updatePlayer(newPlayer);
 
         if (newPlayer.HP <= 0) {
-            setTimeout(() => {
-                setEvents([]);
-                setBattleEndResult("Defeat");
-            }, 1000);
+            setEvents([]);
             return;
         }
 
@@ -549,7 +544,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
         setCurrentWave(nextWaveIndex);
         if (!waves[nextWaveIndex]) {
             updatePlayer(triggerWaveClearEffects(player));
-            setBattleEndResult("Victory");
+            onBattleWon();
             return;
         }
 
@@ -716,12 +711,7 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
     }, [isPlayerTurn]);
 
     const disableActions =
-        battleEndResult ||
-        showTurnAnnouncement ||
-        !isPlayerTurn ||
-        showWaveClear ||
-        enemies.every((enemy) => !enemy || enemy.HP <= 0) ||
-        flagTurnEnd;
+        showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemies.every((enemy) => !enemy || enemy.HP <= 0) || flagTurnEnd;
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
@@ -923,16 +913,6 @@ const BattlefieldContainer = ({ waves, onBattleEnd, initialDeck, player, updateP
                     </div>
                 </div>
             </TargetLineCanvas>
-            {battleEndResult && (
-                <BattleEndOverlay
-                    player={player}
-                    result={battleEndResult}
-                    onClickContinue={onBattleEnd}
-                    onUpdateDeck={onUpdateDeck}
-                    deck={initialDeck}
-                    rewards={rewards}
-                />
-            )}
             <Header player={player} deck={initialDeck} onUseItem={handleUseItem} />
             {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}

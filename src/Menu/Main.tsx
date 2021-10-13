@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { cloneDeep } from "lodash";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Ability, Effect } from "../ability/types";
@@ -20,6 +20,7 @@ import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
 import ClassSelection from "./ClassSelection";
+import GameOver from "./GameOver";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
@@ -105,8 +106,21 @@ const Main = () => {
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
+    const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown] = useState(null);
     const classes = useStyles();
+
+    useEffect(() => {
+        // Check game over when player updates
+        if (player?.HP <= 0) {
+            setTimeout(() => {
+                const callback = () => {
+                    setIsGameOver(true);
+                };
+                handleTransition(callback);
+            }, 2000);
+        }
+    }, [player]);
 
     const handleEventNode = ({ npc }: { npc: NPC }) => {
         const { character, scenes } = npc;
@@ -161,13 +175,13 @@ const Main = () => {
         handleTransition(callback);
     };
 
-    const handleBattleEnd = () => {
-        const callback = () => {
-            if (encounterVictoryCallback) {
-                encounterVictoryCallback();
-                setEncounterVictoryCallback(null);
-            }
+    const handleBattleWon = () => {
+        setRewardsOpen(true);
+    };
 
+    const handleCloseRewards = () => {
+        setRewardsOpen(false);
+        if (encounter) {
             setEncounter(null);
             setPlayer((prev) => ({
                 ...prev,
@@ -176,8 +190,12 @@ const Main = () => {
                 effects: aggregateItemEffects(prev.items),
                 turnHistory: [],
             }));
-        };
-        handleTransition(callback);
+
+            if (encounterVictoryCallback) {
+                encounterVictoryCallback();
+                setEncounterVictoryCallback(null);
+            }
+        }
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
@@ -289,11 +307,10 @@ const Main = () => {
                         <BattlefieldContainer
                             player={player}
                             updatePlayer={setPlayer}
-                            onBattleEnd={handleBattleEnd}
+                            onBattleWon={handleBattleWon}
                             waves={encounter.waves}
                             rewards={encounter.rewards}
                             initialDeck={deck}
-                            onUpdateDeck={setDeck}
                         />
                     )}
                     {isResting && (
@@ -320,8 +337,9 @@ const Main = () => {
                         />
                     )}
                     {!isSelectingSecondaryJob && rewardsOpen && (
-                        <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={() => setRewardsOpen(false)} />
+                        <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={handleCloseRewards} />
                     )}
+
                     {treasure && (
                         <TreasureBox
                             onExit={() => setTreasure(null)}
@@ -334,6 +352,7 @@ const Main = () => {
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
+            {isGameOver && <GameOver player={player} onExit={() => setPlayer(null)} />}
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

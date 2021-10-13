@@ -10,7 +10,6 @@ import { BATTLEFIELD_SIDES, Event, EventGroup } from "./../battle/types";
 import {
     addEnemyResources,
     checkHalveArmor,
-    cleanUpDeadCharacters,
     clearTurnHistory,
     getEmptyIndices,
     getMaxHP,
@@ -108,8 +107,8 @@ const useAbilityActions = ({ ability, enemies, allies, actorId }): Event[] => {
         const { target, movement } = action;
         let selectedIndex;
         // Each subsequent action should be based on the most recently updated enemies/player states.
-        const recentEnemies = cleanUpDeadCharacters(results[results.length - 1]?.updatedEnemies || enemies);
-        const recentAllies = cleanUpDeadCharacters(results[results.length - 1]?.updatedAllies || allies);
+        const recentEnemies = results[results.length - 1]?.updatedEnemies || enemies;
+        const recentAllies = results[results.length - 1]?.updatedAllies || allies;
         let selectedSide = BATTLEFIELD_SIDES.ENEMIES;
 
         if (movement) {
