@@ -133,6 +133,7 @@ export { default as drakebloodImage } from "./drakeblood.png";
 export { default as lucksackImage } from "./lucksack.png";
 export { default as amethystImage } from "./amethyst.png";
 export { default as sandalsImage } from "./leathersandals.png";
+export { default as manualImage } from "./blackmanual.png";
 export { default as kerningBG } from "./kerningbg.jpg";
 export { default as kerningSewer } from "./kerningSewer.png";
 export { default as kerningSewerEntranceFull } from "./kerningSewerFull.png";

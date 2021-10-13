@@ -6,14 +6,15 @@ const useStyles = createUseStyles({
         margin: "16px",
         marginTop: "32px",
         display: "inline-block",
+        verticalAlign: "top",
     },
 });
 
-const CardGrid = ({ deck, selectedAbilityIndex, highlightColour = "#45ff61", onClickAbility }) => {
+const CardGrid = ({ cards, selectedAbilityIndex, highlightColour = "#45ff61", onClickAbility }) => {
     const classes = useStyles();
     return (
         <div>
-            {deck.map((card, i) => (
+            {cards.map((card, i) => (
                 <div
                     className={classes.abilityContainer}
                     key={i}

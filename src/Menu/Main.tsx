@@ -7,7 +7,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { amethyst, drakeBlood, halfEatenHotdog, leatherSandals, safetyCharm, stolenFence } from "../item/items";
+import { amethyst, blackScroll, drakeBlood, halfEatenHotdog, leatherSandals, safetyCharm, stolenFence } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -83,7 +83,8 @@ const useStyles = createUseStyles({
 const aggregateItemEffects = (items: Item[]): Effect[] => {
     const effects = [];
     items.forEach((item) => {
-        effects.push(...item.effects.map(cloneDeep));
+        const itemEffects = item.effects?.map(cloneDeep) || [];
+        effects.push(...itemEffects);
     });
     return effects;
 };
@@ -180,7 +181,7 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [];
+        const starterItems = [blackScroll, blackScroll, blackScroll];
         setPlayer({
             id: uuid.v4(),
             class: selectedClass,

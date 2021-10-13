@@ -2,8 +2,10 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { JOB_CARD_MAP } from "../ability";
 import { updateHPByPercentage } from "../battle/utils";
 import { campfire, perioncamp } from "../images";
+import { blackScroll } from "../item/items";
 import CardGrid from "../Menu/CardGrid";
 const useStyles = createUseStyles({
     root: {
@@ -84,6 +86,8 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
     const [selectedAbilityIndexToRemove, setSelectedAbilityIndexToRemove] = useState(null);
+    const [isLearningAbility, setIsLearningAbility] = useState(false);
+    const [selectedAbilityToLearn, setSelectedAbilityToLearn] = useState(null);
 
     useEffect(() => {
         updatePlayer({
@@ -103,6 +107,22 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
         updateDeck(updatedDeck);
     };
 
+    const handleLearnAbility = () => {
+        let scrollCount = 0;
+        const newItems = player.items.filter((item) => {
+            if (scrollCount >= 3) {
+                return true;
+            }
+            return item.name !== blackScroll.name;
+        });
+        updateDeck([...deck, selectedAbilityToLearn]);
+        updatePlayer({
+            ...player,
+            items: newItems,
+        });
+        setIsLearningAbility(false);
+    };
+
     if (isRemovingAbility) {
         return (
             <div className={classes.root}>
@@ -111,7 +131,7 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                     <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
                     <div className={classes.abilitySection}>
                         <CardGrid
-                            deck={deck}
+                            cards={deck}
                             selectedAbilityIndex={selectedAbilityIndexToRemove}
                             highlightColour={"#45ff61"}
                             onClickAbility={(_, i: number) => setSelectedAbilityIndexToRemove(i)}
@@ -121,6 +141,33 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                         Ommmmmm (confirm)
                     </Button>
                     <Button variant={"contained"} onClick={() => setIsRemovingAbility(false)}>
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    if (isLearningAbility) {
+        const potentialAbilities = JOB_CARD_MAP[player.class].all.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
+
+        return (
+            <div className={classes.root}>
+                <div className={classes.inner}>
+                    <h3>Select an ability to learn</h3>
+                    <div>This consumes your Black Scrolls.</div>
+                    <div className={classes.abilitySection}>
+                        <CardGrid
+                            cards={potentialAbilities}
+                            selectedAbilityIndex={potentialAbilities.findIndex((a) => a.name === selectedAbilityToLearn?.name)}
+                            highlightColour={"#45ff61"}
+                            onClickAbility={(ability) => setSelectedAbilityToLearn(ability)}
+                        />
+                    </div>
+                    <Button variant={"contained"} color={"primary"} onClick={handleLearnAbility}>
+                        Confirm
+                    </Button>
+                    <Button variant={"contained"} onClick={() => setIsLearningAbility(false)}>
                         Cancel
                     </Button>
                 </div>
@@ -152,6 +199,12 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                             <div className={classes.activityName}>Meditate</div>
                             Remove one of your abilities.{" "}
                         </div>
+                        {player.items.filter((item) => item.name === blackScroll.name).length >= 3 && (
+                            <div className={classes.activity} onClick={() => setIsLearningAbility(true)}>
+                                <div className={classes.activityName}>Learn</div>
+                                Combine three {blackScroll.name}s to acquire an ability.
+                            </div>
+                        )}
                         <div className={classes.activity}>Not yet available</div>
                         <div className={classes.activity} onClick={onExit}>
                             Continue journey

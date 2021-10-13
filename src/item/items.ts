@@ -1,5 +1,14 @@
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { amethystImage, drakebloodImage, hotdog, lucksackImage, safetyCharmImage, sandalsImage, stolenFenceImage } from "../images";
+import {
+    amethystImage,
+    drakebloodImage,
+    hotdog,
+    lucksackImage,
+    manualImage,
+    safetyCharmImage,
+    sandalsImage,
+    stolenFenceImage,
+} from "../images";
 import { Item, ITEM_TYPES } from "./types";
 
 export const halfEatenHotdog: Item = {
@@ -129,4 +138,11 @@ export const leatherSandals: Item = {
             },
         },
     ],
+};
+
+export const blackScroll: Item = {
+    name: "Black Scroll",
+    description: "Combine 3 scrolls to attain an ability of your choice for your class.",
+    image: manualImage,
+    type: ITEM_TYPES.MATERIAL,
 };
