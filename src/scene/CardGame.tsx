@@ -78,7 +78,19 @@ const useStyles = createUseStyles({
     },
 });
 
-const getRandomizedDeck = () => {
+const DIFFICULTY_SIZE_MAP = {
+    easy: 6,
+    medium: 10,
+    hard: 15,
+};
+
+const DIFFICULTY_ROW_MAP = {
+    easy: 4,
+    medium: 5,
+    hard: 6,
+};
+
+const getRandomizedDeck = (difficulty: "easy" | "medium" | "hard") => {
     const cards = [
         bluemushroomCard,
         bluesnailCard,
@@ -97,13 +109,18 @@ const getRandomizedDeck = () => {
         wraithCard,
     ];
 
-    return compose(shuffle, flatten, (cards) => repeat(cards, 2))(cards);
+    return compose(
+        flatten,
+        (cards) => repeat(cards, 2),
+        (cards) => cards.slice(0, DIFFICULTY_SIZE_MAP[difficulty]),
+        shuffle
+    )(cards);
 };
 
 const CARD_RANGE_TO_FLIP = 3;
 
-const CardGame = ({ onExit }) => {
-    const [cardLayout] = useState(getRandomizedDeck());
+const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "medium" | "hard" }) => {
+    const [cardLayout] = useState(getRandomizedDeck(difficulty));
     const [flippedCardIndex, setFlippedCardIndex] = useState(null);
     const [selectedCardIndices, setSelectedCardIndices] = useState([null, null]);
     const [isPlayerTurn, setIsPlayerTurn] = useState(null);
@@ -269,7 +286,7 @@ const CardGame = ({ onExit }) => {
                                 <div className={classes.cardBack} />
                             </div>
                         </div>
-                        {(i + 1) % 6 === 0 && <br />}
+                        {(i + 1) % DIFFICULTY_ROW_MAP[difficulty] === 0 && <br />}
                     </React.Fragment>
                 ))}
                 Your Score: {playerScore} <br />

@@ -1,13 +1,15 @@
 import classNames from "classnames";
+import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Ability, Effect } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
+import { updateHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
 import { warmush } from "../images";
-import { amethyst, blackScroll, drakeBlood, halfEatenHotdog, leatherSandals, safetyCharm, stolenFence } from "../item/items";
+import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -21,8 +23,6 @@ import ClassSelection from "./ClassSelection";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
-import { cloneDeep } from "lodash";
-import { updateHP } from "../battle/utils";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
