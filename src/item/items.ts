@@ -2,9 +2,12 @@ import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import {
     amethystImage,
     drakebloodImage,
+    guideBookImage,
     hotdog,
+    humilityStoneImage,
     lucksackImage,
     manualImage,
+    panlidImage,
     safetyCharmImage,
     sandalsImage,
     stolenFenceImage,
@@ -145,4 +148,65 @@ export const blackScroll: Item = {
     description: "Combine 3 scrolls to attain an ability of your choice for your class.",
     image: manualImage,
     type: ITEM_TYPES.MATERIAL,
+};
+
+export const energyStone: Item = {
+    name: "Energy Stone",
+    description: "Grants 1 resource every 3 turns.",
+    image: humilityStoneImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Energy Stone",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            resourcesPerTurn: 1,
+            turnsTriggerFrequency: 3,
+        },
+    ],
+};
+
+export const guideBook: Item = {
+    name: "Guide Book",
+    description: "Enemy encounters now offer 1 extra ability.",
+    image: guideBookImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Guide Book",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            abilityChoicesPerEncounter: 1,
+        },
+    ],
+};
+
+export const panlid: Item = {
+    name: "Pan Lid",
+    description: "On wave start, grants 7 armor and prevents armor decay by 1 turn",
+    image: panlidImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Pan Lid",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                effectOwner: {
+                    armor: 7,
+                    effects: [
+                        {
+                            name: "Pan Lid",
+                            description: "Preventing armor decay.",
+                            icon: panlidImage,
+                            class: EFFECT_CLASSES.BUFF,
+                            type: EFFECT_TYPES.NONE,
+                            preventArmorDecay: true,
+                            duration: 1,
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };

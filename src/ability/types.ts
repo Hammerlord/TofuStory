@@ -96,6 +96,7 @@ export interface Effect {
     onlyVisibleWhenProcced?: boolean;
     mesosGained?: number; // Percentage; 1 = 100%
     maxHP?: number;
+    abilityChoicesPerEncounter?: number;
 }
 
 export interface Aura extends Effect {
