@@ -1,16 +1,22 @@
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import {
+    alligatorTubeImage,
     amethystImage,
+    cactusImage,
+    coffeePotImage,
     drakebloodImage,
     guideBookImage,
     hotdog,
     humilityStoneImage,
     lucksackImage,
     manualImage,
+    nependeathSapImage,
     panlidImage,
+    respawnTokenImage,
     safetyCharmImage,
     sandalsImage,
     stolenFenceImage,
+    sunshinePanImage,
 } from "../images";
 import { Item, ITEM_TYPES } from "./types";
 
@@ -89,6 +95,7 @@ export const drakeBlood: Item = {
     ],
 };
 
+// TODO doesn't do anything yet
 export const luckSack: Item = {
     name: "Luck Sack",
     description: "Gain 20% more mesos.",
@@ -166,6 +173,7 @@ export const energyStone: Item = {
     ],
 };
 
+// TODO doesn't do anything yet
 export const guideBook: Item = {
     name: "Guide Book",
     description: "Enemy encounters now offer 1 extra ability.",
@@ -176,7 +184,9 @@ export const guideBook: Item = {
             name: "Guide Book",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            abilityChoicesPerEncounter: 1,
+            onEncounterEnd: {
+                abilityChoices: 1,
+            },
         },
     ],
 };
@@ -206,6 +216,144 @@ export const panlid: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const alligatorTube: Item = {
+    name: "Alligator Tube",
+    description: "Your maximum health increases by 3. You emit an aura that increases ally attack power by 2.",
+    image: alligatorTubeImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Alligator Tube",
+            description: "Increasing maximum HP by 3.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 3,
+        },
+        {
+            name: "Alligator Tube",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            isAuraEffect: true,
+            damage: 2,
+        },
+    ],
+};
+
+export const cactus: Item = {
+    name: "Cactus",
+    description: "You reflect 1 damage to attackers.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: cactusImage,
+    effects: [
+        {
+            name: "Cactus",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            thorns: 1,
+        },
+    ],
+};
+
+// TODO doesn't do much yet
+export const nependeathSap: Item = {
+    name: "Nependeath Sap",
+    description: "Increases the damage of your damage over time effects by 1. Every 3 turns, your first attack inflicts poison.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: nependeathSapImage,
+    effects: [
+        {
+            name: "Nependeath Sap",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            dotDamageIncrease: 1,
+        },
+        {
+            name: "Nependeath Sap",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            applyEffects: [
+                {
+                    name: "Nependeath Sap",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: nependeathSapImage,
+
+                    onAttack: {
+                        externalParty: {
+                            effects: [
+                                {
+                                    name: "Poison",
+                                    type: EFFECT_TYPES.POISON,
+                                    class: EFFECT_CLASSES.DEBUFF,
+                                    damagePerTurn: 2,
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+// TODO doesn't do anything yet
+export const coffeePot: Item = {
+    name: "Coffee Pot",
+    description: "You can now learn an ability when camping.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: coffeePotImage,
+    effects: [
+        {
+            name: "Coffee Pot",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onCamp: {
+                abilityChoices: 3,
+            },
+        },
+    ],
+};
+
+// TODO doesn't do anything yet
+export const respawnToken: Item = {
+    name: "Respawn Token",
+    description: "If you die, you restore 20 HP and this item is consumed.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: respawnTokenImage,
+    effects: [
+        {
+            name: "Respawn Token",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onKilled: {
+                effectOwner: {
+                    resurrect: true,
+                    healing: 20,
+                },
+            },
+        },
+    ],
+};
+
+// TODO doesn't do anything yet
+export const sunshinePan: Item = {
+    name: "Sunshine Pan",
+    description: "Restore an additional 15 HP when camping.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: sunshinePanImage,
+    effects: [
+        {
+            name: "Sunshine Pan",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onCamp: {
+                healing: 15,
             },
         },
     ],

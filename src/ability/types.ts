@@ -9,6 +9,7 @@ export enum EFFECT_TYPES {
     NONE = "none",
     STUN = "stun",
     BLEED = "bleed",
+    POISON = "poison",
     FREEZE = "freeze",
     BURN = "burn",
     CHILL = "chill",
@@ -37,6 +38,7 @@ export interface EffectEventTrigger {
         armor?: number;
         healing?: number;
         drawCards?: number;
+        resurrect?: boolean;
     };
     externalParty?: {
         // Stat changes to apply to the character who triggered this event
@@ -77,6 +79,7 @@ export interface Effect {
     leech?: number;
     conditions?: EffectCondition[];
     onAttack?: EffectEventTrigger;
+    onKilled?: EffectEventTrigger;
     onFriendlyKilled?: EffectEventTrigger;
     onHostileKilled?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
@@ -96,7 +99,14 @@ export interface Effect {
     onlyVisibleWhenProcced?: boolean;
     mesosGained?: number; // Percentage; 1 = 100%
     maxHP?: number;
-    abilityChoicesPerEncounter?: number;
+    dotDamageIncrease?: number;
+    onEncounterEnd?: {
+        abilityChoices?: number;
+    };
+    onCamp?: {
+        abilityChoices?: number;
+        healing?: number;
+    };
 }
 
 export interface Aura extends Effect {
