@@ -218,7 +218,7 @@ export const thiefAssassin: Enemy = {
             {
                 type: ACTION_TYPES.RANGE_ATTACK,
                 target: TARGET_TYPES.HOSTILE,
-                animation: ANIMATION_TYPES.ONE_WAY,
+                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                 damage: 2,
                 icon: subi,
             },
@@ -248,14 +248,14 @@ export const thiefAssassin: Enemy = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 0,
                     icon: subi,
                 },
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 0,
                     icon: subi,
                 },

@@ -153,6 +153,7 @@ export { default as ropequestBG } from "./ropequest.png";
 export { default as swampBG } from "./swampBG.jpg";
 export { default as kittenBarrelsImage } from "./kittenbarrels.png";
 export { default as sleepywoodBG } from "./sleepywoodBG.jpg";
+export { default as archerArrow } from "./arrow.png";
 
 export { default as noobClubAImage } from "./noobcluba.png";
 export { default as noobClubBImage } from "./noobclubb.png";

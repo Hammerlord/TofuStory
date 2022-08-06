@@ -274,10 +274,11 @@ export enum ACTION_TYPES {
 }
 
 export enum ANIMATION_TYPES {
-    // 'icon' travels from actor to target
-    ONE_WAY = "one-way",
+    // 'icon' travels from actor to target spinning
+    ONE_WAY_SPIN = "one-way-spin",
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
+    ONE_WAY = "one-way",
 }
 
 export interface AbilityEffects {

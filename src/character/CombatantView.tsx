@@ -202,6 +202,7 @@ const useStyles = createUseStyles({
         marginTop: "40%",
         WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        maxHeight: "70%",
     },
 });
 
@@ -241,7 +242,15 @@ const CombatantView = forwardRef(
             if (type === ACTION_TYPES.ATTACK && portraitRef.current) {
                 travel({ to: event.target, from: portraitRef.current, returnToOrigin: true });
             } else if (type === ACTION_TYPES.RANGE_ATTACK && projectileRef.current) {
-                travel({ to: event.target, from: projectileRef.current, spin: true, returnToOrigin: animation === ANIMATION_TYPES.YOYO });
+                const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
+                const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
+                travel({
+                    to: event.target,
+                    from: projectileRef.current,
+                    spin,
+                    rotateToFaceTarget,
+                    returnToOrigin: animation === ANIMATION_TYPES.YOYO,
+                });
             }
 
             let timeout;
