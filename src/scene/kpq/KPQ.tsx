@@ -5,6 +5,7 @@ import KittenBarrels from "./KittenBarrels";
 import KittenBarrelsQuest from "./KittenBarrelsQuest";
 import KPQSewer from "./KPQSewer";
 import KPQSewer2 from "./KPQSewer2";
+import LakelisClickQuest from "./LakelisClickQuest";
 import RopeQuest from "./RopeQuest";
 import SewerEntrance from "./SewerEntrance";
 import SewerEntrance2 from "./SewerEntrance2";
@@ -201,7 +202,8 @@ export const KPQ: Scene = {
                                     text: "Try to get into the next open slot",
                                     next: [
                                         {
-                                            dialog: ["<Pretend there was a mini-game here>"],
+                                            puzzle: LakelisClickQuest,
+                                            dialog: [""],
                                         },
                                         {
                                             scene: KPQSewer,

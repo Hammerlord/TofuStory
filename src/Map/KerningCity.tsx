@@ -9,6 +9,8 @@ const useStyles = createUseStyles({
         height: "100%",
         background: `url(${kerningBG})`,
         color: "white",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
     },
     bg: {
         width: "100%",

@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import { bystanderImage, kerningSewerEntranceFull2, lakelisImage, shoImage, stefaImage, wessImage } from "../../images";
 import { getRandomArbitrary, getRandomItem } from "../../utils";
 import Tooltip from "../../view/Tooltip";
+import getBystanderDialogue from "./getBystanderDialogue";
 
 const useStyles = createUseStyles({
     root: {
@@ -61,24 +62,7 @@ const SewerEntrance2 = ({ player }) => {
         Array.from({ length: 12 }).map((_, i: number) => ({
             flip: Math.random() < 0.5,
             left: 600 + i * getRandomArbitrary(20, 30),
-            text: getRandomItem([
-                "",
-                "ccplz @@@@@@@@@@@@@",
-                "mesos plz @@@@@@@@@@ @@@@@@@@ @@@@@@@@@@@@",
-                "free stuff plz @@@@@@@@@@ @@@@@@@@ @@@@@@@@@@@@",
-                "LF KPQ @@@@@@@@@@@@@@@@@@@",
-                "NX Plzxxxxx",
-                "WTB> fame 5 meso you fame first",
-                "noob",
-                "wtf",
-                "give me mesos or I defame",
-                `LVL ${getRandomItem(Array.from({ length: 10 }).map((_, i) => 20 + i))} ${getRandomItem([
-                    "rouge",
-                    "MAGICIAN",
-                    "war",
-                    "archer",
-                ])} LFG KPQ @@@@@@@ @@@@@@@@@@ @@@@@@@@@@ @@@@ @@@@@@@`,
-            ]),
+            text: getBystanderDialogue(),
         }))
     );
 

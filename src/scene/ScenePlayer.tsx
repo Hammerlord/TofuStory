@@ -142,6 +142,7 @@ const ScenePlayer = ({
     onBattle,
     onExit,
     onShop,
+    onTransition,
 }: {
     scene: Scene;
     player: any;
@@ -149,6 +150,7 @@ const ScenePlayer = ({
     onBattle: Function;
     onExit: Function;
     onShop: Function;
+    onTransition?: Function;
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
@@ -163,7 +165,12 @@ const ScenePlayer = ({
             setBackdrop(() => newScene || null);
         }
 
-        setPuzzle(() => puzzle || null);
+        const exitingPuzzle = Puzzle && !puzzle;
+        if (exitingPuzzle) {
+            onTransition && onTransition(() => setPuzzle(null));
+        } else {
+            setPuzzle(() => puzzle);
+        }
     }, [dialogIndex]);
 
     const handleClickDialog = () => {

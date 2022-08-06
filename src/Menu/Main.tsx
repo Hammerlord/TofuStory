@@ -309,6 +309,7 @@ const Main = () => {
                                 onExit={() => setScene(null)}
                                 onBattle={handleSceneBattle}
                                 onShop={setShop}
+                                onTransition={handleTransition}
                             />
                             <Header player={player} deck={deck} />
                         </>
