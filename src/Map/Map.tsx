@@ -1,4 +1,4 @@
-import { createRef, Fragment, useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Camping, CrossedSwords, House, map, Medal, MoneyBag, QuestionMark, treasureChest2Image } from "../images";
 import Overlay from "../view/Overlay";

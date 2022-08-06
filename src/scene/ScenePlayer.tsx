@@ -188,9 +188,16 @@ const ScenePlayer = ({
             if (isExit) {
                 onExit();
             }
+
+            if (!next && !shop && !isExit) {
+                // This dialogue node just goes to the next index
+                setDialogIndex((prev) => prev + 1);
+            }
         };
         if (encounter) {
-            onBattle(encounter, callback);
+            callback();
+            // skip battles
+            //onBattle(encounter, callback);
         } else {
             callback();
         }

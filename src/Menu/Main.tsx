@@ -12,10 +12,11 @@ import { warmush } from "../images";
 import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
+import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { routeLith } from "../Map/routes/routes";
-import { NODE_TYPES } from "../Map/types";
+import { NODE_TYPES, TOWNS } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
@@ -278,7 +279,14 @@ const Main = () => {
         });
     };
 
-    const isActivityOpen = encounter || isResting || scene || shop || rewardsOpen || treasure;
+    const getTown = () => {
+        switch (town) {
+            case TOWNS.KERNING:
+                return <KerningCity player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
+        }
+    };
+
+    const isActivityOpen = encounter || isResting || scene || shop || rewardsOpen || treasure || town;
 
     return (
         <>
@@ -290,6 +298,8 @@ const Main = () => {
             )}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
+                    {/** town && getTown() **/}
+
                     {scene && (
                         <>
                             <ScenePlayer
