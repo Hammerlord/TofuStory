@@ -229,7 +229,10 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                 >
                     <span className={classes.header}>
                         {cornerIcon}
-                        <span className={classes.name}>{name}</span> <ResourceIcon ability={ability} />
+                        <span className={classes.name}>
+                            {name} {ability.level === 2 && "⋆⋆"}
+                        </span>{" "}
+                        <ResourceIcon ability={ability} />
                     </span>
                     <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
                     <div className={classes.body}>

@@ -2,8 +2,8 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bash, block, slam, slashBlast, warLeap } from "../ability/warrior/warriorAbilities";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { bash, block, slam, slashBlast, warLeap } from "../ability/warrior/warriorAbilities";
 import { anonymushroom, classwarrior, warmush } from "../images";
 import { PLAYER_CLASSES } from "./types";
 

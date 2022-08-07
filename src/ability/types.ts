@@ -254,6 +254,8 @@ export interface Ability {
         resourceCost?: number;
     };
     dialog?: string;
+    upgrades?: Ability[];
+    level?: number; // The level of this ability; assumed to be 1 if not provided
 }
 
 /**

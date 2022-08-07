@@ -46,6 +46,7 @@ import {
     recovery,
     dash,
     ironBody,
+    rendingStrike,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -96,6 +97,7 @@ export const JOB_CARD_MAP = {
             magicCrash,
             dash,
             ironBody,
+            rendingStrike,
         ],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {

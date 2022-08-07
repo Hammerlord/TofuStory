@@ -3,6 +3,7 @@ import {
     brick,
     bricks,
     closecombatImage,
+    extraStrikeImage,
     flag,
     hammer,
     hyperbody,
@@ -25,8 +26,22 @@ import {
     weaponbooster,
     weaponmasteryImage,
 } from "../../images";
-import { healingOverTime, silence, stealth, stun, thorns } from "../Effects";
+import { healingOverTime, silence, stealth, stun, thorns, wound } from "../Effects";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+
+export const bash2: Ability = {
+    name: "Bash",
+    level: 2,
+    resourceCost: 0,
+    image: brick,
+    actions: [
+        {
+            damage: 4,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+    ],
+};
 
 export const bash: Ability = {
     name: "Bash",
@@ -37,6 +52,39 @@ export const bash: Ability = {
             damage: 1,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
+        },
+    ],
+    upgrades: [bash2],
+};
+
+export const warLeap2: Ability = {
+    name: "War Leap",
+    level: 2,
+    resourceCost: 1,
+    image: warleap,
+    actions: [
+        {
+            damage: 2,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            effects: [stun],
+            bonus: {
+                damage: 5,
+                conditions: [
+                    {
+                        healthPercentage: 1,
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
         },
     ],
 };
@@ -63,6 +111,22 @@ export const warLeap: Ability = {
             },
         },
     ],
+    upgrades: [warLeap2],
+};
+
+export const slashBlast2: Ability = {
+    name: "Slash Blast",
+    level: 2,
+    resourceCost: 1,
+    image: slashblast,
+    actions: [
+        {
+            damage: 4,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            area: 1,
+        },
+    ],
 };
 
 export const slashBlast: Ability = {
@@ -75,6 +139,22 @@ export const slashBlast: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             area: 1,
+        },
+    ],
+    upgrades: [slashBlast2],
+};
+
+export const slam2: Ability = {
+    name: "Slam",
+    level: 2,
+    resourceCost: 1,
+    image: mace,
+    actions: [
+        {
+            damage: 7,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            destroyArmor: 3,
         },
     ],
 };
@@ -90,6 +170,25 @@ export const slam: Ability = {
             type: ACTION_TYPES.ATTACK,
         },
     ],
+    upgrades: [slam2],
+};
+
+export const anger2: Ability = {
+    name: "Anger",
+    level: 2,
+    resourceCost: 0,
+    image: rage,
+    actions: [
+        {
+            damage: 3,
+            resources: 2,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 2,
+            },
+        },
+    ],
 };
 
 export const anger: Ability = {
@@ -98,8 +197,31 @@ export const anger: Ability = {
     image: rage,
     actions: [
         {
-            damage: 2,
+            damage: 3,
             resources: 2,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [anger2],
+};
+
+export const shieldStrike2: Ability = {
+    name: "Shield Strike",
+    level: 2,
+    resourceCost: 2,
+    image: shieldred,
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+        },
+        {
+            armor: 7,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -122,6 +244,21 @@ export const shieldStrike: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
+    upgrades: [shieldStrike2],
+};
+
+export const block2: Ability = {
+    name: "Block",
+    level: 2,
+    resourceCost: 1,
+    image: blockImage,
+    actions: [
+        {
+            armor: 7,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
 };
 
 export const block: Ability = {
@@ -135,12 +272,38 @@ export const block: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
+    upgrades: [block2],
+};
+
+const bloodthirst2: Ability = {
+    name: "Bloodthirst",
+    resourceCost: 1,
+    image: shout,
+    depletedOnUse: true,
+    actions: [
+        {
+            effects: [
+                {
+                    name: "Bloodthirst",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 0,
+                    healthPerResourcesSpent: 3,
+                    icon: shout,
+                },
+            ],
+            healing: 4,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
 };
 
 export const bloodthirst: Ability = {
     name: "Bloodthirst",
     resourceCost: 1,
     image: shout,
+    depletedOnUse: true,
     actions: [
         {
             effects: [
@@ -153,8 +316,24 @@ export const bloodthirst: Ability = {
                     icon: shout,
                 },
             ],
-            healing: 2,
+            healing: 3,
             target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    upgrades: [bloodthirst2],
+};
+
+export const spikedArmor2: Ability = {
+    name: "Spiked Armor",
+    level: 2,
+    resourceCost: 2,
+    image: spikes,
+    actions: [
+        {
+            armor: 7,
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [{ ...thorns, duration: 4 }],
             type: ACTION_TYPES.EFFECT,
         },
     ],
@@ -172,6 +351,33 @@ export const spikedArmor: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
+    upgrades: [spikedArmor2],
+};
+
+export const warBanner2: Ability = {
+    name: "War Banner",
+    level: 2,
+    resourceCost: 2,
+    minion: {
+        name: "War Banner",
+        image: flag,
+        maxHP: 1,
+        damage: 0,
+        aura: {
+            damage: 2,
+            armorPerTurn: 1,
+            area: 1,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+        },
+        effects: [
+            {
+                ...stealth,
+                duration: 3,
+            },
+        ],
+    },
+    actions: [],
 };
 
 export const warBanner: Ability = {
@@ -197,6 +403,7 @@ export const warBanner: Ability = {
         ],
     },
     actions: [],
+    upgrades: [warBanner2],
 };
 
 export const snailMinion: Ability = {
@@ -209,6 +416,30 @@ export const snailMinion: Ability = {
         damage: 1,
     },
     actions: [],
+};
+
+export const yell2: Ability = {
+    name: "Yell",
+    level: 2,
+    resourceCost: 2,
+    image: warmush,
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    damage: -3,
+                    damageReceived: 1,
+                    duration: 2,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    icon: warmush,
+                },
+            ],
+        },
+    ],
 };
 
 export const yell: Ability = {
@@ -231,6 +462,21 @@ export const yell: Ability = {
             ],
         },
     ],
+    upgrades: [yell2],
+};
+
+export const bunchOBricks2: Ability = {
+    name: "Bunch o' Bricks",
+    level: 2,
+    resourceCost: 1,
+    image: bricks,
+    actions: [
+        {
+            addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
 };
 
 export const bunchOBricks: Ability = {
@@ -242,6 +488,34 @@ export const bunchOBricks: Ability = {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [bunchOBricks2],
+};
+
+export const hammerang2: Ability = {
+    name: "Hammerang",
+    level: 2,
+    resourceCost: 1,
+    reusable: true, // Hmm... beware of any ability that reduces resource cost
+    image: hammer,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.YOYO,
+            icon: hammer,
+            effects: [
+                {
+                    name: "Hammered",
+                    icon: hammer,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    damageReceived: 1,
+                    duration: 0,
+                },
+            ],
         },
     ],
 };
@@ -258,6 +532,32 @@ export const hammerang: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
             icon: hammer,
+        },
+    ],
+    upgrades: [hammerang2],
+};
+
+export const ironWill2: Ability = {
+    name: "Iron Will",
+    level: 2,
+    resourceCost: 1,
+    image: ironwillImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            armor: 3,
+            effects: [
+                {
+                    name: "Iron Will",
+                    icon: ironwillImage,
+                    description: "Receiving +3 armor from armor sources",
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    armorReceived: 3,
+                    duration: 2,
+                },
+            ],
         },
     ],
 };
@@ -280,6 +580,32 @@ export const ironWill: Ability = {
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 1,
                     duration: 2,
+                },
+            ],
+        },
+    ],
+    upgrades: [ironWill2],
+};
+
+export const hyperBody2: Ability = {
+    name: "Hyper Body",
+    level: 2,
+    resourceCost: 1,
+    image: hyperbody,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Hyper Body",
+                    icon: hyperbody,
+                    description: "Gaining +1 resource and healing received per turn",
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    resourcesPerTurn: 1,
+                    healingReceived: 1,
+                    duration: 4,
                 },
             ],
         },
@@ -307,13 +633,15 @@ export const hyperBody: Ability = {
             ],
         },
     ],
+    upgrades: [hyperBody2],
 };
 
-export const sweepingReach: Ability = {
+export const sweepingReach2: Ability = {
     name: "Sweeping Reach",
+    level: 2,
     resourceCost: 1,
     image: weaponbooster,
-    description: "Increases the area of your next attack by 1",
+    description: "Increases the area of your next offensive ability by 1",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -326,6 +654,90 @@ export const sweepingReach: Ability = {
                     icon: weaponbooster,
                     description: "Increases the area of your next offensive ability by 1",
                     attackAreaIncrease: 1,
+                    onAttack: {
+                        removeEffect: true,
+                    },
+                },
+            ],
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            addCards: [
+                {
+                    name: "Sweeping Reach",
+                    image: weaponbooster,
+                    description: "Increases the area of your next offensive ability by 1",
+                    removeAfterTurn: true,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            effects: [
+                                {
+                                    name: "Sweeping Reach",
+                                    type: EFFECT_TYPES.NONE,
+                                    class: EFFECT_CLASSES.BUFF,
+                                    icon: weaponbooster,
+                                    description: "Increases the area of your next offensive ability by 1",
+                                    attackAreaIncrease: 1,
+                                    onAttack: {
+                                        removeEffect: true,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const sweepingReach: Ability = {
+    name: "Sweeping Reach",
+    resourceCost: 1,
+    image: weaponbooster,
+    description: "Increases the area of your next offensive ability by 1",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Sweeping Reach",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: weaponbooster,
+                    description: "Increases the area of your next offensive ability by 1",
+                    attackAreaIncrease: 1,
+                    onAttack: {
+                        removeEffect: true,
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [sweepingReach2],
+};
+
+export const sharpen2: Ability = {
+    name: "Sharpen",
+    level: 2,
+    resourceCost: 0,
+    image: weaponmasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Sharpen",
+                    icon: weaponmasteryImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 2,
+                    duration: 0,
                     onAttack: {
                         removeEffect: true,
                     },
@@ -358,6 +770,31 @@ export const sharpen: Ability = {
             ],
         },
     ],
+    upgrades: [sharpen2],
+};
+
+export const rush2: Ability = {
+    name: "Rush",
+    level: 2,
+    resourceCost: 1,
+    image: rushImage,
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 2,
+                effects: {
+                    resourceCost: -1,
+                },
+            },
+        },
+    ],
 };
 
 export const rush: Ability = {
@@ -381,6 +818,33 @@ export const rush: Ability = {
             },
         },
     ],
+    upgrades: [rush2],
+};
+
+export const berserk2: Ability = {
+    name: "Berserk",
+    level: 2,
+    resourceCost: 2,
+    image: powerstanceImage,
+    depletedOnUse: true,
+    description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 1,
+                effects: {
+                    resourceCost: -3,
+                },
+            },
+            cards: {
+                effects: {
+                    resourceCost: -3,
+                },
+            },
+        },
+    ],
 };
 
 export const berserk: Ability = {
@@ -400,6 +864,25 @@ export const berserk: Ability = {
             },
         },
     ],
+    upgrades: [berserk2],
+};
+
+export const closeCombat2: Ability = {
+    name: "Close Combat",
+    level: 2,
+    resourceCost: 1,
+    image: closecombatImage,
+    description: "Pulls enemies toward the selected target",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            vacuum: 2,
+            area: 2,
+            effects: [stun],
+            damage: 2,
+        },
+    ],
 };
 
 export const closeCombat: Ability = {
@@ -414,6 +897,30 @@ export const closeCombat: Ability = {
             vacuum: 2,
             area: 2,
             effects: [stun],
+            damage: 1,
+        },
+    ],
+    upgrades: [closeCombat2],
+};
+
+export const recovery2: Ability = {
+    name: "Recovery",
+    level: 2,
+    resourceCost: 1,
+    image: selfRecoveryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            healing: 2,
+            effects: [
+                {
+                    ...healingOverTime,
+                    icon: selfRecoveryImage,
+                    healingPerTurn: 2,
+                    duration: 4,
+                },
+            ],
         },
     ],
 };
@@ -451,6 +958,23 @@ export const magicCrash: Ability = {
     ],
 };
 
+export const dash2: Ability = {
+    name: "Dash",
+    level: 2,
+    resourceCost: 0,
+    image: warriormasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 3,
+            },
+            resources: 1,
+        },
+    ],
+};
+
 export const dash: Ability = {
     name: "Dash",
     resourceCost: 0,
@@ -464,10 +988,12 @@ export const dash: Ability = {
             },
         },
     ],
+    upgrades: [dash2],
 };
 
-export const ironBody: Ability = {
+export const ironBody2: Ability = {
     name: "Iron Body",
+    level: 2,
     resourceCost: 1,
     image: ironbodyImage,
     actions: [
@@ -483,8 +1009,94 @@ export const ironBody: Ability = {
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
                     duration: 2,
+                    armorPerTurn: 2,
                 },
             ],
         },
     ],
+};
+
+export const ironBody: Ability = {
+    name: "Iron Body",
+    resourceCost: 1,
+    image: ironbodyImage,
+    actions: [
+        {
+            armor: 2,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Iron Body",
+                    icon: ironbodyImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    duration: 1,
+                    armorPerTurn: 2,
+                },
+            ],
+        },
+    ],
+    upgrades: [ironBody2],
+};
+
+export const rendingStrike2: Ability = {
+    name: "Rending Strike",
+    level: 2,
+    resourceCost: 1,
+    image: extraStrikeImage,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            effects: [
+                {
+                    ...wound,
+                    duration: 4,
+                },
+            ],
+            bonus: {
+                damage: 5,
+                conditions: [
+                    {
+                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const rendingStrike: Ability = {
+    name: "Rending Strike",
+    resourceCost: 1,
+    image: extraStrikeImage,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            effects: [
+                {
+                    ...wound,
+                    duration: 3,
+                },
+            ],
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [rendingStrike2],
 };

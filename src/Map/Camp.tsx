@@ -7,6 +7,7 @@ import { updateHPByPercentage } from "../battle/utils";
 import { campfire, perioncamp } from "../images";
 import { blackScroll } from "../item/items";
 import CardGrid from "../Menu/CardGrid";
+import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 const useStyles = createUseStyles({
     root: {
         width: "100%",
@@ -86,6 +87,8 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
     const [selectedAbilityIndexToRemove, setSelectedAbilityIndexToRemove] = useState(null);
+    const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
+    const [hasUpgradedAbility, setHasUpgradedAbility] = useState(false);
     const [isLearningAbility, setIsLearningAbility] = useState(false);
     const [selectedAbilityToLearn, setSelectedAbilityToLearn] = useState(null);
 
@@ -175,6 +178,25 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
         );
     }
 
+    if (isUpgradingAbility) {
+        return (
+            <div className={classes.root}>
+                <div className={classes.inner}>
+                    <h3>Select an ability to upgrade</h3>
+                    <CardUpgradeGrid
+                        cards={deck}
+                        onCancel={() => setIsUpgradingAbility(false)}
+                        onConfirm={(updatedDeck) => {
+                            updateDeck(updatedDeck);
+                            setHasUpgradedAbility(true);
+                            setIsUpgradingAbility(false);
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
@@ -205,7 +227,18 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                                 Combine three {blackScroll.name}s to acquire an ability.
                             </div>
                         )}
-                        <div className={classes.activity}>Not yet available</div>
+                        <div
+                            className={classNames(classes.activity, {
+                                disabled: hasUpgradedAbility,
+                            })}
+                            onClick={() => {
+                                if (!hasUpgradedAbility) {
+                                    setIsUpgradingAbility(true);
+                                }
+                            }}
+                        >
+                            <div className={classes.activityName}>Hone</div>Upgrade one of your abilities.
+                        </div>
                         <div className={classes.activity} onClick={onExit}>
                             Continue journey
                         </div>
