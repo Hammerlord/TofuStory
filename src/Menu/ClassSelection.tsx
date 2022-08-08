@@ -2,17 +2,13 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { bash, block, slam, slashBlast, warLeap } from "../ability/warrior/warriorAbilities";
 import { anonymushroom, classwarrior, warmush } from "../images";
 import { PLAYER_CLASSES } from "./types";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: warmush,
-};
-
-const decks = {
-    [PLAYER_CLASSES.WARRIOR]: [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block],
 };
 
 const useStyles = createUseStyles({
@@ -80,7 +76,7 @@ const ClassSelection = ({ onSelectClass }) => {
 
     const handleSelectClass = () => {
         if (selectedClass) {
-            onSelectClass(selectedClass, decks[selectedClass]);
+            onSelectClass(selectedClass, JOB_CARD_MAP[selectedClass].starters);
         }
     };
 
@@ -96,7 +92,7 @@ const ClassSelection = ({ onSelectClass }) => {
                 <div className={classes.inner}>
                     <h2>You gained abilities</h2>
                     <div className={classes.abilities}>
-                        {decks[selectedClass]
+                        {JOB_CARD_MAP[selectedClass].starters
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
                                 <div className={classes.abilityContainer} key={i}>

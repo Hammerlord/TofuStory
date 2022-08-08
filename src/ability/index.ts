@@ -99,6 +99,7 @@ export const JOB_CARD_MAP = {
             ironBody,
             rendingStrike,
         ],
+        starters: [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],

@@ -43,7 +43,21 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
     useEffect(() => {
-        const potentialAbilities = JOB_CARD_MAP[player.class].all.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
+        // For starter abilities, only their level 2 versions are to be part of the prize pool
+        const { starters, all } = JOB_CARD_MAP[player.class];
+        const level2Starters = starters.reduce((acc, card) => {
+            if (card.upgrades?.length && acc.every(({ name }) => name !== card.name)) {
+                acc.push(...card.upgrades);
+            }
+
+            return acc;
+        }, []);
+
+        const potentialAbilities = [
+            ...level2Starters,
+            ...all.filter((card) => starters.every(({ name }) => name !== card.name)),
+            ...(JOB_CARD_MAP[player.secondaryClass]?.all || []),
+        ];
         const shuffled = shuffle(potentialAbilities);
         // Use deck to determine which abilities have a higher chance to roll
         setRolledAbiliies(shuffled.slice(0, 3));
@@ -73,8 +87,11 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} disabled={!rolledAbilities[selectedAbilityIndex]} onClick={handleSelectClick}>
+                <Button variant={"contained"} color="primary" disabled={!rolledAbilities[selectedAbilityIndex]} onClick={handleSelectClick}>
                     Select!
+                </Button>{" "}
+                <Button variant={"contained"} onClick={onClose}>
+                    Exit without taking anything
                 </Button>
             </div>
         </Overlay>

@@ -45,8 +45,8 @@ const UpgradeTile = ({ card, onClick, isSelected }) => {
                     [classes.highlighted]: isSelected,
                 })}
             >
-                {card.upgrades.map((card) => (
-                    <AbilityView ability={card} />
+                {card.upgrades.map((card, i) => (
+                    <AbilityView ability={card} key={i} />
                 ))}
             </div>
         </div>
