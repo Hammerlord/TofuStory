@@ -19,20 +19,22 @@ export const travel = ({ to, from, spin = false, rotateToFaceTarget = false, ret
     const moveIncrementY = (y2 - y) / increments;
     let i = 1;
     let direction = 1;
-    let rotation = 0;
-    if (spin) {
-        const spinIncrement = 360 / increments;
-        rotation = spinIncrement * 1;
-    } else if (rotateToFaceTarget) {
-        const yDist = y - y2;
-        const xDist = x - x2;
-        rotation = Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
-    }
 
     const move = () => {
         if (!from) {
             return;
         }
+
+        let rotation = 0;
+        if (spin) {
+            const spinIncrement = 360 / increments;
+            rotation = spinIncrement * i;
+        } else if (rotateToFaceTarget) {
+            const yDist = y - y2;
+            const xDist = x - x2;
+            rotation = Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
+        }
+
         const xPos = i * moveIncrementX;
         const yPos = i * moveIncrementY;
         from.style.transform = `translateX(${xPos}px) translateY(${yPos}px) rotate(${rotation}deg)`;
