@@ -1,4 +1,4 @@
-import { PLAYER_CLASSES } from "../Menu/types";
+import { PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from "../Menu/types";
 import {
     darkImpale,
     darkSpear,
@@ -59,16 +59,6 @@ import {
     parashockGuard,
     shieldMastery,
 } from "./warrior/whiteknightAbilities";
-
-export enum WARRIOR_SECONDARY_JOBS {
-    FIGHTER = "Fighter",
-    DARK_KNIGHT = "Dark Knight",
-    WHITE_KNIGHT = "White Knight",
-}
-
-export const SECONDARY_JOBS = {
-    [PLAYER_CLASSES.WARRIOR]: WARRIOR_SECONDARY_JOBS,
-};
 
 export const JOB_CARD_MAP = {
     [PLAYER_CLASSES.WARRIOR]: {

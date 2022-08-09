@@ -8,6 +8,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import { updateHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
+import DevToolButton from "../devtools/DevToolButton";
 import { warmush } from "../images";
 import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
@@ -364,6 +365,7 @@ const Main = () => {
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && <GameOver player={player} onExit={() => setPlayer(null)} />}
+            <DevToolButton />
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

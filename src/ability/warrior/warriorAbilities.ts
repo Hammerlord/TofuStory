@@ -1050,7 +1050,6 @@ export const rendingStrike2: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 1,
             effects: [
                 {
                     ...wound,
@@ -1079,7 +1078,6 @@ export const rendingStrike: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 1,
             effects: [
                 {
                     ...wound,

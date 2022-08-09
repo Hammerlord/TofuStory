@@ -2,12 +2,13 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { JOB_CARD_MAP, SECONDARY_JOBS } from "../ability";
+import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import { mesoCoinImage } from "../images";
-import { getRandomInt, getRandomItem, shuffle } from "../utils";
+import { getRandomItem, shuffle } from "../utils";
 import Overlay from "../view/Overlay";
+import { SECONDARY_JOBS } from "./types";
 
 const useStyles = createUseStyles({
     inner: {
