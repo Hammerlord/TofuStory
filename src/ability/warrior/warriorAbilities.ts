@@ -1,4 +1,6 @@
+import { MULTIPLIER_TYPES } from "./../types";
 import {
+    bladestormImage,
     blockImage,
     brick,
     bricks,
@@ -11,8 +13,10 @@ import {
     ironwill as ironwillImage,
     mace,
     magiccrashImage,
+    panicSkillImage,
     powerstanceImage,
     rage,
+    redFistOfFuryImage,
     rushImage,
     selfRecoveryImage,
     shieldred,
@@ -1053,19 +1057,13 @@ export const rendingStrike2: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 4,
+                    duration: 3,
+                },
+                {
+                    ...wound,
+                    duration: 3,
                 },
             ],
-            bonus: {
-                damage: 5,
-                conditions: [
-                    {
-                        hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: "target",
-                        comparator: "eq",
-                    },
-                ],
-            },
         },
     ],
 };
@@ -1081,11 +1079,32 @@ export const rendingStrike: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 3,
+                    duration: 5,
+                },
+            ],
+        },
+    ],
+    upgrades: [rendingStrike2],
+};
+
+export const whirlwind2: Ability = {
+    name: "Whirlwind",
+    level: 2,
+    image: panicSkillImage,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 2,
+            effects: [
+                {
+                    ...wound,
+                    duration: 4,
                 },
             ],
             bonus: {
-                damage: 3,
+                damage: 2,
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
@@ -1096,5 +1115,120 @@ export const rendingStrike: Ability = {
             },
         },
     ],
-    upgrades: [rendingStrike2],
+};
+
+export const whirlwind: Ability = {
+    name: "Whirlwind",
+    image: panicSkillImage,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 2,
+            effects: [
+                {
+                    ...wound,
+                    duration: 3,
+                },
+            ],
+            bonus: {
+                damage: 1,
+                conditions: [
+                    {
+                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [whirlwind2],
+};
+
+export const rupture2: Ability = {
+    name: "Rupture",
+    resourceCost: 0,
+    image: redFistOfFuryImage,
+    description: "Deals +1 damage for every Wound on the target",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 2,
+            bonus: {
+                damage: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.BLEEDS,
+                    calculationTarget: "target",
+                },
+                conditions: [
+                    {
+                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const rupture: Ability = {
+    name: "Rupture",
+    resourceCost: 0,
+    image: redFistOfFuryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 1,
+            bonus: {
+                damage: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.BLEEDS,
+                    calculationTarget: "target",
+                },
+                conditions: [
+                    {
+                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        calculationTarget: "target",
+                        comparator: "eq",
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [rupture2],
+};
+
+export const bladestorm2: Ability = {
+    name: "Bladestorm",
+    level: 2,
+    resourceCost: 0,
+    image: bladestormImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            addCards: [whirlwind2, whirlwind2, whirlwind2].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+};
+
+export const bladestorm: Ability = {
+    name: "Bladestorm",
+    resourceCost: 0,
+    image: bladestormImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [bladestorm2],
 };

@@ -157,6 +157,7 @@ export interface Bonus {
      * Multiple conditions are evaluated as "OR".
      */
     conditions?: AbilityCondition[];
+    excludePrimaryTarget?: boolean;
 }
 
 export interface Condition {
@@ -192,6 +193,7 @@ export enum MULTIPLIER_TYPES {
     ABILITIES_WITH_NAME = "abilitiesWithName",
     MAX_HP = "maxHP",
     DEBUFFS = "debuffs",
+    BLEEDS = "bleeds",
 }
 
 export interface Action {

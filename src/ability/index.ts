@@ -47,6 +47,9 @@ import {
     dash,
     ironBody,
     rendingStrike,
+    whirlwind,
+    rupture,
+    bladestorm,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -88,6 +91,9 @@ export const JOB_CARD_MAP = {
             dash,
             ironBody,
             rendingStrike,
+            whirlwind,
+            rupture,
+            bladestorm,
         ],
         starters: [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block],
     },

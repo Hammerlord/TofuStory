@@ -143,17 +143,28 @@ const triggerOnReceiveAction = ({ action, target, damage = 0 }) => {
     });
 };
 
-const calculateBonus = ({ action, target, actor }: { action: Action; target: Combatant; actor: Combatant }): Action => {
+const calculateBonus = ({
+    action,
+    target,
+    actor,
+    isTargetSelected,
+}: {
+    action: Action;
+    target: Combatant;
+    actor: Combatant;
+    isTargetSelected: boolean;
+}): Action => {
     if (!action.bonus) {
         return action;
     }
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
-    const { conditions = [] } = bonus;
+    const { conditions = [], excludePrimaryTarget = false } = bonus;
     const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
 
     const getCalculationTarget = (conditionTarget: "target" | "actor") => (conditionTarget === "target" ? target : actor);
-    if (passesConditions({ getCalculationTarget, conditions })) {
+    const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
+    if (passesConditions({ getCalculationTarget, conditions }) && isValidTarget) {
         const bonusDamage = (bonus.damage || 0) * multiplier;
         return {
             ...action,
@@ -182,7 +193,7 @@ export const applyActionToTarget = ({
     action: Action;
     ability?: Ability;
 }): Combatant => {
-    action = calculateBonus({ target, actor, action });
+    action = calculateBonus({ target, actor, action, isTargetSelected: targetIndex === selectedIndex });
     const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
     const baseArmor = Math.floor(target.armor * (1 - destroyArmor));

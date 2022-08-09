@@ -263,7 +263,11 @@ export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
-        return character.effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
+        return character.effects.filter((effect: Effect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
+    }
+
+    if (multiplier.type === MULTIPLIER_TYPES.BLEEDS) {
+        return character.effects.filter((effect: Effect) => effect.type === EFFECT_TYPES.BLEED).length || 1;
     }
 
     return 1;

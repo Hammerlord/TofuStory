@@ -31,6 +31,13 @@ const BonusView = ({ ability, player }) => {
                 const conditionText = conditions?.map(
                     ({ hasEffectType = [], hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
                         if (hasEffectType.length) {
+                            if (multiplier) {
+                                return (
+                                    <span key={i}>
+                                        for each {hasEffectType.map(getIconForEffectType)} on the {multiplier.calculationTarget}
+                                    </span>
+                                );
+                            }
                             return (
                                 <span key={i}>
                                     to targets afflicted by {hasEffectType.map(getIconForEffectType)}

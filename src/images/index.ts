@@ -108,6 +108,10 @@ export { default as worldreaverImage } from "./worldreaver.png";
 export { default as lordOfDarknessImage } from "./lordofdarkness.png";
 export { default as gungnirImage } from "./gungnir.png";
 export { default as extraStrikeImage } from "./Blast_Extra_Strike.png";
+export { default as panicSkillImage } from "./Panic.png";
+export { default as redFistOfFuryImage } from "./redfistoffury.png";
+export { default as bladestormImage } from "./bladestorm.png";
+
 export { default as upmattImage } from "./upMATT.png";
 export { default as map } from "./victoria island.png";
 export { default as anonymushroom } from "./anonymushroom.png";
