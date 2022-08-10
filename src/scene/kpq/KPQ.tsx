@@ -342,6 +342,9 @@ export const KPQ: Scene = {
                                                                         {
                                                                             speaker: bowman,
                                                                             dialog: ["First, let's take a ten-minute breather."],
+                                                                        },
+                                                                        {
+                                                                            dialog: ["[You recover 25% HP.]"],
                                                                             healthRecovery: 0.25,
                                                                         },
                                                                         {

@@ -77,7 +77,7 @@ const useStyles = createUseStyles({
 });
 
 const MAX_BYSTANDERS = 8;
-const CLICKS_TO_COMPLETE = 80;
+const CLICKS_TO_COMPLETE = 70;
 
 const LakelisClickQuest = ({ player, onComplete }) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);
