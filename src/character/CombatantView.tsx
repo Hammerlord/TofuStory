@@ -15,6 +15,7 @@ import Effects from "./effects/Effects";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
+import Weapon from "./Weapon";
 
 const useStyles = createUseStyles({
     root: {
@@ -57,6 +58,7 @@ const useStyles = createUseStyles({
         width: "100%",
         margin: "0 auto",
         alignSelf: "flex-end",
+        position: "relative",
     },
     portraitImage: {
         minWidth: "50%",
@@ -204,6 +206,10 @@ const useStyles = createUseStyles({
         filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         maxHeight: "70%",
     },
+    weaponContainer: {
+        position: "absolute",
+        top: -70,
+    },
 });
 
 const CombatantView = forwardRef(
@@ -311,6 +317,14 @@ const CombatantView = forwardRef(
                                             [classes.casting]: oldState.casting,
                                         })}
                                     />
+                                    <div className={classes.weaponContainer}>
+                                        <Weapon
+                                            image={oldState.weapon}
+                                            action={event?.action}
+                                            target={event?.target}
+                                            wielder={portraitRef?.current}
+                                        />
+                                    </div>
                                     {oldState.HP > 0 && <Effects combatant={oldState} healing={statChanges?.healing} />}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />

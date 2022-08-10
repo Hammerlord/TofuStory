@@ -9,7 +9,7 @@ import Rewards from "../battle/Rewards";
 import { updateHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
 import DevToolButton from "../devtools/DevToolButton";
-import { warmush } from "../images";
+import { oldGladiusImage, warmush } from "../images";
 import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
@@ -218,6 +218,7 @@ const Main = () => {
             items: starterItems,
             mesos: 0,
             isPlayer: true,
+            weapon: oldGladiusImage,
         });
         setDeck(deck);
     };
