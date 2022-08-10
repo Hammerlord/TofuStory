@@ -6,7 +6,7 @@ import { getRotationToFaceTarget, getTargetPoints } from "./animations";
 
 const useStyles = createUseStyles({
     root: {
-        transformOrigin: "95% 95%",
+        transformOrigin: "105% 105%",
         display: "none",
     },
     stab: {

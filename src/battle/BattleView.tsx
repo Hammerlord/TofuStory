@@ -14,6 +14,7 @@ import Header from "../Menu/Header";
 import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { shuffle } from "../utils";
+import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import triggerDoTDamage from "./dotDamage";
@@ -370,33 +371,60 @@ const BattlefieldContainer = ({
         setSelectedAbilityIndex(null);
     };
 
+    const getRefFromCharacterId = (characterId) => {
+        if (!characterId) {
+            return;
+        }
+        const allyIndex = allies.findIndex((ally) => characterId === ally?.id);
+        if (allyIndex > -1) {
+            return allyRefs[allyIndex];
+        }
+
+        const enemyIndex = enemies.findIndex((enemy) => characterId === enemy?.id);
+        if (enemyIndex > -1) {
+            return enemyRefs[enemyIndex];
+        }
+    };
+
     /**
-     * Returns the action if the character is using it. This is used in animations...
+     * This is used in animations...
      * @param character
      */
-    const getEvent = (character: Combatant | null): { action?: Action; target: Combatant | null; id?: string } => {
-        let action;
+    const animationEvent = ((): {
+        action?: Action;
+        target?: any;
+        eventId?: string;
+        allTargets: any[];
+        actor?: any;
+    } => {
         let target;
         if (!events.length) {
-            return { action, target };
+            return { action: undefined, target: undefined, allTargets: [], actor: undefined };
         }
 
         const { actorId, targetSide, selectedIndex, id } = (events[0] as Event) || {};
-
-        if (actorId === character?.id) {
-            action = events[0].action;
-        }
+        const action = events[0].action;
+        const targets = targetSide === BATTLEFIELD_SIDES.ALLIES ? allyRefs : enemyRefs;
 
         if (typeof selectedIndex === "number" && targetSide) {
-            target = (targetSide === BATTLEFIELD_SIDES.ALLIES ? allyRefs : enemyRefs)[selectedIndex]?.current;
+            target = targets[selectedIndex]?.current;
+        }
+
+        const allTargets = [];
+        if (action?.area) {
+            for (let i = selectedIndex - action.area; i <= selectedIndex + action.area; ++i) {
+                targets[i]?.current && allTargets.push(targets[i].current);
+            }
         }
 
         return {
             action,
+            actor: getRefFromCharacterId(actorId)?.current,
             target,
-            id,
+            allTargets,
+            eventId: id,
         };
-    };
+    })();
 
     const [minionCardsInPlay, discardSansMinionsInPlay] = (() => {
         // Treat minions in play as if they do not exist in the discard
@@ -866,7 +894,7 @@ const BattlefieldContainer = ({
                                         onMouseLeave={() => setHoveredEnemyIndex(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMIES, i)}
                                         key={i}
-                                        event={getEvent(enemy)}
+                                        event={enemy?.id === events[0]?.actorId ? animationEvent : undefined}
                                         isHighlighted={false}
                                         showReticle={showReticle(BATTLEFIELD_SIDES.ENEMIES, i)}
                                         ref={enemyRefs[i]}
@@ -893,7 +921,7 @@ const BattlefieldContainer = ({
                                                 onMouseLeave={() => setHoveredAllyIndex(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.ALLIES, i)}
                                                 key={i}
-                                                event={getEvent(ally)}
+                                                event={ally?.id === events[0]?.actorId ? animationEvent : undefined}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
                                                 showReticle={showReticle(BATTLEFIELD_SIDES.ALLIES, i)}
                                                 ref={allyRefs[i]}
@@ -913,6 +941,7 @@ const BattlefieldContainer = ({
                             </div>
                         </div>
                     </div>
+                    <AnimationCanvas {...animationEvent} />
                     <div className={classes.abilityContainer}>
                         {Array.from({ length: player.resources }).map((_, i) => (
                             <Fury key={i} className={classes.resource} />

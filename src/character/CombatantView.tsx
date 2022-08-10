@@ -198,17 +198,10 @@ const useStyles = createUseStyles({
         animation: "$deadAnimation 1s forwards",
         transitionTimingFunction: "ease-in-out",
     },
-    projectile: {
-        maxWidth: "40%",
-        objectFit: "contain",
-        marginTop: "40%",
-        WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        maxHeight: "70%",
-    },
     weaponContainer: {
         position: "absolute",
         top: -70,
+        left: -25,
     },
 });
 
@@ -216,9 +209,7 @@ const CombatantView = forwardRef(
     ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, showResourceBar, ...other }: any, ref) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
-        const [portraitRef] = useState(createRef() as React.RefObject<any>);
-        const [projectileRef] = useState(createRef() as React.RefObject<any>);
-        const prevActionRef = useRef();
+        const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const classes = useStyles();
 
         useEffect(() => {
@@ -239,38 +230,6 @@ const CombatantView = forwardRef(
             }, 300);
         }, [combatant]);
 
-        useEffect(() => {
-            if (!event?.target || !event?.action || prevActionRef?.current === event.id) {
-                return;
-            }
-            prevActionRef.current = event.id;
-            const { type, animation } = event?.action || {};
-            if (type === ACTION_TYPES.ATTACK && portraitRef.current) {
-                travel({ to: event.target, from: portraitRef.current, returnToOrigin: true });
-            } else if (type === ACTION_TYPES.RANGE_ATTACK && projectileRef.current) {
-                const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
-                const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
-                travel({
-                    to: event.target,
-                    from: projectileRef.current,
-                    spin,
-                    rotateToFaceTarget,
-                    returnToOrigin: animation === ANIMATION_TYPES.YOYO,
-                });
-            }
-
-            let timeout;
-            return () => {
-                if (portraitRef?.current?.style) {
-                    portraitRef.current.style.transform = "unset";
-                }
-                if (projectileRef?.current?.style) {
-                    projectileRef.current.style.transform = "unset";
-                }
-                clearTimeout(timeout);
-            };
-        }, [event.id]);
-
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);
         };
@@ -285,7 +244,6 @@ const CombatantView = forwardRef(
                 })}
                 onClick={onClick}
                 {...other}
-                ref={ref}
             >
                 <div className={classes.inner}>
                     {isTargeted && (
@@ -302,13 +260,8 @@ const CombatantView = forwardRef(
                                     {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
                                 </div>
                             )}
-                            <div className={classes.combatantContainer}>
-                                <span ref={portraitRef} className={classNames(classes.portrait)}>
-                                    {event?.action?.type === ACTION_TYPES.RANGE_ATTACK && event?.action?.icon && (
-                                        <span className={classes.center}>
-                                            <img src={event?.action?.icon} ref={projectileRef} className={classNames(classes.projectile)} />{" "}
-                                        </span>
-                                    )}
+                            <div className={classes.combatantContainer} ref={weaponRef}>
+                                <span ref={ref as any} className={classNames(classes.portrait)}>
                                     <img
                                         src={oldState.image}
                                         className={classNames(classes.portraitImage, {
@@ -322,7 +275,7 @@ const CombatantView = forwardRef(
                                             image={oldState.weapon}
                                             action={event?.action}
                                             target={event?.target}
-                                            wielder={portraitRef?.current}
+                                            wielder={weaponRef?.current as any}
                                         />
                                     </div>
                                     {oldState.HP > 0 && <Effects combatant={oldState} healing={statChanges?.healing} />}
