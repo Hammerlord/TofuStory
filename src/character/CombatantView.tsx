@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import { createRef, forwardRef, useEffect, useRef, useState } from "react";
+import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
@@ -9,7 +9,6 @@ import EffectIcon from "../icon/EffectIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicator, Zzz } from "../images";
-import { travel } from "./animations";
 import AttackPower from "./AttackPower";
 import Effects from "./effects/Effects";
 import Health from "./HealthView";
