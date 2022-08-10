@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES } from "../ability/types";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
@@ -46,7 +46,7 @@ const useStyles = createUseStyles({
         "0%": {
             transform: "rotate(0deg)",
         },
-        "25%": {
+        "35%": {
             transform: "rotate(0deg)",
         },
         "90%": {

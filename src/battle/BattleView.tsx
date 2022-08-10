@@ -49,6 +49,7 @@ const useStyles = createUseStyles({
         backgroundImage: `url(${victoria})`,
         backgroundSize: "100% 100%",
         overflow: "hidden",
+        color: "black",
     },
     battlefieldContainer: {
         height: "69%",
@@ -158,7 +159,21 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const BattlefieldContainer = ({ waves, onBattleWon, initialDeck, player, updatePlayer, rewards }) => {
+const BattlefieldContainer = ({
+    waves,
+    onBattleWon,
+    initialDeck,
+    player,
+    updatePlayer,
+    rewards,
+}: {
+    waves: Wave[];
+    onBattleWon: Function;
+    initialDeck: Ability[];
+    player: Combatant;
+    updatePlayer: Function;
+    rewards?: any;
+}) => {
     const [deck, setDeck] = useState(shuffle(initialDeck));
     const [discard, setDiscard] = useState([]);
     const [hand, setHand] = useState([]);

@@ -2,14 +2,13 @@ import classNames from "classnames";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
 import { Ability, Effect } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import Rewards from "../battle/Rewards";
 import { updateHP } from "../battle/utils";
+import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import JobUp from "../character/JobUp";
 import DevToolButton from "../devtools/DevToolButton";
-import { oldGladiusImage, warmush } from "../images";
 import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
@@ -203,22 +202,10 @@ const Main = () => {
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
         const starterItems = [blackScroll, blackScroll, blackScroll];
         setPlayer({
-            id: uuid.v4(),
+            ...defaultCharacterProperties,
             class: selectedClass,
-            secondaryClass: null,
-            image: warmush,
-            HP: 25,
-            maxHP: 25,
-            resourcesPerTurn: 3,
-            maxResources: 3,
-            resources: 3,
-            armor: 0,
             effects: aggregateItemEffects(starterItems),
-            turnHistory: [],
             items: starterItems,
-            mesos: 0,
-            isPlayer: true,
-            weapon: oldGladiusImage,
         });
         setDeck(deck);
     };

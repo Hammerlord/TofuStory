@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import CardGame from "../scene/CardGame";
 import DevAbilityViewer from "./DevAbilityViewer";
+import DevStageBattle from "./DevStageBattle";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -50,6 +51,7 @@ const DevToolButton = () => {
     const [devToolsMenuAnchor, setDevToolsMenuAnchor] = useState(null);
     const [cardGameDifficulty, setCardGameDifficulty] = useState(null);
     const [isAbilityViewerOpen, setIsAbilityViewerOpen] = useState(false);
+    const [isBattle, setIsBattle] = useState(false);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -79,6 +81,7 @@ const DevToolButton = () => {
                             </MenuList>
                             <MenuList>
                                 <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>Ability Viewer</MenuItem>
+                                <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                             </MenuList>
                         </div>
                     </ClickAwayListener>
@@ -93,6 +96,13 @@ const DevToolButton = () => {
                 <div className={classes.overlay}>
                     <div className={classes.inner}>
                         <DevAbilityViewer onClose={() => setIsAbilityViewerOpen(false)} />
+                    </div>
+                </div>
+            )}
+            {isBattle && (
+                <div className={classes.overlay}>
+                    <div className={classes.inner}>
+                        <DevStageBattle />
                     </div>
                 </div>
             )}
