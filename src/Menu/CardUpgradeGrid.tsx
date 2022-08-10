@@ -68,8 +68,8 @@ const CardUpgradeGrid = ({
 }: {
     cards: Ability[];
     highlightColour?: string;
-    onCancel: Function;
-    onConfirm: Function;
+    onCancel?: Function;
+    onConfirm?: Function;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useGridStyles();
@@ -82,27 +82,31 @@ const CardUpgradeGrid = ({
                 ))}
             </div>
             <div>
-                <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    onClick={() => {
-                        if (!cards[selectedAbilityIndex]) {
-                            return;
-                        }
+                {onConfirm && (
+                    <Button
+                        variant={"contained"}
+                        color={"primary"}
+                        onClick={() => {
+                            if (!cards[selectedAbilityIndex]) {
+                                return;
+                            }
 
-                        const updatedCards = [
-                            ...cards.filter((_, i) => i !== selectedAbilityIndex),
-                            cards[selectedAbilityIndex].upgrades[0],
-                        ];
-                        onConfirm(updatedCards);
-                    }}
-                    disabled={!cards[selectedAbilityIndex]}
-                >
-                    Select!
-                </Button>
-                <Button variant={"contained"} onClick={onCancel as any}>
-                    Cancel
-                </Button>
+                            const updatedCards = [
+                                ...cards.filter((_, i) => i !== selectedAbilityIndex),
+                                cards[selectedAbilityIndex].upgrades[0],
+                            ];
+                            onConfirm(updatedCards);
+                        }}
+                        disabled={!cards[selectedAbilityIndex]}
+                    >
+                        Select!
+                    </Button>
+                )}
+                {onCancel && (
+                    <Button variant={"contained"} onClick={onCancel as any}>
+                        Cancel
+                    </Button>
+                )}
             </div>
         </div>
     );

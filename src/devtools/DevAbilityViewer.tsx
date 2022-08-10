@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import CardGrid from "../Menu/CardGrid";
+import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { PLAYER_CLASSES, SECONDARY_JOBS } from "../Menu/types";
 
 const useStyles = createUseStyles({
@@ -24,10 +25,16 @@ const useStyles = createUseStyles({
 
 const DevAbilityViewer = ({ onClose }) => {
     const [selectedClass, setSelectedClass] = useState(null);
+    const [isViewingUpgrades, setIsViewingUpgrades] = useState(false);
     const classes = useStyles();
+
+    const Grid = isViewingUpgrades ? CardUpgradeGrid : CardGrid;
 
     return (
         <div>
+            <Button variant="contained" color="primary" onClick={() => setIsViewingUpgrades((prev) => !prev)}>
+                Toggle upgrades {isViewingUpgrades ? "off" : "on"}
+            </Button>
             <Button variant="contained" onClick={onClose}>
                 Close
             </Button>
@@ -37,12 +44,12 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div>
                     <p>{selectedClass}</p>
-                    <CardGrid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
+                    <Grid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
                         <div>
                             <hr />
                             <p>{secondaryClass}</p>
-                            <CardGrid cards={JOB_CARD_MAP[secondaryClass]?.all || []} />
+                            <Grid cards={JOB_CARD_MAP[secondaryClass]?.all || []} />
                         </div>
                     ))}
                 </div>
