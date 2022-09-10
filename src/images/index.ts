@@ -111,6 +111,9 @@ export { default as extraStrikeImage } from "./Blast_Extra_Strike.png";
 export { default as panicSkillImage } from "./Panic.png";
 export { default as redFistOfFuryImage } from "./redfistoffury.png";
 export { default as bladestormImage } from "./bladestorm.png";
+export { default as enrageImage } from "./enrage.png";
+export { default as burningSoulBladeImage } from "./burningsoulblade.png";
+export { default as burningSoulBladeMinionImage } from "./burningsoulblademinion.png";
 
 export { default as upmattImage } from "./upMATT.png";
 export { default as map } from "./victoria island.png";

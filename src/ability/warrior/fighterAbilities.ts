@@ -1,5 +1,7 @@
 import {
     brandishImage,
+    burningSoulBladeImage,
+    burningSoulBladeMinionImage,
     chanceattack,
     combofuryImage,
     endureImage,
@@ -243,4 +245,35 @@ export const risingRage: Ability = {
             ],
         },
     ],
+};
+
+export const burningSoulBlade: Ability = {
+    name: "Burning Soul Blade",
+    resourceCost: 1,
+    image: burningSoulBladeImage,
+    actions: [],
+    minion: {
+        name: "Burning Soul Blade",
+        image: burningSoulBladeMinionImage,
+        maxHP: 1,
+        damage: 2,
+        effects: [
+            {
+                type: EFFECT_TYPES.IMMUNITY,
+                class: EFFECT_CLASSES.BUFF,
+                attackAreaIncrease: 1,
+                onAttack: {
+                    effectOwner: {
+                        effects: [
+                            {
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                                damage: 1,
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
 };

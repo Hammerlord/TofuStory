@@ -20,6 +20,7 @@ import {
     ragingBlow,
     worldReaver,
     risingRage,
+    burningSoulBlade,
 } from "./warrior/fighterAbilities";
 import {
     bash,
@@ -50,6 +51,7 @@ import {
     whirlwind,
     rupture,
     bladestorm,
+    rally,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -94,12 +96,13 @@ export const JOB_CARD_MAP = {
             whirlwind,
             rupture,
             bladestorm,
+            rally,
         ],
-        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block],
+        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, burningSoulBlade, rally],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],
-        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver, risingRage],
+        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver, risingRage, burningSoulBlade],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         onJobUp: [evilEye, piercingDrive],

@@ -4,6 +4,7 @@ import {
     brick,
     bricks,
     closecombatImage,
+    enrageImage,
     extraStrikeImage,
     flag,
     hammer,
@@ -1231,4 +1232,49 @@ export const bladestorm: Ability = {
         },
     ],
     upgrades: [bladestorm2],
+};
+
+export const rally2: Ability = {
+    name: "Rally",
+    resourceCost: 1,
+    image: enrageImage,
+    actions: [
+        {
+            area: 2,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [
+                {
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 3,
+                    duration: 0,
+                    icon: enrageImage,
+                },
+            ],
+        },
+    ],
+};
+
+export const rally: Ability = {
+    name: "Rally",
+    resourceCost: 1,
+    image: enrageImage,
+    actions: [
+        {
+            area: 2,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [
+                {
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 2,
+                    duration: 0,
+                    icon: enrageImage,
+                },
+            ],
+        },
+    ],
+    upgrades: [rally2],
 };
