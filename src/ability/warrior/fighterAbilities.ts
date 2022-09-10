@@ -43,7 +43,7 @@ export const puncture: Ability = {
     image: punctureImage,
     actions: [
         {
-            damage: 1,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -63,11 +63,11 @@ export const chanceStrike: Ability = {
     image: chanceattack,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 4,
+                damage: 8,
                 conditions: [
                     {
                         calculationTarget: "target",

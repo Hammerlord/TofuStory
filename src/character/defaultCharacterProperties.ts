@@ -10,8 +10,8 @@ const defaultCharacterProperties = {
     class: PLAYER_CLASSES.WARRIOR,
     secondaryClass: null,
     image: warmush,
-    HP: 25,
-    maxHP: 25,
+    HP: 50,
+    maxHP: 50,
     resourcesPerTurn: 3,
     maxResources: 3,
     resources: 3,
@@ -22,6 +22,7 @@ const defaultCharacterProperties = {
     weapon: oldGladiusImage,
     effects: [],
     items: [],
+    drawCardsPerTurn: 3,
 } as Combatant;
 
 export default defaultCharacterProperties;

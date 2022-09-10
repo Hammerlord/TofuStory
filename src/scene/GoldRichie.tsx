@@ -8,7 +8,7 @@ import { NPC } from "./types";
 const goldRichie: Enemy = {
     name: "Gold Richie",
     image: goldrichieImage,
-    maxHP: 10,
+    maxHP: 15,
     damage: 0,
     abilities: [
         {
@@ -36,7 +36,7 @@ const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
 const goldRichie2: Enemy = {
     name: "Gold Richie",
     image: goldrichieImage,
-    maxHP: 10,
+    maxHP: 15,
     armor: 15,
     damage: 0,
     abilities: [
@@ -78,8 +78,8 @@ const goldRichie2: Enemy = {
 const adventurerFighter = {
     name: "Fighter",
     image: warriorImage,
-    HP: 25,
-    maxHP: 25,
+    HP: 40,
+    maxHP: 40,
     damage: 2,
     abilities: [rally],
 };
@@ -87,8 +87,8 @@ const adventurerFighter = {
 const adventurerIceWizard = {
     name: "Ice-Lightning Wizard",
     image: wizardImage,
-    HP: 20,
-    maxHP: 20,
+    HP: 35,
+    maxHP: 35,
     damage: 3,
 };
 

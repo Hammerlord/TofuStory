@@ -21,4 +21,5 @@ export interface Combatant {
     resourcesPerTurn?: number;
     items: Item[];
     mesos?: number;
+    drawCardsPerTurn: number;
 }

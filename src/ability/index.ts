@@ -95,7 +95,7 @@ export const JOB_CARD_MAP = {
             rupture,
             bladestorm,
         ],
-        starters: [bash, bash, bash, warLeap, slashBlast, slashBlast, slam, block, block, block],
+        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],

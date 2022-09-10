@@ -43,17 +43,17 @@ export interface Enemy {
 
 export const snail: Enemy = {
     name: "Snail",
-    maxHP: 5,
+    maxHP: 14,
     abilities: [loaf],
     image: snailImage,
-    damage: 1,
+    damage: 2,
 };
 
 export const blueSnail: Enemy = {
     name: "Blue Snail",
-    maxHP: 10,
+    maxHP: 25,
     image: bluesnailImage,
-    damage: 2,
+    damage: 3,
     abilities: [
         {
             name: "Block",
@@ -61,7 +61,7 @@ export const blueSnail: Enemy = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 3,
+                    armor: 5,
                 },
             ],
         },
@@ -70,16 +70,16 @@ export const blueSnail: Enemy = {
 
 export const shroom: Enemy = {
     name: "Shroom",
-    maxHP: 7,
+    maxHP: 20,
     image: shroomImage,
-    damage: 2,
+    damage: 3,
 };
 
 export const redSnail: Enemy = {
     name: "Red Snail",
-    maxHP: 20,
+    maxHP: 35,
     image: redsnailImage,
-    damage: 2,
+    damage: 3,
     abilities: [
         {
             name: "Block",
@@ -87,7 +87,7 @@ export const redSnail: Enemy = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 3,
+                    armor: 5,
                 },
             ],
         },
@@ -96,17 +96,17 @@ export const redSnail: Enemy = {
 
 export const orangeMushroom: Enemy = {
     name: "Orange Mushroom",
-    maxHP: 25,
+    maxHP: 40,
     image: orangeMushroomImage,
-    damage: 3,
+    damage: 5,
     effects: [hardy],
 };
 
 export const noobA: Enemy = {
     name: "Beginner A",
-    maxHP: 20,
+    maxHP: 30,
     image: noobClubAImage,
-    damage: 2,
+    damage: 3,
     abilities: [
         {
             name: "Club!",
@@ -134,9 +134,9 @@ export const noobA: Enemy = {
 
 export const noobB: Enemy = {
     name: "Beginner B",
-    maxHP: 20,
+    maxHP: 30,
     image: noobClubBImage,
-    damage: 2,
+    damage: 3,
     abilities: [
         {
             name: "Flurry",
@@ -209,7 +209,7 @@ export const noobBWarrior = {
 
 export const thiefAssassin: Enemy = {
     name: "XxLeetSinxX",
-    maxHP: 30,
+    maxHP: 40,
     image: leetSin,
     damage: 2,
     attack: {
@@ -278,7 +278,7 @@ export const thiefAssassin: Enemy = {
 
 export const olaf = {
     name: "Olaf",
-    maxHP: 25,
+    maxHP: 35,
     effects: [elite],
     abilities: [
         {
@@ -369,7 +369,7 @@ export const axeStump: Enemy = {
 export const fireBoar: Enemy = {
     name: "Fire Boar",
     image: fireboarImage,
-    maxHP: 25,
+    maxHP: 35,
     damage: 3,
     abilities: [
         {
@@ -391,14 +391,14 @@ export const fireBoar: Enemy = {
 export const ligator: Enemy = {
     name: "Ligator",
     image: ligatorImage,
-    maxHP: 15,
+    maxHP: 20,
     damage: 2,
 };
 
 export const eliteLigator: Enemy = {
     name: "Ligator",
     image: ligatorImage,
-    maxHP: 30,
+    maxHP: 35,
     damage: 2,
     effects: [elite, raging],
 };
@@ -406,14 +406,14 @@ export const eliteLigator: Enemy = {
 export const greenMushroom: Enemy = {
     name: "Green Mushroom",
     image: greenmushroomImage,
-    maxHP: 15,
+    maxHP: 25,
     damage: 1,
 };
 
 export const hornyMushroom: Enemy = {
     name: "Horny Mushroom",
     image: hornymushroomImage,
-    maxHP: 20,
+    maxHP: 30,
     damage: 2,
     effects: [thorns],
 };
@@ -421,7 +421,7 @@ export const hornyMushroom: Enemy = {
 export const kingSlimeEnemy: Enemy = {
     name: "King Slime",
     image: kingslimeImage,
-    maxHP: 50,
+    maxHP: 100,
     damage: 2,
     effects: [elite],
     abilities: [

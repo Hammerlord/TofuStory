@@ -94,7 +94,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     icon: Fire,
-    description: "Burned targets take 2 damage at the end of their turn.",
+    description: "Burned targets take 3 damage at the end of their turn.",
 };
 
 export const chill: Effect = {

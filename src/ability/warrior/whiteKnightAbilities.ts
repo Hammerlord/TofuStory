@@ -20,7 +20,7 @@ export const flameCharge: Ability = {
     image: flamecharge,
     actions: [
         {
-            damage: 2,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -39,11 +39,11 @@ export const blizzardCharge: Ability = {
     image: blizzardcharge,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 3,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -63,20 +63,16 @@ export const blizzardCharge: Ability = {
 
 export const lightningCharge: Ability = {
     name: "Lightning Charge",
-    resourceCost: 2,
+    resourceCost: 1,
     image: lightningcharge,
-    description: "Reduce cost by 1 for every ability used this turn, until Lightning Charge is used or discarded",
-    onAbilityUse: {
-        resourceCost: -1,
-    },
     actions: [
         {
             area: 1,
-            damage: 2,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 3,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -106,15 +102,15 @@ export const divineCharge: Ability = {
     name: "Divine Charge",
     resourceCost: 1,
     image: divinechargeImage,
-    description: "+ Damage equal to the number of debuffs on the target",
+    description: "+2 damage times the number of debuffs on the target",
     actions: [
         {
-            damage: 2,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             bonus: {
-                damage: 1,
+                damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.DEBUFFS,
                     calculationTarget: "target",

@@ -40,8 +40,6 @@ import {
 } from "./utils";
 import WaveInfo from "./WaveInfo";
 
-const CARDS_PER_DRAW = 5;
-
 const useStyles = createUseStyles({
     root: {
         width: "100%",
@@ -490,7 +488,7 @@ const BattlefieldContainer = ({
     };
 
     const handlePlayerTurnStart = () => {
-        let cardsToDraw = CARDS_PER_DRAW - hand.length;
+        let cardsToDraw = player.drawCardsPerTurn - hand.length;
 
         const updateFns = [refreshPlayerResources, checkHalveArmor];
         if (currentRound > 0) {

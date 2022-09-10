@@ -44,14 +44,14 @@ export const darkImpale: Ability = {
     image: darkimpaleImage,
     actions: [
         {
-            damage: 3,
+            damage: 5,
             secondaryDamage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
                     ...wound,
-                    duration: 2,
+                    duration: 3,
                 },
             ],
             area: 2,
@@ -118,12 +118,12 @@ export const piercingDrive: Ability = {
     actions: [
         {
             area: 1,
-            damage: 4,
-            secondaryDamage: 2,
+            damage: 5,
+            secondaryDamage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 1,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -142,7 +142,7 @@ export const spearSweep: Ability = {
     actions: [
         {
             area: 2,
-            damage: 2,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [stun],
