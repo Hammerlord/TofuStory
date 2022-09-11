@@ -8,6 +8,7 @@ import {
     gungnirImage,
     Heart,
     lordOfDarknessImage,
+    nightshadeExplosionImage,
     piercingdriveImage,
     spearsweepImage,
 } from "../../images";
@@ -28,8 +29,8 @@ export const evilEye: Ability = {
             {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                description: "Heals a random ally for 1 each turn.",
-                healTargetPerTurn: 1,
+                description: "Heals a random ally for 2 each turn.",
+                healTargetPerTurn: 2,
                 duration: Infinity,
                 icon: Heart,
             },
@@ -118,12 +119,12 @@ export const piercingDrive: Ability = {
     actions: [
         {
             area: 1,
-            damage: 5,
+            damage: 6,
             secondaryDamage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 3,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -208,7 +209,7 @@ export const gungnir: Ability = {
     resourceCost: 3,
     depletedOnUse: true,
     image: gungnirImage,
-    description: "(Damage equal to half your max HP)",
+    description: "(Damage equal to 25% your max HP)",
     actions: [
         {
             damage: 0,
@@ -220,9 +221,27 @@ export const gungnir: Ability = {
                 damage: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.MAX_HP,
-                    value: 0.5,
+                    value: 0.25,
                     calculationTarget: "actor",
                 },
+            },
+        },
+    ],
+};
+
+export const nightshadeExplosion: Ability = {
+    name: "Nightshade Explosion",
+    resourceCost: 1,
+    image: nightshadeExplosionImage,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 2,
+            radiate: {
+                area: 2,
+                damage: 5,
             },
         },
     ],

@@ -4,6 +4,7 @@ import {
     blastImage,
     blizzardcharge,
     divinechargeImage,
+    elementalForceImage,
     flamecharge,
     highPaladinImage,
     lightningcharge,
@@ -68,7 +69,7 @@ export const lightningCharge: Ability = {
     actions: [
         {
             area: 1,
-            damage: 4,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -87,7 +88,7 @@ export const lightningCharge: Ability = {
 
 export const frostFire: Ability = {
     name: "Frostfire Within",
-    resourceCost: 0,
+    resourceCost: 1,
     image: advancedcharge,
     actions: [
         {
@@ -100,12 +101,12 @@ export const frostFire: Ability = {
 
 export const divineCharge: Ability = {
     name: "Divine Charge",
-    resourceCost: 1,
+    resourceCost: 0,
     image: divinechargeImage,
-    description: "+2 damage times the number of debuffs on the target",
+    description: "damage times the number of debuffs on the target",
     actions: [
         {
-            damage: 3,
+            damage: 2,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -115,12 +116,6 @@ export const divineCharge: Ability = {
                     type: MULTIPLIER_TYPES.DEBUFFS,
                     calculationTarget: "target",
                 },
-                conditions: [
-                    {
-                        calculationTarget: "target",
-                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    },
-                ],
             },
         },
     ],
@@ -202,7 +197,7 @@ export const judgment: Ability = {
 
 export const parashockGuard: Ability = {
     name: "Parashock Guard",
-    resourceCost: 2,
+    resourceCost: 1,
     image: parashockGuardImage,
     depletedOnUse: true,
     description: "(Armor gained equal to your current armor)",
@@ -215,6 +210,35 @@ export const parashockGuard: Ability = {
                 type: MULTIPLIER_TYPES.ARMOR,
                 calculationTarget: "actor",
             },
+        },
+    ],
+};
+
+export const elementalForce: Ability = {
+    name: "Elemental Force",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: elementalForceImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Elemental Force",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: elementalForceImage,
+                    skillBonus: [
+                        {
+                            skill: flameCharge.name,
+                            damage: 2,
+                        },
+                        { skill: blizzardCharge.name, damage: 2 },
+                        { skill: lightningCharge.name, damage: 2 },
+                    ],
+                },
+            ],
         },
     ],
 };

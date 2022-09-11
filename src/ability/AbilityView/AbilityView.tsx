@@ -250,7 +250,11 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                                     Gain <Icon icon={<Shield />} text={armor} />
                                 </div>
                             )}
-                            {resourceGain > 0 && <div>{resourceGain > 0 && <Fury text={resourceGain} />}</div>}
+                            {resourceGain > 0 && (
+                                <div>
+                                    Gain <Fury text={resourceGain} />
+                                </div>
+                            )}
                             {selfDamage > 0 && (
                                 <div>
                                     Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} />

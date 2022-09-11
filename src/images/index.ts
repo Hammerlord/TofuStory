@@ -34,6 +34,7 @@ export { default as Lock } from "./1f512.svg";
 export { default as QuestionMark } from "./2753.svg";
 export { default as House } from "./1f3e0.svg";
 
+export { default as PoisonIcon } from "./poison.png";
 export { default as Wolf } from "./wolf.png";
 export { default as ClickIndicator } from "./clickindicator.gif";
 export { default as blockImage } from "./block.png";
@@ -114,6 +115,8 @@ export { default as bladestormImage } from "./bladestorm.png";
 export { default as enrageImage } from "./enrage.png";
 export { default as burningSoulBladeImage } from "./burningsoulblade.png";
 export { default as burningSoulBladeMinionImage } from "./burningsoulblademinion.png";
+export { default as elementalForceImage } from "./elementalforce.png";
+export { default as nightshadeExplosionImage } from "./nightshadeexplosion.png";
 
 export { default as upmattImage } from "./upMATT.png";
 export { default as map } from "./victoria island.png";
