@@ -22,7 +22,6 @@ import {
     shieldred,
     shout,
     slashblast,
-    snailImage as snailPortrait,
     spikes,
     warleap,
     warmush,
@@ -401,18 +400,6 @@ export const warBanner: Ability = {
     },
     actions: [],
     upgrades: [warBanner2],
-};
-
-export const snailMinion: Ability = {
-    name: "Snail",
-    resourceCost: 1,
-    minion: {
-        name: "Snail",
-        image: snailPortrait,
-        maxHP: 5,
-        damage: 1,
-    },
-    actions: [],
 };
 
 export const yell2: Ability = {

@@ -1,6 +1,7 @@
 import { Ability } from "./../ability/types";
-import { slam, bash, slashBlast, block, warLeap, snailMinion } from "../ability/warrior/warriorAbilities";
+import { slam, bash, slashBlast, block, warLeap } from "../ability/warrior/warriorAbilities";
 import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
+import { snailMinion } from "../ability/minion";
 
 export interface Wave {
     description?: string | string[];
