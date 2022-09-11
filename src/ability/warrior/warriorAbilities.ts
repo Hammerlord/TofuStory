@@ -74,7 +74,7 @@ export const warLeap2: Ability = {
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
             bonus: {
-                damage: 8,
+                damage: 10,
                 conditions: [
                     {
                         healthPercentage: 1,
@@ -98,7 +98,7 @@ export const warLeap: Ability = {
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
             bonus: {
-                damage: 5,
+                damage: 6,
                 conditions: [
                     {
                         healthPercentage: 1,
@@ -149,7 +149,7 @@ export const slam2: Ability = {
     image: mace,
     actions: [
         {
-            damage: 10,
+            damage: 9,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -209,16 +209,16 @@ export const anger: Ability = {
 export const shieldStrike2: Ability = {
     name: "Shield Strike",
     level: 2,
-    resourceCost: 1,
+    resourceCost: 2,
     image: shieldred,
     actions: [
         {
-            damage: 6,
+            damage: 9,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            armor: 5,
+            armor: 9,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -227,16 +227,16 @@ export const shieldStrike2: Ability = {
 
 export const shieldStrike: Ability = {
     name: "Shield Strike",
-    resourceCost: 1,
+    resourceCost: 2,
     image: shieldred,
     actions: [
         {
-            damage: 4,
+            damage: 6,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            armor: 3,
+            armor: 6,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -285,11 +285,11 @@ const bloodthirst2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    healthPerResourcesSpent: 3,
+                    healthPerResourcesSpent: 4,
                     icon: shout,
                 },
             ],
-            healing: 4,
+            healing: 7,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -309,11 +309,11 @@ export const bloodthirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    healthPerResourcesSpent: 2,
+                    healthPerResourcesSpent: 3,
                     icon: shout,
                 },
             ],
-            healing: 3,
+            healing: 5,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -418,7 +418,7 @@ export const snailMinion: Ability = {
 export const yell2: Ability = {
     name: "Yell",
     level: 2,
-    resourceCost: 2,
+    resourceCost: 1,
     image: warmush,
     actions: [
         {
@@ -451,6 +451,7 @@ export const yell: Ability = {
             effects: [
                 {
                     damage: -2,
+                    damageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -465,8 +466,9 @@ export const yell: Ability = {
 export const bunchOBricks2: Ability = {
     name: "Bunch o' Bricks",
     level: 2,
-    resourceCost: 2,
+    resourceCost: 1,
     image: bricks,
+    depletedOnUse: true,
     actions: [
         {
             addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -478,8 +480,9 @@ export const bunchOBricks2: Ability = {
 
 export const bunchOBricks: Ability = {
     name: "Bunch o' Bricks",
-    resourceCost: 2,
+    resourceCost: 1,
     image: bricks,
+    depletedOnUse: true,
     actions: [
         {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -503,16 +506,6 @@ export const hammerang2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
             icon: hammer,
-            effects: [
-                {
-                    name: "Hammered",
-                    icon: hammer,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.DEBUFF,
-                    damageReceived: 1,
-                    duration: 0,
-                },
-            ],
         },
     ],
 };
@@ -830,11 +823,12 @@ export const berserk2: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             drawCards: {
-                amount: 1,
-                effects: {
-                    resourceCost: -3,
-                },
+                amount: 2,
             },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
             cards: {
                 effects: {
                     resourceCost: -3,
@@ -851,6 +845,13 @@ export const berserk: Ability = {
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
     actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 1,
+            },
+        },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
@@ -1121,7 +1122,7 @@ export const whirlwind2: Ability = {
 export const whirlwind: Ability = {
     name: "Whirlwind",
     image: panicSkillImage,
-    resourceCost: 1,
+    resourceCost: 2,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1152,12 +1153,11 @@ export const rupture2: Ability = {
     name: "Rupture",
     resourceCost: 0,
     image: redFistOfFuryImage,
-    description: "Deals +1 damage for every Wound on the target",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 1,
+            damage: 6,
             bonus: {
                 damage: 3,
                 multiplier: {
@@ -1184,7 +1184,7 @@ export const rupture: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 1,
+            damage: 4,
             bonus: {
                 damage: 2,
                 multiplier: {

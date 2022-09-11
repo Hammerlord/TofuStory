@@ -22,17 +22,17 @@ export const intrepidSlash: Ability = {
     description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -69,7 +69,7 @@ export const chanceStrike: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 8,
+                damage: 6,
                 conditions: [
                     {
                         calculationTarget: "target",
@@ -88,12 +88,12 @@ export const brandish: Ability = {
     description: "Hits twice",
     actions: [
         {
-            damage: 2,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
         {
-            damage: 2,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -102,7 +102,7 @@ export const brandish: Ability = {
 
 export const comboFury: Ability = {
     name: "Combo Fury",
-    resourceCost: 1,
+    resourceCost: 0,
     image: combofuryImage,
     description: "Deals 1 damage for every attack you made this turn, hitting twice",
     actions: [
@@ -167,7 +167,7 @@ const ragingBlowAction: Action = {
 
 export const ragingBlow: Ability = {
     name: "Raging Blow",
-    resourceCost: 1,
+    resourceCost: 0,
     image: ragingblowImage,
     description: "Hits twice",
     actions: [
