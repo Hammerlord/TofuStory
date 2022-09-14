@@ -67,15 +67,14 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
     let icon: string | JSX.Element = effect.icon;
     const {
         thorns = 0,
-        healthPerResourcesSpent = 0,
-        healingPerTurn = 0,
-        armorPerTurn = 0,
         type,
         damage,
         leech = 0,
         skillBonus = [],
         onlyVisibleWhenProcced,
         conditions,
+        onTurnStart,
+        onResourcesSpent,
     } = effect;
     if (isAura) {
         name = "Aura";
@@ -85,6 +84,9 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
     if (!icon) {
         return null;
     }
+
+    const { armor, healing } = onTurnStart?.effectOwner || {};
+    const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
 
     const isSilenced = (effect.canBeSilenced || isAura) && silence;
     const passedConditions = passesConditions({
@@ -109,14 +111,14 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
                         <Icon icon={<CrossedSwords />} text={damage} /> base attack
                     </div>
                 )}
-                {armorPerTurn > 0 && (
+                {armor > 0 && (
                     <div>
-                        <Icon icon={<Shield />} text={armorPerTurn} /> per turn
+                        <Icon icon={<Shield />} text={armor} /> per turn
                     </div>
                 )}
-                {healingPerTurn > 0 && (
+                {healing > 0 && (
                     <div>
-                        <Icon icon={<Heart />} text={healingPerTurn} /> per turn
+                        <Icon icon={<Heart />} text={healing} /> per turn
                     </div>
                 )}
                 {healthPerResourcesSpent > 0 && (

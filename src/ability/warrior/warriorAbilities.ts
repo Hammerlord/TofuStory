@@ -6,6 +6,7 @@ import {
     closecombatImage,
     enrageImage,
     extraStrikeImage,
+    Fireworks,
     flag,
     hammer,
     hyperbody,
@@ -284,7 +285,11 @@ const bloodthirst2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    healthPerResourcesSpent: 4,
+                    onResourcesSpent: {
+                        effectOwner: {
+                            healing: 4,
+                        },
+                    },
                     icon: shout,
                 },
             ],
@@ -308,7 +313,11 @@ export const bloodthirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    healthPerResourcesSpent: 3,
+                    onResourcesSpent: {
+                        effectOwner: {
+                            healing: 3,
+                        },
+                    },
                     icon: shout,
                 },
             ],
@@ -359,17 +368,23 @@ export const warBanner2: Ability = {
         image: flag,
         maxHP: 1,
         damage: 0,
-        aura: {
-            damage: 2,
-            armorPerTurn: 1,
-            area: 1,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-        },
         effects: [
             {
                 ...stealth,
                 duration: 3,
+            },
+            {
+                icon: Fireworks,
+                damage: 2,
+                area: 1,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                excludeEffectOwner: true,
+                onTurnStart: {
+                    effectOwner: {
+                        armor: 1,
+                    },
+                },
             },
         ],
     },
@@ -384,17 +399,23 @@ export const warBanner: Ability = {
         image: flag,
         maxHP: 1,
         damage: 0,
-        aura: {
-            damage: 1,
-            armorPerTurn: 1,
-            area: 1,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-        },
         effects: [
             {
                 ...stealth,
                 duration: 2,
+            },
+            {
+                icon: Fireworks,
+                damage: 2,
+                area: 1,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                excludeEffectOwner: true,
+                onTurnStart: {
+                    effectOwner: {
+                        armor: 1,
+                    },
+                },
             },
         ],
     },
@@ -904,8 +925,12 @@ export const recovery2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
-                    healingPerTurn: 3,
                     duration: 3,
+                    onTurnStart: {
+                        effectOwner: {
+                            healing: 3,
+                        },
+                    },
                 },
             ],
         },
@@ -927,8 +952,12 @@ export const recovery: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
-                    healingPerTurn: 2,
                     duration: 3,
+                    onTurnStart: {
+                        effectOwner: {
+                            healing: 3,
+                        },
+                    },
                 },
             ],
         },
@@ -1002,7 +1031,11 @@ export const ironBody2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
                     duration: 2,
-                    armorPerTurn: 2,
+                    onTurnStart: {
+                        effectOwner: {
+                            armor: 2,
+                        },
+                    },
                 },
             ],
         },
@@ -1026,7 +1059,11 @@ export const ironBody: Ability = {
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
                     duration: 1,
-                    armorPerTurn: 2,
+                    onTurnStart: {
+                        effectOwner: {
+                            armor: 2,
+                        },
+                    },
                 },
             ],
         },

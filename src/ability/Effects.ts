@@ -161,7 +161,7 @@ export const avenger: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: AlternateJapaneseOgre,
     description: "Grows powerful when one of its allies falls in combat.",
-    onFriendlyKilled: {
+    onFriendlyDeath: {
         effectOwner: {
             armor: 5,
             effects: [vengeful],
@@ -239,8 +239,12 @@ export const healingOverTime: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    healingPerTurn: 1,
     duration: 5,
+    onTurnStart: {
+        effectOwner: {
+            healing: 2,
+        },
+    },
 };
 
 export const silence: Effect = {

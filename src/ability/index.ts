@@ -100,7 +100,7 @@ export const JOB_CARD_MAP = {
             bladestorm,
             rally,
         ],
-        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, burningSoulBlade, rally],
+        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],

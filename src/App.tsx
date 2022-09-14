@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss";
 import Main from "./Menu/Main";
+import { store } from "./store";
+import { Provider } from "react-redux";
 
 const useStyles = createUseStyles({
     app: {
@@ -44,8 +46,10 @@ export const App = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.app}>
-            <Main />
-        </div>
+        <Provider store={store}>
+            <div className={classes.app}>
+                <Main />
+            </div>
+        </Provider>
     );
 };

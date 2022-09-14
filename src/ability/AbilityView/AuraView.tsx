@@ -33,7 +33,8 @@ const AuraView = ({ aura }: { aura: Aura }) => {
         return null;
     }
 
-    const { healingPerTurn = 0, damage = 0, armorPerTurn = 0 } = aura;
+    const { damage = 0, onTurnStart } = aura;
+    const { healing = 0, armor = 0 } = onTurnStart?.effectOwner || {};
 
     return (
         <div className={classes.root}>
@@ -45,14 +46,14 @@ const AuraView = ({ aura }: { aura: Aura }) => {
                     Gain <Icon icon={<CrossedSwords />} text={damage} />
                 </div>
             )}
-            {healingPerTurn > 0 && (
+            {healing > 0 && (
                 <div>
-                    Gain <Icon icon={<Heart />} text={healingPerTurn} /> per turn
+                    Gain <Icon icon={<Heart />} text={healing} /> per turn
                 </div>
             )}
-            {armorPerTurn > 0 && (
+            {armor > 0 && (
                 <div>
-                    Gain <Icon icon={<Shield />} text={armorPerTurn} /> per turn
+                    Gain <Icon icon={<Shield />} text={armor} /> per turn
                 </div>
             )}
         </div>

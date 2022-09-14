@@ -1,4 +1,4 @@
-import React, { cloneElement } from "react";
+import { cloneElement } from "react";
 import Icon from "../../icon/Icon";
 import { Cactus, Cloudy, CrossedSwords, Heart, Hourglass, Shield, upmattImage } from "../../images";
 import { Fury } from "../../resource/ResourcesView";
@@ -12,19 +12,21 @@ const Buffs = ({ ability }) => {
         <>
             {buffs.map((effect, i) => {
                 const {
-                    healthPerResourcesSpent = 0,
+                    onTurnStart,
                     thorns = 0,
                     armorReceived = 0,
-                    resourcesPerTurn = 0,
-                    healTargetPerTurn = 0,
                     damage = 0,
                     duration = Infinity,
                     onAttack = {},
                     preventArmorDecay,
                     leech = 0,
-                    healingPerTurn = 0,
                     skillBonus = [],
+                    onResourcesSpent,
                 } = effect;
+
+                const { healing, resources: resourcesPerTurn } = onTurnStart?.effectOwner || {};
+                const { healing: healTargetPerTurn } = onTurnStart?.randomFriendly || {};
+                const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
                     effectComponents.push(
@@ -103,10 +105,10 @@ const Buffs = ({ ability }) => {
                     }
                 }
 
-                if (healingPerTurn > 0) {
+                if (healing > 0) {
                     effectComponents.push(
                         <span>
-                            Heal for <Icon icon={<Heart />} text={healingPerTurn} /> per turn
+                            Heal for <Icon icon={<Heart />} text={healing} /> per turn
                         </span>
                     );
                 }

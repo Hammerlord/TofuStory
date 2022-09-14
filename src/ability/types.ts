@@ -25,6 +25,19 @@ export enum EFFECT_CLASSES {
     DEBUFF = "debuff",
 }
 
+interface TriggerEffect {
+    effects?: Effect[];
+    armor?: number;
+    healing?: number;
+    drawCards?: {
+        amount: number;
+        effects?: AbilityEffects;
+    };
+    resurrect?: boolean;
+    resources?: number;
+    damage?: number;
+}
+
 export interface EffectEventTrigger {
     removeEffect?: boolean;
     conditions?: EffectCondition[]; // OR if multiple conditions are present
@@ -32,18 +45,13 @@ export interface EffectEventTrigger {
         // Update the parent effect's stats
         damage?: number;
     };
-    effectOwner?: {
-        // Stat changes to apply to the target (owner of this effect)
-        effects?: Effect[];
-        armor?: number;
-        healing?: number;
-        drawCards?: number;
-        resurrect?: boolean;
-    };
-    externalParty?: {
-        // Stat changes to apply to the character who triggered this event
-        effects?: Effect[];
-    };
+    // Stat changes to apply to the owner of this effect
+    effectOwner?: TriggerEffect;
+    // Stat changes to apply to, for example, the target being attacked, or the target attacking the owner of this effect
+    externalParty?: TriggerEffect;
+    // Stat changes to apply to the character who applied the effect
+    effectApplier?: TriggerEffect;
+    randomFriendly?: TriggerEffect;
 }
 
 export interface Effect {
@@ -54,17 +62,17 @@ export interface Effect {
     duration?: number;
     damage?: number;
     description?: string;
-    healthPerResourcesSpent?: number;
     icon?: string;
     thorns?: number;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     isAuraEffect?: boolean;
-    healingPerTurn?: number;
-    healingPerWaveClear?: number;
-    damagePerTurn?: number; // Damages the owner of this effect
-    armorPerTurn?: number;
     resourcesPerTurn?: number;
+    drawCardsPerTurn?: number;
+    /** Area causes it to affect surrounding targets like an aura */
+    area?: number;
+    /** If true, effect has no effect on its owner */
+    excludeEffectOwner?: boolean;
     immunities?: EFFECT_TYPES[];
     preventArmorDecay?: boolean;
     armorReceived?: number;
@@ -72,20 +80,22 @@ export interface Effect {
     healingReceived?: number;
     /** Only a single instance of this effect type can be on the character */
     unique?: boolean;
-    /** The target for this is random */
-    healTargetPerTurn?: number;
-    damageTargetPerTurn?: number;
     /** A percentage of damage will be returned as HP to the effect owner */
     leech?: number;
     conditions?: EffectCondition[];
     onAttack?: EffectEventTrigger;
-    onKilled?: EffectEventTrigger;
-    onFriendlyKilled?: EffectEventTrigger;
-    onHostileKilled?: EffectEventTrigger;
+    onDeath?: EffectEventTrigger;
+    onFriendlyDeath?: EffectEventTrigger;
+    onHostileDeath?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
+    onResourcesSpent?: EffectEventTrigger;
+    onTurnStart?: EffectEventTrigger;
+    onTurnEnd?: EffectEventTrigger;
+    onEnd?: EffectEventTrigger;
     onWaveStart?: EffectEventTrigger;
+    onWaveClear?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
@@ -107,6 +117,11 @@ export interface Effect {
         abilityChoices?: number;
         healing?: number;
     };
+}
+
+export interface CombatEffect extends Effect {
+    id: string;
+    uptime: number;
 }
 
 export interface Aura extends Effect {
@@ -236,6 +251,7 @@ export interface Action {
     };
     /** Percentage of armor on the target to remove */
     destroyArmor?: number;
+    resurrect?: boolean;
 }
 
 export interface Ability {

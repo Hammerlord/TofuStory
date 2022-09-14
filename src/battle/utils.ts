@@ -1,3 +1,6 @@
+/**
+ * Helpers for various battle functions
+ */
 import { Combatant } from "../character/types";
 import {
     Ability,
@@ -10,7 +13,6 @@ import {
     MULTIPLIER_TYPES,
     TARGET_TYPES,
 } from "./../ability/types";
-import { calculateActionArea } from "./parseAbilityActions";
 import { passesConditions } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
 
@@ -31,25 +33,16 @@ export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCha
     return updatedStatChanges;
 };
 
-export const refreshPlayerResources = (character: Combatant): Combatant => {
+export const refreshResources = (character: Combatant): Combatant => {
+    if (isSilenced(character)) {
+        return character;
+    }
     return {
         ...character,
-        resources:
-            Math.min(character.maxResources, character.resourcesPerTurn) +
-            character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0),
-    };
-};
-
-export const triggerWaveClearEffects = (character: Combatant): Combatant => {
-    const { healingPerWaveClear = 0 } = character.effects.reduce((acc, effect: Effect) => {
-        return {
-            ...acc,
-            healingPerWaveClear: (acc.healingPerWaveClear || 0) + (effect.healingPerWaveClear || 0),
-        };
-    }, {} as any);
-    return {
-        ...character,
-        HP: updateHP(character, healingPerWaveClear),
+        resources: Math.min(
+            character.maxResources,
+            character.resourcesPerTurn + character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
+        ),
     };
 };
 
@@ -74,77 +67,10 @@ export const isSilenced = (character: Combatant): boolean => {
     return character.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };
 
-export const addEnemyResources = (character: Combatant): Combatant => {
-    if (isSilenced(character)) {
-        return character;
-    }
-    return {
-        ...character,
-        resources: Math.min(
-            character.maxResources,
-            character.resources +
-                character.resourcesPerTurn +
-                character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
-        ),
-    };
-};
-
 export const clearTurnHistory = (character: Combatant): Combatant => {
     return {
         ...character,
         turnHistory: [],
-    };
-};
-
-/**
- * Reduces the duration of effects by 1 and removes them if they have run out of time
- */
-export const tickDownDebuffs = (target: Combatant) => {
-    if (!target) {
-        return target;
-    }
-    return {
-        ...target,
-        effects: target.effects
-            .map((effect) => {
-                if (effect.class === EFFECT_CLASSES.DEBUFF) {
-                    return {
-                        ...effect,
-                        duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
-                    };
-                }
-
-                return effect;
-            })
-            .filter(({ duration = Infinity }) => duration > 0),
-    };
-};
-
-export const tickDownBuffs = (target: Combatant) => {
-    return {
-        ...target,
-        effects: target.effects
-            .map((effect) => {
-                if (effect.class === EFFECT_CLASSES.BUFF) {
-                    return {
-                        ...effect,
-                        duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
-                    };
-                }
-
-                return effect;
-            })
-            .filter(({ duration = Infinity }) => duration > 0),
-    };
-};
-
-export const tickEffectUptime = (target: Combatant) => {
-    return {
-        ...target,
-        effects: target.effects.map((effect) => ({
-            ...effect,
-            uptime: (effect.uptime || 0) + 1,
-        })),
     };
 };
 
@@ -158,17 +84,6 @@ export const checkHalveArmor = (target: Combatant): Combatant => {
     };
 };
 
-export const removeEndedEffects = (target: Combatant) => {
-    if (!target) {
-        return target;
-    }
-
-    return {
-        ...target,
-        effects: target.effects.filter(({ duration = Infinity }) => duration > 0),
-    };
-};
-
 /**
  * Player conditional helpers
  */
@@ -179,20 +94,20 @@ export const canUseAbility = (character, ability: HandAbility | undefined): bool
     return resourceCost + temporaryResourceCost <= (character.resources || 0);
 };
 
-export const isValidTarget = ({ ability, side, allies, enemies, index, actor }): boolean => {
+export const isValidTarget = ({ ability, side, playerSide, enemySide, index, actor }): boolean => {
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
 
     if (minion) {
-        return side === BATTLEFIELD_SIDES.ALLIES && (!allies[index] || allies[index].HP === 0);
+        return side === BATTLEFIELD_SIDES.PLAYER_SIDE && (!playerSide[index] || playerSide[index].HP === 0);
     }
 
     const { target } = actions[0] || {};
     const area = calculateActionArea({ action: actions[0], actor }) || ability.area || 0;
 
-    if (side === BATTLEFIELD_SIDES.ALLIES) {
+    if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
         if (target === TARGET_TYPES.SELF) {
-            return allies[index]?.isPlayer;
+            return playerSide[index]?.isPlayer;
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
@@ -200,19 +115,19 @@ export const isValidTarget = ({ ability, side, allies, enemies, index, actor }):
                 if (targetType === "actor") {
                     return actor;
                 } else if (targetType === "target") {
-                    return allies[index];
+                    return playerSide[index];
                 }
             };
             const conditionsPassed = actions.every(({ conditions = [] }) => passesConditions({ getCalculationTarget, conditions }));
             if (area === 0) {
                 // No sense in letting a single target ability whiff on an empty slot, for now
-                return Boolean(allies[index]) && allies[index].HP > 0 && conditionsPassed;
+                return Boolean(playerSide[index]) && playerSide[index].HP > 0 && conditionsPassed;
             }
 
             return conditionsPassed;
         }
-    } else if (side === BATTLEFIELD_SIDES.ENEMIES && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
-        const targetedEnemy = enemies[index];
+    } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
+        const targetedEnemy = enemySide[index];
         const hasStealth = targetedEnemy?.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
         if (hasStealth) {
             return false;
@@ -412,3 +327,181 @@ export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?
     });
     return newCard;
 };
+
+/**
+ * Given an actor and the battlefield, find which side is friendly to the actor and which side is hostile.
+ */
+export const orientate = ({ actorId, enemySide, playerSide }) => {
+    const { PLAYER_SIDE, ENEMY_SIDE } = BATTLEFIELD_SIDES;
+    const [actorSide, hostileSide] = playerSide.find((c) => c?.id === actorId) ? [PLAYER_SIDE, ENEMY_SIDE] : [ENEMY_SIDE, PLAYER_SIDE];
+    const [friendly, hostile] = actorSide === PLAYER_SIDE ? [playerSide, enemySide] : [enemySide, playerSide];
+    return {
+        friendly: friendly.slice(),
+        hostile: hostile.slice(),
+        actorSide,
+        hostileSide,
+        actorIndex: friendly.findIndex((c) => c?.id === actorId),
+    };
+};
+
+export const calculateActionArea = ({ action, actor }: { action?: Action; actor: Combatant }): number => {
+    if (!action) {
+        return 0;
+    }
+    const { type, area = 0 } = action;
+    const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
+    let totalArea = area;
+    actor.effects.forEach(({ attackAreaIncrease = 0 }) => {
+        if (isAttack) {
+            totalArea += attackAreaIncrease;
+        }
+    });
+    return totalArea;
+};
+
+export const applyVacuum = ({
+    characters,
+    index,
+    area,
+    distance,
+}: {
+    characters: (Combatant | null)[];
+    index: number;
+    area: number;
+    distance: number;
+}) => {
+    const newCharacters = characters.slice();
+    for (let i = 1; i <= area; ++i) {
+        if (newCharacters[index + i]) {
+            for (let j = 0; j < i && j < distance; ++j) {
+                if (!newCharacters[index + j]) {
+                    newCharacters[index + j] = newCharacters[index + i];
+                    newCharacters[index + i] = null;
+                }
+            }
+        }
+        if (newCharacters[index - i]) {
+            for (let j = 0; j < i && j < distance; ++j) {
+                if (!newCharacters[index - j]) {
+                    newCharacters[index - j] = newCharacters[index - i];
+                    newCharacters[index - i] = null;
+                }
+            }
+        }
+    }
+    return newCharacters;
+};
+
+export const getBasicAttack = (actor): Ability => {
+    if (actor.attack) {
+        return actor.attack;
+    }
+    return {
+        name: "Attack",
+        actions: [
+            {
+                damage: actor.damage,
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
+            },
+        ],
+    };
+};
+
+export const isUnableToAct = (combatant: Combatant): boolean => {
+    return combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.STUN);
+};
+
+export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movement = 0 }): number[] => {
+    const min = Math.max(0, currentLocationIndex - movement);
+    const max = Math.min(friendly.length - 1, currentLocationIndex + movement);
+    const moveIndices = [];
+    for (let i = min; i <= max; ++i) {
+        if (!friendly[i]) {
+            moveIndices.push(i);
+        }
+    }
+
+    return moveIndices;
+};
+
+export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number[] => {
+    const indices = [];
+    friendly.forEach((f, i) => {
+        if (!f || f.HP === 0) indices.push(i);
+    });
+
+    return indices;
+};
+
+export const calculateBonus = ({
+    action,
+    target,
+    actor,
+    isTargetSelected,
+}: {
+    action: Action;
+    target: Combatant;
+    actor: Combatant;
+    isTargetSelected: boolean;
+}): Action => {
+    if (!action.bonus) {
+        return action;
+    }
+
+    const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
+    const { conditions = [], excludePrimaryTarget = false } = bonus;
+    const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
+
+    const getCalculationTarget = (conditionTarget: "target" | "actor") => (conditionTarget === "target" ? target : actor);
+    const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
+    if (passesConditions({ getCalculationTarget, conditions }) && isValidTarget) {
+        const bonusDamage = (bonus.damage || 0) * multiplier;
+        return {
+            ...action,
+            damage: damage + bonusDamage,
+            secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
+            healing: healing + (bonus.healing || 0) * multiplier,
+            armor: armor + (bonus.armor || 0) * multiplier,
+            effects: [...effects, ...(bonus.effects || [])],
+        } as Action;
+    }
+    return action;
+};
+
+/**
+ * TODO re-enable auras
+ * const renewPersistentAuras = (characters: (Combatant | null)[]) => {
+    const updated = characters.map((character) => {
+        if (!character) {
+            return character;
+        }
+
+        return {
+            ...cloneDeep(character),
+            effects: character.effects.filter((effect) => !effect.isAuraEffect),
+        };
+    });
+
+    updated.forEach((character: Combatant | null, i) => {
+        const { aura, HP = 0 } = character || {};
+        if (aura && HP > 0) {
+            // Only a subset of aura properties are "persistent" effects -- apply or fade based on proximity to the
+            // owner of the aura at any given moment
+            const { area = 0, damage = 0, thorns = 0 } = aura;
+            for (let j = i - area; j <= i + area; ++j) {
+                // Aura effects do not apply to the owner of the aura
+                if (i !== j && updated[j] && updated[j].HP > 0) {
+                    updated[j].effects.push({
+                        thorns,
+                        damage,
+                        isAuraEffect: true,
+                    });
+                }
+            }
+        }
+    });
+    return updated;
+};
+
+ */

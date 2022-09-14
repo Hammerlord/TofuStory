@@ -1,21 +1,26 @@
-import { useMemo, useState } from "react";
-import { bash, slam, slashBlast, whirlwind } from "../ability/warrior/warriorAbilities";
+import { useEffect, useMemo } from "react";
+import { bash, slashBlast, whirlwind } from "../ability/warrior/warriorAbilities";
+import { startBattle } from "../battle/actions/actions";
+import BattlefieldContainer from "../battle/BattleView";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import { blueSnail, redSnail, snail } from "../enemy/enemy";
-import BattlefieldContainer from "../battle/BattleView";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 const DevStageBattle = () => {
     const deck = useMemo(() => [bash, slashBlast, whirlwind, slashBlast, bash], []);
     const enemies = useMemo(() => [snail, blueSnail, redSnail, blueSnail, snail], []);
-    const [player, setPlayer] = useState(defaultCharacterProperties);
+    const dispatch = useAppDispatch();
+    const battle = useAppSelector((state) => state.battle);
+    useEffect(() => {
+        dispatch(startBattle({ player: defaultCharacterProperties, deck, waves: [{ enemies }] }));
+    }, []);
 
-    const onBattleWon = () => {
-        setPlayer(defaultCharacterProperties);
-    };
+    const onBattleWon = () => {};
 
-    return (
-        <BattlefieldContainer player={player} updatePlayer={setPlayer} initialDeck={deck} onBattleWon={onBattleWon} waves={[{ enemies }]} />
-    );
+    if (!battle) {
+        return null;
+    }
+    return <BattlefieldContainer onBattleWon={onBattleWon} />;
 };
 
 export default DevStageBattle;

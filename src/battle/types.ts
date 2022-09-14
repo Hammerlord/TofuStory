@@ -1,5 +1,5 @@
 import { Combatant } from "./../character/types";
-import { Ability, Action } from "./../ability/types";
+import { Ability, Action, CombatEffect } from "./../ability/types";
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;
@@ -8,9 +8,8 @@ export interface BattleNotification {
 
 export enum BATTLEFIELD_SIDES {
     /** Enemies are the player's opponents */
-    ENEMIES = "enemies",
-    /** Allies are the player side */
-    ALLIES = "allies",
+    ENEMY_SIDE = "enemySide",
+    PLAYER_SIDE = "playerSide",
 }
 
 /**
@@ -18,8 +17,8 @@ export enum BATTLEFIELD_SIDES {
  */
 export interface Event {
     action?: Action;
-    updatedAllies: Combatant[];
-    updatedEnemies: Combatant[];
+    playerSide: (Combatant | null)[];
+    enemySide: (Combatant | null)[];
     actorId?: string;
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
@@ -29,4 +28,11 @@ export interface Event {
 export interface EventGroup {
     events: Event[];
     ability?: Ability;
+}
+
+export interface TriggerSource {
+    source: Action | CombatEffect;
+    type: "ability" | "effect";
+    actorId?: string;
+    targetId?: string;
 }

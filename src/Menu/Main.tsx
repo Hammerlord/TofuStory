@@ -3,12 +3,16 @@ import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability, Effect } from "../ability/types";
+import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
+import { battleStateSlice } from "../battle/reducer";
 import Rewards from "../battle/Rewards";
 import { updateHP } from "../battle/utils";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import JobUp from "../character/JobUp";
+import { playerStateSlice } from "../character/playerReducer";
 import DevToolButton from "../devtools/DevToolButton";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { blackScroll } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
 import Camp from "../Map/Camp";
@@ -90,19 +94,18 @@ const aggregateItemEffects = (items: Item[]): Effect[] => {
     });
     return effects;
 };
+const { updatePlayer, onSelectClass, updateDeck } = playerStateSlice.actions;
+const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
-    const [player, setPlayer] = useState(null);
-    const [deck, setDeck] = useState([]);
     const [scene, setScene] = useState(null);
-    const [encounter, setEncounter] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [route, setRoute] = useState(generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 }));
     const [locationNode, setLocationNode] = useState(null);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(true);
+    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
-    const [rewardsOpen, setRewardsOpen] = useState(false);
+    const [rewardsOpen, setRewardsOpen] = useState(true);
     const [shop, setShop] = useState(null);
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
@@ -110,6 +113,9 @@ const Main = () => {
     const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown] = useState(null);
     const classes = useStyles();
+    const dispatch = useAppDispatch();
+    const { character, battle } = useAppSelector((state) => state);
+    const { player, deck } = character || {};
 
     useEffect(() => {
         // Check game over when player updates
@@ -162,7 +168,7 @@ const Main = () => {
         const callback = () => {
             setLocationNode(node);
             if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER) {
-                setEncounter({ waves: node.encounter, rewards: [] });
+                dispatch(startBattle({ waves: node.encounter }));
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
@@ -182,15 +188,17 @@ const Main = () => {
 
     const handleCloseRewards = () => {
         setRewardsOpen(false);
-        if (encounter) {
-            setEncounter(null);
-            setPlayer((prev) => ({
-                ...prev,
-                resources: 0,
-                armor: 0,
-                effects: aggregateItemEffects(prev.items),
-                turnHistory: [],
-            }));
+        if (battle) {
+            dispatch(closeBattle());
+
+            dispatch(
+                updatePlayer({
+                    resources: 0,
+                    armor: 0,
+                    effects: aggregateItemEffects(player.items),
+                    turnHistory: [],
+                })
+            );
 
             if (encounterVictoryCallback) {
                 encounterVictoryCallback();
@@ -200,16 +208,10 @@ const Main = () => {
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
-        const starterItems = [blackScroll, blackScroll, blackScroll];
-        setPlayer({
-            ...defaultCharacterProperties,
-            class: selectedClass,
-            effects: aggregateItemEffects(starterItems),
-            items: starterItems,
-        });
-        setDeck(deck);
+        dispatch(onSelectClass({ selectedClass, deck }));
     };
 
+    /*
     const handleUseItem = (index: number) => {
         const newInventory = player.items.slice();
         const [item] = newInventory.splice(index, 1);
@@ -222,20 +224,22 @@ const Main = () => {
             });
         }
     };
+    */
 
     const handleJobUp = ({ job, jobUpAbilities }) => {
-        setDeck([...deck, ...jobUpAbilities]);
-        setPlayer({
-            ...player,
-            secondaryClass: job,
-        });
+        dispatch(
+            updatePlayer({
+                secondaryClass: job,
+            })
+        );
+        dispatch(updateDeck([...deck, ...jobUpAbilities]));
         setIsSelectingSecondaryJob(false);
     };
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
             const { characters = [], ...other } = encounter;
-            setEncounter(other);
+            startBattle({ waves: other.waves });
             setEncounterVictoryCallback(() => onVictory);
             const newVisited = characters.reduce((acc, character: string) => {
                 return {
@@ -257,14 +261,11 @@ const Main = () => {
     }
 
     const handleLootTreasureBox = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
-        setPlayer((prev) => {
-            const newItems = [...prev.items, ...items];
-            return {
-                ...prev,
-                mesos: (prev.mesos += mesos),
-                effects: aggregateItemEffects(newItems),
-                items: newItems,
-            };
+        const newItems = [...player.items, ...items];
+        updatePlayer({
+            mesos: (player.mesos += mesos),
+            effects: aggregateItemEffects(newItems),
+            items: newItems,
         });
     };
 
@@ -275,19 +276,22 @@ const Main = () => {
         }
     };
 
-    const isActivityOpen = encounter || isResting || scene || shop || rewardsOpen || treasure || town;
+    const setPlayer = (player) => dispatch(updatePlayer(player));
+    const setDeck = (deck) => dispatch(updateDeck(deck));
+
+    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town;
 
     return (
         <>
             {!isActivityOpen && (
                 <div className={classes.mapContainer}>
                     <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
-                    <Header player={player} deck={deck} onUseItem={handleUseItem} />
+                    <Header player={player} deck={deck} />
                 </div>
             )}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
-                    {/** town && getTown() **/}
+                    {town && getTown()}
 
                     {scene && (
                         <>
@@ -303,16 +307,7 @@ const Main = () => {
                             <Header player={player} deck={deck} />
                         </>
                     )}
-                    {encounter && (
-                        <BattlefieldContainer
-                            player={player}
-                            updatePlayer={setPlayer}
-                            onBattleWon={handleBattleWon}
-                            waves={encounter.waves}
-                            rewards={encounter.rewards}
-                            initialDeck={deck}
-                        />
-                    )}
+                    {battle && <BattlefieldContainer onBattleWon={handleBattleWon} />}
                     {isResting && (
                         <>
                             <Camp
@@ -322,7 +317,8 @@ const Main = () => {
                                 updateDeck={setDeck}
                                 updatePlayer={setPlayer}
                             />
-                            <Header player={player} deck={deck} onUseItem={handleUseItem} />
+                            {/** TODO re-enable item usage */}
+                            <Header player={player} deck={deck} />
                         </>
                     )}
                     {shop && (

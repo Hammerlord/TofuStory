@@ -12,6 +12,7 @@ import {
     manualImage,
     nependeathSapImage,
     panlidImage,
+    PoisonIcon,
     respawnTokenImage,
     safetyCharmImage,
     sandalsImage,
@@ -55,18 +56,22 @@ export const stolenFence: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Restores 2 HP on wave clear.",
+    description: "Restores 3 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
     image: safetyCharmImage,
     sellPrice: 10,
     effects: [
         {
             name: "Safety Charm",
-            description: "Restores 2 HP on wave clear.",
+            description: "Restores 3 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: safetyCharmImage,
-            healingPerWaveClear: 2, // Should be on wave clear
+            onWaveClear: {
+                effectOwner: {
+                    healing: 3,
+                },
+            },
         },
     ],
 };
@@ -84,9 +89,13 @@ export const drakeBlood: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: drakebloodImage,
-            damagePerTurn: 1,
             damage: 1,
-            onHostileKilled: {
+            onTurnEnd: {
+                effectOwner: {
+                    damage: 1,
+                },
+            },
+            onHostileDeath: {
                 effectOwner: {
                     healing: 1,
                 },
@@ -143,7 +152,9 @@ export const leatherSandals: Item = {
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 effectOwner: {
-                    drawCards: 1,
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             },
         },
@@ -283,15 +294,21 @@ export const nependeathSap: Item = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: nependeathSapImage,
-
                     onAttack: {
+                        removeEffect: true,
                         externalParty: {
                             effects: [
                                 {
                                     name: "Poison",
                                     type: EFFECT_TYPES.POISON,
                                     class: EFFECT_CLASSES.DEBUFF,
-                                    damagePerTurn: 2,
+                                    icon: PoisonIcon,
+                                    duration: 3,
+                                    onTurnEnd: {
+                                        effectOwner: {
+                                            damage: 2,
+                                        },
+                                    },
                                 },
                             ],
                         },
@@ -331,7 +348,7 @@ export const respawnToken: Item = {
             name: "Respawn Token",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onKilled: {
+            onDeath: {
                 effectOwner: {
                     resurrect: true,
                     healing: 20,

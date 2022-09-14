@@ -1,0 +1,279 @@
+import { BATTLEFIELD_SIDES } from "./../types";
+import { cloneDeep } from "lodash";
+import { compose, partition } from "ramda";
+import { Ability, EFFECT_CLASSES } from "../../ability/types";
+import { Combatant } from "../../character/types";
+import { loaf } from "../../enemy/abilities";
+import { getRandomItem } from "../../utils";
+import { battleStateSlice } from "../reducer";
+import {
+    checkHalveArmor,
+    clearTurnHistory,
+    getBasicAttack,
+    getHealableIndices,
+    getMaxHP,
+    getPossibleSummonIndices,
+    getValidTargetIndices,
+    isUnableToAct,
+    orientate,
+    refreshResources,
+    updateCharacters,
+} from "../utils";
+import { TARGET_TYPES } from "./../../ability/types";
+import { checkEventTrigger, findCombatant, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+
+const { updateBattle, pushEventQueue, endTurn } = battleStateSlice.actions;
+
+/**
+ * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
+ * Otherwise, pick a different ability.
+ * 2) Check the resource cost of the ability.
+ * 3) Check if there is space for a minion.
+ * 4) If the ability applies a buff that the actor already has, don't use it.
+ * 5) If the ability only heals, do not use it at full health.
+ */
+const canUseAbility = ({ actor, ability, hostile, friendly }): boolean => {
+    const resourceCost = ability.resourceCost || 0;
+    if ((actor.resources || 0) < resourceCost) {
+        return false;
+    }
+
+    if (ability.minion) {
+        return friendly.some((combatant) => !combatant || combatant.HP === 0);
+    }
+
+    const abilityEffects = ability.actions.reduce((acc, { effects = [] }) => {
+        return [...acc, ...effects];
+    }, []);
+    if (actor.effects.some(({ name }) => abilityEffects.some((effect) => effect.name === name))) {
+        return false;
+    }
+    if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
+        return actor.HP < getMaxHP(actor); // ? It's not just the actor who needs a healing
+    }
+
+    const movementAction = ability.actions.find((action) => action.movement);
+    if (movementAction) {
+        const index = friendly.findIndex((e: Combatant) => e && e.id === actor.id);
+        return false;
+        // TODO
+        /*
+        return (
+            getPossibleMoveIndices({
+                currentLocationIndex: index,
+                enemies,
+                movement: movementAction.movement,
+            }).length > 0
+        );
+        */
+    }
+
+    return true;
+};
+
+/**
+ * Given an ability, pick a target that makes sense
+ */
+const autoPickTarget = ({
+    ability,
+    actorId,
+    playerSide,
+    enemySide,
+}: {
+    ability: Ability;
+    actorId: string;
+    playerSide: (Combatant | null)[];
+    enemySide: (Combatant | null)[];
+}): { index: number; side: BATTLEFIELD_SIDES } => {
+    const { hostile, friendly, actorSide, hostileSide, actorIndex } = orientate({ actorId, playerSide, enemySide });
+
+    const { area, actions = [], minion } = ability;
+    if (minion) {
+        return {
+            side: actorSide,
+            index: getRandomItem(getPossibleSummonIndices(friendly)),
+        };
+    }
+
+    // For now we only make one selection, and assume that all abilities that contain at least one offensive action must select a hostile target
+    const offensiveAction = actions.find(({ target }) => target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE);
+    if (offensiveAction) {
+        return {
+            side: hostileSide,
+            index: getRandomItem(
+                getValidTargetIndices(hostile, {
+                    // TODO area attacks are still applicable to stealthed units
+                    excludeStealth: true,
+                })
+            ),
+        };
+    }
+
+    const friendlySupportAction = actions.find(({ target }) => target === TARGET_TYPES.FRIENDLY);
+    if (friendlySupportAction) {
+        // If it's a healing spell, it should prioritize injured units (TODO: the most injured unit)
+        let targetIndices = getValidTargetIndices(friendly);
+        if (friendlySupportAction.healing) {
+            const healingIndices = getHealableIndices(friendly);
+            if (healingIndices.length > 0) {
+                targetIndices = healingIndices;
+            }
+        }
+
+        return {
+            side: actorSide,
+            index: getRandomItem(targetIndices),
+        };
+    }
+
+    // Else it is assumed to be a self-targeting ability
+    return {
+        side: actorSide,
+        index: actorIndex,
+    };
+};
+
+const handleCastTick = (actorId: string) => {
+    return (dispatch, getState) => {
+        const combatant: Combatant = findCombatant(getState, actorId);
+        const { ability, castTime = 0, channelDuration, selectedIndex, selectedSide } = combatant.casting;
+
+        const updatedCasting = { ...combatant.casting };
+        if (castTime > 0) {
+            updatedCasting.castTime = castTime - 1;
+        }
+
+        if (!updatedCasting.castTime && channelDuration) {
+            updatedCasting.channelDuration = channelDuration - 1;
+        }
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: {
+                    casting: updatedCasting.channelDuration || updatedCasting.castTime ? updatedCasting : null,
+                },
+            })
+        );
+
+        if (updatedCasting.castTime) {
+            return;
+        }
+
+        const battle = getState().battle;
+        const { playerSide, enemySide } = battle;
+
+        // If the original selected target is no longer valid, switch to a random new target. TODO area abilities could still be valid in the same spot
+        const index = battle[selectedIndex]?.HP > 0 ? selectedIndex : autoPickTarget({ ability, actorId, playerSide, enemySide }).index;
+        if (typeof index === "number") {
+            dispatch(useAbility({ actorId, ability, side: selectedSide, selectedIndex: index }));
+        }
+    };
+};
+
+/**
+ * Given an enemy or minion, pick an ability from its pool of abilities. (Not meant to be used for the player character who has cards etc.)
+ * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
+ */
+const pickAbility = ({ actor, hostile, friendly }): Ability => {
+    const [specialAbilities, regularAbilities] = partition(
+        (a) => a.resourceCost > 0,
+        actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
+    );
+
+    let ability: Ability;
+    if (specialAbilities.length > 0) {
+        if (actor.resources === actor.maxResources) {
+            ability = getRandomItem(specialAbilities);
+        } else {
+            // Otherwise it is just a chance
+            let mostExpensive = 0;
+            specialAbilities.forEach(({ resourceCost }) => {
+                if (resourceCost > mostExpensive) {
+                    mostExpensive = resourceCost;
+                }
+            });
+
+            if (Math.random() < actor.resources / (mostExpensive + 1)) {
+                ability = getRandomItem(specialAbilities);
+            }
+        }
+    }
+    if (!ability) {
+        if (actor.damage > 0) {
+            regularAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
+        }
+
+        ability = getRandomItem(regularAbilities);
+    }
+
+    return ability || loaf;
+};
+
+const enemyUseAbility = (combatantId: string) => {
+    return (dispatch, getState) => {
+        const actor = findCombatant(getState, combatantId);
+        const { playerSide, enemySide } = getState().battle;
+        const { friendly, hostile } = orientate({ actorId: combatantId, playerSide, enemySide });
+        const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
+        const { side, index } = autoPickTarget({ ability, actorId: combatantId, playerSide, enemySide });
+
+        if (!ability.castTime && !ability.channelDuration) {
+            dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
+        } else {
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        casting: ability.castTime > 0 || ability.channelDuration > 0 ? cloneDeep(ability) : null,
+                        resources: actor.resources - (ability.resourceCost || 0),
+                    },
+                })
+            );
+        }
+    };
+};
+
+export const startEnemyTurn = () => {
+    return (dispatch, getState) => {
+        const { enemySide } = getState().battle;
+        const updateFns = [refreshResources, clearTurnHistory, checkHalveArmor];
+        const updated = updateCharacters(enemySide, compose(...updateFns));
+        dispatch(
+            updateBattle({
+                enemySide: updated,
+            })
+        );
+
+        updated.forEach((combatant: Combatant | null) => {
+            if (!combatant) {
+                return;
+            }
+
+            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: "onTurnStart", triggerSource: null }));
+        });
+
+        const acted = {};
+        const makeEnemyMove = () => {
+            const eligible = getState().battle.enemySide.filter(
+                (char: Combatant | null) => char?.HP > 0 && !isUnableToAct(char) && !acted[char.id]
+            );
+            const enemy = getRandomItem(eligible);
+            if (!enemy) {
+                dispatch(endTurn());
+                return;
+            }
+
+            const { id, casting } = enemy;
+            acted[id] = true;
+            if (casting) {
+                dispatch(handleCastTick(id));
+            } else {
+                dispatch(enemyUseAbility(id));
+            }
+            makeEnemyMove();
+        };
+        makeEnemyMove();
+    };
+};
