@@ -211,6 +211,12 @@ export enum MULTIPLIER_TYPES {
     BLEEDS = "bleeds",
 }
 
+export interface Radiate {
+    damage?: number;
+    area?: number;
+    effects?: Effect[];
+}
+
 export interface Action {
     damage?: number;
     secondaryDamage?: number;

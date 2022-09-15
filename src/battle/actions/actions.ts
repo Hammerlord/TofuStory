@@ -11,6 +11,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     HandAbility,
+    Radiate,
     TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
@@ -502,7 +503,19 @@ const onResourceChange = ({ resourceCost, combatantId }) => {
 /**
  * Perform an action from an ability. TODO include effect?
  */
-const performAction = ({ action, ability, selectedIndex, side, actorId }) => {
+const performAction = ({
+    action,
+    ability,
+    selectedIndex,
+    side,
+    actorId,
+}: {
+    action: Action;
+    ability: Ability;
+    selectedIndex: number;
+    side: BATTLEFIELD_SIDES;
+    actorId: string;
+}) => {
     return (dispatch, getState) => {
         const getArea = () => calculateActionArea({ action, actor: findCombatant(getState, actorId) });
 
@@ -529,7 +542,7 @@ const performAction = ({ action, ability, selectedIndex, side, actorId }) => {
             return inArea;
         };
 
-        getState().battle[side].map((character: Combatant | null, i: number) => {
+        getState().battle[side].forEach((character: Combatant | null, i: number) => {
             if (isAffected(character, i)) {
                 dispatch(
                     applyActionToTarget({
@@ -546,7 +559,25 @@ const performAction = ({ action, ability, selectedIndex, side, actorId }) => {
     };
 };
 
-const getTarget = ({ initialSelectedIndex, initialSelectedSide, ability, action, actorId, getState }) => {
+/**
+ * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
+ * This orients the target to the right place (if applicable) as actions are parsed.
+ */
+const getAbilityTarget = ({
+    initialSelectedIndex,
+    initialSelectedSide,
+    ability,
+    action,
+    actorId,
+    getState,
+}: {
+    initialSelectedIndex: number;
+    initialSelectedSide: BATTLEFIELD_SIDES;
+    ability: Ability;
+    action: Action;
+    actorId: string;
+    getState: Function;
+}) => {
     let index = initialSelectedIndex;
     let side = initialSelectedSide;
     const { enemySide, playerSide } = getState().battle;
@@ -555,7 +586,7 @@ const getTarget = ({ initialSelectedIndex, initialSelectedSide, ability, action,
     if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
         const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true }).filter((i) => {
             if (ability.area) {
-                return i >= initialSelectedIndex - ability.area && i <= initialSelectedIndex + ability.area;
+                return Math.abs(i - initialSelectedIndex) <= ability.area;
             }
             return true;
         });
@@ -566,6 +597,33 @@ const getTarget = ({ initialSelectedIndex, initialSelectedSide, ability, action,
     }
 
     return { index, side };
+};
+
+const castRadiate = ({
+    ability,
+    radiate,
+    selectedIndex,
+    side,
+}: {
+    ability: Ability;
+    radiate: Radiate;
+    selectedIndex: number;
+    side: BATTLEFIELD_SIDES;
+}) => {
+    return (dispatch, getState) => {
+        dispatch(
+            performAction({
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    ...radiate,
+                },
+                selectedIndex,
+                side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
+                actorId: getState().battle[side][selectedIndex]?.id,
+                ability,
+            })
+        );
+    };
 };
 
 export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
@@ -595,12 +653,8 @@ export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
             return side === BATTLEFIELD_SIDES.PLAYER_SIDE ? playerSide[selectedIndex] : enemySide[selectedIndex];
         };
 
-        const eligibleActions = actions.filter((action: Action) =>
-            passesConditions({ getCalculationTarget, conditions: action.conditions })
-        );
-
-        eligibleActions.forEach((action: Action) => {
-            const { index, side: finalSide } = getTarget({
+        const handleAction = (action: Action) => {
+            const { index, side: finalSide } = getAbilityTarget({
                 initialSelectedIndex: selectedIndex,
                 initialSelectedSide: side,
                 ability,
@@ -614,20 +668,13 @@ export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
             }
 
             dispatch(performAction({ ability, action, selectedIndex: index, side: finalSide, actorId }));
-            if (action.radiate) {
-                const radiateAction = {
-                    ability,
-                    action: {
-                        type: ACTION_TYPES.EFFECT,
-                        ...action.radiate,
-                    },
-                    selectedIndex,
-                    side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
-                    actorId,
-                };
-                dispatch(performAction({ ability, action: radiateAction, selectedIndex: index, side: finalSide, actorId }));
+            const { radiate } = action;
+            if (radiate) {
+                dispatch(castRadiate({ ability, radiate, selectedIndex, side: finalSide }));
             }
-        });
+        };
+
+        actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions })).forEach(handleAction);
 
         dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: "onAbility", triggerSource: ability }));
     };
