@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom';
 import { App } from './App';
-import { subi } from './images';
+import { clear, subi } from './images';
 
 /**
  * HACK: Preload some images or they can be temporarily invisible :/
+ * TODO: selectively load and unload images in combat
  */
-[subi].forEach((image) => {
+[subi, clear].forEach((image) => {
     const newImage = new Image();
     newImage.src = image;
     window[image] = newImage;

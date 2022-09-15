@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { useDispatch, useSelector } from "react-redux";
 import uuid from "uuid";
-import { Ability, Action, EFFECT_TYPES } from "../ability/types";
+import { Action, EFFECT_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { mapleleaves, victoria } from "../images";
 import Header from "../Menu/Header";
-import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
 import { endTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
 import { startEnemyTurn } from "./actions/enemyTurn";
@@ -19,7 +17,6 @@ import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
-import { battleStateSlice } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
@@ -376,8 +373,13 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
     useEffect(() => {
         if (isEnded) {
             onBattleWon();
+        } else if (currentWave > 1) {
+            setShowWaveClear(true);
+            setTimeout(() => {
+                setShowWaveClear(false);
+            }, TURN_ANNOUNCEMENT_TIME);
         }
-    }, [isEnded]);
+    }, [isEnded, currentWave]);
 
     const disableActions = showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
 
