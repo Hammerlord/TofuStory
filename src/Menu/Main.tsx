@@ -263,7 +263,7 @@ const Main = () => {
     const handleLootTreasureBox = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         const newItems = [...player.items, ...items];
         updatePlayer({
-            mesos: (player.mesos += mesos),
+            mesos: player.mesos + mesos,
             effects: aggregateItemEffects(newItems),
             items: newItems,
         });
