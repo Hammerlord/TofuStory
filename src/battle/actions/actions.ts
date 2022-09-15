@@ -730,20 +730,31 @@ export const onUsePlayerAbility = ({
     selectedAbilityIndex: number;
 }) => {
     return (dispatch, getState) => {
-        const { hand, discard, playerSide } = getState().battle;
-        const newHand = hand.slice();
-        const [ability] = newHand.splice(selectedAbilityIndex, 1);
+        const { playerSide, hand: originalHand } = getState().battle;
+        const handWithAbilityUsed = originalHand.slice();
+        const [ability] = handWithAbilityUsed.splice(selectedAbilityIndex, 1);
         const { removeAfterTurn, reusable, depletedOnUse } = ability as HandAbility;
 
-        let newDiscard = discard.slice();
+        dispatch(
+            updateBattle({
+                hand: handWithAbilityUsed,
+            })
+        );
 
+        dispatch(useAbility({ ability, selectedIndex, side, actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id }));
+
+        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
+        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
+        const { hand, discard } = getState().battle;
+        const newDiscard = discard.slice();
+        const newHand = hand.slice();
         if (reusable) {
             newHand.push({
                 ...ability,
-                effects: {},
+                effects: undefined,
             });
         } else if (!removeAfterTurn && !depletedOnUse) {
-            newDiscard = [...newDiscard, ...prepareForDiscard([ability])];
+            newDiscard.push(...prepareForDiscard([ability]));
         }
 
         dispatch(
@@ -757,8 +768,6 @@ export const onUsePlayerAbility = ({
                 discard: newDiscard,
             })
         );
-
-        dispatch(useAbility({ ability, selectedIndex, side, actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id }));
     };
 };
 
