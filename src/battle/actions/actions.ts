@@ -432,10 +432,9 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
     };
 };
 
-export const endTurn = () => {
-    return (dispatch, getState) => {
-        const { playerSide, enemySide, isPlayerTurn, discard, hand } = getState().battle;
-        (isPlayerTurn ? playerSide : enemySide).forEach((combatant: Combatant | null) => {
+export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
+    return (dispatch) => {
+        side.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
             }
@@ -443,12 +442,19 @@ export const endTurn = () => {
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: "onTurnEnd", triggerSource: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.DEBUFF));
         });
+    };
+};
+
+export const playerEndTurn = () => {
+    return (dispatch, getState) => {
+        const { playerSide, discard, hand } = getState().battle;
+        dispatch(onEndTurnTriggers(playerSide));
 
         dispatch(
             updateBattle({
-                isPlayerTurn: !isPlayerTurn,
-                discard: isPlayerTurn ? [...discard, ...prepareForDiscard(hand)] : discard,
-                hand: isPlayerTurn ? [] : hand,
+                isPlayerTurn: false,
+                discard: [...discard, ...prepareForDiscard(hand)],
+                hand: [],
             })
         );
     };

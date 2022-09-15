@@ -7,14 +7,10 @@ import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
 import { battleStateSlice } from "../battle/reducer";
 import Rewards from "../battle/Rewards";
-import { updateHP } from "../battle/utils";
-import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import JobUp from "../character/JobUp";
 import { playerStateSlice } from "../character/playerReducer";
-import DevToolButton from "../devtools/DevToolButton";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { blackScroll } from "../item/items";
-import { Item, ITEM_TYPES } from "../item/types";
+import { Item } from "../item/types";
 import Camp from "../Map/Camp";
 import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
@@ -349,7 +345,6 @@ const Main = () => {
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && <GameOver player={player} onExit={() => setPlayer(null)} />}
-            <DevToolButton />
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

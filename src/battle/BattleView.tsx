@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { mapleleaves, victoria } from "../images";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
-import { endTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
+import { playerEndTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
 import { startEnemyTurn } from "./actions/enemyTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
@@ -564,7 +564,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                                     disabled={disableActions}
                                     highlight={noMoreMoves}
                                     onClick={() => {
-                                        dispatch(endTurn());
+                                        dispatch(playerEndTurn());
                                     }}
                                 />
                             </div>

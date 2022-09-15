@@ -20,7 +20,15 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
-import { checkEventTrigger, endTurn, findCombatant, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+import {
+    checkEventTrigger,
+    playerEndTurn,
+    findCombatant,
+    tickDownStatusEffects,
+    updateCombatant,
+    useAbility,
+    onEndTurnTriggers,
+} from "./actions";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
@@ -234,6 +242,17 @@ const enemyUseAbility = (combatantId: string) => {
     };
 };
 
+const enemyEndTurn = () => {
+    return (dispatch, getState) => {
+        dispatch(onEndTurnTriggers(getState().battle.enemySide));
+        dispatch(
+            updateBattle({
+                isPlayerTurn: true,
+            })
+        );
+    };
+};
+
 export const startEnemyTurn = () => {
     return (dispatch, getState) => {
         const { enemySide } = getState().battle;
@@ -261,7 +280,7 @@ export const startEnemyTurn = () => {
             );
             const enemy = getRandomItem(eligible);
             if (!enemy) {
-                dispatch(endTurn());
+                dispatch(enemyEndTurn());
                 return;
             }
 

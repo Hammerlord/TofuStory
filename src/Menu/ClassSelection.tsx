@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import DevToolButton from "../devtools/DevToolButton";
 import { anonymushroom, classwarrior, warmush } from "../images";
 import { PLAYER_CLASSES } from "./types";
 
@@ -110,6 +111,8 @@ const ClassSelection = ({ onSelectClass }) => {
 
     return (
         <div className={classes.root}>
+            <DevToolButton />
+
             <div className={classes.inner}>
                 <div>
                     <h1>You wake up without arms or legs.</h1>
