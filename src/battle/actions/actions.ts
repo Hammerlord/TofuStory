@@ -434,7 +434,7 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
 
 export const endTurn = () => {
     return (dispatch, getState) => {
-        const { playerSide, enemySide, isPlayerTurn } = getState().battle;
+        const { playerSide, enemySide, isPlayerTurn, discard, hand } = getState().battle;
         (isPlayerTurn ? playerSide : enemySide).forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
@@ -447,6 +447,8 @@ export const endTurn = () => {
         dispatch(
             updateBattle({
                 isPlayerTurn: !isPlayerTurn,
+                discard: isPlayerTurn ? [...prepareForDiscard(hand), ...discard] : discard,
+                hand: isPlayerTurn ? [] : hand,
             })
         );
     };
