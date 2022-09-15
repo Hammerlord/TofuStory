@@ -40,7 +40,7 @@ import {
     updateHP,
 } from "../utils";
 
-const { onDrawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
+const { drawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 export const findCombatant = (getState, combatantId: string): Combatant | undefined => {
@@ -70,7 +70,7 @@ const onBattleEnd = () => {
 
 const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { waves, currentWave, deck, playerSide, ...other } = getState().battle;
+        const { waves, currentWave, deck, playerSide, hand, ...other } = getState().battle;
         const { presetDeck, description, enemies } = waves[currentWave] || {}; // 1 indexed currentWave so we don't need to + 1
 
         playerSide.forEach((combatant: Combatant | null) => {
@@ -89,6 +89,8 @@ const onWaveClear = () => {
                 deck: presetDeck ? shuffle(presetDeck.slice()) : deck,
             })
         );
+
+        dispatch(onWaveStart());
     };
 };
 
@@ -112,6 +114,7 @@ export const startBattle = ({ waves, player, deck }: { waves: Wave[]; player?: C
                 currentWave: 1,
                 waves,
                 isEnded: false,
+                round: 0,
             })
         );
 
@@ -312,7 +315,7 @@ const onEffectEventTrigger = ({
         if (effectOwner) {
             // These are effects to apply to the effect owner + friendlies within the area
             const { friendly } = orientate({ actorId: ownerId, ...getState().battle });
-            const i = friendly.findIndex(({ id } = {} as Combatant) => id === ownerId);
+            const i = friendly.findIndex((c: Combatant | null) => c?.id === ownerId);
             friendly.forEach((combatant: Combatant | null, j: number) => {
                 const isWithinArea = j >= i - area && j <= i + area;
                 const isTargetingOwner = j === i;
@@ -478,7 +481,7 @@ export const startPlayerTurn = () => {
         const { battle } = getState();
         const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
         dispatch(
-            onDrawCards({
+            drawCards({
                 amount: player.drawCardsPerTurn - battle.hand.length, // TODO card draw effects
             })
         );

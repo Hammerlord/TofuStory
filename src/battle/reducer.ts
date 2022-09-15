@@ -44,7 +44,7 @@ export const battleStateSlice = createSlice({
         popEventQueue: (state) => {
             state.eventQueue.unshift();
         },
-        onDrawCards: (state, action) => {
+        drawCards: (state, action: PayloadAction<{ effects?: object; amount: number }>) => {
             const { deck, hand, discard } = state;
             let newDeck = deck.slice();
             let newHand = hand.slice();
@@ -79,4 +79,4 @@ export const battleStateSlice = createSlice({
     },
 });
 
-export const { onDrawCards } = battleStateSlice.actions;
+export const { drawCards } = battleStateSlice.actions;
