@@ -3,8 +3,7 @@ import { Wave } from "../Menu/tutorial";
 
 const useStyles = createUseStyles({
     root: {
-        background:
-            "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
+        background: "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
         width: "200px",
         padding: "8px 16px",
         fontSize: "1rem",
@@ -17,16 +16,8 @@ const useStyles = createUseStyles({
     },
 });
 
-const WaveInfo = ({
-    waves,
-    currentIndex,
-    cleared,
-}: {
-    waves: Wave[];
-    currentIndex: number;
-    cleared: boolean;
-}) => {
-    const wave = waves[currentIndex];
+const WaveInfo = ({ waves, currentWave, cleared }: { waves: Wave[]; currentWave: number; cleared: boolean }) => {
+    const wave = waves[currentWave - 1];
 
     if (!wave) {
         return null;
@@ -37,7 +28,7 @@ const WaveInfo = ({
     return (
         <div className={classes.root}>
             <div className={classes.currentWave}>
-                Wave {currentIndex + 1} / {waves.length}
+                Wave {currentWave} / {waves.length}
             </div>
             {surviveRounds ? (
                 <div>
