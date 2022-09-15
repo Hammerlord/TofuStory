@@ -32,18 +32,6 @@ export const battleStateSlice = createSlice({
     name: "battle",
     initialState: null,
     reducers: {
-        onWaveClear: (state) => {
-            const { presetDeck, description, enemies } = state.waves[state.currentWave - 1] || {}; // 1 indexed currentWave
-            if (!enemies) {
-            }
-
-            return {
-                ...state,
-                currentWave: state.currentWave + 1,
-                enemySide: enemies.map(createCombatant),
-                deck: presetDeck ? shuffle(presetDeck.slice()) : state.deck,
-            };
-        },
         updateBattle: (state, action: PayloadAction<object>) => {
             return {
                 ...state,
@@ -84,9 +72,6 @@ export const battleStateSlice = createSlice({
                 ],
                 discard: newDiscard,
             };
-        },
-        endTurn: (state) => {
-            state.isPlayerTurn = !state.isPlayerTurn;
         },
         closeBattle: () => {
             return null;

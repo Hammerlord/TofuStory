@@ -11,7 +11,7 @@ import { mapleleaves, victoria } from "../images";
 import Header from "../Menu/Header";
 import { Wave } from "../Menu/tutorial";
 import { Fury } from "../resource/ResourcesView";
-import { onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
+import { endTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
 import { startEnemyTurn } from "./actions/enemyTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
@@ -143,8 +143,6 @@ const useStyles = createUseStyles({
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
-
-const { endTurn } = battleStateSlice.actions;
 
 const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
     const dispatch = useAppDispatch();
@@ -509,7 +507,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield} onClick={handleBattlefieldClick}>
                         <div className={classes.waves}>
-                            <WaveInfo waves={waves} currentIndex={currentWave} cleared={false} />
+                            <WaveInfo waves={waves} currentWave={currentWave} cleared={false} />
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>

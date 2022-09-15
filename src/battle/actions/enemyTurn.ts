@@ -20,9 +20,9 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
-import { checkEventTrigger, findCombatant, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+import { checkEventTrigger, endTurn, findCombatant, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 
-const { updateBattle, pushEventQueue, endTurn } = battleStateSlice.actions;
+const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 /**
  * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
