@@ -160,9 +160,9 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
         isEnded,
     } = useAppSelector((state) => state.battle);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-    const [allyRefs] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef());
-    const [enemyRefs] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef());
-    const [abilityRefs] = Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef());
+    const allyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
+    const enemyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
+    const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [abilityNotification, setAbilityNotification] = useState(null);
     const [info, setInfo] = useState(null);
