@@ -212,7 +212,6 @@ const ScenePlayer = ({
 
     const handleClickItems = () => {
         updatePlayer({
-            ...player,
             items: [...player.items, ...items],
         });
         if (dialogIndex < scene.script.length - 1) {

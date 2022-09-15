@@ -84,7 +84,6 @@ const Shop = ({ player, updatePlayer, updateDeck, deck, merchant, hasDiscount, o
         if (player.mesos >= price) {
             updateDeck([item, ...deck]);
             updatePlayer({
-                ...player,
                 mesos: player.mesos - price,
             });
             const newItems = items.slice();

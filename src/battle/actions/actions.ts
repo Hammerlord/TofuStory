@@ -57,8 +57,7 @@ const onBattleEnd = () => {
             })
         );
 
-        //dispatch(); battle end effects for player
-        const player = getState().battle.playerSide.find(({ isPlayer } = {} as Combatant) => isPlayer);
+        const player = getState().battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
 
         dispatch(
             updatePlayer({

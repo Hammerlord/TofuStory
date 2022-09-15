@@ -94,7 +94,6 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
 
     useEffect(() => {
         updatePlayer({
-            ...player,
             HP: updateHPByPercentage(player, HEALTH_REGAINED),
         });
     }, []);
@@ -120,7 +119,6 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
         });
         updateDeck([...deck, selectedAbilityToLearn]);
         updatePlayer({
-            ...player,
             items: newItems,
         });
         setIsLearningAbility(false);

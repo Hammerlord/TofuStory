@@ -13,7 +13,7 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 player: {
-                    ...(state || {}),
+                    ...(state.player || {}),
                     ...action.payload,
                 },
             };
