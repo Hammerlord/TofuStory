@@ -232,9 +232,7 @@ export interface Action {
     /** Displaces characters toward the target index */
     vacuum?: number;
     /** Effects on the cards currently in the hand */
-    cards?: {
-        effects: AbilityEffects;
-    };
+    currentHandEffects?: AbilityEffects;
     /** Adds cards to your current hand */
     addCards?: Ability[];
     /** Adds cards to your current discard pile */

@@ -837,10 +837,8 @@ export const berserk2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            cards: {
-                effects: {
-                    resourceCost: -3,
-                },
+            currentHandEffects: {
+                resourceCost: -3,
             },
         },
     ],
@@ -863,10 +861,8 @@ export const berserk: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            cards: {
-                effects: {
-                    resourceCost: -3,
-                },
+            currentHandEffects: {
+                resourceCost: -3,
             },
         },
     ],

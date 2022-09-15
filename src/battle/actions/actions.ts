@@ -447,7 +447,7 @@ export const endTurn = () => {
         dispatch(
             updateBattle({
                 isPlayerTurn: !isPlayerTurn,
-                discard: isPlayerTurn ? [...prepareForDiscard(hand), ...discard] : discard,
+                discard: isPlayerTurn ? [...discard, ...prepareForDiscard(hand)] : discard,
                 hand: isPlayerTurn ? [] : hand,
             })
         );
@@ -626,6 +626,36 @@ const castRadiate = ({
     };
 };
 
+const checkCardActions = (action: Action, actorId: string) => {
+    return (dispatch, getState) => {
+        // "Card" mechanics are only applicable to the player
+        if (!findCombatant(getState, actorId)?.isPlayer) {
+            return;
+        }
+        const { drawCards: cardsToDraw, addCards, currentHandEffects } = action;
+        if (cardsToDraw) {
+            dispatch(drawCards(cardsToDraw));
+        }
+
+        if (addCards) {
+            dispatch(
+                updateBattle({
+                    hand: [...getState().battle.hand, ...addCards.map(cloneDeep)],
+                })
+            );
+        }
+
+        // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
+        if (currentHandEffects) {
+            dispatch(
+                updateBattle({
+                    hand: getState().battle.hand.map((card: Ability) => ({ ...card, effects: { ...currentHandEffects } })),
+                })
+            );
+        }
+    };
+};
+
 export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
     return (dispatch, getState) => {
         const { resourceCost = 0, effects = {}, actions = [], minion } = ability;
@@ -672,6 +702,7 @@ export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
             if (radiate) {
                 dispatch(castRadiate({ ability, radiate, selectedIndex, side: finalSide }));
             }
+            dispatch(checkCardActions(action, actorId));
         };
 
         actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions })).forEach(handleAction);
