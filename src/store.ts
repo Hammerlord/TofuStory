@@ -1,15 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { battleStateSlice } from "./battle/reducer";
 import { playerStateSlice } from "./character/playerReducer";
+import thunk, { ThunkMiddleware, ThunkDispatch } from "redux-thunk";
 
 export const store = configureStore({
     reducer: {
         character: playerStateSlice.reducer,
         battle: battleStateSlice.reducer,
     },
+    // Ignore serializable action object errors with this middleware override (do not care about it right now)
+    middleware: [thunk as ThunkMiddleware],
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch;
+export type AppDispatch = ThunkDispatch<any, any, any>;
