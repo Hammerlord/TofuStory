@@ -9,6 +9,7 @@ import {
     Effect,
     EffectEventTrigger,
     EFFECT_CLASSES,
+    EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
     HandAbility,
     Radiate,
@@ -74,7 +75,7 @@ const onWaveClear = () => {
         const { presetDeck, description, enemies } = waves[currentWave] || {}; // 1 indexed currentWave so we don't need to + 1
 
         playerSide.forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: "onWaveClear" }));
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
 
         if (!enemies) {
@@ -126,7 +127,7 @@ const onWaveStart = () => {
     return (dispatch, getState) => {
         const { playerSide, enemySide } = getState().battle;
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: "onWaveStart" }));
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
         });
         dispatch(startPlayerTurn());
     };
@@ -134,21 +135,21 @@ const onWaveStart = () => {
 
 const onCombatantDeath = ({ combatantId, triggerSource }) => {
     return (dispatch, getState) => {
-        dispatch(checkEventTrigger({ combatantId, effectEventKey: "onKilled", triggerSource }));
+        dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, triggerSource }));
 
         const { friendly, hostile } = orientate({ actorId: combatantId, ...getState().battle });
-        friendly.forEach((combatant: Combatant | null) => {
+        const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { HP, id } = combatant || {};
             if (HP > 0 && id !== combatantId) {
-                dispatch(checkEventTrigger({ combatantId: id, effectEventKey: "onFriendlyDeath", triggerSource }));
+                dispatch(checkEventTrigger({ combatantId: id, effectEventKey, triggerSource }));
             }
+        };
+        friendly.forEach((combatant: Combatant | null) => {
+            dispatchEvent(combatant, EFFECT_EVENT_KEYS.onFriendlyDeath);
         });
 
         hostile.forEach((combatant: Combatant | null) => {
-            const { HP, id } = combatant || {};
-            if (HP > 0 && id !== combatantId) {
-                dispatch(checkEventTrigger({ combatantId: id, effectEventKey: "onHostileDeath", triggerSource }));
-            }
+            dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
         const { playerSide, enemySide, waves, currentWave, playerSummonsInPlay, discard } = getState().battle;
@@ -175,118 +176,76 @@ const onCombatantDeath = ({ combatantId, triggerSource }) => {
 
 const onReceiveAction = ({
     action,
-    damage,
     targetId,
     actorId,
     actionParentType,
 }: {
     action: Action;
-    damage?: number;
     targetId: string;
     actorId?: string;
     actionParentType?: "effect" | "ability";
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         const triggerSource = actionParentType ? { source: action, type: actionParentType, actorId, targetId } : undefined;
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
-            dispatch(checkEventTrigger({ combatantId: targetId, effectEventKey: "onReceiveAttack", triggerSource }));
-            dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: "onAttack", triggerSource }));
+            dispatch(checkEventTrigger({ combatantId: targetId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack, triggerSource }));
+            dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: EFFECT_EVENT_KEYS.onAttack, triggerSource }));
         }
-        // Double dips with receiveAttack?
-        if (damage > 0) {
-            dispatch(checkEventTrigger({ combatantId: targetId, effectEventKey: "onReceiveDamage", triggerSource }));
-            dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: "onDealDamage", triggerSource }));
-        }
-    };
-};
-
-const applyEffects = ({ effects = [], targetId, applierId }) => {
-    return (dispatch, getState) => {
-        effects.forEach((effect: CombatEffect) => {
-            const target = findCombatant(getState, targetId);
-            const targetIsImmune = isCharacterImmune(target);
-            const isImmuneTo = (effect: CombatEffect) => {
-                return target.effects.some(
-                    (targetEffect: CombatEffect) =>
-                        targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type) ||
-                        (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF)
-                );
-            };
-
-            if (isImmuneTo(effect)) {
-                return;
-            }
-
-            dispatch(
-                updateCombatant({
-                    combatantId: targetId,
-                    newProperties: {
-                        effects: [
-                            ...target.effects,
-                            {
-                                ...cloneDeep(effect),
-                                uptime: 0,
-                                id: uuid.v4(),
-                            },
-                        ],
-                    },
-                })
-            );
-
-            dispatch(
-                checkEventTrigger({
-                    combatantId: targetId,
-                    effectEventKey: "onReceiveEffect",
-                    // triggerSource: { source: ???, type: "effect", actorId: applierId, targetId }, ??? = needs to be action or the parent effect
-                })
-            );
-            // TODO auras/area effects?
-        });
     };
 };
 
 export const applyActionToTarget = ({
-    targetId,
+    actor,
+    target,
     targetIndex,
     selectedIndex,
-    actorId,
     action,
     actionSource,
 }: {
-    targetId: string;
+    actor?: Combatant;
+    target: Combatant;
     targetIndex: number;
     selectedIndex?: number; // Only applicable for abilities with manual selection?
-    actorId?: string;
     action: Action;
     actionSource: { source: Ability | Effect; type: "ability" | "effect" };
 }) => {
-    return (dispatch, getState) => {
-        const target = findCombatant(getState, targetId);
-        const actor = findCombatant(getState, actorId);
-        action = calculateBonus({ target, actor, action, isTargetSelected: targetIndex === selectedIndex });
-        const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
-        const ability = actionSource?.type === "ability" ? (actionSource.source as Ability) : undefined;
-        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
-        const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
-        const armor = calculateArmor({ target, action, actor });
-        const updatedArmor = Math.max(0, baseArmor - damage + armor);
-        const healthDamage = Math.max(0, damage - baseArmor);
-        let HP = Math.max(0, target.HP - healthDamage);
-        HP = HP > 0 ? updateHP({ maxHP: target.maxHP, HP, effects: target.effects }, healing) : 0;
+    const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
+    const ability = actionSource?.type === "ability" ? (actionSource.source as Ability) : undefined;
+    const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
+    const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
+    const armor = calculateArmor({ target, action, actor });
+    const updatedArmor = Math.max(0, baseArmor - damage + armor);
+    const healthDamage = Math.max(0, damage - baseArmor);
+    let HP = Math.max(0, target.HP - healthDamage);
+    HP = HP > 0 ? updateHP({ maxHP: target.maxHP, HP, effects: target.effects }, healing) : 0;
 
-        dispatch(
-            updateCombatant({
-                combatantId: target.id,
-                newProperties: {
-                    HP,
-                    armor: updatedArmor,
-                    resources: (target.resources || 0) + resources,
-                },
-            })
+    const targetIsImmune = isCharacterImmune(target);
+    const isImmuneTo = (effect: Effect) => {
+        return target.effects.some(
+            (targetEffect: Effect) =>
+                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type) ||
+                (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF)
         );
+    };
 
-        dispatch(applyEffects({ effects, targetId: target.id, applierId: actor?.id }));
-        dispatch(onReceiveAction({ action, damage, targetId: target.id, actorId: actor?.id }));
+    const newEffects = [
+        ...target.effects,
+        ...effects
+            .filter((effect) => !isImmuneTo(effect))
+            .map((effect) => ({
+                ...cloneDeep(effect),
+                uptime: 0,
+                id: uuid.v4(),
+                applier: actor?.id,
+            })),
+    ];
+
+    return {
+        ...target,
+        HP,
+        armor: updatedArmor,
+        resources: (target.resources || 0) + resources,
+        effects: newEffects,
     };
 };
 
@@ -310,7 +269,7 @@ const onEffectEventTrigger = ({
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
-                const newEffects = findCombatant(getState, ownerId)?.effects.filter(({ id }) => id !== effect.id);
+                const newEffects = findCombatant(getState, ownerId).effects.filter(({ id }) => id !== effect.id);
                 dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
             }
         };
@@ -327,28 +286,40 @@ const onEffectEventTrigger = ({
             // These are effects to apply to the effect owner + friendlies within the area
             const { friendly } = orientate({ actorId: ownerId, ...getState().battle });
             const i = friendly.findIndex((c: Combatant | null) => c?.id === ownerId);
-            friendly.forEach((combatant: Combatant | null, j: number) => {
+            // Apply all the updates before triggering any related events
+            const isAffected = (combatant: Combatant | null, j: number) => {
                 const isWithinArea = j >= i - area && j <= i + area;
                 const isTargetingOwner = j === i;
                 const isAffected = combatant?.HP > 0 && isWithinArea && (!excludeEffectOwner || isTargetingOwner);
-                if (!isAffected) {
-                    return;
-                }
+                return isAffected;
+            };
+            friendly
+                .map((combatant: Combatant | null, j: number) => {
+                    if (!isAffected(combatant, j)) {
+                        return;
+                    }
 
-                const action: Action = {
-                    ...effectOwner,
-                    type: ACTION_TYPES.EFFECT,
-                };
-                dispatch(
-                    applyActionToTarget({
-                        targetId: combatant.id,
+                    return applyActionToTarget({
+                        target: combatant,
                         targetIndex: j,
-                        action,
+                        action: {
+                            ...effectOwner,
+                            type: ACTION_TYPES.EFFECT,
+                        },
                         actionSource: { source: effect, type: "effect" },
-                    })
-                );
-            });
-            // TODO create replay event here
+                    });
+                })
+                .forEach((updated: Combatant | null, j: number) => {
+                    if (!isAffected(updated, j)) {
+                        return;
+                    }
+                    dispatch(
+                        updateCombatant({
+                            combatantId: updated.id,
+                            newProperties: updated,
+                        })
+                    );
+                });
         }
 
         checkRemoveEffect();
@@ -383,27 +354,96 @@ export const checkEventTrigger = ({
     };
 };
 
+const getDiff = (
+    oldCombatant: Combatant,
+    newCombatant: Combatant
+): {
+    isDeathBlow: boolean;
+    resourcesSpent: number;
+    healing: number;
+    armor: number;
+    totalDamageTaken: number;
+    effectsGained: Effect[];
+    effectsRemoved: Effect[];
+} => {
+    const newEffectsIds = newCombatant.effects.reduce((acc, effect) => ({ ...acc, [effect.id]: effect }), {});
+    const oldEffectsIds = oldCombatant.effects.reduce((acc, effect) => ({ ...acc, [effect.id]: effect }), {});
+
+    return {
+        isDeathBlow: oldCombatant.HP > 0 && newCombatant.HP === 0,
+        resourcesSpent: oldCombatant.resources - newCombatant.resources,
+        healing: newCombatant.HP - oldCombatant.HP,
+        armor: newCombatant.armor - oldCombatant.armor,
+        totalDamageTaken: oldCombatant.armor + oldCombatant.HP - (newCombatant.armor + newCombatant.HP),
+        effectsGained: newCombatant.effects.filter((e) => !oldEffectsIds[e.id]),
+        effectsRemoved: oldCombatant.effects.filter((e) => !newEffectsIds[e.id]),
+    };
+};
+
+/**
+ * Also uses diffing to trigger events:
+ * - on resource gain
+ * - on armor gain
+ * - on healed
+ * - on receive damage
+ * - on death
+ */
 export const updateCombatant = ({ combatantId, newProperties, source }: { combatantId: string; newProperties: any; source?: any }) => {
     return (dispatch, getState) => {
         const { enemySide, playerSide } = getState().battle;
-        let isDeath = false;
+        const { friendly, actorSide } = orientate({ actorId: combatantId, enemySide, playerSide });
+        const oldCombatant = findCombatant(getState, combatantId);
+        const newCombatant = { ...oldCombatant, ...newProperties };
+        const diff = getDiff(oldCombatant, newCombatant);
 
-        const update = (combatant) => {
-            if (combatant?.id !== combatantId) {
-                return combatant;
-            }
+        dispatch(
+            updateBattle({
+                [actorSide]: friendly.map((combatant: Combatant | null) => (combatant?.id !== combatantId ? combatant : newCombatant)),
+            })
+        );
 
-            isDeath = combatant.HP > 0 && newProperties.HP === 0;
-            return { ...combatant, ...newProperties };
-        };
+        const { isDeathBlow, resourcesSpent, healing, armor, totalDamageTaken, effectsGained, effectsRemoved } = diff;
+        if (resourcesSpent > 0) {
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onResourcesSpent, triggerSource: source })
+            );
+        }
 
-        const updatedBattle = {
-            enemySide: enemySide.map(update),
-            playerSide: playerSide.map(update),
-        };
+        if (healing > 0) {
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealing, triggerSource: source })
+            );
+        }
 
-        dispatch(updateBattle(updatedBattle));
-        if (isDeath) {
+        if (armor > 0) {
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveArmor, triggerSource: source })
+            );
+        }
+
+        if (totalDamageTaken > 0) {
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveDamage, triggerSource: source })
+            );
+        }
+
+        effectsGained.forEach((e) => {
+            // TODO probably include effects in the event trigger payload?
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveEffect, triggerSource: source })
+            );
+        });
+
+        effectsRemoved.forEach((e) => {
+            // TODO probably include effects in the event trigger payload?
+            // Removal should only apply to dispels?
+            dispatch(
+                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onEffectRemoved, triggerSource: source })
+            );
+            dispatch(checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onEnd, triggerSource: source }));
+        });
+
+        if (isDeathBlow) {
             dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
         }
     };
@@ -450,7 +490,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: "onTurnEnd", triggerSource: null }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd, triggerSource: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.DEBUFF));
         });
     };
@@ -493,7 +533,7 @@ export const startPlayerTurn = () => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: "onTurnStart", triggerSource: null }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, triggerSource: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
 
@@ -504,16 +544,6 @@ export const startPlayerTurn = () => {
                 amount: player.drawCardsPerTurn - battle.hand.length, // TODO card draw effects
             })
         );
-    };
-};
-
-const onResourceChange = ({ resourceCost, combatantId }: { resourceCost: number; combatantId: string }) => {
-    return (dispatch, getState) => {
-        const combatant = findCombatant(getState, combatantId);
-        dispatch(updateCombatant({ combatantId, newProperties: { resources: combatant.resources - resourceCost } }));
-        if (resourceCost > 0) {
-            dispatch(checkEventTrigger({ combatantId: combatantId, effectEventKey: "onResourcesSpent", triggerSource: null }));
-        }
     };
 };
 
@@ -559,20 +589,35 @@ const performAction = ({
             return inArea;
         };
 
-        getState().battle[side].forEach((character: Combatant | null, i: number) => {
-            if (isAffected(character, i)) {
+        const actor = findCombatant(getState, actorId);
+        const combatants = getState().battle[side];
+        combatants
+            .map((character: Combatant | null, i: number) => {
+                if (!isAffected(character, i)) {
+                    return;
+                }
+                return applyActionToTarget({
+                    target: character,
+                    selectedIndex,
+                    targetIndex: i,
+                    action,
+                    actor,
+                    actionSource: { source: ability, type: "ability" },
+                });
+            })
+            .forEach((updated: Combatant | null, i) => {
+                if (!isAffected(updated, i)) {
+                    return;
+                }
                 dispatch(
-                    applyActionToTarget({
-                        targetId: character.id,
-                        selectedIndex,
-                        targetIndex: i,
-                        action,
-                        actorId,
-                        actionSource: { source: ability, type: "ability" },
+                    updateCombatant({
+                        combatantId: updated.id,
+                        newProperties: updated,
                     })
                 );
-            }
-        });
+
+                dispatch(onReceiveAction({ action, targetId: updated.id, actorId: actor?.id }));
+            });
     };
 };
 
@@ -727,7 +772,8 @@ export const useAbility = ({
     return (dispatch, getState) => {
         const { resourceCost = 0, actions = [], effects = {} } = ability;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
-        dispatch(onResourceChange({ resourceCost: totalResourceCost, combatantId: actorId })); // Should this be in 'updateCombatant'?
+        const combatant = findCombatant(getState, actorId);
+        dispatch(updateCombatant({ combatantId: actorId, newProperties: { resources: combatant.resources - totalResourceCost } }));
         dispatch(checkSummonMinion({ ability, selectedIndex, side, actorId }));
 
         // TODO when playback the event should be the whole AoE
@@ -763,7 +809,11 @@ export const useAbility = ({
         actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions })).forEach(handleAction);
 
         dispatch(
-            checkEventTrigger({ combatantId: actorId, effectEventKey: "onAbility", triggerSource: { source: ability, type: "ability" } })
+            checkEventTrigger({
+                combatantId: actorId,
+                effectEventKey: EFFECT_EVENT_KEYS.onAbility,
+                triggerSource: { source: ability, type: "ability" },
+            })
         );
     };
 };

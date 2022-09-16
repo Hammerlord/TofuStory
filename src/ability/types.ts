@@ -54,6 +54,26 @@ export interface EffectEventTrigger {
     randomFriendly?: TriggerEffect;
 }
 
+export enum EFFECT_EVENT_KEYS {
+    onAbility = "onAbility",
+    onAttack = "onAttack",
+    onDeath = "onDeath",
+    onFriendlyDeath = "onFriendlyDeath",
+    onHostileDeath = "onHostileDeath",
+    onReceiveAttack = "onReceiveAttack",
+    onReceiveDamage = "onReceiveDamage",
+    onReceiveHealing = "onReceiveHealing",
+    onReceiveArmor = "onReceiveArmor",
+    onReceiveEffect = "onReceiveEffect",
+    onEffectRemoved = "onEffectRemoved",
+    onResourcesSpent = "onResourcesSpent",
+    onTurnStart = "onTurnStart",
+    onTurnEnd = "onTurnEnd",
+    onEnd = "onEnd",
+    onWaveStart = "onWaveStart",
+    onWaveClear = "onWaveClear",
+}
+
 export interface Effect {
     name?: string;
     type: EFFECT_TYPES;
@@ -75,7 +95,7 @@ export interface Effect {
     excludeEffectOwner?: boolean;
     immunities?: EFFECT_TYPES[];
     preventArmorDecay?: boolean;
-    armorReceived?: number;
+    armorReceived?: number; // Increased armor received, that is; ditto for below
     damageReceived?: number;
     healingReceived?: number;
     /** Only a single instance of this effect type can be on the character */
@@ -83,12 +103,15 @@ export interface Effect {
     /** A percentage of damage will be returned as HP to the effect owner */
     leech?: number;
     conditions?: EffectCondition[];
+    onAbility?: EffectEventTrigger;
     onAttack?: EffectEventTrigger;
     onDeath?: EffectEventTrigger;
     onFriendlyDeath?: EffectEventTrigger;
     onHostileDeath?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;
+    onReceiveHealing?: EffectEventTrigger;
+    onReceiveArmor?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
     onResourcesSpent?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
