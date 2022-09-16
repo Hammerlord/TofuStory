@@ -137,23 +137,34 @@ const onCombatantDeath = ({ combatantId, triggerSource }) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: "onKilled", triggerSource }));
 
         const { friendly, hostile } = orientate({ actorId: combatantId, ...getState().battle });
-        friendly.forEach((f) => {
-            if (f && f.id !== combatantId) {
-                dispatch(checkEventTrigger({ combatantId: f.id, effectEventKey: "onFriendlyDeath", triggerSource }));
+        friendly.forEach((combatant: Combatant | null) => {
+            const { HP, id } = combatant || {};
+            if (HP > 0 && id !== combatantId) {
+                dispatch(checkEventTrigger({ combatantId: id, effectEventKey: "onFriendlyDeath", triggerSource }));
             }
         });
 
-        hostile.forEach((h) => {
-            if (h && h.id !== combatantId) {
-                dispatch(checkEventTrigger({ combatantId: h.id, effectEventKey: "onHostileDeath", triggerSource }));
+        hostile.forEach((combatant: Combatant | null) => {
+            const { HP, id } = combatant || {};
+            if (HP > 0 && id !== combatantId) {
+                dispatch(checkEventTrigger({ combatantId: id, effectEventKey: "onHostileDeath", triggerSource }));
             }
         });
 
-        const { playerSide, enemySide, waves, currentWave } = getState().battle;
+        const { playerSide, enemySide, waves, currentWave, playerSummonsInPlay, discard } = getState().battle;
         if (playerSide.find((c: Combatant | null) => c?.isPlayer).HP === 0) {
             // Game over
 
             return;
+        }
+
+        if (playerSummonsInPlay[combatantId]) {
+            dispatch(
+                updateBattle({
+                    playerSummonsInPlay: { ...playerSummonsInPlay, [combatantId]: undefined },
+                    discard: [...discard, playerSummonsInPlay[combatantId]],
+                })
+            );
         }
 
         if (enemySide.every((enemy) => !enemy || enemy.HP === 0)) {
@@ -662,21 +673,39 @@ const checkCardActions = (action: Action, actorId: string) => {
     };
 };
 
+const checkSummonMinion = ({ ability, selectedIndex, side, actorId }) => {
+    return (dispatch, getState) => {
+        const { minion, removeAfterTurn, depletedOnUse } = ability;
+        if (minion) {
+            const minionCombatant: Combatant = createCombatant(minion);
+            const newBattleProps: {
+                playerSide?: (Combatant | null)[];
+                enemySide?: (Combatant | null)[];
+                playerSummonsInPlay?: { [id: string]: Ability };
+            } = {
+                [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
+                    return i === selectedIndex ? minionCombatant : combatant;
+                }),
+            };
+
+            // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
+            if (findCombatant(getState, actorId).isPlayer && !removeAfterTurn && !depletedOnUse) {
+                newBattleProps.playerSummonsInPlay = { [minionCombatant.id]: ability };
+            }
+
+            dispatch(updateBattle(newBattleProps));
+
+            // TODO on summon event triggers?
+        }
+    };
+};
+
 export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
     return (dispatch, getState) => {
-        const { resourceCost = 0, effects = {}, actions = [], minion } = ability;
+        const { resourceCost = 0, effects = {}, actions = [] } = ability;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         dispatch(onResourceChange({ resourceCost: totalResourceCost, combatantId: actorId })); // Should this be in 'updateCombatant'?
-
-        if (minion) {
-            updateBattle({
-                [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                    return i === selectedIndex ? createCombatant(minion) : combatant;
-                }),
-            });
-            // On summon
-            // If the actor is the player then we need to move the ability to the "active summons" bucket
-        }
+        dispatch(checkSummonMinion({ ability, selectedIndex, side, actorId }));
 
         // TODO when playback the event should be the whole AoE
 
@@ -739,7 +768,7 @@ export const onUsePlayerAbility = ({
         const { playerSide, hand: originalHand } = getState().battle;
         const handWithAbilityUsed = originalHand.slice();
         const [ability] = handWithAbilityUsed.splice(selectedAbilityIndex, 1);
-        const { removeAfterTurn, reusable, depletedOnUse } = ability as HandAbility;
+        const { removeAfterTurn, reusable, depletedOnUse, minion } = ability as HandAbility;
 
         dispatch(
             updateBattle({
@@ -759,7 +788,8 @@ export const onUsePlayerAbility = ({
                 ...ability,
                 effects: undefined,
             });
-        } else if (!removeAfterTurn && !depletedOnUse) {
+        } else if (!minion && !removeAfterTurn && !depletedOnUse) {
+            // Minions go into a special bucket rather than immediately to discard; see useAbility
             newDiscard.push(...prepareForDiscard([ability]));
         }
 
@@ -785,6 +815,12 @@ export const onSummonAttack = ({ selectedIndex, actorId }) => {
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
                 ability: getBasicAttack(findCombatant(getState, actorId)),
                 actorId,
+            })
+        );
+
+        dispatch(
+            updateBattle({
+                charactersAttackedThisTurn: [...getState().battle.charactersAttackedThisTurn, actorId],
             })
         );
     };
