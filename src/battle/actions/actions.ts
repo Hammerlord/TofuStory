@@ -507,7 +507,7 @@ export const startPlayerTurn = () => {
     };
 };
 
-const onResourceChange = ({ resourceCost, combatantId }) => {
+const onResourceChange = ({ resourceCost, combatantId }: { resourceCost: number; combatantId: string }) => {
     return (dispatch, getState) => {
         const combatant = findCombatant(getState, combatantId);
         dispatch(updateCombatant({ combatantId, newProperties: { resources: combatant.resources - resourceCost } }));
@@ -616,23 +616,26 @@ const getAbilityTarget = ({
     return { index, side };
 };
 
-const castRadiate = ({
+const checkCastRadiate = ({
     ability,
-    radiate,
+    action,
     selectedIndex,
     side,
 }: {
     ability: Ability;
-    radiate: Radiate;
+    action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
 }) => {
     return (dispatch, getState) => {
+        if (!action.radiate) {
+            return;
+        }
         dispatch(
             performAction({
                 action: {
                     type: ACTION_TYPES.EFFECT,
-                    ...radiate,
+                    ...action.radiate,
                 },
                 selectedIndex,
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
@@ -673,7 +676,17 @@ const checkCardActions = (action: Action, actorId: string) => {
     };
 };
 
-const checkSummonMinion = ({ ability, selectedIndex, side, actorId }) => {
+const checkSummonMinion = ({
+    ability,
+    selectedIndex,
+    side,
+    actorId,
+}: {
+    side: BATTLEFIELD_SIDES;
+    selectedIndex: number;
+    ability: HandAbility;
+    actorId: string;
+}) => {
     return (dispatch, getState) => {
         const { minion, removeAfterTurn, depletedOnUse } = ability;
         if (minion) {
@@ -700,9 +713,19 @@ const checkSummonMinion = ({ ability, selectedIndex, side, actorId }) => {
     };
 };
 
-export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
+export const useAbility = ({
+    ability,
+    selectedIndex,
+    side,
+    actorId,
+}: {
+    side: BATTLEFIELD_SIDES;
+    selectedIndex: number;
+    ability: HandAbility;
+    actorId: string;
+}) => {
     return (dispatch, getState) => {
-        const { resourceCost = 0, effects = {}, actions = [] } = ability;
+        const { resourceCost = 0, actions = [], effects = {} } = ability;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         dispatch(onResourceChange({ resourceCost: totalResourceCost, combatantId: actorId })); // Should this be in 'updateCombatant'?
         dispatch(checkSummonMinion({ ability, selectedIndex, side, actorId }));
@@ -733,20 +756,19 @@ export const useAbility = ({ ability, selectedIndex, side, actorId }) => {
             }
 
             dispatch(performAction({ ability, action, selectedIndex: index, side: finalSide, actorId }));
-            const { radiate } = action;
-            if (radiate) {
-                dispatch(castRadiate({ ability, radiate, selectedIndex, side: finalSide }));
-            }
+            dispatch(checkCastRadiate({ ability, action, selectedIndex, side: finalSide }));
             dispatch(checkCardActions(action, actorId));
         };
 
         actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions })).forEach(handleAction);
 
-        dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: "onAbility", triggerSource: ability }));
+        dispatch(
+            checkEventTrigger({ combatantId: actorId, effectEventKey: "onAbility", triggerSource: { source: ability, type: "ability" } })
+        );
     };
 };
 
-const prepareForDiscard = (cards: HandAbility[]): Ability[] => {
+const prepareForDiscard = (cards: HandAbility[]): HandAbility[] => {
     return cards
         .filter((ability) => !ability.removeAfterTurn)
         .map((hand) => ({
@@ -807,7 +829,7 @@ export const onUsePlayerAbility = ({
     };
 };
 
-export const onSummonAttack = ({ selectedIndex, actorId }) => {
+export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
         dispatch(
             useAbility({

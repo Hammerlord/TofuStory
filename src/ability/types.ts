@@ -268,6 +268,7 @@ export interface Ability {
     castTime?: number;
     description?: string;
     area?: number;
+    /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
     reusable?: boolean;
     depletedOnUse?: boolean;
@@ -284,7 +285,7 @@ export interface Ability {
  * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
  */
 export interface HandAbility extends Ability {
-    effects: AbilityEffects;
+    effects?: AbilityEffects;
 }
 
 export enum ACTION_TYPES {

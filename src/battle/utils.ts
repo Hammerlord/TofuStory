@@ -392,7 +392,7 @@ export const applyVacuum = ({
     return newCharacters;
 };
 
-export const getBasicAttack = (actor): Ability => {
+export const getBasicAttack = (actor): HandAbility => {
     if (actor.attack) {
         return actor.attack;
     }
