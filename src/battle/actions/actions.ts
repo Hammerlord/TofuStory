@@ -12,7 +12,6 @@ import {
     EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
     HandAbility,
-    Radiate,
     TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
@@ -22,12 +21,11 @@ import { Wave } from "../../Menu/tutorial";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, TriggerSource } from "../types";
+import { BATTLEFIELD_SIDES } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
     calculateArmor,
-    calculateBonus,
     calculateDamage,
     checkHalveArmor,
     clearTurnHistory,
@@ -41,6 +39,7 @@ import {
     updateCharacters,
     updateHP,
 } from "../utils";
+import { TriggerSource } from "./../types";
 
 const { drawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -388,7 +387,15 @@ const getDiff = (
  * - on receive damage
  * - on death
  */
-export const updateCombatant = ({ combatantId, newProperties, source }: { combatantId: string; newProperties: any; source?: any }) => {
+export const updateCombatant = ({
+    combatantId,
+    newProperties,
+    source,
+}: {
+    combatantId: string;
+    newProperties: any;
+    source?: TriggerSource;
+}) => {
     return (dispatch, getState) => {
         const { enemySide, playerSide } = getState().battle;
         const { friendly, actorSide } = orientate({ actorId: combatantId, enemySide, playerSide });
@@ -403,44 +410,35 @@ export const updateCombatant = ({ combatantId, newProperties, source }: { combat
         );
 
         const { isDeathBlow, resourcesSpent, healing, armor, totalDamageTaken, effectsGained, effectsRemoved } = diff;
+        const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
+            dispatch(checkEventTrigger({ combatantId: combatantId, effectEventKey, triggerSource: source }));
+        };
         if (resourcesSpent > 0) {
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onResourcesSpent, triggerSource: source })
-            );
+            dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
         }
 
         if (healing > 0) {
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealing, triggerSource: source })
-            );
+            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing);
         }
 
         if (armor > 0) {
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveArmor, triggerSource: source })
-            );
+            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor);
         }
 
         if (totalDamageTaken > 0) {
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveDamage, triggerSource: source })
-            );
+            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
         }
 
         effectsGained.forEach((e) => {
             // TODO probably include effects in the event trigger payload?
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveEffect, triggerSource: source })
-            );
+            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
         });
 
         effectsRemoved.forEach((e) => {
             // TODO probably include effects in the event trigger payload?
             // Removal should only apply to dispels?
-            dispatch(
-                checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onEffectRemoved, triggerSource: source })
-            );
-            dispatch(checkEventTrigger({ combatantId: combatantId, effectEventKey: EFFECT_EVENT_KEYS.onEnd, triggerSource: source }));
+            dispatchEvent(EFFECT_EVENT_KEYS.onEffectRemoved);
+            dispatchEvent(EFFECT_EVENT_KEYS.onEnd);
         });
 
         if (isDeathBlow) {
