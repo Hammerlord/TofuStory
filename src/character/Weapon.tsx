@@ -90,11 +90,9 @@ const Weapon = ({ image, action, wielder, target }) => {
                 [classes.swing]: type === ACTION_TYPES.ATTACK && area >= 1,
                 [classes.whirl]: type === ACTION_TYPES.ATTACK && area >= 2,
             })}
-            style={
-                rotation && {
-                    transform: `rotate(${rotation}deg)`,
-                }
-            }
+            style={{
+                transform: rotation ? `rotate(${rotation}deg)` : "unset",
+            }}
         >
             <img src={image} />
         </div>
