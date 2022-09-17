@@ -48,7 +48,7 @@ const ClearOverlay = ({ labelText }) => {
                 <div className={classes.clearContainer}>
                     <img src={clear} className={classes.clear} />
                 </div>
-                <div className={classes.labelContainer}>{labelText}</div>
+                {labelText && <div className={classes.labelContainer}>{labelText}</div>}
             </div>
         </Overlay>
     );

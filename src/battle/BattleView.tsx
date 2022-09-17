@@ -621,7 +621,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
             </TargetLineCanvas>
             {/** TODO Restore static deck */}
             <Header player={player} deck={[]} onUseItem={handleUseItem} />
-            {showWaveClear && <ClearOverlay labelText={`Next: Wave ${currentWave + 1}`} />}
+            {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
         </div>
     );
