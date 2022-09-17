@@ -312,10 +312,9 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
         }
 
         const allTargets = [];
-        if (action?.area) {
-            for (let i = selectedIndex - action.area; i <= selectedIndex + action.area; ++i) {
-                targets[i]?.current && allTargets.push(targets[i].current);
-            }
+        const area = action?.area || 0;
+        for (let i = selectedIndex - area; i <= selectedIndex + area; ++i) {
+            targets[i]?.current && allTargets.push(targets[i].current);
         }
 
         return {
