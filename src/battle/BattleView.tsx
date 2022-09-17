@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { Action, EFFECT_TYPES } from "../ability/types";
@@ -338,8 +338,12 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
         }, delay);
     };
 
+    const eventQueueRef = useRef([]);
+
     useEffect(() => {
         if (!events.length) {
+            eventQueueRef.current = events;
+
             if (isEnded) {
                 onBattleWon();
                 return;
@@ -376,7 +380,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
             return;
         }
 
-        const { ability, action, playbackTime } = events[0];
+        const { ability, playbackTime } = events[0];
 
         if (ability) {
             setAbilityNotification({
@@ -389,17 +393,15 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
             });
         }
 
-        const timeout = setTimeout(() => {
-            dispatch(popEventQueue());
-        }, playbackTime);
-
-        if (!isPlayerTurn) {
-            // This allows enemy action animations to play synchronously
-            return () => {
-                popEventQueue();
-                clearTimeout(timeout);
-            };
+        const prevEvents = eventQueueRef?.current as Event[];
+        // Disregard pushes to the queue unless going from 0 to n events; this is to smoothen playback
+        const shouldTriggerPop = (prevEvents?.length === 0 && events.length > 0) || events.length < prevEvents.length;
+        if (shouldTriggerPop) {
+            setTimeout(() => {
+                dispatch(popEventQueue());
+            }, playbackTime);
         }
+        eventQueueRef.current = events;
     }, [events, flagTurnEnd]);
 
     useEffect(() => {
