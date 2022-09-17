@@ -252,22 +252,23 @@ const CombatantView = forwardRef(
                 {...other}
             >
                 <div className={classes.inner}>
-                    {isTargeted && (
+                    {isTargeted && showReticle && (
                         <span className={classes.targetAffectedIndicatorContainer}>
                             <Icon icon={ClickIndicator} />
                         </span>
                     )}
-                    {oldState && (
-                        <>
-                            {oldState.HP > 0 && (
-                                <div className={classes.header}>
-                                    {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
-                                    <span>{oldState.name}</span>
-                                    {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
-                                </div>
-                            )}
-                            <div className={classes.combatantContainer} ref={weaponRef}>
-                                <span ref={ref as any} className={classNames(classes.portrait)}>
+
+                    {oldState?.HP > 0 && (
+                        <div className={classes.header}>
+                            {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
+                            <span>{oldState.name}</span>
+                            {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
+                        </div>
+                    )}
+                    <div className={classes.combatantContainer} ref={weaponRef}>
+                        <span ref={ref as any} className={classNames(classes.portrait)}>
+                            {oldState && (
+                                <>
                                     <img
                                         src={oldState.image}
                                         className={classNames(classes.portraitImage, {
@@ -295,34 +296,32 @@ const CombatantView = forwardRef(
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
-                                </span>
-                                {oldState.HP > 0 && (
-                                    <>
-                                        <div className={classes.leftContainer}>
-                                            <Armor amount={oldState.armor} />
-                                            <Health HP={oldState.HP} maxHP={getMaxHP(oldState)} />
-                                        </div>
-
-                                        <div className={classes.rightContainer}>
-                                            <AttackPower combatant={oldState} />
-                                        </div>
-                                        {event?.action?.type === ACTION_TYPES.NONE && (
-                                            <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                            {oldState.HP > 0 && (
-                                <div className={classes.effectsContainer}>
-                                    {oldState.effects?.map((effect, i) => (
-                                        <EffectIcon effect={effect} key={i} silence={isSilenced} owner={oldState} />
-                                    ))}
-                                    {oldState.aura && (
-                                        <EffectIcon effect={oldState.aura} isAura={true} silence={isSilenced} owner={oldState} />
-                                    )}
-                                </div>
+                                </>
                             )}
-                        </>
+                        </span>
+                        {oldState?.HP > 0 && (
+                            <>
+                                <div className={classes.leftContainer}>
+                                    <Armor amount={oldState.armor} />
+                                    <Health HP={oldState.HP} maxHP={getMaxHP(oldState)} />
+                                </div>
+
+                                <div className={classes.rightContainer}>
+                                    <AttackPower combatant={oldState} />
+                                </div>
+                                {event?.action?.type === ACTION_TYPES.NONE && (
+                                    <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />
+                                )}
+                            </>
+                        )}
+                    </div>
+                    {oldState?.HP > 0 && (
+                        <div className={classes.effectsContainer}>
+                            {oldState.effects?.map((effect, i) => (
+                                <EffectIcon effect={effect} key={i} silence={isSilenced} owner={oldState} />
+                            ))}
+                            {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} silence={isSilenced} owner={oldState} />}
+                        </div>
                     )}
                 </div>
                 {showReticle && <Reticle className={classes.reticle} />}
