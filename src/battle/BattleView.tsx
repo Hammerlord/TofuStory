@@ -230,7 +230,7 @@ const BattlefieldContainer = () => {
         }
         const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
-            if (showReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
+            if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
                 setSelectedAbilityIndex(null);
@@ -251,7 +251,7 @@ const BattlefieldContainer = () => {
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
-            if (showReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
+            if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
             } else if (enemySide[index] && enemySide[index].effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
                 warn("That character is stealthed and cannot be targeted directly.");
@@ -261,7 +261,7 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (showReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
+        if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
             handleAllyAttack({ index });
         } else {
             setSelectedAllyIndex(null);
@@ -441,13 +441,10 @@ const BattlefieldContainer = () => {
         return i >= hoveredIndex - area && i <= hoveredIndex + area;
     };
 
-    const showReticle = (side: BATTLEFIELD_SIDES, index: number): boolean => {
+    const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
         if (isEligibleToAttack(playerSide[selectedAllyIndex])) {
-            if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && enemySide[index]) {
-                if (typeof hoveredEnemyIndex === "number") {
-                    return index === hoveredEnemyIndex;
-                }
-                return true;
+            if (combatantSide === BATTLEFIELD_SIDES.ENEMY_SIDE && enemySide[combatantIndex]) {
+                return typeof hoveredEnemyIndex !== "number" || combatantIndex === hoveredEnemyIndex;
             }
 
             return false;
@@ -458,48 +455,23 @@ const BattlefieldContainer = () => {
             return false;
         }
 
-        const { minion } = ability;
-        if (minion) {
-            if (side === BATTLEFIELD_SIDES.PLAYER_SIDE && !playerSide[index]) {
-                if (typeof hoveredAllyIndex === "number") {
-                    return index === hoveredAllyIndex;
-                }
-                return true;
+        if (ability.minion) {
+            if (combatantSide === BATTLEFIELD_SIDES.PLAYER_SIDE && !playerSide[combatantIndex]) {
+                return typeof hoveredAllyIndex !== "number" || combatantIndex === hoveredAllyIndex;
             }
         }
 
-        const actor = player;
-        if (typeof hoveredEnemyIndex === "number") {
-            if (
-                isValidTarget({
-                    ability,
-                    side: BATTLEFIELD_SIDES.ENEMY_SIDE,
-                    index: hoveredEnemyIndex,
-                    playerSide,
-                    enemySide,
-                    actor,
-                })
-            ) {
-                return isTargeted(side, index);
-            }
+        let side = combatantSide;
+        let index = combatantIndex;
+        if (hoveredEnemyIndex === "number") {
+            side = BATTLEFIELD_SIDES.ENEMY_SIDE;
+            index = hoveredEnemyIndex;
+        } else if (hoveredAllyIndex === "number") {
+            side = BATTLEFIELD_SIDES.PLAYER_SIDE;
+            index = hoveredAllyIndex;
         }
 
-        if (typeof hoveredAllyIndex === "number") {
-            if (
-                isValidTarget({
-                    ability,
-                    side: BATTLEFIELD_SIDES.PLAYER_SIDE,
-                    index: hoveredAllyIndex,
-                    playerSide,
-                    enemySide,
-                    actor,
-                })
-            ) {
-                return isTargeted(side, index);
-            }
-        }
-
-        return isValidTarget({ ability, side, index, playerSide, enemySide, actor });
+        return isValidTarget({ ability, side, index, playerSide, enemySide, actor: player });
     };
 
     const origination = useMemo(() => {
@@ -557,7 +529,7 @@ const BattlefieldContainer = () => {
                                         key={i}
                                         event={enemy?.id === events[0]?.actorId ? animationEvent : undefined}
                                         isHighlighted={false}
-                                        showReticle={showReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
+                                        showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         ref={enemyRefs[i]}
                                         showResourceBar={shouldShowResourceBar(enemy)}
                                     />
@@ -584,7 +556,7 @@ const BattlefieldContainer = () => {
                                                 key={i}
                                                 event={ally?.id === events[0]?.actorId ? animationEvent : undefined}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
-                                                showReticle={showReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
+                                                showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 ref={allyRefs[i]}
                                             />
                                         );
