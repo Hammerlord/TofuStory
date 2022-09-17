@@ -254,18 +254,17 @@ const onEffectEventTrigger = ({
     effect,
     ownerId,
     externalPartyId,
+    triggerSource,
 }: {
     effectEvent: EffectEventTrigger;
     effect: CombatEffect;
     ownerId: string;
     externalPartyId?: string;
+    triggerSource?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { area = 0, conditions, canBeSilenced, excludeEffectOwner } = effect;
+        const { area = 0, canBeSilenced, excludeEffectOwner } = effect;
         const { removeEffect, effectOwner, externalParty } = effectEvent;
-        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
-            return findCombatant(getState, calculationTarget === "effectOwner" ? ownerId : externalPartyId);
-        };
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
@@ -278,7 +277,11 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        if (!passesConditions({ getCalculationTarget, conditions })) {
+        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
+            return findCombatant(getState, calculationTarget === "effectOwner" ? ownerId : externalPartyId);
+        };
+
+        if (!passesConditions({ getCalculationTarget, conditions: effectEvent.conditions })) {
             return;
         }
 
@@ -331,7 +334,7 @@ const onEffectEventTrigger = ({
         };
 
         if (effectOwner) {
-            applyProc({ combatantId: ownerId, triggerEffect: effectOwner, excludePrimaryTarget: !excludeEffectOwner });
+            applyProc({ combatantId: ownerId, triggerEffect: effectOwner, excludePrimaryTarget: excludeEffectOwner });
         }
 
         if (externalParty) {
@@ -345,7 +348,7 @@ const onEffectEventTrigger = ({
 export const checkEventTrigger = ({
     combatantId,
     effectEventKey,
-    triggerSource, // TODO check trigger source to see if it passes conditions
+    triggerSource,
 }: {
     combatantId: string;
     effectEventKey: string;
@@ -363,7 +366,6 @@ export const checkEventTrigger = ({
 
         combatant.effects.forEach((effect: CombatEffect) => {
             if (effect[effectEventKey]) {
-                // TODO check conditions
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent: effect[effectEventKey],
