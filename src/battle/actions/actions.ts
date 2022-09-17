@@ -636,6 +636,7 @@ const performAction = ({
                     actionSource: { source: ability, type: "ability" },
                 });
             })
+            // Apply all the updates before triggering any related events
             .forEach((updated: Combatant | null, i) => {
                 if (!isAffected(updated, i)) {
                     return;
@@ -647,10 +648,17 @@ const performAction = ({
                     })
                 );
 
-                dispatch(
-                    onReceiveAction({ action, targetId: updated.id, actorId: actor?.id, actionParentType: ability ? "ability" : "effect" })
-                );
+                dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: ability ? "ability" : "effect" }));
             });
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: {
+                    turnHistory: [...findCombatant(getState, actorId).turnHistory, action],
+                },
+            })
+        );
     };
 };
 
