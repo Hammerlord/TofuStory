@@ -20,7 +20,7 @@ const DevStageBattle = () => {
     if (!battle) {
         return null;
     }
-    return <BattlefieldContainer onBattleWon={onBattleWon} />;
+    return <BattlefieldContainer />;
 };
 
 export default DevStageBattle;

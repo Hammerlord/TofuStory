@@ -144,7 +144,7 @@ const MAX_HAND_SIZE = 10;
 
 const { popEventQueue, updateFlagTurnEnd } = battleStateSlice.actions;
 
-const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
+const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
     const {
         deck,
@@ -343,11 +343,6 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
     useEffect(() => {
         if (!events.length) {
             eventQueueRef.current = events;
-
-            if (isEnded) {
-                onBattleWon();
-                return;
-            }
 
             if (enemySide.every((enemy) => !enemy || enemy.HP === 0)) {
                 setShowWaveClear(true);

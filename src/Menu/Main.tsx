@@ -125,6 +125,12 @@ const Main = () => {
         }
     }, [player]);
 
+    useEffect(() => {
+        if (battle?.isEnded) {
+            setRewardsOpen(true);
+        }
+    }, [battle?.isEnded]);
+
     const handleEventNode = ({ npc }: { npc: NPC }) => {
         const { character, scenes } = npc;
         const visited = visitedNPCs[character] as NPCTracker;
@@ -176,10 +182,6 @@ const Main = () => {
             }
         };
         handleTransition(callback);
-    };
-
-    const handleBattleWon = () => {
-        setRewardsOpen(true);
     };
 
     const handleCloseRewards = () => {
@@ -303,7 +305,7 @@ const Main = () => {
                             <Header player={player} deck={deck} />
                         </>
                     )}
-                    {battle && <BattlefieldContainer onBattleWon={handleBattleWon} />}
+                    {battle && <BattlefieldContainer />}
                     {isResting && (
                         <>
                             <Camp
