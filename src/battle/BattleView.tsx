@@ -354,6 +354,9 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                     }
                     setShowWaveClear(false);
                     dispatch(onWaveClear());
+                    if (!waves[currentWave]) {
+                        return;
+                    }
                     setShowTurnAnnouncement(true);
                     setTimeout(() => {
                         setShowTurnAnnouncement(false);
