@@ -20,61 +20,36 @@ export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
 };
 
 // Bigger animation speed = slower
-export const travel = ({ to, from, spin = false, rotateToFaceTarget = false, returnToOrigin = false, animationSpeed = 60 }) => {
+export const travel = ({ to, from, spin = false, rotateToFaceTarget = false, returnToOrigin = false, playbackTime }) => {
     if (!to || !from) {
         return;
     }
 
-    from.style.transform = "unset";
     const { x, y, x2, y2 } = getTargetPoints({ from, to });
-    const increments = animationSpeed;
-    const moveIncrementX = (x2 - x) / increments;
-    const moveIncrementY = (y2 - y) / increments;
-    let i = 1;
-    let direction = 1;
+    let rotation = 0;
+    if (spin) {
+        rotation = 360;
+    } else if (rotateToFaceTarget) {
+        rotation = getRotationToFaceTarget({ x, y, x2, y2 });
+    }
 
-    const move = () => {
-        if (!from) {
-            return;
-        }
+    const animationFrames = [
+        {
+            transform: `unset`,
+        },
+        {
+            transform: `translateX(${x2 - x}px) translateY(${y2 - y}px) rotate(${rotation}deg)`,
+        },
+    ];
 
-        let rotation = 0;
-        if (spin) {
-            const spinIncrement = 360 / increments;
-            rotation = spinIncrement * i;
-        } else if (rotateToFaceTarget) {
-            rotation = getRotationToFaceTarget({ x, y, x2, y2 });
-        }
+    if (returnToOrigin) {
+        animationFrames.push({
+            transform: `unset`,
+        });
+        playbackTime /= 1.5;
+    }
 
-        const xPos = i * moveIncrementX;
-        const yPos = i * moveIncrementY;
-        from.style.transform = `translateX(${xPos}px) translateY(${yPos}px) rotate(${rotation}deg)`;
-
-        if (direction === 1) {
-            ++i;
-
-            if (i > increments) {
-                if (returnToOrigin) {
-                    direction = -1;
-                } else {
-                    return;
-                }
-            }
-
-            setTimeout(() => {
-                move();
-            });
-        } else {
-            --i;
-
-            if (i > 0) {
-                setTimeout(() => {
-                    move();
-                });
-            } else {
-                from.style.transform = "unset";
-            }
-        }
-    };
-    move();
+    from.animate(animationFrames, {
+        duration: playbackTime,
+    });
 };

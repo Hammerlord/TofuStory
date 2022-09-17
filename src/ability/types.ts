@@ -122,8 +122,6 @@ export interface Effect {
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
     turnsTriggerFrequency?: number;
-    /** How many turns was this effect up on the character */
-    uptime?: number;
     skillBonus?: {
         skill: string;
         damage: number;
@@ -278,6 +276,7 @@ export interface Action {
     /** Percentage of armor on the target to remove */
     destroyArmor?: number;
     resurrect?: boolean;
+    playbackTime?: number;
 }
 
 export interface Ability {

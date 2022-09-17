@@ -377,7 +377,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
             return;
         }
 
-        const { ability, playbackTime = 1250 } = events[0];
+        const { ability, action, playbackTime } = events[0];
 
         if (ability) {
             setAbilityNotification({

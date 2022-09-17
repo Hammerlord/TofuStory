@@ -654,6 +654,9 @@ const performAction = ({
             })
         );
 
+        const MULTI_ACTION_PLAYBACK_SPEED = 750;
+        const NORMAL_ACTION_PLAYBACK_SPEED = 1200;
+
         dispatch(
             pushEventQueue({
                 ...getState().battle,
@@ -663,6 +666,8 @@ const performAction = ({
                 selectedIndex,
                 targetSide: side,
                 ability,
+                playbackTime:
+                    action.playbackTime || ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED,
             } as Event)
         );
     };

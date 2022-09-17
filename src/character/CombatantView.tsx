@@ -224,10 +224,16 @@ const CombatantView = forwardRef(
                 newCharacter: combatant,
             });
 
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
             }, 300);
+
+            return () => {
+                setStatChanges(statChanges);
+                setOldState(combatant);
+                clearTimeout(timeout);
+            };
         }, [combatant]);
 
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
@@ -269,6 +275,13 @@ const CombatantView = forwardRef(
                                             [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
                                             [classes.casting]: oldState.casting,
                                         })}
+                                        style={
+                                            event?.action?.type === ACTION_TYPES.EFFECT
+                                                ? {
+                                                      animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
+                                                  }
+                                                : undefined
+                                        }
                                     />
                                     <div className={classes.weaponContainer}>
                                         <Weapon

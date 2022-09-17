@@ -23,7 +23,7 @@ export interface Event {
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
-    playbackTime?: number;
+    playbackTime: number;
 }
 
 export interface EventGroup {

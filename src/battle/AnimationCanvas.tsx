@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action }: any) => {
+const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, playbackTime = 1000 }: any) => {
     const eventIdRef = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const { left: actorLeft, top: actorTop } = useMemo(() => {
@@ -43,7 +43,7 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action }: an
         eventIdRef.current = eventId;
         const { type, animation } = action || {};
         if (type === ACTION_TYPES.ATTACK && actor) {
-            travel({ to: target, from: actor, returnToOrigin: true });
+            travel({ to: target, from: actor, returnToOrigin: true, playbackTime });
         } else if (type === ACTION_TYPES.RANGE_ATTACK) {
             const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
@@ -54,6 +54,7 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action }: an
                     spin,
                     rotateToFaceTarget,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
+                    playbackTime,
                 });
             });
         }
