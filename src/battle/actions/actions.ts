@@ -13,6 +13,7 @@ import {
     EFFECT_TYPES,
     HandAbility,
     TARGET_TYPES,
+    TriggerEffect,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -261,7 +262,7 @@ const onEffectEventTrigger = ({
 }) => {
     return (dispatch, getState) => {
         const { area = 0, conditions, canBeSilenced, excludeEffectOwner } = effect;
-        const { removeEffect, effectOwner } = effectEvent;
+        const { removeEffect, effectOwner, externalParty } = effectEvent;
         const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
             return findCombatant(getState, calculationTarget === "effectOwner" ? ownerId : externalPartyId);
         };
@@ -281,16 +282,23 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        if (effectOwner) {
-            // These are effects to apply to the effect owner + friendlies within the area
-            const { friendly } = orientate({ actorId: ownerId, ...getState().battle });
-            const i = friendly.findIndex((c: Combatant | null) => c?.id === ownerId);
-            // Apply all the updates before triggering any related events
+        const applyProc = ({
+            combatantId,
+            triggerEffect,
+            excludePrimaryTarget,
+        }: {
+            combatantId?: string;
+            triggerEffect: TriggerEffect;
+            excludePrimaryTarget?: boolean;
+        }) => {
+            if (!combatantId) {
+                return;
+            }
+            const { friendly, actorIndex: i } = orientate({ actorId: combatantId, ...getState().battle });
             const isAffected = (combatant: Combatant | null, j: number) => {
                 const isWithinArea = j >= i - area && j <= i + area;
-                const isTargetingOwner = j === i;
-                const isAffected = combatant?.HP > 0 && isWithinArea && (!excludeEffectOwner || isTargetingOwner);
-                return isAffected;
+                const isExcludingPrimaryTarget = excludePrimaryTarget && j === i;
+                return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
             };
             friendly
                 .map((combatant: Combatant | null, j: number) => {
@@ -302,12 +310,13 @@ const onEffectEventTrigger = ({
                         target: combatant,
                         targetIndex: j,
                         action: {
-                            ...effectOwner,
+                            ...triggerEffect,
                             type: ACTION_TYPES.EFFECT,
                         },
                         actionSource: { source: effect, type: "effect" },
                     });
                 })
+                // Apply all the updates before triggering any related events
                 .forEach((updated: Combatant | null, j: number) => {
                     if (!isAffected(updated, j)) {
                         return;
@@ -319,6 +328,14 @@ const onEffectEventTrigger = ({
                         })
                     );
                 });
+        };
+
+        if (effectOwner) {
+            applyProc({ combatantId: ownerId, triggerEffect: effectOwner, excludePrimaryTarget: !excludeEffectOwner });
+        }
+
+        if (externalParty) {
+            applyProc({ combatantId: externalPartyId, triggerEffect: externalParty });
         }
 
         checkRemoveEffect();
@@ -347,7 +364,14 @@ export const checkEventTrigger = ({
         combatant.effects.forEach((effect: CombatEffect) => {
             if (effect[effectEventKey]) {
                 // TODO check conditions
-                dispatch(onEffectEventTrigger({ effectEvent: effect[effectEventKey], effect, ownerId: combatant.id }));
+                dispatch(
+                    onEffectEventTrigger({
+                        effectEvent: effect[effectEventKey],
+                        effect,
+                        ownerId: combatant.id,
+                        externalPartyId: triggerSource?.actorId,
+                    })
+                );
             }
         });
     };
@@ -614,7 +638,9 @@ const performAction = ({
                     })
                 );
 
-                dispatch(onReceiveAction({ action, targetId: updated.id, actorId: actor?.id }));
+                dispatch(
+                    onReceiveAction({ action, targetId: updated.id, actorId: actor?.id, actionParentType: ability ? "ability" : "effect" })
+                );
             });
     };
 };

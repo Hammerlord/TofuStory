@@ -23,10 +23,14 @@ export const thorns: Effect = {
     name: "Thorns",
     canBeSilenced: true,
     icon: Cactus,
-    thorns: 1,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    onReceiveAttack: {
+        externalParty: {
+            damage: 1,
+        },
+    },
 };
 
 export const controlImmune: Effect = {

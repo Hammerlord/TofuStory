@@ -1,3 +1,4 @@
+import { thorns } from "../ability/Effects";
 import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import {
     alligatorTubeImage,
@@ -262,10 +263,10 @@ export const cactus: Item = {
     image: cactusImage,
     effects: [
         {
+            ...thorns,
             name: "Cactus",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            thorns: 1,
         },
     ],
 };

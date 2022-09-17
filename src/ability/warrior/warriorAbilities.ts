@@ -332,7 +332,7 @@ export const bloodthirst: Ability = {
 export const spikedArmor2: Ability = {
     name: "Spiked Armor",
     level: 2,
-    resourceCost: 2,
+    resourceCost: 1,
     image: spikes,
     actions: [
         {
@@ -346,7 +346,7 @@ export const spikedArmor2: Ability = {
 
 export const spikedArmor: Ability = {
     name: "Spiked Armor",
-    resourceCost: 2,
+    resourceCost: 1,
     image: spikes,
     actions: [
         {

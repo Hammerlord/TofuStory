@@ -25,7 +25,7 @@ export enum EFFECT_CLASSES {
     DEBUFF = "debuff",
 }
 
-interface TriggerEffect {
+export interface TriggerEffect {
     effects?: Effect[];
     armor?: number;
     healing?: number;
@@ -83,7 +83,6 @@ export interface Effect {
     damage?: number;
     description?: string;
     icon?: string;
-    thorns?: number;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     isAuraEffect?: boolean;

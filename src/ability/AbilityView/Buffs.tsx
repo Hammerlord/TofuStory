@@ -13,7 +13,6 @@ const Buffs = ({ ability }) => {
             {buffs.map((effect, i) => {
                 const {
                     onTurnStart,
-                    thorns = 0,
                     armorReceived = 0,
                     damage = 0,
                     duration = Infinity,
@@ -22,11 +21,13 @@ const Buffs = ({ ability }) => {
                     leech = 0,
                     skillBonus = [],
                     onResourcesSpent,
+                    onReceiveAttack,
                 } = effect;
 
                 const { healing, resources: resourcesPerTurn } = onTurnStart?.effectOwner || {};
                 const { healing: healTargetPerTurn } = onTurnStart?.randomFriendly || {};
                 const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
+                const { damage: thorns } = onReceiveAttack?.externalParty || {};
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
                     effectComponents.push(
@@ -117,9 +118,11 @@ const Buffs = ({ ability }) => {
                     if (onAttack.removeEffect) {
                         effectComponents.push(<>for your next attack</>);
                     } else {
-                        effectComponents.push(
-                            duration === 0 ? <>this turn</> : <Icon icon={<Hourglass />} text={duration === Infinity ? "" : duration} />
-                        );
+                        if (duration === 0) {
+                            effectComponents.push(<>this turn</>);
+                        } else if (duration !== Infinity) {
+                            effectComponents.push(<Icon icon={<Hourglass />} text={duration === Infinity ? "∞" : duration} />);
+                        }
                     }
                 }
 

@@ -66,7 +66,6 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
     let name = effect.name;
     let icon: string | JSX.Element = effect.icon;
     const {
-        thorns = 0,
         type,
         damage,
         leech = 0,
@@ -75,6 +74,7 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
         conditions,
         onTurnStart,
         onResourcesSpent,
+        onReceiveAttack,
     } = effect;
     if (isAura) {
         name = "Aura";
@@ -87,6 +87,7 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
 
     const { armor, healing } = onTurnStart?.effectOwner || {};
     const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
+    const { damage: thorns } = onReceiveAttack?.externalParty || {};
 
     const isSilenced = (effect.canBeSilenced || isAura) && silence;
     const passedConditions = passesConditions({
@@ -127,7 +128,7 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
                     </div>
                 )}
                 {leech > 0 && <div>Leeching {leech * 100}% of damage as health (rounded up)</div>}
-                {thorns > 0 && <div>Reflects 1 damage to attackers</div>}
+                {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
                 <div>{effect.description}</div>
                 {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}
                 {isSilenced && <div className={classes.silenced}>Silenced</div>}
