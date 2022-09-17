@@ -22,7 +22,7 @@ import { Wave } from "../../Menu/tutorial";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES } from "../types";
+import { BATTLEFIELD_SIDES, Event } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
@@ -69,7 +69,7 @@ const onBattleEnd = () => {
     };
 };
 
-const onWaveClear = () => {
+export const onWaveClear = () => {
     return (dispatch, getState) => {
         const { waves, currentWave, deck, playerSide, hand, ...other } = getState().battle;
         const { presetDeck, description, enemies } = waves[currentWave] || {}; // 1 indexed currentWave so we don't need to + 1
@@ -90,8 +90,6 @@ const onWaveClear = () => {
                 deck: presetDeck ? shuffle(presetDeck.slice()) : deck,
             })
         );
-
-        dispatch(onWaveStart());
     };
 };
 
@@ -123,7 +121,7 @@ export const startBattle = ({ waves, player, deck }: { waves: Wave[]; player?: C
     };
 };
 
-const onWaveStart = () => {
+export const onWaveStart = () => {
     return (dispatch, getState) => {
         const { playerSide, enemySide } = getState().battle;
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
@@ -166,10 +164,6 @@ const onCombatantDeath = ({ combatantId, triggerSource }) => {
                     discard: [...discard, playerSummonsInPlay[combatantId]],
                 })
             );
-        }
-
-        if (enemySide.every((enemy) => !enemy || enemy.HP === 0)) {
-            dispatch(onWaveClear());
         }
     };
 };
@@ -579,7 +573,7 @@ export const startPlayerTurn = () => {
 };
 
 /**
- * Perform an action from an ability. TODO include effect?
+ * Perform an action from an ability.
  */
 const performAction = ({
     action,
@@ -658,6 +652,18 @@ const performAction = ({
                     turnHistory: [...findCombatant(getState, actorId).turnHistory, action],
                 },
             })
+        );
+
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                action,
+                actorId,
+                id: uuid.v4(),
+                selectedIndex,
+                targetSide: side,
+                ability,
+            } as Event)
         );
     };
 };

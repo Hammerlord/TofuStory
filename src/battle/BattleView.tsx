@@ -9,14 +9,15 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { mapleleaves, victoria } from "../images";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
-import { playerEndTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn } from "./actions/actions";
-import { startEnemyTurn } from "./actions/enemyTurn";
+import { playerEndTurn, onSummonAttack, onUsePlayerAbility, startPlayerTurn, onWaveClear, onWaveStart } from "./actions/actions";
+import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification";
+import { battleStateSlice } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
@@ -141,6 +142,8 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
+const { popEventQueue, updateFlagTurnEnd } = battleStateSlice.actions;
+
 const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
     const dispatch = useAppDispatch();
     const {
@@ -155,6 +158,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
         currentWave,
         waves,
         isEnded,
+        flagTurnEnd,
     } = useAppSelector((state) => state.battle);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
     const allyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
@@ -336,27 +340,65 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
     };
 
     useEffect(() => {
-        if (events.length) {
+        if (!events.length) {
+            if (isEnded) {
+                onBattleWon();
+                return;
+            }
+
+            if (enemySide.every((enemy) => !enemy || enemy.HP === 0)) {
+                setShowWaveClear(true);
+                setTimeout(() => {
+                    if (flagTurnEnd) {
+                        dispatch(updateFlagTurnEnd(false));
+                    }
+                    setShowWaveClear(false);
+                    dispatch(onWaveClear());
+                    setShowTurnAnnouncement(true);
+                    setTimeout(() => {
+                        setShowTurnAnnouncement(false);
+                        dispatch(onWaveStart());
+                    }, TURN_ANNOUNCEMENT_TIME);
+                }, TURN_ANNOUNCEMENT_TIME);
+                return;
+            }
+
+            if (flagTurnEnd) {
+                dispatch(updateFlagTurnEnd(false));
+                if (isPlayerTurn) {
+                    dispatch(playerEndTurn());
+                } else {
+                    dispatch(endEnemyTurn());
+                }
+            }
             return;
         }
-        /*
-        setTimeout(() => {
+
+        const { ability, playbackTime = 1250 } = events[0];
+
+        if (ability) {
             setAbilityNotification({
                 text: (
                     <>
-                        {group.ability.image && <img src={group.ability.image} className={classes.notificationAbility} />}{" "}
-                        {group.ability.name}
+                        {ability.image && <img src={ability.image} className={classes.notificationAbility} />} {ability.name}
                     </>
                 ),
                 id: uuid.v4(),
             });
-        }, 1000);
-        */
+        }
 
-        setTimeout(() => {
-            //updateEvents();
-        }, 1200);
-    }, [events]);
+        const timeout = setTimeout(() => {
+            dispatch(popEventQueue());
+        }, playbackTime);
+
+        if (!isPlayerTurn) {
+            // This allows enemy action animations to play synchronously
+            return () => {
+                popEventQueue();
+                clearTimeout(timeout);
+            };
+        }
+    }, [events, flagTurnEnd]);
 
     useEffect(() => {
         setShowTurnAnnouncement(true);
@@ -365,21 +407,12 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
             if (isPlayerTurn) {
                 dispatch(startPlayerTurn());
             } else {
-                dispatch(startEnemyTurn());
+                setTimeout(() => {
+                    dispatch(startEnemyTurn());
+                }, 500);
             }
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
-
-    useEffect(() => {
-        if (isEnded) {
-            onBattleWon();
-        } else if (currentWave > 1) {
-            setShowWaveClear(true);
-            setTimeout(() => {
-                setShowWaveClear(false);
-            }, TURN_ANNOUNCEMENT_TIME);
-        }
-    }, [isEnded, currentWave]);
 
     const disableActions = showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
 
@@ -513,7 +546,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
-                                {(events[0]?.updatedEnemies || enemySide).map((enemy, i: number) => (
+                                {(events[0]?.enemySide || enemySide).map((enemy, i: number) => (
                                     <CombatantView
                                         combatant={enemy}
                                         isAlly={false}
@@ -539,7 +572,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>
-                                    {(events[0]?.updatedAllies || playerSide).map((ally, i) => {
+                                    {(events[0]?.playerSide || playerSide).map((ally, i) => {
                                         return (
                                             <CombatantView
                                                 combatant={ally}
@@ -564,7 +597,7 @@ const BattlefieldContainer = ({ onBattleWon }: { onBattleWon: Function }) => {
                                     disabled={disableActions}
                                     highlight={noMoreMoves}
                                     onClick={() => {
-                                        dispatch(playerEndTurn());
+                                        dispatch(updateFlagTurnEnd(true));
                                     }}
                                 />
                             </div>

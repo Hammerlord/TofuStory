@@ -13,6 +13,7 @@ export interface BattleState {
     deck: Ability[];
     discard: Ability[];
     hand: Ability[];
+    flagTurnEnd: boolean; // Signals intention to end the turn (to be applied at the end of animations)
     isPlayerTurn: boolean | null;
     eventQueue: Event[];
     playerActionQueue: object[];
@@ -42,7 +43,7 @@ export const battleStateSlice = createSlice({
             state.eventQueue.push(action.payload);
         },
         popEventQueue: (state) => {
-            state.eventQueue.unshift();
+            state.eventQueue.shift();
         },
         drawCards: (state, action: PayloadAction<{ effects?: object; amount: number }>) => {
             const { deck, hand, discard } = state;
@@ -75,6 +76,12 @@ export const battleStateSlice = createSlice({
         },
         closeBattle: () => {
             return null;
+        },
+        updateFlagTurnEnd: (state, action: PayloadAction<boolean>) => {
+            return {
+                ...state,
+                flagTurnEnd: action.payload,
+            };
         },
     },
 });

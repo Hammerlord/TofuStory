@@ -157,6 +157,7 @@ const useStyles = createUseStyles({
         "100%": {
             WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            transform: "unset",
         },
     },
     applyingEffect: {

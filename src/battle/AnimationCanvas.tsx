@@ -58,7 +58,6 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action }: an
             });
         }
 
-        let timeout;
         return () => {
             if (actor?.style) {
                 actor.style.transform = "unset";
@@ -68,8 +67,6 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action }: an
                     ref.current.style.transform = "unset";
                 }
             });
-
-            clearTimeout(timeout);
         };
     }, [eventId]);
 

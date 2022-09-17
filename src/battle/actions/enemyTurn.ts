@@ -1,4 +1,3 @@
-import { BATTLEFIELD_SIDES } from "./../types";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import { Ability, EFFECT_CLASSES } from "../../ability/types";
@@ -20,17 +19,10 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
-import {
-    checkEventTrigger,
-    playerEndTurn,
-    findCombatant,
-    tickDownStatusEffects,
-    updateCombatant,
-    useAbility,
-    onEndTurnTriggers,
-} from "./actions";
+import { BATTLEFIELD_SIDES } from "./../types";
+import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 
-const { updateBattle, pushEventQueue } = battleStateSlice.actions;
+const { updateBattle, updateFlagTurnEnd, pushEventQueue } = battleStateSlice.actions;
 
 /**
  * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
@@ -242,7 +234,7 @@ const enemyUseAbility = (combatantId: string) => {
     };
 };
 
-const enemyEndTurn = () => {
+export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers(getState().battle.enemySide));
         dispatch(
@@ -280,7 +272,7 @@ export const startEnemyTurn = () => {
             );
             const enemy = getRandomItem(eligible);
             if (!enemy) {
-                dispatch(enemyEndTurn());
+                dispatch(updateFlagTurnEnd(true));
                 return;
             }
 
