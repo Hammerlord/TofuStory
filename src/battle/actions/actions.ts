@@ -266,6 +266,12 @@ const onEffectEventTrigger = ({
         const { area = 0, canBeSilenced, excludeEffectOwner } = effect;
         const { removeEffect, effectOwner, externalParty } = effectEvent;
 
+        // Bandaid: effects should never be able to proc themselves
+        const source = triggerSource?.type === "effect" ? (triggerSource.source as Effect) : undefined;
+        if (source?.name === effect.name) {
+            return;
+        }
+
         const checkRemoveEffect = () => {
             if (removeEffect) {
                 const newEffects = findCombatant(getState, ownerId).effects.filter(({ id }) => id !== effect.id);
@@ -372,6 +378,7 @@ export const checkEventTrigger = ({
                         effect,
                         ownerId: combatant.id,
                         externalPartyId: triggerSource?.actorId,
+                        triggerSource,
                     })
                 );
             }
@@ -514,7 +521,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd, triggerSource: null }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.DEBUFF));
         });
     };
@@ -557,7 +564,7 @@ export const startPlayerTurn = () => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, triggerSource: null }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
 
