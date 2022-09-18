@@ -298,13 +298,14 @@ const BattlefieldContainer = () => {
         eventId?: string;
         allTargets: any[];
         actor?: any;
+        playbackTime?: number;
     } => {
         let target;
         if (!events.length) {
             return { action: undefined, target: undefined, allTargets: [], actor: undefined };
         }
 
-        const { actorId, targetSide, selectedIndex, id, action } = (events[0] as Event) || {};
+        const { actorId, targetSide, selectedIndex, id, action, playbackTime } = (events[0] as Event) || {};
         const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
         if (typeof selectedIndex === "number" && targetSide) {
@@ -323,6 +324,7 @@ const BattlefieldContainer = () => {
             target,
             allTargets,
             eventId: id,
+            playbackTime,
         };
     })();
 

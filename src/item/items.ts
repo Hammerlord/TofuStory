@@ -57,21 +57,20 @@ export const stolenFence: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Restores 3 HP on wave clear.",
+    description: "Restores 5 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
     image: safetyCharmImage,
     sellPrice: 10,
     effects: [
         {
             name: "Safety Charm",
-            description: "Restores 3 HP on wave clear.",
+            description: "Restores 5 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: safetyCharmImage,
             onWaveClear: {
-                effectOwner: {
-                    healing: 3,
-                },
+                targetType: "effectOwner",
+                healing: 5,
             },
         },
     ],
@@ -79,27 +78,25 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "Grants 1 attack power and 1 health per kill, but you take 1 damage per turn.",
+    description: "Grants 1 attack power and 3 health per kill, but you take 1 damage per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: drakebloodImage,
     sellPrice: 10,
     effects: [
         {
             name: "Drake Blood",
-            description: "Grants 1 attack power and 1 health per kill, but you take 1 damage per turn.",
+            description: "Grants 1 attack power and 3 health per kill, but you take 1 damage per turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: drakebloodImage,
             damage: 1,
             onTurnEnd: {
-                effectOwner: {
-                    damage: 1,
-                },
+                targetType: "effectOwner",
+                damage: 1,
             },
             onHostileDeath: {
-                effectOwner: {
-                    healing: 1,
-                },
+                targetType: "effectOwner",
+                healing: 3,
             },
         },
     ],
@@ -152,10 +149,9 @@ export const leatherSandals: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
-                effectOwner: {
-                    drawCards: {
-                        amount: 1,
-                    },
+                targetType: "effectOwner",
+                drawCards: {
+                    amount: 1,
                 },
             },
         },
@@ -214,20 +210,19 @@ export const panlid: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
-                effectOwner: {
-                    armor: 7,
-                    effects: [
-                        {
-                            name: "Pan Lid",
-                            description: "Preventing armor decay.",
-                            icon: panlidImage,
-                            class: EFFECT_CLASSES.BUFF,
-                            type: EFFECT_TYPES.NONE,
-                            preventArmorDecay: true,
-                            duration: 1,
-                        },
-                    ],
-                },
+                targetType: "effectOwner",
+                armor: 7,
+                effects: [
+                    {
+                        name: "Pan Lid",
+                        description: "Preventing armor decay.",
+                        icon: panlidImage,
+                        class: EFFECT_CLASSES.BUFF,
+                        type: EFFECT_TYPES.NONE,
+                        preventArmorDecay: true,
+                        duration: 1,
+                    },
+                ],
             },
         },
     ],
@@ -271,7 +266,6 @@ export const cactus: Item = {
     ],
 };
 
-// TODO doesn't do much yet
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
     description: "Increases the damage of your damage over time effects by 1. Every 3 turns, your first attack inflicts poison.",
@@ -297,22 +291,20 @@ export const nependeathSap: Item = {
                     icon: nependeathSapImage,
                     onAttack: {
                         removeEffect: true,
-                        externalParty: {
-                            effects: [
-                                {
-                                    name: "Poison",
-                                    type: EFFECT_TYPES.POISON,
-                                    class: EFFECT_CLASSES.DEBUFF,
-                                    icon: PoisonIcon,
-                                    duration: 3,
-                                    onTurnEnd: {
-                                        effectOwner: {
-                                            damage: 2,
-                                        },
-                                    },
+                        targetType: "externalParty",
+                        effects: [
+                            {
+                                name: "Poison",
+                                type: EFFECT_TYPES.POISON,
+                                class: EFFECT_CLASSES.DEBUFF,
+                                icon: PoisonIcon,
+                                duration: 3,
+                                onTurnEnd: {
+                                    targetType: "effectOwner",
+                                    damage: 2,
                                 },
-                            ],
-                        },
+                            },
+                        ],
                     },
                 },
             ],
@@ -350,10 +342,9 @@ export const respawnToken: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onDeath: {
-                effectOwner: {
-                    resurrect: true,
-                    healing: 20,
-                },
+                targetType: "effectOwner",
+                resurrect: true,
+                healing: 20,
             },
         },
     ],

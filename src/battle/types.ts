@@ -33,7 +33,7 @@ export interface EventGroup {
 
 export interface TriggerSource {
     source: Action | CombatEffect | Ability;
-    type: "ability" | "effect";
+    type: "ability" | "effect" | "proc";
     actorId?: string;
     targetId?: string;
 }

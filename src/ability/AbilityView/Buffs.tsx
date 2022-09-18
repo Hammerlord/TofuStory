@@ -16,7 +16,7 @@ const Buffs = ({ ability }) => {
                     armorReceived = 0,
                     damage = 0,
                     duration = Infinity,
-                    onAttack = {},
+                    onAttack = { removeEffect: false },
                     preventArmorDecay,
                     leech = 0,
                     skillBonus = [],
@@ -24,10 +24,10 @@ const Buffs = ({ ability }) => {
                     onReceiveAttack,
                 } = effect;
 
-                const { healing, resources: resourcesPerTurn } = onTurnStart?.effectOwner || {};
-                const { healing: healTargetPerTurn } = onTurnStart?.randomFriendly || {};
-                const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
-                const { damage: thorns } = onReceiveAttack?.externalParty || {};
+                const { healing, resources: resourcesPerTurn } = onTurnStart || {};
+                const { healing: healTargetPerTurn } = onTurnStart || {};
+                const { healing: healthPerResourcesSpent } = onResourcesSpent || {};
+                const { damage: thorns } = onReceiveAttack || {};
                 const effectComponents = [];
                 if (healthPerResourcesSpent > 0) {
                     effectComponents.push(

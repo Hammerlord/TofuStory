@@ -18,23 +18,25 @@ export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
     resourceCost: 2,
     image: intrepidSlashImage,
-    area: 1,
     description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [
         {
             damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
         },
         {
             damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
         },
         {
             damage: 4,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
         },
     ],
 };
@@ -263,15 +265,14 @@ export const burningSoulBlade: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 attackAreaIncrease: 1,
                 onAttack: {
-                    effectOwner: {
-                        effects: [
-                            {
-                                type: EFFECT_TYPES.NONE,
-                                class: EFFECT_CLASSES.BUFF,
-                                damage: 1,
-                            },
-                        ],
-                    },
+                    targetType: "effectOwner",
+                    effects: [
+                        {
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.BUFF,
+                            damage: 1,
+                        },
+                    ],
                 },
             },
         ],

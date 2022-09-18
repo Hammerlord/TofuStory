@@ -177,12 +177,30 @@ const onReceiveAction = ({
     action: Action;
     targetId: string;
     actorId?: string;
-    actionParentType?: "effect" | "ability";
+    actionParentType?: "effect" | "ability" | "proc";
 }) => {
     return (dispatch) => {
         const triggerSource = actionParentType ? { source: action, type: actionParentType, actorId, targetId } : undefined;
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(checkEventTrigger({ combatantId: targetId, effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack, triggerSource }));
+        }
+    };
+};
+
+const onAction = ({
+    action,
+    targetId,
+    actorId,
+    actionParentType,
+}: {
+    action: Action;
+    targetId?: string;
+    actorId?: string;
+    actionParentType?: "effect" | "ability" | "proc";
+}) => {
+    return (dispatch) => {
+        const triggerSource = actionParentType ? { source: action, type: actionParentType, actorId, targetId } : undefined;
+        if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: EFFECT_EVENT_KEYS.onAttack, triggerSource }));
         }
     };
@@ -198,10 +216,10 @@ export const applyActionToTarget = ({
 }: {
     actor?: Combatant;
     target: Combatant;
-    targetIndex: number;
+    targetIndex?: number;
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
-    actionSource: { source: Ability | Effect; type: "ability" | "effect" };
+    actionSource: TriggerSource;
 }) => {
     const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
     const ability = actionSource?.type === "ability" ? (actionSource.source as Ability) : undefined;
@@ -243,6 +261,87 @@ export const applyActionToTarget = ({
     };
 };
 
+const applyProc = ({
+    effect,
+    effectEvent,
+    ownerId,
+    externalPartyId,
+}: {
+    effect: CombatEffect;
+    effectEvent: EffectEventTrigger;
+    ownerId: string;
+    externalPartyId?: string;
+}) => {
+    return (dispatch, getState) => {
+        const { area = 0, excludeEffectOwner } = effect;
+        const { removeEffect, targetType, actions, conditions, randomOptions = {}, ...other } = effectEvent;
+
+        let targetId;
+        if (targetType === "effectOwner") {
+            targetId = ownerId;
+        } else if (targetType === "effectApplier") {
+            targetId = effect?.applierId;
+        } else if (targetType === "externalParty") {
+            targetId = externalPartyId;
+        }
+        const { friendly: targets, actorIndex: i } = orientate({ actorId: targetId, ...getState().battle });
+
+        const isAffected = (combatant: Combatant, j: number): boolean => {
+            const isWithinArea = Math.abs(j - i) <= area;
+            const isExcludingPrimaryTarget = excludeEffectOwner && targetType === "effectOwner" && j === i;
+            return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
+        };
+
+        targets
+            .map((combatant: Combatant | null, j: number) => {
+                if (!isAffected(combatant, j)) {
+                    return;
+                }
+
+                return applyActionToTarget({
+                    target: combatant,
+                    targetIndex: j,
+                    action: {
+                        ...other,
+                        type: ACTION_TYPES.EFFECT,
+                    },
+                    actionSource: { source: effect, type: "proc" },
+                });
+            })
+            // Apply all the updates before triggering any related events
+            .forEach((updated: Combatant | null, j) => {
+                if (!isAffected(updated, j)) {
+                    return;
+                }
+
+                dispatch(
+                    updateCombatant({
+                        combatantId: updated.id,
+                        newProperties: updated,
+                        source: { source: effect, type: "proc" },
+                    })
+                );
+            });
+
+        actions?.forEach((action) => {
+            const { index, side } = autoSelectActionTarget({
+                action,
+                actorId: ownerId,
+                getState,
+            });
+
+            const getCalculationTarget = () => {
+                return getState().battle[side]?.[index] || null;
+            };
+
+            // Should this be part of autoSelectActionTarget to make it a bit smarter?
+            if (passesConditions({ getCalculationTarget, conditions: action.conditions })) {
+                dispatch(performAction({ action, selectedIndex: index, side, actorId: ownerId, source: { type: "proc", source: effect } }));
+            }
+        });
+    };
+};
+
 const onEffectEventTrigger = ({
     effectEvent,
     effect,
@@ -257,14 +356,8 @@ const onEffectEventTrigger = ({
     triggerSource?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { area = 0, canBeSilenced, excludeEffectOwner } = effect;
-        const { removeEffect, effectOwner, externalParty } = effectEvent;
-
-        // Bandaid: effects should never be able to proc themselves
-        const source = triggerSource?.type === "effect" ? (triggerSource.source as Effect) : undefined;
-        if (source?.name === effect.name) {
-            return;
-        }
+        const { canBeSilenced } = effect;
+        const { removeEffect } = effectEvent;
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
@@ -285,62 +378,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const applyProc = ({
-            combatantId,
-            triggerEffect,
-            excludePrimaryTarget,
-        }: {
-            combatantId?: string;
-            triggerEffect: TriggerEffect;
-            excludePrimaryTarget?: boolean;
-        }) => {
-            if (!combatantId) {
-                return;
-            }
-            const { friendly, actorIndex: i } = orientate({ actorId: combatantId, ...getState().battle });
-            const isAffected = (combatant: Combatant | null, j: number) => {
-                const isWithinArea = j >= i - area && j <= i + area;
-                const isExcludingPrimaryTarget = excludePrimaryTarget && j === i;
-                return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
-            };
-            friendly
-                .map((combatant: Combatant | null, j: number) => {
-                    if (!isAffected(combatant, j)) {
-                        return;
-                    }
-
-                    return applyActionToTarget({
-                        target: combatant,
-                        targetIndex: j,
-                        action: {
-                            ...triggerEffect,
-                            type: ACTION_TYPES.EFFECT,
-                        },
-                        actionSource: { source: effect, type: "effect" },
-                    });
-                })
-                // Apply all the updates before triggering any related events
-                .forEach((updated: Combatant | null, j: number) => {
-                    if (!isAffected(updated, j)) {
-                        return;
-                    }
-                    dispatch(
-                        updateCombatant({
-                            combatantId: updated.id,
-                            newProperties: updated,
-                        })
-                    );
-                });
-        };
-
-        if (effectOwner) {
-            applyProc({ combatantId: ownerId, triggerEffect: effectOwner, excludePrimaryTarget: excludeEffectOwner });
-        }
-
-        if (externalParty) {
-            applyProc({ combatantId: externalPartyId, triggerEffect: externalParty });
-        }
-
+        dispatch(applyProc({ effectEvent, effect, ownerId, externalPartyId }));
         checkRemoveEffect();
     };
 };
@@ -355,7 +393,8 @@ export const checkEventTrigger = ({
     triggerSource?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        if (!combatantId) {
+        // At the moment, procs may not proc procs.
+        if (!combatantId || triggerSource?.type === "proc") {
             return;
         }
 
@@ -572,24 +611,21 @@ export const startPlayerTurn = () => {
     };
 };
 
-/**
- * Perform an action from an ability.
- */
 const performAction = ({
     action,
-    ability,
     selectedIndex,
     side,
     actorId,
+    source: triggerSource,
 }: {
     action: Action;
-    ability: Ability;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
+    source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const getArea = () => calculateActionArea({ action, actor: findCombatant(getState, actorId) });
+        const area = calculateActionArea({ action, actor: findCombatant(getState, actorId) });
 
         if (action.vacuum) {
             dispatch(
@@ -597,16 +633,23 @@ const performAction = ({
                     [side]: applyVacuum({
                         characters: getState().battle[side],
                         index: selectedIndex,
-                        area: getArea(),
+                        area,
                         distance: action.vacuum,
                     }),
                 })
             );
         }
 
+        const extraTargets = action.numTargets || 0;
+        const extraTargetIndices = shuffle(
+            getValidTargetIndices(getState().battle[side], {
+                excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
+                excludeIndex: selectedIndex,
+            })
+        ).slice(0, extraTargets);
+
         const isAffected = (combatant: Combatant | null, i: number): boolean => {
-            const area = getArea();
-            const inArea = combatant && i >= selectedIndex - area && i <= selectedIndex + area;
+            const inArea = combatant && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
             if (action.excludePrimaryTarget) {
                 return inArea && i !== selectedIndex;
             }
@@ -616,6 +659,8 @@ const performAction = ({
 
         const actor = findCombatant(getState, actorId);
         const combatants = getState().battle[side];
+        const { source, type } = triggerSource || {};
+        const ability = type === "ability" ? (source as Ability) : undefined;
         combatants
             .map((character: Combatant | null, i: number) => {
                 if (!isAffected(character, i)) {
@@ -627,7 +672,7 @@ const performAction = ({
                     targetIndex: i,
                     action,
                     actor,
-                    actionSource: { source: ability, type: "ability" },
+                    actionSource: triggerSource,
                 });
             })
             // Apply all the updates before triggering any related events
@@ -642,7 +687,7 @@ const performAction = ({
                     })
                 );
 
-                dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: ability ? "ability" : "effect" }));
+                dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
             });
 
         dispatch(
@@ -667,9 +712,14 @@ const performAction = ({
                 targetSide: side,
                 ability,
                 playbackTime:
-                    action.playbackTime || ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED,
+                    action.playbackTime || (ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
             } as Event)
         );
+
+        dispatch(checkCastRadiate({ source: triggerSource, action, selectedIndex, side }));
+        dispatch(checkCardActions(action, actorId));
+        // TODO we have no idea who was hit out here
+        dispatch(onAction({ action, actorId, actionParentType: type }));
     };
 };
 
@@ -677,52 +727,63 @@ const performAction = ({
  * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
  * This orients the target to the right place (if applicable) as actions are parsed.
  */
-const getAbilityTarget = ({
+const autoSelectActionTarget = ({
     initialSelectedIndex,
     initialSelectedSide,
-    ability,
     action,
     actorId,
     getState,
 }: {
-    initialSelectedIndex: number;
-    initialSelectedSide: BATTLEFIELD_SIDES;
-    ability: Ability;
+    initialSelectedIndex?: number;
+    initialSelectedSide?: BATTLEFIELD_SIDES;
     action: Action;
     actorId: string;
     getState: Function;
+    numTargets?: number;
 }) => {
-    let index = initialSelectedIndex;
-    let side = initialSelectedSide;
     const { enemySide, playerSide } = getState().battle;
-    const { friendly, hostile, actorSide } = orientate({ actorId, enemySide, playerSide });
+    const { friendly, hostile, actorSide, hostileSide } = orientate({ actorId, enemySide, playerSide });
+    const { targetArea: area = 0, target } = action;
+    const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
-    if (action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+    if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
         const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true }).filter((i) => {
-            if (ability.area) {
-                return Math.abs(i - initialSelectedIndex) <= ability.area;
-            }
-            return true;
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
-        index = getRandomItem(targetIndices);
-    } else if (action.target === TARGET_TYPES.SELF) {
-        index = friendly.findIndex((ally) => ally?.id === actorId);
-        side = actorSide;
+
+        return {
+            index: getRandomItem(targetIndices),
+            side: hostileSide,
+        };
+    } else if (target === TARGET_TYPES.RANDOM_FRIENDLY || (target === TARGET_TYPES.FRIENDLY && noValidSelection)) {
+        const targetIndices = getValidTargetIndices(friendly).filter((i) => {
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+        });
+
+        return {
+            index: getRandomItem(targetIndices),
+            side: actorSide,
+        };
+    } else if (target === TARGET_TYPES.SELF) {
+        return {
+            index: friendly.findIndex((ally) => ally?.id === actorId),
+            side: actorSide,
+        };
     }
 
-    return { index, side };
+    return { index: initialSelectedIndex, side: initialSelectedSide };
 };
 
 const checkCastRadiate = ({
-    ability,
     action,
     selectedIndex,
     side,
+    source,
 }: {
-    ability: Ability;
     action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
+    source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         if (!action.radiate) {
@@ -737,7 +798,7 @@ const checkCastRadiate = ({
                 selectedIndex,
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
                 actorId: getState().battle[side][selectedIndex]?.id,
-                ability,
+                source,
             })
         );
     };
@@ -813,7 +874,7 @@ const checkSummonMinion = ({
 export const useAbility = ({
     ability,
     selectedIndex,
-    side,
+    side: initialSide,
     actorId,
 }: {
     side: BATTLEFIELD_SIDES;
@@ -826,39 +887,29 @@ export const useAbility = ({
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         const combatant = findCombatant(getState, actorId);
         dispatch(updateCombatant({ combatantId: actorId, newProperties: { resources: combatant.resources - totalResourceCost } }));
-        dispatch(checkSummonMinion({ ability, selectedIndex, side, actorId }));
-
-        // TODO when playback the event should be the whole AoE
-
-        const getCalculationTarget = (targetType: "actor" | "target") => {
-            if (targetType === "actor") {
-                return findCombatant(getState, actorId);
-            }
-
-            const { playerSide, enemySide } = getState().battle;
-            return side === BATTLEFIELD_SIDES.PLAYER_SIDE ? playerSide[selectedIndex] : enemySide[selectedIndex];
-        };
+        dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId }));
 
         const handleAction = (action: Action) => {
-            const { index, side: finalSide } = getAbilityTarget({
+            const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: selectedIndex,
-                initialSelectedSide: side,
-                ability,
+                initialSelectedSide: initialSide,
                 action,
                 actorId,
                 getState,
             });
 
-            if (typeof index !== "number") {
+            const getCalculationTarget = () => {
+                return getState().battle[side]?.[index] || null;
+            };
+
+            if (!passesConditions({ getCalculationTarget, conditions: action.conditions })) {
                 return;
             }
 
-            dispatch(performAction({ ability, action, selectedIndex: index, side: finalSide, actorId }));
-            dispatch(checkCastRadiate({ ability, action, selectedIndex, side: finalSide }));
-            dispatch(checkCardActions(action, actorId));
+            dispatch(performAction({ action, selectedIndex, side, actorId, source: { type: "ability", source: ability } }));
         };
 
-        actions.filter((action: Action) => passesConditions({ getCalculationTarget, conditions: action.conditions })).forEach(handleAction);
+        actions.forEach(handleAction);
 
         dispatch(
             checkEventTrigger({

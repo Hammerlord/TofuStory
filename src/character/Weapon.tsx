@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
             transform: "rotate(50deg)",
         },
         "100%": {
-            transform: "rotate(0deg)",
+            transform: "unset",
         },
     },
     swing: {

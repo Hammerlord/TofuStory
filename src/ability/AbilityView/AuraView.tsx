@@ -34,7 +34,7 @@ const AuraView = ({ aura }: { aura: Aura }) => {
     }
 
     const { damage = 0, onTurnStart } = aura;
-    const { healing = 0, armor = 0 } = onTurnStart?.effectOwner || {};
+    const { healing = 0, armor = 0 } = onTurnStart || {};
 
     return (
         <div className={classes.root}>

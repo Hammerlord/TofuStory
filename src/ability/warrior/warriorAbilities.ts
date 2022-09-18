@@ -286,9 +286,8 @@ const bloodthirst2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     onResourcesSpent: {
-                        effectOwner: {
-                            healing: 4,
-                        },
+                        targetType: "effectOwner",
+                        healing: 4,
                     },
                     icon: shout,
                 },
@@ -314,9 +313,8 @@ export const bloodthirst: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     onResourcesSpent: {
-                        effectOwner: {
-                            healing: 3,
-                        },
+                        targetType: "effectOwner",
+                        healing: 3,
                     },
                     icon: shout,
                 },
@@ -381,9 +379,8 @@ export const warBanner2: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
-                    effectOwner: {
-                        armor: 1,
-                    },
+                    targetType: "effectOwner",
+                    armor: 2,
                 },
             },
         ],
@@ -412,9 +409,8 @@ export const warBanner: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
-                    effectOwner: {
-                        armor: 1,
-                    },
+                    targetType: "effectOwner",
+                    armor: 2,
                 },
             },
         ],
@@ -914,7 +910,7 @@ export const recovery2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            healing: 2,
+            healing: 3,
             effects: [
                 {
                     icon: selfRecoveryImage,
@@ -923,9 +919,8 @@ export const recovery2: Ability = {
                     canBeSilenced: true,
                     duration: 3,
                     onTurnStart: {
-                        effectOwner: {
-                            healing: 3,
-                        },
+                        targetType: "effectOwner",
+                        healing: 4,
                     },
                 },
             ],
@@ -950,9 +945,8 @@ export const recovery: Ability = {
                     canBeSilenced: true,
                     duration: 3,
                     onTurnStart: {
-                        effectOwner: {
-                            healing: 3,
-                        },
+                        targetType: "effectOwner",
+                        healing: 3,
                     },
                 },
             ],
@@ -1028,9 +1022,8 @@ export const ironBody2: Ability = {
                     preventArmorDecay: true,
                     duration: 2,
                     onTurnStart: {
-                        effectOwner: {
-                            armor: 2,
-                        },
+                        targetType: "effectOwner",
+                        armor: 3,
                     },
                 },
             ],
@@ -1056,9 +1049,8 @@ export const ironBody: Ability = {
                     preventArmorDecay: true,
                     duration: 1,
                     onTurnStart: {
-                        effectOwner: {
-                            armor: 2,
-                        },
+                        targetType: "effectOwner",
+                        armor: 2,
                     },
                 },
             ],
@@ -1079,11 +1071,15 @@ export const rendingStrike2: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 3,
+                    duration: 5,
                 },
                 {
                     ...wound,
-                    duration: 3,
+                    duration: 5,
+                },
+                {
+                    ...wound,
+                    duration: 5,
                 },
             ],
         },
@@ -1099,6 +1095,10 @@ export const rendingStrike: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
+                {
+                    ...wound,
+                    duration: 5,
+                },
                 {
                     ...wound,
                     duration: 5,
@@ -1297,4 +1297,37 @@ export const rally: Ability = {
         },
     ],
     upgrades: [rally2],
+};
+
+export const dustDevils: Ability = {
+    name: "Dust Devils",
+    resourceCost: 1,
+    actions: [
+        {
+            area: 2,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Dust Devils",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: hammer,
+                    onAttack: {
+                        actions: [
+                            {
+                                target: TARGET_TYPES.RANDOM_HOSTILE,
+                                type: ACTION_TYPES.RANGE_ATTACK,
+                                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                                damage: 1,
+                                icon: hammer,
+                                playbackTime: 200,
+                                numTargets: 2,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
 };

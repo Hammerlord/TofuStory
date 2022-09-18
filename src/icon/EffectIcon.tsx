@@ -85,9 +85,9 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
         return null;
     }
 
-    const { armor, healing } = onTurnStart?.effectOwner || {};
-    const { healing: healthPerResourcesSpent } = onResourcesSpent?.effectOwner || {};
-    const { damage: thorns } = onReceiveAttack?.externalParty || {};
+    const { armor, healing } = onTurnStart || {};
+    const { healing: healthPerResourcesSpent } = onResourcesSpent || {};
+    const { damage: thorns } = onReceiveAttack || {};
 
     const isSilenced = (effect.canBeSilenced || isAura) && silence;
     const passedConditions = passesConditions({

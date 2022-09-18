@@ -3,6 +3,7 @@ export enum TARGET_TYPES {
     SELF = "self",
     FRIENDLY = "friendly",
     RANDOM_HOSTILE = "random-hostile",
+    RANDOM_FRIENDLY = "random-friendly",
 }
 
 export enum EFFECT_TYPES {
@@ -39,19 +40,36 @@ export interface TriggerEffect {
 }
 
 export interface EffectEventTrigger {
-    removeEffect?: boolean;
+    removeEffect?: boolean; // Remove this effect from its owner after completion of the event
     conditions?: EffectCondition[]; // OR if multiple conditions are present
     parentEffect?: {
         // Update the parent effect's stats
         damage?: number;
     };
-    // Stat changes to apply to the owner of this effect
-    effectOwner?: TriggerEffect;
-    // Stat changes to apply to, for example, the target being attacked, or the target attacking the owner of this effect
-    externalParty?: TriggerEffect;
-    // Stat changes to apply to the character who applied the effect
-    effectApplier?: TriggerEffect;
-    randomFriendly?: TriggerEffect;
+    // Who should receive the proc that was triggered?
+    // externalParty: for example, the target being attacked, or the target attacking the owner of this effect
+    // effectApplier: the combatant who applied the effect
+    // random: this can be multiple targets
+    targetType?: "effectOwner" | "externalParty" | "effectApplier" | "random";
+    // Stat changes that do not trigger an 'action'
+    effects?: Effect[];
+    armor?: number;
+    healing?: number;
+    drawCards?: {
+        amount: number;
+        effects?: AbilityEffects;
+    };
+    resurrect?: boolean;
+    resources?: number;
+    damage?: number;
+    randomOptions?: {
+        numTargets?: number;
+        targetType: TARGET_TYPES.RANDOM_HOSTILE | TARGET_TYPES.RANDOM_FRIENDLY;
+    };
+
+    // If you are providing actions to be applied to a target, you probably don't want to do any of the other properties.
+    // (Actions already have their own targeting and effects and whatnot)
+    actions?: Action[];
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -142,6 +160,7 @@ export interface Effect {
 export interface CombatEffect extends Effect {
     id: string;
     uptime: number;
+    applierId?: string;
 }
 
 export interface Aura extends Effect {
@@ -245,6 +264,9 @@ export interface Action {
     armor?: number;
     target?: TARGET_TYPES;
     area?: number;
+    /** Only applicable to target type RANDOM. If not supplied, all targets on one side are eligible. */
+    targetArea?: number;
+    numTargets?: number;
     effects?: Effect[];
     description?: string;
     movement?: number;
@@ -288,7 +310,6 @@ export interface Ability {
     channelDuration?: number;
     castTime?: number;
     description?: string;
-    area?: number;
     /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
     reusable?: boolean;

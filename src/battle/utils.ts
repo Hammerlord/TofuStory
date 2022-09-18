@@ -292,11 +292,16 @@ export const calculateArmor = ({ actor, target, action }): number => {
  * @param characters
  * @returns indices of characters that are alive
  */
-export const getValidTargetIndices = (characters: (Combatant | null)[], options: { excludeStealth?: boolean } = {}): number[] => {
+export const getValidTargetIndices = (
+    characters: (Combatant | null)[],
+    options: { excludeStealth?: boolean; excludeIndex?: number } = {}
+): number[] => {
     const indices = [];
     characters.forEach((character: Combatant | null, i: number) => {
-        if (character && character.HP > 0) {
-            if (!options.excludeStealth || !character.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
+        if (character?.HP > 0) {
+            const notStealth = !options.excludeStealth || !character.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
+            const notExcluded = options.excludeIndex !== i;
+            if (notStealth && notExcluded) {
                 indices.push(i);
             }
         }

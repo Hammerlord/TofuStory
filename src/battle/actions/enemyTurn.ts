@@ -87,7 +87,7 @@ const autoPickTarget = ({
 }): { index: number; side: BATTLEFIELD_SIDES } => {
     const { hostile, friendly, actorSide, hostileSide, actorIndex } = orientate({ actorId, playerSide, enemySide });
 
-    const { area, actions = [], minion } = ability;
+    const { actions = [], minion } = ability;
     if (minion) {
         return {
             side: actorSide,

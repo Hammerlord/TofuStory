@@ -151,7 +151,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse } = ability;
-    const { area = ability.area, target: targetType, damage, secondaryDamage, destroyArmor = 0 } = actions[0] || {};
+    const { area = 0, target: targetType, damage, secondaryDamage, destroyArmor = 0 } = actions[0] || {};
     const cardImage = minion?.image || image;
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });

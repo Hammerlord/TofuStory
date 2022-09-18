@@ -27,9 +27,8 @@ export const thorns: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     onReceiveAttack: {
-        externalParty: {
-            damage: 1,
-        },
+        targetType: "externalParty",
+        damage: 1,
     },
 };
 
@@ -50,14 +49,13 @@ export const hardy: Effect = {
     onReceiveEffect: {
         conditions: [
             {
-                calculationTarget: "effectOwner",
+                calculationTarget: "effectOwner", // This should be comparing the effect not its owner
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
         ],
-        effectOwner: {
-            effects: [controlImmune],
-        },
+        targetType: "effectOwner",
+        effects: [controlImmune],
     },
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
@@ -89,9 +87,7 @@ export const wound: Effect = {
     duration: 3,
     damageReceived: 1,
     onTurnEnd: {
-        effectOwner: {
-            damage: 1,
-        },
+        damage: 1,
     },
     icon: Blood,
     description: "Wounded targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
@@ -103,9 +99,8 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     onTurnEnd: {
-        effectOwner: {
-            damage: 3,
-        },
+        targetType: "effectOwner",
+        damage: 3,
     },
     icon: Fire,
     description: "Burned targets take 3 damage at the end of their turn.",
@@ -176,10 +171,9 @@ export const avenger: Effect = {
     icon: AlternateJapaneseOgre,
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyDeath: {
-        effectOwner: {
-            armor: 5,
-            effects: [vengeful],
-        },
+        targetType: "effectOwner",
+        armor: 5,
+        effects: [vengeful],
     },
 };
 
@@ -220,9 +214,8 @@ export const eliteSquad: Effect = {
                 comparator: "eq",
             },
         ],
-        effectOwner: {
-            effects: [controlImmune],
-        },
+        targetType: "effectOwner",
+        effects: [controlImmune],
     },
 };
 
@@ -243,9 +236,8 @@ export const elite: Effect = {
                 comparator: "eq",
             },
         ],
-        effectOwner: {
-            effects: [controlImmune],
-        },
+        targetType: "effectOwner",
+        effects: [controlImmune],
     },
 };
 
@@ -255,9 +247,8 @@ export const healingOverTime: Effect = {
     canBeSilenced: true,
     duration: 5,
     onTurnStart: {
-        effectOwner: {
-            healing: 2,
-        },
+        targetType: "effectOwner",
+        healing: 2,
     },
 };
 
