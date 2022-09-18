@@ -53,6 +53,7 @@ import {
     rupture,
     bladestorm,
     rally,
+    dustDevils,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -99,6 +100,7 @@ export const JOB_CARD_MAP = {
             rupture,
             bladestorm,
             rally,
+            dustDevils,
         ],
         starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block],
     },

@@ -114,20 +114,12 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
             />
         );
     }
-
-    let isEphemeral = ability.removeAfterTurn;
-    let isDeplete = ability.depletedOnUse;
-
     const cardsToAdd = Object.values(cardsToAddMap);
+
+    const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
+    const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
+
     if (cardsToAdd.length > 0) {
-        if (cardsToAdd.some((ability: Ability) => ability.removeAfterTurn)) {
-            isEphemeral = true;
-        }
-
-        if (cardsToAdd.some((ability: Ability) => ability.depletedOnUse)) {
-            isDeplete = true;
-        }
-
         tooltips.push(
             <div className={classes.cards} key={"cards"}>
                 {cardsToAdd.map((ability: Ability, i) => (
@@ -136,6 +128,16 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                     </div>
                 ))}
             </div>
+        );
+    }
+
+    if (ability.preemptive) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Pre-Emptive"
+                description={"Start with this ability in hand when entering battle."}
+                key={"preemptive"}
+            />
         );
     }
 

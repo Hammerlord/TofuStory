@@ -1300,10 +1300,13 @@ export const rally: Ability = {
     upgrades: [rally2],
 };
 
-export const dustDevils: Ability = {
+export const dustDevils2: Ability = {
     name: "Dust Devils",
-    resourceCost: 0,
+    level: 2,
+    resourceCost: 1,
     image: Tornado,
+    description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1314,6 +1317,43 @@ export const dustDevils: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: Tornado,
+                    description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
+                    onAttack: {
+                        actions: [
+                            {
+                                target: TARGET_TYPES.RANDOM_HOSTILE,
+                                type: ACTION_TYPES.RANGE_ATTACK,
+                                animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                                damage: 2,
+                                secondaryDamage: 1,
+                                icon: Tornado,
+                                playbackTime: 350,
+                                numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const dustDevils: Ability = {
+    name: "Dust Devils",
+    resourceCost: 1,
+    image: Tornado,
+    description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Dust Devils",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: Tornado,
+                    description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
                     onAttack: {
                         actions: [
                             {
@@ -1322,8 +1362,8 @@ export const dustDevils: Ability = {
                                 animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                                 damage: 1,
                                 icon: Tornado,
-                                playbackTime: 300,
-                                numTargets: 2,
+                                playbackTime: 350,
+                                numTargets: 2, // Bug: 1 more target is hit than stated in this property
                             },
                         ],
                     },
@@ -1331,4 +1371,5 @@ export const dustDevils: Ability = {
             ],
         },
     ],
+    upgrades: [dustDevils2],
 };

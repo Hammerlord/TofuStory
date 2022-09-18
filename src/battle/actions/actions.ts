@@ -103,7 +103,11 @@ export const startBattle = ({ waves, player, deck }: { waves: Wave[]; player?: C
             updateBattle({
                 enemySide: enemies.map(createCombatant),
                 playerSide: [null, null, player, null, null],
-                deck: shuffle((presetDeck || deck).slice()), // TODO sort "pre-emptive" abilities to the top
+                deck: shuffle((presetDeck || deck).slice()).sort((a, b) => {
+                    const aSort = a.preemptive ? 1 : 0;
+                    const bSort = b.preemptive ? 1 : 0;
+                    return bSort - aSort;
+                }),
                 discard: [],
                 hand: [],
                 isPlayerTurn: true,

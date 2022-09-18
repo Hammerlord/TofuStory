@@ -320,7 +320,10 @@ export interface Ability {
     };
     dialog?: string;
     upgrades?: Ability[];
-    level?: number; // The level of this ability; assumed to be 1 if not provided
+    /** The upgrade level of this ability; assumed to be 1 (baseline) if not provided */
+    level?: number;
+    /** On battle start, this ability is shuffled to the top of your deck. */
+    preemptive?: boolean;
 }
 
 /**
