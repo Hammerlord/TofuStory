@@ -20,6 +20,7 @@ export interface Event {
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];
     actorId?: string;
+    allTargetIndices: number[];
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
     id: string;

@@ -33,6 +33,7 @@ export { default as MoneyBag } from "./1f4b0.svg";
 export { default as Lock } from "./1f512.svg";
 export { default as QuestionMark } from "./2753.svg";
 export { default as House } from "./1f3e0.svg";
+export { default as Tornado } from "./1f32a.svg";
 
 export { default as PoisonIcon } from "./poison.png";
 export { default as Wolf } from "./wolf.png";

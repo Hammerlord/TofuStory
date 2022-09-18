@@ -153,6 +153,19 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse } = ability;
     const { area = 0, target: targetType, damage, secondaryDamage, destroyArmor = 0 } = actions[0] || {};
     const cardImage = minion?.image || image;
+    let imageNode = null;
+
+    if (typeof cardImage === "string") {
+        imageNode = <img src={cardImage} className={classes.portrait} />;
+    } else if (typeof image === "function") {
+        const ImageNode = image as Function;
+        imageNode = (
+            <div>
+                <ImageNode className={classes.portrait} />
+            </div>
+        );
+    }
+
     const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
@@ -234,7 +247,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         </span>{" "}
                         <ResourceIcon ability={ability} />
                     </span>
-                    <div className={classes.portraitContainer}>{cardImage && <img src={cardImage} className={classes.portrait} />}</div>
+                    <div className={classes.portraitContainer}>{imageNode}</div>
                     <div className={classes.body}>
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}

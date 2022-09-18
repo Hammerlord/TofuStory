@@ -305,24 +305,18 @@ const BattlefieldContainer = () => {
             return { action: undefined, target: undefined, allTargets: [], actor: undefined };
         }
 
-        const { actorId, targetSide, selectedIndex, id, action, playbackTime } = (events[0] as Event) || {};
+        const { actorId, targetSide, selectedIndex, allTargetIndices, id, action, playbackTime } = (events[0] as Event) || {};
         const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
         if (typeof selectedIndex === "number" && targetSide) {
             target = targets[selectedIndex]?.current;
         }
 
-        const allTargets = [];
-        const area = action?.area || 0;
-        for (let i = selectedIndex - area; i <= selectedIndex + area; ++i) {
-            targets[i]?.current && allTargets.push(targets[i].current);
-        }
-
         return {
             action,
             actor: getRefFromCharacterId(actorId)?.current,
             target,
-            allTargets,
+            allTargets: allTargetIndices.map((i) => targets[i]?.current).filter((v) => v),
             eventId: id,
             playbackTime,
         };
@@ -380,10 +374,19 @@ const BattlefieldContainer = () => {
         const { ability, playbackTime } = events[0];
 
         if (ability) {
+            // TODO move this to its own component dude
+            const { image, name } = ability;
+            let imageNode;
+            if (typeof image === "string") {
+                imageNode = <img src={image} className={classes.notificationAbility} />;
+            } else if (typeof image === "function") {
+                const ImageNode = image as Function;
+                imageNode = <ImageNode className={classes.notificationAbility} />;
+            }
             setAbilityNotification({
                 text: (
                     <>
-                        {ability.image && <img src={ability.image} className={classes.notificationAbility} />} {ability.name}
+                        {imageNode} {name}
                     </>
                 ),
                 id: uuid.v4(),

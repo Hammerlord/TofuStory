@@ -18,6 +18,10 @@ const useStyles = createUseStyles({
         filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         maxHeight: PROJECTILE_HEIGHT,
     },
+    iconProjectile: {
+        width: PROJECTILE_WIDTH,
+        height: PROJECTILE_HEIGHT,
+    },
 });
 
 const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, playbackTime = 1000 }: any) => {
@@ -53,6 +57,7 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
                     from: projectileRefs[i].current,
                     spin,
                     rotateToFaceTarget,
+                    sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                     playbackTime,
                 });
@@ -72,6 +77,18 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
     }, [eventId]);
 
     const { icon, type } = action || {};
+    const getProjectileElement = (i: number) => {
+        if (typeof icon === "string") {
+            return <img src={icon} className={classNames(classes.projectile)} ref={projectileRefs[i]} />;
+        } else if (typeof icon === "function") {
+            const Icon = icon;
+            return (
+                <div className={classNames(classes.iconProjectile)} ref={projectileRefs[i]}>
+                    <Icon />
+                </div>
+            );
+        }
+    };
 
     return (
         <div className={classes.root}>
@@ -84,7 +101,7 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
                                 style={{ position: "fixed", left: actorLeft - PROJECTILE_WIDTH / 2, top: actorTop - PROJECTILE_HEIGHT / 2 }}
                                 key={i}
                             >
-                                <img src={icon} className={classNames(classes.projectile)} ref={projectileRefs[i]} />
+                                {getProjectileElement(i)}
                             </span>
                         ))}
                 </>

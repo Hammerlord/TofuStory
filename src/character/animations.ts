@@ -1,3 +1,4 @@
+import { getRandomArbitrary } from "./../utils";
 export const getTargetPoints = ({ from, to }) => {
     const getTargetPoint = (rect) => {
         const { x, y, height, width } = rect;
@@ -19,8 +20,15 @@ export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
     return Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
 };
 
-// Bigger animation speed = slower
-export const travel = ({ to, from, spin = false, rotateToFaceTarget = false, returnToOrigin = false, playbackTime }) => {
+export const travel = ({
+    to,
+    from,
+    spin = false,
+    rotateToFaceTarget = false,
+    returnToOrigin = false,
+    playbackTime,
+    sidewinder = false,
+}) => {
     if (!to || !from) {
         return;
     }
@@ -37,10 +45,21 @@ export const travel = ({ to, from, spin = false, rotateToFaceTarget = false, ret
         {
             transform: `unset`,
         },
-        {
-            transform: `translateX(${x2 - x}px) translateY(${y2 - y}px) rotate(${rotation}deg)`,
-        },
     ];
+
+    if (sidewinder) {
+        const xDiff = x2 - x;
+        const transformX = getRandomArbitrary(xDiff - 50, xDiff + 50);
+        const yDiff = y2 - y;
+        const jitterY = getRandomArbitrary(2, 3);
+        animationFrames.push({
+            transform: `translateX(${transformX}px) translateY(${yDiff / jitterY}px) rotate(${rotation}deg)`,
+        });
+    }
+
+    animationFrames.push({
+        transform: `translateX(${x2 - x}px) translateY(${y2 - y}px) rotate(${rotation}deg)`,
+    });
 
     if (returnToOrigin) {
         animationFrames.push({

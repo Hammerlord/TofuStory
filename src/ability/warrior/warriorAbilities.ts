@@ -24,6 +24,7 @@ import {
     shout,
     slashblast,
     spikes,
+    Tornado,
     warleap,
     warmush,
     warriormasteryImage,
@@ -1301,10 +1302,10 @@ export const rally: Ability = {
 
 export const dustDevils: Ability = {
     name: "Dust Devils",
-    resourceCost: 1,
+    resourceCost: 0,
+    image: Tornado,
     actions: [
         {
-            area: 2,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1312,16 +1313,16 @@ export const dustDevils: Ability = {
                     name: "Dust Devils",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    icon: hammer,
+                    icon: Tornado,
                     onAttack: {
                         actions: [
                             {
                                 target: TARGET_TYPES.RANDOM_HOSTILE,
                                 type: ACTION_TYPES.RANGE_ATTACK,
-                                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                                animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                                 damage: 1,
-                                icon: hammer,
-                                playbackTime: 200,
+                                icon: Tornado,
+                                playbackTime: 300,
                                 numTargets: 2,
                             },
                         ],

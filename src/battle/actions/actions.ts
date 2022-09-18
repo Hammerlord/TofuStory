@@ -661,7 +661,7 @@ const performAction = ({
         const combatants = getState().battle[side];
         const { source, type } = triggerSource || {};
         const ability = type === "ability" ? (source as Ability) : undefined;
-        combatants
+        const affectedIndices = combatants
             .map((character: Combatant | null, i: number) => {
                 if (!isAffected(character, i)) {
                     return;
@@ -676,10 +676,11 @@ const performAction = ({
                 });
             })
             // Apply all the updates before triggering any related events
-            .forEach((updated: Combatant | null, i) => {
-                if (!isAffected(updated, i)) {
+            .map((updated: Combatant | null) => {
+                if (!updated) {
                     return;
                 }
+
                 dispatch(
                     updateCombatant({
                         combatantId: updated.id,
@@ -688,7 +689,12 @@ const performAction = ({
                 );
 
                 dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
-            });
+                return updated;
+            })
+            .reduce((acc, cur, i) => {
+                if (cur) acc.push(i);
+                return acc;
+            }, []);
 
         dispatch(
             updateCombatant({
@@ -709,6 +715,7 @@ const performAction = ({
                 actorId,
                 id: uuid.v4(),
                 selectedIndex,
+                allTargetIndices: affectedIndices,
                 targetSide: side,
                 ability,
                 playbackTime:

@@ -346,6 +346,7 @@ export enum ANIMATION_TYPES {
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
     ONE_WAY = "one-way",
+    ONE_WAY_SIDEWINDER = "one-way-sidewinder",
 }
 
 export interface AbilityEffects {
