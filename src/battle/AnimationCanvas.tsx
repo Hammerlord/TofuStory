@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
 import { travel } from "../character/animations";
@@ -27,6 +27,7 @@ const useStyles = createUseStyles({
 const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, playbackTime = 1000 }: any) => {
     const eventIdRef = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
+    const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const { left: actorLeft, top: actorTop } = useMemo(() => {
         if (!actor?.getBoundingClientRect) {
             return {};
@@ -43,6 +44,11 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
         if (!target || !action || eventIdRef.current === eventId || !actor) {
             return;
         }
+
+        // HACK: If a one-way projectile animation finishes playing, there can be a flicker where it teleports back to the origination as we wait for the next event to occur.
+        // Make the projectile turn invisible when the animation is done in that case.
+        setIsAnimationPlaying(true);
+        setTimeout(() => setIsAnimationPlaying(false), playbackTime);
 
         eventIdRef.current = eventId;
         const { type, animation } = action || {};
@@ -63,17 +69,6 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
                 });
             });
         }
-
-        return () => {
-            if (actor?.style) {
-                actor.style.transform = "unset";
-            }
-            projectileRefs.forEach((ref) => {
-                if (ref?.current?.style) {
-                    ref.current.style.transform = "unset";
-                }
-            });
-        };
     }, [eventId]);
 
     const { icon, type } = action || {};
@@ -98,7 +93,12 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
                         .filter((val) => val)
                         .map((tar, i) => (
                             <span
-                                style={{ position: "fixed", left: actorLeft - PROJECTILE_WIDTH / 2, top: actorTop - PROJECTILE_HEIGHT / 2 }}
+                                style={{
+                                    position: "fixed",
+                                    left: actorLeft - PROJECTILE_WIDTH / 2,
+                                    top: actorTop - PROJECTILE_HEIGHT / 2,
+                                    visibility: isAnimationPlaying ? "visible" : "hidden",
+                                }}
                                 key={i}
                             >
                                 {getProjectileElement(i)}

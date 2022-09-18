@@ -709,8 +709,8 @@ const performAction = ({
             })
         );
 
-        const MULTI_ACTION_PLAYBACK_SPEED = 750;
-        const NORMAL_ACTION_PLAYBACK_SPEED = 1200;
+        const MULTI_ACTION_PLAYBACK_SPEED = 500;
+        const NORMAL_ACTION_PLAYBACK_SPEED = 800;
 
         dispatch(
             pushEventQueue({

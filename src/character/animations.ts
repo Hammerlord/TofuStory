@@ -41,7 +41,10 @@ export const travel = ({
         rotation = getRotationToFaceTarget({ x, y, x2, y2 });
     }
 
-    const animationFrames = [
+    const animationFrames: {
+        transform?: string;
+        easing?: "ease-in" | "ease-out";
+    }[] = [
         {
             transform: `unset`,
         },
@@ -65,8 +68,10 @@ export const travel = ({
         animationFrames.push({
             transform: `unset`,
         });
-        playbackTime /= 1.5;
     }
+
+    animationFrames[0].easing = "ease-out";
+    animationFrames[animationFrames.length - 1].easing = "ease-in";
 
     from.animate(animationFrames, {
         duration: playbackTime,
