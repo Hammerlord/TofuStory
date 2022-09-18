@@ -261,6 +261,8 @@ export const burningSoulBlade: Ability = {
         damage: 2,
         effects: [
             {
+                name: "Burning Soul Blade",
+                icon: burningSoulBladeMinionImage,
                 type: EFFECT_TYPES.IMMUNITY,
                 class: EFFECT_CLASSES.BUFF,
                 attackAreaIncrease: 1,

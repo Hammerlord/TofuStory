@@ -21,7 +21,7 @@ import { battleStateSlice } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
-import { calculateActionArea, canUseAbility, isValidTarget } from "./utils";
+import { calculateActionArea, canUseAbility, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
 
 const useStyles = createUseStyles({
@@ -170,8 +170,7 @@ const BattlefieldContainer = () => {
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
-    const [hoveredAllyIndex, setHoveredAllyIndex] = useState(null);
-    const [hoveredEnemyIndex, setHoveredEnemyIndex] = useState(null);
+    const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
 
@@ -421,64 +420,65 @@ const BattlefieldContainer = () => {
     }, [isPlayerTurn]);
 
     const disableActions = showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
+    const selectedMinion = playerSide[selectedAllyIndex];
+    const selectedAbility = selectedMinion?.attack || hand[selectedAbilityIndex];
+    const actor = selectedMinion || player;
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
-        const noHover = !isValidIndex(hoveredAllyIndex) && !isValidIndex(hoveredEnemyIndex);
-        const mismatchingSide =
-            (isValidIndex(hoveredAllyIndex) && side === BATTLEFIELD_SIDES.ENEMY_SIDE) ||
-            (isValidIndex(hoveredEnemyIndex) && side === BATTLEFIELD_SIDES.PLAYER_SIDE);
+        const noHover = !isValidIndex(hoveredCombatant?.index);
+        const mismatchingSide = side !== hoveredCombatant?.side;
         if (disableActions || noHover || mismatchingSide) {
             return false;
         }
 
-        if (playerSide[selectedAllyIndex]) {
-            return side === BATTLEFIELD_SIDES.ENEMY_SIDE && hoveredEnemyIndex === i;
-        }
+        const hoveredIndex = hoveredCombatant?.index;
 
-        const hoveredIndex = isValidIndex(hoveredAllyIndex) ? hoveredAllyIndex : hoveredEnemyIndex;
-        const ability = hand[selectedAbilityIndex];
-
-        if (!ability || !isValidTarget({ ability, side, index: hoveredIndex, enemySide, playerSide, actor: player })) {
-            return false;
-        }
-
-        const { actions = [] } = ability;
-        const area = calculateActionArea({ action: actions[0], actor: player }) || ability.area || 0;
-        return i >= hoveredIndex - area && i <= hoveredIndex + area;
+        return (
+            selectedAbility &&
+            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, enemySide, playerSide, actor }) &&
+            isWithinAbilityArea({ ability: selectedAbility, actor, selectedIndex: hoveredIndex, targetIndex: i })
+        );
     };
 
     const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
-        if (isEligibleToAttack(playerSide[selectedAllyIndex])) {
-            if (combatantSide === BATTLEFIELD_SIDES.ENEMY_SIDE && enemySide[combatantIndex]) {
-                return typeof hoveredEnemyIndex !== "number" || combatantIndex === hoveredEnemyIndex;
-            }
-
+        if (!selectedAbility) {
             return false;
         }
 
-        const ability = hand[selectedAbilityIndex];
-        if (!ability) {
-            return false;
-        }
-
-        if (ability.minion) {
-            if (combatantSide === BATTLEFIELD_SIDES.PLAYER_SIDE && !playerSide[combatantIndex]) {
-                return typeof hoveredAllyIndex !== "number" || combatantIndex === hoveredAllyIndex;
+        if (
+            isValidTarget({
+                ability: selectedAbility,
+                side: combatantSide,
+                index: combatantIndex,
+                playerSide,
+                enemySide,
+                actor,
+            })
+        ) {
+            if (
+                !hoveredCombatant ||
+                !isValidTarget({
+                    ability: selectedAbility,
+                    side: hoveredCombatant.side,
+                    index: hoveredCombatant.index,
+                    playerSide,
+                    enemySide,
+                    actor,
+                })
+            ) {
+                return true;
             }
+
+            return isWithinAbilityArea({
+                ability: selectedAbility,
+                actor,
+                selectedIndex: hoveredCombatant?.index,
+                targetIndex: combatantIndex,
+            });
         }
 
-        let side = combatantSide;
-        let index = combatantIndex;
-        if (hoveredEnemyIndex === "number") {
-            side = BATTLEFIELD_SIDES.ENEMY_SIDE;
-            index = hoveredEnemyIndex;
-        } else if (hoveredAllyIndex === "number") {
-            side = BATTLEFIELD_SIDES.PLAYER_SIDE;
-            index = hoveredAllyIndex;
-        }
-
-        return isValidTarget({ ability, side, index, playerSide, enemySide, actor: player });
+        return false;
     };
 
     const origination = useMemo(() => {
@@ -530,8 +530,8 @@ const BattlefieldContainer = () => {
                                         isAlly={false}
                                         onClick={(e) => handleEnemyClick(e, i)}
                                         isSelected={false}
-                                        onMouseEnter={() => setHoveredEnemyIndex(i)}
-                                        onMouseLeave={() => setHoveredEnemyIndex(null)}
+                                        onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i })}
+                                        onMouseLeave={() => setHoveredCombatant(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         key={i}
                                         event={enemy?.id === events[0]?.actorId ? animationEvent : undefined}
@@ -557,8 +557,8 @@ const BattlefieldContainer = () => {
                                                 isAlly={true}
                                                 onClick={(e) => handleAllyClick(e, i)}
                                                 isSelected={selectedAllyIndex === i}
-                                                onMouseEnter={() => setHoveredAllyIndex(i)}
-                                                onMouseLeave={() => setHoveredAllyIndex(null)}
+                                                onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i })}
+                                                onMouseLeave={() => setHoveredCombatant(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 key={i}
                                                 event={ally?.id === events[0]?.actorId ? animationEvent : undefined}

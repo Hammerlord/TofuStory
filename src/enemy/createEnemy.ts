@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
+import { getBasicAttack } from "../battle/utils";
 import { Combatant } from "../character/types";
 import { getRandomItem, shuffle } from "./../utils";
 import { bigBeefy, smalltofu, thefaketofu, theraretofu, theRegalTofu } from "./tofu";
@@ -20,6 +21,7 @@ export const createCombatant = (combatant): Combatant => {
         casting: null,
         abilities: combatant.abilities?.map(cloneDeep) || [],
         turnHistory: [],
+        attack: getBasicAttack(combatant),
     };
 };
 

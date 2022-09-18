@@ -2,6 +2,7 @@
  * Helpers for various battle functions
  */
 import { Combatant } from "../character/types";
+import { CrossedSwords } from "../images";
 import {
     Ability,
     Action,
@@ -94,6 +95,9 @@ export const canUseAbility = (character, ability: HandAbility | undefined): bool
     return resourceCost + temporaryResourceCost <= (character.resources || 0);
 };
 
+/**
+ * Note to self: This is for PLAYER ACTIONS only
+ */
 export const isValidTarget = ({ ability, side, playerSide, enemySide, index, actor }): boolean => {
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
@@ -103,7 +107,7 @@ export const isValidTarget = ({ ability, side, playerSide, enemySide, index, act
     }
 
     const { target } = actions[0] || {};
-    const area = calculateActionArea({ action: actions[0], actor }) || ability.area || 0;
+    const area = calculateActionArea({ action: actions[0], actor }) || actions[0].area || 0;
 
     if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
         if (target === TARGET_TYPES.SELF) {
@@ -403,9 +407,10 @@ export const getBasicAttack = (actor): HandAbility => {
     }
     return {
         name: "Attack",
+        image: CrossedSwords,
         actions: [
             {
-                damage: actor.damage,
+                damage: actor.damage || 0,
                 target: TARGET_TYPES.HOSTILE,
                 type: ACTION_TYPES.ATTACK,
             },
@@ -472,6 +477,15 @@ export const calculateBonus = ({
         } as Action;
     }
     return action;
+};
+
+export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex }): boolean => {
+    if ([selectedIndex, targetIndex].some((i) => typeof i !== "number")) {
+        return false;
+    }
+    const action = ability.actions[0];
+    const area = calculateActionArea({ action, actor }) || action?.area || 0;
+    return Math.abs(selectedIndex - targetIndex) <= area;
 };
 
 /**
