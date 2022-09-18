@@ -500,25 +500,25 @@ const BattlefieldContainer = () => {
     }
 
     return (
-        <div className={classes.root}>
-            {info && (
-                <Notification onClick={() => setInfo(null)} id={info.id}>
-                    {info.text}
-                </Notification>
-            )}
-            {notification && (
-                <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
-                    {notification.text}
-                </Notification>
-            )}
-            {abilityNotification && (
-                <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1250}>
-                    {abilityNotification.text}
-                </Notification>
-            )}
-            <TargetLineCanvas originationRef={origination} color={targetLineColor}>
+        <TargetLineCanvas originationRef={origination} color={targetLineColor}>
+            <div className={classes.root} onClick={handleBattlefieldClick}>
+                {info && (
+                    <Notification onClick={() => setInfo(null)} id={info.id}>
+                        {info.text}
+                    </Notification>
+                )}
+                {notification && (
+                    <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
+                        {notification.text}
+                    </Notification>
+                )}
+                {abilityNotification && (
+                    <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1250}>
+                        {abilityNotification.text}
+                    </Notification>
+                )}
                 <div className={classes.battlefieldContainer}>
-                    <div className={classes.battlefield} onClick={handleBattlefieldClick}>
+                    <div className={classes.battlefield}>
                         <div className={classes.waves}>
                             <WaveInfo waves={waves} currentWave={currentWave} cleared={false} />
                         </div>
@@ -596,12 +596,12 @@ const BattlefieldContainer = () => {
                         />
                     </div>
                 </div>
-            </TargetLineCanvas>
-            {/** TODO Restore static deck */}
-            <Header player={player} deck={[]} onUseItem={handleUseItem} />
-            {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
-            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
-        </div>
+                {/** TODO Restore static deck */}
+                <Header player={player} deck={[]} onUseItem={handleUseItem} />
+                {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
+                {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
+            </div>
+        </TargetLineCanvas>
     );
 };
 
