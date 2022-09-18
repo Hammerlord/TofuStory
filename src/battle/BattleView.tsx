@@ -237,7 +237,7 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (index === selectedAllyIndex) {
+        if (typeof selectedAllyIndex === "number") {
             setSelectedAllyIndex(null);
         } else if (isEligibleToAttack(playerSide[index])) {
             setSelectedAllyIndex(index);
