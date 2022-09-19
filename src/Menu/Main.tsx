@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import Camp from "../Map/Camp";
 import KerningCity from "../Map/KerningCity";
+import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { routeLith, toLith } from "../Map/routes/routes";
@@ -267,6 +268,8 @@ const Main = () => {
         switch (town) {
             case TOWNS.KERNING:
                 return <KerningCity player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
+            case TOWNS.LITH_HARBOUR:
+                return <LithHarbor player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
         }
     };
 

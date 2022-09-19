@@ -16,6 +16,8 @@ const useStyles = createUseStyles({
         position: "relative",
         width: "100%",
         height: "100%",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
     },
     overlay: {
         width: "100%",

@@ -10,6 +10,8 @@ const useStyles = createUseStyles({
         height: "100%",
         background: `url(${lithHarbor})`,
         color: "white",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
     },
     bg: {
         width: "100%",
