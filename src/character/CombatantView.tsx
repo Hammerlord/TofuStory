@@ -203,6 +203,9 @@ const useStyles = createUseStyles({
         top: -70,
         left: -25,
     },
+    poisoned: {
+        filter: "sepia(0.9) hue-rotate(-300deg) saturate(2)",
+    },
 });
 
 const CombatantView = forwardRef(
@@ -272,6 +275,7 @@ const CombatantView = forwardRef(
                                     <img
                                         src={oldState.image}
                                         className={classNames(classes.portraitImage, {
+                                            [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                                             [classes.dead]: oldState.HP === 0,
                                             [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
                                             [classes.casting]: oldState.casting,
