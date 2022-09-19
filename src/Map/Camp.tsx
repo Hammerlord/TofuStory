@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
+import { Ability } from "../ability/types";
 import { updateHPByPercentage } from "../battle/utils";
 import { campfire, perioncamp } from "../images";
 import { blackScroll } from "../item/items";
@@ -150,7 +151,9 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
     }
 
     if (isLearningAbility) {
-        const potentialAbilities = JOB_CARD_MAP[player.class].all.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
+        const potentialAbilities = JOB_CARD_MAP[player.class].all
+            .concat(JOB_CARD_MAP[player.secondaryClass]?.all || [])
+            .filter((ability: Ability) => !ability.depletedOnUse);
 
         return (
             <div className={classes.root}>
@@ -222,7 +225,7 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                         {player.items.filter((item) => item.name === blackScroll.name).length >= 3 && (
                             <div className={classes.activity} onClick={() => setIsLearningAbility(true)}>
                                 <div className={classes.activityName}>Learn</div>
-                                Combine three {blackScroll.name}s to acquire an ability.
+                                Combine three {blackScroll.name}s to attain a non-deplete ability.
                             </div>
                         )}
                         <div

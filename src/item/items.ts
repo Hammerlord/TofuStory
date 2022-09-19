@@ -122,17 +122,17 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Increases maximum HP by 5.",
+    description: "Increases maximum HP by 10.",
     type: ITEM_TYPES.EQUIPMENT,
     image: amethystImage,
     sellPrice: 10,
     effects: [
         {
             name: "Amethyst",
-            description: "Increasing maximum HP by 5.",
+            description: "Increasing maximum HP by 10.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
+            maxHP: 10,
         },
     ],
 };
@@ -160,7 +160,7 @@ export const leatherSandals: Item = {
 
 export const blackScroll: Item = {
     name: "Black Scroll",
-    description: "Combine 3 scrolls to attain an ability of your choice for your class.",
+    description: "Combine 3 scrolls to attain a non-deplete ability of your choice for your class.",
     image: manualImage,
     type: ITEM_TYPES.MATERIAL,
 };
@@ -230,22 +230,23 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Your maximum health increases by 3. You emit an aura that increases ally attack power by 2.",
+    description: "Your maximum health increases by 5. You emit an aura that increases ally attack power by 2.",
     image: alligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
             name: "Alligator Tube",
-            description: "Increasing maximum HP by 3.",
+            description: "Increasing maximum HP by 5.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 3,
+            maxHP: 5,
         },
         {
             name: "Alligator Tube",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            isAuraEffect: true,
+            area: 1,
+            excludeEffectOwner: true,
             damage: 2,
         },
     ],
