@@ -1,109 +1,6 @@
 import { axeStump, blueSnail, fireBoar, octopus, orangeMushroom, redSnail, shroom, snail, stump, wildBoar } from "../../enemy/enemy";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
-export const toLith: Route = {
-    initialPlayerPosition: {
-        x: 0.15873015873015872,
-        y: 0.730697961704756,
-    },
-    nodes: [
-        {
-            x: 0.15716753022452504,
-            y: 0.7956483387239047,
-            type: NODE_TYPES.TOWN,
-            town: TOWNS.LITH_HARBOUR,
-        },
-    ],
-};
-
-const toKerning = {
-    elites: [snail, blueSnail, shroom],
-    nodes: [
-        {
-            x: 0.24807256235827665,
-            y: 0.6016059295861643,
-        },
-        {
-            x: 0.19591836734693877,
-            y: 0.609017912291538,
-        },
-        {
-            x: 0.17551020408163265,
-            y: 0.5558987029030266,
-        },
-        {
-            x: 0.1877818778187782,
-            y: 0.4992147419118417,
-        },
-        {
-            x: 0.14982728842832468,
-            y: 0.39576595119082625,
-            type: NODE_TYPES.TOWN,
-            town: TOWNS.KERNING,
-        },
-    ],
-};
-
-export const toHenesys = {
-    elites: [snail, blueSnail, shroom],
-    nodes: [
-        {
-            x: 0.30483592400690845,
-            y: 0.6727433107909438,
-        },
-        {
-            x: 0.3143350604490501,
-            y: 0.7221405468979711,
-        },
-        {
-            x: 0.3333333333333333,
-            y: 0.7680094089973537,
-        },
-        {
-            x: 0.37132987910189985,
-            y: 0.7962364010585122,
-        },
-        {
-            x: 0.45509499136442144,
-            y: 0.8068215230814466,
-            type: NODE_TYPES.TOWN,
-            town: TOWNS.HENESYS,
-        },
-    ],
-};
-
-export const routeLith: Route = {
-    initialPlayerPosition: {
-        x: 0.15716753022452504,
-        y: 0.7956483387239047,
-    },
-    enemies: {
-        easy: [snail],
-        normal: [blueSnail, shroom],
-        hard: [redSnail],
-        hardest: [orangeMushroom],
-    } as MapEnemies,
-    nodes: [
-        {
-            x: 0.15873015873015872,
-            y: 0.730697961704756,
-        },
-        {
-            x: 0.1963718820861678,
-            y: 0.6868437306979617,
-        },
-        {
-            x: 0.254875283446712,
-            y: 0.679431747992588,
-        },
-        {
-            x: 0.2925170068027211,
-            y: 0.6244595429277332,
-        },
-    ],
-    next: [toHenesys, toKerning],
-};
-
 export const routeKerningToPerion = {
     enemies: {
         easy: [stump, octopus],
@@ -139,33 +36,33 @@ export const routeKerningToPerion = {
     ] as RouteNode[],
 };
 
-export const routeHenesysEllinia = {
+const toKerning = {
+    elites: [snail, blueSnail, shroom],
     nodes: [
         {
-            x: 0.5246113989637305,
-            y: 0.8079976477506615,
+            x: 0.24807256235827665,
+            y: 0.6016059295861643,
         },
         {
-            x: 0.5531088082901554,
-            y: 0.7603645986474566,
+            x: 0.19591836734693877,
+            y: 0.609017912291538,
         },
         {
-            x: 0.5613126079447323,
-            y: 0.7062628638635695,
+            x: 0.17551020408163265,
+            y: 0.5558987029030266,
         },
         {
-            x: 0.5906735751295337,
-            y: 0.6574536900911496,
+            x: 0.1877818778187782,
+            y: 0.4992147419118417,
         },
         {
-            x: 0.6308290155440415,
-            y: 0.6356953837106734,
-        },
-        {
-            x: 0.6640759930915371,
-            y: 0.6080564539841223,
+            x: 0.14982728842832468,
+            y: 0.39576595119082625,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.KERNING,
         },
     ],
+    next: [routeKerningToPerion],
 };
 
 export const routeElliniaPerion = {
@@ -207,6 +104,119 @@ export const routeElliniaPerion = {
             y: 0.2211114378124081,
         },
     ],
+};
+
+export const routeHenesysEllinia = {
+    nodes: [
+        {
+            x: 0.5246113989637305,
+            y: 0.8079976477506615,
+        },
+        {
+            x: 0.5531088082901554,
+            y: 0.7603645986474566,
+        },
+        {
+            x: 0.5613126079447323,
+            y: 0.7062628638635695,
+        },
+        {
+            x: 0.5906735751295337,
+            y: 0.6574536900911496,
+        },
+        {
+            x: 0.6308290155440415,
+            y: 0.6356953837106734,
+        },
+        {
+            x: 0.6640759930915371,
+            y: 0.6080564539841223,
+        },
+    ],
+    next: [],
+};
+
+export const toHenesys = {
+    elites: [snail, blueSnail, shroom],
+    nodes: [
+        {
+            x: 0.30483592400690845,
+            y: 0.6727433107909438,
+        },
+        {
+            x: 0.3143350604490501,
+            y: 0.7221405468979711,
+        },
+        {
+            x: 0.3333333333333333,
+            y: 0.7680094089973537,
+        },
+        {
+            x: 0.37132987910189985,
+            y: 0.7962364010585122,
+        },
+        {
+            x: 0.45509499136442144,
+            y: 0.8068215230814466,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.HENESYS,
+        },
+    ],
+    next: [routeHenesysEllinia],
+};
+
+export const routeLith: Route = {
+    initialPlayerPosition: {
+        x: 0.15716753022452504,
+        y: 0.7956483387239047,
+    },
+    enemies: {
+        easy: [snail],
+        normal: [blueSnail, shroom],
+        hard: [redSnail],
+        hardest: [orangeMushroom],
+    } as MapEnemies,
+    nodes: [
+        {
+            x: 0.15873015873015872,
+            y: 0.730697961704756,
+        },
+        {
+            x: 0.1963718820861678,
+            y: 0.6868437306979617,
+        },
+        {
+            x: 0.254875283446712,
+            y: 0.679431747992588,
+        },
+        {
+            x: 0.2925170068027211,
+            y: 0.6244595429277332,
+        },
+    ],
+    next: [toHenesys, toKerning],
+};
+
+export const toLith: Route = {
+    initialPlayerPosition: {
+        x: 0.15873015873015872,
+        y: 0.730697961704756,
+    },
+    enemies: {
+        easy: [snail],
+        normal: [blueSnail, shroom],
+        hard: [redSnail],
+        hardest: [orangeMushroom],
+    } as MapEnemies,
+    nodes: [
+        {
+            x: 0.15716753022452504,
+            y: 0.7956483387239047,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.LITH_HARBOUR,
+        },
+    ],
+    next: [routeLith],
 };
 
 const routeDeadTrees = {

@@ -73,6 +73,9 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
         };
 
         const generateInitialNode = (baseNode) => {
+            if (baseNode.type) {
+                return baseNode;
+            }
             if (numEncountersSinceRestPoint >= 2) {
                 numEncountersSinceRestPoint = 0;
 

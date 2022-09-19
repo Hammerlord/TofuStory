@@ -89,6 +89,9 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
 
     // prev and current are the output of generateTravelRoute
     const drawRouteNode = ({ prev, current, routeNodes, lines }: any) => {
+        if (!current) {
+            return;
+        }
         const { width = 0, height = 0 } = container as { width: number; height: number };
         const x = current.x * width;
         const y = current.y * height;

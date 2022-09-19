@@ -15,7 +15,7 @@ import Camp from "../Map/Camp";
 import KerningCity from "../Map/KerningCity";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { routeLith } from "../Map/routes/routes";
+import { routeLith, toLith } from "../Map/routes/routes";
 import { NODE_TYPES, TOWNS } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
@@ -87,7 +87,7 @@ const Main = () => {
     const [scene, setScene] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [route, setRoute] = useState(generateTravelRoute({ route: routeLith, notoreity: 0, numRoutesComplete: 0 }));
+    const [route, setRoute] = useState(null);
     const [locationNode, setLocationNode] = useState(null);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
@@ -102,6 +102,10 @@ const Main = () => {
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
     const { player, deck } = character || {};
+
+    useEffect(() => {
+        setRoute(generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 }));
+    }, []);
 
     useEffect(() => {
         // Check game over when player updates
