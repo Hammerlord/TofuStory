@@ -1,7 +1,10 @@
 import { createUseStyles } from "react-jss";
 import Main from "./Menu/Main";
-import { store } from "./store";
+import { getConfiguredStore, store } from "./store";
 import { Provider } from "react-redux";
+import DevToolButton from "./devtools/DevToolButton";
+import { useMemo } from "react";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     app: {
@@ -33,6 +36,13 @@ const useStyles = createUseStyles({
             background: "rgba(0, 0, 0, 0.4)",
         },
     },
+    root: {
+        position: "fixed",
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
+    },
     button: {
         padding: "8px 32px",
         fontFamily: "Barlow, Arial",
@@ -44,12 +54,23 @@ const useStyles = createUseStyles({
 
 export const App = () => {
     const classes = useStyles();
+    const isDevToolEnabled = true;
+    const devStore = useMemo(() => (isDevToolEnabled ? getConfiguredStore() : undefined), [isDevToolEnabled]);
 
     return (
-        <Provider store={store}>
-            <div className={classes.app}>
-                <Main />
-            </div>
-        </Provider>
+        <>
+            <Provider store={store}>
+                <div className={classNames(classes.app, classes.root)}>
+                    <Main />
+                </div>
+            </Provider>
+            {isDevToolEnabled && (
+                <Provider store={devStore}>
+                    <div className={classes.app}>
+                        <DevToolButton />
+                    </div>
+                </Provider>
+            )}
+        </>
     );
 };

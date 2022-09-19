@@ -157,9 +157,9 @@ const BattlefieldContainer = () => {
         charactersAttackedThisTurn,
         currentWave,
         waves,
-        isEnded,
         flagTurnEnd,
     } = useAppSelector((state) => state.battle);
+    const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
     const allyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
     const enemyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
@@ -596,8 +596,7 @@ const BattlefieldContainer = () => {
                         />
                     </div>
                 </div>
-                {/** TODO Restore static deck */}
-                <Header player={player} deck={[]} onUseItem={handleUseItem} />
+                <Header player={player} deck={originalDeck} onUseItem={handleUseItem} />
                 {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
             </div>
