@@ -1,4 +1,3 @@
-import { MULTIPLIER_TYPES } from "./../types";
 import {
     advancedcharge,
     blastImage,
@@ -12,7 +11,7 @@ import {
     shieldmasteryImage,
 } from "../../images";
 import { burn, chill, stun } from "../Effects";
-import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../types";
 import { block } from "./warriorAbilities";
 
 export const flameCharge: Ability = {
@@ -47,7 +46,7 @@ export const blizzardCharge: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         hasEffectType: [EFFECT_TYPES.BURN],
                     },
                 ],
@@ -76,7 +75,7 @@ export const lightningCharge: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         hasEffectType: [EFFECT_TYPES.CHILL],
                     },
                 ],
@@ -114,7 +113,7 @@ export const divineCharge: Ability = {
                 damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.DEBUFFS,
-                    calculationTarget: "target",
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             },
         },

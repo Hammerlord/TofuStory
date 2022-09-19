@@ -1,6 +1,7 @@
 import { Ability } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties from "./defaultCharacterProperties";
+import { aggregateItemEffects } from "../Menu/utils";
 
 export const playerStateSlice = createSlice({
     name: "player",
@@ -24,6 +25,7 @@ export const playerStateSlice = createSlice({
                 player: {
                     ...defaultCharacterProperties,
                     class: action.payload.selectedClass,
+                    effects: aggregateItemEffects(defaultCharacterProperties.items),
                 },
                 deck: action.payload.deck,
             };

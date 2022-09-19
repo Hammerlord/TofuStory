@@ -25,6 +25,7 @@ import GameOver from "./GameOver";
 import Header from "./Header";
 import Shop from "./Shop";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
+import { aggregateItemEffects } from "./utils";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -79,14 +80,6 @@ const useStyles = createUseStyles({
     },
 });
 
-const aggregateItemEffects = (items: Item[]): Effect[] => {
-    const effects = [];
-    items.forEach((item) => {
-        const itemEffects = item.effects?.map(cloneDeep) || [];
-        effects.push(...itemEffects);
-    });
-    return effects;
-};
 const { updatePlayer, onSelectClass, updateDeck } = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 

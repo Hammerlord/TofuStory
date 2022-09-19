@@ -13,7 +13,6 @@ import {
     EFFECT_TYPES,
     HandAbility,
     TARGET_TYPES,
-    TriggerEffect,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -40,6 +39,7 @@ import {
     updateCharacters,
     updateHP,
 } from "../utils";
+import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { TriggerSource } from "./../types";
 
 const { drawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
@@ -269,30 +269,27 @@ const applyProc = ({
     effect,
     effectEvent,
     ownerId,
-    externalPartyId,
+    getCalculationTargetId,
 }: {
     effect: CombatEffect;
     effectEvent: EffectEventTrigger;
     ownerId: string;
-    externalPartyId?: string;
+    getCalculationTargetId: (target: TRIGGER_TARGET_TYPES) => string;
 }) => {
     return (dispatch, getState) => {
         const { area = 0, excludeEffectOwner } = effect;
         const { removeEffect, targetType, actions, conditions, randomOptions = {}, ...other } = effectEvent;
 
-        let targetId;
-        if (targetType === "effectOwner") {
-            targetId = ownerId;
-        } else if (targetType === "effectApplier") {
-            targetId = effect?.applierId;
-        } else if (targetType === "externalParty") {
-            targetId = externalPartyId;
+        const targetId = getCalculationTargetId(targetType);
+        if (!targetId) {
+            return;
         }
+
         const { friendly: targets, actorIndex: i } = orientate({ actorId: targetId, ...getState().battle });
 
         const isAffected = (combatant: Combatant, j: number): boolean => {
             const isWithinArea = Math.abs(j - i) <= area;
-            const isExcludingPrimaryTarget = excludeEffectOwner && targetType === "effectOwner" && j === i;
+            const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
             return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
         };
 
@@ -350,14 +347,12 @@ const onEffectEventTrigger = ({
     effectEvent,
     effect,
     ownerId,
-    externalPartyId,
-    triggerSource,
+    source,
 }: {
     effectEvent: EffectEventTrigger;
     effect: CombatEffect;
     ownerId: string;
-    externalPartyId?: string;
-    triggerSource?: TriggerSource;
+    source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         const { canBeSilenced } = effect;
@@ -374,15 +369,25 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
-            return findCombatant(getState, calculationTarget === "effectOwner" ? ownerId : externalPartyId);
+        const getCalculationTargetId = (targetType: TRIGGER_TARGET_TYPES): string | undefined => {
+            return {
+                [TRIGGER_TARGET_TYPES.EFFECT_OWNER]: ownerId,
+                [TRIGGER_TARGET_TYPES.EFFECT_APPLIER]: effect?.applierId,
+                [TRIGGER_TARGET_TYPES.ACTOR]: source?.actorId,
+                [TRIGGER_TARGET_TYPES.TARGET]: source?.targetId,
+            }[targetType];
         };
 
-        if (!passesConditions({ getCalculationTarget, conditions: effectEvent.conditions })) {
+        if (
+            !passesConditions({
+                getCalculationTarget: (targetType: TRIGGER_TARGET_TYPES) => findCombatant(getState, getCalculationTargetId(targetType)),
+                conditions: effectEvent.conditions,
+            })
+        ) {
             return;
         }
 
-        dispatch(applyProc({ effectEvent, effect, ownerId, externalPartyId }));
+        dispatch(applyProc({ effectEvent, effect, ownerId, getCalculationTargetId }));
         checkRemoveEffect();
     };
 };
@@ -414,8 +419,7 @@ export const checkEventTrigger = ({
                         effectEvent: effect[effectEventKey],
                         effect,
                         ownerId: combatant.id,
-                        externalPartyId: triggerSource?.actorId,
-                        triggerSource,
+                        source: triggerSource,
                     })
                 );
             }
@@ -450,12 +454,7 @@ const getDiff = (
 };
 
 /**
- * Also uses diffing to trigger events:
- * - on resource gain
- * - on armor gain
- * - on healed
- * - on receive damage
- * - on death
+ * Updates a combatant given its ID, and uses state diffing to trigger events
  */
 export const updateCombatant = ({
     combatantId,
@@ -695,7 +694,7 @@ const performAction = ({
                 dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
                 return updated;
             })
-            .reduce((acc, cur, i) => {
+            .reduce((acc: number[], cur: Combatant | undefined, i: number) => {
                 if (cur) acc.push(i);
                 return acc;
             }, []);
@@ -729,8 +728,8 @@ const performAction = ({
 
         dispatch(checkCastRadiate({ source: triggerSource, action, selectedIndex, side }));
         dispatch(checkCardActions(action, actorId));
-        // TODO we have no idea who was hit out here
-        dispatch(onAction({ action, actorId, actionParentType: type }));
+        // Target is only the primary target for an AoE
+        dispatch(onAction({ action, actorId, targetId: combatants[selectedIndex]?.id, actionParentType: type }));
     };
 };
 

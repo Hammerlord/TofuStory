@@ -1,5 +1,5 @@
 /**
- * Helpers for various battle functions
+ * @file Helpers for various battle functions
  */
 import { Combatant } from "../character/types";
 import { CrossedSwords } from "../images";
@@ -13,6 +13,7 @@ import {
     HandAbility,
     MULTIPLIER_TYPES,
     TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { passesConditions } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
@@ -199,8 +200,8 @@ export const getEnabledEffects = (character: Combatant | null): Effect[] => {
 
     const silenced = isSilenced(character);
 
-    const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") =>
-        calculationTarget === "effectOwner" ? character : undefined;
+    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES) =>
+        calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? character : undefined;
 
     return character.effects.filter((effect) => {
         const disabled = silenced && effect.canBeSilenced;
@@ -463,7 +464,14 @@ export const calculateBonus = ({
     const { conditions = [], excludePrimaryTarget = false } = bonus;
     const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
 
-    const getCalculationTarget = (conditionTarget: "target" | "actor") => (conditionTarget === "target" ? target : actor);
+    const getCalculationTarget = (conditionTarget: TRIGGER_TARGET_TYPES) => {
+        // conditionTarget for action bonuses is not expected to be anything other than these two
+        if (conditionTarget === TRIGGER_TARGET_TYPES.TARGET) {
+            return target;
+        } else if (conditionTarget === TRIGGER_TARGET_TYPES.ACTOR) {
+            return actor;
+        }
+    };
     const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
     if (passesConditions({ getCalculationTarget, conditions }) && isValidTarget) {
         const bonusDamage = (bonus.damage || 0) * multiplier;

@@ -39,18 +39,28 @@ export interface TriggerEffect {
     damage?: number;
 }
 
+// Who should receive the proc that was triggered?
+// externalParty: for example, the target being attacked, or the target attacking the owner of this effect
+// effectApplier: the combatant who applied the effect
+// random: this can be multiple targets
+export enum TRIGGER_TARGET_TYPES {
+    EFFECT_OWNER = "effect-owner",
+    PLAYER = "player",
+    EFFECT_APPLIER = "effect-applier",
+    TARGET = "target",
+    ACTOR = "actor",
+    RANDOM = "random",
+}
+
 export interface EffectEventTrigger {
     removeEffect?: boolean; // Remove this effect from its owner after completion of the event
-    conditions?: EffectCondition[]; // OR if multiple conditions are present
+    conditions?: Condition[]; // OR if multiple conditions are present
     parentEffect?: {
         // Update the parent effect's stats
         damage?: number;
     };
-    // Who should receive the proc that was triggered?
-    // externalParty: for example, the target being attacked, or the target attacking the owner of this effect
-    // effectApplier: the combatant who applied the effect
-    // random: this can be multiple targets
-    targetType?: "effectOwner" | "externalParty" | "effectApplier" | "random";
+
+    targetType?: TRIGGER_TARGET_TYPES;
     // Stat changes that do not trigger an 'action'
     effects?: Effect[];
     armor?: number;
@@ -119,7 +129,7 @@ export interface Effect {
     unique?: boolean;
     /** A percentage of damage will be returned as HP to the effect owner */
     leech?: number;
-    conditions?: EffectCondition[];
+    conditions?: Condition[];
     onAbility?: EffectEventTrigger;
     onAttack?: EffectEventTrigger;
     onDeath?: EffectEventTrigger;
@@ -210,7 +220,7 @@ export interface Bonus {
      * Conditions to pass for the bonus to apply.
      * Multiple conditions are evaluated as "OR".
      */
-    conditions?: AbilityCondition[];
+    conditions?: Condition[];
     excludePrimaryTarget?: boolean;
 }
 
@@ -230,14 +240,7 @@ export interface Condition {
     armor?: number;
     /** Whether the name of the target matches the condition. This is always an "includes" check: */
     characterName?: string;
-}
-
-export interface AbilityCondition extends Condition {
-    calculationTarget: "actor" | "target";
-}
-
-export interface EffectCondition extends Condition {
-    calculationTarget: "effectOwner" | "externalParty";
+    calculationTarget: TRIGGER_TARGET_TYPES;
 }
 
 export enum MULTIPLIER_TYPES {
@@ -287,7 +290,7 @@ export interface Action {
     bonus?: Bonus;
     multiplier?: Multiplier;
     animation?: ANIMATION_TYPES;
-    conditions?: AbilityCondition[];
+    conditions?: Condition[];
     excludePrimaryTarget?: boolean;
     /** Radiates damage/effects to opponents on the other side of the board. */
     radiate?: {

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { Effect } from "../ability/types";
+import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant } from "../character/types";
 
@@ -91,7 +91,8 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
 
     const isSilenced = (effect.canBeSilenced || isAura) && silence;
     const passedConditions = passesConditions({
-        getCalculationTarget: (calculationTarget) => (calculationTarget === "effectOwner" ? owner : undefined),
+        getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
+            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? owner : undefined,
         conditions,
     });
 

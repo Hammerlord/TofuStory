@@ -5,6 +5,7 @@ import { CrossedSwords } from "../images";
 import Icon from "../icon/Icon";
 import { getEnabledEffects } from "../battle/utils";
 import Tooltip from "../view/Tooltip";
+import { TRIGGER_TARGET_TYPES } from "../ability/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -26,8 +27,8 @@ const AttackPower = ({ combatant }) => {
     }
 
     const damageEffects = getEnabledEffects(combatant).filter(({ damage = 0, conditions = [] }) => {
-        const getCalculationTarget = (calculationTarget: "effectOwner" | "externalParty") => {
-            if (calculationTarget === "effectOwner") {
+        const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES) => {
+            if (calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
                 return combatant;
             }
         };

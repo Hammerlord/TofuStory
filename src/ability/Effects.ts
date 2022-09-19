@@ -17,7 +17,7 @@ import {
     upmattImage,
     weaponbooster,
 } from "../images";
-import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "./types";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./types";
 
 export const thorns: Effect = {
     name: "Thorns",
@@ -27,7 +27,7 @@ export const thorns: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     onReceiveAttack: {
-        targetType: "externalParty",
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
         damage: 1,
     },
 };
@@ -49,12 +49,12 @@ export const hardy: Effect = {
     onReceiveEffect: {
         conditions: [
             {
-                calculationTarget: "effectOwner", // This should be comparing the effect not its owner
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
         ],
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [controlImmune],
     },
     duration: Infinity,
@@ -99,7 +99,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     onTurnEnd: {
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         damage: 3,
     },
     icon: Fire,
@@ -147,7 +147,7 @@ export const raging: Effect = {
         {
             comparator: "lt",
             healthPercentage: 0.4,
-            calculationTarget: "effectOwner",
+            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         },
     ],
 };
@@ -171,7 +171,7 @@ export const avenger: Effect = {
     icon: AlternateJapaneseOgre,
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyDeath: {
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         armor: 5,
         effects: [vengeful],
     },
@@ -209,12 +209,12 @@ export const eliteSquad: Effect = {
     onReceiveEffect: {
         conditions: [
             {
-                calculationTarget: "effectOwner",
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
         ],
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [controlImmune],
     },
 };
@@ -231,12 +231,12 @@ export const elite: Effect = {
     onReceiveEffect: {
         conditions: [
             {
-                calculationTarget: "effectOwner",
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
         ],
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [controlImmune],
     },
 };
@@ -247,7 +247,7 @@ export const healingOverTime: Effect = {
     canBeSilenced: true,
     duration: 5,
     onTurnStart: {
-        targetType: "effectOwner",
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         healing: 2,
     },
 };

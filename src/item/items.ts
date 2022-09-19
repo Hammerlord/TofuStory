@@ -1,5 +1,5 @@
 import { thorns } from "../ability/Effects";
-import { EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
+import { EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import {
     alligatorTubeImage,
     amethystImage,
@@ -46,7 +46,7 @@ export const stolenFence: Item = {
             onlyVisibleWhenProcced: true,
             conditions: [
                 {
-                    calculationTarget: "effectOwner",
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     healthPercentage: 0.5,
                     comparator: "lt",
                 },
@@ -69,7 +69,7 @@ export const safetyCharm: Item = {
             class: EFFECT_CLASSES.BUFF,
             icon: safetyCharmImage,
             onWaveClear: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 5,
             },
         },
@@ -91,11 +91,11 @@ export const drakeBlood: Item = {
             icon: drakebloodImage,
             damage: 1,
             onTurnEnd: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 damage: 1,
             },
             onHostileDeath: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 3,
             },
         },
@@ -149,7 +149,7 @@ export const leatherSandals: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 drawCards: {
                     amount: 1,
                 },
@@ -210,7 +210,7 @@ export const panlid: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 7,
                 effects: [
                     {
@@ -268,7 +268,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Increases the damage of your damage over time effects by 1. Every 3 turns, your first attack inflicts poison.",
+    description: "Every turn, your first attack inflicts poison to your primary target.",
     type: ITEM_TYPES.EQUIPMENT,
     image: nependeathSapImage,
     effects: [
@@ -276,38 +276,36 @@ export const nependeathSap: Item = {
             name: "Nependeath Sap",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            dotDamageIncrease: 1,
-        },
-        {
-            name: "Nependeath Sap",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 3,
-            applyEffects: [
-                {
-                    name: "Nependeath Sap",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: nependeathSapImage,
-                    onAttack: {
-                        removeEffect: true,
-                        targetType: "externalParty",
-                        effects: [
-                            {
-                                name: "Poison",
-                                type: EFFECT_TYPES.POISON,
-                                class: EFFECT_CLASSES.DEBUFF,
-                                icon: PoisonIcon,
-                                duration: 3,
-                                onTurnEnd: {
-                                    targetType: "effectOwner",
-                                    damage: 2,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Poisonous",
+                        description: "Next attack applying poison to the primary target.",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: nependeathSapImage,
+                        onAttack: {
+                            removeEffect: true,
+                            targetType: TRIGGER_TARGET_TYPES.TARGET,
+                            effects: [
+                                {
+                                    name: "Poison",
+                                    type: EFFECT_TYPES.POISON,
+                                    class: EFFECT_CLASSES.DEBUFF,
+                                    icon: PoisonIcon,
+                                    duration: 3,
+                                    onTurnEnd: {
+                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                        damage: 2,
+                                    },
                                 },
-                            },
-                        ],
+                            ],
+                        },
                     },
-                },
-            ],
+                ],
+            },
         },
     ],
 };
@@ -330,7 +328,6 @@ export const coffeePot: Item = {
     ],
 };
 
-// TODO doesn't do anything yet
 export const respawnToken: Item = {
     name: "Respawn Token",
     description: "If you die, you restore 20 HP and this item is consumed.",
@@ -342,7 +339,7 @@ export const respawnToken: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onDeath: {
-                targetType: "effectOwner",
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resurrect: true,
                 healing: 20,
             },

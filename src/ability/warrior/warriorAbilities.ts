@@ -32,7 +32,7 @@ import {
     weaponmasteryImage,
 } from "../../images";
 import { silence, stealth, stun, thorns, wound } from "../Effects";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
 import { MULTIPLIER_TYPES } from "./../types";
 
 export const bash2: Ability = {
@@ -79,7 +79,7 @@ export const warLeap2: Ability = {
                 conditions: [
                     {
                         healthPercentage: 1,
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -103,7 +103,7 @@ export const warLeap: Ability = {
                 conditions: [
                     {
                         healthPercentage: 1,
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -287,7 +287,7 @@ const bloodthirst2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     onResourcesSpent: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         healing: 4,
                     },
                     icon: shout,
@@ -314,7 +314,7 @@ export const bloodthirst: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     onResourcesSpent: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         healing: 3,
                     },
                     icon: shout,
@@ -380,7 +380,7 @@ export const warBanner2: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
-                    targetType: "effectOwner",
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     armor: 2,
                 },
             },
@@ -410,7 +410,7 @@ export const warBanner: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
-                    targetType: "effectOwner",
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     armor: 2,
                 },
             },
@@ -920,7 +920,7 @@ export const recovery2: Ability = {
                     canBeSilenced: true,
                     duration: 3,
                     onTurnStart: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         healing: 4,
                     },
                 },
@@ -946,7 +946,7 @@ export const recovery: Ability = {
                     canBeSilenced: true,
                     duration: 3,
                     onTurnStart: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         healing: 3,
                     },
                 },
@@ -1023,7 +1023,7 @@ export const ironBody2: Ability = {
                     preventArmorDecay: true,
                     duration: 2,
                     onTurnStart: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         armor: 3,
                     },
                 },
@@ -1050,7 +1050,7 @@ export const ironBody: Ability = {
                     preventArmorDecay: true,
                     duration: 1,
                     onTurnStart: {
-                        targetType: "effectOwner",
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         armor: 2,
                     },
                 },
@@ -1131,7 +1131,7 @@ export const whirlwind2: Ability = {
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1160,7 +1160,7 @@ export const whirlwind: Ability = {
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1183,12 +1183,12 @@ export const rupture2: Ability = {
                 damage: 3,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
-                    calculationTarget: "target",
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1210,12 +1210,12 @@ export const rupture: Ability = {
                 damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
-                    calculationTarget: "target",
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                     },
                 ],

@@ -1,4 +1,4 @@
-import { AbilityCondition, EffectCondition } from "../ability/types";
+import { Condition, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import { getMaxHP } from "./utils";
 
@@ -19,10 +19,10 @@ export const passesConditions = ({
     getCalculationTarget,
     conditions = [],
 }: {
-    getCalculationTarget: (calculationTarget: "target" | "actor" | "effectOwner" | "externalParty") => Combatant | undefined;
-    conditions: (AbilityCondition | EffectCondition)[];
+    getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) => Combatant | undefined;
+    conditions: Condition[];
 }): boolean => {
-    const passesCondition = (condition: AbilityCondition | EffectCondition) => {
+    const passesCondition = (condition: Condition) => {
         const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName } = condition;
         const combatant: Combatant = getCalculationTarget(calculationTarget);
         if (!combatant) {

@@ -12,7 +12,8 @@ import {
     worldreaverImage,
 } from "../../images";
 import { immunity, wound } from "../Effects";
-import { Ability, AbilityCondition, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { TRIGGER_TARGET_TYPES } from "./../types";
 
 export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
@@ -74,9 +75,9 @@ export const chanceStrike: Ability = {
                 damage: 6,
                 conditions: [
                     {
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    } as AbilityCondition,
+                    },
                 ],
             },
         },
@@ -267,7 +268,7 @@ export const burningSoulBlade: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 attackAreaIncrease: 1,
                 onAttack: {
-                    targetType: "effectOwner",
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     effects: [
                         {
                             type: EFFECT_TYPES.NONE,

@@ -1,7 +1,8 @@
-import { Combatant } from "./types";
 import uuid from "uuid";
 import { oldGladiusImage, warmush } from "../images";
+import { nependeathSap } from "../item/items";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { Combatant } from "./types";
 
 /** Default character stats */
 const defaultCharacterProperties = {
@@ -21,7 +22,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: oldGladiusImage,
     effects: [],
-    items: [],
+    items: [nependeathSap],
     drawCardsPerTurn: 3,
 } as Combatant;
 

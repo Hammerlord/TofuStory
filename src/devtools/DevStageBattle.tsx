@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { burningSoulBlade, comboFury } from "../ability/warrior/fighterAbilities";
-import { dustDevils, dustDevils2, slashBlast } from "../ability/warrior/warriorAbilities";
+import { dustDevils, dustDevils2, slashBlast, spikedArmor } from "../ability/warrior/warriorAbilities";
 import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 const { updatePlayer, updateDeck } = playerStateSlice.actions;
 
 const DevStageBattle = () => {
-    const deck = useMemo(() => [slashBlast, burningSoulBlade, dustDevils, dustDevils2, comboFury], []);
+    const deck = useMemo(() => [spikedArmor], []);
     const enemies = useMemo(() => [null, null, redSnail, blueSnail, snail], []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);

@@ -13,7 +13,7 @@ import {
     spearsweepImage,
 } from "../../images";
 import { silence, stealth, stun, wound } from "../Effects";
-import { Ability, AbilityCondition, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
 
 export const evilEye: Ability = {
     name: "Evil Eye",
@@ -110,10 +110,10 @@ export const darkSpear: Ability = {
                 damage: 5,
                 conditions: [
                     {
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         armor: 0,
                         comparator: "gt",
-                    } as AbilityCondition,
+                    },
                 ],
             },
         },
@@ -135,7 +135,7 @@ export const piercingDrive: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: "target",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         hasEffectType: [EFFECT_TYPES.STUN],
                     },
                 ],
@@ -174,7 +174,7 @@ export const evilEyeShock: Ability = {
             },
             conditions: [
                 {
-                    calculationTarget: "target",
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                     characterName: "Evil Eye",
                 },
             ],

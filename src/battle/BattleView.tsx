@@ -158,6 +158,7 @@ const BattlefieldContainer = () => {
         currentWave,
         waves,
         flagTurnEnd,
+        round,
     } = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -410,7 +411,10 @@ const BattlefieldContainer = () => {
         setTimeout(() => {
             setShowTurnAnnouncement(false);
             if (isPlayerTurn) {
-                dispatch(startPlayerTurn());
+                // Wave start already handles round === 0 case
+                if (round) {
+                    dispatch(startPlayerTurn());
+                }
             } else {
                 setTimeout(() => {
                     dispatch(startEnemyTurn());
