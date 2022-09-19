@@ -355,6 +355,7 @@ const BattlefieldContainer = () => {
                     setTimeout(() => {
                         setShowTurnAnnouncement(false);
                         dispatch(onWaveStart());
+                        dispatch(startPlayerTurn());
                     }, TURN_ANNOUNCEMENT_TIME);
                 }, TURN_ANNOUNCEMENT_TIME);
                 return;
@@ -411,10 +412,7 @@ const BattlefieldContainer = () => {
         setTimeout(() => {
             setShowTurnAnnouncement(false);
             if (isPlayerTurn) {
-                // Wave start already handles round === 0 case
-                if (round) {
-                    dispatch(startPlayerTurn());
-                }
+                dispatch(startPlayerTurn());
             } else {
                 setTimeout(() => {
                     dispatch(startEnemyTurn());

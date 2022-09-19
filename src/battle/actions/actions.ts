@@ -1,3 +1,4 @@
+import { aggregateItemEffects } from "./../../Menu/utils";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import uuid from "uuid";
@@ -93,10 +94,13 @@ export const onWaveClear = () => {
     };
 };
 
-export const startBattle = ({ waves, player, deck }: { waves: Wave[]; player?: Combatant; deck?: Ability[] }) => {
+export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }) => {
     return (dispatch, getState) => {
         const { character } = getState();
-        player = player || character?.player;
+        const player = {
+            ...character.player,
+            effects: aggregateItemEffects(character.player.items),
+        };
         deck = deck || character?.deck;
         const { presetDeck, description, enemies } = waves[0];
         dispatch(
@@ -131,7 +135,6 @@ export const onWaveStart = () => {
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
         });
-        dispatch(startPlayerTurn());
     };
 };
 
@@ -280,49 +283,51 @@ const applyProc = ({
         const { area = 0, excludeEffectOwner } = effect;
         const { removeEffect, targetType, actions, conditions, randomOptions = {}, ...other } = effectEvent;
 
-        const targetId = getCalculationTargetId(targetType);
-        if (!targetId) {
-            return;
-        }
+        $applyStatChanges: {
+            const targetId = getCalculationTargetId(targetType);
+            if (!targetId) {
+                break $applyStatChanges;
+            }
 
-        const { friendly: targets, actorIndex: i } = orientate({ actorId: targetId, ...getState().battle });
+            const { friendly: targets, actorIndex: i } = orientate({ actorId: targetId, ...getState().battle });
 
-        const isAffected = (combatant: Combatant, j: number): boolean => {
-            const isWithinArea = Math.abs(j - i) <= area;
-            const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
-            return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
-        };
+            const isAffected = (combatant: Combatant, j: number): boolean => {
+                const isWithinArea = Math.abs(j - i) <= area;
+                const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
+                return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
+            };
 
-        targets
-            .map((combatant: Combatant | null, j: number) => {
-                if (!isAffected(combatant, j)) {
-                    return;
-                }
+            targets
+                .map((combatant: Combatant | null, j: number) => {
+                    if (!isAffected(combatant, j)) {
+                        return;
+                    }
 
-                return applyActionToTarget({
-                    target: combatant,
-                    targetIndex: j,
-                    action: {
-                        ...other,
-                        type: ACTION_TYPES.EFFECT,
-                    },
-                    actionSource: { source: effect, type: "proc" },
+                    return applyActionToTarget({
+                        target: combatant,
+                        targetIndex: j,
+                        action: {
+                            ...other,
+                            type: ACTION_TYPES.EFFECT,
+                        },
+                        actionSource: { source: effect, type: "proc" },
+                    });
+                })
+                // Apply all the updates before triggering any related events
+                .forEach((updated: Combatant | null, j) => {
+                    if (!isAffected(updated, j)) {
+                        return;
+                    }
+
+                    dispatch(
+                        updateCombatant({
+                            combatantId: updated.id,
+                            newProperties: updated,
+                            source: { source: effect, type: "proc" },
+                        })
+                    );
                 });
-            })
-            // Apply all the updates before triggering any related events
-            .forEach((updated: Combatant | null, j) => {
-                if (!isAffected(updated, j)) {
-                    return;
-                }
-
-                dispatch(
-                    updateCombatant({
-                        combatantId: updated.id,
-                        newProperties: updated,
-                        source: { source: effect, type: "proc" },
-                    })
-                );
-            });
+        }
 
         actions?.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
