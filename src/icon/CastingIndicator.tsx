@@ -28,7 +28,8 @@ const CastingIndicator = ({ casting, combatant }) => {
         return null;
     }
 
-    const { name, channelDuration, castTime, description } = casting;
+    const { ability, channelDuration, castTime, description = "" } = casting;
+    const { name } = ability;
     const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name });
     return (
         <div>

@@ -48,6 +48,23 @@ export const refreshResources = (character: Combatant): Combatant => {
     };
 };
 
+// Enemies gain resources every turn rather than "refresh" them
+export const gainResources = (character: Combatant): Combatant => {
+    if (isSilenced(character)) {
+        return character;
+    }
+
+    return {
+        ...character,
+        resources: Math.min(
+            character.maxResources,
+            character.resources +
+                character.resourcesPerTurn +
+                character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
+        ),
+    };
+};
+
 export const getMaxHP = (character: { HP: number; maxHP: number; effects: Effect[] }): number => {
     return character.maxHP + character.effects.reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
 };

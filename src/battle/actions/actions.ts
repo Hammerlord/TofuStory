@@ -27,6 +27,7 @@ import {
     applyVacuum,
     calculateActionArea,
     calculateArmor,
+    calculateBonus,
     calculateDamage,
     checkHalveArmor,
     clearTurnHistory,
@@ -228,6 +229,7 @@ export const applyActionToTarget = ({
     action: Action;
     actionSource: TriggerSource;
 }) => {
+    action = calculateBonus({ action, target, actor, isTargetSelected: targetIndex === selectedIndex });
     const { healing = 0, effects = [], resources = 0, destroyArmor = 0 } = action;
     const ability = actionSource?.type === "ability" ? (actionSource.source as Ability) : undefined;
     const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
@@ -901,7 +903,9 @@ export const useAbility = ({
         const { resourceCost = 0, actions = [], effects = {} } = ability;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         const combatant = findCombatant(getState, actorId);
-        dispatch(updateCombatant({ combatantId: actorId, newProperties: { resources: combatant.resources - totalResourceCost } }));
+        dispatch(
+            updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
+        );
         dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId }));
 
         const handleAction = (action: Action) => {

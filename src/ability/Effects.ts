@@ -37,7 +37,7 @@ export const controlImmune: Effect = {
     description: "Target cannot be stunned or frozen.",
     icon: NoStun,
     immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-    duration: 4,
+    duration: 5,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
 };

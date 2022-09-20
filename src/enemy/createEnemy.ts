@@ -14,7 +14,7 @@ export const createCombatant = (combatant): Combatant => {
         ...combatant,
         HP: combatant.HP || combatant.maxHP,
         effects: combatant.effects?.map(cloneDeep) || [],
-        armor: 0,
+        armor: combatant.armor || 0,
         resources: combatant.resources || 0,
         maxResources: combatant.maxResources || 3,
         resourcesPerTurn: combatant.resourcesPerTurn || 1,

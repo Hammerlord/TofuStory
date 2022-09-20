@@ -8,6 +8,7 @@ import { battleStateSlice } from "../reducer";
 import {
     checkHalveArmor,
     clearTurnHistory,
+    gainResources,
     getBasicAttack,
     getHealableIndices,
     getMaxHP,
@@ -15,7 +16,6 @@ import {
     getValidTargetIndices,
     isUnableToAct,
     orientate,
-    refreshResources,
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
@@ -221,11 +221,18 @@ const enemyUseAbility = (combatantId: string) => {
         if (!ability.castTime && !ability.channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
         } else {
+            const casting = {
+                ability,
+                castTime: ability.castTime,
+                channelDuration: ability.channelDuration,
+                selectedIndex: index,
+                selectedSide: side,
+            };
             dispatch(
                 updateCombatant({
                     combatantId,
                     newProperties: {
-                        casting: ability.castTime > 0 || ability.channelDuration > 0 ? cloneDeep(ability) : null,
+                        casting,
                         resources: actor.resources - (ability.resourceCost || 0),
                     },
                 })
@@ -248,7 +255,7 @@ export const endEnemyTurn = () => {
 export const startEnemyTurn = () => {
     return (dispatch, getState) => {
         const { enemySide } = getState().battle;
-        const updateFns = [refreshResources, clearTurnHistory, checkHalveArmor];
+        const updateFns = [gainResources, clearTurnHistory, checkHalveArmor];
         const updated = updateCharacters(enemySide, compose(...updateFns));
         dispatch(
             updateBattle({

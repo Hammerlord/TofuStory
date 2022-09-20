@@ -1,6 +1,6 @@
 import { slashBlast, block } from "./../ability/warrior/warriorAbilities";
 import { stealth, elite, burn, thorns, hardy, raging } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
 import {
@@ -25,6 +25,10 @@ import {
     kingslimeImage,
     noobWarriorAImage,
     noobWarriorBImage,
+    manoImage,
+    blueSnailShellImage,
+    redSnailShellImage,
+    snailShellImage,
 } from "../images";
 
 export interface Enemy {
@@ -433,6 +437,119 @@ export const kingSlimeEnemy: Enemy = {
                     type: ACTION_TYPES.ATTACK,
                     damage: 4,
                     area: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const manoEnemy: Enemy = {
+    name: "Mano",
+    image: manoImage,
+    maxHP: 100,
+    armor: 100,
+    resources: 0,
+    damage: 3,
+    abilities: [
+        {
+            name: "Call Snail",
+            minion: {
+                ...snail,
+                damage: 1,
+                maxHP: 10,
+            },
+            actions: [
+                {
+                    // HACK: this is just for animation playback
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                },
+            ],
+        },
+        {
+            name: "Call Snail",
+            minion: {
+                ...blueSnail,
+                damage: 2,
+                maxHP: 20,
+            },
+            actions: [
+                {
+                    // HACK: this is just for animation playback
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                },
+            ],
+        },
+        {
+            name: "Withdraw",
+            channelDuration: 3,
+            resourceCost: 3,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    armor: 10,
+                    effects: [
+                        {
+                            ...thorns,
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Rollout",
+            castTime: 1,
+            channelDuration: 3,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 8,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            ...hardy,
+            name: "Senior Shell",
+            icon: snailShellImage,
+            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
+            canBeSilenced: false,
+        },
+        {
+            name: "Tough Shell",
+            icon: blueSnailShellImage,
+            preventArmorDecay: true,
+            canBeSilenced: true,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            description: "Prevents armor decay.",
+            duration: 10,
+        },
+        {
+            name: "Weighted Shell",
+            icon: redSnailShellImage,
+            canBeSilenced: false,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            description: "While this character has armor, its damage is increased.",
+            damage: 1,
+            skillBonus: [
+                {
+                    skill: "Rollout",
+                    damage: 4,
+                },
+            ],
+            conditions: [
+                {
+                    comparator: "gt",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
         },
