@@ -177,7 +177,7 @@ const useStyles = createUseStyles({
     },
     effectsContainer: {
         position: "absolute",
-        bottom: "-12px",
+        top: "100%",
         width: "90%",
         left: "50%",
         transform: "translateX(-50%)",
