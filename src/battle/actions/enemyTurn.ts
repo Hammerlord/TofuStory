@@ -182,32 +182,37 @@ const pickAbility = ({ actor, hostile, friendly }): Ability => {
     );
 
     let ability: Ability;
+    // If we are capped resources, we should always use a special ability, preferably the most expensive ones
+    if (specialAbilities.length > 0 && actor.resources === actor.maxResources) {
+        const maxResourceAbilities = specialAbilities.filter(({ resourceCost }) => resourceCost === actor.maxResources);
+        return getRandomItem(maxResourceAbilities.length ? maxResourceAbilities : specialAbilities);
+    }
+
+    // High chance of picking minion summon if there are many spaces to summon
+    const [minionSummonAbilities, otherAbilities] = partition((ability) => ability.minion, regularAbilities);
+    const chanceToSummon = getPossibleSummonIndices(friendly).length * 0.2;
+    if (minionSummonAbilities.length > 0 && Math.random() <= chanceToSummon) {
+        return getRandomItem(minionSummonAbilities);
+    }
+
+    // Pick a special ability at just a chance
     if (specialAbilities.length > 0) {
-        if (actor.resources === actor.maxResources) {
-            ability = getRandomItem(specialAbilities);
-        } else {
-            // Otherwise it is just a chance
-            let mostExpensive = 0;
-            specialAbilities.forEach(({ resourceCost }) => {
-                if (resourceCost > mostExpensive) {
-                    mostExpensive = resourceCost;
-                }
-            });
-
-            if (Math.random() < actor.resources / (mostExpensive + 1)) {
-                ability = getRandomItem(specialAbilities);
+        let mostExpensive = 0;
+        specialAbilities.forEach(({ resourceCost }) => {
+            if (resourceCost > mostExpensive) {
+                mostExpensive = resourceCost;
             }
+        });
+
+        if (Math.random() < actor.resources / (mostExpensive + 1)) {
+            return getRandomItem(specialAbilities);
         }
     }
-    if (!ability) {
-        if (actor.damage > 0) {
-            regularAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
-        }
 
-        ability = getRandomItem(regularAbilities);
+    if (actor.damage > 0) {
+        otherAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
     }
-
-    return ability || loaf;
+    return getRandomItem(otherAbilities) || loaf;
 };
 
 const enemyUseAbility = (combatantId: string) => {

@@ -29,6 +29,8 @@ import {
     blueSnailShellImage,
     redSnailShellImage,
     snailShellImage,
+    mutantSnailImage,
+    weaponmasteryImage,
 } from "../images";
 
 export interface Enemy {
@@ -443,20 +445,30 @@ export const kingSlimeEnemy: Enemy = {
     ],
 };
 
-export const manoEnemy: Enemy = {
-    name: "Mano",
-    image: manoImage,
-    maxHP: 100,
-    armor: 100,
+export const mutantSnailEnemy: Enemy = {
+    name: "Mutant Snail",
+    image: mutantSnailImage,
+    maxHP: 150,
+    armor: 50,
     resources: 0,
-    damage: 3,
+    damage: 5,
+    effects: [
+        {
+            ...hardy,
+            name: "Tyrant Shell",
+            icon: snailShellImage,
+            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
+            canBeSilenced: false,
+        },
+    ],
     abilities: [
         {
             name: "Call Snail",
+            image: snailImage,
             minion: {
                 ...snail,
                 damage: 1,
-                maxHP: 10,
+                maxHP: 11,
             },
             actions: [
                 {
@@ -468,10 +480,116 @@ export const manoEnemy: Enemy = {
         },
         {
             name: "Call Snail",
+            image: bluesnailImage,
             minion: {
                 ...blueSnail,
                 damage: 2,
-                maxHP: 20,
+                maxHP: 15,
+            },
+            actions: [
+                {
+                    // HACK: this is just for animation playback
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                },
+            ],
+        },
+        {
+            name: "Whip",
+            resourceCost: 1,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    area: 2,
+                    excludePrimaryTarget: true,
+                    damage: 3,
+                    effects: [
+                        {
+                            name: "Whipped",
+                            description: "Whipped into a frenzy!",
+                            icon: weaponmasteryImage,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.BUFF,
+                            damage: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Frenzied Tantrum",
+            description: "{{ caster }} will tantrum, dealing 3 hits per move.",
+            resourceCost: 3,
+            channelDuration: 3,
+            castTime: 1,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    effects: [
+                        {
+                            name: "Frenzy",
+                            description: "Entering a frenzy!",
+                            icon: weaponmasteryImage,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.BUFF,
+                            damage: 1,
+                            duration: 2,
+                        },
+                    ],
+                },
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+            ],
+        },
+    ],
+};
+
+export const manoEnemy: Enemy = {
+    name: "Mano",
+    image: manoImage,
+    maxHP: 100,
+    armor: 100,
+    resources: 0,
+    damage: 3,
+    abilities: [
+        {
+            name: "Call Snail",
+            image: snailImage,
+            minion: {
+                ...snail,
+                damage: 1,
+                maxHP: 11,
+            },
+            actions: [
+                {
+                    // HACK: this is just for animation playback
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                },
+            ],
+        },
+        {
+            name: "Call Snail",
+            image: bluesnailImage,
+            minion: {
+                ...blueSnail,
+                damage: 2,
+                maxHP: 15,
             },
             actions: [
                 {
