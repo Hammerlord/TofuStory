@@ -67,6 +67,7 @@ export const stealth: Effect = {
     class: EFFECT_CLASSES.BUFF,
     name: "Stealth",
     icon: Cloudy,
+    canBeSilenced: true,
     description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
     onAttack: {
         removeEffect: true,
