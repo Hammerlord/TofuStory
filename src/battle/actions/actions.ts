@@ -32,8 +32,9 @@ import {
     checkHalveArmor,
     clearTurnHistory,
     getBasicAttack,
+    getEnabledEffects,
     getValidTargetIndices,
-    isCharacterImmune,
+    hasEffectType,
     isSilenced,
     orientate,
     refreshResources,
@@ -238,14 +239,15 @@ export const applyActionToTarget = ({
     const updatedArmor = Math.max(0, baseArmor - damage + armor);
     const healthDamage = Math.max(0, damage - baseArmor);
     let HP = Math.max(0, target.HP - healthDamage);
-    HP = HP > 0 ? updateHP({ maxHP: target.maxHP, HP, effects: target.effects }, healing) : 0;
+    HP = HP > 0 ? updateHP({ ...target, maxHP: target.maxHP, HP, effects: target.effects }, healing) : 0;
 
-    const targetIsImmune = isCharacterImmune(target);
-    const isImmuneTo = (effect: Effect) => {
-        return target.effects.some(
-            (targetEffect: Effect) =>
-                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type) ||
-                (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF)
+    const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
+    const isImmuneTo = (effect: Effect): boolean => {
+        if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
+            return false;
+        }
+        return getEnabledEffects(target).some((targetEffect: Effect) =>
+            targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
         );
     };
 

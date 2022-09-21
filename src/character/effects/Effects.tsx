@@ -7,6 +7,7 @@ import Icon from "../../icon/Icon";
 import { Dizzy, SpeechBubble } from "../../images";
 import Bleed from "./Bleed";
 import Stealth from "./Stealth";
+import { getEnabledEffects } from "../../battle/utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -103,16 +104,18 @@ const Effects = ({ combatant, healing }) => {
     if (!combatant) {
         return null;
     }
+
+    const effects = getEnabledEffects(combatant);
     const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
-        return combatant.effects.some((effect) => effect.type === type);
+        return effects.some((effect) => effect.type === type);
     };
 
     const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
     const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
     const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
     const isImmune = hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
-    const bleeds = combatant.effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
-    const burn = combatant.effects.reduce((acc: number, effect: Effect) => {
+    const bleeds = effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
+    const burn = effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.BURN) {
             return acc + effect.duration;
         }

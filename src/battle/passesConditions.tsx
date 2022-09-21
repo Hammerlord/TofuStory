@@ -23,6 +23,7 @@ export const passesConditions = ({
     conditions: Condition[];
 }): boolean => {
     const passesCondition = (condition: Condition) => {
+        // Silence does not affect conditions, but should it?
         const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName } = condition;
         const combatant: Combatant = getCalculationTarget(calculationTarget);
         if (!combatant) {

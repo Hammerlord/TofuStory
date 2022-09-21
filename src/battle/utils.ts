@@ -1,3 +1,4 @@
+import { CombatEffect } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
@@ -7,7 +8,6 @@ import {
     Ability,
     Action,
     ACTION_TYPES,
-    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     HandAbility,
@@ -54,36 +54,39 @@ export const gainResources = (character: Combatant): Combatant => {
         return character;
     }
 
+    const resourcesGained =
+        character.resourcesPerTurn +
+        getEnabledEffects(character).reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0);
+
     return {
         ...character,
-        resources: Math.min(
-            character.maxResources,
-            character.resources +
-                character.resourcesPerTurn +
-                character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
-        ),
+        resources: Math.min(character.maxResources, character.resources + resourcesGained),
     };
 };
 
-export const getMaxHP = (character: { HP: number; maxHP: number; effects: Effect[] }): number => {
-    return character.maxHP + character.effects.reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
+export const getMaxHP = (character: Combatant): number => {
+    return character.maxHP + getEnabledEffects(character).reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
 };
 
-export const updateHP = (character: { HP: number; maxHP: number; effects: Effect[] }, amount: number): number => {
+export const updateHP = (character: Combatant, amount: number): number => {
     return Math.min(getMaxHP(character), character.HP + amount);
 };
 
-export const updateHPByPercentage = (character: { HP: number; maxHP: number; effects: Effect[] }, percentage: number): number => {
+export const updateHPByPercentage = (character: Combatant, percentage: number): number => {
     const maxHP = getMaxHP(character);
     return Math.min(maxHP, character.HP + Math.floor(maxHP * percentage));
 };
 
 export const isSilenced = (character: Combatant): boolean => {
+    return character?.effects?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+};
+
+export const isStealthed = (character?: Combatant): boolean => {
     if (!character) {
         return false;
     }
-
-    return character.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+    const silenced = isSilenced(character);
+    return character.effects?.some(({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced));
 };
 
 export const clearTurnHistory = (character: Combatant): Combatant => {
@@ -94,13 +97,20 @@ export const clearTurnHistory = (character: Combatant): Combatant => {
 };
 
 export const checkHalveArmor = (target: Combatant): Combatant => {
-    if (target.effects.some((effect) => effect.preventArmorDecay)) {
+    if (getEnabledEffects(target).some((effect) => effect.preventArmorDecay)) {
         return target;
     }
     return {
         ...target,
         armor: Math.floor(target.armor / 2),
     };
+};
+
+export const hasEffectType = (target: Combatant, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
+    return (
+        target &&
+        getEnabledEffects(target).some(({ type }) => (Array.isArray(effectType) ? effectType.includes(type) : type === effectType))
+    );
 };
 
 /**
@@ -150,8 +160,7 @@ export const isValidTarget = ({ ability, side, playerSide, enemySide, index, act
         }
     } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         const targetedEnemy = enemySide[index];
-        const hasStealth = targetedEnemy?.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
-        if (hasStealth) {
+        if (isStealthed(targetedEnemy)) {
             return false;
         }
         if (area === 0) {
@@ -200,18 +209,21 @@ export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
-        return character.effects.filter((effect: Effect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
+        return getEnabledEffects(character).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.BLEEDS) {
-        return character.effects.filter((effect: Effect) => effect.type === EFFECT_TYPES.BLEED).length || 1;
+        return getEnabledEffects(character).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED).length || 1;
     }
 
     return 1;
 };
 
-export const getEnabledEffects = (character: Combatant | null): Effect[] => {
-    if (!character) {
+/**
+ * Given a character, return its effects that have not been canceled due to silence or failing conditions.
+ */
+export const getEnabledEffects = (character?: Combatant | null): CombatEffect[] => {
+    if (!character?.effects) {
         return [];
     }
 
@@ -220,20 +232,10 @@ export const getEnabledEffects = (character: Combatant | null): Effect[] => {
     const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES) =>
         calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? character : undefined;
 
-    return character.effects.filter((effect) => {
-        const disabled = silenced && effect.canBeSilenced;
+    return character.effects?.filter((effect) => {
+        const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
         return !disabled && passesConditions({ getCalculationTarget, conditions: effect.conditions });
     });
-};
-
-export const isCharacterImmune = (character: Combatant | null) => {
-    if (!character) return false;
-    return character.effects.some(({ type }) => type === EFFECT_TYPES.IMMUNITY);
-};
-
-export const isCharacterImmuneToAttacks = (character: Combatant | null) => {
-    if (!character) return false;
-    return character.effects.some(({ type }) => type === EFFECT_TYPES.ATTACK_IMMUNITY);
 };
 
 const getSkillDamage = ({ ability, skillBonus }) => {
@@ -265,7 +267,9 @@ export const calculateDamage = ({
     action: Action;
     ability?: Ability;
 }): number => {
-    if (isCharacterImmune(target) || isCharacterImmuneToAttacks(target)) {
+    const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
+
+    if (hasEffectType(target, EFFECT_TYPES.IMMUNITY) || (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY))) {
         return 0;
     }
 
@@ -274,7 +278,7 @@ export const calculateDamage = ({
             return action.secondaryDamage;
         }
 
-        if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
+        if (isAttack) {
             return action.damage || actor?.damage || 0;
         }
 
@@ -286,7 +290,7 @@ export const calculateDamage = ({
 
     let damageFromEffects = 0;
     let diffDamageReceived = 0;
-    if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
+    if (isAttack) {
         damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, skillBonus = [] }) => {
             return acc + damage + getSkillDamage({ ability, skillBonus });
         }, 0);
@@ -321,7 +325,7 @@ export const getValidTargetIndices = (
     const indices = [];
     characters.forEach((character: Combatant | null, i: number) => {
         if (character?.HP > 0) {
-            const notStealth = !options.excludeStealth || !character.effects.some(({ type }) => type === EFFECT_TYPES.STEALTH);
+            const notStealth = !options.excludeStealth || !isStealthed(character);
             const notExcluded = options.excludeIndex !== i;
             if (notStealth && notExcluded) {
                 indices.push(i);
@@ -378,11 +382,12 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
     const { type, area = 0 } = action;
     const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
     let totalArea = area;
-    actor.effects.forEach(({ attackAreaIncrease = 0 }) => {
-        if (isAttack) {
+    if (isAttack) {
+        getEnabledEffects(actor).forEach(({ attackAreaIncrease = 0 }) => {
             totalArea += attackAreaIncrease;
-        }
-    });
+        });
+    }
+
     return totalArea;
 };
 
@@ -437,7 +442,7 @@ export const getBasicAttack = (actor): HandAbility => {
 };
 
 export const isUnableToAct = (combatant: Combatant): boolean => {
-    return combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.STUN);
+    return combatant?.effects.some((effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
 };
 
 export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movement = 0 }): number[] => {

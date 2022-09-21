@@ -21,7 +21,7 @@ import { battleStateSlice } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
-import { calculateActionArea, canUseAbility, isValidTarget, isWithinAbilityArea } from "./utils";
+import { calculateActionArea, canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
 
 const useStyles = createUseStyles({
@@ -179,7 +179,7 @@ const BattlefieldContainer = () => {
         if (!ally || ally.isPlayer) {
             return false;
         }
-        const damageFromEffects = ally.effects?.reduce((acc: number, { damage = 0 }) => acc + damage, 0);
+        const damageFromEffects = getEnabledEffects(ally).reduce((acc: number, { damage = 0 }) => acc + damage, 0);
         const totalDamage = (ally.damage || 0) + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
@@ -253,7 +253,7 @@ const BattlefieldContainer = () => {
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
-            } else if (enemySide[index] && enemySide[index].effects.some(({ type }) => type === EFFECT_TYPES.STEALTH)) {
+            } else if (isStealthed(enemySide[index])) {
                 warn("That character is stealthed and cannot be targeted directly.");
             } else {
                 setSelectedAbilityIndex(null);
