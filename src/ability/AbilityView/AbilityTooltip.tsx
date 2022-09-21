@@ -3,9 +3,8 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
 import { Fireworks } from "../../images";
-import { Ability, EFFECT_TYPES } from "../types";
+import { Ability, Effect, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
-import { getAllEffects } from "./utils";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -99,7 +98,23 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const aura = ability.minion?.aura;
     const classes = useTooltipStyles();
 
-    const effectsToDisplay = getAllEffects(ability).filter(requiresExplanation);
+    const getUniqueEffects = (ability: Ability): Effect[] => {
+        const effects = ability.actions
+            ?.reduce((acc, { effects = [] }) => {
+                return [...acc, ...effects];
+            }, [])
+            .concat(ability.minion?.effects || []);
+        const map = effects.reduce((acc, effect: Effect) => {
+            return {
+                ...acc,
+                [effect.type]: effect,
+            };
+        }, {});
+
+        return Object.values(map);
+    };
+
+    const effectsToDisplay = getUniqueEffects(ability).filter(requiresExplanation);
     const tooltips = effectsToDisplay.map((effect) => {
         return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
     });
