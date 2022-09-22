@@ -51,7 +51,9 @@ const useStyles = createUseStyles({
     header: {
         display: "flex",
         justifyContent: "space-between",
-        textShadow: "0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2px white")
+            .join(", "),
         lineHeight: "16px",
         zIndex: 1,
     },
