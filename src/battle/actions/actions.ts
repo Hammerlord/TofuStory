@@ -318,8 +318,8 @@ const applyProc = ({
                     });
                 })
                 // Apply all the updates before triggering any related events
-                .forEach((updated: Combatant | null, j) => {
-                    if (!isAffected(updated, j)) {
+                .forEach((updated: Combatant | null) => {
+                    if (!updated) {
                         return;
                     }
 
