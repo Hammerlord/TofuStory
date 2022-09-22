@@ -1,15 +1,16 @@
 import { getRandomArbitrary } from "./../utils";
-export const getTargetPoints = ({ from, to }) => {
-    const getTargetPoint = (rect) => {
-        const { x, y, height, width } = rect;
-        return {
-            x: x + width / 2,
-            y: y + height / 2,
-        };
-    };
 
-    const { x, y } = getTargetPoint(from.getBoundingClientRect());
-    const { x: x2, y: y2 } = getTargetPoint(to.getBoundingClientRect());
+const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
+    const { x, y, height, width } = element.getBoundingClientRect();
+    return {
+        x: x + width / 2,
+        y: y + height / 2,
+    };
+};
+
+export const getTargetPoints = ({ from, to }) => {
+    const { x, y } = getCenterCoords(from);
+    const { x: x2, y: y2 } = getCenterCoords(to);
 
     return { x, y, x2, y2 };
 };
@@ -21,24 +22,24 @@ export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
 };
 
 export const travel = ({
-    to,
     from,
+    to,
+    playbackTime,
     spin = false,
     rotateToFaceTarget = false,
     returnToOrigin = false,
-    playbackTime,
     sidewinder = false,
+}: {
+    from: HTMLElement;
+    to: HTMLElement | HTMLElement[];
+    playbackTime: number;
+    spin?: boolean;
+    rotateToFaceTarget?: boolean;
+    returnToOrigin?: boolean;
+    sidewinder?: boolean;
 }) => {
-    if (!to || !from) {
+    if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
-    }
-
-    const { x, y, x2, y2 } = getTargetPoints({ from, to });
-    let rotation = 0;
-    if (spin) {
-        rotation = 360;
-    } else if (rotateToFaceTarget) {
-        rotation = getRotationToFaceTarget({ x, y, x2, y2 });
     }
 
     const animationFrames: {
@@ -50,18 +51,31 @@ export const travel = ({
         },
     ];
 
-    if (sidewinder) {
+    const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
+    targetElements.forEach((element: HTMLElement, i: number) => {
+        const { x, y } = getCenterCoords(from);
+        const { x: x2, y: y2 } = getCenterCoords(element);
+        let rotation = 0;
+        if (spin) {
+            const isEven = i % 2 === 0;
+            rotation = 360 * (isEven ? 1 : -1);
+        } else if (rotateToFaceTarget) {
+            rotation = getRotationToFaceTarget({ x, y, x2, y2 });
+        }
         const xDiff = x2 - x;
-        const transformX = getRandomArbitrary(xDiff - 50, xDiff + 50);
         const yDiff = y2 - y;
-        const jitterY = getRandomArbitrary(2, 3);
-        animationFrames.push({
-            transform: `translateX(${transformX}px) translateY(${yDiff / jitterY}px) rotate(${rotation}deg)`,
-        });
-    }
 
-    animationFrames.push({
-        transform: `translateX(${x2 - x}px) translateY(${y2 - y}px) rotate(${rotation}deg)`,
+        if (sidewinder) {
+            const transformX = getRandomArbitrary(xDiff - 50, xDiff + 50);
+            const jitterY = getRandomArbitrary(2, 3);
+            animationFrames.push({
+                transform: `translateX(${transformX}px) translateY(${yDiff / jitterY}px) rotate(${rotation}deg)`,
+            });
+        }
+
+        animationFrames.push({
+            transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
+        });
     });
 
     if (returnToOrigin) {

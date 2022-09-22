@@ -526,9 +526,13 @@ export const hammerang: Ability = {
     image: hammer,
     actions: [
         {
-            damage: 6,
+            damage: 5,
+            secondaryDamage: 4,
+            targetArea: 2,
+            numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
             animation: ANIMATION_TYPES.YOYO,
             icon: hammer,
         },

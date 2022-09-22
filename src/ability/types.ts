@@ -267,9 +267,11 @@ export interface Action {
     armor?: number;
     target?: TARGET_TYPES;
     area?: number;
-    /** Only applicable to target type RANDOM. If not supplied, all targets on one side are eligible. */
+    /** Only applicable to target type RANDOM or ricochet. If not supplied, all targets on one side are eligible. */
     targetArea?: number;
     numTargets?: number;
+    // Bounces between numTargets within targetArea
+    ricochet?: boolean;
     effects?: Effect[];
     description?: string;
     movement?: number;
@@ -353,6 +355,7 @@ export enum ANIMATION_TYPES {
     YOYO = "yoyo",
     ONE_WAY = "one-way",
     ONE_WAY_SIDEWINDER = "one-way-sidewinder",
+    RICOCHET = "ricochet",
 }
 
 export interface AbilityEffects {

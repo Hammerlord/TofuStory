@@ -51,27 +51,36 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
         setTimeout(() => setIsAnimationPlaying(false), playbackTime);
 
         eventIdRef.current = eventId;
-        const { type, animation } = action || {};
+        const { type, animation, ricochet } = action || {};
         if (type === ACTION_TYPES.ATTACK && actor) {
-            travel({ to: target, from: actor, returnToOrigin: true, playbackTime });
-        } else if (type === ACTION_TYPES.RANGE_ATTACK) {
+            travel({ from: actor, to: target, returnToOrigin: true, playbackTime });
+            return;
+        }
+
+        if (type === ACTION_TYPES.RANGE_ATTACK) {
             const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
-            allTargets.forEach((tar, i) => {
+            const animateRangeAttack = (target, projectileRefIndex: number) => {
                 travel({
-                    to: tar,
-                    from: projectileRefs[i].current,
+                    from: projectileRefs[projectileRefIndex].current,
+                    to: target,
                     spin,
                     rotateToFaceTarget,
                     sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                     playbackTime,
                 });
-            });
+            };
+
+            if (ricochet) {
+                animateRangeAttack(allTargets, 0);
+            } else {
+                allTargets.forEach(animateRangeAttack);
+            }
         }
     }, [eventId]);
 
-    const { icon, type } = action || {};
+    const { icon, type, ricochet } = action || {};
     const getProjectileElement = (i: number) => {
         if (typeof icon === "string") {
             return <img src={icon} className={classNames(classes.projectile)} ref={projectileRefs[i]} />;
@@ -85,11 +94,14 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
         }
     };
 
+    // TODO This gnarly bit of code is really just because there's one ability that ricochets right now and it's single target, so don't spawn more projectiles than needed
+    const projectileTargets = ricochet ? [allTargets[0]] : allTargets;
+
     return (
         <div className={classes.root}>
             {type === ACTION_TYPES.RANGE_ATTACK && icon && (
                 <>
-                    {allTargets
+                    {projectileTargets
                         .filter((val) => val)
                         .map((tar, i) => (
                             <span

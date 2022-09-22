@@ -1,5 +1,5 @@
 import { aggregateItemEffects } from "./../../Menu/utils";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniq } from "lodash";
 import { compose, partition } from "ramda";
 import uuid from "uuid";
 import {
@@ -727,7 +727,8 @@ const performAction = ({
                 actorId,
                 id: uuid.v4(),
                 selectedIndex,
-                allTargetIndices: affectedIndices,
+                // HACK: ensure that the selected index and "extra target indices" are hit first in playback
+                allTargetIndices: uniq([selectedIndex, ...extraTargetIndices, ...affectedIndices]),
                 targetSide: side,
                 ability,
                 playbackTime:
