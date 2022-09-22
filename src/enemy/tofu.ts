@@ -5,7 +5,7 @@ import theraretofuPortrait from "../images/item257.png";
 import smalltofuPortrait from "../images/item394.png";
 import matty from "../images/matty.png";
 import { hardy, raging } from "./../ability/Effects";
-import { loaf, move, rally, shiningLaser, tantrum, whip } from "./abilities";
+import { loaf, move, rally, shiningLaser, tantrum } from "./abilities";
 
 export const smalltofu: Enemy = {
     name: "Small Tofu",
@@ -66,13 +66,4 @@ export const theRegalTofu: Enemy = {
     damage: 3,
     abilities: [rally],
     effects: [hardy],
-};
-
-export const theCruelTofu: Enemy = {
-    name: "The Cruel Tofu",
-    image: regalTofu, // TODO
-    maxHP: 30,
-    armor: 0,
-    damage: 3,
-    abilities: [whip],
 };

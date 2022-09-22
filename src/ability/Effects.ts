@@ -249,6 +249,7 @@ export const elite: Effect = {
 };
 
 export const healingOverTime: Effect = {
+    name: "Healing Over Time",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,

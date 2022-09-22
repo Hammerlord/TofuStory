@@ -4,7 +4,7 @@ import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant } from "../character/types";
 
-import { CrossedSwords, Fireworks, Heart, Shield, SpeechBubble } from "../images";
+import { CrossedSwords, Fireworks, Heart, Hourglass, Shield, SpeechBubble } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
@@ -13,6 +13,26 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         display: "inline-block",
+        margin: "0 1px",
+    },
+    iconText: {
+        position: "absolute",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2px black")
+            .join(", "),
+        fontWeight: "bold",
+        zIndex: "3",
+        color: "white",
+    },
+    stacks: {
+        bottom: -1,
+        left: 2,
+        fontSize: "14px",
+    },
+    duration: {
+        position: "absolute",
+        top: -2,
+        right: -4,
     },
     tooltipContents: {
         display: "flex",
@@ -56,17 +76,16 @@ const useStyles = createUseStyles({
     },
 });
 
-const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura?: boolean; silence?: boolean; owner: Combatant }) => {
-    if (!effect) {
+const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; isSilenced?: boolean; owner: Combatant }) => {
+    if (!effects?.length) {
         return null;
     }
 
     const classes = useStyles();
 
-    let name = effect.name;
-    let icon: string | JSX.Element = effect.icon;
     const {
-        type,
+        name,
+        icon,
         damage,
         leech = 0,
         skillBonus = [],
@@ -75,11 +94,10 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
         onTurnStart,
         onResourcesSpent,
         onReceiveAttack,
-    } = effect;
-    if (isAura) {
-        name = "Aura";
-        icon = <Fireworks />;
-    }
+        description,
+        duration = Infinity,
+        canBeSilenced,
+    } = effects[0];
 
     if (!icon) {
         return null;
@@ -89,7 +107,6 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
     const { healing: healthPerResourcesSpent } = onResourcesSpent || {};
     const { damage: thorns } = onReceiveAttack || {};
 
-    const isSilenced = (effect.canBeSilenced || isAura) && silence;
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
             calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? owner : undefined,
@@ -100,14 +117,25 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
         return null;
     }
 
+    const allSameDuration = effects.every(({ duration }) => duration === effects[0].duration);
+    let durationDisplay: string | number = "";
+    if (!allSameDuration) {
+        durationDisplay = "*";
+    } else if (duration !== Infinity) {
+        durationDisplay = duration;
+    }
+
     const tooltipContent = (
         <div className={classes.tooltipContents}>
             <div className={classNames(classes.iconContainer)}>
                 <Icon icon={icon} size={"lg"} />
             </div>
             <div className={classes.container}>
-                <div className={classes.tooltipTitle}>{name}</div>
-                {isAura && <span>Grants effects to adjacent allies:</span>}
+                <div className={classes.tooltipTitle}>
+                    {name}
+                    {effects.length > 1 ? ` x${effects.length}` : ""}
+                </div>
+                <div>{description}</div>
                 {damage > 0 && (
                     <div>
                         <Icon icon={<CrossedSwords />} text={damage} /> base attack
@@ -130,14 +158,25 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
                 )}
                 {leech > 0 && <div>Leeching {leech * 100}% of damage as health (rounded up)</div>}
                 {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
-                <div>{effect.description}</div>
-                {effect.duration < Infinity && <span>{effect.duration} turns remaining</span>}
-                {isSilenced && <div className={classes.silenced}>Silenced</div>}
+                {allSameDuration && duration !== Infinity && (
+                    <span>
+                        <Icon icon={<Hourglass />} text={duration} /> turns remaining
+                    </span>
+                )}
+                {!allSameDuration && (
+                    <span>
+                        {effects.map((e, i) => (
+                            <Icon key={i} icon={<Hourglass />} text={e.duration === Infinity ? "∞" : e.duration} />
+                        ))}{" "}
+                        turns remaining
+                    </span>
+                )}
                 {skillBonus.map(({ skill, damage = 0 }) => (
                     <div key={skill}>
                         {skill} {damage > 0 && <Icon icon={<CrossedSwords />} text={`+${damage}`} />}
                     </div>
                 ))}
+                {isSilenced && canBeSilenced && <div className={classes.silenced}>Silenced</div>}
             </div>
         </div>
     );
@@ -146,15 +185,23 @@ const EffectIcon = ({ effect, isAura, silence, owner }: { effect: Effect; isAura
             <span className={classes.root}>
                 <Icon
                     icon={icon}
-                    text={effect.duration < Infinity && effect.duration}
                     className={classNames({
                         [classes.disabled]: isSilenced,
                     })}
-                />
-                {isSilenced && <Icon icon={<SpeechBubble />} className={classes.silenceIcon} />}
+                >
+                    <>
+                        {durationDisplay && (
+                            <span className={classes.duration}>
+                                <Icon icon={<Hourglass />} size="sm" text={durationDisplay} />
+                            </span>
+                        )}
+                        {effects.length > 1 && <span className={classNames(classes.iconText, classes.stacks)}>{effects.length}</span>}
+                    </>
+                </Icon>
+                {isSilenced && canBeSilenced && <Icon icon={<SpeechBubble />} className={classes.silenceIcon} />}
             </span>
         </Tooltip>
     );
 };
 
-export default EffectIcon;
+export default EffectGroupIcon;

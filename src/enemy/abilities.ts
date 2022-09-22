@@ -94,27 +94,6 @@ export const stomp: Ability = {
     ],
 };
 
-export const whip: Ability = {
-    name: "Whip",
-    resourceCost: 3,
-    actions: [
-        {
-            damage: 1,
-            target: TARGET_TYPES.FRIENDLY,
-            type: ACTION_TYPES.EFFECT,
-            area: 3,
-            effects: [
-                {
-                    damage: 1,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 4,
-                },
-            ],
-        },
-    ],
-};
-
 export const enemyHaste: Ability = {
     name: "Haste",
     resourceCost: 1,

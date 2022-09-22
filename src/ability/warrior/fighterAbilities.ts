@@ -271,6 +271,7 @@ export const burningSoulBlade: Ability = {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     effects: [
                         {
+                            name: "Burning Soul Blade",
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
                             damage: 1,

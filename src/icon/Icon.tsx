@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import React from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -8,10 +7,13 @@ const useStyles = createUseStyles({
         display: "inline-block",
         borderRadius: "32px",
         "&.sm": {
-            width: "12px",
-            height: "12px",
-            minWidth: "12px",
-            minHeight: "12px",
+            width: "16px",
+            height: "16px",
+            minWidth: "16px",
+            minHeight: "16px",
+            "& .text": {
+                fontSize: "12px",
+            },
         },
         "&.md": {
             width: "24px",
@@ -54,7 +56,9 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        textShadow: "0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2px black")
+            .join(", "),
         fontSize: "16px",
         fontWeight: "bold",
         zIndex: "3",
@@ -69,9 +73,10 @@ interface IconInterface {
     size?: "sm" | "md" | "lg" | "xl";
     className?: string;
     style?: any;
+    children?: JSX.Element;
 }
 
-const Icon = ({ text, icon, background, size = "md", className, style, ...other }: IconInterface) => {
+const Icon = ({ text, icon, background, size = "md", className, style, children, ...other }: IconInterface) => {
     const classes = useStyles();
     size = ["sm", "md", "lg", "xl"].includes(size) ? size : undefined;
     let iconNode;
@@ -93,7 +98,7 @@ const Icon = ({ text, icon, background, size = "md", className, style, ...other 
         <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other}>
             <span className={classNames(classes.inner)}>
                 {iconNode}
-                <span className={classNames("text", classes.text)}>{text}</span>
+                {children ? children : <span className={classNames("text", classes.text)}>{text}</span>}
             </span>
         </span>
     );

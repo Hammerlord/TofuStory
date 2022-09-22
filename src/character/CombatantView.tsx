@@ -5,11 +5,12 @@ import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
-import EffectIcon from "../icon/EffectIcon";
+import EffectGroupIcon from "../icon/EffectGroupIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicator, Zzz } from "../images";
 import AttackPower from "./AttackPower";
+import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
@@ -321,10 +322,7 @@ const CombatantView = forwardRef(
                     </div>
                     {oldState?.HP > 0 && (
                         <div className={classes.effectsContainer}>
-                            {oldState.effects?.map((effect, i) => (
-                                <EffectIcon effect={effect} key={i} silence={isSilenced} owner={oldState} />
-                            ))}
-                            {oldState.aura && <EffectIcon effect={oldState.aura} isAura={true} silence={isSilenced} owner={oldState} />}
+                            <EffectIconsContainer isSilenced={isSilenced} combatant={oldState} />
                         </div>
                     )}
                 </div>

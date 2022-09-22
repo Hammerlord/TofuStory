@@ -103,7 +103,7 @@ export enum EFFECT_EVENT_KEYS {
 }
 
 export interface Effect {
-    name?: string;
+    name: string;
     type: EFFECT_TYPES;
     class: EFFECT_CLASSES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...

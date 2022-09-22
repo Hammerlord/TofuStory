@@ -27,6 +27,7 @@ export const evilEye: Ability = {
         effects: [
             stealth,
             {
+                name: "Evil Eye Heal",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 description: "Heals a random ally for 2 each turn.",

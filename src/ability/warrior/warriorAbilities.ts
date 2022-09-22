@@ -373,6 +373,7 @@ export const warBanner2: Ability = {
                 duration: 3,
             },
             {
+                name: "War Banner",
                 icon: Fireworks,
                 damage: 2,
                 area: 1,
@@ -403,6 +404,7 @@ export const warBanner: Ability = {
                 duration: 2,
             },
             {
+                name: "War Banner",
                 icon: Fireworks,
                 damage: 2,
                 area: 1,
@@ -432,6 +434,7 @@ export const yell2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
+                    name: "Admonished",
                     damage: -3,
                     damageReceived: 1,
                     duration: 2,
@@ -455,6 +458,7 @@ export const yell: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
+                    name: "Admonished",
                     damage: -2,
                     damageReceived: 1,
                     duration: 2,
@@ -914,6 +918,7 @@ export const recovery2: Ability = {
             healing: 3,
             effects: [
                 {
+                    name: "Recovery",
                     icon: selfRecoveryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
@@ -940,6 +945,7 @@ export const recovery: Ability = {
             healing: 2,
             effects: [
                 {
+                    name: "Recovery",
                     icon: selfRecoveryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
@@ -1266,6 +1272,7 @@ export const rally2: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             effects: [
                 {
+                    name: "Inspired",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     damage: 3,
@@ -1288,6 +1295,7 @@ export const rally: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             effects: [
                 {
+                    name: "Inspired",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     damage: 2,
@@ -1316,6 +1324,7 @@ export const dustDevils2: Ability = {
                     name: "Dust Devils",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
+                    duration: 4,
                     icon: Tornado,
                     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
                     onAttack: {
@@ -1352,6 +1361,7 @@ export const dustDevils: Ability = {
                     name: "Dust Devils",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
+                    duration: 4,
                     icon: Tornado,
                     description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
                     onAttack: {
