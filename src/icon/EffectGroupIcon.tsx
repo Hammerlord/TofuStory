@@ -90,7 +90,6 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         leech = 0,
         skillBonus = [],
         onlyVisibleWhenProcced,
-        conditions,
         onTurnStart,
         onResourcesSpent,
         onReceiveAttack,
@@ -110,7 +109,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
             calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? owner : undefined,
-        conditions,
+        proc: effects[0],
     });
 
     if (!passedConditions && onlyVisibleWhenProcced) {

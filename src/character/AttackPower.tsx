@@ -1,11 +1,9 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { passesConditions } from "../battle/passesConditions";
-import { CrossedSwords } from "../images";
-import Icon from "../icon/Icon";
 import { getEnabledEffects } from "../battle/utils";
+import Icon from "../icon/Icon";
+import { CrossedSwords } from "../images";
 import Tooltip from "../view/Tooltip";
-import { TRIGGER_TARGET_TYPES } from "../ability/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -26,13 +24,8 @@ const AttackPower = ({ combatant }) => {
         return null;
     }
 
-    const damageEffects = getEnabledEffects(combatant).filter(({ damage = 0, conditions = [] }) => {
-        const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES) => {
-            if (calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-                return combatant;
-            }
-        };
-        return damage !== 0 && passesConditions({ getCalculationTarget, conditions });
+    const damageEffects = getEnabledEffects(combatant).filter(({ damage = 0 }) => {
+        return damage !== 0;
     });
     const damageFromEffects = damageEffects.reduce((acc: number, { damage }) => {
         return acc + damage;

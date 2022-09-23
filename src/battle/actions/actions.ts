@@ -345,7 +345,7 @@ const applyProc = ({
             };
 
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
-            if (passesConditions({ getCalculationTarget, conditions: action.conditions })) {
+            if (passesConditions({ getCalculationTarget, proc: action })) {
                 dispatch(performAction({ action, selectedIndex: index, side, actorId: ownerId, source: { type: "proc", source: effect } }));
             }
         });
@@ -390,7 +390,7 @@ const onEffectEventTrigger = ({
         if (
             !passesConditions({
                 getCalculationTarget: (targetType: TRIGGER_TARGET_TYPES) => findCombatant(getState, getCalculationTargetId(targetType)),
-                conditions: effectEvent.conditions,
+                proc: effectEvent,
             })
         ) {
             return;
@@ -924,7 +924,7 @@ export const useAbility = ({
                 return getState().battle[side]?.[index] || null;
             };
 
-            if (!passesConditions({ getCalculationTarget, conditions: action.conditions })) {
+            if (!passesConditions({ getCalculationTarget, proc: action })) {
                 return;
             }
 

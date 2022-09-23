@@ -150,7 +150,7 @@ export const isValidTarget = ({ ability, side, playerSide, enemySide, index, act
                     return playerSide[index];
                 }
             };
-            const conditionsPassed = actions.every(({ conditions = [] }) => passesConditions({ getCalculationTarget, conditions }));
+            const conditionsPassed = actions.every((action) => passesConditions({ getCalculationTarget, proc: action }));
             if (area === 0) {
                 // No sense in letting a single target ability whiff on an empty slot, for now
                 return Boolean(playerSide[index]) && playerSide[index].HP > 0 && conditionsPassed;
@@ -234,7 +234,7 @@ export const getEnabledEffects = (character?: Combatant | null): CombatEffect[] 
 
     return character.effects?.filter((effect) => {
         const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
-        return !disabled && passesConditions({ getCalculationTarget, conditions: effect.conditions });
+        return !disabled && passesConditions({ getCalculationTarget, proc: effect });
     });
 };
 
@@ -483,7 +483,7 @@ export const calculateBonus = ({
     }
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
-    const { conditions = [], excludePrimaryTarget = false } = bonus;
+    const { excludePrimaryTarget = false } = bonus;
     const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
 
     const getCalculationTarget = (conditionTarget: TRIGGER_TARGET_TYPES) => {
@@ -495,7 +495,7 @@ export const calculateBonus = ({
         }
     };
     const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-    if (passesConditions({ getCalculationTarget, conditions }) && isValidTarget) {
+    if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
         const bonusDamage = (bonus.damage || 0) * multiplier;
         return {
             ...action,
