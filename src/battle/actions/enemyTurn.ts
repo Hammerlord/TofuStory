@@ -179,7 +179,7 @@ const CHANCE_TO_SUMMON_MULTIPLIER = 0.2;
  * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
  */
 const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: Combatant; friendly: Combatant[] }): Ability => {
-    const [specialAbilities, regularAbilities] = partition(
+    let [specialAbilities, regularAbilities] = partition(
         (a) => a.resourceCost > 0,
         actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
     );
@@ -191,7 +191,7 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
     }
 
     // High chance of picking minion summon if there are many spaces to summon
-    const [minionSummonAbilities, otherAbilities] = partition(
+    let [minionSummonAbilities, otherAbilities] = partition(
         (ability) => ability.minion || ability.actions.some((a: Action) => a.summon),
         regularAbilities
     );
@@ -208,8 +208,8 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
         // We are assuming that same name === same ability even though that is not actually guaranteed
         const lastAbilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
         if (lastAbilityUsed) {
-            otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
-            specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+            otherAbilities = otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+            specialAbilities = specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
         }
     }
 
