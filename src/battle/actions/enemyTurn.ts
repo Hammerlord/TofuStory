@@ -208,7 +208,10 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
         // We are assuming that same name === same ability even though that is not actually guaranteed
         const lastAbilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
         if (lastAbilityUsed) {
-            otherAbilities = otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+            // Don't remove its only ability though
+            if (otherAbilities.length > 1) {
+                otherAbilities = otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+            }
             specialAbilities = specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
         }
     }
