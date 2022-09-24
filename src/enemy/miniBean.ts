@@ -48,7 +48,7 @@ const yuck: Effect = {
     duration: 3,
 };
 
-const delicious = {
+const delicious: Effect = {
     name: "Delicious",
     icon: turkeyImage,
     type: EFFECT_TYPES.NONE,
@@ -60,7 +60,7 @@ const delicious = {
     },
 };
 
-const disgusting = {
+const disgusting: Effect = {
     name: "Disgusting",
     icon: yuckImage,
     type: EFFECT_TYPES.NONE,

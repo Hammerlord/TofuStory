@@ -209,11 +209,22 @@ const onAction = ({
     actorId?: string;
     actionParentType?: "effect" | "ability" | "proc";
 }) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         const triggerSource = actionParentType ? { source: action, type: actionParentType, actorId, targetId } : undefined;
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(checkEventTrigger({ combatantId: actorId, effectEventKey: EFFECT_EVENT_KEYS.onAttack, triggerSource }));
         }
+
+        const { turnHistory } = findCombatant(getState, actorId);
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: {
+                    turnHistory: [...turnHistory, action],
+                },
+            })
+        );
     };
 };
 
@@ -658,6 +669,107 @@ const checkHandleSummon = ({ action, actorId }: { action: Action; actorId: strin
     };
 };
 
+/**
+ * Handle the induceCombatantAttack property of an action (tells minions to attack randomly)
+ */
+const checkInduceAttack = ({
+    action,
+    combatants,
+    selectedIndex,
+    parentSource,
+}: {
+    action: Action;
+    combatants: Combatant[];
+    selectedIndex: number;
+    parentSource: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        if (!action.induceCombatantAttack) {
+            return;
+        }
+        shuffle(combatants).forEach(({ id }) => {
+            const { hostileSide, actor } = orientate({ actorId: id, ...getState().battle }); // Make sure combatant's not stale
+            if (!actor.HP) {
+                return;
+            }
+            dispatch(
+                performAction({
+                    action: getInducedAttack(actor),
+                    selectedIndex,
+                    side: hostileSide,
+                    actorId: id,
+                    parentSource,
+                })
+            );
+        });
+    };
+};
+
+const checkHandleVacuum = ({
+    vacuum,
+    side,
+    selectedIndex,
+    area,
+}: {
+    vacuum: number;
+    side: BATTLEFIELD_SIDES;
+    selectedIndex: number;
+    area: number;
+}) => {
+    return (dispatch, getState) => {
+        if (!vacuum) {
+            return;
+        }
+        dispatch(
+            updateBattle({
+                [side]: applyVacuum({
+                    characters: getState().battle[side],
+                    index: selectedIndex,
+                    area,
+                    distance: vacuum,
+                }),
+            })
+        );
+    };
+};
+
+const pushPlaybackQueue = ({
+    action,
+    actorId,
+    selectedIndex,
+    allTargetIndices,
+    ability,
+    side,
+}: {
+    action: Action;
+    actorId: string;
+    selectedIndex: number;
+    allTargetIndices: number[];
+    ability?: Ability;
+    side: BATTLEFIELD_SIDES;
+}) => {
+    return (dispatch, getState) => {
+        const MULTI_ACTION_PLAYBACK_SPEED = 500;
+        const NORMAL_ACTION_PLAYBACK_SPEED = 800;
+
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                action,
+                actorId,
+                id: uuid.v4(),
+                selectedIndex,
+                // HACK: ensure that the selected index and "extra target indices" are hit first in playback
+                allTargetIndices,
+                targetSide: side,
+                ability,
+                playbackTime:
+                    action.playbackTime || (ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
+            } as Event)
+        );
+    };
+};
+
 const performAction = ({
     action,
     selectedIndex,
@@ -674,20 +786,8 @@ const performAction = ({
     return (dispatch, getState) => {
         const area = calculateActionArea({ action, actor: findCombatant(getState, actorId) });
 
-        const { vacuum, induceCombatantAttack, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
-        if (vacuum) {
-            dispatch(
-                updateBattle({
-                    [side]: applyVacuum({
-                        characters: getState().battle[side],
-                        index: selectedIndex,
-                        area,
-                        distance: vacuum,
-                    }),
-                })
-            );
-        }
-
+        const { vacuum, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
+        dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleSummon({ action, actorId }));
 
         const extraTargetIndices = shuffle(
@@ -709,13 +809,12 @@ const performAction = ({
         const actor = findCombatant(getState, actorId);
         const combatants = getState().battle[side];
         const { source, type } = parentSource || {};
-        const ability = type === "ability" ? (source as Ability) : undefined;
-        const { affectedIndices, affectedCombatants } = combatants
-            .map((character: Combatant | null, i: number) => {
+        const { affectedIndices, affectedCombatants } = combatants.reduce(
+            (acc, character: Combatant | null, i: number) => {
                 if (!isAffected(character, i)) {
-                    return;
+                    return acc;
                 }
-                return applyActionToTarget({
+                const combatant = applyActionToTarget({
                     target: character,
                     selectedIndex,
                     targetIndex: i,
@@ -723,83 +822,32 @@ const performAction = ({
                     actor,
                     actionSource: parentSource,
                 });
-            })
-            // Apply all the updates before triggering any related events
-            .map((updated: Combatant | null) => {
-                if (!updated) {
-                    return;
-                }
+                acc.affectedIndices.push(i);
+                acc.affectedCombatants.push(combatant);
+                return acc;
+            },
+            { affectedIndices: [], affectedCombatants: [] }
+        );
 
-                dispatch(
-                    updateCombatant({
-                        combatantId: updated.id,
-                        newProperties: updated,
-                        source: { ...parentSource, source: action, targetId: updated.id, actorId },
-                    })
-                );
-
-                dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
-                return updated;
-            })
-            .reduce(
-                (acc, cur: Combatant | undefined, i: number) => {
-                    if (cur) {
-                        acc.affectedIndices.push(i);
-                        acc.affectedCombatants.push(cur);
-                    }
-                    return acc;
-                },
-                { affectedIndices: [], affectedCombatants: [] }
+        // Apply all the updates before triggering any related events
+        affectedCombatants.forEach((updated: Combatant) => {
+            dispatch(
+                updateCombatant({
+                    combatantId: updated.id,
+                    newProperties: updated,
+                    source: { ...parentSource, source: action, targetId: updated.id, actorId },
+                })
             );
 
-        const { turnHistory } = findCombatant(getState, actorId);
+            dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
+        });
 
-        dispatch(
-            updateCombatant({
-                combatantId: actorId,
-                newProperties: {
-                    turnHistory: [...turnHistory, action],
-                },
-            })
-        );
+        const ability = type === "ability" ? (source as Ability) : undefined;
+        // HACK: ensure that the selected index and "extra target indices" are hit first in playback
+        const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...affectedIndices]);
+        dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability, side }));
 
-        const MULTI_ACTION_PLAYBACK_SPEED = 500;
-        const NORMAL_ACTION_PLAYBACK_SPEED = 800;
-
-        dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                action,
-                actorId,
-                id: uuid.v4(),
-                selectedIndex,
-                // HACK: ensure that the selected index and "extra target indices" are hit first in playback
-                allTargetIndices: uniq([selectedIndex, ...extraTargetIndices, ...affectedIndices]),
-                targetSide: side,
-                ability,
-                playbackTime:
-                    action.playbackTime || (ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
-            } as Event)
-        );
-
-        if (induceCombatantAttack) {
-            shuffle(affectedCombatants).forEach(({ id }) => {
-                const { hostileSide, actor } = orientate({ actorId: id, ...getState().battle }); // Make sure combatant's not stale
-                if (!actor.HP) {
-                    return;
-                }
-                dispatch(
-                    performAction({
-                        action: getInducedAttack(actor),
-                        selectedIndex,
-                        side: hostileSide,
-                        actorId: id,
-                        parentSource,
-                    })
-                );
-            });
-        }
-
+        dispatch(checkInduceAttack({ action, combatants: affectedCombatants, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
         dispatch(checkCardActions(action, actorId));
         // Target is only the primary target for an AoE
@@ -988,11 +1036,9 @@ export const useAbility = ({
                 return getState().battle[side]?.[index] || null;
             };
 
-            if (!passesConditions({ getCalculationTarget, proc: action })) {
-                return;
+            if (passesConditions({ getCalculationTarget, proc: action })) {
+                dispatch(performAction({ action, selectedIndex, side, actorId, parentSource: { type: "ability", source: ability } }));
             }
-
-            dispatch(performAction({ action, selectedIndex, side, actorId, parentSource: { type: "ability", source: ability } }));
         };
 
         actions.forEach(handleAction);
