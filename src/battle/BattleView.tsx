@@ -398,7 +398,8 @@ const BattlefieldContainer = () => {
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
 
-    const disableActions = showTurnAnnouncement || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
+    const disableActions =
+        showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand[selectedAbilityIndex];
     const actor = selectedMinion || player;
