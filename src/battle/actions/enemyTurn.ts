@@ -212,7 +212,7 @@ const pickAbility = ({ actor, hostile, friendly }): Ability => {
     if (actor.damage > 0) {
         otherAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
     }
-    return getRandomItem(otherAbilities) || loaf;
+    return getRandomItem(otherAbilities);
 };
 
 const enemyUseAbility = (combatantId: string) => {
@@ -221,6 +221,9 @@ const enemyUseAbility = (combatantId: string) => {
         const { playerSide, enemySide } = getState().battle;
         const { friendly, hostile } = orientate({ actorId: combatantId, playerSide, enemySide });
         const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
+        if (!ability) {
+            return;
+        }
         const { side, index } = autoPickTarget({ ability, actorId: combatantId, playerSide, enemySide });
 
         if (!ability.castTime && !ability.channelDuration) {

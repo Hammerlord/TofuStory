@@ -304,6 +304,12 @@ export interface Action {
     destroyArmor?: number;
     resurrect?: boolean;
     playbackTime?: number;
+    summon?: {
+        // If more than one minion is provided, chooses one randomly.
+        minion: Minion[];
+        // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
+        positionIndex?: number;
+    }[];
 }
 
 export interface Ability {
@@ -356,6 +362,7 @@ export enum ANIMATION_TYPES {
     ONE_WAY = "one-way",
     ONE_WAY_SIDEWINDER = "one-way-sidewinder",
     RICOCHET = "ricochet",
+    DROP = "drop",
 }
 
 export interface AbilityEffects {

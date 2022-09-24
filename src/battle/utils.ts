@@ -406,7 +406,8 @@ export const applyVacuum = ({
     for (let i = 1; i <= area; ++i) {
         if (newCharacters[index + i]) {
             for (let j = 0; j < i && j < distance; ++j) {
-                if (!newCharacters[index + j]) {
+                const existingCharacter = newCharacters[index + j];
+                if (!existingCharacter || existingCharacter.HP === 0) {
                     newCharacters[index + j] = newCharacters[index + i];
                     newCharacters[index + i] = null;
                 }
@@ -414,7 +415,8 @@ export const applyVacuum = ({
         }
         if (newCharacters[index - i]) {
             for (let j = 0; j < i && j < distance; ++j) {
-                if (!newCharacters[index - j]) {
+                const existingCharacter = newCharacters[index - j];
+                if (!existingCharacter || existingCharacter.HP === 0) {
                     newCharacters[index - j] = newCharacters[index - i];
                     newCharacters[index - i] = null;
                 }

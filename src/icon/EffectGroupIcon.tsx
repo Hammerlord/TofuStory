@@ -86,7 +86,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     const {
         name,
         icon,
-        damage,
+        damage = 0,
+        damageReceived = 0,
         leech = 0,
         skillBonus = [],
         onlyVisibleWhenProcced,
@@ -135,11 +136,12 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     {effects.length > 1 ? ` x${effects.length}` : ""}
                 </div>
                 <div>{description}</div>
-                {damage > 0 && (
+                {damage !== 0 && (
                     <div>
-                        <Icon icon={<CrossedSwords />} text={damage} /> base attack
+                        <Icon icon={<CrossedSwords />} text={damage} /> attack power
                     </div>
                 )}
+                {damageReceived > 0 && <div>Receiving {damageReceived} increased damage from attacks</div>}
                 {armor > 0 && (
                     <div>
                         <Icon icon={<Shield />} text={armor} /> per turn

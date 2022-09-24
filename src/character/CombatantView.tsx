@@ -271,10 +271,10 @@ const CombatantView = forwardRef(
                     )}
                     <div className={classes.combatantContainer} ref={weaponRef}>
                         <span ref={ref as any} className={classNames(classes.portrait)}>
-                            {oldState && (
+                            {oldState && combatant && (
                                 <>
                                     <img
-                                        src={oldState.image}
+                                        src={combatant.image}
                                         className={classNames(classes.portraitImage, {
                                             [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                                             [classes.dead]: oldState.HP === 0,

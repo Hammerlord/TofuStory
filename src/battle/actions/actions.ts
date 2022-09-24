@@ -33,6 +33,7 @@ import {
     clearTurnHistory,
     getBasicAttack,
     getEnabledEffects,
+    getPossibleSummonIndices,
     getValidTargetIndices,
     hasEffectType,
     isSilenced,
@@ -346,7 +347,9 @@ const applyProc = ({
 
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
             if (passesConditions({ getCalculationTarget, proc: action })) {
-                dispatch(performAction({ action, selectedIndex: index, side, actorId: ownerId, source: { type: "proc", source: effect } }));
+                dispatch(
+                    performAction({ action, selectedIndex: index, side, actorId: ownerId, parentSource: { type: "proc", source: effect } })
+                );
             }
         });
     };
@@ -417,10 +420,12 @@ export const checkEventTrigger = ({
         }
 
         const combatant = findCombatant(getState, combatantId);
-        if (!combatant || combatant.HP === 0) {
+        // Dead characters generally cannot trigger effects except in case of killing blows
+        if (!combatant || (effectEventKey !== EFFECT_EVENT_KEYS.onDeath && combatant.HP === 0)) {
             return;
         }
 
+        console.log("triggering", effectEventKey, triggerSource);
         combatant.effects.forEach((effect: CombatEffect) => {
             if (effect[effectEventKey]) {
                 dispatch(
@@ -623,18 +628,48 @@ export const startPlayerTurn = () => {
     };
 };
 
+const checkHandleSummon = ({ action, actorId }: { action: Action; actorId: string }) => {
+    return (dispatch, getState) => {
+        if (!action.summon) {
+            return;
+        }
+
+        for (const summon of action.summon) {
+            const { friendly, actorSide } = orientate({ actorId, ...getState().battle });
+            const { minion, positionIndex } = summon;
+            const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
+            const minionToSummon = getRandomItem(minion);
+            if (typeof pos !== "number") {
+                break;
+            }
+
+            dispatch(
+                updateBattle({
+                    [actorSide]: friendly.map((combatant: Combatant | null, i) => {
+                        if (combatant?.HP > 0 || i !== pos) {
+                            return combatant;
+                        }
+
+                        return createCombatant(minionToSummon);
+                    }),
+                })
+            );
+        }
+    };
+};
+
 const performAction = ({
     action,
     selectedIndex,
     side,
     actorId,
-    source: triggerSource,
+    parentSource,
 }: {
     action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
-    source: TriggerSource;
+    parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         const area = calculateActionArea({ action, actor: findCombatant(getState, actorId) });
@@ -651,6 +686,8 @@ const performAction = ({
                 })
             );
         }
+
+        dispatch(checkHandleSummon({ action, actorId }));
 
         const extraTargets = action.numTargets || 0;
         const extraTargetIndices = shuffle(
@@ -671,7 +708,7 @@ const performAction = ({
 
         const actor = findCombatant(getState, actorId);
         const combatants = getState().battle[side];
-        const { source, type } = triggerSource || {};
+        const { source, type } = parentSource || {};
         const ability = type === "ability" ? (source as Ability) : undefined;
         const affectedIndices = combatants
             .map((character: Combatant | null, i: number) => {
@@ -684,7 +721,7 @@ const performAction = ({
                     targetIndex: i,
                     action,
                     actor,
-                    actionSource: triggerSource,
+                    actionSource: parentSource,
                 });
             })
             // Apply all the updates before triggering any related events
@@ -697,6 +734,7 @@ const performAction = ({
                     updateCombatant({
                         combatantId: updated.id,
                         newProperties: updated,
+                        source: { ...parentSource, source: action, targetId: updated.id, actorId },
                     })
                 );
 
@@ -736,7 +774,7 @@ const performAction = ({
             } as Event)
         );
 
-        dispatch(checkCastRadiate({ source: triggerSource, action, selectedIndex, side }));
+        dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
         dispatch(checkCardActions(action, actorId));
         // Target is only the primary target for an AoE
         dispatch(onAction({ action, actorId, targetId: combatants[selectedIndex]?.id, actionParentType: type }));
@@ -818,7 +856,7 @@ const checkCastRadiate = ({
                 selectedIndex,
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
                 actorId: getState().battle[side][selectedIndex]?.id,
-                source,
+                parentSource: source,
             })
         );
     };
@@ -928,7 +966,7 @@ export const useAbility = ({
                 return;
             }
 
-            dispatch(performAction({ action, selectedIndex, side, actorId, source: { type: "ability", source: ability } }));
+            dispatch(performAction({ action, selectedIndex, side, actorId, parentSource: { type: "ability", source: ability } }));
         };
 
         actions.forEach(handleAction);

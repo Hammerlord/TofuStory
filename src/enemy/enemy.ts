@@ -1,37 +1,37 @@
-import { slashBlast, block } from "./../ability/warrior/warriorAbilities";
-import { stealth, elite, burn, thorns, hardy, raging } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
-import { enemyHaste, loaf } from "./abilities";
 import { Ability, Effect } from "../ability/types";
 import {
-    bluesnailImage,
-    leetSin,
-    noobClubAImage,
-    noobClubBImage,
-    orangeMushroomImage,
-    redsnailImage,
-    shroomImage,
-    snailImage,
-    subi,
-    olafImage,
-    octopusImage,
-    wildboarImage,
-    stumpImage,
-    fireboarImage,
     axestumpImage,
-    ligatorImage,
+    bluesnailImage,
+    blueSnailShellImage,
+    fireboarImage,
     greenmushroomImage,
     hornymushroomImage,
     kingslimeImage,
+    leetSin,
+    ligatorImage,
+    manoImage,
+    mutantSnailImage,
+    noobClubAImage,
+    noobClubBImage,
     noobWarriorAImage,
     noobWarriorBImage,
-    manoImage,
-    blueSnailShellImage,
+    octopusImage,
+    olafImage,
+    orangeMushroomImage,
+    redsnailImage,
     redSnailShellImage,
+    shroomImage,
+    snailImage,
     snailShellImage,
-    mutantSnailImage,
+    stumpImage,
+    subi,
     weaponmasteryImage,
+    wildboarImage,
 } from "../images";
+import { burn, elite, hardy, raging, stealth, thorns } from "./../ability/Effects";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
+import { enemyHaste, loaf } from "./abilities";
 
 export interface Enemy {
     name: string;
