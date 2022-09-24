@@ -17,10 +17,11 @@ import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
-import Notification from "./Notification";
+import Notification from "./Notification/Notification";
+import AbilityNotification from "./Notification/AbilityNotification";
 import { battleStateSlice } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
-import TurnAnnouncement from "./TurnNotification";
+import TurnAnnouncement from "./Notification/TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
 import { canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
@@ -131,11 +132,6 @@ const useStyles = createUseStyles({
         left: 0,
         top: 0,
         pointerEvents: "none",
-    },
-    notificationAbility: {
-        width: "24px",
-        maxHeight: "24px",
-        verticalAlign: "bottom",
     },
 });
 
@@ -373,30 +369,7 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        const { ability, playbackTime } = events[0];
-
-        if (ability) {
-            // TODO move this to its own component dude
-            const { image, name } = ability;
-            if (!name) {
-                return;
-            }
-            let imageNode;
-            if (typeof image === "string") {
-                imageNode = <img src={image} className={classes.notificationAbility} />;
-            } else if (typeof image === "function") {
-                const ImageNode = image as Function;
-                imageNode = <ImageNode className={classes.notificationAbility} />;
-            }
-            setAbilityNotification({
-                text: (
-                    <>
-                        {imageNode} {name}
-                    </>
-                ),
-                id: uuid.v4(),
-            });
-        }
+        const { playbackTime } = events[0];
 
         const prevEvents = eventQueueRef?.current as Event[];
         // Disregard pushes to the queue unless going from 0 to n events; this is to smoothen playback
@@ -518,11 +491,7 @@ const BattlefieldContainer = () => {
                         {notification.text}
                     </Notification>
                 )}
-                {abilityNotification && (
-                    <Notification onClick={() => setNotification(null)} id={abilityNotification.id} duration={1250}>
-                        {abilityNotification.text}
-                    </Notification>
-                )}
+                {events[0]?.ability && <AbilityNotification ability={events[0].ability} />}
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield}>
                         <div className={classes.waves}>

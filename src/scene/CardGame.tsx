@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { compose, flatten, repeat } from "ramda";
 import React, { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import TurnAnnouncement from "../battle/Notification/TurnNotification";
 import {
     bluemushroomCard,
     bluesnailCard,
@@ -23,7 +24,6 @@ import {
 } from "../images";
 import { getRandomItem, shuffle } from "../utils";
 import Overlay from "../view/Overlay";
-import TurnAnnouncement from "./../battle/TurnNotification";
 
 const useStyles = createUseStyles({
     inner: {
