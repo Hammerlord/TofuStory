@@ -144,13 +144,13 @@ export const isValidTarget = ({ ability, side, playerSide, enemySide, index, act
 
         if (target === TARGET_TYPES.FRIENDLY) {
             const getCalculationTarget = (targetType) => {
-                if (targetType === "actor") {
+                if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                     return actor;
-                } else if (targetType === "target") {
+                } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
                     return playerSide[index];
                 }
             };
-            const conditionsPassed = actions.every((action) => passesConditions({ getCalculationTarget, proc: action }));
+            const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
             if (area === 0) {
                 // No sense in letting a single target ability whiff on an empty slot, for now
                 return Boolean(playerSide[index]) && playerSide[index].HP > 0 && conditionsPassed;
@@ -163,8 +163,16 @@ export const isValidTarget = ({ ability, side, playerSide, enemySide, index, act
         if (isStealthed(targetedEnemy)) {
             return false;
         }
+        const getCalculationTarget = (targetType) => {
+            if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
+                return actor;
+            } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
+                return targetedEnemy;
+            }
+        };
+        const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
         if (area === 0) {
-            return targetedEnemy?.HP > 0;
+            return targetedEnemy?.HP > 0 && conditionsPassed;
         }
         return true;
     }
