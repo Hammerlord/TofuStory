@@ -195,9 +195,12 @@ const useStyles = createUseStyles({
             filter: "brightness(0.5)",
         },
     },
-    dead: {
+    dying: {
         animation: "$deadAnimation 1s forwards",
         transitionTimingFunction: "ease-in-out",
+    },
+    dead: {
+        opacity: 0,
     },
     weaponContainer: {
         position: "absolute",
@@ -214,12 +217,16 @@ const CombatantView = forwardRef(
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
+        const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
         const classes = useStyles();
 
         useEffect(() => {
             if (!combatant || !oldState || oldState.id !== combatant.id) {
                 setStatChanges({});
                 setOldState(combatant);
+                if (combatant?.HP > 0) {
+                    setPlayDeathAnimation(false);
+                }
                 return;
             }
 
@@ -231,6 +238,10 @@ const CombatantView = forwardRef(
             const timeout = setTimeout(() => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
+                const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
+                if (isKillingBlow) {
+                    setPlayDeathAnimation(true);
+                }
             }, 300);
 
             return () => {
@@ -277,7 +288,8 @@ const CombatantView = forwardRef(
                                         src={combatant.image}
                                         className={classNames(classes.portraitImage, {
                                             [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                                            [classes.dead]: oldState.HP === 0,
+                                            [classes.dying]: playDeathAnimation,
+                                            [classes.dead]: !playDeathAnimation && oldState.HP === 0,
                                             [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
                                             [classes.casting]: oldState.casting,
                                         })}
