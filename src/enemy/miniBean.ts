@@ -155,6 +155,55 @@ const suckIn: Ability = {
     ],
 };
 
+const throwFood: Ability = {
+    name: "Throw Food",
+    image: bananaGrahamPieImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            excludePrimaryTarget: true,
+            area: 5,
+            effects: [
+                {
+                    name: "Foodborne Projectile",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    damage: 2,
+                    duration: 0,
+                    onAttack: {
+                        removeEffect: true,
+                        damage: 5,
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    },
+                },
+            ],
+            induceCombatantAttack: true,
+        },
+    ],
+};
+
+const picoDrop: Ability = {
+    name: "Pico Drop",
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: toyHammerImage,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            area: 1,
+        },
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: toyHammerImage,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            area: 1,
+        },
+    ],
+};
+
 export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: miniBeanImage,
@@ -163,26 +212,8 @@ export const miniBean: Minion = {
     damage: 3,
     abilities: [
         suckIn,
-        {
-            name: "Pico Drop",
-            resourceCost: 1,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: toyHammerImage,
-                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    area: 1,
-                },
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: toyHammerImage,
-                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    area: 1,
-                },
-            ],
-        },
+        picoDrop,
+        throwFood,
         {
             name: "Big Suck",
             resourceCost: 3,

@@ -377,6 +377,9 @@ const BattlefieldContainer = () => {
         if (ability) {
             // TODO move this to its own component dude
             const { image, name } = ability;
+            if (!name) {
+                return;
+            }
             let imageNode;
             if (typeof image === "string") {
                 imageNode = <img src={image} className={classes.notificationAbility} />;

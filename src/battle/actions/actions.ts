@@ -1,4 +1,3 @@
-import { aggregateItemEffects } from "./../../Menu/utils";
 import { cloneDeep, uniq } from "lodash";
 import { compose, partition } from "ramda";
 import uuid from "uuid";
@@ -33,6 +32,7 @@ import {
     clearTurnHistory,
     getBasicAttack,
     getEnabledEffects,
+    getInducedAttack,
     getPossibleSummonIndices,
     getValidTargetIndices,
     hasEffectType,
@@ -44,6 +44,7 @@ import {
     updateHP,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
+import { aggregateItemEffects } from "./../../Menu/utils";
 import { TriggerSource } from "./../types";
 
 const { drawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
@@ -673,14 +674,15 @@ const performAction = ({
     return (dispatch, getState) => {
         const area = calculateActionArea({ action, actor: findCombatant(getState, actorId) });
 
-        if (action.vacuum) {
+        const { vacuum, induceCombatantAttack, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
+        if (vacuum) {
             dispatch(
                 updateBattle({
                     [side]: applyVacuum({
                         characters: getState().battle[side],
                         index: selectedIndex,
                         area,
-                        distance: action.vacuum,
+                        distance: vacuum,
                     }),
                 })
             );
@@ -688,7 +690,6 @@ const performAction = ({
 
         dispatch(checkHandleSummon({ action, actorId }));
 
-        const extraTargets = action.numTargets || 0;
         const extraTargetIndices = shuffle(
             getValidTargetIndices(getState().battle[side], {
                 excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
@@ -698,7 +699,7 @@ const performAction = ({
 
         const isAffected = (combatant: Combatant | null, i: number): boolean => {
             const inArea = combatant && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
-            if (action.excludePrimaryTarget) {
+            if (excludePrimaryTarget) {
                 return inArea && i !== selectedIndex;
             }
 
@@ -709,7 +710,7 @@ const performAction = ({
         const combatants = getState().battle[side];
         const { source, type } = parentSource || {};
         const ability = type === "ability" ? (source as Ability) : undefined;
-        const affectedIndices = combatants
+        const { affectedIndices, affectedCombatants } = combatants
             .map((character: Combatant | null, i: number) => {
                 if (!isAffected(character, i)) {
                     return;
@@ -740,10 +741,16 @@ const performAction = ({
                 dispatch(onReceiveAction({ action, targetId: updated.id, actorId, actionParentType: type }));
                 return updated;
             })
-            .reduce((acc: number[], cur: Combatant | undefined, i: number) => {
-                if (cur) acc.push(i);
-                return acc;
-            }, []);
+            .reduce(
+                (acc, cur: Combatant | undefined, i: number) => {
+                    if (cur) {
+                        acc.affectedIndices.push(i);
+                        acc.affectedCombatants.push(cur);
+                    }
+                    return acc;
+                },
+                { affectedIndices: [], affectedCombatants: [] }
+            );
 
         const { turnHistory } = findCombatant(getState, actorId);
 
@@ -774,6 +781,24 @@ const performAction = ({
                     action.playbackTime || (ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
             } as Event)
         );
+
+        if (induceCombatantAttack) {
+            shuffle(affectedCombatants).forEach(({ id }) => {
+                const { hostileSide, actor } = orientate({ actorId: id, ...getState().battle }); // Make sure combatant's not stale
+                if (!actor.HP) {
+                    return;
+                }
+                dispatch(
+                    performAction({
+                        action: getInducedAttack(actor),
+                        selectedIndex,
+                        side: hostileSide,
+                        actorId: id,
+                        parentSource,
+                    })
+                );
+            });
+        }
 
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
         dispatch(checkCardActions(action, actorId));

@@ -313,6 +313,8 @@ export interface Action {
         // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
         positionIndex?: number;
     }[];
+    // When cast on a combatant that has attack power, that combatant will attack randomly.
+    induceCombatantAttack?: boolean;
 }
 
 export interface Ability {

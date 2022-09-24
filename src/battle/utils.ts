@@ -366,12 +366,14 @@ export const orientate = ({ actorId, enemySide, playerSide }) => {
     const { PLAYER_SIDE, ENEMY_SIDE } = BATTLEFIELD_SIDES;
     const [actorSide, hostileSide] = playerSide.find((c) => c?.id === actorId) ? [PLAYER_SIDE, ENEMY_SIDE] : [ENEMY_SIDE, PLAYER_SIDE];
     const [friendly, hostile] = actorSide === PLAYER_SIDE ? [playerSide, enemySide] : [enemySide, playerSide];
+    const actorIndex = friendly.findIndex((c) => c?.id === actorId);
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
         actorSide,
         hostileSide,
-        actorIndex: friendly.findIndex((c) => c?.id === actorId),
+        actorIndex,
+        actor: friendly[actorIndex],
     };
 };
 
@@ -426,7 +428,7 @@ export const applyVacuum = ({
     return newCharacters;
 };
 
-export const getBasicAttack = (actor): HandAbility => {
+export const getBasicAttack = (actor: Combatant): Ability => {
     if (actor.attack) {
         return actor.attack;
     }
@@ -440,6 +442,15 @@ export const getBasicAttack = (actor): HandAbility => {
                 type: ACTION_TYPES.ATTACK,
             },
         ],
+    };
+};
+
+export const getInducedAttack = (actor: Combatant): Action => {
+    return {
+        damage: actor.damage || 0,
+        target: TARGET_TYPES.RANDOM_HOSTILE,
+        type: ACTION_TYPES.ATTACK,
+        playbackTime: 400,
     };
 };
 
