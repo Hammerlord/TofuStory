@@ -1,6 +1,7 @@
 import { compose } from "ramda";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
+import { Ability } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 
 const DECK_COLOR = "#176fbd";
@@ -33,6 +34,24 @@ const useStyles = createUseStyles({
     svg: {
         overflow: "visible",
     },
+    abilityList: {
+        margin: 0,
+        padding: 0,
+        listStyle: "none",
+    },
+    abilityItem: {
+        marginBottom: "2px",
+    },
+    abilityIcon: {
+        width: "24px",
+        maxHeight: "24px",
+        verticalAlign: "bottom",
+    },
+    tooltipTitle: {
+        textAlign: "center",
+        fontWeight: "bold",
+        marginBottom: "4px",
+    },
 });
 
 const Deck = ({ deck, discard }) => {
@@ -46,35 +65,71 @@ const Deck = ({ deck, discard }) => {
         return isLast ? DECK_COLOR : DECK_SHADOW;
     };
 
-    const getCountMap = (items: { name: string }[]) => {
+    const getAbilityMap = (items: Ability[]): { [abilityName: string]: { count: number; ability: Ability } } => {
         return items
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
-            .reduce((acc, item) => {
-                acc[item.name] = (acc[item.name] || 0) + 1;
+            .reduce((acc, ability) => {
+                const abilityLevel = ability.level || 1;
+                const levelDisplay = Array.from({ length: ability.level })
+                    .map(() => "⋆")
+                    .join("");
+                const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
+                acc[name] = {
+                    ability,
+                    count: (acc[name]?.count || 0) + 1,
+                };
                 return acc;
             }, {});
     };
 
-    const getTooltip = (count) => {
-        return Object.entries(count).map(([abilityName, count], i) => (
-            <div key={i}>
-                {abilityName} x{count}
-            </div>
-        ));
+    const getTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: Ability } }) => {
+        return (
+            <ul className={classes.abilityList}>
+                {Object.entries(abilityMap).map(([abilityName, { ability, count }], i) => {
+                    const image = ability.image;
+                    let imageNode;
+                    if (typeof image === "string") {
+                        imageNode = <img src={image} className={classes.abilityIcon} />;
+                    } else if (typeof image === "function") {
+                        const ImageNode = image as Function;
+                        imageNode = <ImageNode className={classes.abilityIcon} />;
+                    }
+
+                    return (
+                        <li key={abilityName} className={classes.abilityItem}>
+                            {imageNode} {abilityName} x{count}
+                        </li>
+                    );
+                })}
+            </ul>
+        );
     };
 
-    const deckCount = useMemo(() => compose(getTooltip, getCountMap)(deck), [deck]);
-    const discardCount = useMemo(() => compose(getTooltip, getCountMap)(discard), [discard]);
+    const deckCount = useMemo(() => compose(getTooltip, getAbilityMap)(deck), [deck]);
+    const discardCount = useMemo(() => compose(getTooltip, getAbilityMap)(discard), [discard]);
+    const deckTooltip = (
+        <div>
+            <div className={classes.tooltipTitle}>Deck</div>
+            {deckCount}
+        </div>
+    );
+
+    const discardTooltip = (
+        <div>
+            <div className={classes.tooltipTitle}>On cooldown</div>
+            {discardCount}
+        </div>
+    );
 
     return (
         <div className={classes.root}>
-            <Tooltip title={deckCount} placement={"right"}>
+            <Tooltip title={deckTooltip} placement={"right"}>
                 <div className={classes.deckContainer}>
                     <svg viewBox="0 0 100 100" className={classes.svg}>
                         {Array.from({ length: deck.length + discard.length }).map((_, i) => {
                             return (
-                                <svg key={i} y={i * -5 + 75} viewBox="0 0 100 100">
+                                <svg key={i} y={i * -2 + 75} viewBox="0 0 100 100">
                                     <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
                                     {i === deck.length + discard.length - 1 && (
                                         <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
@@ -88,7 +143,7 @@ const Deck = ({ deck, discard }) => {
                 </div>
             </Tooltip>
 
-            <Tooltip title={discardCount} placement={"right"}>
+            <Tooltip title={discardTooltip} placement={"right"}>
                 <div className={classes.onCooldown}>Cooldown: {discard.length}</div>
             </Tooltip>
         </div>

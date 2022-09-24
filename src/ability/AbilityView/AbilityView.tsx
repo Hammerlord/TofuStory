@@ -243,7 +243,11 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     <span className={classes.header}>
                         {cornerIcon}
                         <span className={classes.name}>
-                            {name} {ability.level === 2 && "⋆⋆"}
+                            {name}{" "}
+                            {ability.level > 1 &&
+                                Array.from({ length: ability.level })
+                                    .map(() => "⋆")
+                                    .join("")}
                         </span>{" "}
                         <ResourceIcon ability={ability} />
                     </span>
