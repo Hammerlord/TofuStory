@@ -173,7 +173,7 @@ const BattlefieldContainer = () => {
     const classes = useStyles();
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        if (!ally || ally.isPlayer) {
+        if (!ally || ally.isPlayer || ally.HP === 0) {
             return false;
         }
         const damageFromEffects = getEnabledEffects(ally).reduce((acc: number, { damage = 0 }) => acc + damage, 0);
