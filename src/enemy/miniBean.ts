@@ -6,11 +6,15 @@ import {
     cakeSliceImage,
     forkedTurkeyImage,
     greenCheeseImage,
+    grilledCheeseImage,
+    hotdogSupremeImage,
     miniBeanImage,
+    tofuImage,
     toyHammerImage,
     turkeyImage,
     unagiImage,
     yuckImage,
+    zingyKebabImage,
 } from "../images";
 import { hardy } from "./../ability/Effects";
 import {
@@ -44,64 +48,77 @@ const yuck: Effect = {
     duration: 3,
 };
 
+const delicious = {
+    name: "Delicious",
+    icon: turkeyImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    onDeath: {
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        healing: 2,
+        effects: [yum],
+    },
+};
+
+const disgusting = {
+    name: "Disgusting",
+    icon: yuckImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    onDeath: {
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        effects: [yuck],
+        damage: 3,
+    },
+};
+
 export const cake: Minion = {
     name: "Cake",
     image: cakeSliceImage,
-    maxHP: 30,
-    damage: 0,
-    effects: [
-        {
-            name: "Delicious",
-            icon: turkeyImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onDeath: {
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                healing: 2,
-                effects: [yum],
-            },
-        },
-    ],
+    maxHP: 20,
+    effects: [delicious],
 };
 
 export const unagi: Minion = {
     name: "Unagi",
     image: unagiImage,
-    maxHP: 50,
-    damage: 0,
-    effects: [
-        {
-            name: "Delicious",
-            icon: turkeyImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onDeath: {
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                healing: 3,
-                effects: [yum],
-            },
-        },
-    ],
+    maxHP: 25,
+    effects: [delicious],
 };
 
 export const bananaGrahamPie: Minion = {
     name: "Banana Graham Pie",
     image: bananaGrahamPieImage,
     maxHP: 50,
-    damage: 0,
-    effects: [
-        {
-            name: "Delicious",
-            icon: turkeyImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onDeath: {
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                healing: 3,
-                effects: [yum],
-            },
-        },
-    ],
+    effects: [delicious, delicious],
+};
+
+export const hotdogSupremeMinion: Minion = {
+    name: "Hotdog Supreme",
+    image: hotdogSupremeImage,
+    maxHP: 50,
+    effects: [delicious, delicious],
+};
+
+export const tofuPlatter: Minion = {
+    name: "Tofu",
+    image: tofuImage,
+    maxHP: 20,
+    effects: [delicious],
+};
+
+export const grilledCheese: Minion = {
+    name: "Grilled Cheese",
+    image: grilledCheeseImage,
+    maxHP: 25,
+    effects: [delicious],
+};
+
+export const nastyKebab: Minion = {
+    name: "Nasty Kebab",
+    image: zingyKebabImage,
+    maxHP: 12,
+    effects: [disgusting],
 };
 
 export const moldyCheese: Minion = {
@@ -109,19 +126,7 @@ export const moldyCheese: Minion = {
     image: greenCheeseImage,
     maxHP: 10,
     damage: 0,
-    effects: [
-        {
-            name: "Disgusting",
-            icon: yuckImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onDeath: {
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                effects: [yuck],
-                damage: 3,
-            },
-        },
-    ],
+    effects: [disgusting],
 };
 
 const suckIn: Ability = {
@@ -143,11 +148,11 @@ const suckIn: Ability = {
             // that may not be the case and we may need a no-animation action to handle this instead
             summon: [
                 {
-                    minion: [cake, unagi, bananaGrahamPie, moldyCheese],
+                    minion: [cake, unagi, bananaGrahamPie, moldyCheese, hotdogSupremeMinion, tofuPlatter, grilledCheese, nastyKebab],
                     positionIndex: 0,
                 },
                 {
-                    minion: [cake, unagi, bananaGrahamPie, moldyCheese],
+                    minion: [cake, unagi, bananaGrahamPie, moldyCheese, hotdogSupremeMinion, tofuPlatter, grilledCheese, nastyKebab],
                     positionIndex: 4,
                 },
             ],
@@ -235,10 +240,12 @@ export const eat: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             damage: 100,
-            conditions: [cake.name, unagi.name, bananaGrahamPie.name, moldyCheese.name].map((name) => ({
-                calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                characterName: name,
-            })),
+            conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
+                ({ name }) => ({
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    characterName: name,
+                })
+            ),
         },
     ],
 };
