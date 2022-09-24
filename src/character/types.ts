@@ -1,10 +1,10 @@
-import { Ability } from "../ability/types";
+import { Ability, Minion } from "../ability/types";
 import { BATTLEFIELD_SIDES } from "../battle/types";
 import { Item } from "../item/types";
 import { Action, Aura, CombatEffect } from "./../ability/types";
 
 /** Interface of a battle participant */
-export interface Combatant {
+export interface Combatant extends Minion {
     HP: number;
     maxHP: number;
     armor: number;
@@ -24,6 +24,7 @@ export interface Combatant {
         selectedSide?: BATTLEFIELD_SIDES;
     };
     turnHistory: Action[];
+    abilityHistory: Ability[];
     maxResources?: number;
     resourcesPerTurn?: number;
     items: Item[];

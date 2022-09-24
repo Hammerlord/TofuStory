@@ -425,7 +425,6 @@ export const checkEventTrigger = ({
             return;
         }
 
-        console.log("triggering", effectEventKey, triggerSource);
         combatant.effects.forEach((effect: CombatEffect) => {
             if (effect[effectEventKey]) {
                 dispatch(
@@ -746,11 +745,13 @@ const performAction = ({
                 return acc;
             }, []);
 
+        const { turnHistory } = findCombatant(getState, actorId);
+
         dispatch(
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    turnHistory: [...findCombatant(getState, actorId).turnHistory, action],
+                    turnHistory: [...turnHistory, action],
                 },
             })
         );
@@ -970,6 +971,15 @@ export const useAbility = ({
         };
 
         actions.forEach(handleAction);
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: {
+                    abilityHistory: [...findCombatant(getState, actorId).abilityHistory, ability],
+                },
+            })
+        );
 
         dispatch(
             checkEventTrigger({

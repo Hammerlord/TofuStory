@@ -1,4 +1,4 @@
-import { Enemy } from "../enemy/enemy";
+import { Minion } from "../ability/types";
 import { Item } from "../item/types";
 
 export interface Scene {
@@ -12,7 +12,7 @@ export interface ScriptResponse {
     encounter?: {
         characters: string[];
         waves: {
-            enemies: Enemy[];
+            enemies: Minion[];
         }[];
     };
     next?: ScriptNode[];

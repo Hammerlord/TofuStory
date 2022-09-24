@@ -1,11 +1,10 @@
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { rally } from "../enemy/abilities";
-import { Enemy } from "../enemy/enemy";
 import { goldrichieImage, warriorImage, weaponmasteryImage, wizardImage } from "../images";
 import { Wave } from "../Menu/tutorial";
 import { NPC } from "./types";
 
-const goldRichie: Enemy = {
+const goldRichie: Minion = {
     name: "Gold Richie",
     image: goldrichieImage,
     maxHP: 15,
@@ -33,7 +32,7 @@ const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
     ],
 };
 
-const goldRichie2: Enemy = {
+const goldRichie2: Minion = {
     name: "Gold Richie",
     image: goldrichieImage,
     maxHP: 15,

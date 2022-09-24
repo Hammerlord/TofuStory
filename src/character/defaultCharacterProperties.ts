@@ -18,6 +18,7 @@ const defaultCharacterProperties = {
     resources: 3,
     armor: 0,
     turnHistory: [],
+    abilityHistory: [],
     mesos: 0,
     isPlayer: true,
     weapon: oldGladiusImage,

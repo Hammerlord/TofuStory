@@ -177,15 +177,18 @@ export interface Aura extends Effect {
     area?: number;
 }
 
-interface Minion {
-    // Merge with Combatant?
+export interface Minion {
     name: string;
     image: string;
     maxHP: number;
-    damage: number;
-    effects?: Effect[];
+    HP?: number;
     armor?: number;
-    aura?: Aura;
+    abilities?: Ability[];
+    damage?: number;
+    effects?: Effect[];
+    resources?: number;
+    /** Enemy basic attack. If not provided, one will be generated. */
+    attack?: Ability;
 }
 
 export enum CONDITION_TYPE {

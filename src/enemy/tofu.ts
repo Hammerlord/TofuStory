@@ -1,4 +1,4 @@
-import { Enemy } from "./enemy";
+import { Minion } from "../ability/types";
 import { BigBeefy, regalTofu } from "../images";
 import realtofuPortrait from "../images/item118.png";
 import theraretofuPortrait from "../images/item257.png";
@@ -7,7 +7,7 @@ import matty from "../images/matty.png";
 import { hardy, raging } from "./../ability/Effects";
 import { loaf, move, rally, shiningLaser, tantrum } from "./abilities";
 
-export const smalltofu: Enemy = {
+export const smalltofu: Minion = {
     name: "Small Tofu",
     image: smalltofuPortrait,
     maxHP: 3,
@@ -17,7 +17,7 @@ export const smalltofu: Enemy = {
     effects: [],
 };
 
-export const thefaketofu: Enemy = {
+export const thefaketofu: Minion = {
     name: "Fake Tofu",
     image: matty,
     maxHP: 5,
@@ -26,7 +26,7 @@ export const thefaketofu: Enemy = {
     abilities: [loaf, move],
 };
 
-export const realtofu: Enemy = {
+export const realtofu: Minion = {
     name: "Real Tofu",
     image: realtofuPortrait,
     maxHP: 8,
@@ -36,7 +36,7 @@ export const realtofu: Enemy = {
     effects: [],
 };
 
-export const theraretofu: Enemy = {
+export const theraretofu: Minion = {
     name: "Rare Tofu",
     image: theraretofuPortrait,
     maxHP: 15,
@@ -47,7 +47,7 @@ export const theraretofu: Enemy = {
     effects: [hardy],
 };
 
-export const bigBeefy: Enemy = {
+export const bigBeefy: Minion = {
     name: "Big Beefy",
     image: BigBeefy,
     maxHP: 30,
@@ -58,7 +58,7 @@ export const bigBeefy: Enemy = {
     effects: [hardy, raging],
 };
 
-export const theRegalTofu: Enemy = {
+export const theRegalTofu: Minion = {
     name: "The Regal Tofu",
     image: regalTofu,
     maxHP: 10,

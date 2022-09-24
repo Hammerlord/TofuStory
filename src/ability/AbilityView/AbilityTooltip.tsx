@@ -95,7 +95,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         return acc;
     }, {});
 
-    const aura = ability.minion?.aura;
     const classes = useTooltipStyles();
 
     const getUniqueEffects = (ability: Ability): Effect[] => {
@@ -119,6 +118,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
     });
 
+    /**
     if (aura) {
         tooltips.push(
             <AbilityTooltipSection
@@ -129,6 +129,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
             />
         );
     }
+     */
     const cardsToAdd = Object.values(cardsToAddMap);
 
     const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;

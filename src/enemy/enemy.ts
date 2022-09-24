@@ -1,4 +1,3 @@
-import { Ability, Effect } from "../ability/types";
 import {
     axestumpImage,
     bluesnailImage,
@@ -29,25 +28,19 @@ import {
     wildboarImage,
 } from "../images";
 import { burn, elite, hardy, raging, stealth, thorns } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { enemyHaste, loaf } from "./abilities";
 
-export interface Enemy {
-    name: string;
-    image: string;
-    maxHP: number;
-    HP?: number;
-    armor?: number;
-    abilities?: Ability[];
-    damage: number;
-    effects?: Effect[];
-    resources?: number;
-    /** Enemy basic attack. If not provided, one will be generated for the enemy. */
-    attack?: Ability;
-}
-
-export const snail: Enemy = {
+export const snail: Minion = {
     name: "Snail",
     maxHP: 14,
     abilities: [loaf],
@@ -55,7 +48,7 @@ export const snail: Enemy = {
     damage: 2,
 };
 
-export const blueSnail: Enemy = {
+export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 25,
     image: bluesnailImage,
@@ -74,14 +67,14 @@ export const blueSnail: Enemy = {
     ],
 };
 
-export const shroom: Enemy = {
+export const shroom: Minion = {
     name: "Shroom",
     maxHP: 20,
     image: shroomImage,
     damage: 3,
 };
 
-export const redSnail: Enemy = {
+export const redSnail: Minion = {
     name: "Red Snail",
     maxHP: 35,
     image: redsnailImage,
@@ -100,7 +93,7 @@ export const redSnail: Enemy = {
     ],
 };
 
-export const orangeMushroom: Enemy = {
+export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
     maxHP: 40,
     image: orangeMushroomImage,
@@ -108,7 +101,7 @@ export const orangeMushroom: Enemy = {
     effects: [hardy],
 };
 
-export const noobA: Enemy = {
+export const noobA: Minion = {
     name: "Beginner A",
     maxHP: 30,
     image: noobClubAImage,
@@ -138,7 +131,7 @@ export const noobA: Enemy = {
     ],
 };
 
-export const noobB: Enemy = {
+export const noobB: Minion = {
     name: "Beginner B",
     maxHP: 30,
     image: noobClubBImage,
@@ -213,7 +206,7 @@ export const noobBWarrior = {
     ],
 };
 
-export const thiefAssassin: Enemy = {
+export const thiefAssassin: Minion = {
     name: "XxLeetSinxX",
     maxHP: 40,
     image: leetSin,
@@ -308,14 +301,14 @@ export const olaf = {
     image: olafImage,
 };
 
-export const octopus: Enemy = {
+export const octopus: Minion = {
     name: "Octopus",
     image: octopusImage,
     maxHP: 7,
     damage: 1,
 };
 
-export const wildBoar: Enemy = {
+export const wildBoar: Minion = {
     name: "Wild Boar",
     image: wildboarImage,
     maxHP: 12,
@@ -335,7 +328,7 @@ export const wildBoar: Enemy = {
     ],
 };
 
-export const stump: Enemy = {
+export const stump: Minion = {
     name: "Stump",
     image: stumpImage,
     maxHP: 10,
@@ -344,7 +337,7 @@ export const stump: Enemy = {
     effects: [hardy],
 };
 
-export const axeStump: Enemy = {
+export const axeStump: Minion = {
     name: "Axe Stump",
     image: axestumpImage,
     maxHP: 17,
@@ -372,7 +365,7 @@ export const axeStump: Enemy = {
     effects: [hardy],
 };
 
-export const fireBoar: Enemy = {
+export const fireBoar: Minion = {
     name: "Fire Boar",
     image: fireboarImage,
     maxHP: 35,
@@ -394,14 +387,14 @@ export const fireBoar: Enemy = {
     effects: [hardy],
 };
 
-export const ligator: Enemy = {
+export const ligator: Minion = {
     name: "Ligator",
     image: ligatorImage,
     maxHP: 20,
     damage: 2,
 };
 
-export const eliteLigator: Enemy = {
+export const eliteLigator: Minion = {
     name: "Ligator",
     image: ligatorImage,
     maxHP: 35,
@@ -409,14 +402,14 @@ export const eliteLigator: Enemy = {
     effects: [elite, raging],
 };
 
-export const greenMushroom: Enemy = {
+export const greenMushroom: Minion = {
     name: "Green Mushroom",
     image: greenmushroomImage,
     maxHP: 25,
     damage: 1,
 };
 
-export const hornyMushroom: Enemy = {
+export const hornyMushroom: Minion = {
     name: "Horny Mushroom",
     image: hornymushroomImage,
     maxHP: 30,
@@ -424,7 +417,7 @@ export const hornyMushroom: Enemy = {
     effects: [thorns],
 };
 
-export const kingSlimeEnemy: Enemy = {
+export const kingSlimeEnemy: Minion = {
     name: "King Slime",
     image: kingslimeImage,
     maxHP: 100,
@@ -445,7 +438,7 @@ export const kingSlimeEnemy: Enemy = {
     ],
 };
 
-export const mutantSnailEnemy: Enemy = {
+export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: mutantSnailImage,
     maxHP: 150,
@@ -559,7 +552,7 @@ export const mutantSnailEnemy: Enemy = {
     ],
 };
 
-export const manoEnemy: Enemy = {
+export const manoEnemy: Minion = {
     name: "Mano",
     image: manoImage,
     maxHP: 100,

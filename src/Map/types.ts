@@ -1,9 +1,9 @@
 import { Wave } from "./../Menu/tutorial";
 import { Item } from "../item/types";
-import { Enemy } from "./../enemy/enemy";
 import { NPC } from "./../scene/types";
 import KerningCity from "./KerningCity";
 import LithHarbor from "./LithHarbor";
+import { Minion } from "../ability/types";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
@@ -29,10 +29,10 @@ export interface RouteNode {
 }
 
 export interface MapEnemies {
-    easy: Enemy[];
-    normal: Enemy[];
-    hard: Enemy[];
-    hardest: Enemy[];
+    easy: Minion[];
+    normal: Minion[];
+    hard: Minion[];
+    hardest: Minion[];
 }
 
 export enum ENEMY_DIFFICULTY {
@@ -59,7 +59,7 @@ export interface Route {
         mesos?: { min: number; max: number };
         items?: Item[];
     }[];
-    elites?: Enemy[];
+    elites?: Minion[];
     next?: Route[];
 }
 

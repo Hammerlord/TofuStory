@@ -148,7 +148,7 @@ const TreasureBox = ({
     mesos?: number;
     title?: string;
     onLoot: Function;
-    Puzzle?: ({ onComplete: Function, completed: boolean }) => JSX.Element;
+    Puzzle?: ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => JSX.Element;
 }) => {
     const classes = useStyles();
     const [completed, setCompleted] = useState(!Puzzle);

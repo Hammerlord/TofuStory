@@ -1,6 +1,5 @@
 import { concat } from "ramda";
-import { Ability } from "../ability/types";
-import { Enemy } from "../enemy/enemy";
+import { Ability, Minion } from "../ability/types";
 import { avenger, elite, eliteSquad, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { createCombatant } from "./../enemy/createEnemy";
@@ -9,7 +8,7 @@ import { getRandomItem, shuffle } from "./../utils";
 import { enemyLayouts } from "./routes/layouts";
 import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";
 
-const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
+const getSyntheticSummon = (summonableEnemies: Minion[]): Ability => {
     return {
         name: "Call Minion",
         minion: {
@@ -19,7 +18,7 @@ const getSyntheticSummon = (summonableEnemies: Enemy[]): Ability => {
     };
 };
 
-const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
+const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
@@ -38,7 +37,7 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
     ]);
 };
 
-const generateElite = (possibleEnemies: MapEnemies): (Enemy | null)[] => {
+const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, shielding]);
     const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
     const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));

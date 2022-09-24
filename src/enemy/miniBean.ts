@@ -20,12 +20,12 @@ import {
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Minion,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { Enemy } from "./enemy";
 
-const yum = {
+const yum: Effect = {
     name: "Yum!",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -41,10 +41,10 @@ const yuck: Effect = {
     icon: yuckImage,
     damage: -1,
     damageReceived: 1,
-    duration: 5,
+    duration: 3,
 };
 
-export const cake: Enemy = {
+export const cake: Minion = {
     name: "Cake",
     image: cakeSliceImage,
     maxHP: 30,
@@ -64,7 +64,7 @@ export const cake: Enemy = {
     ],
 };
 
-export const unagi: Enemy = {
+export const unagi: Minion = {
     name: "Unagi",
     image: unagiImage,
     maxHP: 50,
@@ -84,7 +84,7 @@ export const unagi: Enemy = {
     ],
 };
 
-export const bananaGrahamPie: Enemy = {
+export const bananaGrahamPie: Minion = {
     name: "Banana Graham Pie",
     image: bananaGrahamPieImage,
     maxHP: 50,
@@ -104,7 +104,7 @@ export const bananaGrahamPie: Enemy = {
     ],
 };
 
-export const moldyCheese: Enemy = {
+export const moldyCheese: Minion = {
     name: "Moldy Cheese",
     image: greenCheeseImage,
     maxHP: 10,
@@ -155,7 +155,7 @@ const suckIn: Ability = {
     ],
 };
 
-export const miniBean: Enemy = {
+export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: miniBeanImage,
     maxHP: 300,
@@ -165,12 +165,20 @@ export const miniBean: Enemy = {
         suckIn,
         {
             name: "Pico Drop",
+            resourceCost: 1,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: toyHammerImage,
-                    animation: ANIMATION_TYPES.DROP,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    area: 1,
+                },
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: toyHammerImage,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     area: 1,
                 },
             ],

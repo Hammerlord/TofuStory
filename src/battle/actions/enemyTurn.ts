@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
-import { Ability, EFFECT_CLASSES } from "../../ability/types";
+import { Ability, Action, EFFECT_CLASSES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { loaf } from "../../enemy/abilities";
 import { getRandomItem } from "../../utils";
@@ -171,17 +171,19 @@ const handleCastTick = (actorId: string) => {
     };
 };
 
+const CHANCE_TO_SKIP_REPEAT_ABILITY = 0.8;
+const CHANCE_TO_SUMMON_MULTIPLIER = 0.2;
+
 /**
  * Given an enemy or minion, pick an ability from its pool of abilities. (Not meant to be used for the player character who has cards etc.)
  * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
  */
-const pickAbility = ({ actor, hostile, friendly }): Ability => {
+const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: Combatant; friendly: Combatant[] }): Ability => {
     const [specialAbilities, regularAbilities] = partition(
         (a) => a.resourceCost > 0,
         actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
     );
 
-    let ability: Ability;
     // If we are capped resources, we should always use a special ability, preferably the most expensive ones
     if (specialAbilities.length > 0 && actor.resources === actor.maxResources) {
         const maxResourceAbilities = specialAbilities.filter(({ resourceCost }) => resourceCost === actor.maxResources);
@@ -189,10 +191,26 @@ const pickAbility = ({ actor, hostile, friendly }): Ability => {
     }
 
     // High chance of picking minion summon if there are many spaces to summon
-    const [minionSummonAbilities, otherAbilities] = partition((ability) => ability.minion, regularAbilities);
-    const chanceToSummon = getPossibleSummonIndices(friendly).length * 0.2;
+    const [minionSummonAbilities, otherAbilities] = partition(
+        (ability) => ability.minion || ability.actions.some((a: Action) => a.summon),
+        regularAbilities
+    );
+    const chanceToSummon = getPossibleSummonIndices(friendly).length * CHANCE_TO_SUMMON_MULTIPLIER;
     if (minionSummonAbilities.length > 0 && Math.random() <= chanceToSummon) {
         return getRandomItem(minionSummonAbilities);
+    }
+
+    if (actor.damage > 0) {
+        otherAbilities.push(getBasicAttack(actor));
+    }
+
+    if (Math.random() <= CHANCE_TO_SKIP_REPEAT_ABILITY) {
+        // We are assuming that same name === same ability even though that is not actually guaranteed
+        const lastAbilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
+        if (lastAbilityUsed) {
+            otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+            specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+        }
     }
 
     // Pick a special ability at just a chance
@@ -209,9 +227,6 @@ const pickAbility = ({ actor, hostile, friendly }): Ability => {
         }
     }
 
-    if (actor.damage > 0) {
-        otherAbilities.push(...Array.from({ length: 3 }).map(() => getBasicAttack(actor)));
-    }
     return getRandomItem(otherAbilities);
 };
 

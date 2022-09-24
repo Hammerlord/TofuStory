@@ -30,6 +30,7 @@ export const createCombatant = (combatant): Combatant => {
                 id: uuid.v4(),
             })) || [],
         turnHistory: [],
+        abilityHistory: [],
         attack: getBasicAttack(combatant),
     };
 };

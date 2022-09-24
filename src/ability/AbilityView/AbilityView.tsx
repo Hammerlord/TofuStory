@@ -12,7 +12,6 @@ import { getAbilityColor } from "../utils";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
-import AuraView from "./AuraView";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
@@ -168,7 +167,6 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
         );
     }
 
-    const { aura } = minion || {};
     const { baseDamage } = getDamageStatistics({ ability, player });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
@@ -285,7 +283,6 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         <RadiateView ability={ability} />
                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
-                        {aura && <AuraView aura={aura} />}
                     </div>
                     <div className={classes.footer}>
                         {actions.length > 0 && area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
