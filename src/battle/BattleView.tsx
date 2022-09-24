@@ -192,7 +192,6 @@ const BattlefieldContainer = () => {
     };
 
     const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
-        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         setSelectedAllyIndex(null);
         if (!canUseAbility(player, hand[i])) {
             warn(`Need more resources to use ${hand[i].name}.`);
@@ -204,13 +203,14 @@ const BattlefieldContainer = () => {
                 setSelectedAbilityIndex(null);
             } else {
                 setSelectedAbilityIndex(i);
+                e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
             }
         }
     };
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        dispatch(onUsePlayerAbility({ selectedIndex, selectedAbilityIndex, side }) as any);
         setSelectedAbilityIndex(null);
+        dispatch(onUsePlayerAbility({ selectedIndex, selectedAbilityIndex, side }) as any);
     };
 
     const handleAllyAttack = ({ index }) => {
@@ -220,8 +220,6 @@ const BattlefieldContainer = () => {
     };
 
     const handleAllyClick = (e: React.ChangeEvent, index) => {
-        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
-
         if (disableActions) {
             return;
         }
@@ -239,12 +237,11 @@ const BattlefieldContainer = () => {
             setSelectedAllyIndex(null);
         } else if (isEligibleToAttack(playerSide[index])) {
             setSelectedAllyIndex(index);
+            e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         }
     };
 
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
-        e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
-
         const selectedAbility = hand[selectedAbilityIndex];
 
         if (selectedAbility) {
