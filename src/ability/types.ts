@@ -146,6 +146,7 @@ export interface Effect {
     onEnd?: EffectEventTrigger;
     onWaveStart?: EffectEventTrigger;
     onWaveClear?: EffectEventTrigger;
+    onEffectRemoved?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */

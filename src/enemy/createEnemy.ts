@@ -3,6 +3,7 @@ import uuid from "uuid";
 import { Ability, Effect } from "../ability/types";
 import { getBasicAttack } from "../battle/utils";
 import { Combatant } from "../character/types";
+import { aggregateItemEffects } from "../Menu/utils";
 import { getRandomItem, shuffle } from "./../utils";
 import { bigBeefy, smalltofu, thefaketofu, theraretofu, theRegalTofu } from "./tofu";
 
@@ -14,11 +15,14 @@ export const createCombatant = (combatant): Combatant => {
         id: uuid.v4(),
         ...combatant,
         HP: combatant.HP || combatant.maxHP,
-        effects:
-            combatant.effects?.map((effect: Effect) => ({
+        effects: [
+            ...aggregateItemEffects(combatant.items || []),
+            ...(combatant.effects?.map((effect: Effect) => ({
                 ...cloneDeep(effect),
+                uptime: 0,
                 id: uuid.v4(),
-            })) || [],
+            })) || []),
+        ],
         armor: combatant.armor || 0,
         resources: combatant.resources || 0,
         maxResources: combatant.maxResources || 3,

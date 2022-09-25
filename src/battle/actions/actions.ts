@@ -416,7 +416,7 @@ export const checkEventTrigger = ({
     triggerSource,
 }: {
     combatantId: string;
-    effectEventKey: string;
+    effectEventKey: EFFECT_EVENT_KEYS;
     triggerSource?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
@@ -432,10 +432,11 @@ export const checkEventTrigger = ({
         }
 
         combatant.effects.forEach((effect: CombatEffect) => {
-            if (effect[effectEventKey]) {
+            const { uptime, turnsTriggerFrequency, [effectEventKey]: effectEvent } = effect;
+            if (effectEvent && (!turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0)) {
                 dispatch(
                     onEffectEventTrigger({
-                        effectEvent: effect[effectEventKey],
+                        effectEvent,
                         effect,
                         ownerId: combatant.id,
                         source: triggerSource,

@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
-import { Ability, Action, EFFECT_CLASSES } from "../../ability/types";
+import { Ability, Action, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { loaf } from "../../enemy/abilities";
 import { getRandomItem } from "../../utils";
@@ -294,8 +294,8 @@ export const startEnemyTurn = () => {
                 return;
             }
 
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, triggerSource: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: "onTurnStart", triggerSource: null }));
         });
 
         const acted = {};

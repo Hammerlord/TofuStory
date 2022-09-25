@@ -10,6 +10,7 @@ export const aggregateItemEffects = (items: Item[]): Effect[] => {
             item.effects?.map((effect) => ({
                 ...cloneDeep(effect),
                 id: uuid.v4(),
+                uptime: 0,
             })) || [];
         effects.push(...itemEffects);
     });

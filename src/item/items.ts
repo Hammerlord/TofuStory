@@ -269,7 +269,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every turn, your first attack inflicts poison to your primary target.",
+    description: "Every three turns, your first attack inflicts poison to your primary target.",
     type: ITEM_TYPES.EQUIPMENT,
     image: nependeathSapImage,
     effects: [

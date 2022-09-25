@@ -193,16 +193,19 @@ export const shielding: Effect = {
     icon: orangegemImage,
     description: "Periodically gaining a shield that wards off a single attack.",
     turnsTriggerFrequency: 2,
-    applyEffects: [
-        {
-            name: "Attack Immunity",
-            icon: upmattImage,
-            type: EFFECT_TYPES.ATTACK_IMMUNITY,
-            class: EFFECT_CLASSES.BUFF,
-            duration: 2,
-            onReceiveAttack: { removeEffect: true },
-        },
-    ],
+    onTurnStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                name: "Attack Immunity",
+                icon: upmattImage,
+                type: EFFECT_TYPES.ATTACK_IMMUNITY,
+                class: EFFECT_CLASSES.BUFF,
+                duration: 2,
+                onReceiveAttack: { removeEffect: true },
+            },
+        ],
+    },
 };
 
 export const eliteSquad: Effect = {

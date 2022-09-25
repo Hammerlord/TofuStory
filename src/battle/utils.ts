@@ -65,7 +65,14 @@ export const gainResources = (character: Combatant): Combatant => {
 };
 
 export const getMaxHP = (character: Combatant): number => {
-    return character.maxHP + getEnabledEffects(character).reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
+    const silenced = isSilenced(character);
+    const enabledEffects = character.effects?.filter((effect) => {
+        const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
+        return !disabled;
+    });
+    // Conditional max HP checking can cause an infinite loop
+    // For now assume that there are no conditions tied to max HP effects
+    return character.maxHP + enabledEffects.reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
 };
 
 export const updateHP = (character: Combatant, amount: number): number => {
