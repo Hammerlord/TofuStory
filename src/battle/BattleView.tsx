@@ -163,7 +163,6 @@ const BattlefieldContainer = () => {
     const enemyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
-    const [abilityNotification, setAbilityNotification] = useState(null);
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
