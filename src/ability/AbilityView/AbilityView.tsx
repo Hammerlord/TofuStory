@@ -157,7 +157,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     let imageNode = null;
 
     if (typeof cardImage === "string") {
-        imageNode = <img src={cardImage} className={classes.portrait} />;
+        imageNode = <img src={cardImage} className={classes.portrait} draggable="false" />;
     } else if (typeof image === "function") {
         const ImageNode = image as Function;
         imageNode = (
