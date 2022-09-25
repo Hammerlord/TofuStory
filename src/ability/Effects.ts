@@ -210,6 +210,7 @@ export const eliteSquad: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    damage: 1,
     icon: Medal,
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
@@ -231,7 +232,7 @@ export const elite: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    damage: 1,
+    damage: 2,
     description:
         "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     icon: MilitaryMedal,
