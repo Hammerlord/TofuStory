@@ -136,6 +136,8 @@ export { default as burningSoulBladeImage } from "./burningsoulblade.png";
 export { default as burningSoulBladeMinionImage } from "./burningsoulblademinion.png";
 export { default as elementalForceImage } from "./elementalforce.png";
 export { default as nightshadeExplosionImage } from "./nightshadeexplosion.png";
+export { default as doubleTimeImage } from "./doubletime.png";
+export { default as advancedWeaponMasteryImage } from "./advanced-weapon-mastery.png";
 
 export { default as upmattImage } from "./upMATT.png";
 export { default as map } from "./victoria island.png";

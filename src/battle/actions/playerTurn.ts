@@ -18,21 +18,36 @@ export const onUsePlayerAbility = ({
     selectedAbilityIndex: number;
 }) => {
     return (dispatch, getState) => {
-        const { playerSide, hand: originalHand } = getState().battle;
+        const { playerSide, hand } = getState().battle;
+
+        const ability = hand[selectedAbilityIndex];
+        dispatch(removeAbilityFromHand({ index: selectedAbilityIndex }));
+        dispatch(useAbility({ ability, selectedIndex, side, actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id }));
+
+        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
+        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
+        dispatch(handleDiscard(ability));
+    };
+};
+
+const removeAbilityFromHand = ({ index }) => {
+    return (dispatch, getState) => {
+        const { hand: originalHand } = getState().battle;
         const handWithAbilityUsed = originalHand.slice();
-        const [ability] = handWithAbilityUsed.splice(selectedAbilityIndex, 1);
-        const { removeAfterTurn, reusable, depletedOnUse, minion } = ability as HandAbility;
+        handWithAbilityUsed.splice(index, 1);
 
         dispatch(
             updateBattle({
                 hand: handWithAbilityUsed,
             })
         );
+    };
+};
 
-        dispatch(useAbility({ ability, selectedIndex, side, actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id }));
+const handleDiscard = (ability: HandAbility) => {
+    return (dispatch, getState) => {
+        const { removeAfterTurn, reusable, depletedOnUse, minion } = ability;
 
-        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
-        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
         const { hand, discard } = getState().battle;
         const newDiscard = discard.slice();
         const newHand = hand.slice();

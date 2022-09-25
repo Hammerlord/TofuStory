@@ -120,6 +120,7 @@ export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }
                 waves,
                 isEnded: false,
                 round: 0,
+                selectCards: null,
             })
         );
 
@@ -885,7 +886,7 @@ const checkCardActions = (action: Action, actorId: string) => {
         if (!findCombatant(getState, actorId)?.isPlayer) {
             return;
         }
-        const { drawCards: cardsToDraw, addCards, currentHandEffects } = action;
+        const { drawCards: cardsToDraw, addCards, currentHandEffects, selectCards } = action;
         if (cardsToDraw) {
             dispatch(drawCards(cardsToDraw));
         }
@@ -903,6 +904,14 @@ const checkCardActions = (action: Action, actorId: string) => {
             dispatch(
                 updateBattle({
                     hand: getState().battle.hand.map((card: Ability) => ({ ...card, effects: { ...currentHandEffects } })),
+                })
+            );
+        }
+
+        if (selectCards) {
+            dispatch(
+                updateBattle({
+                    selectCards,
                 })
             );
         }

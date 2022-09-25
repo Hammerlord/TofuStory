@@ -24,6 +24,8 @@ export interface BattleState {
     waves: Wave[];
     currentWave: number;
     isEnded: boolean;
+    /** When interacting with cards in your hand, or discovering a card */
+    selectCards: object | null;
 }
 
 /**

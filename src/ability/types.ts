@@ -292,6 +292,11 @@ export interface Action {
         amount: number;
         effects?: AbilityEffects;
     };
+    selectCards?: {
+        type: SELECT_CARD_TYPES;
+        filters?: ACTION_TYPES[];
+        effects?: AbilityEffects;
+    };
     icon?: string; // Used as a projectile
     bonus?: Bonus;
     multiplier?: Multiplier;
@@ -374,4 +379,10 @@ export enum ANIMATION_TYPES {
 export interface AbilityEffects {
     resourceCost?: number;
     damage?: number;
+    removeAfterTurn?: boolean;
+}
+
+export enum SELECT_CARD_TYPES {
+    COPY_FROM_HAND = "copy",
+    DISCOVER_FROM_CLASS = "discover-from-class",
 }

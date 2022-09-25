@@ -1,9 +1,11 @@
 import {
+    advancedWeaponMasteryImage,
     bladestormImage,
     blockImage,
     brick,
     bricks,
     closecombatImage,
+    doubleTimeImage,
     enrageImage,
     extraStrikeImage,
     Fireworks,
@@ -32,7 +34,16 @@ import {
     weaponmasteryImage,
 } from "../../images";
 import { silence, stealth, stun, thorns, wound } from "../Effects";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
+import {
+    Ability,
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    SELECT_CARD_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../types";
 import { MULTIPLIER_TYPES } from "./../types";
 
 export const bash2: Ability = {
@@ -1386,4 +1397,45 @@ export const dustDevils: Ability = {
         },
     ],
     upgrades: [dustDevils2],
+};
+
+export const doubleTime: Ability = {
+    name: "Double Time",
+    image: doubleTimeImage,
+    resourceCost: 1,
+    description: "Create a copy of a card in your hand. It costs 1 less and is Ephemeral",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+                effects: {
+                    resourceCost: -1,
+                    removeAfterTurn: true,
+                },
+            },
+        },
+    ],
+};
+
+export const arsenal: Ability = {
+    name: "Arsenal",
+    resourceCost: 1,
+    image: advancedWeaponMasteryImage,
+    description: "Discover an offensive ability available to your class. It costs 1 less and is Ephemeral",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.DISCOVER_FROM_CLASS,
+                filters: [ACTION_TYPES.ATTACK],
+                effects: {
+                    resourceCost: -1,
+                    removeAfterTurn: true,
+                },
+            },
+        },
+    ],
 };

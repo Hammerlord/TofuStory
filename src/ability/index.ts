@@ -54,6 +54,8 @@ import {
     bladestorm,
     rally,
     dustDevils,
+    doubleTime,
+    arsenal,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -101,6 +103,8 @@ export const JOB_CARD_MAP = {
             bladestorm,
             rally,
             dustDevils,
+            doubleTime,
+            arsenal,
         ],
         starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block],
     },

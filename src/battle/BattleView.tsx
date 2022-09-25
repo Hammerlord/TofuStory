@@ -25,6 +25,7 @@ import TurnAnnouncement from "./Notification/TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
 import { canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
+import SelectCardOverlay from "./SelectCardOverlay";
 
 const useStyles = createUseStyles({
     root: {
@@ -139,7 +140,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const { popEventQueue, updateFlagTurnEnd } = battleStateSlice.actions;
+const { popEventQueue, updateFlagTurnEnd, updateBattle } = battleStateSlice.actions;
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
@@ -155,7 +156,7 @@ const BattlefieldContainer = () => {
         currentWave,
         waves,
         flagTurnEnd,
-        round,
+        selectCards,
     } = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -170,6 +171,12 @@ const BattlefieldContainer = () => {
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
+
+    const disableActions =
+        showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
+    const selectedMinion = playerSide[selectedAllyIndex];
+    const selectedAbility = selectedMinion?.attack || hand[selectedAbilityIndex];
+    const actor = selectedMinion || player;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0) {
@@ -210,6 +217,15 @@ const BattlefieldContainer = () => {
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         setSelectedAbilityIndex(null);
         dispatch(onUsePlayerAbility({ selectedIndex, selectedAbilityIndex, side }) as any);
+    };
+
+    const handleSelectCard = (ability) => {
+        dispatch(
+            updateBattle({
+                hand: [...hand, ability],
+                selectCards: null,
+            })
+        );
     };
 
     const handleAllyAttack = ({ index }) => {
@@ -394,12 +410,6 @@ const BattlefieldContainer = () => {
         }, TURN_ANNOUNCEMENT_TIME);
     }, [isPlayerTurn]);
 
-    const disableActions =
-        showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
-    const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = selectedMinion?.attack || hand[selectedAbilityIndex];
-    const actor = selectedMinion || player;
-
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
         const noHover = !isValidIndex(hoveredCombatant?.index);
@@ -571,6 +581,21 @@ const BattlefieldContainer = () => {
                 <Header player={player} deck={originalDeck} onUseItem={handleUseItem} />
                 {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
+                {selectCards && (
+                    <SelectCardOverlay
+                        player={player}
+                        selectCards={selectCards}
+                        hand={hand}
+                        onSelect={handleSelectCard}
+                        onCancel={() => {
+                            dispatch(
+                                updateBattle({
+                                    selectCards: null,
+                                })
+                            );
+                        }}
+                    />
+                )}
             </div>
         </TargetLineCanvas>
     );
