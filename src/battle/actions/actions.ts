@@ -377,17 +377,6 @@ const onEffectEventTrigger = ({
         const { canBeSilenced } = effect;
         const { removeEffect } = effectEvent;
 
-        const checkRemoveEffect = () => {
-            if (removeEffect) {
-                const newEffects = findCombatant(getState, ownerId).effects.filter(({ id }) => id !== effect.id);
-                dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-            }
-        };
-        if (canBeSilenced && isSilenced(findCombatant(getState, ownerId))) {
-            checkRemoveEffect();
-            return;
-        }
-
         const getCalculationTargetId = (targetType: TRIGGER_TARGET_TYPES): string | undefined => {
             return {
                 [TRIGGER_TARGET_TYPES.EFFECT_OWNER]: ownerId,
@@ -397,17 +386,28 @@ const onEffectEventTrigger = ({
             }[targetType];
         };
 
-        if (
-            !passesConditions({
-                getCalculationTarget: (targetType: TRIGGER_TARGET_TYPES) => findCombatant(getState, getCalculationTargetId(targetType)),
-                proc: effectEvent,
-            })
-        ) {
+        const conditionsPassed = passesConditions({
+            getCalculationTarget: (targetType: TRIGGER_TARGET_TYPES) => findCombatant(getState, getCalculationTargetId(targetType)),
+            proc: effectEvent,
+        });
+
+        const checkRemoveEffect = () => {
+            if (removeEffect) {
+                const newEffects = findCombatant(getState, ownerId).effects.filter(({ id }) => id !== effect.id);
+                dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+            }
+        };
+        if (canBeSilenced && isSilenced(findCombatant(getState, ownerId))) {
+            if (conditionsPassed) {
+                checkRemoveEffect();
+            }
             return;
         }
 
-        dispatch(applyProc({ effectEvent, effect, ownerId, getCalculationTargetId }));
-        checkRemoveEffect();
+        if (conditionsPassed) {
+            dispatch(applyProc({ effectEvent, effect, ownerId, getCalculationTargetId }));
+            checkRemoveEffect();
+        }
     };
 };
 

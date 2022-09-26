@@ -17,6 +17,7 @@ import {
     upmattImage,
     VolcanoIcon,
     weaponbooster,
+    weaponmasteryImage,
 } from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES, TARGET_TYPES, ACTION_TYPES, Minion, ANIMATION_TYPES } from "./types";
 
@@ -149,15 +150,31 @@ export const raging: Effect = {
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: Anger,
-    description: "When this character drops below 40% HP, its damage increases by 2.",
-    damage: 2,
-    conditions: [
-        {
-            comparator: "lt",
-            healthPercentage: 0.4,
-            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        },
-    ],
+    description: "Periodically increasing the attack power of this character.",
+    turnsTriggerFrequency: 2,
+    onTurnStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                name: "Rage",
+                type: EFFECT_TYPES.RAGE,
+                class: EFFECT_CLASSES.BUFF,
+                icon: weaponmasteryImage,
+                description: "Growing angry. Effect is removed if the character is stunned.",
+                damage: 1,
+                onReceiveEffect: {
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
+                            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                            comparator: "eq",
+                        },
+                    ],
+                    removeEffect: true,
+                },
+            },
+        ],
+    },
 };
 
 const vengeful: Effect = {
