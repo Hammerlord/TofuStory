@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
@@ -257,6 +257,29 @@ const CombatantView = forwardRef(
 
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
 
+        const imageProps = {
+            className: classNames(classes.portraitImage, {
+                [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
+                [classes.dying]: playDeathAnimation,
+                [classes.dead]: !playDeathAnimation && oldState?.HP === 0,
+                [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST,
+                [classes.casting]: oldState?.casting,
+            }),
+            style:
+                event?.action?.type === ACTION_TYPES.EFFECT
+                    ? {
+                          animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
+                      }
+                    : undefined,
+        };
+        let imageNode = null;
+        if (typeof combatant?.image === "string") {
+            imageNode = <img src={combatant.image} {...imageProps} draggable="false" />;
+        } else if (typeof combatant?.image === "function") {
+            const ImageNode = combatant.image as Function;
+            imageNode = <ImageNode {...imageProps} />;
+        }
+
         return (
             <div
                 className={classNames(classes.root, {
@@ -284,23 +307,7 @@ const CombatantView = forwardRef(
                         <span ref={ref as any} className={classNames(classes.portrait)}>
                             {oldState && combatant && (
                                 <>
-                                    <img
-                                        src={combatant.image}
-                                        className={classNames(classes.portraitImage, {
-                                            [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                                            [classes.dying]: playDeathAnimation,
-                                            [classes.dead]: !playDeathAnimation && oldState.HP === 0,
-                                            [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT,
-                                            [classes.casting]: oldState.casting,
-                                        })}
-                                        style={
-                                            event?.action?.type === ACTION_TYPES.EFFECT
-                                                ? {
-                                                      animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
-                                                  }
-                                                : undefined
-                                        }
-                                    />
+                                    {imageNode}
                                     <div className={classes.weaponContainer}>
                                         <Weapon
                                             image={oldState.weapon}

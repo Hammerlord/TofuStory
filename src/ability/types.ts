@@ -374,6 +374,8 @@ export enum ANIMATION_TYPES {
     ONE_WAY_SIDEWINDER = "one-way-sidewinder",
     RICOCHET = "ricochet",
     DROP = "drop",
+    // This is the same as ACTION_TYPES.EFFECT
+    CAST = "cast",
 }
 
 export interface AbilityEffects {

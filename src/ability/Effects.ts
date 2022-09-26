@@ -15,9 +15,10 @@ import {
     Snowflake,
     SpeechBubble,
     upmattImage,
+    VolcanoIcon,
     weaponbooster,
 } from "../images";
-import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./types";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES, TARGET_TYPES, ACTION_TYPES, Minion, ANIMATION_TYPES } from "./types";
 
 export const thorns: Effect = {
     name: "Thorns",
@@ -203,6 +204,61 @@ export const shielding: Effect = {
                 class: EFFECT_CLASSES.BUFF,
                 duration: 2,
                 onReceiveAttack: { removeEffect: true },
+            },
+        ],
+    },
+};
+
+const volcano: Minion = {
+    name: "Volcano",
+    maxHP: 6,
+    image: VolcanoIcon,
+    effects: [
+        {
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            name: "Erupting",
+            icon: VolcanoIcon,
+            description: "Erupting for 10 damage when this effect expires",
+            duration: 2,
+            onEnd: {
+                actions: [
+                    {
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        target: TARGET_TYPES.RANDOM_HOSTILE,
+                        animation: ANIMATION_TYPES.CAST,
+                        area: 2,
+                        damage: 10,
+                    },
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        target: TARGET_TYPES.SELF,
+                        damage: 100,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const eruptive: Effect = {
+    name: "Eruptive",
+    canBeSilenced: true,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: VolcanoIcon,
+    description: "Periodically summoning volcanoes that erupt, dealing area damage",
+    turnsTriggerFrequency: 3,
+    onTurnStart: {
+        actions: [
+            {
+                type: ACTION_TYPES.EFFECT,
+                target: TARGET_TYPES.SELF,
+                summon: [
+                    {
+                        minion: [volcano],
+                    },
+                ],
             },
         ],
     },

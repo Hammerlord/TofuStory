@@ -524,12 +524,23 @@ export const updateCombatant = ({
             dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
         });
 
-        effectsRemoved.forEach((e) => {
-            // TODO probably include effects in the event trigger payload?
-            // Removal should only apply to dispels?
-            dispatchEvent(EFFECT_EVENT_KEYS.onEffectRemoved);
-            dispatchEvent(EFFECT_EVENT_KEYS.onEnd);
-        });
+        const combatant = findCombatant(getState, combatantId);
+        if (combatant.HP > 0) {
+            effectsRemoved.forEach((e: CombatEffect) => {
+                // TODO probably include effects in the event trigger payload?
+                // Removal should only apply to dispels?
+                dispatchEvent(EFFECT_EVENT_KEYS.onEffectRemoved);
+                if (e.onEnd) {
+                    dispatch(
+                        onEffectEventTrigger({
+                            effectEvent: e.onEnd,
+                            effect: e,
+                            ownerId: combatantId,
+                        })
+                    );
+                }
+            });
+        }
 
         if (isDeathBlow) {
             dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
