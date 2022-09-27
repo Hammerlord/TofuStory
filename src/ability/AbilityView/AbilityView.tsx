@@ -260,22 +260,22 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         <>
                             {!healingCornerIcon && healing > 0 && (
                                 <div>
-                                    Heal for <Icon icon={<Heart />} text={healing} />
+                                    Heal for <Icon icon={<Heart />} text={healing} size={"sm"} />
                                 </div>
                             )}
                             {!armorCornerIcon && armor > 0 && (
                                 <div>
-                                    Gain <Icon icon={<Shield />} text={armor} />
+                                    Gain <Icon icon={<Shield />} text={armor} size={"sm"} />
                                 </div>
                             )}
                             {resourceGain > 0 && (
                                 <div>
-                                    Gain <Fury text={resourceGain} />
+                                    Gain <Fury text={resourceGain} size={"sm"} />
                                 </div>
                             )}
                             {selfDamage > 0 && (
                                 <div>
-                                    Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} />
+                                    Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} size={"sm"} />
                                 </div>
                             )}
                             {ability.reusable && <div>Returns to your hand after use</div>}

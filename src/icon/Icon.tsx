@@ -7,19 +7,19 @@ const useStyles = createUseStyles({
         display: "inline-block",
         borderRadius: "32px",
         "&.sm": {
-            width: "16px",
-            height: "16px",
-            minWidth: "16px",
-            minHeight: "16px",
+            width: "20px",
+            height: "20px",
+            minWidth: "20px",
+            minHeight: "20px",
             "& .text": {
-                fontSize: "12px",
+                fontSize: "14px",
             },
         },
         "&.md": {
-            width: "24px",
-            height: "24px",
-            minWidth: "24px",
-            minHeight: "24px",
+            width: "28px",
+            height: "28px",
+            minWidth: "28px",
+            minHeight: "28px",
         },
         "&.lg": {
             width: "36px",

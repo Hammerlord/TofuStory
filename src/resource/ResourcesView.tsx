@@ -15,9 +15,10 @@ const useStyles = createUseStyles({
 interface FuryInterface {
     text?: string | number;
     className?: string;
+    size?: "xl" | "lg" | "md" | "sm";
 }
 
-export const Fury = ({ text, className }: FuryInterface) => {
+export const Fury = ({ text, className, size }: FuryInterface) => {
     const classes = useStyles();
-    return <Icon className={classNames(classes.root, className)} icon={<Fire />} background={"#eb4034"} text={text} />;
+    return <Icon className={classNames(classes.root, className)} icon={<Fire />} background={"#eb4034"} text={text} size={size} />;
 };

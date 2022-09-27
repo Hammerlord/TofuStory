@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
 });
 
 const DevAbilityViewer = ({ onClose }) => {
-    const [selectedClass, setSelectedClass] = useState(null);
+    const [selectedClass, setSelectedClass] = useState(PLAYER_CLASSES.WARRIOR);
     const [isViewingUpgrades, setIsViewingUpgrades] = useState(false);
     const classes = useStyles();
 

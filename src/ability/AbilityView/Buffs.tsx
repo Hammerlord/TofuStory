@@ -32,7 +32,7 @@ const Buffs = ({ ability }) => {
                 if (healthPerResourcesSpent > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Heart />} text={`+${healthPerResourcesSpent}`} /> per <Fury /> spent{" "}
+                            Gain <Icon icon={<Heart />} text={`+${healthPerResourcesSpent}`} size={"sm"} /> per <Fury size={"sm"} /> spent{" "}
                         </span>
                     );
                 }
@@ -40,7 +40,7 @@ const Buffs = ({ ability }) => {
                 if (thorns > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Cactus />} />
+                            Gain <Icon icon={<Cactus />} size={"sm"} />
                         </span>
                     );
                 }
@@ -48,36 +48,36 @@ const Buffs = ({ ability }) => {
                 if (armorReceived > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Shield />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} /> from armor
-                            sources{" "}
+                            Gain <Icon icon={<Shield />} size={"sm"} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
+                            from armor sources{" "}
                         </span>
                     );
                 }
                 if (resourcesPerTurn > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Fury text={`+${resourcesPerTurn}`} /> per turn
+                            Gain <Fury size={"sm"} text={`+${resourcesPerTurn}`} /> per turn
                         </span>
                     );
                 }
                 if (effect.type === EFFECT_TYPES.STEALTH) {
                     effectComponents.push(
                         <span>
-                            <Icon icon={<Cloudy />} /> Stealth
+                            <Icon size={"sm"} icon={<Cloudy />} /> Stealth
                         </span>
                     );
                 }
                 if (effect.type === EFFECT_TYPES.IMMUNITY) {
                     effectComponents.push(
                         <span>
-                            <Icon icon={upmattImage} /> Immunity
+                            <Icon size={"sm"} icon={upmattImage} /> Immunity
                         </span>
                     );
                 }
                 if (healTargetPerTurn > 0) {
                     effectComponents.push(
                         <span>
-                            Heals an injured ally for <Icon icon={<Heart />} text={healTargetPerTurn} /> per turn
+                            Heals an injured ally for <Icon icon={<Heart />} size={"sm"} text={healTargetPerTurn} /> per turn
                         </span>
                     );
                 }
@@ -85,7 +85,7 @@ const Buffs = ({ ability }) => {
                 if (damage > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<CrossedSwords />} text={`+${damage}`} />
+                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${damage}`} />
                         </span>
                     );
                 }
@@ -109,7 +109,7 @@ const Buffs = ({ ability }) => {
                 if (healing > 0) {
                     effectComponents.push(
                         <span>
-                            Heal for <Icon icon={<Heart />} text={healing} /> per turn
+                            Heal for <Icon icon={<Heart />} size={"sm"} text={healing} /> per turn
                         </span>
                     );
                 }
@@ -121,7 +121,7 @@ const Buffs = ({ ability }) => {
                         if (duration === 0) {
                             effectComponents.push(<>this turn</>);
                         } else if (duration !== Infinity) {
-                            effectComponents.push(<Icon icon={<Hourglass />} text={duration === Infinity ? "∞" : duration} />);
+                            effectComponents.push(<Icon icon={<Hourglass />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
                         }
                     }
                 }
@@ -132,7 +132,7 @@ const Buffs = ({ ability }) => {
                             Increase{" "}
                             {...skillBonus.map(({ skill, damage = 0 }) => (
                                 <span key={skill}>
-                                    {skill} {damage > 0 && <Icon icon={<CrossedSwords />} text={`+${damage}`} />}
+                                    {skill} {damage > 0 && <Icon icon={<CrossedSwords />} size={"sm"} text={`+${damage}`} />}
                                 </span>
                             ))}
                         </>

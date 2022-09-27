@@ -67,36 +67,36 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
             Inflict{" "}
             {bleedDuration > 0 && (
                 <>
-                    <Icon icon={<Blood />} />
-                    <Icon icon={<Hourglass />} text={bleedDuration} />
+                    <Icon icon={<Blood />} size={"sm"} />
+                    <Icon icon={<Hourglass />} size={"sm"} text={bleedDuration} />
                 </>
             )}{" "}
             {stunDuration > 0 && (
                 <>
-                    <Icon icon={<Dizzy />} />
-                    <Icon icon={<Hourglass />} text={stunDuration} />
+                    <Icon icon={<Dizzy />} size={"sm"} />
+                    <Icon icon={<Hourglass />} size={"sm"} text={stunDuration} />
                 </>
             )}{" "}
             {burnDuration > 0 && (
                 <>
-                    <Icon icon={<Fire />} /> <Icon icon={<Hourglass />} text={burnDuration} />
+                    <Icon icon={<Fire />} size={"sm"} /> <Icon icon={<Hourglass size={"sm"} />} text={burnDuration} />
                 </>
             )}{" "}
             {chillDuration > 0 && (
                 <>
-                    <Icon icon={<Snowflake />} /> <Icon icon={<Hourglass />} text={chillDuration} />
+                    <Icon icon={<Snowflake />} size={"sm"} /> <Icon icon={<Hourglass />} size={"sm"} text={chillDuration} />
                 </>
             )}{" "}
             {damage && (
                 <>
-                    <Icon icon={<CrossedSwords />} text={`${damage > 0 ? "+" : ""}${damage}`} />
-                    <Icon icon={<Hourglass />} text={debuffDuration} />
+                    <Icon icon={<CrossedSwords />} size={"sm"} text={`${damage > 0 ? "+" : ""}${damage}`} />
+                    <Icon icon={<Hourglass />} size={"sm"} text={debuffDuration} />
                 </>
             )}
             {silenceDuration > 0 && (
                 <>
-                    <Icon icon={<SpeechBubble />} />
-                    <Icon icon={<Hourglass />} text={silenceDuration} />
+                    <Icon icon={<SpeechBubble />} size={"sm"} />
+                    <Icon icon={<Hourglass />} size={"sm"} text={silenceDuration} />
                 </>
             )}
         </div>

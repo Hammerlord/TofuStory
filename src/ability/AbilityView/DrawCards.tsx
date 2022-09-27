@@ -17,7 +17,7 @@ const DrawCards = ({ ability }: { ability: Ability | HandAbility }) => {
             Draw {amount} card{amount > 1 ? "s" : ""}.{" "}
             {resourceCost < 0 && (
                 <>
-                    It costs <Fury text={Math.abs(resourceCost)} /> less until it is used or discarded.
+                    It costs <Fury text={Math.abs(resourceCost)} size={"sm"} /> less until it is used or discarded.
                 </>
             )}
         </span>
