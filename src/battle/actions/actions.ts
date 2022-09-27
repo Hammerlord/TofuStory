@@ -595,7 +595,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
     };
 };
 
-const checkHandleSummon = ({ action, actorId }: { action: Action; actorId: string }) => {
+const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
         if (!action.summon) {
             return;
@@ -610,6 +610,8 @@ const checkHandleSummon = ({ action, actorId }: { action: Action; actorId: strin
                 break;
             }
 
+            const summonedMinion = createCombatant(minionToSummon);
+
             dispatch(
                 updateBattle({
                     [actorSide]: friendly.map((combatant: Combatant | null, i) => {
@@ -617,10 +619,25 @@ const checkHandleSummon = ({ action, actorId }: { action: Action; actorId: strin
                             return combatant;
                         }
 
-                        return createCombatant(minionToSummon);
+                        return summonedMinion;
                     }),
                 })
             );
+
+            if (summonedMinion.onSummon) {
+                summonedMinion.onSummon.forEach((action) => {
+                    const { index, side } = autoSelectActionTarget({ action, actorId: summonedMinion.id, getState });
+                    dispatch(
+                        performAction({
+                            action,
+                            selectedIndex: index,
+                            side,
+                            actorId: summonedMinion.id,
+                            parentSource: { ...parentSource, type: "proc" },
+                        })
+                    );
+                });
+            }
         }
     };
 };
@@ -744,7 +761,7 @@ const performAction = ({
 
         const { vacuum, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        dispatch(checkHandleSummon({ action, actorId }));
+        dispatch(checkHandleSummon({ action, actorId, parentSource }));
 
         const extraTargetIndices = shuffle(
             getValidTargetIndices(getState().battle[side], {
@@ -943,23 +960,37 @@ const checkSummonMinion = ({
     return (dispatch, getState) => {
         const { minion, removeAfterTurn, depletedOnUse } = ability;
         if (minion) {
-            const minionCombatant: Combatant = createCombatant(minion);
+            const summonedMinion: Combatant = createCombatant(minion);
             const newBattleProps: {
                 playerSide?: (Combatant | null)[];
                 enemySide?: (Combatant | null)[];
                 playerSummonsInPlay?: { [id: string]: Ability };
             } = {
                 [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                    return i === selectedIndex ? minionCombatant : combatant;
+                    return i === selectedIndex ? summonedMinion : combatant;
                 }),
             };
 
             // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
             if (findCombatant(getState, actorId).isPlayer && !removeAfterTurn && !depletedOnUse) {
-                newBattleProps.playerSummonsInPlay = { [minionCombatant.id]: ability };
+                newBattleProps.playerSummonsInPlay = { [summonedMinion.id]: ability };
             }
 
             dispatch(updateBattle(newBattleProps));
+            if (summonedMinion.onSummon) {
+                summonedMinion.onSummon.forEach((action) => {
+                    const { index, side } = autoSelectActionTarget({ action, actorId: summonedMinion.id, getState });
+                    dispatch(
+                        performAction({
+                            action,
+                            selectedIndex: index,
+                            side,
+                            actorId: summonedMinion.id,
+                            parentSource: { source: ability, actorId, type: "proc" },
+                        })
+                    );
+                });
+            }
 
             // TODO on summon event triggers?
         }

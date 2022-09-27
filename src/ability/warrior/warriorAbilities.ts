@@ -369,6 +369,25 @@ export const spikedArmor: Ability = {
     upgrades: [spikedArmor2],
 };
 
+const drumOfWar = {
+    type: ACTION_TYPES.EFFECT,
+    target: TARGET_TYPES.SELF,
+    excludePrimaryTarget: true,
+    armor: 2,
+    area: 1,
+    effects: [
+        {
+            name: "Drums of War",
+            description: "Attack power increased.",
+            icon: weaponmasteryImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            damage: 1,
+            duration: 1,
+        },
+    ],
+};
+
 export const warBanner2: Ability = {
     name: "War Banner",
     level: 2,
@@ -376,8 +395,15 @@ export const warBanner2: Ability = {
     minion: {
         name: "War Banner",
         image: flag,
-        maxHP: 1,
+        maxHP: 5,
         damage: 0,
+        onSummon: [
+            {
+                ...drumOfWar,
+                armor: 3,
+                area: 2,
+            },
+        ],
         effects: [
             {
                 ...stealth,
@@ -386,14 +412,18 @@ export const warBanner2: Ability = {
             {
                 name: "War Banner",
                 icon: Fireworks,
-                damage: 2,
-                area: 1,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    armor: 2,
+                    actions: [
+                        {
+                            ...drumOfWar,
+                            armor: 3,
+                            area: 2,
+                        },
+                    ],
                 },
             },
         ],
@@ -407,8 +437,10 @@ export const warBanner: Ability = {
     minion: {
         name: "War Banner",
         image: flag,
-        maxHP: 1,
+        maxHP: 5,
         damage: 0,
+        onSummon: [drumOfWar],
+
         effects: [
             {
                 ...stealth,
@@ -417,14 +449,12 @@ export const warBanner: Ability = {
             {
                 name: "War Banner",
                 icon: Fireworks,
-                damage: 2,
-                area: 1,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    armor: 2,
+                    actions: [drumOfWar],
                 },
             },
         ],

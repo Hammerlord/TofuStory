@@ -190,6 +190,8 @@ export interface Minion {
     resources?: number;
     /** Enemy basic attack. If not provided, one will be generated. */
     attack?: Ability;
+    /** Actions to perform when this minion has been summoned */
+    onSummon?: Action[];
 }
 
 export enum CONDITION_TYPE {
