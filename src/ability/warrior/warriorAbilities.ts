@@ -38,6 +38,7 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     SELECT_CARD_TYPES,
@@ -90,7 +91,7 @@ export const warLeap2: Ability = {
                 conditions: [
                     {
                         healthPercentage: 1,
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -114,7 +115,7 @@ export const warLeap: Ability = {
                 conditions: [
                     {
                         healthPercentage: 1,
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1182,7 +1183,7 @@ export const whirlwind2: Ability = {
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1211,7 +1212,7 @@ export const whirlwind: Ability = {
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1234,12 +1235,12 @@ export const rupture2: Ability = {
                 damage: 3,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
                 },
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],
@@ -1261,12 +1262,12 @@ export const rupture: Ability = {
                 damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
                 },
                 conditions: [
                     {
                         hasEffectType: [EFFECT_TYPES.BLEED],
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
                 ],

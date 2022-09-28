@@ -11,7 +11,16 @@ import {
     shieldmasteryImage,
 } from "../../images";
 import { burn, chill, stun } from "../Effects";
-import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../types";
+import {
+    Ability,
+    ACTION_TYPES,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../types";
 import { block } from "./warriorAbilities";
 
 export const flameCharge: Ability = {
@@ -46,7 +55,7 @@ export const blizzardCharge: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         hasEffectType: [EFFECT_TYPES.BURN],
                     },
                 ],
@@ -75,7 +84,7 @@ export const lightningCharge: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         hasEffectType: [EFFECT_TYPES.CHILL],
                     },
                 ],
@@ -113,7 +122,7 @@ export const divineCharge: Ability = {
                 damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.DEBUFFS,
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
                 },
             },
         },
@@ -188,7 +197,7 @@ export const judgment: Ability = {
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
                 type: MULTIPLIER_TYPES.ARMOR,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],
@@ -207,7 +216,7 @@ export const parashockGuard: Ability = {
             target: TARGET_TYPES.SELF,
             multiplier: {
                 type: MULTIPLIER_TYPES.ARMOR,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],

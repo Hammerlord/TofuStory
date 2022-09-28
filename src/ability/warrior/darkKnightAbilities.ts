@@ -13,7 +13,16 @@ import {
     spearsweepImage,
 } from "../../images";
 import { silence, stealth, stun, wound } from "../Effects";
-import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
+import {
+    Ability,
+    ACTION_TYPES,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../types";
 
 export const evilEye: Ability = {
     name: "Evil Eye",
@@ -85,7 +94,18 @@ export const darkThirst: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     damage: 1,
                     duration: 2,
-                    leech: 0.5,
+                    onAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        healing: 1,
+                        multiplier: {
+                            type: MULTIPLIER_TYPES.NUM_SOURCE_TARGETS,
+                            value: 1,
+                        },
+                    },
+                    onHostileDeath: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        healing: 3,
+                    },
                 },
                 {
                     ...wound,
@@ -111,7 +131,7 @@ export const darkSpear: Ability = {
                 damage: 5,
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         armor: 0,
                         comparator: "gt",
                     },
@@ -136,7 +156,7 @@ export const piercingDrive: Ability = {
                 damage: 4,
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         hasEffectType: [EFFECT_TYPES.STUN],
                     },
                 ],
@@ -175,7 +195,7 @@ export const evilEyeShock: Ability = {
             },
             conditions: [
                 {
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
                     characterName: "Evil Eye",
                 },
             ],
@@ -201,7 +221,14 @@ export const lordOfDarkness: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     damage: 1,
                     duration: 2,
-                    leech: 0.25,
+                    onAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        healing: 1,
+                        multiplier: {
+                            type: MULTIPLIER_TYPES.NUM_SOURCE_TARGETS,
+                            value: 1,
+                        },
+                    },
                     onReceiveDamage: {
                         parentEffect: {
                             damage: 1,
@@ -231,7 +258,7 @@ export const gungnir: Ability = {
                 multiplier: {
                     type: MULTIPLIER_TYPES.MAX_HP,
                     value: 0.25,
-                    calculationTarget: "actor",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
                 },
             },
         },

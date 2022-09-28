@@ -16,9 +16,8 @@ const Buffs = ({ ability }) => {
                     armorReceived = 0,
                     damage = 0,
                     duration = Infinity,
-                    onAttack = { removeEffect: false },
+                    onAttack = { removeEffect: false, healing: 0 },
                     preventArmorDecay,
-                    leech = 0,
                     skillBonus = [],
                     onResourcesSpent,
                     onReceiveAttack,
@@ -29,6 +28,7 @@ const Buffs = ({ ability }) => {
                 const { healing: healthPerResourcesSpent } = onResourcesSpent || {};
                 const { damage: thorns } = onReceiveAttack || {};
                 const effectComponents = [];
+                const lifePerHit = onAttack.healing; // TODO must scale with number of attacked targets to be considered "on hit"
                 if (healthPerResourcesSpent > 0) {
                     effectComponents.push(
                         <span>
@@ -98,11 +98,19 @@ const Buffs = ({ ability }) => {
                     }
                 }
 
-                if (leech > 0) {
+                if (lifePerHit > 0) {
                     if (effectComponents.length > 0) {
-                        effectComponents.push(<span>and leech {leech * 100}% damage as HP</span>);
+                        effectComponents.push(
+                            <span>
+                                and gain <Icon icon={<Heart />} text={lifePerHit} size={"sm"} /> per hit
+                            </span>
+                        );
                     } else {
-                        effectComponents.push(<span>Leech {leech * 100}% damage as HP</span>);
+                        effectComponents.push(
+                            <span>
+                                Gain <Icon icon={<Heart />} text={lifePerHit} size={"sm"} /> per hit
+                            </span>
+                        );
                     }
                 }
 

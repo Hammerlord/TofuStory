@@ -1,4 +1,3 @@
-import { CombatEffect } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
@@ -14,9 +13,12 @@ import {
     MULTIPLIER_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
+    CONDITION_TARGETS,
+    Multiplier,
+    CombatEffect,
 } from "./../ability/types";
 import { passesConditions } from "./passesConditions";
-import { BATTLEFIELD_SIDES } from "./types";
+import { BATTLEFIELD_SIDES, TriggerSource } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -197,16 +199,49 @@ export const updateCharacters = (characters: (Combatant | null)[], updateFn): (C
     });
 };
 
-export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant; target?: Combatant; multiplier: any }): number => {
+export const getMultiplier = ({
+    actor,
+    target,
+    allTargets = [],
+    sourceTargets = [],
+    multiplier,
+}: {
+    actor?: Combatant;
+    target?: Combatant;
+    allTargets?: Combatant[];
+    sourceTargets?: Combatant[];
+    multiplier: Multiplier;
+}): number => {
     const character = (() => {
         const calculationTarget = multiplier?.calculationTarget;
         if (!calculationTarget) {
             return;
         }
 
-        return calculationTarget === "actor" ? actor : target;
+        if (calculationTarget === CONDITION_TARGETS.ACTOR && actor) {
+            return actor;
+        }
+
+        if (calculationTarget === CONDITION_TARGETS.TARGET && target) {
+            return target;
+        }
     })();
-    if (!multiplier || !character) {
+
+    if (!multiplier) {
+        return 1;
+    }
+
+    const numValue = typeof multiplier.value === "number" ? multiplier.value : 1;
+
+    if (multiplier.type === MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS) {
+        return allTargets.length * numValue || 1;
+    }
+
+    if (multiplier.type === MULTIPLIER_TYPES.NUM_SOURCE_TARGETS) {
+        return sourceTargets.length * numValue || 1;
+    }
+
+    if (!character) {
         return 1;
     }
 
@@ -219,8 +254,7 @@ export const getMultiplier = ({ actor, target, multiplier }: { actor?: Combatant
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.MAX_HP) {
-        const value = typeof multiplier.value === "number" ? multiplier.value : 1;
-        return Math.floor(getMaxHP(character) * value);
+        return Math.floor(getMaxHP(character) * numValue);
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
@@ -312,7 +346,7 @@ export const calculateDamage = ({
         diffDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
     }
 
-    const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target });
+    const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target: target });
     const total = damage + diffDamageReceived;
     if (total < 0) {
         return 0;
@@ -326,7 +360,7 @@ export const calculateArmor = ({ actor, target, action }): number => {
     }
     const targetArmor = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmor + (action.armor || 0);
-    return Math.max(0, armor * getMultiplier({ multiplier: action.multiplier, target, actor }));
+    return Math.max(0, armor * getMultiplier({ multiplier: action.multiplier, target: target, actor }));
 };
 
 /**
@@ -495,14 +529,46 @@ export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number
     return indices;
 };
 
+export const calculateMultiplier = ({
+    action,
+    actor,
+    target,
+    allTargets,
+    sourceTargets,
+    multiplier,
+}: {
+    action: Action; // The action to apply the mutiplier to
+    target: Combatant;
+    allTargets?: Combatant[];
+    sourceTargets?: Combatant[];
+    actor: Combatant;
+    multiplier?: Multiplier;
+}) => {
+    if (!multiplier) {
+        return action;
+    }
+    const multiplierValue = getMultiplier({ actor, allTargets, sourceTargets, target, multiplier });
+    const { damage = 0, secondaryDamage = 0, healing = 0, armor = 0 } = action;
+
+    return {
+        ...action,
+        damage: damage * multiplierValue,
+        secondaryDamage: secondaryDamage * multiplierValue,
+        healing: healing * multiplierValue,
+        armor: armor * multiplierValue,
+    } as Action;
+};
+
 export const calculateBonus = ({
     action,
     target,
+    allTargets,
     actor,
     isTargetSelected,
 }: {
-    action: Action;
+    action: Action; // The action to apply the bonus to
     target: Combatant;
+    allTargets: Combatant[];
     actor: Combatant;
     isTargetSelected: boolean;
 }): Action => {
@@ -512,13 +578,12 @@ export const calculateBonus = ({
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
     const { excludePrimaryTarget = false } = bonus;
-    const multiplier = getMultiplier({ actor, target, multiplier: bonus.multiplier });
+    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier });
 
-    const getCalculationTarget = (conditionTarget: TRIGGER_TARGET_TYPES) => {
-        // conditionTarget for action bonuses is not expected to be anything other than these two
-        if (conditionTarget === TRIGGER_TARGET_TYPES.TARGET) {
+    const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET) => {
+        if (conditionTarget === CONDITION_TARGETS.TARGET) {
             return target;
-        } else if (conditionTarget === TRIGGER_TARGET_TYPES.ACTOR) {
+        } else if (conditionTarget === CONDITION_TARGETS.ACTOR) {
             return actor;
         }
     };

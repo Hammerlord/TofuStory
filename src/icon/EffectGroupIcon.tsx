@@ -88,7 +88,6 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         icon,
         damage = 0,
         damageReceived = 0,
-        leech = 0,
         skillBonus = [],
         onlyVisibleWhenProcced,
         onTurnStart,
@@ -97,6 +96,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         description,
         duration = Infinity,
         canBeSilenced,
+        onAttack = {},
     } = effects[0];
 
     if (!icon) {
@@ -116,6 +116,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     if (!passedConditions && onlyVisibleWhenProcced) {
         return null;
     }
+
+    const { multiplier, healing: lifePerHit } = onAttack; // TODO the difference between life on attack and life per enemy hit
 
     const allSameDuration = effects.every(({ duration }) => duration === effects[0].duration);
     let durationDisplay: string | number = "";
@@ -157,7 +159,11 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                         <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per <Fury /> spent
                     </div>
                 )}
-                {leech > 0 && <div>Leeching {leech * 100}% of damage as health (rounded up)</div>}
+                {lifePerHit > 0 && (
+                    <div>
+                        Gaining <Icon icon={<Heart />} text={lifePerHit} size={"sm"} /> per hit
+                    </div>
+                )}
                 {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>

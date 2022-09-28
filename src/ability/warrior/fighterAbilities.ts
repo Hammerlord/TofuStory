@@ -12,7 +12,7 @@ import {
     worldreaverImage,
 } from "../../images";
 import { immunity, wound } from "../Effects";
-import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
+import { Ability, Action, ACTION_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 import { TRIGGER_TARGET_TYPES } from "./../types";
 
 export const intrepidSlash: Ability = {
@@ -75,7 +75,7 @@ export const chanceStrike: Ability = {
                 damage: 6,
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
                         hasEffectClass: EFFECT_CLASSES.DEBUFF,
                     },
                 ],
@@ -115,7 +115,7 @@ export const comboFury: Ability = {
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
         {
@@ -124,7 +124,7 @@ export const comboFury: Ability = {
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],
@@ -142,7 +142,7 @@ export const parry: Ability = {
             target: TARGET_TYPES.SELF,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],
@@ -212,7 +212,7 @@ export const worldReaver: Ability = {
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: "actor",
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
         {

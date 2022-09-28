@@ -269,7 +269,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every three turns, your first attack inflicts poison to your primary target.",
+    description: "Every three turns, your first attack inflicts poison.",
     type: ITEM_TYPES.EQUIPMENT,
     image: nependeathSapImage,
     effects: [
@@ -283,13 +283,13 @@ export const nependeathSap: Item = {
                 effects: [
                     {
                         name: "Poisonous",
-                        description: "Next attack applying poison to the primary target.",
+                        description: "Next attack applying poison.",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: nependeathSapImage,
                         onAttack: {
                             removeEffect: true,
-                            targetType: TRIGGER_TARGET_TYPES.TARGET,
+                            targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                             effects: [
                                 {
                                     name: "Poison",

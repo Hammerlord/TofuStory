@@ -26,17 +26,9 @@ export enum EFFECT_CLASSES {
     DEBUFF = "debuff",
 }
 
-export interface TriggerEffect {
-    effects?: Effect[];
-    armor?: number;
-    healing?: number;
-    drawCards?: {
-        amount: number;
-        effects?: AbilityEffects;
-    };
-    resurrect?: boolean;
-    resources?: number;
-    damage?: number;
+export enum CONDITION_TARGETS {
+    TARGET = "target",
+    ACTOR = "actor",
 }
 
 // Who should receive the proc that was triggered?
@@ -50,6 +42,7 @@ export enum TRIGGER_TARGET_TYPES {
     TARGET = "target",
     ACTOR = "actor",
     RANDOM = "random",
+    ALL_TARGETS = "all-targets", // All targets affected by the trigger action
 }
 
 export interface EffectEventTrigger {
@@ -80,6 +73,7 @@ export interface EffectEventTrigger {
     // If you are providing actions to be applied to a target, you probably don't want to do any of the other properties.
     // (Actions already have their own targeting and effects and whatnot)
     actions?: Action[];
+    multiplier?: Multiplier;
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -127,8 +121,6 @@ export interface Effect {
     healingReceived?: number;
     /** Only a single instance of this effect type can be on the character */
     unique?: boolean;
-    /** A percentage of damage will be returned as HP to the effect owner */
-    leech?: number;
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
     onAttack?: EffectEventTrigger;
@@ -202,7 +194,7 @@ export enum CONDITION_TYPE {
 
 export interface Multiplier {
     type: MULTIPLIER_TYPES;
-    calculationTarget: "actor" | "target";
+    calculationTarget?: CONDITION_TARGETS;
     // Eg. if the type is maxHP, pass a percentage (number in range 0 <= 1) of the maxHP to scale from
     // Eg. if the type is ABILITIES_WITH_NAME, give the name value here
     value?: string | number;
@@ -246,7 +238,7 @@ export interface Condition {
     armor?: number;
     /** Whether the name of the target matches the condition. This is always an "includes" check: */
     characterName?: string;
-    calculationTarget: TRIGGER_TARGET_TYPES;
+    calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES;
 }
 
 export enum MULTIPLIER_TYPES {
@@ -257,6 +249,15 @@ export enum MULTIPLIER_TYPES {
     MAX_HP = "maxHP",
     DEBUFFS = "debuffs",
     BLEEDS = "bleeds",
+    /**
+     * Number of characters affected by the current action
+     */
+    NUM_AFFECTED_TARGETS = "numCharactersAffected",
+    /**
+     * Number of characters affected by the trigger source action
+     * For example, the trigger event was onAttack; this makes the resultant proc scale with the number of enemies hit by the attack
+     */
+    NUM_SOURCE_TARGETS = "numSourceCharactersAffected",
 }
 
 export interface Radiate {

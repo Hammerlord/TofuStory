@@ -32,9 +32,25 @@ export interface EventGroup {
     ability?: Ability;
 }
 
+export enum TRIGGER_SOURCE_TYPES {
+    ABILITY = "ability",
+    EFFECT = "effect",
+    // An extra effect or action triggered conditionally from another effect
+    PROC = "proc",
+}
+
+/**
+ * "What" triggered this action, effect, or proc to occur. For example:
+ * - When triggering an action from an ability, the ability is the source (caused the action to occur)
+ * - When triggering an onAttack event, the attack action is the source
+ * - Events like "on turn end" were not caused by any action in particular and do not have a source
+ */
 export interface TriggerSource {
     source: Action | CombatEffect | Ability;
-    type: "ability" | "effect" | "proc";
+    type: TRIGGER_SOURCE_TYPES;
     actorId?: string;
+    // The selected target during the action
     targetId?: string;
+    // All targets affected by the action
+    allTargetIds?: string[];
 }

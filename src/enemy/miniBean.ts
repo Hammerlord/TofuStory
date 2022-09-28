@@ -21,6 +21,7 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CONDITION_TARGETS,
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -242,7 +243,7 @@ export const eat: Ability = {
             damage: 100,
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
                 ({ name }) => ({
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
                     characterName: name,
                 })
             ),
