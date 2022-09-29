@@ -35,8 +35,6 @@ export interface EventGroup {
 export enum TRIGGER_SOURCE_TYPES {
     ABILITY = "ability",
     EFFECT = "effect",
-    // An extra effect or action triggered conditionally from another effect
-    PROC = "proc",
 }
 
 /**
@@ -48,6 +46,8 @@ export enum TRIGGER_SOURCE_TYPES {
 export interface TriggerSource {
     source: Action | CombatEffect | Ability;
     type: TRIGGER_SOURCE_TYPES;
+    // Is this an extra effect or action triggered conditionally from another effect?
+    isProc: boolean;
     actorId?: string;
     // The selected target during the action
     targetId?: string;

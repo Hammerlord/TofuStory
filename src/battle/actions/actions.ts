@@ -216,96 +216,90 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
     };
 };
 
-export const applyActionToTargets = ({
+export const getUpdatedTargets = ({
     actorId,
     targetIds,
     targetIndices,
     selectedIndex,
     action: initialAction,
+    parent: ability,
     source,
+    getCombatantById,
 }: {
     actorId?: string;
     targetIds: string[];
     targetIndices: number[];
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
+    parent?: Ability;
     source: TriggerSource;
-}) => {
-    return (dispatch, getState) => {
-        const getCombatantById = (id: string) => findCombatant(getState, id);
-        const actor = getCombatantById(actorId);
-        const targets = targetIds.map(getCombatantById);
-        const sourceTargets = (source.allTargetIds || []).map(getCombatantById);
-        const ability = source?.type === "ability" ? (source.source as Ability) : undefined;
+    getCombatantById: (id: string) => Combatant;
+}): [Combatant, Action][] => {
+    const actor = getCombatantById(actorId);
+    const targets = targetIds.map(getCombatantById);
+    const sourceTargets = (source.allTargetIds || []).map(getCombatantById);
 
-        targets
-            .map((target: Combatant, i: number) => {
-                const targetIndex = targetIndices[i];
-                let action = calculateMultiplier({
-                    action: initialAction,
-                    actor,
-                    target,
-                    allTargets: targets,
-                    sourceTargets,
-                    multiplier: initialAction.multiplier,
-                });
-                action = calculateBonus({
-                    action,
-                    target: target,
-                    actor,
-                    allTargets: targets,
-                    isTargetSelected: targetIndex === selectedIndex,
-                });
-                const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
-                const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
-                const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
-                const armor = calculateArmor({ target, action, actor: actorId });
-                const updatedArmor = Math.max(0, baseArmor - damage + armor);
-                const healthDamage = Math.max(0, damage - baseArmor);
-                let HP = Math.max(0, target.HP - healthDamage);
-                if (HP > 0 || resurrect) {
-                    HP = updateHP({ ...target, HP }, healing);
-                }
+    return targets.map((target: Combatant, i: number) => {
+        const targetIndex = targetIndices[i];
+        let action = calculateMultiplier({
+            action: initialAction,
+            actor,
+            target,
+            allTargets: targets,
+            sourceTargets,
+            multiplier: initialAction.multiplier,
+        });
+        action = calculateBonus({
+            action,
+            target: target,
+            actor,
+            allTargets: targets,
+            isTargetSelected: targetIndex === selectedIndex,
+        });
+        const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
+        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
+        const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
+        const armor = calculateArmor({ target, action, actor: actorId });
+        const updatedArmor = Math.max(0, baseArmor - damage + armor);
+        const healthDamage = Math.max(0, damage - baseArmor);
+        let HP = Math.max(0, target.HP - healthDamage);
+        if (HP > 0 || resurrect) {
+            HP = updateHP({ ...target, HP }, healing);
+        }
 
-                const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
-                const isImmuneTo = (effect: Effect): boolean => {
-                    if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
-                        return false;
-                    }
-                    return getEnabledEffects(target).some((targetEffect: Effect) =>
-                        targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
-                    );
-                };
+        const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
+        const isImmuneTo = (effect: Effect): boolean => {
+            if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
+                return false;
+            }
+            return getEnabledEffects(target).some((targetEffect: Effect) =>
+                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
+            );
+        };
 
-                const newEffects = [
-                    ...target.effects,
-                    ...effects
-                        .filter((effect) => !isImmuneTo(effect))
-                        .map((effect) => ({
-                            ...cloneDeep(effect),
-                            uptime: 0,
-                            id: uuid.v4(),
-                            applier: actorId,
-                        })),
-                ];
+        const newEffects = [
+            ...target.effects,
+            ...effects
+                .filter((effect) => !isImmuneTo(effect))
+                .map((effect) => ({
+                    ...cloneDeep(effect),
+                    uptime: 0,
+                    id: uuid.v4(),
+                    applier: actorId,
+                })),
+        ];
 
-                return [
-                    {
-                        ...target,
-                        HP,
-                        armor: updatedArmor,
-                        resources: (target.resources || 0) + resources,
-                        effects: newEffects,
-                    },
-                    action,
-                ];
-            })
-            .forEach((updated: [Combatant, Action]) => {
-                const [combatant, action] = updated;
-                dispatch(updateCombatant({ combatantId: combatant.id, newProperties: combatant, source }));
-                dispatch(onReceiveAction({ action, source: { ...source, actorId, targetId: combatant.id } }));
-            });
-    };
+        return [
+            {
+                ...target,
+                HP,
+                armor: updatedArmor,
+                resources: (target.resources || 0) + resources,
+                effects: newEffects,
+            },
+            action,
+        ];
+    });
 };
 
 const onEffectEventTrigger = ({
@@ -321,7 +315,7 @@ const onEffectEventTrigger = ({
 }) => {
     return (dispatch, getState) => {
         const { canBeSilenced, area = 0, excludeEffectOwner } = effect;
-        const { removeEffect, targetType, actions, conditions, randomOptions = {}, ...other } = effectEvent;
+        const { removeEffect, targetType, ability, conditions, randomOptions = {}, ...other } = effectEvent;
 
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES): string[] => {
             const targetIds =
@@ -359,7 +353,7 @@ const onEffectEventTrigger = ({
             checkRemoveEffect();
         }
 
-        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.PROC };
+        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
 
         $applyStatChanges: {
             const targetIds = getCalculationTargetIds(targetType);
@@ -383,21 +377,23 @@ const onEffectEventTrigger = ({
                 return acc;
             }, []);
 
-            dispatch(
-                applyActionToTargets({
-                    targetIds,
-                    targetIndices,
-                    actorId: ownerId,
-                    action: {
-                        ...other,
-                        type: ACTION_TYPES.EFFECT,
-                    },
-                    source: procSource,
-                })
-            );
+            getUpdatedTargets({
+                targetIds,
+                targetIndices,
+                actorId: ownerId,
+                action: {
+                    ...other,
+                    type: ACTION_TYPES.EFFECT,
+                },
+                source: procSource,
+                getCombatantById: (id: string) => findCombatant(getState, id),
+            }).forEach((updated: [Combatant, Action]) => {
+                const [combatant] = updated;
+                dispatch(updateCombatant({ combatantId: combatant.id, newProperties: combatant, source }));
+            });
         }
 
-        actions?.forEach((action) => {
+        ability?.actions.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
                 action,
                 actorId: ownerId,
@@ -416,7 +412,11 @@ const onEffectEventTrigger = ({
                         selectedIndex: index,
                         side,
                         actorId: ownerId,
-                        parentSource: { ...procSource, actorId: ownerId },
+                        parent: ability,
+                        parentSource: {
+                            ...procSource,
+                            actorId: ownerId,
+                        },
                     })
                 );
             }
@@ -434,8 +434,9 @@ export const checkEventTrigger = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        // At the moment, procs may not proc procs.
-        if (!combatantId || source?.type === TRIGGER_SOURCE_TYPES.PROC) {
+        // At the moment, procs may not proc procs unless it is a kill event.
+        const killEvents = [EFFECT_EVENT_KEYS.onDeath, EFFECT_EVENT_KEYS.onFriendlyDeath, EFFECT_EVENT_KEYS.onHostileDeath];
+        if (!combatantId || (source?.isProc && !killEvents.includes(effectEventKey))) {
             return;
         }
 
@@ -646,7 +647,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                             selectedIndex: index,
                             side,
                             actorId: summonedMinion.id,
-                            parentSource: { ...parentSource, type: TRIGGER_SOURCE_TYPES.PROC },
+                            parentSource: { ...parentSource, isProc: true },
                         })
                     );
                 });
@@ -733,6 +734,7 @@ const pushPlaybackQueue = ({
     allTargetIndices: number[];
     ability?: Ability;
     side: BATTLEFIELD_SIDES;
+    //battlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     return (dispatch, getState) => {
         const MULTI_ACTION_PLAYBACK_SPEED = 500;
@@ -761,12 +763,14 @@ const performAction = ({
     selectedIndex,
     side,
     actorId,
+    parent,
     parentSource,
 }: {
     action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
+    parent?: Ability;
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
@@ -793,7 +797,6 @@ const performAction = ({
         };
 
         const combatants = getState().battle[side];
-        const { source, type } = parentSource || {};
         const targetIndices = combatants.reduce((acc, character: Combatant | null, i: number) => {
             if (isAffected(character, i)) {
                 acc.push(i);
@@ -803,21 +806,31 @@ const performAction = ({
         }, []);
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
-        dispatch(
-            applyActionToTargets({
-                targetIds,
-                targetIndices,
-                selectedIndex,
-                action,
-                actorId,
-                source: parentSource,
-            })
-        );
+        const updated = getUpdatedTargets({
+            targetIds,
+            targetIndices,
+            selectedIndex,
+            action,
+            actorId,
+            parent,
+            source: parentSource,
+            getCombatantById: (id: string) => findCombatant(getState, id),
+        });
 
-        const ability = type === "ability" ? (source as Ability) : undefined;
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
-        dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability, side }));
+        dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side }));
+
+        updated.forEach(([combatant, action]) => {
+            dispatch(
+                updateCombatant({
+                    combatantId: combatant.id,
+                    newProperties: combatant,
+                    source: { ...parentSource, source: action, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds },
+                })
+            );
+        });
+
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
         dispatch(checkCardActions(action, actorId));
@@ -827,6 +840,15 @@ const performAction = ({
                 source: { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds },
             })
         );
+
+        updated.forEach(([combatant, action]) => {
+            dispatch(
+                onReceiveAction({
+                    action,
+                    source: { ...parentSource, actorId, targetId: combatant.id, allTargetIds: targetIds },
+                })
+            );
+        });
     };
 };
 
@@ -989,7 +1011,7 @@ const checkSummonMinion = ({
                             selectedIndex: index,
                             side,
                             actorId: summonedMinion.id,
-                            parentSource: { source: ability, actorId, type: TRIGGER_SOURCE_TYPES.PROC },
+                            parentSource: { source: ability, actorId, type: TRIGGER_SOURCE_TYPES.ABILITY, isProc: true },
                         })
                     );
                 });
@@ -1020,7 +1042,7 @@ export const useAbility = ({
         );
         dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId }));
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability };
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, isProc: false };
         const handleAction = (action: Action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: selectedIndex,
@@ -1035,7 +1057,7 @@ export const useAbility = ({
             };
 
             if (passesConditions({ getCalculationTarget, proc: action })) {
-                dispatch(performAction({ action, selectedIndex, side, actorId, parentSource: source }));
+                dispatch(performAction({ action, selectedIndex, side, actorId, parent: ability, parentSource: source }));
             }
         };
 

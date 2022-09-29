@@ -418,13 +418,16 @@ export const warBanner2: Ability = {
                 excludeEffectOwner: true,
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    actions: [
-                        {
-                            ...drumOfWar,
-                            armor: 3,
-                            area: 2,
-                        },
-                    ],
+                    ability: {
+                        name: "Drumbeat of War",
+                        actions: [
+                            {
+                                ...drumOfWar,
+                                armor: 3,
+                                area: 2,
+                            },
+                        ],
+                    },
                 },
             },
         ],
@@ -455,7 +458,10 @@ export const warBanner: Ability = {
                 excludeEffectOwner: true,
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    actions: [drumOfWar],
+                    ability: {
+                        name: "Drumbeat of War",
+                        actions: [drumOfWar],
+                    },
                 },
             },
         ],
@@ -1374,18 +1380,21 @@ export const dustDevils2: Ability = {
                     icon: Tornado,
                     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
                     onAttack: {
-                        actions: [
-                            {
-                                target: TARGET_TYPES.RANDOM_HOSTILE,
-                                type: ACTION_TYPES.RANGE_ATTACK,
-                                animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-                                damage: 2,
-                                secondaryDamage: 1,
-                                icon: Tornado,
-                                playbackTime: 350,
-                                numTargets: 2, // Bug: 1 more target is hit than stated in this property
-                            },
-                        ],
+                        ability: {
+                            name: "Dust Devils",
+                            actions: [
+                                {
+                                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                                    type: ACTION_TYPES.RANGE_ATTACK,
+                                    animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                                    damage: 2,
+                                    secondaryDamage: 1,
+                                    icon: Tornado,
+                                    playbackTime: 350,
+                                    numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                                },
+                            ],
+                        },
                     },
                 },
             ],
@@ -1411,17 +1420,20 @@ export const dustDevils: Ability = {
                     icon: Tornado,
                     description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
                     onAttack: {
-                        actions: [
-                            {
-                                target: TARGET_TYPES.RANDOM_HOSTILE,
-                                type: ACTION_TYPES.RANGE_ATTACK,
-                                animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-                                damage: 1,
-                                icon: Tornado,
-                                playbackTime: 350,
-                                numTargets: 2, // Bug: 1 more target is hit than stated in this property
-                            },
-                        ],
+                        ability: {
+                            name: "Dust Devils",
+                            actions: [
+                                {
+                                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                                    type: ACTION_TYPES.RANGE_ATTACK,
+                                    animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                                    damage: 1,
+                                    icon: Tornado,
+                                    playbackTime: 350,
+                                    numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                                },
+                            ],
+                        },
                     },
                 },
             ],

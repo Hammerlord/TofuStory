@@ -2,6 +2,7 @@ import {
     AlternateJapaneseOgre,
     Anger,
     Blood,
+    bombImage,
     Cactus,
     Cloudy,
     Dizzy,
@@ -239,20 +240,24 @@ const volcano: Minion = {
             description: "Erupting for 10 damage when this effect expires",
             duration: 2,
             onEnd: {
-                actions: [
-                    {
-                        type: ACTION_TYPES.RANGE_ATTACK,
-                        target: TARGET_TYPES.RANDOM_HOSTILE,
-                        animation: ANIMATION_TYPES.CAST,
-                        area: 2,
-                        damage: 10,
-                    },
-                    {
-                        type: ACTION_TYPES.EFFECT,
-                        target: TARGET_TYPES.SELF,
-                        damage: 100,
-                    },
-                ],
+                ability: {
+                    name: "Erupt",
+                    image: VolcanoIcon,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            animation: ANIMATION_TYPES.CAST,
+                            area: 2,
+                            damage: 10,
+                        },
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            damage: 100,
+                        },
+                    ],
+                },
             },
         },
     ],
@@ -267,17 +272,63 @@ export const eruptive: Effect = {
     description: "Periodically summoning volcanoes that erupt, dealing area damage",
     turnsTriggerFrequency: 3,
     onTurnStart: {
-        actions: [
-            {
-                type: ACTION_TYPES.EFFECT,
-                target: TARGET_TYPES.SELF,
-                summon: [
-                    {
-                        minion: [volcano],
-                    },
-                ],
-            },
-        ],
+        ability: {
+            name: "Raise Volcano",
+            image: VolcanoIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    summon: [
+                        {
+                            minion: [volcano],
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+};
+
+export const explosive: Effect = {
+    name: "Explosive",
+    canBeSilenced: true,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: bombImage,
+    description: "On death, explodes for 10 damage and applies a Burn that increases damage taken from explode by 10 for 3 turns.",
+    onDeath: {
+        ability: {
+            name: "Explode",
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    area: 3,
+                    damage: 10,
+                    effects: [
+                        {
+                            name: "Explosive Burn",
+                            description: "Burning and taking increased damage from Explode.",
+                            icon: Fire,
+                            type: EFFECT_TYPES.BURN,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            duration: 3,
+                            onTurnEnd: {
+                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                damage: 3,
+                            },
+                            abilityDamageReceived: [
+                                {
+                                    abilityName: "Explode",
+                                    damage: 10,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
     },
 };
 

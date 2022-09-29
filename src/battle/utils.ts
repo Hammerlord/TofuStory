@@ -339,12 +339,28 @@ export const calculateDamage = ({
 
     let damageFromEffects = 0;
     let diffDamageReceived = 0;
-    if (isAttack) {
-        damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, skillBonus = [] }) => {
-            return acc + damage + getSkillDamage({ ability, skillBonus });
+    damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, skillBonus = [] }) => {
+        return acc + damage + getSkillDamage({ ability, skillBonus });
+    }, 0);
+
+    const getAbilityDamageReceived = (abilityDamageReceived): number => {
+        if (!abilityDamageReceived) {
+            return 0;
+        }
+        return abilityDamageReceived?.reduce((acc, { abilityName, damage = 0 }) => {
+            if (abilityName && abilityName.toLowerCase() === ability?.name.toLowerCase()) {
+                acc += damage;
+            }
+            return acc;
         }, 0);
-        diffDamageReceived = getEnabledEffects(target).reduce((acc, { damageReceived = 0 }) => acc + damageReceived, 0) || 0;
-    }
+    };
+
+    diffDamageReceived =
+        getEnabledEffects(target).reduce((acc, { name, damageReceived = 0, abilityDamageReceived }) => {
+            acc += damageReceived;
+            acc += getAbilityDamageReceived(abilityDamageReceived);
+            return acc;
+        }, 0) || 0;
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target: target });
     const total = damage + diffDamageReceived;

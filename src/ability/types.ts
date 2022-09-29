@@ -70,9 +70,9 @@ export interface EffectEventTrigger {
         targetType: TARGET_TYPES.RANDOM_HOSTILE | TARGET_TYPES.RANDOM_FRIENDLY;
     };
 
-    // If you are providing actions to be applied to a target, you probably don't want to do any of the other properties.
-    // (Actions already have their own targeting and effects and whatnot)
-    actions?: Action[];
+    // If you are providing an ability to be applied to a target, you probably don't want to do any of the other properties.
+    // (Ability actions already have their own targeting and effects and whatnot)
+    ability?: Ability;
     multiplier?: Multiplier;
 }
 
@@ -119,6 +119,10 @@ export interface Effect {
     armorReceived?: number; // Increased armor received, that is; ditto for below
     damageReceived?: number;
     healingReceived?: number;
+    abilityDamageReceived?: {
+        abilityName: string;
+        damage: number;
+    }[];
     /** Only a single instance of this effect type can be on the character */
     unique?: boolean;
     conditions?: Condition[];

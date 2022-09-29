@@ -235,19 +235,16 @@ const CombatantView = forwardRef(
                 newCharacter: combatant,
             });
 
-            const timeout = setTimeout(() => {
-                setStatChanges(statChanges);
-                setOldState(combatant);
-                const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
-                if (isKillingBlow) {
-                    setPlayDeathAnimation(true);
-                }
-            }, 300);
+            setStatChanges(statChanges);
+            setOldState(combatant);
+            const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
+            if (isKillingBlow) {
+                setPlayDeathAnimation(true);
+            }
 
             return () => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-                clearTimeout(timeout);
             };
         }, [combatant]);
 
@@ -260,8 +257,8 @@ const CombatantView = forwardRef(
         const imageProps = {
             className: classNames(classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                [classes.dying]: playDeathAnimation,
-                [classes.dead]: !playDeathAnimation && oldState?.HP === 0,
+                [classes.dying]: !event?.action && playDeathAnimation,
+                [classes.dead]: !event?.action && !playDeathAnimation && oldState?.HP === 0,
                 [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST,
                 [classes.casting]: oldState?.casting,
             }),

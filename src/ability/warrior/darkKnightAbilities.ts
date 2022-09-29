@@ -41,13 +41,16 @@ export const evilEye: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 description: "Heals a random ally for 2 each turn.",
                 onTurnStart: {
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.RANDOM_FRIENDLY,
-                            healing: 2,
-                        },
-                    ],
+                    ability: {
+                        name: "Heal",
+                        actions: [
+                            {
+                                type: ACTION_TYPES.EFFECT,
+                                target: TARGET_TYPES.RANDOM_FRIENDLY,
+                                healing: 2,
+                            },
+                        ],
+                    },
                 },
                 duration: Infinity,
                 icon: Heart,
