@@ -29,10 +29,7 @@ export const thorns: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    onReceiveAttack: {
-        targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        damage: 1,
-    },
+    thorns: 1,
 };
 
 export const controlImmune: Effect = {
