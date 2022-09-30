@@ -81,7 +81,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck } = playerStateSlice.actions;
+const { updatePlayer, onSelectClass, updateDeck, restartGame } = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
@@ -112,11 +112,8 @@ const Main = () => {
         // Check game over when player updates
         if (player?.HP <= 0) {
             setTimeout(() => {
-                const callback = () => {
-                    setIsGameOver(true);
-                };
-                handleTransition(callback);
-            }, 2000);
+                setIsGameOver(true);
+            }, 1500);
         }
     }, [player]);
 
@@ -345,7 +342,20 @@ const Main = () => {
                 </div>
             )}
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
-            {isGameOver && <GameOver player={player} onExit={() => setPlayer(null)} />}
+            {isGameOver && (
+                <GameOver
+                    player={player}
+                    onExit={() => {
+                        const callback = () => {
+                            setIsGameOver(false);
+                            dispatch(closeBattle());
+                            dispatch(restartGame());
+                        };
+
+                        handleTransition(callback);
+                    }}
+                />
+            )}
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

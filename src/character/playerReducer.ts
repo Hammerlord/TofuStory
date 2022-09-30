@@ -36,5 +36,11 @@ export const playerStateSlice = createSlice({
                 deck: action.payload,
             };
         },
+        restartGame: () => {
+            return {
+                player: null,
+                deck: [],
+            };
+        },
     },
 });

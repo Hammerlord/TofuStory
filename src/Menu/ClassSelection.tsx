@@ -92,7 +92,7 @@ const ClassSelection = ({ onSelectClass }) => {
                 <div className={classes.inner}>
                     <h2>You gained abilities</h2>
                     <div className={classes.abilities}>
-                        {JOB_CARD_MAP[selectedClass].starters
+                        {[...JOB_CARD_MAP[selectedClass].starters]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
                                 <div className={classes.abilityContainer} key={i}>

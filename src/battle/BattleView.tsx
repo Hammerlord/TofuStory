@@ -157,6 +157,8 @@ const BattlefieldContainer = () => {
         waves,
         flagTurnEnd,
         selectCards,
+        isEnded,
+        isLost,
     } = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -346,6 +348,9 @@ const BattlefieldContainer = () => {
     const eventQueueRef = useRef([]);
 
     useEffect(() => {
+        if (isEnded || isLost) {
+            return;
+        }
         if (!events.length) {
             eventQueueRef.current = events;
 
@@ -397,6 +402,9 @@ const BattlefieldContainer = () => {
     }, [events, flagTurnEnd]);
 
     useEffect(() => {
+        if (isEnded || isLost) {
+            return;
+        }
         setShowTurnAnnouncement(true);
         setTimeout(() => {
             setShowTurnAnnouncement(false);

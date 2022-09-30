@@ -122,6 +122,7 @@ export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }
                 isEnded: false,
                 round: 0,
                 selectCards: null,
+                isLost: false,
             })
         );
 
@@ -138,8 +139,12 @@ export const onWaveStart = () => {
     };
 };
 
-const handleLifeOnKill = (triggerSource: TriggerSource) => {
+const handleLifeOnKill = (triggerSource?: TriggerSource) => {
     return (dispatch, getState) => {
+        if (!triggerSource) {
+            return;
+        }
+
         const { type, source, actorId } = triggerSource;
         let killedBy: Combatant | undefined;
         if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
@@ -265,9 +270,15 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
 
         const { playerSide, enemySide, waves, currentWave, playerSummonsInPlay, discard } = getState().battle;
 
-        if (playerSide.find((c: Combatant | null) => c?.isPlayer).HP === 0) {
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        if (player.HP === 0) {
             // Game over
-
+            dispatch(
+                updateBattle({
+                    isLost: true,
+                })
+            );
+            dispatch(updatePlayer(player));
             return;
         }
 

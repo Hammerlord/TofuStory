@@ -300,9 +300,12 @@ export const startEnemyTurn = () => {
 
         const acted = {};
         const makeEnemyMove = () => {
-            const eligible = getState().battle.enemySide.filter(
-                (char: Combatant | null) => char?.HP > 0 && !isUnableToAct(char) && !acted[char.id]
-            );
+            const { isEnded, isLost, enemySide } = getState().battle;
+            if (isEnded || isLost) {
+                return;
+            }
+
+            const eligible = enemySide.filter((char: Combatant | null) => char?.HP > 0 && !isUnableToAct(char) && !acted[char.id]);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
                 dispatch(updateFlagTurnEnd(true));

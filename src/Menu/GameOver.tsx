@@ -43,12 +43,15 @@ const useStyles = createUseStyles({
             transform: "translateY(8px)",
         },
     },
-    item: {
+    itemContainer: {
         margin: "0 4px",
+    },
+    item: {
         animationName: "$upAndDown",
         animationDuration: "1s",
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
+        height: "100%",
     },
 });
 
@@ -70,13 +73,17 @@ const GameOver = ({ onExit, player }) => {
             <div className={classes.inner}>
                 <BannerNotice>With your untimely demise, your journey has ended.</BannerNotice>
                 <div className={classes.body}>
-                    <p>Somewhere out there is a happy adventurer...</p>
                     <div className={classes.loot}>
                         {player.items.map((item, i: number) => (
-                            <img src={item.image} key={i} className={classes.item} style={{ animationDelay: `${0.1 * i}s` }} />
+                            <div className={classes.itemContainer} key={i}>
+                                <img src={item.image} className={classes.item} style={{ animationDelay: `${0.1 * i}s` }} />
+                            </div>
                         ))}
-                        <img src={mesoImage} className={classes.item} style={{ animationDelay: `${0.1 * player.items.length}s` }} />
+                        <div className={classes.itemContainer}>
+                            <img src={mesoImage} className={classes.item} style={{ animationDelay: `${0.1 * player.items.length}s` }} />
+                        </div>
                     </div>
+                    <p>Somewhere out there is a happy adventurer...</p>
                 </div>
                 <div>
                     <Button onClick={onExit} variant="contained" color="primary">

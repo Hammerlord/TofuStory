@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Ability } from "../ability/types";
 import { Combatant } from "../character/types";
-import createCombatant from "../enemy/createEnemy";
 import { Wave } from "../Menu/tutorial";
 import { shuffle } from "../utils";
 import { Event } from "./types";
@@ -23,9 +22,10 @@ export interface BattleState {
     round: number;
     waves: Wave[];
     currentWave: number;
-    isEnded: boolean;
+    isEnded: boolean; // Actually the victory state
     /** When interacting with cards in your hand, or discovering a card */
     selectCards: object | null;
+    isLost: boolean;
 }
 
 /**
