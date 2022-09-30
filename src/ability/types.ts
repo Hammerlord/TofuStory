@@ -375,6 +375,7 @@ export enum ACTION_TYPES {
     MOVEMENT = "movement",
     BLEED = "bleed",
     BURN = "burn",
+    SPECIAL = "special",
 }
 
 export enum ANIMATION_TYPES {

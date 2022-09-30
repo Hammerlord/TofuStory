@@ -238,7 +238,7 @@ export const eat: Ability = {
     resourceCost: 0,
     actions: [
         {
-            type: ACTION_TYPES.ATTACK,
+            type: ACTION_TYPES.SPECIAL,
             target: TARGET_TYPES.HOSTILE,
             damage: 100,
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
