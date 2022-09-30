@@ -33,7 +33,7 @@ const AuraView = ({ aura }: { aura: Aura }) => {
         return null;
     }
 
-    const { damage = 0, onTurnStart } = aura;
+    const { attackPower: damage = 0, onTurnStart } = aura;
     const { healing = 0, armor = 0 } = onTurnStart || {};
 
     return (

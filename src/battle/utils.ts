@@ -337,10 +337,10 @@ export const calculateDamage = ({
         return baseDamage;
     }
 
-    let damageFromEffects = 0;
-    let diffDamageReceived = 0;
-    damageFromEffects = getEnabledEffects(actor).reduce((acc, { damage = 0, skillBonus = [] }) => {
-        return acc + damage + getSkillDamage({ ability, skillBonus });
+    const damageFromEffects = getEnabledEffects(actor).reduce((acc, { attackPower = 0, skillBonus = [] }) => {
+        // Attack power only applies to attacks
+        const attackPowerIncrease = isAttack ? attackPower : 0;
+        return acc + getSkillDamage({ ability, skillBonus }) + attackPowerIncrease;
     }, 0);
 
     const getAbilityDamageReceived = (abilityDamageReceived): number => {
@@ -355,19 +355,16 @@ export const calculateDamage = ({
         }, 0);
     };
 
-    diffDamageReceived =
-        getEnabledEffects(target).reduce((acc, { name, damageReceived = 0, abilityDamageReceived }) => {
-            acc += damageReceived;
+    const damageReceivedFromEffects =
+        getEnabledEffects(target).reduce((acc, { damageReceived = 0, abilityDamageReceived }) => {
+            acc += isAttack ? damageReceived : 0;
             acc += getAbilityDamageReceived(abilityDamageReceived);
             return acc;
         }, 0) || 0;
 
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target: target });
-    const total = damage + diffDamageReceived;
-    if (total < 0) {
-        return 0;
-    }
-    return total;
+    const total = damage + damageReceivedFromEffects;
+    return Math.max(0, total);
 };
 
 export const calculateArmor = ({ actor, target, action }): number => {

@@ -504,7 +504,7 @@ export const mutantSnailEnemy: Minion = {
                             icon: weaponmasteryImage,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
-                            damage: 1,
+                            attackPower: 1,
                         },
                     ],
                 },
@@ -527,7 +527,7 @@ export const mutantSnailEnemy: Minion = {
                             icon: weaponmasteryImage,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
-                            damage: 1,
+                            attackPower: 1,
                             duration: 2,
                         },
                     ],
@@ -649,7 +649,7 @@ export const manoEnemy: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "While this character has armor, its damage is increased.",
-            damage: 1,
+            attackPower: 1,
             skillBonus: [
                 {
                     skill: "Rollout",

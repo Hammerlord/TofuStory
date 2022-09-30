@@ -24,10 +24,10 @@ const AttackPower = ({ combatant }) => {
         return null;
     }
 
-    const damageEffects = getEnabledEffects(combatant).filter(({ damage = 0 }) => {
+    const damageEffects = getEnabledEffects(combatant).filter(({ attackPower: damage = 0 }) => {
         return damage !== 0;
     });
-    const damageFromEffects = damageEffects.reduce((acc: number, { damage }) => {
+    const damageFromEffects = damageEffects.reduce((acc: number, { attackPower: damage }) => {
         return acc + damage;
     }, 0);
 
@@ -51,7 +51,7 @@ const AttackPower = ({ combatant }) => {
                     <div>Modifiers:</div>
                 </>
             )}
-            {damageEffects.map(({ icon, name: effectName, damage }, i) => (
+            {damageEffects.map(({ icon, name: effectName, attackPower: damage }, i) => (
                 <div key={i}>
                     <Icon icon={icon} /> {effectName} {damage < 0 ? "-" : "+"}
                     {damage}

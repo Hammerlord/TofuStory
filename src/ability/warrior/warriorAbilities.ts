@@ -483,7 +483,7 @@ export const yell2: Ability = {
             effects: [
                 {
                     name: "Admonished",
-                    damage: -3,
+                    attackPower: -3,
                     damageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
@@ -507,7 +507,7 @@ export const yell: Ability = {
             effects: [
                 {
                     name: "Admonished",
-                    damage: -2,
+                    attackPower: -2,
                     damageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
@@ -787,7 +787,7 @@ export const sharpen2: Ability = {
                     icon: weaponmasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 3,
+                    attackPower: 3,
                     duration: 0,
                     onAttack: {
                         removeEffect: true,
@@ -812,7 +812,7 @@ export const sharpen: Ability = {
                     icon: weaponmasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 2,
+                    attackPower: 2,
                     duration: 0,
                     onAttack: {
                         removeEffect: true,
@@ -1327,7 +1327,7 @@ export const rally2: Ability = {
                     name: "Inspired",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 3,
+                    attackPower: 3,
                     duration: 0,
                     icon: enrageImage,
                 },
@@ -1350,7 +1350,7 @@ export const rally: Ability = {
                     name: "Inspired",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 2,
+                    attackPower: 2,
                     duration: 0,
                     icon: enrageImage,
                 },

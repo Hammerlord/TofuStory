@@ -102,7 +102,7 @@ export interface Effect {
     class: EFFECT_CLASSES;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
     duration?: number;
-    damage?: number;
+    attackPower?: number;
     description?: string;
     icon?: string;
     attackAreaIncrease?: number;

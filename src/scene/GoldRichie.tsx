@@ -62,7 +62,7 @@ const goldRichie2: Minion = {
                         {
                             icon: weaponmasteryImage,
                             name: "Bolster",
-                            damage: 1,
+                            attackPower: 1,
                             duration: 3,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,

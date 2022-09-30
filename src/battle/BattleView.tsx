@@ -182,7 +182,7 @@ const BattlefieldContainer = () => {
         if (!ally || ally.isPlayer || ally.HP === 0) {
             return false;
         }
-        const damageFromEffects = getEnabledEffects(ally).reduce((acc: number, { damage = 0 }) => acc + damage, 0);
+        const damageFromEffects = getEnabledEffects(ally).reduce((acc: number, { attackPower = 0 }) => acc + attackPower, 0);
         const totalDamage = (ally.damage || 0) + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };

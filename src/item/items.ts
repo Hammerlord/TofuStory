@@ -89,7 +89,7 @@ export const drakeBlood: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: drakebloodImage,
-            damage: 1,
+            attackPower: 1,
             lifeOnKill: 3,
             onTurnEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -244,7 +244,7 @@ export const alligatorTube: Item = {
             class: EFFECT_CLASSES.BUFF,
             area: 1,
             excludeEffectOwner: true,
-            damage: 2,
+            attackPower: 2,
         },
     ],
 };

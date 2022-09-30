@@ -14,7 +14,7 @@ const Buffs = ({ ability }) => {
                 const {
                     onTurnStart,
                     armorReceived = 0,
-                    damage = 0,
+                    attackPower = 0,
                     duration = Infinity,
                     onAttack = { removeEffect: false, healing: 0 },
                     preventArmorDecay,
@@ -82,10 +82,10 @@ const Buffs = ({ ability }) => {
                     );
                 }
 
-                if (damage > 0) {
+                if (attackPower > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${damage}`} />
+                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${attackPower}`} />
                         </span>
                     );
                 }

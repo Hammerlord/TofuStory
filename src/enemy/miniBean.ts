@@ -35,7 +35,7 @@ const yum: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: turkeyImage,
-    damage: 1,
+    attackPower: 1,
     duration: 5,
 };
 
@@ -44,7 +44,7 @@ const yuck: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: yuckImage,
-    damage: -1,
+    attackPower: -1,
     damageReceived: 1,
     duration: 3,
 };
@@ -175,7 +175,7 @@ const throwFood: Ability = {
                     name: "Foodborne Projectile",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 2,
+                    attackPower: 2,
                     duration: 0,
                     onAttack: {
                         removeEffect: true,

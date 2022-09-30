@@ -95,7 +95,7 @@ export const darkThirst: Ability = {
                     icon: darkThirstImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 1,
+                    attackPower: 1,
                     duration: 2,
                     onAttack: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -222,7 +222,7 @@ export const lordOfDarkness: Ability = {
                     icon: lordOfDarknessImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    damage: 1,
+                    attackPower: 1,
                     duration: 2,
                     onAttack: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

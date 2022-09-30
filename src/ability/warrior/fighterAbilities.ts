@@ -274,7 +274,7 @@ export const burningSoulBlade: Ability = {
                             name: "Burning Soul Blade",
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
-                            damage: 1,
+                            attackPower: 1,
                         },
                     ],
                 },

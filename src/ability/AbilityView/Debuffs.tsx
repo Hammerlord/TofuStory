@@ -9,13 +9,13 @@ export const getDebuffDurations = (
     stunDuration: number;
     chillDuration: number;
     burnDuration: number;
-    damage: number;
+    attackPower: number;
     debuffDuration: number;
     silenceDuration: number;
 } => {
     const debuffs = effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
     return debuffs.reduce((acc, effect: Effect) => {
-        const { type, duration = 0, damage = 0 } = effect;
+        const { type, duration = 0, attackPower = 0 } = effect;
         switch (type) {
             case EFFECT_TYPES.BLEED:
                 return {
@@ -45,7 +45,7 @@ export const getDebuffDurations = (
             default:
                 return {
                     ...acc,
-                    damage: (acc.damage || 0) + damage,
+                    attackPower: (acc.attackPower || 0) + attackPower,
                     debuffDuration: (acc.debuffDuration || 0) + duration,
                 };
         }
@@ -53,7 +53,7 @@ export const getDebuffDurations = (
 };
 
 const Debuffs = ({ effects }: { effects: Effect[] }) => {
-    const { bleedDuration, stunDuration, chillDuration, burnDuration, damage, debuffDuration, silenceDuration } =
+    const { bleedDuration, stunDuration, chillDuration, burnDuration, attackPower, debuffDuration, silenceDuration } =
         getDebuffDurations(effects);
 
     const hasDebuff =
@@ -87,9 +87,9 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
                     <Icon icon={<Snowflake />} size={"sm"} /> <Icon icon={<Hourglass />} size={"sm"} text={chillDuration} />
                 </>
             )}{" "}
-            {damage && (
+            {attackPower && (
                 <>
-                    <Icon icon={<CrossedSwords />} size={"sm"} text={`${damage > 0 ? "+" : ""}${damage}`} />
+                    <Icon icon={<CrossedSwords />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />
                     <Icon icon={<Hourglass />} size={"sm"} text={debuffDuration} />
                 </>
             )}

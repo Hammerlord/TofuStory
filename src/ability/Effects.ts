@@ -122,7 +122,7 @@ export const chill: Effect = {
     type: EFFECT_TYPES.CHILL,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 5,
-    damage: -1,
+    attackPower: -1,
     description: "Chilled targets have their attack power reduced by 1.",
 };
 
@@ -162,7 +162,7 @@ export const raging: Effect = {
                 class: EFFECT_CLASSES.BUFF,
                 icon: weaponmasteryImage,
                 description: "Growing angry. Effect is removed if the character is stunned.",
-                damage: 1,
+                attackPower: 1,
                 onReceiveEffect: {
                     conditions: [
                         {
@@ -182,7 +182,7 @@ const vengeful: Effect = {
     name: "Vengeful",
     canBeSilenced: true,
     duration: 2,
-    damage: 3,
+    attackPower: 3,
     icon: JapaneseOgre,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -337,7 +337,7 @@ export const eliteSquad: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    damage: 1,
+    attackPower: 1,
     icon: Medal,
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
@@ -359,7 +359,7 @@ export const elite: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    damage: 2,
+    attackPower: 2,
     description:
         "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     icon: MilitaryMedal,
