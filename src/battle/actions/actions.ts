@@ -191,7 +191,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
     };
 };
 
-const checkLifeOnHit = ({
+const checkHitEffects = ({
     affectedTargets,
     actorId,
     action,
@@ -209,61 +209,35 @@ const checkLifeOnHit = ({
 
         const actor = findCombatant(getState, actorId);
         if (!actor || actor?.HP === 0) {
-            return;
-        }
-
-        const lifeOnHit = getEnabledEffects(actor).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
-        if (lifeOnHit === 0) {
             return;
         }
 
         const { actorIndex } = orientate({ actorId, ...getState().battle });
+        const lifeOnHit = getEnabledEffects(actor).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+        if (lifeOnHit) {
+            const [lifeOnHitTarget, healAction] = getUpdatedTargets({
+                actorId: actor.id,
+                targetIds: [actor.id],
+                targetIndices: [actorIndex],
+                selectedIndex: actorIndex,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    healing: lifeOnHit * affectedTargets.length,
+                },
+                source: {
+                    ...source,
+                    isProc: true,
+                },
+                getCombatantById: (id) => findCombatant(getState, id),
+            })[0];
 
-        const [updated, healAction] = getUpdatedTargets({
-            actorId: actor.id,
-            targetIds: [actor.id],
-            targetIndices: [actorIndex],
-            selectedIndex: actorIndex,
-            action: {
-                type: ACTION_TYPES.EFFECT,
-                healing: lifeOnHit * affectedTargets.length,
-            },
-            source: {
-                ...source,
-                isProc: true,
-            },
-            getCombatantById: (id) => findCombatant(getState, id),
-        })[0];
-
-        dispatch(
-            updateCombatant({
-                combatantId: actorId,
-                newProperties: updated,
-                source: { source: healAction, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
-            })
-        );
-    };
-};
-
-const checkThorns = ({
-    affectedTargets,
-    actorId,
-    action,
-    source,
-}: {
-    affectedTargets: string[];
-    actorId: string;
-    action: Action;
-    source: TriggerSource;
-}) => {
-    return (dispatch, getState) => {
-        if (source.isProc || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
-            return;
-        }
-
-        const actor = findCombatant(getState, actorId);
-        if (!actor || actor?.HP === 0) {
-            return;
+            dispatch(
+                updateCombatant({
+                    combatantId: actorId,
+                    newProperties: lifeOnHitTarget,
+                    source: { isProc: true, source: healAction, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+                })
+            );
         }
 
         const totalThorns = affectedTargets.reduce((acc, id: string) => {
@@ -271,33 +245,30 @@ const checkThorns = ({
             getEnabledEffects(combatant).forEach(({ thorns = 0 }) => (acc += thorns));
             return acc;
         }, 0);
-        if (totalThorns === 0) {
-            return;
+
+        if (totalThorns) {
+            const [thornsTarget, thornsAction] = getUpdatedTargets({
+                targetIds: [actor.id],
+                targetIndices: [actorIndex],
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    damage: totalThorns,
+                },
+                source: {
+                    ...source,
+                    isProc: true,
+                },
+                getCombatantById: (id) => findCombatant(getState, id),
+            })[0];
+
+            dispatch(
+                updateCombatant({
+                    combatantId: actorId,
+                    newProperties: thornsTarget,
+                    source: { isProc: true, source: thornsAction, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: actorId },
+                })
+            );
         }
-
-        const { actorIndex } = orientate({ actorId, ...getState().battle });
-
-        const [updated, thornsAction] = getUpdatedTargets({
-            targetIds: [actor.id],
-            targetIndices: [actorIndex],
-            action: {
-                type: ACTION_TYPES.EFFECT,
-                damage: totalThorns,
-            },
-            source: {
-                ...source,
-                isProc: true,
-            },
-            getCombatantById: (id) => findCombatant(getState, id),
-        })[0];
-
-        dispatch(
-            updateCombatant({
-                combatantId: actorId,
-                newProperties: updated,
-                source: { source: thornsAction, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: actorId },
-            })
-        );
     };
 };
 
@@ -992,8 +963,7 @@ const performAction = ({
         });
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
-        dispatch(checkThorns({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
-        dispatch(checkLifeOnHit({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
+        dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
         dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side }));
