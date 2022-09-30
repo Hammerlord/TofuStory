@@ -96,23 +96,13 @@ export const darkThirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
+                    lifeOnHit: 1,
+                    lifeOnKill: 3,
                     duration: 2,
-                    onAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 1,
-                        multiplier: {
-                            type: MULTIPLIER_TYPES.NUM_SOURCE_TARGETS,
-                            value: 1,
-                        },
-                    },
-                    onHostileDeath: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
-                    },
                 },
                 {
                     ...wound,
-                    duration: 2,
+                    duration: 3,
                 },
             ],
         },
@@ -224,14 +214,7 @@ export const lordOfDarkness: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
                     duration: 2,
-                    onAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 1,
-                        multiplier: {
-                            type: MULTIPLIER_TYPES.NUM_SOURCE_TARGETS,
-                            value: 1,
-                        },
-                    },
+                    lifeOnHit: 1,
                     onReceiveDamage: {
                         parentEffect: {
                             damage: 1,

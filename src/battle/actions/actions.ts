@@ -152,8 +152,13 @@ const handleLifeOnKill = (triggerSource: TriggerSource) => {
             return;
         }
 
-        const { actorIndex, actor } = orientate({ actorId: killedBy.id, ...getState().battle });
-        const lifeOnKill = getEnabledEffects(actor).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+        const lifeOnKill = getEnabledEffects(killedBy).reduce((acc, { lifeOnHit: lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+        if (lifeOnKill === 0) {
+            return;
+        }
+
+        const { actorIndex } = orientate({ actorId: killedBy.id, ...getState().battle });
+
         const [updated, action] = getUpdatedTargets({
             actorId: killedBy.id,
             targetIds: [killedBy.id],
@@ -181,13 +186,65 @@ const handleLifeOnKill = (triggerSource: TriggerSource) => {
     };
 };
 
+const checkLifeOnHit = ({
+    affectedTargets,
+    actorId,
+    action,
+    source,
+}: {
+    affectedTargets: string[];
+    actorId: string;
+    action: Action;
+    source: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        if (source.isProc || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
+            return;
+        }
+
+        const actor = findCombatant(getState, actorId);
+        if (!actor || actor?.HP === 0) {
+            return;
+        }
+
+        const lifeOnHit = getEnabledEffects(actor).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+        if (lifeOnHit === 0) {
+            return;
+        }
+
+        const { actorIndex } = orientate({ actorId, ...getState().battle });
+
+        const [updated, healAction] = getUpdatedTargets({
+            actorId: actor.id,
+            targetIds: [actor.id],
+            targetIndices: [actorIndex],
+            selectedIndex: actorIndex,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                healing: lifeOnHit * affectedTargets.length,
+            },
+            source: {
+                ...source,
+                isProc: true,
+            },
+            getCombatantById: (id) => findCombatant(getState, id),
+        })[0];
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: updated,
+                source: { source: healAction, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+            })
+        );
+    };
+};
+
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource: TriggerSource }) => {
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
         const { friendly, hostile } = orientate({ actorId: combatantId, ...getState().battle });
-
-        dispatch(handleLifeOnKill(triggerSource));
 
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { HP, id } = combatant || {};
@@ -195,6 +252,9 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                 dispatch(checkEventTrigger({ combatantId: id, effectEventKey, source: triggerSource }));
             }
         };
+
+        dispatch(handleLifeOnKill(triggerSource));
+
         friendly.forEach((combatant: Combatant | null) => {
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onFriendlyDeath);
         });
@@ -204,6 +264,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         });
 
         const { playerSide, enemySide, waves, currentWave, playerSummonsInPlay, discard } = getState().battle;
+
         if (playerSide.find((c: Combatant | null) => c?.isPlayer).HP === 0) {
             // Game over
 
@@ -863,6 +924,9 @@ const performAction = ({
             getCombatantById: (id: string) => findCombatant(getState, id),
         });
 
+        const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
+
+        dispatch(checkLifeOnHit({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
         dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side }));
@@ -872,7 +936,7 @@ const performAction = ({
                 updateCombatant({
                     combatantId: combatant.id,
                     newProperties: combatant,
-                    source: { ...parentSource, source: action, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds },
+                    source: { ...source, source: action },
                 })
             );
         });
@@ -883,7 +947,7 @@ const performAction = ({
         dispatch(
             onAction({
                 action,
-                source: { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds },
+                source: { ...source, targetId: combatants[selectedIndex]?.id },
             })
         );
 
@@ -891,7 +955,7 @@ const performAction = ({
             dispatch(
                 onReceiveAction({
                     action,
-                    source: { ...parentSource, actorId, targetId: combatant.id, allTargetIds: targetIds },
+                    source: { ...source, targetId: combatant.id },
                 })
             );
         });
