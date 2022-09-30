@@ -356,8 +356,8 @@ export const calculateDamage = ({
     };
 
     const damageReceivedFromEffects =
-        getEnabledEffects(target).reduce((acc, { damageReceived = 0, abilityDamageReceived }) => {
-            acc += isAttack ? damageReceived : 0;
+        getEnabledEffects(target).reduce((acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
+            acc += isAttack ? attackDamageReceived : 0;
             acc += getAbilityDamageReceived(abilityDamageReceived);
             return acc;
         }, 0) || 0;

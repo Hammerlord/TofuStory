@@ -95,7 +95,7 @@ export const wound: Effect = {
     type: EFFECT_TYPES.BLEED,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
-    damageReceived: 1,
+    attackDamageReceived: 1,
     onTurnEnd: {
         damage: 1,
     },

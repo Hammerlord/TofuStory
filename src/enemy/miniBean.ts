@@ -45,7 +45,7 @@ const yuck: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     icon: yuckImage,
     attackPower: -1,
-    damageReceived: 1,
+    attackDamageReceived: 1,
     duration: 3,
 };
 

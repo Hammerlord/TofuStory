@@ -42,7 +42,7 @@ export const stolenFence: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: stolenFenceImage,
-            damageReceived: -1,
+            attackDamageReceived: -1,
             onlyVisibleWhenProcced: true,
             conditions: [
                 {

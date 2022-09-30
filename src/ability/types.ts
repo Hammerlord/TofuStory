@@ -117,7 +117,7 @@ export interface Effect {
     immunities?: EFFECT_TYPES[];
     preventArmorDecay?: boolean;
     armorReceived?: number; // Increased armor received, that is; ditto for below
-    damageReceived?: number;
+    attackDamageReceived?: number;
     healingReceived?: number;
     /** Healing received when hitting an enemy. Scales with the number of enemies hit */
     lifeOnHit?: number;

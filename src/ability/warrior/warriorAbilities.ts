@@ -484,7 +484,7 @@ export const yell2: Ability = {
                 {
                     name: "Admonished",
                     attackPower: -3,
-                    damageReceived: 1,
+                    attackDamageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -508,7 +508,7 @@ export const yell: Ability = {
                 {
                     name: "Admonished",
                     attackPower: -2,
-                    damageReceived: 1,
+                    attackDamageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
