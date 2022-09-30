@@ -138,11 +138,57 @@ export const onWaveStart = () => {
     };
 };
 
-const onCombatantDeath = ({ combatantId, triggerSource }) => {
+const handleLifeOnKill = (triggerSource: TriggerSource) => {
+    return (dispatch, getState) => {
+        const { type, source, actorId } = triggerSource;
+        let killedBy: Combatant | undefined;
+        if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
+            killedBy = findCombatant(getState, (source as CombatEffect)?.applierId);
+        } else if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
+            killedBy = findCombatant(getState, actorId);
+        }
+
+        if (!killedBy || killedBy.HP === 0) {
+            return;
+        }
+
+        const { actorIndex, actor } = orientate({ actorId: killedBy.id, ...getState().battle });
+        const lifeOnKill = getEnabledEffects(actor).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+        const [updated, action] = getUpdatedTargets({
+            actorId: killedBy.id,
+            targetIds: [killedBy.id],
+            targetIndices: [actorIndex],
+            selectedIndex: actorIndex,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                healing: lifeOnKill,
+            },
+            source: {
+                ...triggerSource,
+                isProc: true,
+            },
+            getCombatantById: (id) => findCombatant(getState, id),
+        })[0];
+
+        dispatch(
+            updateCombatant({
+                combatantId: killedBy.id,
+                newProperties: updated,
+                // This is technically a proc in concept, but it is allowed to proc procs
+                source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id },
+            })
+        );
+    };
+};
+
+const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource: TriggerSource }) => {
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
         const { friendly, hostile } = orientate({ actorId: combatantId, ...getState().battle });
+
+        dispatch(handleLifeOnKill(triggerSource));
+
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { HP, id } = combatant || {};
             if (HP > 0 && id !== combatantId) {

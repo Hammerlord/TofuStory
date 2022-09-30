@@ -47,7 +47,9 @@ export interface TriggerSource {
     source: Action | CombatEffect | Ability;
     type: TRIGGER_SOURCE_TYPES;
     // Is this an extra effect or action triggered conditionally from another effect?
-    isProc: boolean;
+    // TODO there are some exceptions around certain events -- for example, lifeOnKill, onWaveStart are
+    // sufficiently "rare" enough occurrences they are allowed to trigger procs despite technically being procs themselves
+    isProc?: boolean;
     actorId?: string;
     // The selected target during the action
     targetId?: string;

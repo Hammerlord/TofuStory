@@ -119,6 +119,11 @@ export interface Effect {
     armorReceived?: number; // Increased armor received, that is; ditto for below
     damageReceived?: number;
     healingReceived?: number;
+    /** Healing received when hitting an enemy. Scales with the number of enemies hit */
+    lifeOnHit?: number;
+    /** Damage to reflect back to attackers */
+    thorns?: number;
+    lifeOnKill?: number;
     abilityDamageReceived?: {
         abilityName: string;
         damage: number;
