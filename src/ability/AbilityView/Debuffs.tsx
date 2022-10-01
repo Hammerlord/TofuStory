@@ -2,103 +2,43 @@ import Icon from "../../icon/Icon";
 import { Blood, CrossedSwords, Dizzy, Fire, Hourglass, Snowflake, SpeechBubble } from "../../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
-export const getDebuffDurations = (
-    effects: Effect[]
-): {
-    bleedDuration: number;
-    stunDuration: number;
-    chillDuration: number;
-    burnDuration: number;
-    attackPower: number;
-    debuffDuration: number;
-    silenceDuration: number;
-} => {
-    const debuffs = effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
-    return debuffs.reduce((acc, effect: Effect) => {
-        const { type, duration = 0, attackPower = 0 } = effect;
-        switch (type) {
-            case EFFECT_TYPES.BLEED:
-                return {
-                    ...acc,
-                    bleedDuration: (acc.bleedDuration || 0) + duration,
-                };
-            case EFFECT_TYPES.STUN:
-                return {
-                    ...acc,
-                    stunDuration: (acc.stunDuration || 0) + duration,
-                };
-            case EFFECT_TYPES.CHILL:
-                return {
-                    ...acc,
-                    chillDuration: (acc.chillDuration || 0) + duration,
-                };
-            case EFFECT_TYPES.BURN:
-                return {
-                    ...acc,
-                    burnDuration: (acc.burnDuration || 0) + duration,
-                };
-            case EFFECT_TYPES.SILENCE:
-                return {
-                    ...acc,
-                    silenceDuration: (acc.silenceDuration || 0) + duration,
-                };
-            default:
-                return {
-                    ...acc,
-                    attackPower: (acc.attackPower || 0) + attackPower,
-                    debuffDuration: (acc.debuffDuration || 0) + duration,
-                };
-        }
-    }, {} as any);
+export const getDebuffIcon = (type: EFFECT_TYPES): JSX.Element => {
+    switch (type) {
+        case EFFECT_TYPES.BLEED:
+            return <Blood />;
+        case EFFECT_TYPES.STUN:
+            return <Dizzy />;
+        case EFFECT_TYPES.CHILL:
+            return <Snowflake />;
+        case EFFECT_TYPES.BURN:
+            return <Fire />;
+        case EFFECT_TYPES.SILENCE:
+            return <SpeechBubble />;
+    }
 };
 
 const Debuffs = ({ effects }: { effects: Effect[] }) => {
-    const { bleedDuration, stunDuration, chillDuration, burnDuration, attackPower, debuffDuration, silenceDuration } =
-        getDebuffDurations(effects);
-
-    const hasDebuff =
-        bleedDuration > 0 || stunDuration > 0 || burnDuration > 0 || chillDuration > 0 || debuffDuration > 0 || silenceDuration > 0;
-    if (!hasDebuff) {
+    const debuffs = effects.filter((effect) => effect.class === EFFECT_CLASSES.DEBUFF);
+    if (debuffs.length === 0) {
         return null;
     }
 
     return (
         <div>
             Inflict{" "}
-            {bleedDuration > 0 && (
-                <>
-                    <Icon icon={<Blood />} size={"sm"} />
-                    <Icon icon={<Hourglass />} size={"sm"} text={bleedDuration} />
-                </>
-            )}{" "}
-            {stunDuration > 0 && (
-                <>
-                    <Icon icon={<Dizzy />} size={"sm"} />
-                    <Icon icon={<Hourglass />} size={"sm"} text={stunDuration} />
-                </>
-            )}{" "}
-            {burnDuration > 0 && (
-                <>
-                    <Icon icon={<Fire />} size={"sm"} /> <Icon icon={<Hourglass size={"sm"} />} text={burnDuration} />
-                </>
-            )}{" "}
-            {chillDuration > 0 && (
-                <>
-                    <Icon icon={<Snowflake />} size={"sm"} /> <Icon icon={<Hourglass />} size={"sm"} text={chillDuration} />
-                </>
-            )}{" "}
-            {attackPower && (
-                <>
-                    <Icon icon={<CrossedSwords />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />
-                    <Icon icon={<Hourglass />} size={"sm"} text={debuffDuration} />
-                </>
-            )}
-            {silenceDuration > 0 && (
-                <>
-                    <Icon icon={<SpeechBubble />} size={"sm"} />
-                    <Icon icon={<Hourglass />} size={"sm"} text={silenceDuration} />
-                </>
-            )}
+            {debuffs.map((effect: Effect, i) => {
+                const { duration, attackPower, type } = effect;
+                return (
+                    <span key={i}>
+                        <Icon icon={getDebuffIcon(type)} size={"sm"} />
+                        {/** Chill's attack power decrease is explained in a tooltip */}
+                        {attackPower && type !== EFFECT_TYPES.CHILL && (
+                            <Icon icon={<CrossedSwords />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />
+                        )}
+                        <Icon icon={<Hourglass />} size={"sm"} text={duration === Infinity ? "∞" : duration} />
+                    </span>
+                );
+            })}
         </div>
     );
 };

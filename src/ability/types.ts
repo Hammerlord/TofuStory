@@ -41,7 +41,6 @@ export enum TRIGGER_TARGET_TYPES {
     EFFECT_APPLIER = "effect-applier",
     TARGET = "target",
     ACTOR = "actor",
-    RANDOM = "random",
     ALL_TARGETS = "all-targets", // All targets affected by the trigger action
 }
 
