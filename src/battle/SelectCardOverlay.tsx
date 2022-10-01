@@ -78,7 +78,9 @@ const SelectCardOverlay = ({
 
         const applyFilters = (cards: HandAbility[]) => {
             // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
-            cards = cards.filter(({ instanceId }) => instanceId !== selectCardsPrompt.abilityQueued?.selectedAbilityId);
+            if (selectCardsPrompt.abilityQueued?.selectedAbilityId) {
+                cards = cards.filter(({ instanceId }) => instanceId !== selectCardsPrompt.abilityQueued.selectedAbilityId);
+            }
             if (filters?.length) {
                 return cards.filter(({ actions }) => actions.some((action: Action) => filters.includes(action.type)));
             }
@@ -90,6 +92,7 @@ const SelectCardOverlay = ({
         }
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             setAbilityChoices(applyFilters(hand));
+            return;
         }
 
         if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
@@ -105,9 +108,9 @@ const SelectCardOverlay = ({
     const handleSelectClick = () => {
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             onSelect({ updatedHand: hand.filter((ability: HandAbility) => ability.instanceId !== selectedAbilityId) });
-            return;
+        } else {
+            onSelect({ updatedHand: [...hand, selectedAbility] });
         }
-        onSelect(selectedAbility);
     };
 
     return (
