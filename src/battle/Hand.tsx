@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability } from "../ability/types";
+import { HandAbility } from "../ability/types";
 
-const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs }) => {
+const Hand = ({ hand, onAbilityClick, selectedAbilityId, className, player, refs }) => {
     const [oldHand, setOldHand] = useState([]);
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
@@ -36,18 +36,18 @@ const Hand = ({ hand, onAbilityClick, isAbilitySelected, className, player, refs
         };
     }, [hand]);
 
-    const handleAbilityClick = (event, i: number) => {
+    const handleAbilityClick = (event, id: string) => {
         if (!isPlayingAnimation) {
-            onAbilityClick(event, i);
+            onAbilityClick(event, id);
         }
     };
 
     return (
         <div className={className}>
-            {oldHand.map((ability: Ability, i: number) => (
+            {oldHand.map((ability: HandAbility, i: number) => (
                 <AbilityView
-                    onClick={(e) => handleAbilityClick(e, i)}
-                    isSelected={isAbilitySelected(i)}
+                    onClick={(e) => handleAbilityClick(e, ability.instanceId)}
+                    isSelected={selectedAbilityId === ability.instanceId}
                     key={i}
                     ability={ability}
                     player={player}

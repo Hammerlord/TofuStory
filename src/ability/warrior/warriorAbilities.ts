@@ -10,6 +10,7 @@ import {
     extraStrikeImage,
     Fireworks,
     flag,
+    giganticSledgeImage,
     hammer,
     hyperbody,
     ironbodyImage,
@@ -1479,6 +1480,24 @@ export const arsenal: Ability = {
                     removeAfterTurn: true,
                 },
             },
+        },
+    ],
+};
+
+export const sledge: Ability = {
+    name: "Sledge",
+    resourceCost: 2,
+    image: giganticSledgeImage,
+    description: "Deplete another card in your hand to use this ability",
+    depletedOnUse: true,
+    selectCards: {
+        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 15,
         },
     ],
 };

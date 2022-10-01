@@ -1,12 +1,14 @@
 import { Button } from "@material-ui/core";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, Action, SELECT_CARD_TYPES } from "../ability/types";
+import { Ability, Action, HandAbility, SelectCards, SELECT_CARD_TYPES } from "../ability/types";
 import { shuffle } from "../utils";
 import Overlay from "../view/Overlay";
+import uuid from "uuid";
+import { PlayerSelectCardsPrompt } from "./reducer";
 
 const useStyles = createUseStyles({
     inner: {
@@ -42,32 +44,52 @@ const useStyles = createUseStyles({
     },
 });
 
-const SelectCardOverlay = ({ selectCards, hand, onSelect, player, onCancel }) => {
+const SelectCardOverlay = ({
+    selectCardsPrompt,
+    hand,
+    onSelect,
+    player,
+    onCancel,
+}: {
+    selectCardsPrompt: PlayerSelectCardsPrompt;
+    hand: HandAbility[];
+    onSelect: ({ updatedHand }: { updatedHand: HandAbility[] }) => void;
+    player: any;
+    onCancel: () => void;
+}) => {
     const [abilityChoices, setAbilityChoices] = useState([]);
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const classes = useStyles();
-    const { effects, type, filters } = selectCards;
+    const { effects = {}, type, filters } = selectCardsPrompt.selectCards;
     const { removeAfterTurn, ...other } = effects;
+    const selectedAbility = abilityChoices.find(({ instanceId }) => instanceId === selectedAbilityId);
 
-    const applyEffects = (ability: Ability) => {
+    const createNewOption = (ability: Ability | HandAbility): HandAbility => {
         return {
             ...ability,
+            instanceId: uuid.v4(),
             removeAfterTurn,
             effects: other,
         };
     };
+
     useEffect(() => {
         // Set selectable cards per selectCards type
 
-        const applyFilters = (cards) => {
+        const applyFilters = (cards: HandAbility[]) => {
+            // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
+            cards = cards.filter(({ instanceId }) => instanceId !== selectCardsPrompt.abilityQueued?.selectedAbilityId);
             if (filters?.length) {
                 return cards.filter(({ actions }) => actions.some((action: Action) => filters.includes(action.type)));
             }
             return cards;
         };
         if (type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
-            setAbilityChoices(applyFilters(hand).map(applyEffects));
+            setAbilityChoices(applyFilters(hand).map(createNewOption));
             return;
+        }
+        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+            setAbilityChoices(applyFilters(hand));
         }
 
         if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
@@ -75,13 +97,17 @@ const SelectCardOverlay = ({ selectCards, hand, onSelect, player, onCancel }) =>
             const secondJobCards = JOB_CARD_MAP[player.secondaryClass]?.all || [];
             const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
             const shuffled = shuffle(potentialAbilities);
-            setAbilityChoices(shuffled.slice(0, 3).map(applyEffects));
+            setAbilityChoices(shuffled.slice(0, 3).map(createNewOption));
             return;
         }
     }, []);
 
     const handleSelectClick = () => {
-        onSelect(applyEffects(abilityChoices[selectedAbilityIndex]));
+        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+            onSelect({ updatedHand: hand.filter((ability: HandAbility) => ability.instanceId !== selectedAbilityId) });
+            return;
+        }
+        onSelect(selectedAbility);
     };
 
     return (
@@ -91,22 +117,23 @@ const SelectCardOverlay = ({ selectCards, hand, onSelect, player, onCancel }) =>
                     <h1>
                         {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
                         {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
+                        {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                     </h1>
                 </div>
                 <div className={classes.abilityContainer}>
-                    {abilityChoices.map((ability, i) => (
+                    {abilityChoices.map((ability: HandAbility) => (
                         <div
                             className={classNames(classes.ability, {
-                                selected: i === selectedAbilityIndex,
+                                selected: ability.instanceId === selectedAbilityId,
                             })}
-                            onClick={() => setSelectedAbilityIndex(i)}
-                            key={i}
+                            onClick={() => setSelectedAbilityId(ability.instanceId)}
+                            key={ability.instanceId}
                         >
                             <AbilityView ability={ability} />
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} color="primary" disabled={!abilityChoices[selectedAbilityIndex]} onClick={handleSelectClick}>
+                <Button variant={"contained"} color="primary" disabled={!selectedAbility} onClick={handleSelectClick}>
                     Select!
                 </Button>
                 <div className={classes.cancel}>

@@ -274,6 +274,12 @@ export interface Radiate {
     effects?: Effect[];
 }
 
+export interface SelectCards {
+    type: SELECT_CARD_TYPES;
+    filters?: ACTION_TYPES[];
+    effects?: AbilityEffects;
+}
+
 export interface Action {
     damage?: number;
     secondaryDamage?: number;
@@ -303,11 +309,7 @@ export interface Action {
         amount: number;
         effects?: AbilityEffects;
     };
-    selectCards?: {
-        type: SELECT_CARD_TYPES;
-        filters?: ACTION_TYPES[];
-        effects?: AbilityEffects;
-    };
+    selectCards?: SelectCards;
     icon?: string; // Used as a projectile
     bonus?: Bonus;
     multiplier?: Multiplier;
@@ -357,12 +359,15 @@ export interface Ability {
     level?: number;
     /** On battle start, this ability is shuffled to the top of your deck. */
     preemptive?: boolean;
+    /** This is treated as a prerequisite to using the ability */
+    selectCards?: SelectCards;
 }
 
 /**
  * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
  */
 export interface HandAbility extends Ability {
+    instanceId: string;
     effects?: AbilityEffects;
 }
 
@@ -399,4 +404,5 @@ export interface AbilityEffects {
 export enum SELECT_CARD_TYPES {
     COPY_FROM_HAND = "copy",
     DISCOVER_FROM_CLASS = "discover-from-class",
+    DEPLETE_FROM_HAND = "deplete",
 }

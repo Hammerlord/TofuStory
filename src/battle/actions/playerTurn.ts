@@ -9,20 +9,27 @@ import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffe
 const { drawCards, updateBattle } = battleStateSlice.actions;
 
 export const onUsePlayerAbility = ({
-    selectedIndex,
-    side,
-    selectedAbilityIndex,
+    selectedTargetIndex,
+    selectedTargetSide,
+    selectedAbilityId,
 }: {
-    selectedIndex: number;
-    side: BATTLEFIELD_SIDES;
-    selectedAbilityIndex: number;
+    selectedTargetIndex: number;
+    selectedTargetSide: BATTLEFIELD_SIDES;
+    selectedAbilityId: string;
 }) => {
     return (dispatch, getState) => {
         const { playerSide, hand } = getState().battle;
 
-        const ability = hand[selectedAbilityIndex];
-        dispatch(removeAbilityFromHand({ index: selectedAbilityIndex }));
-        dispatch(useAbility({ ability, selectedIndex, side, actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id }));
+        const ability = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+        dispatch(removeAbilityFromHand(selectedAbilityId));
+        dispatch(
+            useAbility({
+                ability,
+                selectedIndex: selectedTargetIndex,
+                side: selectedTargetSide,
+                actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id,
+            })
+        );
 
         // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
         // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
@@ -30,10 +37,11 @@ export const onUsePlayerAbility = ({
     };
 };
 
-const removeAbilityFromHand = ({ index }) => {
+const removeAbilityFromHand = (abilityId: string) => {
     return (dispatch, getState) => {
         const { hand: originalHand } = getState().battle;
         const handWithAbilityUsed = originalHand.slice();
+        const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);
         handWithAbilityUsed.splice(index, 1);
 
         dispatch(

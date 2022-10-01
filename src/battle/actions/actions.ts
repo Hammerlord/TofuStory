@@ -42,7 +42,7 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { aggregateItemEffects } from "./../../Menu/utils";
 import { TriggerSource } from "./../types";
 
-const { drawCards, updateBattle, pushEventQueue } = battleStateSlice.actions;
+const { drawCards, updateBattle, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 export const findCombatant = (getState, combatantId: string): Combatant | undefined => {
@@ -106,11 +106,16 @@ export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }
             updateBattle({
                 enemySide: enemies.map(createCombatant),
                 playerSide: [null, null, player, null, null],
-                deck: shuffle((presetDeck || deck).slice()).sort((a, b) => {
-                    const aSort = a.preemptive ? 1 : 0;
-                    const bSort = b.preemptive ? 1 : 0;
-                    return bSort - aSort;
-                }),
+                deck: shuffle((presetDeck || deck).slice())
+                    .sort((a, b) => {
+                        const aSort = a.preemptive ? 1 : 0;
+                        const bSort = b.preemptive ? 1 : 0;
+                        return bSort - aSort;
+                    })
+                    .map((card) => ({
+                        ...card,
+                        instanceId: uuid.v4(),
+                    })),
                 discard: [],
                 hand: [],
                 isPlayerTurn: true,
@@ -1110,7 +1115,7 @@ const checkCardActions = (action: Action, actorId: string) => {
 
         if (selectCards) {
             dispatch(
-                updateBattle({
+                promptPlayerSelectCards({
                     selectCards,
                 })
             );
@@ -1177,17 +1182,18 @@ export const useAbility = ({
 }: {
     side: BATTLEFIELD_SIDES;
     selectedIndex: number;
-    ability: HandAbility;
+    ability: Ability | HandAbility;
     actorId: string;
 }) => {
     return (dispatch, getState) => {
+        // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = {} } = ability;
         const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         const combatant = findCombatant(getState, actorId);
         dispatch(
             updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
         );
-        dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId }));
+        dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId }));
 
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, isProc: false };
         const handleAction = (action: Action) => {

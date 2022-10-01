@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
-import { Ability, Action, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { loaf } from "../../enemy/abilities";
 import { getRandomItem } from "../../utils";

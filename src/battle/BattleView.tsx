@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Action } from "../ability/types";
+import { Action, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
@@ -19,7 +19,7 @@ import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import Notification from "./Notification/Notification";
 import AbilityNotification from "./Notification/AbilityNotification";
-import { battleStateSlice } from "./reducer";
+import { BattleState, battleStateSlice, PlayerSelectCardsPrompt } from "./reducer";
 import TargetLineCanvas from "./TargetLineCanvas";
 import TurnAnnouncement from "./Notification/TurnNotification";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
@@ -140,7 +140,7 @@ const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 const MAX_HAND_SIZE = 10;
 
-const { popEventQueue, updateFlagTurnEnd, updateBattle } = battleStateSlice.actions;
+const { popEventQueue, updateFlagTurnEnd, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
@@ -156,10 +156,10 @@ const BattlefieldContainer = () => {
         currentWave,
         waves,
         flagTurnEnd,
-        selectCards,
+        selectCardsPrompt,
         isEnded,
         isLost,
-    } = useAppSelector((state) => state.battle);
+    }: BattleState = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
     const allyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
@@ -169,7 +169,7 @@ const BattlefieldContainer = () => {
     const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
@@ -177,7 +177,7 @@ const BattlefieldContainer = () => {
     const disableActions =
         showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = selectedMinion?.attack || hand[selectedAbilityIndex];
+    const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actor = selectedMinion || player;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
@@ -199,35 +199,43 @@ const BattlefieldContainer = () => {
         });
     };
 
-    const handleAbilityClick = (e: React.ChangeEvent, i: number) => {
+    const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
         setSelectedAllyIndex(null);
-        if (!canUseAbility(player, hand[i])) {
-            warn(`Need more resources to use ${hand[i].name}.`);
+        const ability = hand.find((card: HandAbility) => card.instanceId === id);
+        if (!canUseAbility(player, ability)) {
+            warn(`Need more resources to use ${ability.name}.`);
             return;
         }
 
         if (isPlayerTurn) {
-            if (selectedAbilityIndex === i) {
-                setSelectedAbilityIndex(null);
+            if (selectedAbilityId === id) {
+                setSelectedAbilityId(null);
             } else {
-                setSelectedAbilityIndex(i);
+                setSelectedAbilityId(id);
                 e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
             }
         }
     };
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        setSelectedAbilityIndex(null);
-        dispatch(onUsePlayerAbility({ selectedIndex, selectedAbilityIndex, side }) as any);
+        setSelectedAbilityId(null);
+        dispatch(onUsePlayerAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
     };
 
-    const handleSelectCard = (ability) => {
+    const handleSelectCardFromPrompt = ({ updatedHand }: { updatedHand: HandAbility[] }) => {
         dispatch(
             updateBattle({
-                hand: [...hand, ability],
-                selectCards: null,
+                hand: updatedHand,
             })
         );
+        handleCancelSelectCard();
+        if (selectCardsPrompt.abilityQueued) {
+            dispatch(onUsePlayerAbility(selectCardsPrompt.abilityQueued));
+        }
+    };
+
+    const handleCancelSelectCard = () => {
+        dispatch(closePlayerSelectCardsPrompt());
     };
 
     const handleAllyAttack = ({ index }) => {
@@ -236,16 +244,31 @@ const BattlefieldContainer = () => {
         setSelectedAllyIndex(null);
     };
 
+    const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
+        if (selectedAbility.selectCards.type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+            if (hand.length <= 1) {
+                warn("That ability requires at least one other card in your hand to deplete");
+                return;
+            }
+        }
+
+        dispatch(
+            promptPlayerSelectCards({
+                selectCards: selectedAbility.selectCards,
+                abilityQueued: { selectedAbilityId, selectedTargetSide: side, selectedTargetIndex: selectedIndex },
+            } as PlayerSelectCardsPrompt)
+        );
+    };
+
     const handleAllyClick = (e: React.ChangeEvent, index) => {
         if (disableActions) {
             return;
         }
-        const selectedAbility = hand[selectedAbilityIndex];
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
-                setSelectedAbilityIndex(null);
+                setSelectedAbilityId(null);
             }
             return;
         }
@@ -259,15 +282,18 @@ const BattlefieldContainer = () => {
     };
 
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
-        const selectedAbility = hand[selectedAbilityIndex];
-
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
+                if (selectedAbility.selectCards) {
+                    handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
+                    return;
+                }
+
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
             } else if (isStealthed(enemySide[index])) {
                 warn("That character is stealthed and cannot be targeted directly.");
             } else {
-                setSelectedAbilityIndex(null);
+                setSelectedAbilityId(null);
             }
             return;
         }
@@ -281,7 +307,7 @@ const BattlefieldContainer = () => {
 
     const handleBattlefieldClick = () => {
         setSelectedAllyIndex(null);
-        setSelectedAbilityIndex(null);
+        setSelectedAbilityId(null);
     };
 
     const getRefFromCharacterId = (characterId) => {
@@ -475,14 +501,16 @@ const BattlefieldContainer = () => {
         return false;
     };
 
+    const abilityIndex = hand.findIndex(({ instanceId }) => selectedAbilityId === instanceId);
+
     const origination = useMemo(() => {
         if (disableActions) {
             return null;
         }
-        return allyRefs[selectedAllyIndex]?.current || abilityRefs[selectedAbilityIndex]?.current;
-    }, [disableActions, selectedAllyIndex, selectedAbilityIndex]);
+        return allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current;
+    }, [disableActions, selectedAllyIndex, selectedAbilityId]);
 
-    const targetLineColor = getAbilityColor(hand[selectedAbilityIndex]);
+    const targetLineColor = getAbilityColor(hand[abilityIndex]);
     const shouldShowResourceBar = (combatant) => {
         return combatant?.abilities.some(({ resourceCost }) => resourceCost > 0);
     };
@@ -580,7 +608,7 @@ const BattlefieldContainer = () => {
                             className={classes.abilities}
                             hand={hand}
                             refs={abilityRefs}
-                            isAbilitySelected={(i: number) => isPlayerTurn && selectedAbilityIndex === i}
+                            selectedAbilityId={selectedAbilityId}
                             onAbilityClick={handleAbilityClick}
                             player={player}
                         />
@@ -589,19 +617,13 @@ const BattlefieldContainer = () => {
                 <Header player={player} deck={originalDeck} onUseItem={handleUseItem} />
                 {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
-                {selectCards && (
+                {selectCardsPrompt && (
                     <SelectCardOverlay
                         player={player}
-                        selectCards={selectCards}
+                        selectCardsPrompt={selectCardsPrompt}
                         hand={hand}
-                        onSelect={handleSelectCard}
-                        onCancel={() => {
-                            dispatch(
-                                updateBattle({
-                                    selectCards: null,
-                                })
-                            );
-                        }}
+                        onSelect={handleSelectCardFromPrompt}
+                        onCancel={handleCancelSelectCard}
                     />
                 )}
             </div>
