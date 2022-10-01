@@ -1,6 +1,7 @@
+import { panlid, stolenFence, alligatorTube, amethyst, engravedStone } from "./../item/items";
 import uuid from "uuid";
 import { oldGladiusImage, warmush } from "../images";
-import { nependeathSap } from "../item/items";
+import { drakeBlood, nependeathSap } from "../item/items";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { Combatant } from "./types";
 
@@ -13,9 +14,9 @@ const defaultCharacterProperties = {
     image: warmush,
     HP: 50,
     maxHP: 50,
-    resourcesPerTurn: 3,
-    maxResources: 3,
-    resources: 3,
+    resourcesPerTurn: 1,
+    maxResources: 5,
+    resources: 2,
     armor: 0,
     turnHistory: [],
     abilityHistory: [],
@@ -23,7 +24,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: oldGladiusImage,
     effects: [],
-    items: [nependeathSap],
+    items: [engravedStone],
     drawCardsPerTurn: 3,
 } as Combatant;
 

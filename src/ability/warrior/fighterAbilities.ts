@@ -17,7 +17,8 @@ import { TRIGGER_TARGET_TYPES } from "./../types";
 
 export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
-    resourceCost: 2,
+    resourceCost: 1,
+    depletedOnUse: true,
     image: intrepidSlashImage,
     description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [

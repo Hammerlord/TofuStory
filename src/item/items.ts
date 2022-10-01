@@ -162,18 +162,33 @@ export const blackScroll: Item = {
     type: ITEM_TYPES.MATERIAL,
 };
 
-export const energyStone: Item = {
-    name: "Energy Stone",
-    description: "Grants 1 resource every 3 turns.",
+export const engravedStone: Item = {
+    name: "Engraved Stone",
+    description: "A mysterious keepsake on your person. When you are attacked, gain 1 resource. This may occur once per turn.",
     image: humilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Energy Stone",
+            name: "Engraved Stone",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            resourcesPerTurn: 1,
-            turnsTriggerFrequency: 3,
+            onTurnEnd: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Vigour",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: humilityStoneImage,
+                        duration: 1,
+                        onReceiveAttack: {
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            removeEffect: true,
+                            resources: 1,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

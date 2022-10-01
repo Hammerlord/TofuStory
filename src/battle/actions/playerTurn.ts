@@ -3,7 +3,7 @@ import { EFFECT_CLASSES, EFFECT_EVENT_KEYS, HandAbility } from "../../ability/ty
 import { Combatant } from "../../character/types";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
-import { checkHalveArmor, clearTurnHistory, getBasicAttack, refreshResources, updateCardEffects, updateCharacters } from "../utils";
+import { checkHalveArmor, clearTurnHistory, gainResources, getBasicAttack, updateCardEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 
 const { drawCards, updateBattle } = battleStateSlice.actions;
@@ -120,7 +120,7 @@ export const playerEndTurn = () => {
 export const startPlayerTurn = () => {
     return (dispatch, getState) => {
         const { playerSide, round } = getState().battle;
-        const updateFns = [refreshResources, clearTurnHistory];
+        const updateFns = [gainResources, clearTurnHistory];
         if (round > 0) {
             updateFns.push(checkHalveArmor);
         }

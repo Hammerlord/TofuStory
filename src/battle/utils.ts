@@ -37,20 +37,6 @@ export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCha
     return updatedStatChanges;
 };
 
-export const refreshResources = (character: Combatant): Combatant => {
-    if (isSilenced(character)) {
-        return character;
-    }
-    return {
-        ...character,
-        resources: Math.min(
-            character.maxResources,
-            character.resourcesPerTurn + character.effects.reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0)
-        ),
-    };
-};
-
-// Enemies gain resources every turn rather than "refresh" them
 export const gainResources = (character: Combatant): Combatant => {
     if (isSilenced(character)) {
         return character;

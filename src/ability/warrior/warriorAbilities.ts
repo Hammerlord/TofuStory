@@ -55,7 +55,7 @@ export const bash2: Ability = {
     image: brick,
     actions: [
         {
-            damage: 8,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -68,7 +68,7 @@ export const bash: Ability = {
     image: brick,
     actions: [
         {
-            damage: 5,
+            damage: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -79,16 +79,16 @@ export const bash: Ability = {
 export const warLeap2: Ability = {
     name: "War Leap",
     level: 2,
-    resourceCost: 1,
+    resourceCost: 0,
     image: warleap,
     actions: [
         {
-            damage: 4,
+            damage: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
             bonus: {
-                damage: 10,
+                damage: 6,
                 conditions: [
                     {
                         healthPercentage: 1,
@@ -103,16 +103,16 @@ export const warLeap2: Ability = {
 
 export const warLeap: Ability = {
     name: "War Leap",
-    resourceCost: 1,
+    resourceCost: 0,
     image: warleap,
     actions: [
         {
-            damage: 3,
+            damage: 1,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             effects: [stun],
             bonus: {
-                damage: 6,
+                damage: 4,
                 conditions: [
                     {
                         healthPercentage: 1,
@@ -195,9 +195,6 @@ export const anger2: Ability = {
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 2,
-            },
         },
     ],
 };
@@ -212,9 +209,6 @@ export const anger: Ability = {
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 1,
-            },
         },
     ],
     upgrades: [anger2],
@@ -526,7 +520,6 @@ export const bunchOBricks2: Ability = {
     level: 2,
     resourceCost: 1,
     image: bricks,
-    depletedOnUse: true,
     actions: [
         {
             addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -540,7 +533,6 @@ export const bunchOBricks: Ability = {
     name: "Bunch o' Bricks",
     resourceCost: 1,
     image: bricks,
-    depletedOnUse: true,
     actions: [
         {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -559,9 +551,13 @@ export const hammerang2: Ability = {
     image: hammer,
     actions: [
         {
-            damage: 8,
+            damage: 7,
+            secondaryDamage: 6,
+            targetArea: 2,
+            numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
             animation: ANIMATION_TYPES.YOYO,
             icon: hammer,
         },

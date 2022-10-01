@@ -444,7 +444,7 @@ export const getUpdatedTargets = ({
                 ...target,
                 HP,
                 armor: updatedArmor,
-                resources: (target.resources || 0) + resources,
+                resources: Math.min(target.maxResources, (target.resources || 0) + resources),
                 effects: newEffects,
             },
             action,

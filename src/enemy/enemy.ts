@@ -42,17 +42,17 @@ import { enemyHaste, loaf } from "./abilities";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 14,
+    maxHP: 10,
     abilities: [loaf],
     image: snailImage,
-    damage: 2,
+    damage: 1,
 };
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 25,
+    maxHP: 16,
     image: bluesnailImage,
-    damage: 3,
+    damage: 2,
     abilities: [
         {
             name: "Block",
@@ -69,14 +69,14 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 20,
+    maxHP: 12,
     image: shroomImage,
     damage: 3,
 };
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 35,
+    maxHP: 24,
     image: redsnailImage,
     damage: 3,
     abilities: [
