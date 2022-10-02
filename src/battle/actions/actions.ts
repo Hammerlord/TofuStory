@@ -877,6 +877,7 @@ const pushPlaybackQueue = ({
     allTargetIndices,
     ability,
     side,
+    battlefield,
 }: {
     action: Action;
     actorId: string;
@@ -884,15 +885,15 @@ const pushPlaybackQueue = ({
     allTargetIndices: number[];
     ability?: Ability;
     side: BATTLEFIELD_SIDES;
-    //battlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
+    battlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     return (dispatch, getState) => {
-        const MULTI_ACTION_PLAYBACK_SPEED = 500;
+        const MULTI_ACTION_PLAYBACK_SPEED = 600;
         const NORMAL_ACTION_PLAYBACK_SPEED = 800;
 
         dispatch(
             pushEventQueue({
-                ...getState().battle,
+                ...battlefield,
                 action,
                 actorId,
                 id: uuid.v4(),
@@ -966,12 +967,22 @@ const performAction = ({
             source: parentSource,
             getCombatantById: (id: string) => findCombatant(getState, id),
         });
+        const updatedCombatants = updated.map(([combatant]) => combatant);
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
         dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
-        dispatch(pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side }));
+        const updatedBattlefield = {
+            ...getState().battle,
+            [side]: combatants.map((combatant) => {
+                return updatedCombatants.find((updatedCombatant) => updatedCombatant.id === combatant?.id) || combatant;
+            }),
+        };
+
+        dispatch(
+            pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side, battlefield: updatedBattlefield })
+        );
 
         updated.forEach(([combatant, action]) => {
             dispatch(

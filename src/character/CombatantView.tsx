@@ -235,14 +235,17 @@ const CombatantView = forwardRef(
                 newCharacter: combatant,
             });
 
-            setStatChanges(statChanges);
-            setOldState(combatant);
-            const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
-            if (isKillingBlow) {
-                setPlayDeathAnimation(true);
-            }
+            const timeout = setTimeout(() => {
+                setStatChanges(statChanges);
+                setOldState(combatant);
+                const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
+                if (isKillingBlow) {
+                    setPlayDeathAnimation(true);
+                }
+            }, 500);
 
             return () => {
+                clearTimeout(timeout);
                 setStatChanges(statChanges);
                 setOldState(combatant);
             };
