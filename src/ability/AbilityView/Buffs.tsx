@@ -75,7 +75,7 @@ const EffectEventDisplay = (effectEvents) => {
             if (components.length > 1) {
                 components.push(<>and this effect is removed</>);
             } else if (key === EFFECT_EVENT_KEYS.onAttack) {
-                return <>on your next attack</>;
+                return <span key={key}>on your next attack</span>;
             }
         }
 
