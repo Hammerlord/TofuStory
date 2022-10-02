@@ -189,6 +189,9 @@ export { default as kittenBarrelsImage } from "./kittenbarrels.png";
 export { default as sleepywoodBG } from "./sleepywoodBG.jpg";
 export { default as archerArrow } from "./arrow.png";
 export { default as bombImage } from "./bomb.png";
+export { default as squishyLiquidImage } from "./SquishyLiquid.png";
+export { default as slimeBubbleImage } from "./SlimeBubble.png";
+export { default as slimeOmokImage } from "./SlimeOmok.png";
 
 export { default as noobClubAImage } from "./noobcluba.png";
 export { default as noobClubBImage } from "./noobclubb.png";

@@ -63,6 +63,7 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         zIndex: "3",
         color: "white",
+        whiteSpace: "nowrap",
     },
 });
 

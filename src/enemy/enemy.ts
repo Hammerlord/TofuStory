@@ -5,7 +5,6 @@ import {
     fireboarImage,
     greenmushroomImage,
     hornymushroomImage,
-    kingslimeImage,
     leetSin,
     ligatorImage,
     manoImage,
@@ -415,27 +414,6 @@ export const hornyMushroom: Minion = {
     maxHP: 30,
     damage: 2,
     effects: [thorns],
-};
-
-export const kingSlimeEnemy: Minion = {
-    name: "King Slime",
-    image: kingslimeImage,
-    maxHP: 100,
-    damage: 2,
-    effects: [elite],
-    abilities: [
-        {
-            name: "Earthquake",
-            actions: [
-                {
-                    resources: 3,
-                    type: ACTION_TYPES.ATTACK,
-                    damage: 4,
-                    area: 2,
-                },
-            ],
-        },
-    ],
 };
 
 export const mutantSnailEnemy: Minion = {

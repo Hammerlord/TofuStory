@@ -280,6 +280,11 @@ export interface SelectCards {
     effects?: AbilityEffects;
 }
 
+export enum MORPH_MINION_MODIFIERS {
+    SUM = "sum",
+    DIVIDE_EVENLY = "divide-evenly",
+}
+
 export interface Action {
     damage?: number;
     secondaryDamage?: number;
@@ -332,6 +337,16 @@ export interface Action {
         // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
         positionIndex?: number;
     }[];
+    // Mutate one or more combatants/minions to become one or more different combatants/minions.
+    morph?: {
+        minions: {
+            minion: Minion | string; // Minion object or a string name
+            positionIndex?: number;
+        }[];
+        modifiers: {
+            HP: MORPH_MINION_MODIFIERS;
+        };
+    };
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
 }

@@ -12,10 +12,12 @@ import {
     EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
     HandAbility,
+    MORPH_MINION_MODIFIERS,
     TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
+import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
 import { Wave } from "../../Menu/tutorial";
 import { getRandomItem, shuffle } from "../../utils";
@@ -501,6 +503,8 @@ const onEffectEventTrigger = ({
 
         if (conditionsPassed) {
             checkRemoveEffect();
+        } else {
+            return;
         }
 
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
@@ -651,9 +655,14 @@ export const updateCombatant = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
+        const oldCombatant = findCombatant(getState, combatantId);
+        // Due to morph, the combatant may no longer exist
+        if (!oldCombatant) {
+            return;
+        }
         const { enemySide, playerSide } = getState().battle;
         const { friendly, actorSide } = orientate({ actorId: combatantId, enemySide, playerSide });
-        const oldCombatant = findCombatant(getState, combatantId);
+
         const newCombatant = { ...oldCombatant, ...newProperties };
         const diff = getDiff(oldCombatant, newCombatant);
 
@@ -689,7 +698,7 @@ export const updateCombatant = ({
         });
 
         const combatant = findCombatant(getState, combatantId);
-        if (combatant.HP > 0) {
+        if (combatant?.HP > 0) {
             effectsRemoved.forEach((e: CombatEffect) => {
                 // TODO probably include effects in the event trigger payload?
                 // Removal should only apply to dispels?
@@ -803,6 +812,57 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                 });
             }
         }
+    };
+};
+
+const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTargetIds: string[] }) => {
+    return (dispatch, getState) => {
+        if (!action.morph) {
+            return;
+        }
+
+        const targets = morphTargetIds.map((id) => findCombatant(getState, id));
+        const { friendly, actorSide } = orientate({ actorId: morphTargetIds[0], ...getState().battle });
+        const { minions, modifiers } = action.morph;
+        const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
+            let value = targets.reduce((acc, combatant) => {
+                return acc + (combatant[property] || 0);
+            }, 0); // Default is sum
+            if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
+                value = Math.ceil(value / minions.length);
+            }
+            acc[property] = value;
+            return acc;
+        }, {});
+
+        const combatants = friendly.map((combatant: Combatant | null) => {
+            if (morphTargetIds.includes(combatant?.id)) {
+                return null;
+            }
+            return combatant;
+        });
+
+        for (const { minion, positionIndex } of minions) {
+            const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
+            const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
+            if (!minionToSummon) {
+                console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
+                return;
+            }
+
+            if (typeof pos === "number") {
+                combatants[pos] = {
+                    ...createCombatant(minionToSummon),
+                    ...modifierValues,
+                };
+            }
+        }
+
+        dispatch(
+            updateBattle({
+                [actorSide]: combatants,
+            })
+        );
     };
 };
 
@@ -925,7 +985,11 @@ const performAction = ({
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const area = calculateActionArea({ action, actor: findCombatant(getState, actorId) });
+        const actor = findCombatant(getState, actorId);
+        if (!actor) {
+            return;
+        }
+        const area = calculateActionArea({ action, actor });
 
         const { vacuum, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
@@ -1012,6 +1076,7 @@ const performAction = ({
                 })
             );
         });
+        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds }));
     };
 };
 
@@ -1227,11 +1292,17 @@ export const useAbility = ({
 
         actions.forEach(handleAction);
 
+        const actor = findCombatant(getState, actorId);
+        // Due to morph, the combatant may no longer exist
+        if (!actor) {
+            return;
+        }
+
         dispatch(
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    abilityHistory: [...findCombatant(getState, actorId).abilityHistory, ability],
+                    abilityHistory: [...actor.abilityHistory, ability],
                 },
             })
         );

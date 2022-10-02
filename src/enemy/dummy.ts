@@ -7,6 +7,7 @@ export const basicDummy = {
     image: puppetree,
     maxHP: 15,
     abilities: [loaf],
+    effects: [hardy],
     damage: 1,
 };
 

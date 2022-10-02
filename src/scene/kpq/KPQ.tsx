@@ -1,4 +1,5 @@
-import { eliteLigator, greenMushroom, hornyMushroom, kingSlimeEnemy, ligator } from "../../enemy/enemy";
+import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../enemy/enemy";
+import { kingSlimeEnemy } from "../../enemy/kingSlime";
 import { Scene } from "../types";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
 import KittenBarrels from "./KittenBarrels";
