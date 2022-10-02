@@ -69,11 +69,11 @@ export const chanceStrike: Ability = {
     image: chanceattack,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 6,
+                damage: 5,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.TARGET,

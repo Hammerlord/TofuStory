@@ -55,7 +55,7 @@ export const bash2: Ability = {
     image: brick,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -68,7 +68,7 @@ export const bash: Ability = {
     image: brick,
     actions: [
         {
-            damage: 2,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -133,7 +133,7 @@ export const slashBlast2: Ability = {
     image: slashblast,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             area: 1,
@@ -147,7 +147,7 @@ export const slashBlast: Ability = {
     image: slashblast,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             area: 1,
@@ -176,7 +176,7 @@ export const slam: Ability = {
     image: mace,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -239,12 +239,12 @@ export const shieldStrike: Ability = {
     image: shieldred,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            armor: 6,
+            armor: 7,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -272,7 +272,7 @@ export const block: Ability = {
     image: blockImage,
     actions: [
         {
-            armor: 5,
+            armor: 6,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -350,7 +350,7 @@ export const spikedArmor: Ability = {
     image: spikes,
     actions: [
         {
-            armor: 4,
+            armor: 5,
             target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, duration: 3 }],
             type: ACTION_TYPES.EFFECT,
@@ -547,7 +547,7 @@ export const hammerang2: Ability = {
         {
             damage: 7,
             secondaryDamage: 6,
-            targetArea: 2,
+            targetArea: 1,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -565,9 +565,9 @@ export const hammerang: Ability = {
     image: hammer,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             secondaryDamage: 4,
-            targetArea: 2,
+            targetArea: 1,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -820,7 +820,7 @@ export const rush2: Ability = {
     image: rushImage,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -843,7 +843,7 @@ export const rush: Ability = {
     image: rushImage,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -967,7 +967,7 @@ export const recovery2: Ability = {
                     duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 4,
+                        healing: 3,
                     },
                 },
             ],
@@ -994,7 +994,7 @@ export const recovery: Ability = {
                     duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
+                        healing: 2,
                     },
                 },
             ],
@@ -1058,7 +1058,7 @@ export const ironBody2: Ability = {
     image: ironbodyImage,
     actions: [
         {
-            armor: 5,
+            armor: 7,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1069,10 +1069,6 @@ export const ironBody2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
                     duration: 2,
-                    onTurnStart: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 3,
-                    },
                 },
             ],
         },
@@ -1085,7 +1081,7 @@ export const ironBody: Ability = {
     image: ironbodyImage,
     actions: [
         {
-            armor: 4,
+            armor: 5,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1096,10 +1092,6 @@ export const ironBody: Ability = {
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
                     duration: 1,
-                    onTurnStart: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 2,
-                    },
                 },
             ],
         },
@@ -1119,15 +1111,11 @@ export const rendingStrike2: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 4,
                 },
                 {
                     ...wound,
-                    duration: 5,
-                },
-                {
-                    ...wound,
-                    duration: 5,
+                    duration: 4,
                 },
             ],
         },
@@ -1145,11 +1133,11 @@ export const rendingStrike: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
             ],
         },

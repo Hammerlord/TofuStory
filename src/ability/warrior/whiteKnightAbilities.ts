@@ -29,7 +29,7 @@ export const flameCharge: Ability = {
     image: flamecharge,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -48,11 +48,11 @@ export const blizzardCharge: Ability = {
     image: blizzardcharge,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 4,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.TARGET,
@@ -77,11 +77,11 @@ export const lightningCharge: Ability = {
     actions: [
         {
             area: 1,
-            damage: 3,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 4,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.TARGET,

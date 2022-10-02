@@ -49,7 +49,7 @@ export const evilEye: Ability = {
                             {
                                 type: ACTION_TYPES.EFFECT,
                                 target: TARGET_TYPES.RANDOM_FRIENDLY,
-                                healing: 2,
+                                healing: 3,
                             },
                         ],
                     },
@@ -143,12 +143,12 @@ export const piercingDrive: Ability = {
     actions: [
         {
             area: 1,
-            damage: 6,
-            secondaryDamage: 3,
+            damage: 7,
+            secondaryDamage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
-                damage: 4,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.TARGET,
@@ -232,7 +232,7 @@ export const gungnir: Ability = {
     resourceCost: 3,
     depletedOnUse: true,
     image: gungnirImage,
-    description: "(Damage equal to 25% your max HP)",
+    description: "(Damage equal to 50% of your max HP)",
     actions: [
         {
             damage: 0,
@@ -244,7 +244,7 @@ export const gungnir: Ability = {
                 damage: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.MAX_HP,
-                    value: 0.25,
+                    value: 0.5,
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                 },
             },
