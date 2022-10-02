@@ -28,6 +28,8 @@ export const evilEye: Ability = {
     name: "Evil Eye",
     resourceCost: 1,
     image: evileyeskill,
+    description: "Heals a random ally for 2 each turn.",
+
     minion: {
         name: "Evil Eye",
         image: evileyeminion,
@@ -200,7 +202,6 @@ export const lordOfDarkness: Ability = {
     name: "Lord of Darkness",
     resourceCost: 2,
     image: lordOfDarknessImage,
-    description: "Receiving damage increases attack power bonus by 1",
     depletedOnUse: true,
     actions: [
         {

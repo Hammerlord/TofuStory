@@ -293,10 +293,7 @@ const bloodthirst2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    onResourcesSpent: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 4,
-                    },
+                    lifeOnHit: 4,
                     icon: shout,
                 },
             ],
@@ -320,10 +317,7 @@ export const bloodthirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    onResourcesSpent: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
-                    },
+                    lifeOnHit: 3,
                     icon: shout,
                 },
             ],
@@ -715,7 +709,6 @@ export const sweepingReach2: Ability = {
                 {
                     name: "Sweeping Reach",
                     image: weaponbooster,
-                    description: "Increases the area of your next offensive ability by 1",
                     removeAfterTurn: true,
                     actions: [
                         {
@@ -746,7 +739,6 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
     image: weaponbooster,
-    description: "Increases the area of your next offensive ability by 1",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,

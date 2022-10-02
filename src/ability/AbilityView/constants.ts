@@ -17,8 +17,8 @@ export const effectEventKeyLabelMap = {
     onReceiveEffect: "When you receive an effect",
     onEffectRemoved: "When this effect is removed", // TODO probably not an actual event
     onResourcesSpent: "After spending resources",
-    onTurnStart: "On turn start",
-    onTurnEnd: "On turn end",
+    onTurnStart: "When your turn starts",
+    onTurnEnd: "When your turn ends",
     onEnd: "When this effect ends",
     onWaveStart: "On wave start",
     onWaveClear: "On wave clear",

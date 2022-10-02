@@ -72,10 +72,14 @@ const EffectEventDisplay = (effectEvents) => {
         }
 
         if (removeEffect) {
-            components.push(<>this effect is removed</>);
+            if (components.length > 1) {
+                components.push(<>and this effect is removed</>);
+            } else if (key === EFFECT_EVENT_KEYS.onAttack) {
+                return <>on your next attack</>;
+            }
         }
 
-        return <div key={key}>{components.map((component, j) => cloneElement(component, { key: j }))}</div>;
+        return <span key={key}>{components.map((component, j) => cloneElement(component, { key: j }))}</span>;
     });
 
     return <>{content}</>;
@@ -86,7 +90,7 @@ const Buffs = ({ ability }) => {
 
     return (
         <>
-            {buffs.map((effect, i) => {
+            {buffs.map((effect: Effect, i) => {
                 const {
                     armorReceived = 0,
                     attackPower = 0,
@@ -99,6 +103,7 @@ const Buffs = ({ ability }) => {
                     thorns = 0,
                     healingReceived,
                     attackDamageReceived,
+                    attackAreaIncrease,
                     ...other
                 } = effect;
                 const effectComponents = [];
@@ -106,7 +111,7 @@ const Buffs = ({ ability }) => {
                 if (thorns > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Cactus />} size={"sm"} />
+                            Gain <Icon icon={<Cactus />} size={"sm"} />{" "}
                         </span>
                     );
                 }
@@ -138,16 +143,16 @@ const Buffs = ({ ability }) => {
                 if (attackPower > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${attackPower}`} />
+                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${attackPower}`} />{" "}
                         </span>
                     );
                 }
 
                 if (preventArmorDecay) {
                     if (effectComponents.length > 0) {
-                        effectComponents.push(<span>and prevent armor decay</span>);
+                        effectComponents.push(<span>and prevent armor decay </span>);
                     } else {
-                        effectComponents.push(<span>Prevent armor decay</span>);
+                        effectComponents.push(<span>Prevent armor decay </span>);
                     }
                 }
 
@@ -168,14 +173,6 @@ const Buffs = ({ ability }) => {
                     );
                 }
 
-                if (effectComponents.length > 0) {
-                    if (duration === 0) {
-                        effectComponents.push(<>this turn</>);
-                    } else if (duration !== Infinity) {
-                        effectComponents.push(<Icon icon={<Hourglass />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
-                    }
-                }
-
                 if (skillBonus.length > 0) {
                     effectComponents.push(
                         <>
@@ -188,9 +185,19 @@ const Buffs = ({ ability }) => {
                     );
                 }
 
+                if (attackAreaIncrease > 0) {
+                    effectComponents.push(<>+{attackAreaIncrease} area </>);
+                }
+
                 if (effect.type !== EFFECT_TYPES.STEALTH) {
                     // Stealth need not be explained here
                     effectComponents.push(<EffectEventDisplay {...other} />);
+                }
+
+                if (duration === 0) {
+                    effectComponents.push(<> this turn</>);
+                } else if (duration !== Infinity) {
+                    effectComponents.push(<Icon icon={<Hourglass />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
                 }
 
                 return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;
