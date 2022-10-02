@@ -539,7 +539,7 @@ const onEffectEventTrigger = ({
                 getCombatantById: (id: string) => findCombatant(getState, id),
             }).forEach((updated: [Combatant, Action]) => {
                 const [combatant] = updated;
-                dispatch(updateCombatant({ combatantId: combatant.id, newProperties: combatant, source }));
+                dispatch(updateCombatant({ combatantId: combatant.id, newProperties: combatant, source: procSource }));
             });
         }
 
