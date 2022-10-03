@@ -12,6 +12,7 @@ import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import Camp from "../Map/Camp";
+import Henesys from "../Map/Henesys";
 import KerningCity from "../Map/KerningCity";
 import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
@@ -262,12 +263,14 @@ const Main = () => {
     };
 
     const getTown = () => {
-        switch (town) {
-            case TOWNS.KERNING:
-                return <KerningCity player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
-            case TOWNS.LITH_HARBOUR:
-                return <LithHarbor player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
-        }
+        const TOWN_MAP = {
+            [TOWNS.KERNING]: KerningCity,
+            [TOWNS.LITH_HARBOUR]: LithHarbor,
+            [TOWNS.HENESYS]: Henesys,
+        };
+
+        const Town = TOWN_MAP[town];
+        return <Town player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
     };
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
