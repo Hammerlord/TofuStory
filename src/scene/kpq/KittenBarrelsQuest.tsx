@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ClickIndicator, kittenBarrelsImage, shoImage, sleepywoodBG, stefaImage, wessImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
+import { SceneProps } from "../types";
 import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({
@@ -104,7 +105,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const KittenBarrelsQuest = ({ player, onComplete }) => {
+const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
     const [correctCombination] = useState(generateCombination({ length: 5, remove: 2 }));
     const [answer, setAnswer] = useState(correctCombination.map(() => null));
     const [selectedPartyMember, setSelectedPartyMember] = useState(null);

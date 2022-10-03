@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { kittenBarrelsImage, shoImage, stefaImage, wessImage } from "../../images";
+import { SceneProps } from "../types";
 
 const useStyles = createUseStyles({
     root: {
@@ -35,7 +36,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const KittenBarrels = ({ player }) => {
+const KittenBarrels = ({ player }: SceneProps) => {
     const classes = useStyles();
 
     return (

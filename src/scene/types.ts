@@ -1,4 +1,5 @@
 import { Minion } from "../ability/types";
+import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 
 export interface Scene {
@@ -30,8 +31,8 @@ export interface ScriptNode {
         name: string;
         image: string;
     };
-    scene?: ({ player }: { player: any }) => JSX.Element;
-    puzzle?: ({ player, onComplete }: { player: any; onComplete: Function }) => JSX.Element;
+    scene?: ({ player }: { player: Combatant }) => JSX.Element;
+    puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: () => void }) => JSX.Element;
     dialog: string[];
     responses?: ScriptResponse[];
     items?: Item[];
@@ -46,4 +47,9 @@ export interface NPC {
         notorious: Scene;
         helped: Scene;
     };
+}
+
+export interface SceneProps {
+    player?: Combatant;
+    onComplete?: () => void;
 }

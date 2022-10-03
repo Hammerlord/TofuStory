@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import { bystanderImage, kerningSewerEntranceFull, shoImage, stefaImage, wessImage } from "../../images";
 import { getRandomArbitrary, getRandomItem } from "../../utils";
 import Tooltip from "../../view/Tooltip";
+import { SceneProps } from "../types";
 import getBystanderDialogue from "./getBystanderDialogue";
 
 const useStyles = createUseStyles({
@@ -49,7 +50,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const SewerEntrance = ({ player }) => {
+const SewerEntrance = ({ player }: SceneProps) => {
     const classes = useStyles();
     const [bystanders] = useState(
         Array.from({ length: 10 }).map((_, i: number) => ({

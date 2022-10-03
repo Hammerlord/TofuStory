@@ -1,7 +1,10 @@
 import { Button, ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import CardGame from "../scene/CardGame";
+import KittenBarrelsQuest from "../scene/kpq/KittenBarrelsQuest";
+import RopeQuest from "../scene/kpq/RopeQuest";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevStageBattle from "./DevStageBattle";
 
@@ -47,11 +50,18 @@ const useStyles = createUseStyles({
     },
 });
 
+const QUEST_MAP = {
+    "Rope Quest": RopeQuest,
+    "Kitten Barrels Quest": KittenBarrelsQuest,
+};
+
 const DevToolButton = () => {
     const [devToolsMenuAnchor, setDevToolsMenuAnchor] = useState(null);
     const [cardGameDifficulty, setCardGameDifficulty] = useState(null);
     const [isAbilityViewerOpen, setIsAbilityViewerOpen] = useState(false);
     const [isBattle, setIsBattle] = useState(false);
+    const [isSceneViewerOpen, setIsSceneViewerOpen] = useState(false);
+    const [questName, setQuestName] = useState("");
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -61,6 +71,9 @@ const DevToolButton = () => {
     const handleClickDevTools = (e) => {
         setDevToolsMenuAnchor((prev) => (prev ? null : e.currentTarget));
     };
+
+    const Quest = QUEST_MAP[questName];
+
     return (
         <>
             <div className={classes.buttonContainer}>
@@ -81,6 +94,7 @@ const DevToolButton = () => {
                             </MenuList>
                             <MenuList>
                                 <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>Ability Viewer</MenuItem>
+                                <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>Scene Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                             </MenuList>
                         </div>
@@ -103,6 +117,27 @@ const DevToolButton = () => {
                 <div className={classes.overlay}>
                     <div className={classes.inner}>
                         <DevStageBattle />
+                    </div>
+                </div>
+            )}
+            {isSceneViewerOpen && (
+                <div className={classes.overlay}>
+                    <div className={classes.inner}>
+                        <div>
+                            KPQ
+                            <MenuList>
+                                {Object.keys(QUEST_MAP).map((key) => (
+                                    <MenuList onClick={() => setQuestName(key)}>{key}</MenuList>
+                                ))}
+                            </MenuList>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {Quest && (
+                <div className={classes.overlay}>
+                    <div className={classes.inner}>
+                        <Quest player={defaultCharacterProperties} onComplete={() => setQuestName(null)} />
                     </div>
                 </div>
             )}

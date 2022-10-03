@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { kpqSwamp, shoImage, stefaImage, wessImage } from "../../images";
+import { SceneProps } from "../types";
 
 const useStyles = createUseStyles({
     root: {
@@ -34,7 +35,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const KPQSewer = ({ player }) => {
+const KPQSewer = ({ player }: SceneProps) => {
     const classes = useStyles();
 
     return (

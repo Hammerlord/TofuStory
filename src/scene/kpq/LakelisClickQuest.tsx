@@ -6,6 +6,7 @@ import uuid from "uuid";
 import { bystanderImage, ClickIndicator, kerningBG, kerningSewerEntranceFull, lakelisImage } from "../../images";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Tooltip from "../../view/Tooltip";
+import { SceneProps } from "../types";
 import getBystanderDialogue from "./getBystanderDialogue";
 
 const lakelisX = 772;
@@ -81,7 +82,7 @@ const useStyles = createUseStyles({
 const MAX_BYSTANDERS = 8;
 const CLICKS_TO_COMPLETE = 70;
 
-const LakelisClickQuest = ({ player, onComplete }) => {
+const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);
     const [timer, setTimer] = useState(0);
     const classes = useStyles();

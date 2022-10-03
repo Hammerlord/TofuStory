@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ClickIndicator, ropequestBG, shoImage, shoRopeImage, stefaImage, stefaRopeImage, swampBG, wessImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
+import { SceneProps } from "../types";
 import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({
@@ -99,7 +100,7 @@ const useStyles = createUseStyles({
  * 1  2
  * 3  4
  */
-const RopeQuest = ({ player, onComplete }) => {
+const RopeQuest = ({ player, onComplete }: SceneProps) => {
     const [correctCombination] = useState(generateCombination());
     const [answer, setAnswer] = useState([null, null, null, null]);
     const [selectedPartyMember, setSelectedPartyMember] = useState(null);
@@ -108,28 +109,53 @@ const RopeQuest = ({ player, onComplete }) => {
     const [wrongAnswer, setWrongAnswer] = useState(false);
     const [movedPlayerTimes, setMovedPlayerTimes] = useState(0);
     const [shoDialog, setShoDialog] = useState("");
+    const [visitedAnswers, setVisitedAnswers] = useState({});
+    const [showDuplicateAnswerWarning, setShowDuplicateAnswerWarning] = useState(false);
 
     const classes = useStyles();
 
     useEffect(() => {
-        if (answer.filter((a) => a).length === correctCombination.filter((c) => c).length) {
-            setBlockUI(true);
-            setTimeout(() => {
-                const isCorrectAnswer = answer.every((answer, i) => Boolean(correctCombination[i]) === Boolean(answer));
-                if (isCorrectAnswer) {
-                    setCompleted(true);
-                    setTimeout(() => {
-                        onComplete();
-                    }, 2000);
-                } else {
-                    setWrongAnswer(true);
-                    setBlockUI(false);
-                    setTimeout(() => {
-                        setWrongAnswer(false);
-                    }, 2000);
-                }
-            }, 3000);
+        const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
+        if (isIncompleteAnswer) {
+            return;
         }
+
+        const answerKey = JSON.stringify(answer.map((a: string | null) => Boolean(a)));
+        if (visitedAnswers[answerKey]) {
+            setShowDuplicateAnswerWarning(true);
+            const timeout = setTimeout(() => {
+                setShowDuplicateAnswerWarning(false);
+            }, 2000);
+
+            return () => {
+                setShowDuplicateAnswerWarning(false);
+                clearTimeout(timeout);
+            };
+        } else {
+            setVisitedAnswers({
+                ...visitedAnswers,
+                [answerKey]: true,
+            });
+        }
+
+        setBlockUI(true);
+
+        setTimeout(() => {
+            const isCorrectAnswer = answer.every((a: string | null, i: number) => Boolean(correctCombination[i]) === Boolean(a));
+            if (isCorrectAnswer) {
+                setCompleted(true);
+                setTimeout(() => {
+                    onComplete();
+                }, 2000);
+                return;
+            } else {
+                setWrongAnswer(true);
+                setBlockUI(false);
+                setTimeout(() => {
+                    setWrongAnswer(false);
+                }, 2000);
+            }
+        }, 3000);
     }, [answer]);
 
     const handleClickPartyMember = (partyMemberName: string) => {
@@ -164,6 +190,10 @@ const RopeQuest = ({ player, onComplete }) => {
             newAnswer[prevIndex] = null;
         }
         newAnswer[ropeId] = selectedPartyMember;
+        if (JSON.stringify(newAnswer) === JSON.stringify(answer)) {
+            return;
+        }
+
         setAnswer(newAnswer);
         setSelectedPartyMember(null);
         if (selectedPartyMember === "player") {
@@ -196,6 +226,9 @@ const RopeQuest = ({ player, onComplete }) => {
         }
         if (wrongAnswer) {
             return "Looks like that wasn't it. Let's try another combination.";
+        }
+        if (showDuplicateAnswerWarning) {
+            return "I think we already tried that combination. Let's do another.";
         }
         return "";
     })();
