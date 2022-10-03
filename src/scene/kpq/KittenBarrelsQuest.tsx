@@ -112,6 +112,7 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
     const [blockUI, setBlockUI] = useState(false);
     const [completed, setCompleted] = useState(false);
     const [wessDialog, setWessDialog] = useState("");
+    const [visitedAnswers, setVisitedAnswers] = useState({});
 
     const classes = useStyles();
 
@@ -122,27 +123,47 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
     };
 
     useEffect(() => {
-        console.log(correctCombination);
-        if (answer.filter((a) => a).length === correctCombination.filter((c) => c).length) {
-            setBlockUI(true);
-            setWessDialog("Alright, I'm checking if this is the right answer...");
-            setTimeout(() => {
-                const isCorrectAnswer = answer.every((answer, i) => Boolean(correctCombination[i]) === Boolean(answer));
-                if (isCorrectAnswer) {
-                    setCompleted(true);
-                    setWessDialog("We got it!");
-                    setTimeout(() => {
-                        onComplete();
-                    }, 2000);
-                } else {
-                    setWessDialog("Looks like that wasn't it. Let's try another combination.");
-                    setBlockUI(false);
-                    setTimeout(() => {
-                        setWessDialog("");
-                    }, 2000);
-                }
-            }, 3000);
+        const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
+        if (isIncompleteAnswer) {
+            return;
         }
+
+        const answerKey = JSON.stringify(answer.map((a: string | null) => Boolean(a)));
+        if (visitedAnswers[answerKey]) {
+            setWessDialog("I think we already tried that combination. Let's do another.");
+            const timeout = setTimeout(() => {
+                setWessDialog("");
+            }, 2000);
+
+            return () => {
+                setWessDialog("");
+                clearTimeout(timeout);
+            };
+        } else {
+            setVisitedAnswers({
+                ...visitedAnswers,
+                [answerKey]: true,
+            });
+        }
+
+        setBlockUI(true);
+        setWessDialog("Alright, I'm checking if this is the right answer...");
+        setTimeout(() => {
+            const isCorrectAnswer = answer.every((answer, i) => Boolean(correctCombination[i]) === Boolean(answer));
+            if (isCorrectAnswer) {
+                setCompleted(true);
+                setWessDialog("We got it!");
+                setTimeout(() => {
+                    onComplete();
+                }, 2000);
+            } else {
+                setWessDialog("Looks like that wasn't it. Let's try another combination.");
+                setBlockUI(false);
+                setTimeout(() => {
+                    setWessDialog("");
+                }, 2000);
+            }
+        }, 3000);
     }, [answer]);
 
     const handleClickPartyMember = (partyMemberName: string) => {
@@ -166,6 +187,10 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
             newAnswer[prevIndex] = null;
         }
         newAnswer[index] = selectedPartyMember;
+        if (JSON.stringify(newAnswer) === JSON.stringify(answer)) {
+            return;
+        }
+
         setAnswer(newAnswer);
         setSelectedPartyMember(null);
     };
