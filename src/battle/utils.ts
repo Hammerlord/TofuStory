@@ -323,7 +323,10 @@ export const calculateDamage = ({
         return baseDamage;
     }
 
-    const damageFromEffects = getEnabledEffects(actor).reduce((acc, { attackPower = 0, skillBonus = [] }) => {
+    const damageFromEffects = getEnabledEffects(actor).reduce((acc, { attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
+        if (excludeEffectOwner) {
+            return acc;
+        }
         // Attack power only applies to attacks
         const attackPowerIncrease = isAttack ? attackPower : 0;
         return acc + getSkillDamage({ ability, skillBonus }) + attackPowerIncrease;
