@@ -162,7 +162,7 @@ const Main = () => {
     const handleSelectNode = (node) => {
         const callback = () => {
             setLocationNode(node);
-            if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER) {
+            if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER || node.type === NODE_TYPES.BOSS) {
                 dispatch(startBattle({ waves: node.encounter }));
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);

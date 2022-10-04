@@ -1,4 +1,17 @@
-import { axeStump, blueSnail, fireBoar, octopus, orangeMushroom, redSnail, shroom, snail, stump, wildBoar } from "../../enemy/enemy";
+import {
+    axeStump,
+    blueSnail,
+    fireBoar,
+    manoEnemy,
+    mutantSnailEnemy,
+    octopus,
+    orangeMushroom,
+    redSnail,
+    shroom,
+    snail,
+    stump,
+    wildBoar,
+} from "../../enemy/enemy";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const routeKerningToPerion = {
@@ -40,10 +53,6 @@ const toKerning = {
     elites: [snail, blueSnail, shroom],
     nodes: [
         {
-            x: 0.24807256235827665,
-            y: 0.6016059295861643,
-        },
-        {
             x: 0.19591836734693877,
             y: 0.609017912291538,
         },
@@ -55,6 +64,7 @@ const toKerning = {
             x: 0.1877818778187782,
             y: 0.4992147419118417,
         },
+        { x: 0.18412698412698414, y: 0.4544662963518991 },
         {
             x: 0.14982728842832468,
             y: 0.39576595119082625,
@@ -63,6 +73,23 @@ const toKerning = {
         },
     ],
     next: [routeKerningToPerion],
+};
+
+const toKerningForest = {
+    nodes: [
+        {
+            x: 0.24807256235827665,
+            y: 0.6016059295861643,
+        },
+        { x: 0.23139329805996472, y: 0.5596757243657109 },
+        {
+            x: 0.2324514991181658,
+            y: 0.5092328479207326,
+            type: NODE_TYPES.BOSS,
+            encounter: [{ enemies: [null, snail, mutantSnailEnemy, snail, null] }],
+        },
+    ],
+    next: [toKerning],
 };
 
 export const routeElliniaPerion = {
@@ -139,6 +166,20 @@ export const routeHenesysEllinia = {
 export const toHenesys = {
     elites: [snail, blueSnail, shroom],
     nodes: [
+        { x: 0.38765432098765434, y: 0.7446329379972977 },
+        { x: 0.3950617283950617, y: 0.8070860231196517 },
+        {
+            x: 0.45509499136442144,
+            y: 0.8068215230814466,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.HENESYS,
+        },
+    ],
+    next: [routeHenesysEllinia],
+};
+
+export const toHenesysForest: Route = {
+    nodes: [
         {
             x: 0.30483592400690845,
             y: 0.6727433107909438,
@@ -151,18 +192,15 @@ export const toHenesys = {
             x: 0.3333333333333333,
             y: 0.7680094089973537,
         },
+        { x: 0.363668430335097, y: 0.7907521393184207 },
         {
-            x: 0.37132987910189985,
-            y: 0.7962364010585122,
-        },
-        {
-            x: 0.45509499136442144,
-            y: 0.8068215230814466,
-            type: NODE_TYPES.TOWN,
-            town: TOWNS.HENESYS,
+            x: 0.37178130511463847,
+            y: 0.6970725116348897,
+            type: NODE_TYPES.BOSS,
+            encounter: [{ enemies: [null, snail, manoEnemy, snail, null] }],
         },
     ],
-    next: [routeHenesysEllinia],
+    next: [toHenesys],
 };
 
 export const routeLith: Route = {
@@ -177,24 +215,13 @@ export const routeLith: Route = {
         hardest: [orangeMushroom],
     } as MapEnemies,
     nodes: [
-        {
-            x: 0.15873015873015872,
-            y: 0.730697961704756,
-        },
-        {
-            x: 0.1963718820861678,
-            y: 0.6868437306979617,
-        },
-        {
-            x: 0.254875283446712,
-            y: 0.679431747992588,
-        },
-        {
-            x: 0.2925170068027211,
-            y: 0.6244595429277332,
-        },
+        { x: 0.16, y: 0.7301997386596976 },
+        { x: 0.1887719298245614, y: 0.690057868209819 },
+        { x: 0.23333333333333334, y: 0.6852790741086429 },
+        { x: 0.2729824561403509, y: 0.6675975359342916 },
+        { x: 0.29157894736842105, y: 0.6241105096135897 },
     ],
-    next: [toHenesys, toKerning],
+    next: [toHenesysForest, toKerningForest],
 };
 
 export const toLith: Route = {

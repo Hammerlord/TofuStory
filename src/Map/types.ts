@@ -8,6 +8,7 @@ import { Minion } from "../ability/types";
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
     ELITE_ENCOUNTER = "eliteEncounter",
+    BOSS = "bossEncounter",
     EVENT = "event",
     RESTING_ZONE = "restingZone",
     SHOP = "shop",
@@ -16,9 +17,10 @@ export enum NODE_TYPES {
 }
 
 export interface RouteNode {
+    id?: string;
     x: number;
     y: number;
-    type: NODE_TYPES;
+    type?: NODE_TYPES;
     encounter?: Wave[];
     npc?: NPC;
     treasure?: {
@@ -26,6 +28,7 @@ export interface RouteNode {
         items?: Item[];
         puzzle: Function;
     };
+    town?: TOWNS;
 }
 
 export interface MapEnemies {
@@ -43,12 +46,7 @@ export enum ENEMY_DIFFICULTY {
 }
 
 export interface Route {
-    nodes: {
-        x: number;
-        y: number;
-        type?: NODE_TYPES;
-        town?: TOWNS;
-    }[];
+    nodes: RouteNode[];
     initialPlayerPosition?: {
         x: number;
         y: number;

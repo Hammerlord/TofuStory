@@ -1,9 +1,9 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Camping, CrossedSwords, House, map, Medal, MoneyBag, QuestionMark, treasureChest2Image } from "../images";
+import { Camping, CrossedSwords, House, JapaneseOgre, map, Medal, MoneyBag, QuestionMark, treasureChest2Image } from "../images";
 import Overlay from "../view/Overlay";
 import Pan from "./Pan";
-import { NODE_TYPES } from "./types";
+import { NODE_TYPES, RouteNode } from "./types";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -29,8 +29,12 @@ const useStyles = createUseStyles({
     },
     routeNode: {
         position: "absolute",
-        WebkitFilter: "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))",
-        filter: "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))",
+        WebkitFilter: Array.from({ length: 3 })
+            .map(() => "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))")
+            .join(" "),
+        filter: Array.from({ length: 3 })
+            .map(() => "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))")
+            .join(" "),
         cursor: "pointer",
         zIndex: 3,
     },
@@ -38,32 +42,37 @@ const useStyles = createUseStyles({
 
 const NODE_ICON_SIZE = 24;
 
-const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
+const Map = ({
+    onSelectNode,
+    currentNode,
+    generatedRoute,
+    playerImage,
+    enableDraw = false,
+}: {
+    onSelectNode?: (node: RouteNode) => void;
+    currentNode?: RouteNode;
+    generatedRoute?: RouteNode;
+    playerImage?: string;
+    enableDraw?: boolean;
+}) => {
     const classes = useStyles();
-    const [containerRef] = useState(useRef(createRef() as any));
+    const containerRef = useRef() as any;
     const [positions, setPositions] = useState([]);
-    const [enableDraw] = useState(false);
     const [container, setContainer] = useState({});
 
-    const handleImageLoad = () => {
-        setContainer(containerRef.current.getBoundingClientRect());
+    const updateContainer = () => {
+        if (containerRef.current?.getBoundingClientRect) {
+            const newContainer = containerRef.current.getBoundingClientRect();
+            setContainer(newContainer);
+        }
     };
 
     useEffect(() => {
-        const onResize = () => {
-            if (containerRef.current?.getBoundingClientRect) {
-                setContainer(containerRef.current.getBoundingClientRect());
-            }
-        };
-        window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
+        window.addEventListener("resize", updateContainer);
+        return () => window.removeEventListener("resize", updateContainer);
     }, [containerRef.current]);
 
-    const handleClickMap = (e) => {
-        e.preventDefault();
-    };
-
-    const handleClickNode = (node) => {
+    const handleClickNode = (node: RouteNode) => {
         onSelectNode(node);
     };
 
@@ -71,8 +80,8 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
     const handleDraw = (e) => {
         if (enableDraw && e.button === 0) {
             const { left, width, top, height } = containerRef.current.getBoundingClientRect();
-            const newPositions = [...positions, [(e.clientX - left) / width, (e.clientY - top) / height]];
-            console.log(newPositions);
+            const newPositions = [...positions, { x: (e.clientX - left) / width, y: (e.clientY - top) / height }];
+            console.log(JSON.stringify(newPositions));
             setPositions(newPositions);
         }
     };
@@ -82,6 +91,7 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
             const newPositions = positions.slice();
             newPositions.splice(i, 1);
             setPositions(newPositions);
+            console.log(JSON.stringify(newPositions));
             e.stopPropagation();
             e.preventDefault();
         }
@@ -128,6 +138,7 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
                 {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={treasureChest2Image} />}
                 {current.type === NODE_TYPES.EVENT && <QuestionMark {...iconProps} />}
                 {current.type === NODE_TYPES.TOWN && <House {...iconProps} />}
+                {current.type === NODE_TYPES.BOSS && <JapaneseOgre {...iconProps} />}
 
                 {current.id === currentNode?.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
             </g>
@@ -145,12 +156,12 @@ const Map = ({ onSelectNode, currentNode, generatedRoute, playerImage }) => {
         <Overlay>
             <div className={classes.root}>
                 <Pan>
-                    <img src={map} className={classes.image} onMouseDown={handleClickMap} ref={containerRef} onLoad={handleImageLoad} />
-                    <svg className={classes.routeContainer} onClick={handleDraw}>
+                    <img src={map} className={classes.image} ref={containerRef} onLoad={updateContainer} />
+                    <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
                         {lines}
                         {routeNodes}
                         {enableDraw &&
-                            positions.map(([x, y], i) => {
+                            positions.map(({ x, y }, i) => {
                                 const { width = 0, height = 0 } = container as { width: number; height: number };
                                 if (!width || !height) {
                                     return;

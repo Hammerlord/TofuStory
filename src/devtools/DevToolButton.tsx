@@ -2,6 +2,7 @@ import { Button, ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
+import Map from "../Map/Map";
 import CardGame from "../scene/CardGame";
 import KittenBarrelsQuest from "../scene/kpq/KittenBarrelsQuest";
 import RopeQuest from "../scene/kpq/RopeQuest";
@@ -62,6 +63,7 @@ const DevToolButton = () => {
     const [isBattle, setIsBattle] = useState(false);
     const [isSceneViewerOpen, setIsSceneViewerOpen] = useState(false);
     const [questName, setQuestName] = useState("");
+    const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -96,6 +98,7 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>Ability Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>Scene Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
+                                <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
                             </MenuList>
                         </div>
                     </ClickAwayListener>
@@ -138,6 +141,13 @@ const DevToolButton = () => {
                 <div className={classes.overlay}>
                     <div className={classes.inner}>
                         <Quest player={defaultCharacterProperties} onComplete={() => setQuestName(null)} />
+                    </div>
+                </div>
+            )}
+            {isMapDrawerOpen && (
+                <div className={classes.overlay}>
+                    <div className={classes.inner}>
+                        <Map enableDraw={true} />
                     </div>
                 </div>
             )}

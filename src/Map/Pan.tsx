@@ -35,6 +35,7 @@ const Pan = ({ children }) => {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             ref={containerRef}
             style={{
                 transform: `translate(${x}px, ${y}px)`,
