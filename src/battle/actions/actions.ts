@@ -1175,7 +1175,13 @@ const checkCardActions = (action: Action, actorId: string) => {
         if (addCards) {
             dispatch(
                 updateBattle({
-                    hand: [...getState().battle.hand, ...addCards.map(cloneDeep)],
+                    hand: [
+                        ...getState().battle.hand,
+                        ...addCards.map((card) => ({
+                            ...card,
+                            instanceId: uuid.v4(),
+                        })),
+                    ],
                 })
             );
         }
