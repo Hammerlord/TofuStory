@@ -466,11 +466,21 @@ export const hornyMushroom: Minion = {
 export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: mutantSnailImage,
-    maxHP: 150,
-    armor: 50,
+    maxHP: 100,
+    armor: 75,
     resources: 0,
     damage: 5,
     effects: [
+        {
+            name: "Tough Shell",
+            icon: blueSnailShellImage,
+            preventArmorDecay: true,
+            canBeSilenced: true,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            description: "Prevents armor decay.",
+            duration: 5,
+        },
         {
             ...hardy,
             name: "Tyrant Shell",
@@ -572,7 +582,7 @@ export const mutantSnailEnemy: Minion = {
 export const manoEnemy: Minion = {
     name: "Mano",
     image: manoImage,
-    maxHP: 100,
+    maxHP: 75,
     armor: 100,
     resources: 0,
     damage: 3,
@@ -628,7 +638,7 @@ export const manoEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 8,
+                    damage: 7,
                 },
             ],
         },
@@ -662,7 +672,7 @@ export const manoEnemy: Minion = {
             skillBonus: [
                 {
                     skill: "Rollout",
-                    damage: 4,
+                    damage: 3,
                 },
             ],
             conditions: [
