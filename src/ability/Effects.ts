@@ -13,6 +13,7 @@ import {
     MilitaryMedal,
     NoStun,
     orangegem as orangegemImage,
+    PoisonIcon,
     Snowflake,
     SpeechBubble,
     upmattImage,
@@ -392,4 +393,17 @@ export const silence: Effect = {
     type: EFFECT_TYPES.SILENCE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: SpeechBubble,
+};
+
+export const poison: Effect = {
+    name: "Poison",
+    type: EFFECT_TYPES.POISON,
+    class: EFFECT_CLASSES.DEBUFF,
+    icon: PoisonIcon,
+    duration: 3,
+    healingReceived: -1,
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        damage: 2,
+    },
 };

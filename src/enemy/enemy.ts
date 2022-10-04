@@ -8,6 +8,7 @@ import {
     leetSin,
     ligatorImage,
     manoImage,
+    MushroomSporeImage,
     mutantSnailImage,
     noobClubAImage,
     noobClubBImage,
@@ -26,7 +27,7 @@ import {
     weaponmasteryImage,
     wildboarImage,
 } from "../images";
-import { burn, elite, hardy, raging, stealth, thorns } from "./../ability/Effects";
+import { burn, elite, hardy, poison, raging, stealth, thorns } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -41,7 +42,7 @@ import { enemyHaste, loaf } from "./abilities";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 10,
+    maxHP: 11,
     abilities: [loaf],
     image: snailImage,
     damage: 1,
@@ -49,43 +50,89 @@ export const snail: Minion = {
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 16,
+    maxHP: 7,
+    armor: 15,
     image: bluesnailImage,
     damage: 2,
-    abilities: [
+    effects: [
         {
-            name: "Block",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 5,
-                },
-            ],
+            name: "Tough Shell",
+            icon: blueSnailShellImage,
+            preventArmorDecay: true,
+            canBeSilenced: true,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            description: "Prevents armor decay.",
+            duration: 5,
         },
     ],
 };
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 12,
+    maxHP: 15,
     image: shroomImage,
     damage: 3,
+    abilities: [
+        {
+            name: "Poison Spore",
+            image: MushroomSporeImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MushroomSporeImage,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    damage: 1,
+                    effects: [
+                        {
+                            ...poison,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 24,
+    maxHP: 14,
+    armor: 25,
     image: redsnailImage,
-    damage: 3,
+    damage: 2,
     abilities: [
         {
-            name: "Block",
+            name: "Rollout",
+            castTime: 1,
+            channelDuration: 2,
+            resourceCost: 3,
             actions: [
                 {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 5,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Weighted Shell",
+            icon: redSnailShellImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            duration: 5,
+            preventArmorDecay: true,
+            canBeSilenced: true,
+            description: "Prevents armor decay. While this character has armor, its damage is increased.",
+            attackPower: 1,
+            conditions: [
+                {
+                    comparator: "gt",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
         },
@@ -94,7 +141,7 @@ export const redSnail: Minion = {
 
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 40,
+    maxHP: 50,
     image: orangeMushroomImage,
     damage: 5,
     effects: [hardy],
@@ -436,27 +483,19 @@ export const mutantSnailEnemy: Minion = {
         {
             name: "Call Snail",
             image: snailImage,
-            minion: {
-                ...snail,
-                damage: 1,
-                maxHP: 11,
-            },
             actions: [
                 {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    summon: [{ minion: [snail] }, { minion: [snail] }],
                 },
             ],
         },
         {
             name: "Call Snail",
             image: bluesnailImage,
-            minion: {
-                ...blueSnail,
-                damage: 2,
-                maxHP: 15,
-            },
+            minion: blueSnail,
             actions: [
                 {
                     // HACK: this is just for animation playback
@@ -492,7 +531,7 @@ export const mutantSnailEnemy: Minion = {
             name: "Frenzied Tantrum",
             description: "{{ caster }} will tantrum, dealing 3 hits per move.",
             resourceCost: 3,
-            channelDuration: 3,
+            channelDuration: 2,
             castTime: 1,
             actions: [
                 {
@@ -541,27 +580,19 @@ export const manoEnemy: Minion = {
         {
             name: "Call Snail",
             image: snailImage,
-            minion: {
-                ...snail,
-                damage: 1,
-                maxHP: 11,
-            },
             actions: [
                 {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    summon: [{ minion: [snail] }, { minion: [snail] }],
                 },
             ],
         },
         {
             name: "Call Snail",
             image: bluesnailImage,
-            minion: {
-                ...blueSnail,
-                damage: 2,
-                maxHP: 15,
-            },
+            minion: blueSnail,
             actions: [
                 {
                     // HACK: this is just for animation playback
@@ -572,7 +603,7 @@ export const manoEnemy: Minion = {
         },
         {
             name: "Withdraw",
-            channelDuration: 3,
+            channelDuration: 2,
             resourceCost: 3,
             actions: [
                 {

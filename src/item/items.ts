@@ -1,4 +1,4 @@
-import { thorns } from "../ability/Effects";
+import { poison, thorns } from "../ability/Effects";
 import { EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import {
     alligatorTubeImage,
@@ -302,19 +302,7 @@ export const nependeathSap: Item = {
                         onAttack: {
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                            effects: [
-                                {
-                                    name: "Poison",
-                                    type: EFFECT_TYPES.POISON,
-                                    class: EFFECT_CLASSES.DEBUFF,
-                                    icon: PoisonIcon,
-                                    duration: 3,
-                                    onTurnEnd: {
-                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                        damage: 2,
-                                    },
-                                },
-                            ],
+                            effects: [{ ...poison }],
                         },
                     },
                 ],
