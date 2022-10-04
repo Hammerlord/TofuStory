@@ -186,8 +186,13 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
 
     // If we are capped resources, we should always use a special ability, preferably the most expensive ones
     if (specialAbilities.length > 0 && actor.resources === actor.maxResources) {
-        const maxResourceAbilities = specialAbilities.filter(({ resourceCost }) => resourceCost === actor.maxResources);
-        return getRandomItem(maxResourceAbilities.length ? maxResourceAbilities : specialAbilities);
+        // TS does not have findLast array method
+        const lastMaxSpecialAbilityUsed = (actor.abilityHistory as any).findLast((ability) => ability.resourceCost === actor.maxResources);
+        let validMaxResourceAbilities = specialAbilities.filter(({ resourceCost }) => resourceCost === actor.maxResources);
+        if (validMaxResourceAbilities.length > 1 && lastMaxSpecialAbilityUsed) {
+            validMaxResourceAbilities = validMaxResourceAbilities.filter(({ name }) => name !== lastMaxSpecialAbilityUsed?.name);
+        }
+        return getRandomItem(validMaxResourceAbilities.length ? validMaxResourceAbilities : specialAbilities);
     }
 
     // High chance of picking minion summon if there are many spaces to summon
