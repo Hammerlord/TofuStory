@@ -156,7 +156,7 @@ const handleCastTick = (actorId: string) => {
             })
         );
 
-        if (updatedCasting.castTime) {
+        if (updatedCasting.castTime || isUnableToAct(combatant)) {
             return;
         }
 
@@ -305,7 +305,7 @@ export const startEnemyTurn = () => {
                 return;
             }
 
-            const eligible = enemySide.filter((char: Combatant | null) => char?.HP > 0 && !isUnableToAct(char) && !acted[char.id]);
+            const eligible = enemySide.filter((char: Combatant | null) => char?.HP > 0 && !acted[char.id]);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
                 dispatch(updateFlagTurnEnd(true));
@@ -316,7 +316,7 @@ export const startEnemyTurn = () => {
             acted[id] = true;
             if (casting) {
                 dispatch(handleCastTick(id));
-            } else {
+            } else if (!isUnableToAct(enemy)) {
                 dispatch(enemyUseAbility(id));
             }
             makeEnemyMove();

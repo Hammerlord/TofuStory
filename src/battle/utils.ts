@@ -38,7 +38,7 @@ export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCha
 };
 
 export const gainResources = (character: Combatant): Combatant => {
-    if (isSilenced(character)) {
+    if (isSilenced(character) || isUnableToAct(character)) {
         return character;
     }
 
