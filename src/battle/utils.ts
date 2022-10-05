@@ -7,18 +7,18 @@ import {
     Ability,
     Action,
     ACTION_TYPES,
+    CombatEffect,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     HandAbility,
+    Multiplier,
     MULTIPLIER_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
-    CONDITION_TARGETS,
-    Multiplier,
-    CombatEffect,
 } from "./../ability/types";
 import { passesConditions } from "./passesConditions";
-import { BATTLEFIELD_SIDES, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -578,7 +578,7 @@ export const calculateBonus = ({
         return action;
     }
 
-    const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [] } = action;
+    const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = action;
     const { excludePrimaryTarget = false } = bonus;
     const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier });
 
@@ -594,6 +594,7 @@ export const calculateBonus = ({
         const bonusDamage = (bonus.damage || 0) * multiplier;
         return {
             ...action,
+            area: area + (bonus.area || 0),
             damage: damage + bonusDamage,
             secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
             healing: healing + (bonus.healing || 0) * multiplier,

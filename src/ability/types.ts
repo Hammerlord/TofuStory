@@ -216,6 +216,7 @@ export interface Bonus {
     healing?: number;
     armor?: number;
     effects?: Effect[];
+    area?: number;
 
     /**
      * A multiplier on the bonus amount

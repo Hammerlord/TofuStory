@@ -65,7 +65,10 @@ const onBattleEnd = () => {
 
         dispatch(
             updatePlayer({
+                armor: 0,
                 HP: player.HP,
+                turnHistory: [],
+                abilityHistory: [],
             })
         );
     };

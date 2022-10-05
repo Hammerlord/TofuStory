@@ -108,7 +108,7 @@ export const JOB_CARD_MAP = {
             arsenal,
             sledge,
         ],
-        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, bash, bash],
+        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, block, bash, bash],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],

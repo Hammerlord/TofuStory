@@ -592,11 +592,12 @@ export const ironWill2: Ability = {
     level: 2,
     resourceCost: 1,
     image: ironwillImage,
+    depletedOnUse: true,
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 5,
             effects: [
                 {
                     name: "Iron Will",
@@ -605,7 +606,6 @@ export const ironWill2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 3,
-                    duration: 2,
                 },
             ],
         },
@@ -616,20 +616,19 @@ export const ironWill: Ability = {
     name: "Iron Will",
     resourceCost: 1,
     image: ironwillImage,
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 4,
             effects: [
                 {
                     name: "Iron Will",
                     icon: ironwillImage,
-                    description: "Receiving +1 armor from armor sources",
+                    description: "Receiving +2 armor from armor sources",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 2,
-                    duration: 2,
                 },
             ],
         },
@@ -642,6 +641,8 @@ export const hyperBody2: Ability = {
     level: 2,
     resourceCost: 1,
     image: hyperbody,
+    depletedOnUse: true,
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -650,12 +651,12 @@ export const hyperBody2: Ability = {
                 {
                     name: "Hyper Body",
                     icon: hyperbody,
-                    description: "Gaining +1 resource and healing received per turn",
+                    description: "Gaining +1 resource every 2 turns and +1 healing received",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     resourcesPerTurn: 1,
                     healingReceived: 1,
-                    duration: 4,
+                    turnsTriggerFrequency: 2,
                 },
             ],
         },
@@ -666,6 +667,7 @@ export const hyperBody: Ability = {
     name: "Hyper Body",
     resourceCost: 1,
     image: hyperbody,
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -674,11 +676,11 @@ export const hyperBody: Ability = {
                 {
                     name: "Hyper Body",
                     icon: hyperbody,
-                    description: "Gaining +1 resource per turn",
+                    description: "Gaining +1 resource every 2 turns",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     resourcesPerTurn: 1,
-                    duration: 3,
+                    turnsTriggerFrequency: 2,
                 },
             ],
         },
@@ -829,7 +831,7 @@ export const rush2: Ability = {
     image: rushImage,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -873,7 +875,7 @@ export const rush: Ability = {
 export const berserk2: Ability = {
     name: "Berserk",
     level: 2,
-    resourceCost: 2,
+    resourceCost: 1,
     image: powerstanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
@@ -897,7 +899,7 @@ export const berserk2: Ability = {
 
 export const berserk: Ability = {
     name: "Berserk",
-    resourceCost: 3,
+    resourceCost: 1,
     image: powerstanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
@@ -1020,7 +1022,7 @@ export const magicCrash2: Ability = {
     image: magiccrashImage,
     actions: [
         {
-            damage: 6,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -1035,7 +1037,7 @@ export const magicCrash: Ability = {
     image: magiccrashImage,
     actions: [
         {
-            damage: 4,
+            damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -1084,7 +1086,7 @@ export const ironBody2: Ability = {
     image: ironbodyImage,
     actions: [
         {
-            armor: 7,
+            armor: 8,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1107,7 +1109,7 @@ export const ironBody: Ability = {
     image: ironbodyImage,
     actions: [
         {
-            armor: 5,
+            armor: 6,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1134,15 +1136,19 @@ export const rendingStrike2: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 5,
             effects: [
                 {
                     ...wound,
-                    duration: 4,
+                    duration: 5,
                 },
                 {
                     ...wound,
-                    duration: 4,
+                    duration: 5,
+                },
+                {
+                    ...wound,
+                    duration: 5,
                 },
             ],
         },
@@ -1157,15 +1163,15 @@ export const rendingStrike: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 1,
+            damage: 3,
             effects: [
                 {
                     ...wound,
-                    duration: 3,
+                    duration: 5,
                 },
                 {
                     ...wound,
-                    duration: 3,
+                    duration: 5,
                 },
             ],
         },
@@ -1223,16 +1229,17 @@ export const rupture2: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 6,
+            damage: 3,
             bonus: {
                 damage: 3,
+                area: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
                     calculationTarget: CONDITION_TARGETS.TARGET,
                 },
                 conditions: [
                     {
-                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN],
                         calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },
@@ -1250,16 +1257,17 @@ export const rupture: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 4,
+            damage: 3,
             bonus: {
                 damage: 2,
+                area: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
                     calculationTarget: CONDITION_TARGETS.TARGET,
                 },
                 conditions: [
                     {
-                        hasEffectType: [EFFECT_TYPES.BLEED],
+                        hasEffectType: [EFFECT_TYPES.BLEED, EFFECT_TYPES.STUN],
                         calculationTarget: CONDITION_TARGETS.TARGET,
                         comparator: "eq",
                     },

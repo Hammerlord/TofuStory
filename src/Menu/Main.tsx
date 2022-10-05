@@ -184,10 +184,7 @@ const Main = () => {
 
             dispatch(
                 updatePlayer({
-                    resources: 0,
-                    armor: 0,
                     effects: aggregateItemEffects(player.items),
-                    turnHistory: [],
                 })
             );
 
