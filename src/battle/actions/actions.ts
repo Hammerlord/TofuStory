@@ -1292,7 +1292,7 @@ export const useAbility = ({
             };
 
             if (passesConditions({ getCalculationTarget, proc: action })) {
-                dispatch(performAction({ action, selectedIndex, side, actorId, parent: ability, parentSource: source }));
+                dispatch(performAction({ action, selectedIndex: index, side, actorId, parent: ability, parentSource: source }));
             }
         };
 
