@@ -267,6 +267,7 @@ export enum MULTIPLIER_TYPES {
      * For example, the trigger event was onAttack; this makes the resultant proc scale with the number of enemies hit by the attack
      */
     NUM_SOURCE_TARGETS = "numSourceCharactersAffected",
+    RESOURCES_SPENT = "resourcesSpent",
 }
 
 export interface Radiate {
@@ -354,7 +355,7 @@ export interface Action {
 
 export interface Ability {
     name: string;
-    resourceCost?: number;
+    resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
     actions: Action[];
     minion?: Minion;
     image?: string;

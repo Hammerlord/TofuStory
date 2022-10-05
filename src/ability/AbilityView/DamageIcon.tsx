@@ -8,7 +8,7 @@ import { Action, ACTION_TYPES, TARGET_TYPES } from "../types";
 export const getDamageStatistics = ({
     ability,
     player,
-}): { baseDamage: number; totalDamage: number; numActionsWithDamage: number; damageBonusFromEffects: number } => {
+}): { baseDamage: number; totalDamage: number; hasMultiplier: boolean; damageBonusFromEffects: number } => {
     const { actions = [] } = ability;
     const totalDamage = actions.reduce((acc, action: Action) => {
         if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
@@ -16,15 +16,14 @@ export const getDamageStatistics = ({
         }
         return acc;
     }, 0);
-    const numAttackActions = actions.filter(
-        (action) => action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK
-    ).length;
-    const baseDamage = Math.floor(totalDamage / (numAttackActions || 1));
+    const attackActions = actions.filter((action) => action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK);
+    const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
+    const baseDamage = Math.floor(totalDamage / (attackActions.length || 1));
     const damageBonusFromEffects = player?.effects.reduce((acc, { damage = 0 }) => acc + damage, 0) || 0;
     return {
         baseDamage,
         totalDamage,
-        numActionsWithDamage: numAttackActions,
+        hasMultiplier: attackActions.length > 1 || hasAttackMultiplier,
         damageBonusFromEffects,
     };
 };
@@ -39,14 +38,13 @@ const useStyles = createUseStyles({
 
 const DamageIcon = ({ ability, player }) => {
     const { actions } = ability;
-    const { baseDamage, totalDamage, numActionsWithDamage, damageBonusFromEffects } = getDamageStatistics({ ability, player });
+    const { baseDamage, totalDamage, hasMultiplier, damageBonusFromEffects } = getDamageStatistics({ ability, player });
     const classes = useStyles();
 
     if (!totalDamage) {
         return null;
     }
 
-    const hasMultiplier = numActionsWithDamage > 1;
     const isAdditive = actions.find(({ bonus }) => bonus?.damage > 0) || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
 
     return (

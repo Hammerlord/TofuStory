@@ -259,12 +259,14 @@ const enemyUseAbility = (combatantId: string) => {
                 selectedIndex: index,
                 selectedSide: side,
             };
+
+            const resourceCost = (ability.resourceCost === "x" ? actor.resources : ability.resourceCost) || 0;
             dispatch(
                 updateCombatant({
                     combatantId,
                     newProperties: {
                         casting,
-                        resources: actor.resources - (ability.resourceCost || 0),
+                        resources: actor.resources - resourceCost,
                     },
                 })
             );

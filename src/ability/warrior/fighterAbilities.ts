@@ -230,23 +230,19 @@ export const worldReaver: Ability = {
 
 export const risingRage: Ability = {
     name: "Rising Rage",
-    resourceCost: 0,
+    resourceCost: "x",
     image: risingrageImage,
+    description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
     actions: [
         {
             area: 1,
-            damage: 1,
+            damage: 5,
+            multiplier: {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+            },
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    ...rageEffect,
-                },
-            ],
         },
     ],
 };

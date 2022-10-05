@@ -21,7 +21,7 @@ const ResourceIcon = ({ ability }: { ability: Ability | HandAbility }) => {
     const { resourceCost, effects = {} } = ability;
     const resourceCostFromEffect = effects.resourceCost || 0;
     const classes = useStyles();
-    const totalResourceCost = Math.max(0, resourceCost + resourceCostFromEffect);
+    const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffect);
     return (
         <Fury
             text={totalResourceCost}

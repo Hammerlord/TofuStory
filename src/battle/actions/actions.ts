@@ -403,6 +403,7 @@ export const getUpdatedTargets = ({
             allTargets: targets,
             sourceTargets,
             multiplier: initialAction.multiplier,
+            ability,
         });
         action = calculateBonus({
             action,
@@ -410,6 +411,7 @@ export const getUpdatedTargets = ({
             actor,
             allTargets: targets,
             isTargetSelected: targetIndex === selectedIndex,
+            ability,
         });
         const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
@@ -1273,8 +1275,15 @@ export const useAbility = ({
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = {} } = ability;
-        const totalResourceCost = Math.max(0, resourceCost + (effects.resourceCost || 0));
         const combatant = findCombatant(getState, actorId);
+        const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + (effects.resourceCost || 0));
+
+        // Append the final resource cost. This value may be used in calculations
+        ability = {
+            ...ability,
+            resourceCost: totalResourceCost,
+        };
+
         dispatch(
             updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
         );
