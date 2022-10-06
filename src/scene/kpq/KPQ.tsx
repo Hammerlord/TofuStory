@@ -1,5 +1,6 @@
 import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../enemy/enemy";
 import { kingSlimeEnemy } from "../../enemy/kingSlime";
+import { kerningBG, sleepywoodBG, swampBG } from "../../images";
 import { Scene } from "../types";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
 import KittenBarrels from "./KittenBarrels";
@@ -54,6 +55,7 @@ export const KPQ: Scene = {
     characters: [],
     script: [
         {
+            background: kerningBG,
             scene: SewerEntrance,
             dialog: ["There's a crowd around the sewers. Maybe you should avoid catching any unwanted attention..."],
         },
@@ -207,6 +209,7 @@ export const KPQ: Scene = {
                                             dialog: [""],
                                         },
                                         {
+                                            background: swampBG,
                                             scene: KPQSewer,
                                             speaker: thief,
                                             dialog: ["Hey, you got us in, mushroom guy. Not bad."],
@@ -387,6 +390,7 @@ export const KPQ: Scene = {
                                                                                             dialog: ["Uh huh..."],
                                                                                         },
                                                                                         {
+                                                                                            background: sleepywoodBG,
                                                                                             scene: KittenBarrels,
                                                                                             speaker: magician,
                                                                                             dialog: ["You've gotta be kidding me."],

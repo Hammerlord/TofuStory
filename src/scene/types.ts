@@ -32,6 +32,7 @@ export interface ScriptNode {
         image: string;
     };
     scene?: ({ player }: { player: Combatant }) => JSX.Element;
+    background?: string;
     puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: () => void }) => JSX.Element;
     dialog: string[];
     responses?: ScriptResponse[];

@@ -17,6 +17,20 @@ const useStyles = createUseStyles({
         right: 0,
         bottom: 0,
     },
+    backgroundContainer: {
+        width: "100%",
+        height: "100%",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+    },
+    backgroundOverlay: {
+        position: "fixed",
+        background: "rgba(50, 50, 50, 0.7)",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+    },
     inner: {
         textAlign: "center",
         margin: "auto",
@@ -25,6 +39,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
+        height: "700px",
     },
     wrapper: {
         position: "absolute",
@@ -56,9 +71,6 @@ const useStyles = createUseStyles({
                 marginBottom: 0,
             },
         },
-    },
-    sceneContainer: {
-        marginTop: "-150px",
     },
     portraitContainer: {
         minHeight: "100px",
@@ -160,21 +172,29 @@ const ScenePlayer = ({
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
     const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
+    const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const classes = useStyles();
     const { speaker, dialog = [], items, responses, puzzle } = script[dialogIndex] || {};
 
     useEffect(() => {
-        const newScene = script[dialogIndex]?.scene;
+        const { scene: newScene, background } = script[dialogIndex] || {};
         if (newScene && newScene !== Backdrop) {
-            setBackdrop(() => newScene || null);
+            onTransition(() => {
+                setBackdrop(() => newScene || null);
+            });
         }
 
-        const exitingPuzzle = Puzzle && !puzzle;
-        if (exitingPuzzle) {
-            onTransition && onTransition(() => setPuzzle(null));
+        const transitioningPuzzle = (Puzzle && !puzzle) || (!puzzle && Puzzle);
+        if (transitioningPuzzle) {
+            onTransition &&
+                onTransition(() => {
+                    setPuzzle(null);
+                    background && setBackground(background);
+                });
         } else {
             setPuzzle(() => puzzle);
+            background && setBackground(background);
         }
     }, [dialogIndex]);
 
@@ -249,63 +269,70 @@ const ScenePlayer = ({
 
     return (
         <div className={classes.root}>
+            <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
+            <div className={classes.backgroundOverlay} />
             <div className={classes.inner}>
-                <div className={classes.sceneContainer}>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
-                <div className={classes.wrapper}>
-                    <div className={classes.dialogContainer}>
-                        <div className={classes.portraitContainer}>
-                            {speaker && (
-                                <>
-                                    <div className={classes.portrait}>
-                                        <img src={speaker.image} key={speaker.name} />
-                                    </div>{" "}
-                                    <div className={classes.speakerName}>{speaker?.name}</div>
-                                </>
-                            )}
-                        </div>
-                        <div className={classes.dialog} onClick={handleClickDialog}>
-                            <div>
-                                {dialog.map((line, i) => (
-                                    <p key={i}>{interpolateDialog(line)}</p>
-                                ))}
-                            </div>
-                            {!responses && !items && (
-                                <div className={classes.dialogArrow}>
-                                    <span>❯</span>
+                {!Puzzle && (
+                    <>
+                        <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
+
+                        <div className={classes.wrapper}>
+                            <div className={classes.dialogContainer}>
+                                <div className={classes.portraitContainer}>
+                                    {speaker && (
+                                        <>
+                                            <div className={classes.portrait}>
+                                                <img src={speaker.image} key={speaker.name} />
+                                            </div>{" "}
+                                            <div className={classes.speakerName}>{speaker?.name}</div>
+                                        </>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    </div>
-                    {responses && (
-                        <div className={classes.feedbackContainer}>
-                            {responses.map((response, i) => (
-                                <div
-                                    className={classNames(classes.option, classes.response)}
-                                    key={i}
-                                    onClick={() => handleClickResponse(response)}
-                                >
-                                    <span>
-                                        {response.text} {getResponseAffix(response)}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    {items && (
-                        <div className={classes.feedbackContainer} onClick={handleClickItems}>
-                            <div className={classes.option}>
-                                - You gain -
-                                {items.map((item) => (
-                                    <div key={item.name}>
-                                        <img src={item.image} /> {item.name}
+                                <div className={classes.dialog} onClick={handleClickDialog}>
+                                    <div>
+                                        {dialog.map((line, i) => (
+                                            <p key={i}>{interpolateDialog(line)}</p>
+                                        ))}
                                     </div>
-                                ))}
+                                    {!responses && !items && (
+                                        <div className={classes.dialogArrow}>
+                                            <span>❯</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
+                            {responses && (
+                                <div className={classes.feedbackContainer}>
+                                    {responses.map((response, i) => (
+                                        <div
+                                            className={classNames(classes.option, classes.response)}
+                                            key={i}
+                                            onClick={() => handleClickResponse(response)}
+                                        >
+                                            <span>
+                                                {response.text} {getResponseAffix(response)}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {items && (
+                                <div className={classes.feedbackContainer} onClick={handleClickItems}>
+                                    <div className={classes.option}>
+                                        - You gain -
+                                        {items.map((item) => (
+                                            <div key={item.name}>
+                                                <img src={item.image} /> {item.name}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    </>
+                )}
+                {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
             </div>
-            {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
         </div>
     );
 };
