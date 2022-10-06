@@ -53,7 +53,8 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
         eventIdRef.current = eventId;
         const { type, animation, ricochet } = action || {};
         if (type === ACTION_TYPES.ATTACK && actor) {
-            travel({ from: actor, to: target, returnToOrigin: true, playbackTime });
+            const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
+            travel({ from: actor, to: target, returnToOrigin: true, spin, playbackTime });
             return;
         }
 

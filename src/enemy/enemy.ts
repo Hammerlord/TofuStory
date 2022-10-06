@@ -113,6 +113,8 @@ export const redSnail: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
+                    animation: ANIMATION_TYPES.YOYO,
+                    playbackTime: 600,
                 },
             ],
         },
@@ -638,6 +640,8 @@ export const manoEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.YOYO,
+                    playbackTime: 600,
                     damage: 7,
                 },
             ],
