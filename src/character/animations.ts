@@ -21,6 +21,18 @@ export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
     return Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
 };
 
+const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }) => {
+    let totalTraveldistance = travelCoordinates.reduce((acc, { xDiff, yDiff }) => {
+        return acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    }, 0);
+    if (returnToOrigin) {
+        const { x, y } = travelCoordinates[0];
+        const { x2, y2 } = travelCoordinates[travelCoordinates.length - 1];
+        totalTraveldistance += Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+    }
+    return totalTraveldistance;
+};
+
 export const travel = ({
     from,
     to,
@@ -45,6 +57,7 @@ export const travel = ({
     const animationFrames: {
         transform?: string;
         easing?: "ease-in" | "ease-out";
+        offset?: number;
     }[] = [
         {
             transform: `unset`,
@@ -52,9 +65,36 @@ export const travel = ({
     ];
 
     const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
-    targetElements.forEach((element: HTMLElement, i: number) => {
+    const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
         const { x, y } = getCenterCoords(from);
         const { x: x2, y: y2 } = getCenterCoords(element);
+        const xDiff = x2 - x;
+        const yDiff = y2 - y;
+        if (sidewinder) {
+            const jitterX = getRandomArbitrary(50, 50);
+            const jitterY = getRandomArbitrary(2, 3);
+            const sidewinderX = x + jitterX;
+            const sideWinderX2 = x2 + jitterX;
+            const sidewinderY = y / jitterY;
+            const sidewinderY2 = y2 / jitterY;
+
+            acc.push({
+                x: sidewinderX,
+                x2: sideWinderX2,
+                y: sidewinderY,
+                y2: sidewinderY2,
+                xDiff: sideWinderX2 - sidewinderX,
+                yDiff: sidewinderY2 - sidewinderY,
+            });
+        }
+
+        acc.push({ x, x2, y, y2, xDiff, yDiff });
+
+        return acc;
+    }, []);
+    const totalTravelDistance = getTotalTravelDistance({ travelCoordinates, returnToOrigin });
+
+    travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
         let rotation = 0;
         if (spin) {
             const isEven = i % 2 === 0;
@@ -62,19 +102,13 @@ export const travel = ({
         } else if (rotateToFaceTarget) {
             rotation = getRotationToFaceTarget({ x, y, x2, y2 });
         }
-        const xDiff = x2 - x;
-        const yDiff = y2 - y;
-
-        if (sidewinder) {
-            const transformX = getRandomArbitrary(xDiff - 50, xDiff + 50);
-            const jitterY = getRandomArbitrary(2, 3);
-            animationFrames.push({
-                transform: `translateX(${transformX}px) translateY(${yDiff / jitterY}px) rotate(${rotation}deg)`,
-            });
-        }
+        const travelDist = travelCoordinates
+            .slice(0, i + 1)
+            .reduce((acc, { xDiff, yDiff }) => acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)), 0);
 
         animationFrames.push({
             transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
+            offset: travelDist / totalTravelDistance || null,
         });
     });
 
