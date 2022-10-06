@@ -420,20 +420,43 @@ export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?
 };
 
 /**
- * Given an actor and the battlefield, find which side is friendly to the actor and which side is hostile.
+ * Given a combatant and the battlefield, find which side is friendly to the combatant and which side is hostile.
  */
-export const orientate = ({ actorId, enemySide, playerSide }) => {
+export const orientate = ({
+    combatantId,
+    enemySide,
+    playerSide,
+}: {
+    combatantId: string;
+    enemySide: (Combatant | null)[];
+    playerSide: (Combatant | null)[];
+}):
+    | {
+          combatant: Combatant;
+          friendly: (Combatant | null)[];
+          hostile: (Combatant | null)[];
+          friendlySide: BATTLEFIELD_SIDES;
+          hostileSide: BATTLEFIELD_SIDES;
+          combatantIndex: number;
+      }
+    | undefined => {
     const { PLAYER_SIDE, ENEMY_SIDE } = BATTLEFIELD_SIDES;
-    const [actorSide, hostileSide] = playerSide.find((c) => c?.id === actorId) ? [PLAYER_SIDE, ENEMY_SIDE] : [ENEMY_SIDE, PLAYER_SIDE];
-    const [friendly, hostile] = actorSide === PLAYER_SIDE ? [playerSide, enemySide] : [enemySide, playerSide];
-    const actorIndex = friendly.findIndex((c) => c?.id === actorId);
+    const [friendlySide, hostileSide] = playerSide.find((c) => c?.id === combatantId)
+        ? [PLAYER_SIDE, ENEMY_SIDE]
+        : [ENEMY_SIDE, PLAYER_SIDE];
+    const [friendly, hostile] = friendlySide === PLAYER_SIDE ? [playerSide, enemySide] : [enemySide, playerSide];
+    const combatantIndex = friendly.findIndex((c) => c?.id === combatantId);
+    if (combatantIndex === -1) {
+        return;
+    }
+
     return {
         friendly: friendly.slice(),
         hostile: hostile.slice(),
-        actorSide,
+        friendlySide,
         hostileSide,
-        actorIndex,
-        actor: friendly[actorIndex],
+        combatantIndex,
+        combatant: friendly[combatantIndex],
     };
 };
 

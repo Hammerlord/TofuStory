@@ -85,12 +85,12 @@ const autoPickTarget = ({
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];
 }): { index: number; side: BATTLEFIELD_SIDES } => {
-    const { hostile, friendly, actorSide, hostileSide, actorIndex } = orientate({ actorId, playerSide, enemySide });
+    const { hostile, friendly, friendlySide, hostileSide, combatantIndex } = orientate({ combatantId: actorId, playerSide, enemySide });
 
     const { actions = [], minion } = ability;
     if (minion) {
         return {
-            side: actorSide,
+            side: friendlySide,
             index: getRandomItem(getPossibleSummonIndices(friendly)),
         };
     }
@@ -121,15 +121,15 @@ const autoPickTarget = ({
         }
 
         return {
-            side: actorSide,
+            side: friendlySide,
             index: getRandomItem(targetIndices),
         };
     }
 
     // Else it is assumed to be a self-targeting ability
     return {
-        side: actorSide,
-        index: actorIndex,
+        side: friendlySide,
+        index: combatantIndex,
     };
 };
 
@@ -178,7 +178,7 @@ const CHANCE_TO_SUMMON_MULTIPLIER = 0.2;
  * Given an enemy or minion, pick an ability from its pool of abilities. (Not meant to be used for the player character who has cards etc.)
  * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
  */
-const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: Combatant; friendly: Combatant[] }): Ability => {
+const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: Combatant[]; friendly: Combatant[] }): Ability => {
     let [specialAbilities, regularAbilities] = partition(
         (a) => a.resourceCost > 0,
         actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
@@ -242,7 +242,7 @@ const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
         const actor = findCombatant(getState, combatantId);
         const { playerSide, enemySide } = getState().battle;
-        const { friendly, hostile } = orientate({ actorId: combatantId, playerSide, enemySide });
+        const { friendly, hostile } = orientate({ combatantId, playerSide, enemySide });
         const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
         if (!ability) {
             return;
