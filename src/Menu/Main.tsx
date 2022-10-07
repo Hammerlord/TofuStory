@@ -106,7 +106,9 @@ const Main = () => {
     const { player, deck } = character || {};
 
     useEffect(() => {
-        setRoute(generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 }));
+        const route = generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 });
+        setRoute(route);
+        setLocationNode(route);
     }, []);
 
     useEffect(() => {
@@ -160,8 +162,9 @@ const Main = () => {
     };
 
     const handleSelectNode = (node) => {
+        setLocationNode(node);
+
         const callback = () => {
-            setLocationNode(node);
             if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER || node.type === NODE_TYPES.BOSS) {
                 dispatch(startBattle({ waves: node.encounter }));
             } else if (node.type === NODE_TYPES.EVENT) {
@@ -277,12 +280,10 @@ const Main = () => {
 
     return (
         <>
-            {!isActivityOpen && (
-                <div className={classes.mapContainer}>
-                    <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
-                    <Header player={player} deck={deck} />
-                </div>
-            )}
+            <div className={classes.mapContainer}>
+                <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
+                <Header player={player} deck={deck} />
+            </div>
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
                     {town && getTown()}

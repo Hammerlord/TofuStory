@@ -1,12 +1,38 @@
-import { createRef, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 
-const Pan = ({ children }) => {
+const Pan = ({ defaultPosition, children }) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [mousePos, setLastMousePos] = useState([null, null]);
     const [isMouseDown, setIsMouseDown] = useState(false);
-    const [containerRef] = useState(useRef(createRef() as any));
+    const containerRef = useRef() as any;
     const [isPanning, setIsPanning] = useState(false);
+    const [isIntroPan, setIsIntroPan] = useState(true);
+
+    useEffect(() => {
+        if (!defaultPosition.x || !defaultPosition.y) {
+            return;
+        }
+
+        const panTime = isIntroPan ? 2000 : 400;
+        setIsIntroPan(false);
+        containerRef.current?.animate(
+            [
+                {
+                    transform: `translate(${x}px, ${y}px)`,
+                    easing: "ease-in-out",
+                    offset: 0,
+                },
+                {
+                    transform: `translate(${defaultPosition.x}px, ${defaultPosition.y}px)`,
+                    easing: "ease-in-out",
+                },
+            ],
+            panTime
+        );
+        setX(defaultPosition.x);
+        setY(defaultPosition.y);
+    }, [defaultPosition.x, defaultPosition.y]);
 
     const handleMouseDown = (e) => {
         setLastMousePos([e.screenX, e.screenY]);

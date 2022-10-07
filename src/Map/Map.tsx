@@ -140,7 +140,7 @@ const Map = ({
                 {current.type === NODE_TYPES.TOWN && <House {...iconProps} />}
                 {current.type === NODE_TYPES.BOSS && <JapaneseOgre {...iconProps} />}
 
-                {current.id === currentNode?.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
+                {currentNode && current.id === currentNode.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
             </g>
         );
         if (current.next) {
@@ -152,26 +152,30 @@ const Map = ({
     const lines = [];
     drawRouteNode({ current: generatedRoute, routeNodes, lines });
 
+    const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
+    const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
+    const absoluteNodeLocation = { x: (currentNode?.x || 0) * -mapWidth, y: (currentNode?.y || 0) * -mapHeight };
+    const pan = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
+
     return (
         <Overlay>
             <div className={classes.root}>
-                <Pan>
+                <Pan defaultPosition={pan}>
                     <img src={map} className={classes.image} ref={containerRef} onLoad={updateContainer} />
                     <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
                         {lines}
                         {routeNodes}
                         {enableDraw &&
                             positions.map(({ x, y }, i) => {
-                                const { width = 0, height = 0 } = container as { width: number; height: number };
-                                if (!width || !height) {
+                                if (!mapWidth || !mapHeight) {
                                     return;
                                 }
                                 return (
                                     <circle
                                         onMouseDown={(e) => handleErase(e, i)}
                                         key={i}
-                                        cx={x * width}
-                                        cy={y * height}
+                                        cx={x * mapWidth}
+                                        cy={y * mapHeight}
                                         r={9}
                                         fill={"red"}
                                     />
