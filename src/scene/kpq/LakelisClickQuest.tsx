@@ -80,7 +80,7 @@ const useStyles = createUseStyles({
 });
 
 const MAX_BYSTANDERS = 8;
-const CLICKS_TO_COMPLETE = 70;
+const CLICKS_TO_COMPLETE = 10;
 
 const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);

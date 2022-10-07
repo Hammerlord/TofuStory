@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { HenesysBGImage, WorldMap } from "../images";
+import pantry from "../scene/Henesys/pantry";
 
 const useStyles = createUseStyles({
     root: {
@@ -76,7 +77,7 @@ const Henesys = ({ player, onExit, onClickScene }) => {
                 <div className={classes.inner}>
                     <h2>Henesys</h2>
                     <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node)}>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(pantry)}>
                             Event
                             <div className={classes.event}>?</div>
                         </div>
