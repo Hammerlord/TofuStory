@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { kerningBG, kerningSewer, WorldMap } from "../images";
-import { KPQ } from "../scene/kpq/KPQ";
+import { KPQ } from "../scene/Kerning/kpq/KPQ";
 
 const useStyles = createUseStyles({
     root: {

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { kpqSwamp, ligatorImage, shoImage, stefaImage, wessImage } from "../../images";
-import { SceneProps } from "../types";
+import { kpqSwamp, shoImage, stefaImage, wessImage } from "../../../images";
+import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
     root: {
@@ -16,36 +16,26 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        left: 410,
-        top: 290,
+        left: "334px",
+        top: "285px",
         height: "70px",
     },
     sho: {
-        left: 250,
+        left: "470px",
         top: "282px",
-        transform: "scale(-1, 1)",
     },
     stefa: {
-        left: 572,
+        left: "437px",
         top: "293px",
-        transform: "scale(-1, 1)",
     },
     wess: {
-        left: 221,
         top: 284,
+        left: 198,
         transform: "scale(-1, 1)",
-    },
-    ligator: {
-        left: 690,
-        top: 330,
-    },
-    ligator2: {
-        left: 750,
-        top: 330,
     },
 });
 
-const KPQSewer2 = ({ player }: SceneProps) => {
+const KPQSewer = ({ player }: SceneProps) => {
     const classes = useStyles();
 
     return (
@@ -54,10 +44,8 @@ const KPQSewer2 = ({ player }: SceneProps) => {
             <img src={stefaImage} className={classNames(classes.stefa, classes.character)} />
             <img src={shoImage} className={classNames(classes.sho, classes.character)} />
             <img src={wessImage} className={classNames(classes.wess, classes.character)} />
-            <img src={ligatorImage} className={classNames(classes.ligator, classes.character)} />
-            <img src={ligatorImage} className={classNames(classes.ligator2, classes.character)} />
         </div>
     );
 };
 
-export default KPQSewer2;
+export default KPQSewer;

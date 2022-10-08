@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicator, kittenBarrelsImage, shoImage, sleepywoodBG, stefaImage, wessImage } from "../../images";
-import Tooltip from "../../view/Tooltip";
-import { SceneProps } from "../types";
+import { ClickIndicator, kittenBarrelsImage, shoImage, sleepywoodBG, stefaImage, wessImage } from "../../../images";
+import Tooltip from "../../../view/Tooltip";
+import { SceneProps } from "../../types";
 import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({

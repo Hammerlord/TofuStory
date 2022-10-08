@@ -3,10 +3,10 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { bystanderImage, ClickIndicator, kerningBG, kerningSewerEntranceFull, lakelisImage } from "../../images";
-import { getRandomArbitrary, getRandomInt } from "../../utils";
-import Tooltip from "../../view/Tooltip";
-import { SceneProps } from "../types";
+import { bystanderImage, ClickIndicator, kerningBG, kerningSewerEntranceFull, lakelisImage } from "../../../images";
+import { getRandomArbitrary, getRandomInt } from "../../../utils";
+import Tooltip from "../../../view/Tooltip";
+import { SceneProps } from "../../types";
 import getBystanderDialogue from "./getBystanderDialogue";
 
 const lakelisX = 772;

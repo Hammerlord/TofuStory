@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { kittenBarrelsImage, shoImage, stefaImage, wessImage } from "../../images";
-import { SceneProps } from "../types";
+import { kpqSwamp, ligatorImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${kittenBarrelsImage}) no-repeat`,
-        width: "1050px",
-        height: "525px",
+        background: `url(${kpqSwamp}) no-repeat`,
+        width: "892px",
+        height: "539px",
     },
     character: {
         position: "absolute",
@@ -16,27 +16,36 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 317,
-        left: 283,
+        left: 410,
+        top: 290,
         height: "70px",
     },
     sho: {
-        top: 309,
-        left: 139,
+        left: 250,
+        top: "282px",
         transform: "scale(-1, 1)",
     },
     stefa: {
-        top: 318,
-        left: 403,
+        left: 572,
+        top: "293px",
         transform: "scale(-1, 1)",
     },
     wess: {
-        top: 267,
-        left: 523,
+        left: 221,
+        top: 284,
+        transform: "scale(-1, 1)",
+    },
+    ligator: {
+        left: 690,
+        top: 330,
+    },
+    ligator2: {
+        left: 750,
+        top: 330,
     },
 });
 
-const KittenBarrels = ({ player }: SceneProps) => {
+const KPQSewer2 = ({ player }: SceneProps) => {
     const classes = useStyles();
 
     return (
@@ -45,8 +54,10 @@ const KittenBarrels = ({ player }: SceneProps) => {
             <img src={stefaImage} className={classNames(classes.stefa, classes.character)} />
             <img src={shoImage} className={classNames(classes.sho, classes.character)} />
             <img src={wessImage} className={classNames(classes.wess, classes.character)} />
+            <img src={ligatorImage} className={classNames(classes.ligator, classes.character)} />
+            <img src={ligatorImage} className={classNames(classes.ligator2, classes.character)} />
         </div>
     );
 };
 
-export default KittenBarrels;
+export default KPQSewer2;

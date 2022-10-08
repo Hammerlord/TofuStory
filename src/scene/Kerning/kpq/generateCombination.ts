@@ -1,4 +1,4 @@
-import { getRandomInt } from "../../utils";
+import { getRandomInt } from "../../../utils";
 
 const generateCombination = ({ length = 4, remove = 1 } = {}) => {
     const nums = Array.from({ length }).map(() => true);

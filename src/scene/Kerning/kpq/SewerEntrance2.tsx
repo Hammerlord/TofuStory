@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bystanderImage, kerningSewerEntranceFull2, lakelisImage, shoImage, stefaImage, wessImage } from "../../images";
-import { getRandomArbitrary, getRandomItem } from "../../utils";
-import Tooltip from "../../view/Tooltip";
-import { SceneProps } from "../types";
+import { bystanderImage, kerningSewerEntranceFull2, lakelisImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { getRandomArbitrary, getRandomItem } from "../../../utils";
+import Tooltip from "../../../view/Tooltip";
+import { SceneProps } from "../../types";
 import getBystanderDialogue from "./getBystanderDialogue";
 
 const useStyles = createUseStyles({

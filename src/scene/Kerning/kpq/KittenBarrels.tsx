@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { kpqSwamp, shoImage, stefaImage, wessImage } from "../../images";
-import { SceneProps } from "../types";
+import { kittenBarrelsImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${kpqSwamp}) no-repeat`,
-        width: "892px",
-        height: "539px",
+        background: `url(${kittenBarrelsImage}) no-repeat`,
+        width: "1050px",
+        height: "525px",
     },
     character: {
         position: "absolute",
@@ -16,26 +16,27 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        left: "334px",
-        top: "285px",
+        top: 317,
+        left: 283,
         height: "70px",
     },
     sho: {
-        left: "470px",
-        top: "282px",
+        top: 309,
+        left: 139,
+        transform: "scale(-1, 1)",
     },
     stefa: {
-        left: "437px",
-        top: "293px",
+        top: 318,
+        left: 403,
+        transform: "scale(-1, 1)",
     },
     wess: {
-        top: 284,
-        left: 198,
-        transform: "scale(-1, 1)",
+        top: 267,
+        left: 523,
     },
 });
 
-const KPQSewer = ({ player }: SceneProps) => {
+const KittenBarrels = ({ player }: SceneProps) => {
     const classes = useStyles();
 
     return (
@@ -48,4 +49,4 @@ const KPQSewer = ({ player }: SceneProps) => {
     );
 };
 
-export default KPQSewer;
+export default KittenBarrels;

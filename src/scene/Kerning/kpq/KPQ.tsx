@@ -1,7 +1,7 @@
-import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../enemy/enemy";
-import { kingSlimeEnemy } from "../../enemy/kingSlime";
-import { kerningBG, sleepywoodBG, swampBG } from "../../images";
-import { Scene } from "../types";
+import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../enemy/enemy";
+import { kingSlimeEnemy } from "../../../enemy/kingSlime";
+import { kerningBG, sleepywoodBG, swampBG } from "../../../images";
+import { Scene } from "../../types";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
 import KittenBarrels from "./KittenBarrels";
 import KittenBarrelsQuest from "./KittenBarrelsQuest";

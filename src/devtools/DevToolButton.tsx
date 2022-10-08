@@ -4,8 +4,8 @@ import { createUseStyles } from "react-jss";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
 import Map from "../Map/Map";
 import CardGame from "../scene/CardGame";
-import KittenBarrelsQuest from "../scene/kpq/KittenBarrelsQuest";
-import RopeQuest from "../scene/kpq/RopeQuest";
+import KittenBarrelsQuest from "../scene/Kerning/kpq/KittenBarrelsQuest";
+import RopeQuest from "../scene/Kerning/kpq/RopeQuest";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevStageBattle from "./DevStageBattle";
 

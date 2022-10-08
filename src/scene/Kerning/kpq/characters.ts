@@ -1,4 +1,4 @@
-import { bystanderImage, kingslimeImage, lakelisImage, shoImage, stefaImage, wessImage } from "../../images";
+import { bystanderImage, kingslimeImage, lakelisImage, shoImage, stefaImage, wessImage } from "../../../images";
 
 export const bowman = {
     name: "Bowman",

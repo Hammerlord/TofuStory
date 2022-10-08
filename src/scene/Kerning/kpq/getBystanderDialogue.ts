@@ -1,4 +1,4 @@
-import { getRandomItem } from "../../utils";
+import { getRandomItem } from "../../../utils";
 
 const getBystanderDialogue = () => {
     return getRandomItem([
