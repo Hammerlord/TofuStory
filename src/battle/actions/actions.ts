@@ -732,6 +732,9 @@ export const updateCombatant = ({
 export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_CLASSES) => {
     return (dispatch, getState) => {
         const combatant = findCombatant(getState, combatantId);
+        if (!combatant) {
+            return;
+        }
         const tickedDown = combatant.effects.map((effect) => {
             if (!effectClass || effect.class === effectClass) {
                 return {
