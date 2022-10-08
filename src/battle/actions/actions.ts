@@ -98,7 +98,7 @@ export const onWaveClear = () => {
     };
 };
 
-export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }) => {
+export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[]; deck?: Ability[]; addAbilities?: Ability[] }) => {
     return (dispatch, getState) => {
         const { character } = getState();
         const player = {
@@ -111,7 +111,7 @@ export const startBattle = ({ waves, deck }: { waves: Wave[]; deck?: Ability[] }
             updateBattle({
                 enemySide: enemies.map(createCombatant),
                 playerSide: [null, null, player, null, null],
-                deck: shuffle((presetDeck || deck).slice())
+                deck: shuffle([...(presetDeck || deck).slice(), ...addAbilities])
                     .sort((a, b) => {
                         const aSort = a.preemptive ? 1 : 0;
                         const bSort = b.preemptive ? 1 : 0;

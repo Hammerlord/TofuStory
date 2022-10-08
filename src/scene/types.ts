@@ -1,4 +1,4 @@
-import { Minion } from "../ability/types";
+import { Ability, Minion } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 
@@ -11,6 +11,7 @@ export interface ScriptResponse {
     text: string;
     isExit?: boolean;
     encounter?: {
+        addAbilities?: Ability[];
         characters: string[];
         waves: {
             enemies: Minion[];

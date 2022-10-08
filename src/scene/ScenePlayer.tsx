@@ -227,9 +227,9 @@ const ScenePlayer = ({
             }
         };
         if (encounter) {
-            callback();
+            //callback();
             // skip battles
-            //onBattle(encounter, callback);
+            onBattle(encounter, callback);
         } else {
             callback();
         }

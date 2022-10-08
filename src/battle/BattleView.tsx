@@ -31,11 +31,16 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        position: "relative",
         backgroundImage: `url(${victoria})`,
-        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
         overflow: "hidden",
         color: "black",
+        position: "fixed",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
     },
     battlefieldContainer: {
         height: "69%",
