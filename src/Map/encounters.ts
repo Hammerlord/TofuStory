@@ -1,6 +1,6 @@
 import { concat } from "ramda";
 import { Ability, Minion } from "../ability/types";
-import { avenger, elite, eliteSquad, raging, shielding, thorns } from "./../ability/Effects";
+import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { createCombatant } from "./../enemy/createEnemy";
 import { Wave } from "./../Menu/tutorial";
@@ -18,10 +18,24 @@ const getSyntheticSummon = (summonableEnemies: Minion[]): Ability => {
     };
 };
 
+const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive]);
+    const baseEnemy = getRandomItem(possibleEnemies.easy);
+
+    const enemy = {
+        ...baseEnemy,
+        maxHP: Math.floor(baseEnemy.maxHP * 1.2 + 20),
+        abilities: [...(baseEnemy.abilities || [])],
+        effects: [eliteSquad, affix],
+    };
+
+    return [enemy, enemy, enemy, enemy, enemy];
+};
+
 const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger, shielding]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive]);
     const ability = getRandomItem([tantrum]);
-    const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
+    const baseEnemy = getRandomItem([...possibleEnemies.easy, ...possibleEnemies.normal]);
     const enemy = {
         ...baseEnemy,
         maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 30),
@@ -38,9 +52,9 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
 };
 
 const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, shielding]);
+    const affix = getRandomItem([thorns, raging, shielding, eruptive]);
     const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
-    const baseEnemy = getRandomItem(concat(...Object.values(possibleEnemies)));
+    const baseEnemy = getRandomItem(concat(possibleEnemies.hard, possibleEnemies.hardest));
     const enemy = {
         ...baseEnemy,
         maxHP: Math.floor(baseEnemy.maxHP * 1.5 + 50),
@@ -71,7 +85,14 @@ const getWaveDifficulties = (numWaves: number): ENEMY_DIFFICULTY[] => {
 
 export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.ELITE_ENCOUNTER, possibleEnemies: MapEnemies): Wave[] => {
     if (encounterType === NODE_TYPES.ELITE_ENCOUNTER) {
-        return [{ enemies: Math.random() < 0.5 ? generateElite(possibleEnemies) : generateEliteTriad(possibleEnemies) }];
+        const eliteType = getRandomItem([1, 2, 3]);
+        if (eliteType === 1) {
+            return [{ enemies: generateElite(possibleEnemies) }];
+        } else if (eliteType === 2) {
+            return [{ enemies: generateEliteTriad(possibleEnemies) }];
+        } else {
+            return [{ enemies: generateEliteSquad(possibleEnemies) }];
+        }
     }
 
     const numWaves = getRandomItem([1, 2, 3]);

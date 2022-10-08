@@ -294,7 +294,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: bombImage,
-    description: "On death, explodes for 10 damage and applies a Burn that increases damage taken from explode by 10 for 3 turns.",
+    description: "On death, explodes for 5 damage and applies a Burn that increases damage taken from explode by 5 for 3 turns.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -303,7 +303,7 @@ export const explosive: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.HOSTILE,
                     area: 3,
-                    damage: 10,
+                    damage: 5,
                     effects: [
                         {
                             name: "Explosive Burn",
@@ -311,7 +311,7 @@ export const explosive: Effect = {
                             icon: Fire,
                             type: EFFECT_TYPES.BURN,
                             class: EFFECT_CLASSES.DEBUFF,
-                            duration: 3,
+                            duration: 2,
                             onTurnEnd: {
                                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                 damage: 3,
@@ -319,7 +319,7 @@ export const explosive: Effect = {
                             abilityDamageReceived: [
                                 {
                                     abilityName: "Explode",
-                                    damage: 10,
+                                    damage: 5,
                                 },
                             ],
                         },
