@@ -23,9 +23,11 @@ import {
     wraithCard,
 } from "../images";
 import { getRandomItem, shuffle } from "../utils";
-import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
+    root: {
+        minWidth: "800px",
+    },
     inner: {
         position: "absolute",
         top: "50%",
@@ -267,7 +269,7 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
     };
 
     return (
-        <Overlay>
+        <div className={classes.root}>
             <div className={classes.inner}>
                 {cardLayout.map((card, i) => (
                     <React.Fragment key={i}>
@@ -297,14 +299,14 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
                         {playerScore < opponentScore && "You lose"}
                         {playerScore === opponentScore && "Draw"}
                         <br />
-                        <Button variant="contained" color="primary" onClick={onExit}>
+                        <Button variant="contained" color="primary" onClick={() => onExit(playerScore > opponentScore)}>
                             Exit
                         </Button>
                     </div>
                 )}
             </div>
             {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
-        </Overlay>
+        </div>
     );
 };
 

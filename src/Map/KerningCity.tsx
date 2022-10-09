@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { kerningBG, kerningSewer, WorldMap } from "../images";
+import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 
 const useStyles = createUseStyles({
@@ -77,6 +78,10 @@ const KerningCity = ({ player, onExit, onClickScene }) => {
                         <div className={classNames(classes.node)} onClick={() => onClickScene(KPQ)}>
                             Event
                             <img src={kerningSewer} />
+                            <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(kerningMatchingCards)}>
+                            Event
                             <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>

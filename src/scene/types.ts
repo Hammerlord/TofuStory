@@ -34,10 +34,16 @@ export interface ScriptNode {
     };
     scene?: ({ player }: { player: Combatant }) => JSX.Element;
     background?: string;
-    puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: () => void }) => JSX.Element;
+    puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: (success?: boolean) => void }) => JSX.Element;
     dialog: string[];
     responses?: ScriptResponse[];
     items?: Item[];
+    itemChoices?: {
+        // The pool of items that can be shown as options
+        items: Item[];
+        // How many different options the player can pick from
+        numChoices: number;
+    };
     healthRecovery?: number; // Percentage
 }
 

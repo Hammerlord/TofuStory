@@ -2,6 +2,8 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import ItemSelection from "../item/ItemSelection";
+import { Item } from "../item/types";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { Scene, ScriptResponse } from "./types";
 
@@ -175,7 +177,7 @@ const ScenePlayer = ({
     const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const classes = useStyles();
-    const { speaker, dialog = [], items, responses, puzzle } = script[dialogIndex] || {};
+    const { speaker, dialog = [], items, responses, puzzle, itemChoices } = script[dialogIndex] || {};
 
     useEffect(() => {
         const { scene: newScene, background } = script[dialogIndex] || {};
@@ -238,6 +240,17 @@ const ScenePlayer = ({
     const handleClickItems = () => {
         updatePlayer({
             items: [...player.items, ...items],
+        });
+        if (dialogIndex < scene.script.length - 1) {
+            setDialogIndex(dialogIndex + 1);
+        } else {
+            onExit();
+        }
+    };
+
+    const handleSelectItemChoice = (item: Item) => {
+        updatePlayer({
+            items: [...player.items, item],
         });
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
@@ -333,6 +346,7 @@ const ScenePlayer = ({
                 )}
                 {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
             </div>
+            {itemChoices && <ItemSelection {...itemChoices} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />}
         </div>
     );
 };

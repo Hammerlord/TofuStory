@@ -195,6 +195,7 @@ export { default as squishyLiquidImage } from "./SquishyLiquid.png";
 export { default as slimeBubbleImage } from "./SlimeBubble.png";
 export { default as slimeOmokImage } from "./SlimeOmok.png";
 export { default as HenesysBGImage } from "./HenesysBG.jpg";
+export { default as CaseyImage } from "./Casey.png";
 
 export { default as noobClubAImage } from "./noobcluba.png";
 export { default as noobClubBImage } from "./noobclubb.png";
