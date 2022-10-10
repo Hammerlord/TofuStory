@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
+import { Action, ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
 import { travel } from "../character/animations";
 
 const PROJECTILE_WIDTH = 70;
@@ -24,8 +24,22 @@ const useStyles = createUseStyles({
     },
 });
 
-const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, playbackTime = 1000 }: any) => {
-    const eventIdRef = useRef(); // Prevent duplicate playbacks of the same action
+const AnimationCanvas = ({
+    actor,
+    target,
+    allTargets = [],
+    eventId,
+    action,
+    playbackTime = 1000,
+}: {
+    actor?: HTMLElement;
+    target?: HTMLElement;
+    allTargets?: HTMLElement[];
+    eventId?: string;
+    action?: Action;
+    playbackTime?: number;
+}) => {
+    const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const { left: actorLeft, top: actorTop } = useMemo(() => {
@@ -86,7 +100,7 @@ const AnimationCanvas = ({ actor, target, allTargets = [], eventId, action, play
         if (typeof icon === "string") {
             return <img src={icon} className={classNames(classes.projectile)} ref={projectileRefs[i]} />;
         } else if (typeof icon === "function") {
-            const Icon = icon;
+            const Icon: Function = icon;
             return (
                 <div className={classNames(classes.iconProjectile)} ref={projectileRefs[i]}>
                     <Icon />

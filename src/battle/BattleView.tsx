@@ -168,8 +168,14 @@ const BattlefieldContainer = () => {
     }: BattleState = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-    const allyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
-    const enemyRefs = useMemo(() => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()), []);
+    const allyRefs: React.RefObject<HTMLElement>[] = useMemo(
+        () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
+        []
+    );
+    const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(
+        () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
+        []
+    );
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [info, setInfo] = useState(null);
@@ -327,7 +333,7 @@ const BattlefieldContainer = () => {
         setSelectedAbilityId(null);
     };
 
-    const getRefFromCharacterId = (characterId) => {
+    const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
         if (!characterId) {
             return;
         }
@@ -343,15 +349,14 @@ const BattlefieldContainer = () => {
     };
 
     /**
-     * This is used in animations...
-     * @param character
+     * Given a playback event, get the HTML Element refs associated to the actor/targets of that event.
      */
     const animationEvent = ((): {
         action?: Action;
-        target?: any;
+        target?: HTMLElement;
         eventId?: string;
-        allTargets: any[];
-        actor?: any;
+        allTargets: HTMLElement[];
+        actor?: HTMLElement;
         playbackTime?: number;
     } => {
         let target;
