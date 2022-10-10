@@ -23,20 +23,27 @@ const WaveInfo = ({ waves, currentWaveIndex, cleared }: { waves: Wave[]; current
         return null;
     }
 
-    const { surviveRounds } = wave.winCondition || {};
+    const { surviveRounds, defeatBoss } = wave.winCondition || {};
     const classes = useStyles();
+
+    let messageNode;
+    if (surviveRounds) {
+        messageNode = (
+            <div>
+                Survive {surviveRounds} round{surviveRounds > 1 && "s"}
+            </div>
+        );
+    } else if (defeatBoss) {
+        messageNode = <div>Defeat the boss</div>;
+    } else {
+        messageNode = <div>Defeat all enemies</div>;
+    }
     return (
         <div className={classes.root}>
             <div className={classes.currentWave}>
                 Wave {currentWaveIndex + 1} / {waves.length}
             </div>
-            {surviveRounds ? (
-                <div>
-                    Survive {surviveRounds} round{surviveRounds > 1 && "s"}
-                </div>
-            ) : (
-                <div>Defeat all enemies</div>
-            )}
+            {messageNode}
         </div>
     );
 };
