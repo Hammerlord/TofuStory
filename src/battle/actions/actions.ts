@@ -19,11 +19,10 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
-import { Wave } from "../../Menu/tutorial";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES, Wave } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
@@ -76,8 +75,8 @@ const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { waves, currentWave, deck, playerSide, hand, ...other } = getState().battle;
-        const { presetDeck, description, enemies } = waves[currentWave] || {}; // 1 indexed currentWave so we don't need to + 1
+        const { waves, currentWaveIndex, deck, playerSide, hand } = getState().battle;
+        const { presetDeck, enemies } = waves[currentWaveIndex + 1] || {};
 
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
@@ -90,7 +89,7 @@ export const onWaveClear = () => {
 
         dispatch(
             updateBattle({
-                currentWave: currentWave + 1,
+                currentWaveIndex: currentWaveIndex + 1,
                 enemySide: enemies.map(createCombatant),
                 deck: presetDeck ? shuffle(presetDeck.slice()) : deck,
             })
@@ -127,7 +126,7 @@ export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[];
                 eventQueue: [],
                 playerActionQueue: [],
                 playerSummonsInPlay: {},
-                currentWave: 1,
+                currentWaveIndex: 0,
                 waves,
                 isEnded: false,
                 round: 0,

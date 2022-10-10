@@ -1,9 +1,9 @@
 import { concat } from "ramda";
 import { Ability, Minion } from "../ability/types";
+import { Wave } from "../battle/types";
 import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { createCombatant } from "./../enemy/createEnemy";
-import { Wave } from "./../Menu/tutorial";
 import { getRandomItem, shuffle } from "./../utils";
 import { enemyLayouts } from "./routes/layouts";
 import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";

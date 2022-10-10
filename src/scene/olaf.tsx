@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
+import { Wave } from "../battle/types";
 import { olaf } from "../enemy/enemy";
 import { lithHarborBalconyFull, olafImage, puppetree } from "../images";
-import { Wave } from "../Menu/tutorial";
 import { Scene } from "./types";
 
 const olafNPC = {

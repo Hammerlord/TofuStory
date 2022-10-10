@@ -1,7 +1,7 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { Wave } from "../battle/types";
 import { rally } from "../enemy/abilities";
 import { goldrichieImage, warriorImage, weaponmasteryImage, wizardImage } from "../images";
-import { Wave } from "../Menu/tutorial";
 import { NPC } from "./types";
 
 const goldRichie: Minion = {

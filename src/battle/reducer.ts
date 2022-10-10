@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Ability, HandAbility, SelectCards } from "../ability/types";
+import { HandAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
-import { Wave } from "../Menu/tutorial";
 import { shuffle } from "../utils";
-import { BATTLEFIELD_SIDES, Event } from "./types";
+import { BATTLEFIELD_SIDES, Event, Wave } from "./types";
 
 export interface BattleState {
     enemySide: (Combatant | null)[];
@@ -21,7 +20,7 @@ export interface BattleState {
     /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
     round: number;
     waves: Wave[];
-    currentWave: number;
+    currentWaveIndex: number;
     isEnded: boolean; // Actually the victory state
     /** When interacting with cards in your hand, or discovering a card */
     selectCardsPrompt: PlayerSelectCardsPrompt | null;

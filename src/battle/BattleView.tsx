@@ -158,8 +158,9 @@ const BattlefieldContainer = () => {
         playerSide,
         eventQueue: events,
         charactersAttackedThisTurn,
-        currentWave,
+        currentWaveIndex,
         waves,
+        round,
         flagTurnEnd,
         selectCardsPrompt,
         isEnded,
@@ -179,8 +180,19 @@ const BattlefieldContainer = () => {
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
 
-    const disableActions =
-        showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || enemySide.every((enemy) => !enemy || enemy.HP <= 0);
+    const isWinConditionTriggered = (() => {
+        const { winCondition = {} } = waves[currentWaveIndex] || {};
+        if (winCondition.surviveRounds) {
+            return round > winCondition.surviveRounds;
+        }
+
+        if (winCondition.defeatBoss) {
+            return enemySide.every((enemy) => !enemy?.isBoss || enemy?.HP <= 0);
+        }
+
+        return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
+    })();
+    const disableActions = showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || isWinConditionTriggered;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actor = selectedMinion || player;
@@ -385,7 +397,7 @@ const BattlefieldContainer = () => {
         if (!events.length) {
             eventQueueRef.current = events;
 
-            if (enemySide.every((enemy) => !enemy || enemy.HP === 0)) {
+            if (isWinConditionTriggered) {
                 setShowWaveClear(true);
                 setTimeout(() => {
                     if (flagTurnEnd) {
@@ -393,7 +405,7 @@ const BattlefieldContainer = () => {
                     }
                     setShowWaveClear(false);
                     dispatch(onWaveClear());
-                    if (!waves[currentWave]) {
+                    if (!waves[currentWaveIndex + 1]) {
                         return;
                     }
                     setShowTurnAnnouncement(true);
@@ -543,7 +555,7 @@ const BattlefieldContainer = () => {
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield}>
                         <div className={classes.waves}>
-                            <WaveInfo waves={waves} currentWave={currentWave} cleared={false} />
+                            <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} cleared={false} />
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
@@ -620,7 +632,9 @@ const BattlefieldContainer = () => {
                     </div>
                 </div>
                 <Header player={player} deck={originalDeck} onUseItem={handleUseItem} />
-                {showWaveClear && <ClearOverlay labelText={waves[currentWave] ? `Next: Wave ${currentWave + 1}` : undefined} />}
+                {showWaveClear && (
+                    <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
+                )}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
                 {selectCardsPrompt && (
                     <SelectCardOverlay

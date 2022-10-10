@@ -15,6 +15,7 @@ import {
 export const slimeGlobule: Minion = {
     name: "Slime Globule",
     image: slimeImage,
+    isBoss: true,
     maxHP: 100,
     effects: [
         hardy,
@@ -55,6 +56,7 @@ export const slimeGlobule: Minion = {
 export const kingSlimeEnemy: Minion = {
     name: "King Slime",
     image: kingslimeImage,
+    isBoss: true,
     maxHP: 300,
     damage: 5,
     armor: 20,

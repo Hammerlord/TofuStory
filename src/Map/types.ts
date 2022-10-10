@@ -1,9 +1,9 @@
-import { Wave } from "./../Menu/tutorial";
 import { Item } from "../item/types";
 import { NPC } from "./../scene/types";
 import KerningCity from "./KerningCity";
 import LithHarbor from "./LithHarbor";
 import { Minion } from "../ability/types";
+import { Wave } from "../battle/types";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",

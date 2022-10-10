@@ -57,3 +57,13 @@ export interface TriggerSource {
     // All targets affected by the action
     allTargetIds?: string[];
 }
+
+export interface Wave {
+    description?: string | string[];
+    enemies: Array<any>;
+    presetDeck?: Ability[];
+    winCondition?: {
+        surviveRounds?: number;
+        defeatBoss?: boolean;
+    };
+}

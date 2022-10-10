@@ -1,17 +1,7 @@
-import { Ability } from "./../ability/types";
-import { slam, bash, slashBlast, block, warLeap } from "../ability/warrior/warriorAbilities";
-import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
 import { snailMinion } from "../ability/minion";
-
-export interface Wave {
-    description?: string | string[];
-    enemies: Array<any>;
-    presetDeck?: Ability[];
-    rewards?: Array<any>;
-    winCondition?: {
-        surviveRounds?: number;
-    };
-}
+import { bash, block, slam, slashBlast, warLeap } from "../ability/warrior/warriorAbilities";
+import { Wave } from "../battle/types";
+import { basicDummy, ragingDummy, spikedDummy } from "../enemy/dummy";
 
 const tutorial: Wave[] = [
     {

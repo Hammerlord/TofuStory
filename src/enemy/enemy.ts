@@ -468,6 +468,7 @@ export const hornyMushroom: Minion = {
 export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: mutantSnailImage,
+    isBoss: true,
     maxHP: 100,
     armor: 75,
     resources: 0,
@@ -584,6 +585,7 @@ export const mutantSnailEnemy: Minion = {
 export const manoEnemy: Minion = {
     name: "Mano",
     image: manoImage,
+    isBoss: true,
     maxHP: 75,
     armor: 100,
     resources: 0,

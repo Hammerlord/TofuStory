@@ -192,6 +192,7 @@ export interface Minion {
     attack?: Ability;
     /** Actions to perform when this minion has been summoned */
     onSummon?: Action[];
+    isBoss?: boolean;
 }
 
 export enum CONDITION_TYPE {

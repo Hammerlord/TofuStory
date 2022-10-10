@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { Wave } from "../Menu/tutorial";
+import { Wave } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -16,8 +16,8 @@ const useStyles = createUseStyles({
     },
 });
 
-const WaveInfo = ({ waves, currentWave, cleared }: { waves: Wave[]; currentWave: number; cleared: boolean }) => {
-    const wave = waves[currentWave - 1];
+const WaveInfo = ({ waves, currentWaveIndex, cleared }: { waves: Wave[]; currentWaveIndex: number; cleared: boolean }) => {
+    const wave = waves[currentWaveIndex];
 
     if (!wave) {
         return null;
@@ -28,7 +28,7 @@ const WaveInfo = ({ waves, currentWave, cleared }: { waves: Wave[]; currentWave:
     return (
         <div className={classes.root}>
             <div className={classes.currentWave}>
-                Wave {currentWave} / {waves.length}
+                Wave {currentWaveIndex + 1} / {waves.length}
             </div>
             {surviveRounds ? (
                 <div>
