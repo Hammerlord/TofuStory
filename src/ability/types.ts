@@ -95,6 +95,17 @@ export enum EFFECT_EVENT_KEYS {
     onWaveClear = "onWaveClear",
 }
 
+export enum SCALING_VALUE_TYPES {
+    FLAT = "flat",
+    PERCENTAGE = "percentage",
+}
+
+export interface AbilityDamageReceived {
+    abilityName: string;
+    damage: number;
+    type: SCALING_VALUE_TYPES;
+}
+
 export interface Effect {
     name: string;
     type: EFFECT_TYPES;
@@ -123,10 +134,7 @@ export interface Effect {
     /** Damage to reflect back to attackers */
     thorns?: number;
     lifeOnKill?: number;
-    abilityDamageReceived?: {
-        abilityName: string;
-        damage: number;
-    }[];
+    abilityDamageReceived?: AbilityDamageReceived[];
     /** Only a single instance of this effect type can be on the character */
     unique?: boolean;
     conditions?: Condition[];
@@ -195,12 +203,6 @@ export interface Minion {
     isBoss?: boolean;
 }
 
-export enum CONDITION_TYPE {
-    INCREMENTING = "incrementing",
-    DECREMENTING = "decrementing",
-    FLAT = "flat",
-}
-
 export interface Multiplier {
     type: MULTIPLIER_TYPES;
     calculationTarget?: CONDITION_TARGETS;
@@ -252,6 +254,7 @@ export interface Condition {
 }
 
 export enum MULTIPLIER_TYPES {
+    FLAT = "flat", // Take the value as-is
     ATTACKS_MADE_IN_TURN = "attacksMadeInTurn",
     ARMOR = "armor",
     // This is for players only; count the number of cards they own with a particular name

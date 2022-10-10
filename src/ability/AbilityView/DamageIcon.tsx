@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { calculateDamage } from "../../battle/utils";
+import { calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwords } from "../../images";
 import { Action, ACTION_TYPES, TARGET_TYPES } from "../types";
@@ -12,7 +12,10 @@ export const getDamageStatistics = ({
     const { actions = [] } = ability;
     const totalDamage = actions.reduce((acc, action: Action) => {
         if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-            acc += player ? calculateDamage({ actor: player, action, actionParent: ability }) : action.damage || 0;
+            acc += player
+                ? calculateDamage({ actor: player, action, actionParent: ability }) *
+                  getMultiplier({ actor: player, actionParent: ability, multiplier: action.multiplier })
+                : action.damage || 0;
         }
         return acc;
     }, 0);

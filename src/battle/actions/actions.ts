@@ -783,7 +783,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
         }
 
         for (const summon of action.summon) {
-            const { friendly, friendlySide } = orientate({ actorId, ...getState().battle });
+            const { friendly = [], friendlySide } = orientate({ actorId, ...getState().battle }) || {};
             const { minion, positionIndex } = summon;
             const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
             const minionToSummon = getRandomItem(minion);

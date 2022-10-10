@@ -6,6 +6,7 @@ import { CrossedSwords } from "../images";
 import { Item } from "../item/types";
 import {
     Ability,
+    AbilityDamageReceived,
     Action,
     ACTION_TYPES,
     CombatEffect,
@@ -15,6 +16,7 @@ import {
     HandAbility,
     Multiplier,
     MULTIPLIER_TYPES,
+    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
@@ -202,7 +204,7 @@ export const getMultiplier = ({
     allTargets?: Combatant[];
     sourceTargets?: Combatant[];
     actionParent?: Ability | Item;
-    multiplier: Multiplier;
+    multiplier?: Multiplier;
 }): number => {
     const character = (() => {
         const calculationTarget = multiplier?.calculationTarget;
@@ -246,7 +248,7 @@ export const getMultiplier = ({
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.MAX_HP) {
-        return Math.floor(getMaxHP(character) * numValue);
+        return Math.ceil(getMaxHP(character) * numValue);
     }
 
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
@@ -344,27 +346,31 @@ export const calculateDamage = ({
         return acc + getSkillDamage({ ability: actionParent, skillBonus }) + attackPowerIncrease;
     }, 0);
 
-    const getAbilityDamageReceived = (abilityDamageReceived): number => {
-        if (!abilityDamageReceived) {
-            return 0;
-        }
-        return abilityDamageReceived?.reduce((acc, { abilityName, damage = 0 }) => {
-            if (abilityName && abilityName.toLowerCase() === actionParent?.name.toLowerCase()) {
-                acc += damage;
-            }
-            return acc;
-        }, 0);
+    const applyAbilityDamageReceived = (damage): number => {
+        const { multiplier, additionalDamageReceived } = getEnabledEffects(target).reduce(
+            (acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
+                acc.additionalDamageReceived += isAttack ? attackDamageReceived : 0;
+
+                abilityDamageReceived?.forEach(({ abilityName, damage = 0, type }: AbilityDamageReceived) => {
+                    if (abilityName && abilityName.toLowerCase() === actionParent?.name.toLowerCase()) {
+                        if (type === SCALING_VALUE_TYPES.PERCENTAGE) {
+                            acc.multiplier += damage;
+                        } else {
+                            acc.additionalDamageReceived += damage;
+                        }
+                    }
+                });
+
+                return acc;
+            },
+            { multiplier: 0, additionalDamageReceived: 0 }
+        );
+
+        return (damage + additionalDamageReceived) * (multiplier || 1);
     };
 
-    const damageReceivedFromEffects =
-        getEnabledEffects(target).reduce((acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
-            acc += isAttack ? attackDamageReceived : 0;
-            acc += getAbilityDamageReceived(abilityDamageReceived);
-            return acc;
-        }, 0) || 0;
-
     const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target: target });
-    const total = damage + damageReceivedFromEffects;
+    const total = Math.ceil(applyAbilityDamageReceived(damage));
     return Math.max(0, total);
 };
 

@@ -396,7 +396,7 @@ const BattlefieldContainer = () => {
     const eventQueueRef = useRef([]);
 
     useEffect(() => {
-        if (isEnded || isLost) {
+        if (isEnded) {
             return;
         }
         if (!events.length) {

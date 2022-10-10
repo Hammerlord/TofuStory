@@ -21,7 +21,19 @@ import {
     weaponbooster,
     weaponmasteryImage,
 } from "../images";
-import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES, TARGET_TYPES, ACTION_TYPES, Minion, ANIMATION_TYPES } from "./types";
+import {
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TRIGGER_TARGET_TYPES,
+    TARGET_TYPES,
+    ACTION_TYPES,
+    Minion,
+    ANIMATION_TYPES,
+    MULTIPLIER_TYPES,
+    CONDITION_TARGETS,
+    SCALING_VALUE_TYPES,
+} from "./types";
 
 export const thorns: Effect = {
     name: "Thorns",
@@ -235,7 +247,7 @@ const volcano: Minion = {
             class: EFFECT_CLASSES.BUFF,
             name: "Erupting",
             icon: VolcanoIcon,
-            description: "Erupting for 10 damage when this effect expires",
+            description: "Erupting for damage equal to the character's max health when this effect expires",
             duration: 2,
             onEnd: {
                 ability: {
@@ -247,7 +259,12 @@ const volcano: Minion = {
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             animation: ANIMATION_TYPES.CAST,
                             area: 2,
-                            damage: 10,
+                            damage: 1,
+                            multiplier: {
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                type: MULTIPLIER_TYPES.MAX_HP,
+                                value: 1,
+                            },
                         },
                         {
                             type: ACTION_TYPES.EFFECT,
@@ -294,7 +311,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: bombImage,
-    description: "On death, explodes for 5 damage and applies a Burn that increases damage taken from explode by 5 for 3 turns.",
+    description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 2 turns.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -303,11 +320,20 @@ export const explosive: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.HOSTILE,
                     area: 3,
-                    damage: 5,
+                    damage: 1,
+                    bonus: {
+                        damage: 1,
+                        multiplier: {
+                            type: MULTIPLIER_TYPES.MAX_HP,
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            value: 0.1,
+                        },
+                    },
+
                     effects: [
                         {
-                            name: "Explosive Burn",
-                            description: "Burning and taking increased damage from Explode.",
+                            name: "Explosive - Burn",
+                            description: "Burning and taking 50% increased damage from Explode.",
                             icon: Fire,
                             type: EFFECT_TYPES.BURN,
                             class: EFFECT_CLASSES.DEBUFF,
@@ -319,7 +345,8 @@ export const explosive: Effect = {
                             abilityDamageReceived: [
                                 {
                                     abilityName: "Explode",
-                                    damage: 5,
+                                    damage: 1.5,
+                                    type: SCALING_VALUE_TYPES.PERCENTAGE,
                                 },
                             ],
                         },
@@ -399,6 +426,7 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
+    description: "Healing received reduced by 1. Taking 2 damage at the end of the turn.",
     icon: PoisonIcon,
     duration: 3,
     healingReceived: -1,
