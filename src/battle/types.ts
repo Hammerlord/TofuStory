@@ -1,5 +1,6 @@
 import { Combatant } from "./../character/types";
 import { Ability, Action, CombatEffect } from "./../ability/types";
+import { Item } from "../item/types";
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;
@@ -35,6 +36,7 @@ export interface EventGroup {
 
 export enum TRIGGER_SOURCE_TYPES {
     ABILITY = "ability",
+    ITEM = "item",
     EFFECT = "effect",
 }
 
@@ -45,7 +47,7 @@ export enum TRIGGER_SOURCE_TYPES {
  * - Events like "on turn end" were not caused by any action in particular and do not have a source
  */
 export interface TriggerSource {
-    source: Action | CombatEffect | Ability;
+    source: Action | CombatEffect | Ability | Item;
     type: TRIGGER_SOURCE_TYPES;
     // Is this an extra effect or action triggered conditionally from another effect?
     // TODO there are some exceptions around certain events -- for example, lifeOnKill, onWaveStart are

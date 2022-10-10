@@ -61,7 +61,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[]; onUseItem?: Function }) => {
+const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[]; onUseItem?: (itemIndex: number) => void }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
 

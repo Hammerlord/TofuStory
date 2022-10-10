@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Inventory = ({ inventory, onUseItem }) => {
+const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (itemIndex: number) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 

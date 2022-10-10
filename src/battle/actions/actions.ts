@@ -19,6 +19,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
+import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
@@ -376,7 +377,7 @@ export const getUpdatedTargets = ({
     targetIndices,
     selectedIndex,
     action: initialAction,
-    parent: ability,
+    actionParent,
     source,
     getCombatantById,
 }: {
@@ -385,7 +386,7 @@ export const getUpdatedTargets = ({
     targetIndices: number[];
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
-    parent?: Ability;
+    actionParent?: Ability | Item;
     source: TriggerSource;
     getCombatantById: (id: string) => Combatant;
 }): [Combatant, Action][] => {
@@ -402,7 +403,7 @@ export const getUpdatedTargets = ({
             allTargets: targets,
             sourceTargets,
             multiplier: initialAction.multiplier,
-            ability,
+            actionParent: actionParent,
         });
         action = calculateBonus({
             action,
@@ -410,10 +411,10 @@ export const getUpdatedTargets = ({
             actor,
             allTargets: targets,
             isTargetSelected: targetIndex === selectedIndex,
-            ability,
+            actionParent,
         });
         const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
-        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, ability });
+        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
         const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
         const armor = calculateArmor({ target, action, actor: actorId });
         const updatedArmor = Math.max(0, baseArmor - damage + armor);
@@ -942,7 +943,7 @@ const pushPlaybackQueue = ({
     actorId,
     selectedIndex,
     allTargetIndices,
-    ability,
+    actionParent,
     side,
     battlefield,
 }: {
@@ -950,7 +951,7 @@ const pushPlaybackQueue = ({
     actorId: string;
     selectedIndex: number;
     allTargetIndices: number[];
-    ability?: Ability;
+    actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
     battlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
@@ -968,9 +969,10 @@ const pushPlaybackQueue = ({
                 // HACK: ensure that the selected index and "extra target indices" are hit first in playback
                 allTargetIndices,
                 targetSide: side,
-                ability,
+                ability: actionParent,
                 playbackTime:
-                    action.playbackTime || (ability?.actions.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
+                    // @ts-ignore
+                    action.playbackTime || (actionParent?.actions?.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
             } as Event)
         );
     };
@@ -988,7 +990,7 @@ const performAction = ({
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
-    parent?: Ability;
+    parent?: Ability | Item;
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
@@ -1034,7 +1036,7 @@ const performAction = ({
             selectedIndex,
             action,
             actorId,
-            parent,
+            actionParent: parent,
             source: parentSource,
             getCombatantById: (id: string) => findCombatant(getState, id),
         });
@@ -1052,7 +1054,15 @@ const performAction = ({
         };
 
         dispatch(
-            pushPlaybackQueue({ action, actorId, selectedIndex, allTargetIndices, ability: parent, side, battlefield: updatedBattlefield })
+            pushPlaybackQueue({
+                action,
+                actorId,
+                selectedIndex,
+                allTargetIndices,
+                actionParent: parent,
+                side,
+                battlefield: updatedBattlefield,
+            })
         );
 
         updated.forEach(([combatant, action]) => {
@@ -1332,6 +1342,48 @@ export const useAbility = ({
                 combatantId: actorId,
                 effectEventKey: EFFECT_EVENT_KEYS.onAbility,
                 source: source,
+            })
+        );
+    };
+};
+
+export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: string }) => {
+    return (dispatch, getState) => {
+        const { combatantIndex, friendlySide, combatant } = orientate({ combatantId: actorId, ...getState().battle }) || {};
+        if (!friendlySide) {
+            return;
+        }
+
+        const item = combatant.items[itemIndex];
+        dispatch(
+            performAction({
+                action: {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    healing: item.healing,
+                    resources: item.resources,
+                    effects: item.effects,
+                },
+                actorId,
+                selectedIndex: combatantIndex,
+                side: friendlySide,
+                parent: item,
+                parentSource: {
+                    actorId,
+                    targetId: actorId,
+                    allTargetIds: [actorId],
+                    source: item,
+                    type: TRIGGER_SOURCE_TYPES.ITEM,
+                },
+            })
+        );
+
+        dispatch(
+            updateCombatant({
+                combatantId: actorId,
+                newProperties: {
+                    items: findCombatant(getState, actorId).items.filter((item, i) => i !== itemIndex),
+                },
             })
         );
     };

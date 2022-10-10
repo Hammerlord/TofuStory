@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { mapleleaves, victoria } from "../images";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
-import { onWaveClear, onWaveStart } from "./actions/actions";
+import { onWaveClear, onWaveStart, updateCombatant, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
@@ -532,10 +532,11 @@ const BattlefieldContainer = () => {
         return combatant?.abilities.some(({ resourceCost }) => resourceCost > 0);
     };
 
-    const canUseItem = isPlayerTurn && !events.length;
     let handleUseItem;
-    if (canUseItem) {
-        // TODO
+    if (isPlayerTurn && player?.HP > 0) {
+        handleUseItem = (itemIndex: number) => {
+            dispatch(useItem({ itemIndex, actorId: player.id }));
+        };
     }
 
     return (

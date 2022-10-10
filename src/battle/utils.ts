@@ -3,6 +3,7 @@
  */
 import { Combatant } from "../character/types";
 import { CrossedSwords } from "../images";
+import { Item } from "../item/types";
 import {
     Ability,
     Action,
@@ -193,14 +194,14 @@ export const getMultiplier = ({
     target,
     allTargets = [],
     sourceTargets = [],
-    ability,
+    actionParent,
     multiplier,
 }: {
     actor?: Combatant;
     target?: Combatant;
     allTargets?: Combatant[];
     sourceTargets?: Combatant[];
-    ability?: Ability;
+    actionParent?: Ability | Item;
     multiplier: Multiplier;
 }): number => {
     const character = (() => {
@@ -256,8 +257,10 @@ export const getMultiplier = ({
         return getEnabledEffects(character).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED).length || 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof ability?.resourceCost === "number") {
-        return ability.resourceCost;
+    // @ts-ignore -- We are checking the existence of resourceCost here either way
+    if (multiplier.type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
+        // @ts-ignore
+        return actionParent.resourceCost;
     }
 
     return 1;
@@ -302,14 +305,14 @@ export const calculateDamage = ({
     targetIndex,
     selectedIndex,
     action,
-    ability,
+    actionParent,
 }: {
     actor?: Combatant;
     target?: Combatant;
     targetIndex?: number;
     selectedIndex?: number;
     action: Action;
-    ability?: Ability;
+    actionParent?: Ability | Item;
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
@@ -338,7 +341,7 @@ export const calculateDamage = ({
         }
         // Attack power only applies to attacks
         const attackPowerIncrease = isAttack ? attackPower : 0;
-        return acc + getSkillDamage({ ability, skillBonus }) + attackPowerIncrease;
+        return acc + getSkillDamage({ ability: actionParent, skillBonus }) + attackPowerIncrease;
     }, 0);
 
     const getAbilityDamageReceived = (abilityDamageReceived): number => {
@@ -346,7 +349,7 @@ export const calculateDamage = ({
             return 0;
         }
         return abilityDamageReceived?.reduce((acc, { abilityName, damage = 0 }) => {
-            if (abilityName && abilityName.toLowerCase() === ability?.name.toLowerCase()) {
+            if (abilityName && abilityName.toLowerCase() === actionParent?.name.toLowerCase()) {
                 acc += damage;
             }
             return acc;
@@ -570,7 +573,7 @@ export const calculateMultiplier = ({
     allTargets,
     sourceTargets,
     multiplier,
-    ability,
+    actionParent,
 }: {
     action: Action; // The action to apply the mutiplier to
     target: Combatant;
@@ -578,12 +581,12 @@ export const calculateMultiplier = ({
     sourceTargets?: Combatant[];
     actor: Combatant;
     multiplier?: Multiplier;
-    ability?: Ability;
+    actionParent?: Ability | Item;
 }) => {
     if (!multiplier) {
         return action;
     }
-    const multiplierValue = getMultiplier({ actor, allTargets, sourceTargets, target, multiplier, ability });
+    const multiplierValue = getMultiplier({ actor, allTargets, sourceTargets, target, multiplier, actionParent });
     const { damage = 0, secondaryDamage = 0, healing = 0, armor = 0 } = action;
 
     return {
@@ -601,14 +604,14 @@ export const calculateBonus = ({
     allTargets,
     actor,
     isTargetSelected,
-    ability,
+    actionParent,
 }: {
     action: Action; // The action to apply the bonus to
     target: Combatant;
     allTargets: Combatant[];
     actor: Combatant;
     isTargetSelected: boolean;
-    ability?: Ability;
+    actionParent?: Ability | Item;
 }): Action => {
     if (!action.bonus) {
         return action;
@@ -616,7 +619,7 @@ export const calculateBonus = ({
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = action;
     const { excludePrimaryTarget = false } = bonus;
-    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier, ability });
+    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier, actionParent });
 
     const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET) => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {
