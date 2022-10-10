@@ -374,7 +374,7 @@ export const calculateDamage = ({
     return Math.max(0, total);
 };
 
-export const calculateArmor = ({ actor, target, action }): number => {
+export const calculateArmor = ({ actor, target, action }: { actor: Combatant; target?: Combatant; action: Action }): number => {
     if (!action.armor) {
         return 0;
     }

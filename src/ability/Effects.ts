@@ -208,7 +208,26 @@ export const avenger: Effect = {
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyDeath: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        armor: 5,
+        ability: {
+            name: "Vengeful",
+            image: JapaneseOgre,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    armor: 3,
+                    resources: 1,
+                    bonus: {
+                        armor: 1,
+                        multiplier: {
+                            type: MULTIPLIER_TYPES.MAX_HP,
+                            value: 0.2,
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                        },
+                    },
+                },
+            ],
+        },
         effects: [vengeful],
     },
 };

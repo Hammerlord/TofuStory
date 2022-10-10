@@ -409,7 +409,7 @@ export const getUpdatedTargets = ({
             healing * getMultiplier({ actor, allTargets: targets, sourceTargets, target, multiplier: action.multiplier, actionParent });
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
         const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
-        const armor = calculateArmor({ target, action, actor: actorId });
+        const armor = calculateArmor({ target, action, actor });
         const updatedArmor = Math.max(0, baseArmor - damage + armor);
         const healthDamage = Math.max(0, damage - baseArmor);
         let HP = Math.max(0, target.HP - healthDamage);
