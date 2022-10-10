@@ -572,38 +572,6 @@ export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number
     return indices;
 };
 
-export const calculateMultiplier = ({
-    action,
-    actor,
-    target,
-    allTargets,
-    sourceTargets,
-    multiplier,
-    actionParent,
-}: {
-    action: Action; // The action to apply the mutiplier to
-    target: Combatant;
-    allTargets?: Combatant[];
-    sourceTargets?: Combatant[];
-    actor: Combatant;
-    multiplier?: Multiplier;
-    actionParent?: Ability | Item;
-}) => {
-    if (!multiplier) {
-        return action;
-    }
-    const multiplierValue = getMultiplier({ actor, allTargets, sourceTargets, target, multiplier, actionParent });
-    const { damage = 0, secondaryDamage = 0, healing = 0, armor = 0 } = action;
-
-    return {
-        ...action,
-        damage: damage * multiplierValue,
-        secondaryDamage: secondaryDamage * multiplierValue,
-        healing: healing * multiplierValue,
-        armor: armor * multiplierValue,
-    } as Action;
-};
-
 export const calculateBonus = ({
     action,
     target,

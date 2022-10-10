@@ -30,9 +30,9 @@ import {
     calculateArmor,
     calculateBonus,
     calculateDamage,
-    calculateMultiplier,
     getEnabledEffects,
     getInducedAttack,
+    getMultiplier,
     getPossibleSummonIndices,
     getValidTargetIndices,
     hasEffectType,
@@ -396,17 +396,8 @@ export const getUpdatedTargets = ({
 
     return targets.map((target: Combatant, i: number) => {
         const targetIndex = targetIndices[i];
-        let action = calculateMultiplier({
+        const action = calculateBonus({
             action: initialAction,
-            actor,
-            target,
-            allTargets: targets,
-            sourceTargets,
-            multiplier: initialAction.multiplier,
-            actionParent: actionParent,
-        });
-        action = calculateBonus({
-            action,
             target: target,
             actor,
             allTargets: targets,
@@ -414,6 +405,8 @@ export const getUpdatedTargets = ({
             actionParent,
         });
         const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
+        const totalHealing =
+            healing * getMultiplier({ actor, allTargets: targets, sourceTargets, target, multiplier: action.multiplier, actionParent });
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
         const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
         const armor = calculateArmor({ target, action, actor: actorId });
@@ -421,7 +414,7 @@ export const getUpdatedTargets = ({
         const healthDamage = Math.max(0, damage - baseArmor);
         let HP = Math.max(0, target.HP - healthDamage);
         if (HP > 0 || resurrect) {
-            HP = updateHP({ ...target, HP }, healing);
+            HP = updateHP({ ...target, HP }, totalHealing);
         }
 
         const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
