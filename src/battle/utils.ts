@@ -566,7 +566,7 @@ export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movemen
 export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number[] => {
     const indices = [];
     friendly.forEach((f, i) => {
-        if (!f || f.HP === 0) indices.push(i);
+        if (!f || f.HP <= 0) indices.push(i);
     });
 
     return indices;
