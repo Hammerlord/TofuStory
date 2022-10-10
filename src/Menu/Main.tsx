@@ -282,7 +282,8 @@ const Main = () => {
         <>
             <div className={classes.mapContainer}>
                 <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
-                <Header player={player} deck={deck} />
+                {/** BattleView has its own header */}
+                {!battle && <Header player={player} deck={deck} />}
             </div>
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
