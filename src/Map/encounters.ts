@@ -1,5 +1,5 @@
 import { concat } from "ramda";
-import { Ability, Minion } from "../ability/types";
+import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
 import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
@@ -7,16 +7,6 @@ import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem, shuffle } from "./../utils";
 import { enemyLayouts } from "./routes/layouts";
 import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";
-
-const getSyntheticSummon = (summonableEnemies: Minion[]): Ability => {
-    return {
-        name: "Call Minion",
-        minion: {
-            ...getRandomItem(summonableEnemies),
-        },
-        actions: [],
-    };
-};
 
 const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive]);
@@ -52,15 +42,43 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
 };
 
 const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, shielding, eruptive]);
-    const ability = getRandomItem([getSyntheticSummon(possibleEnemies.easy)]);
+    const swarming: Effect = {
+        type: EFFECT_TYPES.NONE,
+        class: EFFECT_CLASSES.BUFF,
+        canBeSilenced: true,
+        name: "Swarming",
+        icon: possibleEnemies.easy[0].image,
+        description: "Periodically summoning minions.",
+        turnsTriggerFrequency: 3,
+        onTurnStart: {
+            ability: {
+                name: "Call Minions",
+                actions: [
+                    {
+                        target: TARGET_TYPES.SELF,
+                        type: ACTION_TYPES.EFFECT,
+                        summon: [
+                            {
+                                minion: possibleEnemies.easy,
+                            },
+                            {
+                                minion: possibleEnemies.easy,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    };
+    const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming]);
     const baseEnemy = getRandomItem(concat(possibleEnemies.hard, possibleEnemies.hardest));
     const enemy = {
         ...baseEnemy,
         maxHP: Math.floor(baseEnemy.maxHP * 1.5 + 50),
-        abilities: [...(baseEnemy.abilities || []), ability],
+        abilities: [...(baseEnemy.abilities || []), tantrum],
         effects: [elite, affix],
     };
+
     return [null, getRandomItem(possibleEnemies.easy), enemy, getRandomItem(possibleEnemies.easy), null];
 };
 
