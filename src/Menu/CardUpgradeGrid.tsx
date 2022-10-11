@@ -54,6 +54,21 @@ const UpgradeTile = ({ card, onClick, isSelected }) => {
 };
 
 const useGridStyles = createUseStyles({
+    root: {
+        width: "100%",
+        height: "100%",
+        background: "rgba(50, 50, 50, 0.9)",
+        color: "white",
+    },
+    inner: {
+        textAlign: "center",
+        margin: "auto",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        fontSize: "1.2rem",
+    },
     abilitySection: {
         width: "80vw",
         height: "70vh",
@@ -68,45 +83,54 @@ const CardUpgradeGrid = ({
 }: {
     cards: Ability[];
     highlightColour?: string;
-    onCancel?: Function;
-    onConfirm?: Function;
+    onCancel?: () => void;
+    onConfirm?: (updatedDeck: Ability[]) => void;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useGridStyles();
 
     return (
-        <div>
-            <div className={classes.abilitySection}>
-                {cards.map((card, i) => (
-                    <UpgradeTile card={card} onClick={() => setSelectedAbilityIndex(i)} key={i} isSelected={i === selectedAbilityIndex} />
-                ))}
-            </div>
-            <div>
-                {onConfirm && (
-                    <Button
-                        variant={"contained"}
-                        color={"primary"}
-                        onClick={() => {
-                            if (!cards[selectedAbilityIndex]) {
-                                return;
-                            }
+        <div className={classes.root}>
+            <div className={classes.inner}>
+                <h3>Select an ability to upgrade</h3>
 
-                            const updatedCards = [
-                                ...cards.filter((_, i) => i !== selectedAbilityIndex),
-                                cards[selectedAbilityIndex].upgrades[0],
-                            ];
-                            onConfirm(updatedCards);
-                        }}
-                        disabled={!cards[selectedAbilityIndex]}
-                    >
-                        Select!
-                    </Button>
-                )}
-                {onCancel && (
-                    <Button variant={"contained"} onClick={onCancel as any}>
-                        Cancel
-                    </Button>
-                )}
+                <div className={classes.abilitySection}>
+                    {cards.map((card, i) => (
+                        <UpgradeTile
+                            card={card}
+                            onClick={() => setSelectedAbilityIndex(i)}
+                            key={i}
+                            isSelected={i === selectedAbilityIndex}
+                        />
+                    ))}
+                </div>
+                <div>
+                    {onConfirm && (
+                        <Button
+                            variant={"contained"}
+                            color={"primary"}
+                            onClick={() => {
+                                if (!cards[selectedAbilityIndex]) {
+                                    return;
+                                }
+
+                                const updatedCards = [
+                                    ...cards.filter((_, i) => i !== selectedAbilityIndex),
+                                    cards[selectedAbilityIndex].upgrades[0],
+                                ];
+                                onConfirm(updatedCards);
+                            }}
+                            disabled={!cards[selectedAbilityIndex]}
+                        >
+                            Select!
+                        </Button>
+                    )}
+                    {onCancel && (
+                        <Button variant={"contained"} onClick={onCancel as any}>
+                            Cancel
+                        </Button>
+                    )}
+                </div>
             </div>
         </div>
     );

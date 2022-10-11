@@ -181,20 +181,15 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
 
     if (isUpgradingAbility) {
         return (
-            <div className={classes.root}>
-                <div className={classes.inner}>
-                    <h3>Select an ability to upgrade</h3>
-                    <CardUpgradeGrid
-                        cards={deck}
-                        onCancel={() => setIsUpgradingAbility(false)}
-                        onConfirm={(updatedDeck) => {
-                            updateDeck(updatedDeck);
-                            setHasUpgradedAbility(true);
-                            setIsUpgradingAbility(false);
-                        }}
-                    />
-                </div>
-            </div>
+            <CardUpgradeGrid
+                cards={deck}
+                onCancel={() => setIsUpgradingAbility(false)}
+                onConfirm={(updatedDeck) => {
+                    updateDeck(updatedDeck);
+                    setHasUpgradedAbility(true);
+                    setIsUpgradingAbility(false);
+                }}
+            />
         );
     }
 

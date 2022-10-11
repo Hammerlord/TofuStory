@@ -23,6 +23,8 @@ import { NODE_TYPES, TOWNS } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
+import Overlay from "../view/Overlay";
+import CardUpgradeGrid from "./CardUpgradeGrid";
 import ClassSelection from "./ClassSelection";
 import GameOver from "./GameOver";
 import Header from "./Header";
@@ -99,6 +101,7 @@ const Main = () => {
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
+    const [upgradingAbility, setUpgradingAbility] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown] = useState(null);
     const classes = useStyles();
@@ -204,7 +207,19 @@ const Main = () => {
     };
 
     const handleUseItem = (itemIndex: number) => {
-        dispatch(useConsumable(itemIndex));
+        if (player.items[itemIndex].upgradeCard) {
+            console.log("test");
+            setUpgradingAbility(
+                () => () =>
+                    dispatch(
+                        updatePlayer({
+                            items: player.items.filter((item, i: number) => i !== itemIndex),
+                        })
+                    )
+            );
+        } else {
+            dispatch(useConsumable(itemIndex));
+        }
     };
 
     const handleJobUp = ({ job, jobUpAbilities }) => {
@@ -266,7 +281,7 @@ const Main = () => {
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const setDeck = (deck) => dispatch(updateDeck(deck));
 
-    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town;
+    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town || upgradingAbility;
 
     return (
         <>
@@ -322,6 +337,21 @@ const Main = () => {
                         />
                     )}
                     {battle && <BattlefieldContainer />}
+                    {upgradingAbility && (
+                        <Overlay>
+                            <CardUpgradeGrid
+                                cards={deck}
+                                onCancel={() => setUpgradingAbility(null)}
+                                onConfirm={(updatedDeck) => {
+                                    dispatch(updateDeck(updatedDeck));
+                                    if (typeof upgradingAbility === "function") {
+                                        upgradingAbility();
+                                    }
+                                    setUpgradingAbility(null);
+                                }}
+                            />
+                        </Overlay>
+                    )}
                 </div>
             )}
             {/** BattleView has its own header */}

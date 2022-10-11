@@ -214,6 +214,7 @@ export { default as goldMesoImage } from "./mesocoin.png";
 export { default as mesoStackImage } from "./mesostack.png";
 export { default as mesoBagImage } from "./mesoBag.png";
 export { default as oldGladiusImage } from "./oldgladius.png";
+export { default as GoldenHammerImage } from "./GoldenHammer.png";
 
 export { default as wessImage } from "./wess.png";
 export { default as shoImage } from "./sho.png";

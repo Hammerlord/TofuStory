@@ -6,6 +6,7 @@ import {
     cactusImage,
     coffeePotImage,
     drakebloodImage,
+    GoldenHammerImage,
     guideBookImage,
     hotdog,
     humilityStoneImage,
@@ -364,4 +365,12 @@ export const sunshinePan: Item = {
             },
         },
     ],
+};
+
+export const goldenHammer: Item = {
+    name: "Golden Hammer",
+    description: "Use this item to upgrade a card.",
+    type: ITEM_TYPES.MATERIAL,
+    image: GoldenHammerImage,
+    upgradeCard: true,
 };
