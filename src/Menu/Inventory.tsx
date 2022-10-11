@@ -67,6 +67,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
     };
 
     const selectedItem = inventory[selectedItemIndex];
+    const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
 
     return (
         <div className={classes.root}>
@@ -90,7 +91,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
                             {selectedItem.description}
                             <div className={classes.useButtonContainer}>
-                                {selectedItem?.type === ITEM_TYPES.CONSUMABLE && onUseItem && (
+                                {isItemUsable && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>
                                         Use
                                     </Button>

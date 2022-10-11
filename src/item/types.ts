@@ -16,4 +16,5 @@ export interface Item {
     image: string;
     sellPrice?: number;
     effects?: Effect[];
+    upgradeCard?: boolean;
 }

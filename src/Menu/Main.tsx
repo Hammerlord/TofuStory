@@ -7,6 +7,7 @@ import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
 import { battleStateSlice } from "../battle/reducer";
 import Rewards from "../battle/Rewards";
+import { getMaxHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -82,7 +83,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck, restartGame } = playerStateSlice.actions;
+const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable } = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
@@ -202,20 +203,9 @@ const Main = () => {
         dispatch(onSelectClass({ selectedClass, deck }));
     };
 
-    /*
-    const handleUseItem = (index: number) => {
-        const newInventory = player.items.slice();
-        const [item] = newInventory.splice(index, 1);
-        if (item.type === ITEM_TYPES.CONSUMABLE) {
-            const healing = item.HP || 0;
-            setPlayer({
-                ...player,
-                HP: updateHP(player, healing),
-                inventory: newInventory,
-            });
-        }
+    const handleUseItem = (itemIndex: number) => {
+        dispatch(useConsumable(itemIndex));
     };
-    */
 
     const handleJobUp = ({ job, jobUpAbilities }) => {
         dispatch(
@@ -282,40 +272,30 @@ const Main = () => {
         <>
             <div className={classes.mapContainer}>
                 <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
-                {/** BattleView has its own header */}
-                {!battle && <Header player={player} deck={deck} />}
             </div>
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
                     {town && getTown()}
 
                     {scene && (
-                        <>
-                            <ScenePlayer
-                                scene={scene}
-                                player={player}
-                                updatePlayer={setPlayer}
-                                onExit={() => setScene(null)}
-                                onBattle={handleSceneBattle}
-                                onShop={setShop}
-                                onTransition={handleTransition}
-                            />
-                            <Header player={player} deck={deck} />
-                        </>
+                        <ScenePlayer
+                            scene={scene}
+                            player={player}
+                            updatePlayer={setPlayer}
+                            onExit={() => setScene(null)}
+                            onBattle={handleSceneBattle}
+                            onShop={setShop}
+                            onTransition={handleTransition}
+                        />
                     )}
-                    {battle && <BattlefieldContainer />}
                     {isResting && (
-                        <>
-                            <Camp
-                                onExit={() => setIsResting(false)}
-                                player={player}
-                                deck={deck}
-                                updateDeck={setDeck}
-                                updatePlayer={setPlayer}
-                            />
-                            {/** TODO re-enable item usage */}
-                            <Header player={player} deck={deck} />
-                        </>
+                        <Camp
+                            onExit={() => setIsResting(false)}
+                            player={player}
+                            deck={deck}
+                            updateDeck={setDeck}
+                            updatePlayer={setPlayer}
+                        />
                     )}
                     {shop && (
                         <Shop
@@ -341,8 +321,12 @@ const Main = () => {
                             Puzzle={treasure.puzzle}
                         />
                     )}
+                    {battle && <BattlefieldContainer />}
                 </div>
             )}
+            {/** BattleView has its own header */}
+            {!battle && <Header player={player} deck={deck} onUseItem={handleUseItem} />}
+
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && (
                 <GameOver
