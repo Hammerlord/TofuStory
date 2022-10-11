@@ -107,6 +107,7 @@ export const wound: Effect = {
     duration: 3,
     attackDamageReceived: 1,
     onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         damage: 1,
     },
     icon: Blood,
