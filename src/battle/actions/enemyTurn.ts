@@ -306,6 +306,7 @@ export const startEnemyTurn = () => {
         });
 
         const acted = {};
+        const ENEMY_TURN_DELAY = 1250;
         const makeEnemyMove = () => {
             const { isEnded, isLost, enemySide } = getState().battle;
             if (isEnded || isLost) {
@@ -315,7 +316,9 @@ export const startEnemyTurn = () => {
             const eligible = enemySide.filter((char: Combatant | null) => char?.HP > 0 && !acted[char.id]);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
-                dispatch(updateFlagTurnEnd(true));
+                setTimeout(() => {
+                    dispatch(updateFlagTurnEnd(true));
+                }, ENEMY_TURN_DELAY);
                 return;
             }
 
@@ -326,7 +329,9 @@ export const startEnemyTurn = () => {
             } else if (!isUnableToAct(enemy)) {
                 dispatch(enemyUseAbility(id));
             }
-            makeEnemyMove();
+            setTimeout(() => {
+                makeEnemyMove();
+            }, ENEMY_TURN_DELAY);
         };
         makeEnemyMove();
     };
