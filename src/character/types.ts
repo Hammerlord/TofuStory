@@ -30,4 +30,5 @@ export interface Combatant extends Minion {
     items: Item[];
     mesos?: number;
     drawCardsPerTurn: number;
+    weapon?: string; // Weapon image
 }

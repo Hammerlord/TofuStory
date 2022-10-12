@@ -14,7 +14,7 @@ import {
     alligatorTube,
     cactus,
 } from "./../../item/items";
-import { goldRichieMerchant } from "../../scene/GoldRichie";
+import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
 import { noob } from "../../scene/Noob";
 
 export const events = [goldRichieMerchant, noob];

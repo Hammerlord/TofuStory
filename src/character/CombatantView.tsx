@@ -9,12 +9,14 @@ import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
 import { ZzzIcon } from "../images/icons";
+import Tooltip from "../view/Tooltip";
 import AttackPower from "./AttackPower";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import Health from "./HealthView";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
+import { Combatant } from "./types";
 import Weapon from "./Weapon";
 
 const useStyles = createUseStyles({
@@ -213,7 +215,33 @@ const useStyles = createUseStyles({
 });
 
 const CombatantView = forwardRef(
-    ({ combatant, onClick, isTargeted, event, isAlly, isSelected, isHighlighted, showReticle, showResourceBar, ...other }: any, ref) => {
+    (
+        {
+            combatant,
+            onClick,
+            isTargeted,
+            event,
+            isAlly,
+            isSelected,
+            isHighlighted,
+            showReticle,
+            showResourceBar,
+            ...other
+        }: {
+            combatant: Combatant;
+            onClick: (event: any) => void;
+            isTargeted: Boolean;
+            event: any; // AnimationEvent
+            isAlly: Boolean;
+            isSelected: Boolean;
+            isHighlighted: Boolean;
+            showReticle: Boolean;
+            showResourceBar?: Boolean;
+            onMouseEnter?: (event: any) => void;
+            onMouseLeave?: (event: any) => void;
+        },
+        ref
+    ) => {
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
@@ -307,7 +335,14 @@ const CombatantView = forwardRef(
                         <span ref={ref as any} className={classNames(classes.portrait)}>
                             {oldState && combatant && (
                                 <>
-                                    {imageNode}
+                                    <Tooltip
+                                        open={Boolean(event?.actionParent?.dialog)}
+                                        title={event?.actionParent?.dialog || ""}
+                                        placement="top"
+                                    >
+                                        {imageNode}
+                                    </Tooltip>
+
                                     <div className={classes.weaponContainer}>
                                         <Weapon
                                             image={oldState.weapon}

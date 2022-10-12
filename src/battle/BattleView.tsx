@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Action, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Ability, Action, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
+import { Item } from "../item/types";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
 import { onWaveClear, onWaveStart, useItem } from "./actions/actions";
@@ -358,13 +359,14 @@ const BattlefieldContainer = () => {
         allTargets: HTMLElement[];
         actor?: HTMLElement;
         playbackTime?: number;
+        actionParent?: Ability | Item;
     } => {
         let target;
         if (!events.length) {
             return { action: undefined, target: undefined, allTargets: [], actor: undefined };
         }
 
-        const { actorId, targetSide, selectedIndex, allTargetIndices, id, action, playbackTime } = (events[0] as Event) || {};
+        const { actorId, targetSide, selectedIndex, allTargetIndices, id, action, playbackTime, actionParent } = (events[0] as Event) || {};
         const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
         if (typeof selectedIndex === "number" && targetSide) {
@@ -378,6 +380,7 @@ const BattlefieldContainer = () => {
             allTargets: allTargetIndices.map((i) => targets[i]?.current).filter((v) => v),
             eventId: id,
             playbackTime,
+            actionParent,
         };
     })();
 
@@ -557,7 +560,7 @@ const BattlefieldContainer = () => {
                         {notification.text}
                     </Notification>
                 )}
-                {events[0]?.ability && <AbilityNotification ability={events[0].ability} />}
+                {events[0]?.actionParent && <AbilityNotification ability={events[0].actionParent} />}
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield}>
                         <div className={classes.waves}>

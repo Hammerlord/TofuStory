@@ -1,27 +1,6 @@
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
-import { Wave } from "../battle/types";
-import { rally } from "../enemy/abilities";
-import { GoldRichieImage, GuardWarriorImage, WeaponMasteryImage } from "../images";
-import { NPC } from "./types";
-
-const goldRichie: Minion = {
-    name: "Gold Richie",
-    image: GoldRichieImage,
-    maxHP: 15,
-    damage: 0,
-    abilities: [
-        {
-            name: "Curl Up in Fetal Position",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 2,
-                },
-            ],
-        },
-    ],
-};
+import { Wave } from "../../battle/types";
+import { NPC } from "../types";
+import { adventurerFighter, adventurerIceWizard, goldRichie, goldRichie2 } from "./GoldRichieCharacters";
 
 const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
     characters: [goldRichie.name],
@@ -30,65 +9,6 @@ const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
             enemies: [null, null, goldRichie, null, null],
         },
     ],
-};
-
-const goldRichie2: Minion = {
-    name: "Gold Richie",
-    image: GoldRichieImage,
-    maxHP: 15,
-    armor: 15,
-    damage: 0,
-    abilities: [
-        {
-            name: "Curl Up in Fetal Position",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 2,
-                },
-            ],
-        },
-        {
-            name: "Bolster",
-            dialog: "The one who personally defeats that mushroom gets a hefty bonus!",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    excludePrimaryTarget: true,
-                    area: 3,
-                    effects: [
-                        {
-                            icon: WeaponMasteryImage,
-                            name: "Bolster",
-                            attackPower: 1,
-                            duration: 3,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
-};
-
-const adventurerFighter = {
-    name: "Fighter",
-    image: GuardWarriorImage,
-    HP: 40,
-    maxHP: 40,
-    damage: 2,
-    abilities: [rally],
-};
-
-const adventurerIceWizard = {
-    name: "Ice-Lightning Wizard",
-    image: GuardWarriorImage,
-    HP: 35,
-    maxHP: 35,
-    damage: 3,
 };
 
 const goldRichieFight2: { characters: string[]; waves: Wave[] } = {

@@ -26,7 +26,7 @@ export interface Event {
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
     playbackTime: number;
-    ability?: Ability;
+    actionParent?: Ability | Item;
 }
 
 export interface EventGroup {

@@ -201,6 +201,7 @@ export interface Minion {
     /** Actions to perform when this minion has been summoned */
     onSummon?: Action[];
     isBoss?: boolean;
+    mesos?: number;
 }
 
 export interface Multiplier {

@@ -7,12 +7,13 @@ import defaultCharacterProperties from "../character/defaultCharacterProperties"
 import { playerStateSlice } from "../character/playerReducer";
 import { blueSnail, manoEnemy, redSnail, snail } from "../enemy/enemy";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { goldRichie } from "../scene/GoldRichie/GoldRichieCharacters";
 
 const { updatePlayer, updateDeck } = playerStateSlice.actions;
 
 const DevStageBattle = () => {
     const deck = useMemo(() => [spikedArmor, dustDevils, slam], []);
-    const enemies = useMemo(() => [null, null, manoEnemy, null, null], []);
+    const enemies = useMemo(() => [null, null, goldRichie, null, null], []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);
     useEffect(() => {

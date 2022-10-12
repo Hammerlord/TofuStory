@@ -962,7 +962,7 @@ const pushPlaybackQueue = ({
                 // HACK: ensure that the selected index and "extra target indices" are hit first in playback
                 allTargetIndices,
                 targetSide: side,
-                ability: actionParent,
+                actionParent,
                 playbackTime:
                     // @ts-ignore
                     action.playbackTime || (actionParent?.actions?.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
