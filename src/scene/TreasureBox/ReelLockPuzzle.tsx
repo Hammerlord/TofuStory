@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bluesnailImage, orangeMushroomImage, pigImage, redsnailImage, shroomImage, slimeImage, snailImage } from "../../images";
+import { BlueSnailImage, OrangeMushroomImage, PigImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
 import { getRandomInt, shuffle } from "../../utils";
 
 const useStyles = createUseStyles({
@@ -46,7 +46,7 @@ const useStyles = createUseStyles({
 const ReelLockPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const [columns] = useState(
         (() => {
-            const column = shuffle([snailImage, bluesnailImage, shroomImage, redsnailImage, slimeImage, orangeMushroomImage, pigImage]);
+            const column = shuffle([SnailImage, BlueSnailImage, ShroomImage, RedSnailImage, SlimeImage, OrangeMushroomImage, PigImage]);
             const answerIndex = getRandomInt(0, column.length - 1);
             const [validAnswer] = column.splice(answerIndex, 1);
             const cols = Array.from({ length: 4 }).map((_, i) => {

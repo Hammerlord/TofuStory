@@ -1,26 +1,21 @@
+import { BombImage, GemHeartImage, PoisonImage, UpMATTImage, WeaponBoosterImage, WeaponMasteryImage } from "../images";
 import {
-    AlternateJapaneseOgre,
-    Anger,
-    Blood,
-    bombImage,
-    Cactus,
-    Cloudy,
-    Dizzy,
-    Fire,
-    Helmet,
-    JapaneseOgre,
-    Medal,
-    MilitaryMedal,
-    NoStun,
-    orangegem as orangegemImage,
-    PoisonIcon,
-    Snowflake,
-    SpeechBubble,
-    upmattImage,
+    AngerIcon,
+    BloodIcon,
+    CactusIcon,
+    CloudyIcon,
+    DizzyIcon,
+    FireIcon,
+    HelmetIcon,
+    JapaneseOgreAlternateIcon,
+    JapaneseOgreIcon,
+    MedalIcon,
+    MilitaryMedalIcon,
+    NoStunIcon,
+    SnowflakeIcon,
+    SpeechBubbleIcon,
     VolcanoIcon,
-    weaponbooster,
-    weaponmasteryImage,
-} from "../images";
+} from "../images/icons";
 import {
     Effect,
     EFFECT_CLASSES,
@@ -38,7 +33,7 @@ import {
 export const thorns: Effect = {
     name: "Thorns",
     canBeSilenced: true,
-    icon: Cactus,
+    icon: CactusIcon,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -48,7 +43,7 @@ export const thorns: Effect = {
 export const controlImmune: Effect = {
     name: "Stun Immunity",
     description: "Target cannot be stunned or frozen.",
-    icon: NoStun,
+    icon: NoStunIcon,
     immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
     duration: 5,
     type: EFFECT_TYPES.NONE,
@@ -58,7 +53,7 @@ export const controlImmune: Effect = {
 export const hardy: Effect = {
     name: "Hardy",
     description: "After being stunned or frozen, gains temporary immunity to those effects.",
-    icon: Helmet,
+    icon: HelmetIcon,
     onReceiveEffect: {
         conditions: [
             {
@@ -79,7 +74,7 @@ export const stealth: Effect = {
     type: EFFECT_TYPES.STEALTH,
     class: EFFECT_CLASSES.BUFF,
     name: "Stealth",
-    icon: Cloudy,
+    icon: CloudyIcon,
     canBeSilenced: true,
     description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
     onAttack: {
@@ -97,7 +92,7 @@ export const stun: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
     description: "Afflicted targets are unable to act during their turn.",
-    icon: Dizzy,
+    icon: DizzyIcon,
 };
 
 export const wound: Effect = {
@@ -110,7 +105,7 @@ export const wound: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         damage: 1,
     },
-    icon: Blood,
+    icon: BloodIcon,
     description: "Wounded targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
 };
 
@@ -123,13 +118,13 @@ export const burn: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         damage: 3,
     },
-    icon: Fire,
+    icon: FireIcon,
     description: "Burned targets take 3 damage at the end of their turn.",
 };
 
 export const chill: Effect = {
     name: "Chill",
-    icon: Snowflake,
+    icon: SnowflakeIcon,
     type: EFFECT_TYPES.CHILL,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 5,
@@ -143,13 +138,13 @@ export const cleave: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: weaponbooster,
+    icon: WeaponBoosterImage,
     description: "Area of this character's basic attacks increased by 1.",
 };
 
 export const immunity: Effect = {
     name: "Immunity",
-    icon: upmattImage,
+    icon: UpMATTImage,
     type: EFFECT_TYPES.IMMUNITY,
     class: EFFECT_CLASSES.BUFF,
     duration: 1,
@@ -161,7 +156,7 @@ export const raging: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
-    icon: Anger,
+    icon: AngerIcon,
     description: "Periodically increasing the attack power of this character.",
     turnsTriggerFrequency: 2,
     onTurnStart: {
@@ -171,7 +166,7 @@ export const raging: Effect = {
                 name: "Rage",
                 type: EFFECT_TYPES.RAGE,
                 class: EFFECT_CLASSES.BUFF,
-                icon: weaponmasteryImage,
+                icon: WeaponMasteryImage,
                 description: "Growing angry. Effect is removed if the character is stunned.",
                 attackPower: 1,
                 onReceiveEffect: {
@@ -194,7 +189,7 @@ const vengeful: Effect = {
     canBeSilenced: true,
     duration: 2,
     attackPower: 3,
-    icon: JapaneseOgre,
+    icon: JapaneseOgreIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
 };
@@ -205,13 +200,13 @@ export const avenger: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: AlternateJapaneseOgre,
+    icon: JapaneseOgreAlternateIcon,
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyDeath: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         ability: {
             name: "Vengeful",
-            image: JapaneseOgre,
+            image: JapaneseOgreIcon,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
@@ -239,7 +234,7 @@ export const shielding: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: orangegemImage,
+    icon: GemHeartImage,
     description: "Periodically gaining a shield that wards off a single attack.",
     turnsTriggerFrequency: 2,
     onTurnStart: {
@@ -247,7 +242,7 @@ export const shielding: Effect = {
         effects: [
             {
                 name: "Attack Immunity",
-                icon: upmattImage,
+                icon: UpMATTImage,
                 type: EFFECT_TYPES.ATTACK_IMMUNITY,
                 class: EFFECT_CLASSES.BUFF,
                 duration: 2,
@@ -330,7 +325,7 @@ export const explosive: Effect = {
     canBeSilenced: true,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: bombImage,
+    icon: BombImage,
     description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 2 turns.",
     onDeath: {
         ability: {
@@ -354,7 +349,7 @@ export const explosive: Effect = {
                         {
                             name: "Explosive - Burn",
                             description: "Burning and taking 50% increased damage from Explode.",
-                            icon: Fire,
+                            icon: FireIcon,
                             type: EFFECT_TYPES.BURN,
                             class: EFFECT_CLASSES.DEBUFF,
                             duration: 2,
@@ -383,7 +378,7 @@ export const eliteSquad: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
-    icon: Medal,
+    icon: MedalIcon,
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     onReceiveEffect: {
@@ -407,7 +402,7 @@ export const elite: Effect = {
     attackPower: 2,
     description:
         "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
-    icon: MilitaryMedal,
+    icon: MilitaryMedalIcon,
     onReceiveEffect: {
         conditions: [
             {
@@ -439,7 +434,7 @@ export const silence: Effect = {
     description: "Disables certain buffs and prevents resource generation.",
     type: EFFECT_TYPES.SILENCE,
     class: EFFECT_CLASSES.DEBUFF,
-    icon: SpeechBubble,
+    icon: SpeechBubbleIcon,
 };
 
 export const poison: Effect = {
@@ -447,7 +442,7 @@ export const poison: Effect = {
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
     description: "Healing received reduced by 1. Taking 2 damage at the end of the turn.",
-    icon: PoisonIcon,
+    icon: PoisonImage,
     duration: 3,
     healingReceived: -1,
     onTurnEnd: {

@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bystanderImage, kerningSewerEntranceFull, shoImage, stefaImage, wessImage } from "../../../images";
-import { getRandomArbitrary, getRandomItem } from "../../../utils";
+import { BystanderImage, KerningSewerFullImage, ShoImage, StefaImage, WessImage } from "../../../images";
+import { getRandomArbitrary } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
 import getBystanderDialogue from "./getBystanderDialogue";
@@ -10,7 +10,7 @@ import getBystanderDialogue from "./getBystanderDialogue";
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${kerningSewerEntranceFull}) no-repeat`,
+        background: `url(${KerningSewerFullImage}) no-repeat`,
         width: "1200px",
         height: "616px",
     },
@@ -63,9 +63,9 @@ const SewerEntrance = ({ player }: SceneProps) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={stefaImage} className={classNames(classes.stefa, classes.character)} />
-            <img src={shoImage} className={classNames(classes.sho, classes.character)} />
-            <img src={wessImage} className={classNames(classes.wess, classes.character)} />
+            <img src={StefaImage} className={classNames(classes.stefa, classes.character)} />
+            <img src={ShoImage} className={classNames(classes.sho, classes.character)} />
+            <img src={WessImage} className={classNames(classes.wess, classes.character)} />
             {bystanders.map(({ flip, left, text }, i) => (
                 <Tooltip
                     placement={"top"}
@@ -77,7 +77,7 @@ const SewerEntrance = ({ player }: SceneProps) => {
                     PopperProps={{ disablePortal: true }}
                 >
                     <img
-                        src={bystanderImage}
+                        src={BystanderImage}
                         className={classNames(classes.character, classes.bystander, {
                             [classes.flip]: flip,
                         })}

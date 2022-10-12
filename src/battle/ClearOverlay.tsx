@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { clear } from "../images";
+import { ClearImage } from "../images";
 import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
@@ -46,7 +46,7 @@ const ClearOverlay = ({ labelText }) => {
         <Overlay>
             <div className={classes.container}>
                 <div className={classes.clearContainer}>
-                    <img src={clear} className={classes.clear} />
+                    <img src={ClearImage} className={classes.clear} />
                 </div>
                 {labelText && <div className={classes.labelContainer}>{labelText}</div>}
             </div>

@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { getMultiplier } from "../../battle/utils";
 import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
-import { CrossedSwords, Heart, Shield } from "../../images";
+import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { Fury } from "../../resource/ResourcesView";
 import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
 import { getAbilityColor } from "../utils";
@@ -204,7 +204,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
             armorCornerIcon = true;
             return (
                 <Icon
-                    icon={<Shield />}
+                    icon={<ShieldIcon />}
                     text={armor}
                     className={classNames({
                         [classes.highlightText]: hasMultiplier,
@@ -217,7 +217,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
             healingCornerIcon = true;
             return (
                 <Icon
-                    icon={<Heart />}
+                    icon={<HeartIcon />}
                     text={healing}
                     className={classNames({
                         [classes.highlightText]: hasMultiplier,
@@ -260,12 +260,12 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         <>
                             {!healingCornerIcon && healing > 0 && (
                                 <div>
-                                    Heal for <Icon icon={<Heart />} text={healing} size={"sm"} />
+                                    Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
                                 </div>
                             )}
                             {!armorCornerIcon && armor > 0 && (
                                 <div>
-                                    Gain <Icon icon={<Shield />} text={armor} size={"sm"} />
+                                    Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
                                 </div>
                             )}
                             {resourceGain > 0 && (
@@ -275,7 +275,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                             )}
                             {selfDamage > 0 && (
                                 <div>
-                                    Self-inflict <Icon icon={<CrossedSwords />} text={selfDamage} size={"sm"} />
+                                    Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
                                 </div>
                             )}
                             {ability.reusable && <div>Returns to your hand after use</div>}
@@ -293,8 +293,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         <AbilityTypeView targetType={targetType} minion={minion} />
                         {minion && (
                             <div className={classes.minionStats}>
-                                <Icon icon={<Heart />} text={minion.maxHP} className={classes.minionHP} />
-                                <Icon icon={<CrossedSwords />} text={minion.damage} className={classes.minionDamage} />
+                                <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
+                                <Icon icon={<CrossedSwordsIcon />} text={minion.damage} className={classes.minionDamage} />
                             </div>
                         )}
                     </div>

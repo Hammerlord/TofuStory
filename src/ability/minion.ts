@@ -1,5 +1,5 @@
 /** Generic minions */
-import { snailImage } from "../images";
+import { SnailImage } from "../images";
 import { Ability } from "./types";
 
 export const snailMinion: Ability = {
@@ -7,7 +7,7 @@ export const snailMinion: Ability = {
     resourceCost: 1,
     minion: {
         name: "Snail",
-        image: snailImage,
+        image: SnailImage,
         maxHP: 5,
         damage: 1,
     },

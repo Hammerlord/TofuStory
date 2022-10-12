@@ -3,8 +3,8 @@ import { createUseStyles } from "react-jss";
 import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant } from "../character/types";
+import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
 
-import { CrossedSwords, Fireworks, Heart, Hourglass, Shield, SpeechBubble } from "../images";
 import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
@@ -140,14 +140,14 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                 <div>{description}</div>
                 {attackPower !== 0 && (
                     <div>
-                        <Icon icon={<CrossedSwords />} text={attackPower} /> attack power
+                        <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
                     </div>
                 )}
                 {attackDamageReceived !== 0 && (
                     <div>
                         Receiving{" "}
                         <Icon
-                            icon={<CrossedSwords />}
+                            icon={<CrossedSwordsIcon />}
                             text={attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`}
                         />
                         damage from attacks
@@ -155,41 +155,41 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                 )}
                 {armor > 0 && (
                     <div>
-                        <Icon icon={<Shield />} text={armor} /> per turn
+                        <Icon icon={<ShieldIcon />} text={armor} /> per turn
                     </div>
                 )}
                 {healing > 0 && (
                     <div>
-                        <Icon icon={<Heart />} text={healing} /> per turn
+                        <Icon icon={<HeartIcon />} text={healing} /> per turn
                     </div>
                 )}
                 {healthPerResourcesSpent > 0 && (
                     <div>
-                        <Icon icon={<Heart />} text={healthPerResourcesSpent} /> per <Fury /> spent
+                        <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per <Fury /> spent
                     </div>
                 )}
                 {lifePerHit > 0 && (
                     <div>
-                        Gaining <Icon icon={<Heart />} text={lifePerHit} size={"sm"} /> per hit
+                        Gaining <Icon icon={<HeartIcon />} text={lifePerHit} size={"sm"} /> per hit
                     </div>
                 )}
                 {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
-                        <Icon icon={<Hourglass />} text={duration} /> turns remaining
+                        <Icon icon={<HourglassIcon />} text={duration} /> turns remaining
                     </span>
                 )}
                 {!allSameDuration && (
                     <span>
                         {effects.map((e, i) => (
-                            <Icon key={i} icon={<Hourglass />} text={e.duration === Infinity ? "∞" : e.duration} />
+                            <Icon key={i} icon={<HourglassIcon />} text={e.duration === Infinity ? "∞" : e.duration} />
                         ))}{" "}
                         turns remaining
                     </span>
                 )}
                 {skillBonus.map(({ skill, damage = 0 }) => (
                     <div key={skill}>
-                        {skill} {damage > 0 && <Icon icon={<CrossedSwords />} text={`+${damage}`} />}
+                        {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
                     </div>
                 ))}
                 {isSilenced && canBeSilenced && <div className={classes.silenced}>Silenced</div>}
@@ -208,13 +208,13 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     <>
                         {durationDisplay && (
                             <span className={classes.duration}>
-                                <Icon icon={<Hourglass />} size="sm" text={durationDisplay} />
+                                <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                             </span>
                         )}
                         {effects.length > 1 && <span className={classNames(classes.iconText, classes.stacks)}>{effects.length}</span>}
                     </>
                 </Icon>
-                {isSilenced && canBeSilenced && <Icon icon={<SpeechBubble />} className={classes.silenceIcon} />}
+                {isSilenced && canBeSilenced && <Icon icon={<SpeechBubbleIcon />} className={classes.silenceIcon} />}
             </span>
         </Tooltip>
     );

@@ -1,8 +1,7 @@
-import { panlid, stolenFence, alligatorTube, amethyst, engravedStone } from "./../item/items";
 import uuid from "uuid";
-import { oldGladiusImage, warmush } from "../images";
-import { drakeBlood, nependeathSap } from "../item/items";
+import { OldGladiusImage, WarMushImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { engravedStone } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */
@@ -11,7 +10,7 @@ const defaultCharacterProperties = {
     id: uuid.v4(),
     class: PLAYER_CLASSES.WARRIOR,
     secondaryClass: null,
-    image: warmush,
+    image: WarMushImage,
     HP: 50,
     maxHP: 50,
     resourcesPerTurn: 1,
@@ -22,7 +21,7 @@ const defaultCharacterProperties = {
     abilityHistory: [],
     mesos: 0,
     isPlayer: true,
-    weapon: oldGladiusImage,
+    weapon: OldGladiusImage,
     effects: [],
     items: [engravedStone],
     drawCardsPerTurn: 3,

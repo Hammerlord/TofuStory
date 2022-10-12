@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bluesnailImage, orangeMushroomImage, pigImage, redsnailImage, shroomImage, slimeImage, snailImage } from "../../images";
-import { getRandomInt, shuffle } from "../../utils";
+import { BlueSnailImage, RedSnailImage } from "../../images";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -55,7 +54,7 @@ const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; comple
             {answer.map((a: boolean, i: number) => (
                 <div key={i}>
                     <div className={classes.iconContainer} onClick={() => onClickTile(i)}>
-                        <img src={a ? bluesnailImage : redsnailImage} className={classes.icon} key={a ? bluesnailImage : redsnailImage} />
+                        <img src={a ? BlueSnailImage : RedSnailImage} className={classes.icon} key={a ? BlueSnailImage : RedSnailImage} />
                     </div>
                 </div>
             ))}

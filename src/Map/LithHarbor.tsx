@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { lithHarbor, lithHarborBalcony, lithHarborExit, lithHarborShark, WorldMap } from "../images";
+import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
+import { WorldMapIcon } from "../images/icons";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
 
@@ -8,7 +9,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: `url(${lithHarbor})`,
+        background: `url(${LithHarborCityBGImage})`,
         color: "white",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -80,20 +81,20 @@ const LithHarbor = ({ player, onExit, onClickScene }) => {
                     <div className={classes.eventsContainer}>
                         <div className={classNames(classes.node, classes.balcony)} onClick={() => onClickScene(lithEventsOlaf)}>
                             Event
-                            <img src={lithHarborBalcony} />
+                            <img src={LithHarborBalconyImage} />
                             <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node, classes.shark)} onClick={() => onClickScene(lithEventsTeoJohn)}>
                             Event
-                            <img src={lithHarborShark} />
+                            <img src={LithHarborSharkImage} />
                             <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
                             Exit to World Map
-                            <img src={lithHarborExit} />
+                            <img src={LithHarborExitImage} />
                             <div className={classes.event}>
                                 <div className={classes.eventInner}>
-                                    <WorldMap />
+                                    <WorldMapIcon />
                                 </div>
                             </div>
                         </div>

@@ -1,14 +1,14 @@
 import { getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
-import { Blood, CrossedSwords, Dizzy, Fire, Heart, Shield, Snowflake } from "../../images";
+import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
 import { Condition, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
     const map = {
-        [EFFECT_TYPES.BLEED]: <Icon icon={Blood} key={key} size={"sm"} />,
-        [EFFECT_TYPES.STUN]: <Icon icon={Dizzy} key={key} size={"sm"} />,
-        [EFFECT_TYPES.CHILL]: <Icon icon={Snowflake} key={key} size={"sm"} />,
-        [EFFECT_TYPES.BURN]: <Icon icon={Fire} key={key} size={"sm"} />,
+        [EFFECT_TYPES.BLEED]: <Icon icon={BloodIcon} key={key} size={"sm"} />,
+        [EFFECT_TYPES.STUN]: <Icon icon={DizzyIcon} key={key} size={"sm"} />,
+        [EFFECT_TYPES.CHILL]: <Icon icon={SnowflakeIcon} key={key} size={"sm"} />,
+        [EFFECT_TYPES.BURN]: <Icon icon={FireIcon} key={key} size={"sm"} />,
     };
     return map[effectType];
 };
@@ -62,7 +62,7 @@ const BonusView = ({ ability, player }) => {
                         if (armor !== undefined) {
                             return (
                                 <span key={i}>
-                                    to <Icon icon={<Shield />} size={"sm"} /> targets
+                                    to <Icon icon={<ShieldIcon />} size={"sm"} /> targets
                                 </span>
                             );
                         }
@@ -76,11 +76,11 @@ const BonusView = ({ ability, player }) => {
                     <div key={i}>
                         {totalDamage > 0 && (
                             <>
-                                Deal <Icon icon={CrossedSwords} text={`+${totalDamage}`} size={"sm"} />
+                                Deal <Icon icon={CrossedSwordsIcon} text={`+${totalDamage}`} size={"sm"} />
                             </>
                         )}{" "}
-                        {totalHealing > 0 && <Icon icon={Heart} text={`+${totalHealing}`} size={"sm"} />}{" "}
-                        {totalArmor > 0 && <Icon icon={Shield} text={`+${totalArmor}`} size={"sm"} />}
+                        {totalHealing > 0 && <Icon icon={HeartIcon} text={`+${totalHealing}`} size={"sm"} />}{" "}
+                        {totalArmor > 0 && <Icon icon={ShieldIcon} text={`+${totalArmor}`} size={"sm"} />}
                         {conditionText}
                     </div>
                 );

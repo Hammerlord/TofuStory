@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import { Ability } from "../ability/types";
 import { updateHPByPercentage } from "../battle/utils";
-import { campfire, perioncamp } from "../images";
+import { CampfireImage, PerionCampImage } from "../images";
 import { blackScroll } from "../item/items";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
@@ -28,7 +28,7 @@ const useStyles = createUseStyles({
     scene: {
         position: "relative",
         margin: "36px 0",
-        background: `url(${perioncamp}) no-repeat`,
+        background: `url(${PerionCampImage}) no-repeat`,
         width: "600px",
         height: "450px",
     },
@@ -200,7 +200,7 @@ const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
                 <p>You've regained {HEALTH_REGAINED * 100}% of your HP.</p>
                 <div className={classes.scene}>
                     <img src={player.image} className={classes.player} />
-                    <img src={campfire} className={classes.bonfire} />
+                    <img src={CampfireImage} className={classes.bonfire} />
                 </div>
                 <div className={classes.activitySection}>
                     <div className={classes.activityContainer}>

@@ -1,28 +1,28 @@
-import { bystanderImage, kingslimeImage, lakelisImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { BystanderImage, KingSlimeImage, LakelisImage, ShoImage, StefaImage, WessImage } from "../../../images";
 
 export const bowman = {
     name: "Bowman",
-    image: wessImage,
+    image: WessImage,
 };
 
 export const magician = {
     name: "Magician",
-    image: shoImage,
+    image: ShoImage,
 };
 
 export const thief = {
     name: "Thief",
-    image: stefaImage,
+    image: StefaImage,
 };
 
 export const lakelis = {
     name: "Lakelis",
-    image: lakelisImage,
+    image: LakelisImage,
 };
 
 export const bystander = {
     name: "Bystander",
-    image: bystanderImage,
+    image: BystanderImage,
 };
 
 export const aVoice = {
@@ -31,5 +31,5 @@ export const aVoice = {
 
 export const kingSlime = {
     name: "King Slime",
-    image: kingslimeImage,
+    image: KingSlimeImage,
 };

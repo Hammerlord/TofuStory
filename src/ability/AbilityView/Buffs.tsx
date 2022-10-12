@@ -1,6 +1,7 @@
 import { cloneElement } from "react";
 import Icon from "../../icon/Icon";
-import { Cactus, Cloudy, CrossedSwords, Heart, Hourglass, Shield, upmattImage } from "../../images";
+import { UpMATTImage } from "../../images";
+import { CactusIcon, CloudyIcon, CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
 import { Fury } from "../../resource/ResourcesView";
 import { CONDITION_TARGETS, Effect, EffectEventTrigger, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../types";
 import { effectEventKeyLabelMap, multiplierTypeKeyLabelMap } from "./constants";
@@ -39,14 +40,14 @@ const EffectEventDisplay = (effectEvents) => {
         if (armor) {
             components.push(
                 <>
-                    gain <Icon icon={<Shield />} size={"sm"} text={`+${armor}`} />
+                    gain <Icon icon={<ShieldIcon />} size={"sm"} text={`+${armor}`} />
                 </>
             );
         }
         if (healing) {
             components.push(
                 <>
-                    heal for <Icon icon={<Heart />} size={"sm"} text={healing} />
+                    heal for <Icon icon={<HeartIcon />} size={"sm"} text={healing} />
                 </>
             );
         }
@@ -60,7 +61,7 @@ const EffectEventDisplay = (effectEvents) => {
         if (damage) {
             components.push(
                 <span>
-                    deal <Icon icon={<CrossedSwords />} size={"sm"} text={`+${damage}`} />
+                    deal <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />
                 </span>
             );
         }
@@ -111,7 +112,7 @@ const Buffs = ({ ability }) => {
                 if (thorns > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Cactus />} size={"sm"} />{" "}
+                            Gain <Icon icon={<CactusIcon />} size={"sm"} />{" "}
                         </span>
                     );
                 }
@@ -119,7 +120,8 @@ const Buffs = ({ ability }) => {
                 if (armorReceived > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<Shield />} size={"sm"} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
+                            Gain{" "}
+                            <Icon icon={<ShieldIcon />} size={"sm"} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
                             from armor sources{" "}
                         </span>
                     );
@@ -128,14 +130,14 @@ const Buffs = ({ ability }) => {
                 if (effect.type === EFFECT_TYPES.STEALTH) {
                     effectComponents.push(
                         <span>
-                            <Icon size={"sm"} icon={<Cloudy />} /> Stealth
+                            <Icon size={"sm"} icon={<CloudyIcon />} /> Stealth
                         </span>
                     );
                 }
                 if (effect.type === EFFECT_TYPES.IMMUNITY) {
                     effectComponents.push(
                         <span>
-                            <Icon size={"sm"} icon={upmattImage} /> Immunity
+                            <Icon size={"sm"} icon={UpMATTImage} /> Immunity
                         </span>
                     );
                 }
@@ -143,7 +145,7 @@ const Buffs = ({ ability }) => {
                 if (attackPower > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<CrossedSwords />} size={"sm"} text={`+${attackPower}`} />{" "}
+                            Gain <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${attackPower}`} />{" "}
                         </span>
                     );
                 }
@@ -159,8 +161,8 @@ const Buffs = ({ ability }) => {
                 if (lifeOnHit > 0) {
                     effectComponents.push(
                         <span>
-                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Icon icon={<Heart />} text={lifeOnHit} size={"sm"} /> per
-                            hit
+                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} />{" "}
+                            per hit
                         </span>
                     );
                 }
@@ -178,7 +180,7 @@ const Buffs = ({ ability }) => {
                         <>
                             {...skillBonus.map(({ skill, damage = 0 }) => (
                                 <div key={skill}>
-                                    {skill} {damage > 0 && <Icon icon={<CrossedSwords />} size={"sm"} text={`+${damage}`} />}
+                                    {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />}
                                 </div>
                             ))}
                         </>
@@ -197,7 +199,7 @@ const Buffs = ({ ability }) => {
                 if (duration === 0) {
                     effectComponents.push(<> this turn</>);
                 } else if (duration !== Infinity) {
-                    effectComponents.push(<Icon icon={<Hourglass />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
+                    effectComponents.push(<Icon icon={<HourglassIcon />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
                 }
 
                 return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;

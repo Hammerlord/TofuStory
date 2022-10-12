@@ -1,14 +1,14 @@
 import {
-    advancedcharge,
-    blastImage,
-    blizzardcharge,
-    divinechargeImage,
-    elementalForceImage,
-    flamecharge,
-    highPaladinImage,
-    lightningcharge,
-    parashockGuardImage,
-    shieldmasteryImage,
+    AdvancedChargeImage,
+    BlastImage,
+    BlizzardChargeImage,
+    DivineChargeImage,
+    ElementalForceImage,
+    FlameChargeImage,
+    HighPaladinImage,
+    LightningChargeImage,
+    ParashockGuardImage,
+    ShieldMasteryImage,
 } from "../../images";
 import { burn, chill, stun } from "../Effects";
 import {
@@ -26,7 +26,7 @@ import { block } from "./warriorAbilities";
 export const flameCharge: Ability = {
     name: "Flame Charge",
     resourceCost: 1,
-    image: flamecharge,
+    image: FlameChargeImage,
     actions: [
         {
             damage: 5,
@@ -45,7 +45,7 @@ export const flameCharge: Ability = {
 export const blizzardCharge: Ability = {
     name: "Blizzard Charge",
     resourceCost: 1,
-    image: blizzardcharge,
+    image: BlizzardChargeImage,
     actions: [
         {
             damage: 5,
@@ -73,7 +73,7 @@ export const blizzardCharge: Ability = {
 export const lightningCharge: Ability = {
     name: "Lightning Charge",
     resourceCost: 1,
-    image: lightningcharge,
+    image: LightningChargeImage,
     actions: [
         {
             area: 1,
@@ -97,7 +97,7 @@ export const lightningCharge: Ability = {
 export const frostFire: Ability = {
     name: "Frostfire Within",
     resourceCost: 1,
-    image: advancedcharge,
+    image: AdvancedChargeImage,
     actions: [
         {
             addCards: [flameCharge, blizzardCharge].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -110,7 +110,7 @@ export const frostFire: Ability = {
 export const divineCharge: Ability = {
     name: "Divine Charge",
     resourceCost: 0,
-    image: divinechargeImage,
+    image: DivineChargeImage,
     description: "damage times the number of debuffs on the target",
     actions: [
         {
@@ -132,7 +132,7 @@ export const divineCharge: Ability = {
 export const shieldMastery: Ability = {
     name: "Shield Mastery",
     resourceCost: 1,
-    image: shieldmasteryImage,
+    image: ShieldMasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -141,7 +141,7 @@ export const shieldMastery: Ability = {
             effects: [
                 {
                     name: "Shield Mastery",
-                    icon: shieldmasteryImage,
+                    icon: ShieldMasteryImage,
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
@@ -157,7 +157,7 @@ export const shieldMastery: Ability = {
 export const blast: Ability = {
     name: "Blast",
     resourceCost: 3,
-    image: blastImage,
+    image: BlastImage,
     description: "Reduce cost by 1 for every ability used this turn, until Blast is used or discarded",
     onAbilityUse: {
         resourceCost: -1,
@@ -184,7 +184,7 @@ export const blast: Ability = {
 export const judgment: Ability = {
     name: "Judgment",
     resourceCost: 3,
-    image: highPaladinImage,
+    image: HighPaladinImage,
     description:
         "Deals 1 damage multiplied by armor \n Reduce cost by 1 for every ability used this turn, until Judgment is used or discarded",
     onAbilityUse: {
@@ -206,7 +206,7 @@ export const judgment: Ability = {
 export const parashockGuard: Ability = {
     name: "Parashock Guard",
     resourceCost: 1,
-    image: parashockGuardImage,
+    image: ParashockGuardImage,
     depletedOnUse: true,
     description: "(Armor gained equal to your current armor)",
     actions: [
@@ -226,7 +226,7 @@ export const elementalForce: Ability = {
     name: "Elemental Force",
     resourceCost: 1,
     depletedOnUse: true,
-    image: elementalForceImage,
+    image: ElementalForceImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -236,7 +236,7 @@ export const elementalForce: Ability = {
                     name: "Elemental Force",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    icon: elementalForceImage,
+                    icon: ElementalForceImage,
                     skillBonus: [
                         {
                             skill: flameCharge.name,

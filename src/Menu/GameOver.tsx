@@ -1,8 +1,7 @@
 import { Button } from "@material-ui/core";
 import { createUseStyles } from "react-jss";
-import { goldMesoImage, mesoBagImage, mesoCoinImage, mesoStackImage } from "../images";
+import { MesoBagImage, MesoCoinImage, MesoImage, MesoStackImage } from "../images";
 import BannerNotice from "../view/BannerNotice";
-import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
     root: {
@@ -59,14 +58,14 @@ const GameOver = ({ onExit, player }) => {
     const classes = useStyles();
     const mesoImage = (() => {
         if (player.mesos < 100) {
-            return mesoCoinImage;
+            return MesoImage;
         } else if (player.mesos >= 100 && player.mesos < 250) {
-            return goldMesoImage;
+            return MesoCoinImage;
         } else if (player.mesos >= 250 && player.mesos < 500) {
-            return mesoStackImage;
+            return MesoStackImage;
         }
 
-        return mesoBagImage;
+        return MesoBagImage;
     })();
     return (
         <div className={classes.root}>

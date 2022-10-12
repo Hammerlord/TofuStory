@@ -208,7 +208,6 @@ const Main = () => {
 
     const handleUseItem = (itemIndex: number) => {
         if (player.items[itemIndex].upgradeCard) {
-            console.log("test");
             setUpgradingAbility(
                 () => () =>
                     dispatch(

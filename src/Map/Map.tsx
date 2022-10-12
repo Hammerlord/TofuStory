@@ -1,6 +1,7 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Camping, CrossedSwords, House, JapaneseOgre, map, Medal, MoneyBag, QuestionMark, treasureChest2Image } from "../images";
+import { TreasureChestImage, VictoriaIslandImage } from "../images";
+import { CampingIcon, CrossedSwordsIcon, HouseIcon, JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon } from "../images/icons";
 import Overlay from "../view/Overlay";
 import Pan from "./Pan";
 import { NODE_TYPES, RouteNode } from "./types";
@@ -131,14 +132,14 @@ const Map = ({
         routeNodes.push(
             <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
                 <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
-                {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwords {...iconProps} />}
-                {current.type === NODE_TYPES.ELITE_ENCOUNTER && <Medal {...iconProps} />}
-                {current.type === NODE_TYPES.RESTING_ZONE && <Camping {...iconProps} />}
-                {current.type === NODE_TYPES.SHOP && <MoneyBag {...iconProps} />}
-                {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={treasureChest2Image} />}
-                {current.type === NODE_TYPES.EVENT && <QuestionMark {...iconProps} />}
-                {current.type === NODE_TYPES.TOWN && <House {...iconProps} />}
-                {current.type === NODE_TYPES.BOSS && <JapaneseOgre {...iconProps} />}
+                {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
+                {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
+                {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
+                {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
+                {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
+                {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
+                {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
+                {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
 
                 {currentNode && current.id === currentNode.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
             </g>
@@ -161,7 +162,7 @@ const Map = ({
         <Overlay>
             <div className={classes.root}>
                 <Pan defaultPosition={pan}>
-                    <img src={map} className={classes.image} ref={containerRef} onLoad={updateContainer} />
+                    <img src={VictoriaIslandImage} className={classes.image} ref={containerRef} onLoad={updateContainer} />
                     <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
                         {lines}
                         {routeNodes}

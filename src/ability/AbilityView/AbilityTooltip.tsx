@@ -2,7 +2,6 @@ import { Tooltip } from "@material-ui/core";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { Fireworks } from "../../images";
 import { Ability, Effect, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
 

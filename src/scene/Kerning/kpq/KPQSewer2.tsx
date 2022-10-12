@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { kpqSwamp, ligatorImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { LigatorImage, ShoImage, StefaImage, SwampKPQImage, WessImage } from "../../../images";
 import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${kpqSwamp}) no-repeat`,
+        background: `url(${SwampKPQImage}) no-repeat`,
         width: "892px",
         height: "539px",
     },
@@ -51,11 +51,11 @@ const KPQSewer2 = ({ player }: SceneProps) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={stefaImage} className={classNames(classes.stefa, classes.character)} />
-            <img src={shoImage} className={classNames(classes.sho, classes.character)} />
-            <img src={wessImage} className={classNames(classes.wess, classes.character)} />
-            <img src={ligatorImage} className={classNames(classes.ligator, classes.character)} />
-            <img src={ligatorImage} className={classNames(classes.ligator2, classes.character)} />
+            <img src={StefaImage} className={classNames(classes.stefa, classes.character)} />
+            <img src={ShoImage} className={classNames(classes.sho, classes.character)} />
+            <img src={WessImage} className={classNames(classes.wess, classes.character)} />
+            <img src={LigatorImage} className={classNames(classes.ligator, classes.character)} />
+            <img src={LigatorImage} className={classNames(classes.ligator2, classes.character)} />
         </div>
     );
 };

@@ -1,9 +1,8 @@
-import { kingslimeImage, slimeBubbleImage, slimeImage, slimeOmokImage, squishyLiquidImage } from "../images";
+import { KingSlimeImage, SlimeBubbleImage, SlimeImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
 import { controlImmune, hardy } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
-    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
@@ -14,7 +13,7 @@ import {
 
 export const slimeGlobule: Minion = {
     name: "Slime Globule",
-    image: slimeImage,
+    image: SlimeImage,
     isBoss: true,
     maxHP: 100,
     effects: [
@@ -55,7 +54,7 @@ export const slimeGlobule: Minion = {
 
 export const kingSlimeEnemy: Minion = {
     name: "King Slime",
-    image: kingslimeImage,
+    image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
     damage: 5,
@@ -68,7 +67,7 @@ export const kingSlimeEnemy: Minion = {
             class: EFFECT_CLASSES.BUFF,
             attackDamageReceived: -3,
             canBeSilenced: false,
-            icon: squishyLiquidImage,
+            icon: SquishyLiquidImage,
             onReceiveEffect: {
                 conditions: [
                     {
@@ -87,7 +86,7 @@ export const kingSlimeEnemy: Minion = {
             class: EFFECT_CLASSES.BUFF,
             preventArmorDecay: true,
             canBeSilenced: true,
-            icon: slimeBubbleImage,
+            icon: SlimeBubbleImage,
             description: "Preventing armor decay.",
         },
         {
@@ -96,7 +95,7 @@ export const kingSlimeEnemy: Minion = {
             canBeSilenced: false,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            icon: slimeOmokImage,
+            icon: SlimeOmokImage,
             onReceiveDamage: {
                 conditions: [
                     {

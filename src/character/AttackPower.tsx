@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { getEnabledEffects } from "../battle/utils";
 import Icon from "../icon/Icon";
-import { CrossedSwords } from "../images";
+import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 
 const useStyles = createUseStyles({
@@ -64,7 +64,7 @@ const AttackPower = ({ combatant }) => {
         <Tooltip title={tooltip}>
             <span>
                 <Icon
-                    icon={<CrossedSwords />}
+                    icon={<CrossedSwordsIcon />}
                     size={"lg"}
                     text={totalDamage}
                     className={classNames({

@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
-import { CrossedSwords } from "../../images";
+import { CrossedSwordsIcon } from "../../images/icons";
 import { Action, ACTION_TYPES, TARGET_TYPES } from "../types";
 
 export const getDamageStatistics = ({
@@ -52,7 +52,7 @@ const DamageIcon = ({ ability, player }) => {
 
     return (
         <Icon
-            icon={<CrossedSwords />}
+            icon={<CrossedSwordsIcon />}
             text={`${baseDamage}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames({
                 [classes.highlightText]: damageBonusFromEffects > 0,

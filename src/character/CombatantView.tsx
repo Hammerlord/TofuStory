@@ -5,10 +5,10 @@ import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
-import EffectGroupIcon from "../icon/EffectGroupIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
-import { ClickIndicator, Zzz } from "../images";
+import { ClickIndicatorImage } from "../images";
+import { ZzzIcon } from "../images/icons";
 import AttackPower from "./AttackPower";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
@@ -292,7 +292,7 @@ const CombatantView = forwardRef(
                 <div className={classes.inner}>
                     {isTargeted && showReticle && (
                         <span className={classes.targetAffectedIndicatorContainer}>
-                            <Icon icon={ClickIndicator} />
+                            <Icon icon={ClickIndicatorImage} />
                         </span>
                     )}
 
@@ -334,7 +334,7 @@ const CombatantView = forwardRef(
                                     <AttackPower combatant={oldState} />
                                 </div>
                                 {event?.action?.type === ACTION_TYPES.NONE && (
-                                    <Icon icon={<Zzz />} size="xl" className={classes.actionIcon} />
+                                    <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
                                 )}
                             </>
                         )}

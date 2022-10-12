@@ -1,15 +1,11 @@
 import { Minion } from "../ability/types";
-import { BigBeefy, regalTofu } from "../images";
-import realtofuPortrait from "../images/item118.png";
-import theraretofuPortrait from "../images/item257.png";
-import smalltofuPortrait from "../images/item394.png";
-import matty from "../images/matty.png";
+import { BigBeefyImage, FlanImage, MattyImage, RegalTofuImage, RubberImage, WhiteRockImage } from "../images";
 import { hardy, raging } from "./../ability/Effects";
 import { loaf, move, rally, shiningLaser, tantrum } from "./abilities";
 
 export const smalltofu: Minion = {
     name: "Small Tofu",
-    image: smalltofuPortrait,
+    image: WhiteRockImage,
     maxHP: 3,
     armor: 0,
     damage: 1,
@@ -19,7 +15,7 @@ export const smalltofu: Minion = {
 
 export const thefaketofu: Minion = {
     name: "Fake Tofu",
-    image: matty,
+    image: MattyImage,
     maxHP: 5,
     armor: 0,
     damage: 2,
@@ -28,7 +24,7 @@ export const thefaketofu: Minion = {
 
 export const realtofu: Minion = {
     name: "Real Tofu",
-    image: realtofuPortrait,
+    image: RubberImage,
     maxHP: 8,
     armor: 0,
     damage: 2,
@@ -38,7 +34,7 @@ export const realtofu: Minion = {
 
 export const theraretofu: Minion = {
     name: "Rare Tofu",
-    image: theraretofuPortrait,
+    image: FlanImage,
     maxHP: 15,
     armor: 0,
     damage: 2,
@@ -49,7 +45,7 @@ export const theraretofu: Minion = {
 
 export const bigBeefy: Minion = {
     name: "Big Beefy",
-    image: BigBeefy,
+    image: BigBeefyImage,
     maxHP: 30,
     armor: 0,
     damage: 2,
@@ -60,7 +56,7 @@ export const bigBeefy: Minion = {
 
 export const theRegalTofu: Minion = {
     name: "The Regal Tofu",
-    image: regalTofu,
+    image: RegalTofuImage,
     maxHP: 10,
     armor: 0,
     damage: 3,

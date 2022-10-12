@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { bluesnailImage, shroomImage, snailImage } from "../../images";
+import { BlueSnailImage, ShroomImage, SnailImage } from "../../images";
 import { getRandomInt, shuffle } from "../../utils";
 
 const useStyles = createUseStyles({
@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
 
 const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const classes = useStyles();
-    const column = [snailImage, bluesnailImage, shroomImage];
+    const column = [SnailImage, BlueSnailImage, ShroomImage];
     const [currentCombo, setCurrentCombo] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)));
     const [correctAnswer] = useState(shuffle(currentCombo.map((_, i) => i)));
     const [currentAnswer, setCurrentAnswer] = useState([]);

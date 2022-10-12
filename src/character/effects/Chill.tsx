@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { Snowflake } from "../../images";
+import { SnowflakeIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 
 const ANIMATION_DURATION = 2;
@@ -76,7 +76,7 @@ const Chill = ({ amount }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<Snowflake />} className={classes.icon} style={style} />
+                <Icon key={i} icon={<SnowflakeIcon />} className={classes.icon} style={style} />
             ))}
         </div>
     );

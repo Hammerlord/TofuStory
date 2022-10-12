@@ -1,13 +1,14 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { HenesysBGImage, WorldMap } from "../images";
+import { HenesysRegionBGImage } from "../images";
+import { WorldMapIcon } from "../images/icons";
 import pantry from "../scene/Henesys/pantry";
 
 const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: `url(${HenesysBGImage})`,
+        background: `url(${HenesysRegionBGImage})`,
         color: "white",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -86,7 +87,7 @@ const Henesys = ({ player, onExit, onClickScene }) => {
                             <img src={null} />
                             <div className={classes.event}>
                                 <div className={classes.eventInner}>
-                                    <WorldMap />
+                                    <WorldMapIcon />
                                 </div>
                             </div>
                         </div>

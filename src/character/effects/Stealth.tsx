@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { Cloud } from "../../images";
+import { CloudIcon } from "../../images/icons";
 
 const useStyles = createUseStyles({
     "@keyframes stealthCloud": {
@@ -32,7 +32,7 @@ const Stealth = ({ isStealthed }) => {
     }
     return (
         <div className={classNames(classes.root)}>
-            <Cloud />
+            <CloudIcon />
         </div>
     );
 };

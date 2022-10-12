@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Fire } from "../../images";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Icon from "../../icon/Icon";
+import { FireIcon } from "../../images/icons";
 
 const ANIMATION_DURATION = 2;
 
@@ -75,7 +75,7 @@ const Burn = ({ amount }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<Fire />} className={classes.icon} style={style} />
+                <Icon key={i} icon={<FireIcon />} className={classes.icon} style={style} />
             ))}
         </div>
     );

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { bystanderImage, ClickIndicator, kerningBG, kerningSewerEntranceFull, lakelisImage } from "../../../images";
+import { BystanderImage, ClickIndicatorImage, KerningCityBGImage, KerningSewerFullImage, LakelisImage } from "../../../images";
 import { getRandomArbitrary, getRandomInt } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
@@ -13,7 +13,7 @@ const lakelisX = 772;
 
 const useStyles = createUseStyles({
     root: {
-        background: `url(${kerningBG}) no-repeat`,
+        background: `url(${KerningCityBGImage}) no-repeat`,
         position: "relative",
         width: "100%",
         height: "100%",
@@ -35,7 +35,7 @@ const useStyles = createUseStyles({
     },
     scene: {
         position: "relative",
-        background: `url(${kerningSewerEntranceFull}) no-repeat`, // placeholder...
+        background: `url(${KerningSewerFullImage}) no-repeat`, // placeholder...
         width: "1200px",
         height: "616px",
     },
@@ -190,13 +190,13 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                 <div className={classes.inner}>
                     <div className={classes.scene}>
                         <div className={classNames(classes.lakelis, classes.character)}>
-                            <img src={lakelisImage} onClick={handleClickLakelis} />
+                            <img src={LakelisImage} onClick={handleClickLakelis} />
                         </div>
 
                         {bystanders.map(({ flip, left, top, text, clicked, id }, i) => {
                             const bystanderImg = (
                                 <img
-                                    src={bystanderImage}
+                                    src={BystanderImage}
                                     className={classNames(classes.character, classes.bystander, {
                                         [classes.flip]: flip && !clicked,
                                         [classes.spinLeft]: clicked,
@@ -233,7 +233,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                             />
                         </div>
 
-                        <img src={ClickIndicator} className={classes.clickIndicator} />
+                        <img src={ClickIndicatorImage} className={classes.clickIndicator} />
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
  * @file Helpers for various battle functions
  */
 import { Combatant } from "../character/types";
-import { CrossedSwords } from "../images";
+import { CrossedSwordsIcon } from "../images/icons";
 import { Item } from "../item/types";
 import {
     Ability,
@@ -526,7 +526,7 @@ export const getBasicAttack = (actor: Combatant): Ability => {
     }
     return {
         name: "Attack",
-        image: CrossedSwords,
+        image: CrossedSwordsIcon,
         actions: [
             {
                 damage: actor.damage || 0,

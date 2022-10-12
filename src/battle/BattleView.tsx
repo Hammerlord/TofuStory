@@ -6,10 +6,10 @@ import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { mapleleaves, victoria } from "../images";
+import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
-import { onWaveClear, onWaveStart, updateCombatant, useItem } from "./actions/actions";
+import { onWaveClear, onWaveStart, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
@@ -17,21 +17,21 @@ import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
-import Notification from "./Notification/Notification";
 import AbilityNotification from "./Notification/AbilityNotification";
-import { BattleState, battleStateSlice, PlayerSelectCardsPrompt } from "./reducer";
-import TargetLineCanvas from "./TargetLineCanvas";
+import Notification from "./Notification/Notification";
 import TurnAnnouncement from "./Notification/TurnNotification";
+import { BattleState, battleStateSlice, PlayerSelectCardsPrompt } from "./reducer";
+import SelectCardOverlay from "./SelectCardOverlay";
+import TargetLineCanvas from "./TargetLineCanvas";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
 import { canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
-import SelectCardOverlay from "./SelectCardOverlay";
 
 const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        backgroundImage: `url(${victoria})`,
+        backgroundImage: `url(${LithRegionBGImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         overflow: "hidden",
@@ -63,7 +63,7 @@ const useStyles = createUseStyles({
 
         "&:before": {
             content: "' '",
-            backgroundImage: `url(${mapleleaves})`,
+            backgroundImage: `url(${MapleLeavesImage})`,
             width: "100%",
             height: "100%",
             opacity: 0.04,

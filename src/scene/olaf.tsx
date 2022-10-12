@@ -2,18 +2,18 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Wave } from "../battle/types";
 import { olaf } from "../enemy/enemy";
-import { lithHarborBalconyFull, olafImage, puppetree } from "../images";
+import { LithHarborBalconyFullImage, OlafImage, PuppetreeImage } from "../images";
 import { Scene } from "./types";
 
 const olafNPC = {
     name: "Olaf",
-    image: olafImage,
+    image: OlafImage,
 };
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${lithHarborBalconyFull}) no-repeat`,
+        background: `url(${LithHarborBalconyFullImage}) no-repeat`,
         width: "896px",
         height: "520px",
     },
@@ -53,10 +53,10 @@ const Olaf = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={puppetree} className={classNames(classes.puppetree1, classes.character)} />
-            <img src={olafImage} className={classNames(classes.olaf, classes.character)} />
-            <img src={puppetree} className={classNames(classes.puppetree2, classes.character)} />
-            <img src={puppetree} className={classNames(classes.puppetree3, classes.character)} />
+            <img src={PuppetreeImage} className={classNames(classes.puppetree1, classes.character)} />
+            <img src={OlafImage} className={classNames(classes.olaf, classes.character)} />
+            <img src={PuppetreeImage} className={classNames(classes.puppetree2, classes.character)} />
+            <img src={PuppetreeImage} className={classNames(classes.puppetree3, classes.character)} />
         </div>
     );
 };

@@ -1,20 +1,21 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import {
-    bananaGrahamPieImage,
-    cakeSliceImage,
-    HenesysTownstreetImage,
-    hotdogSupremeImage,
+    BananaGrahamPieImage,
+    CakeSliceImage,
+    HenesysTownstreetStageImage,
+    HotdogSupremeImage,
     MayaImage,
-    miniBeanImage,
-    unagiImage,
+    MiniBeanImage,
+    UnagiImage,
 } from "../../images";
+
 import { SceneProps } from "../types";
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${HenesysTownstreetImage}) no-repeat`,
+        background: `url(${HenesysTownstreetStageImage}) no-repeat`,
         width: "900px",
         height: "700px",
     },
@@ -85,11 +86,11 @@ const Pantry = ({ player }: SceneProps) => {
         <div className={classes.root}>
             <img src={player?.image} className={classNames(classes.player, classes.character)} />
             <img src={MayaImage} className={classNames(classes.maya, classes.character)} />
-            <img src={miniBeanImage} className={classNames(classes.miniBean, classes.character)} />
-            <img src={bananaGrahamPieImage} className={classNames(classes.pie, classes.item)} />
-            <img src={cakeSliceImage} className={classNames(classes.cake, classes.item)} style={{ animationDelay: "0.1s" }} />
-            <img src={unagiImage} className={classNames(classes.unagi, classes.item)} />
-            <img src={hotdogSupremeImage} className={classNames(classes.hotdog, classes.item)} style={{ animationDelay: "0.2s" }} />
+            <img src={MiniBeanImage} className={classNames(classes.miniBean, classes.character)} />
+            <img src={BananaGrahamPieImage} className={classNames(classes.pie, classes.item)} />
+            <img src={CakeSliceImage} className={classNames(classes.cake, classes.item)} style={{ animationDelay: "0.1s" }} />
+            <img src={UnagiImage} className={classNames(classes.unagi, classes.item)} />
+            <img src={HotdogSupremeImage} className={classNames(classes.hotdog, classes.item)} style={{ animationDelay: "0.2s" }} />
         </div>
     );
 };

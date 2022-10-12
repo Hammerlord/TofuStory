@@ -1,32 +1,32 @@
 import { poison, thorns } from "../ability/Effects";
-import { EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import {
-    alligatorTubeImage,
-    amethystImage,
-    cactusImage,
-    coffeePotImage,
-    drakebloodImage,
+    AlligatorTubeImage,
+    AmethystImage,
+    BlackManualImage,
+    CactusImage,
+    CoffeePotImage,
+    DrakeBloodImage,
     GoldenHammerImage,
-    guideBookImage,
-    hotdog,
-    humilityStoneImage,
-    lucksackImage,
-    manualImage,
-    nependeathSapImage,
-    panlidImage,
-    PoisonIcon,
-    respawnTokenImage,
-    safetyCharmImage,
-    sandalsImage,
-    stolenFenceImage,
-    sunshinePanImage,
+    GuidebookImage,
+    HotdogImage,
+    HumilityStoneImage,
+    LeatherSandalsImage,
+    LuckSackImage,
+    PanlidImage,
+    RespawnTokenImage,
+    SafetyCharmImage,
+    SapOfNependeathImage,
+    StolenFenceImage,
+    SunshinePanImage,
 } from "../images";
+import { EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+
 import { Item, ITEM_TYPES } from "./types";
 
 export const halfEatenHotdog: Item = {
     name: "Half-eaten Hot Dog",
     healing: 10,
-    image: hotdog,
+    image: HotdogImage,
     type: ITEM_TYPES.CONSUMABLE,
 };
 
@@ -34,7 +34,7 @@ export const stolenFence: Item = {
     name: "Stolen Fence",
     description: "Reduces damage received by 1 when health is less than half.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: stolenFenceImage,
+    image: StolenFenceImage,
     sellPrice: 10,
     effects: [
         {
@@ -42,7 +42,7 @@ export const stolenFence: Item = {
             description: "Reducing damage taken by 1.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            icon: stolenFenceImage,
+            icon: StolenFenceImage,
             attackDamageReceived: -1,
             onlyVisibleWhenProcced: true,
             conditions: [
@@ -60,7 +60,7 @@ export const safetyCharm: Item = {
     name: "Safety Charm",
     description: "Restores 5 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: safetyCharmImage,
+    image: SafetyCharmImage,
     sellPrice: 10,
     effects: [
         {
@@ -68,7 +68,7 @@ export const safetyCharm: Item = {
             description: "Restores 5 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            icon: safetyCharmImage,
+            icon: SafetyCharmImage,
             onWaveClear: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 5,
@@ -81,7 +81,7 @@ export const drakeBlood: Item = {
     name: "Drake Blood",
     description: "Grants 1 attack power and 3 health per kill, but you take 3 damage per turn.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: drakebloodImage,
+    image: DrakeBloodImage,
     sellPrice: 10,
     effects: [
         {
@@ -89,7 +89,7 @@ export const drakeBlood: Item = {
             description: "Grants 1 attack power and 3 health per kill, but you take 3 damage per turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            icon: drakebloodImage,
+            icon: DrakeBloodImage,
             attackPower: 1,
             lifeOnKill: 3,
             onTurnEnd: {
@@ -105,7 +105,7 @@ export const luckSack: Item = {
     name: "Luck Sack",
     description: "Gain 20% more mesos.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: lucksackImage,
+    image: LuckSackImage,
     sellPrice: 10,
     effects: [
         {
@@ -122,7 +122,7 @@ export const amethyst: Item = {
     name: "Amethyst",
     description: "Increases maximum HP by 10.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: amethystImage,
+    image: AmethystImage,
     sellPrice: 10,
     effects: [
         {
@@ -139,7 +139,7 @@ export const leatherSandals: Item = {
     name: "Leather Sandals",
     description: "The quintessential footwear of aspiring adventurers. On wave start, draw an extra card.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: sandalsImage,
+    image: LeatherSandalsImage,
     sellPrice: 10,
     effects: [
         {
@@ -159,14 +159,14 @@ export const leatherSandals: Item = {
 export const blackScroll: Item = {
     name: "Black Scroll",
     description: "Combine 3 scrolls to attain a non-deplete ability of your choice for your class.",
-    image: manualImage,
+    image: BlackManualImage,
     type: ITEM_TYPES.MATERIAL,
 };
 
 export const engravedStone: Item = {
     name: "Engraved Stone",
-    description: "A mysterious keepsake on your person. When you are attacked, gain 1 resource. This may occur once per turn.",
-    image: humilityStoneImage,
+    description: "A mysterious keepsake you found on your person. When you are attacked, gain 1 resource. This may occur once per turn.",
+    image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -180,7 +180,7 @@ export const engravedStone: Item = {
                         name: "Vigour",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: humilityStoneImage,
+                        icon: HumilityStoneImage,
                         duration: 1,
                         onReceiveAttack: {
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -197,8 +197,8 @@ export const engravedStone: Item = {
 // TODO doesn't do anything yet
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "Enemy encounters now offer 1 extra ability.",
-    image: guideBookImage,
+    description: "Enemy encounters now offer 1 extra ability choice.",
+    image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -215,7 +215,7 @@ export const guideBook: Item = {
 export const panlid: Item = {
     name: "Pan Lid",
     description: "On wave start, grants 7 armor and prevents armor decay by 1 turn",
-    image: panlidImage,
+    image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -229,7 +229,7 @@ export const panlid: Item = {
                     {
                         name: "Pan Lid",
                         description: "Preventing armor decay.",
-                        icon: panlidImage,
+                        icon: PanlidImage,
                         class: EFFECT_CLASSES.BUFF,
                         type: EFFECT_TYPES.NONE,
                         preventArmorDecay: true,
@@ -244,7 +244,7 @@ export const panlid: Item = {
 export const alligatorTube: Item = {
     name: "Alligator Tube",
     description: "Your maximum health increases by 5. You emit an aura that increases ally attack power by 2.",
-    image: alligatorTubeImage,
+    image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -269,7 +269,7 @@ export const cactus: Item = {
     name: "Cactus",
     description: "You reflect 1 damage to attackers.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: cactusImage,
+    image: CactusImage,
     effects: [
         {
             ...thorns,
@@ -284,7 +284,7 @@ export const nependeathSap: Item = {
     name: "Nependeath Sap",
     description: "Every three turns, your first attack inflicts poison.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: nependeathSapImage,
+    image: SapOfNependeathImage,
     effects: [
         {
             name: "Nependeath Sap",
@@ -299,7 +299,7 @@ export const nependeathSap: Item = {
                         description: "Next attack applying poison.",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: nependeathSapImage,
+                        icon: SapOfNependeathImage,
                         onAttack: {
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
@@ -317,7 +317,7 @@ export const coffeePot: Item = {
     name: "Coffee Pot",
     description: "You can now learn an ability when camping.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: coffeePotImage,
+    image: CoffeePotImage,
     effects: [
         {
             name: "Coffee Pot",
@@ -334,7 +334,7 @@ export const respawnToken: Item = {
     name: "Respawn Token",
     description: "If you die, you restore 20 HP and this item is consumed.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: respawnTokenImage,
+    image: RespawnTokenImage,
     effects: [
         {
             name: "Respawn Token",
@@ -354,7 +354,7 @@ export const sunshinePan: Item = {
     name: "Sunshine Pan",
     description: "Restore an additional 15 HP when camping.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: sunshinePanImage,
+    image: SunshinePanImage,
     effects: [
         {
             name: "Sunshine Pan",

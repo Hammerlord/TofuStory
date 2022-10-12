@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Boom } from "../images";
+import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
 
 const useStyles = createUseStyles({
@@ -51,14 +51,7 @@ const HitIcon = ({ statChanges }) => {
     if (!statChanges.damage) {
         return null;
     }
-    return (
-        <Icon
-            icon={<Boom />}
-            className={classes.root}
-            text={statChanges.damage}
-            style={{ opacity }}
-        />
-    );
+    return <Icon icon={<BoomIcon />} className={classes.root} text={statChanges.damage} style={{ opacity }} />;
 };
 
 export default HitIcon;

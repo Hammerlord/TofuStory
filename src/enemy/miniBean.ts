@@ -2,19 +2,19 @@
  * @file Objects related to the Mini Bean fight
  */
 import {
-    bananaGrahamPieImage,
-    cakeSliceImage,
-    forkedTurkeyImage,
-    greenCheeseImage,
-    grilledCheeseImage,
-    hotdogSupremeImage,
-    miniBeanImage,
-    tofuImage,
-    toyHammerImage,
-    turkeyImage,
-    unagiImage,
-    yuckImage,
-    zingyKebabImage,
+    BananaGrahamPieImage,
+    CakeSliceImage,
+    ForkedTurkeyImage,
+    GreenCheeseImage,
+    GrilledCheeseImage,
+    HotdogSupremeImage,
+    MiniBeanImage,
+    TofuImage,
+    ToyHammerImage,
+    RoastedTurkeyImage,
+    UnagiImage,
+    YuckImage,
+    ZingyKebabImage,
 } from "../images";
 import { hardy } from "./../ability/Effects";
 import {
@@ -34,7 +34,7 @@ const yum: Effect = {
     name: "Yum!",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: turkeyImage,
+    icon: RoastedTurkeyImage,
     attackPower: 1,
     duration: 5,
 };
@@ -43,7 +43,7 @@ const yuck: Effect = {
     name: "Yuck!",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    icon: yuckImage,
+    icon: YuckImage,
     attackPower: -1,
     attackDamageReceived: 1,
     duration: 3,
@@ -51,7 +51,7 @@ const yuck: Effect = {
 
 const delicious: Effect = {
     name: "Delicious",
-    icon: turkeyImage,
+    icon: RoastedTurkeyImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     onDeath: {
@@ -63,7 +63,7 @@ const delicious: Effect = {
 
 const disgusting: Effect = {
     name: "Disgusting",
-    icon: yuckImage,
+    icon: YuckImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     onDeath: {
@@ -75,56 +75,56 @@ const disgusting: Effect = {
 
 export const cake: Minion = {
     name: "Cake",
-    image: cakeSliceImage,
+    image: CakeSliceImage,
     maxHP: 20,
     effects: [delicious],
 };
 
 export const unagi: Minion = {
     name: "Unagi",
-    image: unagiImage,
+    image: UnagiImage,
     maxHP: 25,
     effects: [delicious],
 };
 
 export const bananaGrahamPie: Minion = {
     name: "Banana Graham Pie",
-    image: bananaGrahamPieImage,
+    image: BananaGrahamPieImage,
     maxHP: 50,
     effects: [delicious, delicious],
 };
 
 export const hotdogSupremeMinion: Minion = {
     name: "Hotdog Supreme",
-    image: hotdogSupremeImage,
+    image: HotdogSupremeImage,
     maxHP: 50,
     effects: [delicious, delicious],
 };
 
 export const tofuPlatter: Minion = {
     name: "Tofu",
-    image: tofuImage,
+    image: TofuImage,
     maxHP: 20,
     effects: [delicious],
 };
 
 export const grilledCheese: Minion = {
     name: "Grilled Cheese",
-    image: grilledCheeseImage,
+    image: GrilledCheeseImage,
     maxHP: 25,
     effects: [delicious],
 };
 
 export const nastyKebab: Minion = {
     name: "Nasty Kebab",
-    image: zingyKebabImage,
+    image: ZingyKebabImage,
     maxHP: 12,
     effects: [disgusting],
 };
 
 export const moldyCheese: Minion = {
     name: "Moldy Cheese",
-    image: greenCheeseImage,
+    image: GreenCheeseImage,
     maxHP: 10,
     damage: 0,
     effects: [disgusting],
@@ -163,7 +163,7 @@ const suckIn: Ability = {
 
 const throwFood: Ability = {
     name: "Throw Food",
-    image: bananaGrahamPieImage,
+    image: BananaGrahamPieImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -196,14 +196,14 @@ const picoDrop: Ability = {
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            icon: toyHammerImage,
+            icon: ToyHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
         },
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            icon: toyHammerImage,
+            icon: ToyHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
         },
@@ -212,7 +212,7 @@ const picoDrop: Ability = {
 
 export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
-    image: miniBeanImage,
+    image: MiniBeanImage,
     HP: 10,
     maxHP: 300,
     resources: 0,
@@ -236,7 +236,7 @@ export const miniBean: Minion = {
 export const eat: Ability = {
     name: "Eat!",
     description: "Chow down on a food item",
-    image: forkedTurkeyImage,
+    image: ForkedTurkeyImage,
     resourceCost: 0,
     actions: [
         {

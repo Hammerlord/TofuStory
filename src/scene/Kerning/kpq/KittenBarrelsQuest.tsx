@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicator, kittenBarrelsImage, shoImage, sleepywoodBG, stefaImage, wessImage } from "../../../images";
+import { ClickIndicatorImage, KittenBarrelsImage, ShoImage, SleepywoodRegionBGImage, StefaImage, WessImage } from "../../../images";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
 import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({
     root: {
-        background: `url(${sleepywoodBG}) no-repeat`,
+        background: `url(${SleepywoodRegionBGImage}) no-repeat`,
         position: "relative",
         width: "100%",
         height: "100%",
@@ -118,8 +118,8 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
 
     const PARTY_MEMBER_IMAGE_MAP = {
         player: player.image,
-        stefa: stefaImage,
-        sho: shoImage,
+        stefa: StefaImage,
+        sho: ShoImage,
     };
 
     useEffect(() => {
@@ -203,12 +203,12 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
         <div className={classes.root}>
             <div className={classes.overlay}>
                 <div className={classes.inner}>
-                    <img src={kittenBarrelsImage} />
+                    <img src={KittenBarrelsImage} />
                     {Object.keys(PARTY_MEMBER_IMAGE_MAP).map((memberName) => {
                         if (isUnassigned(memberName)) {
                             return (
                                 <div className={classes[memberName]} key={memberName}>
-                                    {!selectedPartyMember && <img src={ClickIndicator} className={classes.clickIndicator} />}
+                                    {!selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
                                     <img
                                         src={PARTY_MEMBER_IMAGE_MAP[memberName]}
                                         onClick={() => handleClickPartyMember(memberName)}
@@ -222,11 +222,11 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={wessImage} className={classNames(classes.wess)} />
+                        <img src={WessImage} className={classNames(classes.wess)} />
                     </Tooltip>
                     {answer.map((memberName: string | null, i: number) => (
                         <div key={i} className={classNames(classes.basket, classes[`basket${i + 1}`])} onClick={() => handleClickSlot(i)}>
-                            {selectedPartyMember && <img src={ClickIndicator} className={classes.clickIndicator} />}
+                            {selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
 
                             {memberName && (
                                 <img

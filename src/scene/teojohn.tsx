@@ -1,22 +1,22 @@
 import { createUseStyles } from "react-jss";
-import { hotdog, johnImage, lithHarborSharkFull, teoImage } from "../images";
+import { JohnImage, LithHarborSharkFullImage, TeoImage } from "../images";
 import { halfEatenHotdog } from "../item/items";
-import { Scene, ScriptNode } from "./types";
+import { Scene } from "./types";
 
 const teo = {
     name: "Teo",
-    image: teoImage,
+    image: TeoImage,
 };
 
 const john = {
     name: "John",
-    image: johnImage,
+    image: JohnImage,
 };
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${lithHarborSharkFull}) no-repeat`,
+        background: `url(${LithHarborSharkFullImage}) no-repeat`,
         width: "700px",
         height: "506px",
     },
@@ -50,8 +50,8 @@ const TeoJohn = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classes.player} />
-            <img src={teoImage} className={classes.character1} />
-            <img src={johnImage} className={classes.character2} />
+            <img src={TeoImage} className={classes.character1} />
+            <img src={JohnImage} className={classes.character2} />
         </div>
     );
 };

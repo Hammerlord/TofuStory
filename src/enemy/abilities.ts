@@ -1,4 +1,4 @@
-import { hasteImage } from "../images";
+import { HasteImage } from "../images";
 import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 export const loaf: Ability = {
     name: "Loaf",
@@ -97,7 +97,7 @@ export const stomp: Ability = {
 export const enemyHaste: Ability = {
     name: "Haste",
     resourceCost: 1,
-    image: hasteImage,
+    image: HasteImage,
     actions: [
         {
             area: 1,
@@ -111,7 +111,7 @@ export const enemyHaste: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 3,
-                    icon: hasteImage,
+                    icon: HasteImage,
                 },
             ],
         },

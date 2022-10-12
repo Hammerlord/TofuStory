@@ -1,31 +1,31 @@
 import {
-    axestumpImage,
-    bluesnailImage,
-    blueSnailShellImage,
-    fireboarImage,
-    greenmushroomImage,
-    hornymushroomImage,
-    leetSin,
-    ligatorImage,
-    manoImage,
+    AxeStumpImage,
+    BlueSnailImage,
+    BlueSnailShellImage,
+    FireBoarImage,
+    GreenMushroomImage,
+    HornyMushroomImage,
+    LeetSinImage,
+    LigatorImage,
+    ManoImage,
     MushroomSporeImage,
-    mutantSnailImage,
-    noobClubAImage,
-    noobClubBImage,
-    noobWarriorAImage,
-    noobWarriorBImage,
-    octopusImage,
-    olafImage,
-    orangeMushroomImage,
-    redsnailImage,
-    redSnailShellImage,
-    shroomImage,
-    snailImage,
-    snailShellImage,
-    stumpImage,
-    subi,
-    weaponmasteryImage,
-    wildboarImage,
+    MutantSnailImage,
+    NoobClubAImage,
+    NoobClubBImage,
+    NoobWarriorAImage,
+    NoobWarriorBImage,
+    OctopusImage,
+    OlafImage,
+    OrangeMushroomImage,
+    RedSnailImage,
+    RedSnailShellImage,
+    ShroomImage,
+    SnailImage,
+    SnailShellImage,
+    StumpImage,
+    SubiImage,
+    WeaponMasteryImage,
+    WildBoarImage,
 } from "../images";
 import { burn, elite, hardy, poison, raging, stealth, thorns } from "./../ability/Effects";
 import {
@@ -44,7 +44,7 @@ export const snail: Minion = {
     name: "Snail",
     maxHP: 11,
     abilities: [loaf],
-    image: snailImage,
+    image: SnailImage,
     damage: 1,
 };
 
@@ -52,12 +52,12 @@ export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 7,
     armor: 15,
-    image: bluesnailImage,
+    image: BlueSnailImage,
     damage: 2,
     effects: [
         {
             name: "Tough Shell",
-            icon: blueSnailShellImage,
+            icon: BlueSnailShellImage,
             preventArmorDecay: true,
             canBeSilenced: true,
             type: EFFECT_TYPES.NONE,
@@ -71,7 +71,7 @@ export const blueSnail: Minion = {
 export const shroom: Minion = {
     name: "Shroom",
     maxHP: 15,
-    image: shroomImage,
+    image: ShroomImage,
     damage: 3,
     abilities: [
         {
@@ -100,7 +100,7 @@ export const redSnail: Minion = {
     name: "Red Snail",
     maxHP: 14,
     armor: 25,
-    image: redsnailImage,
+    image: RedSnailImage,
     damage: 2,
     abilities: [
         {
@@ -122,7 +122,7 @@ export const redSnail: Minion = {
     effects: [
         {
             name: "Weighted Shell",
-            icon: redSnailShellImage,
+            icon: RedSnailShellImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             duration: 5,
@@ -144,7 +144,7 @@ export const redSnail: Minion = {
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
     maxHP: 50,
-    image: orangeMushroomImage,
+    image: OrangeMushroomImage,
     damage: 5,
     effects: [hardy],
 };
@@ -152,7 +152,7 @@ export const orangeMushroom: Minion = {
 export const noobA: Minion = {
     name: "Beginner A",
     maxHP: 30,
-    image: noobClubAImage,
+    image: NoobClubAImage,
     damage: 3,
     abilities: [
         {
@@ -182,7 +182,7 @@ export const noobA: Minion = {
 export const noobB: Minion = {
     name: "Beginner B",
     maxHP: 30,
-    image: noobClubBImage,
+    image: NoobClubBImage,
     damage: 3,
     abilities: [
         {
@@ -223,7 +223,7 @@ export const noobB: Minion = {
 export const noobAWarrior = {
     name: "Beginner A",
     maxHP: 40,
-    image: noobWarriorAImage,
+    image: NoobWarriorAImage,
     damage: 3,
     abilities: [
         {
@@ -240,7 +240,7 @@ export const noobAWarrior = {
 export const noobBWarrior = {
     name: "Beginner B",
     maxHP: 40,
-    image: noobWarriorBImage,
+    image: NoobWarriorBImage,
     damage: 3,
     abilities: [
         {
@@ -257,7 +257,7 @@ export const noobBWarrior = {
 export const thiefAssassin: Minion = {
     name: "XxLeetSinxX",
     maxHP: 40,
-    image: leetSin,
+    image: LeetSinImage,
     damage: 2,
     attack: {
         name: "Attack",
@@ -267,7 +267,7 @@ export const thiefAssassin: Minion = {
                 target: TARGET_TYPES.HOSTILE,
                 animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                 damage: 2,
-                icon: subi,
+                icon: SubiImage,
             },
         ],
     },
@@ -297,14 +297,14 @@ export const thiefAssassin: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 0,
-                    icon: subi,
+                    icon: SubiImage,
                 },
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 0,
-                    icon: subi,
+                    icon: SubiImage,
                 },
             ],
         },
@@ -346,19 +346,19 @@ export const olaf = {
         },
     ],
     damage: 2,
-    image: olafImage,
+    image: OlafImage,
 };
 
 export const octopus: Minion = {
     name: "Octopus",
-    image: octopusImage,
+    image: OctopusImage,
     maxHP: 7,
     damage: 1,
 };
 
 export const wildBoar: Minion = {
     name: "Wild Boar",
-    image: wildboarImage,
+    image: WildBoarImage,
     maxHP: 12,
     damage: 2,
     abilities: [
@@ -378,7 +378,7 @@ export const wildBoar: Minion = {
 
 export const stump: Minion = {
     name: "Stump",
-    image: stumpImage,
+    image: StumpImage,
     maxHP: 10,
     armor: 5,
     damage: 1,
@@ -387,7 +387,7 @@ export const stump: Minion = {
 
 export const axeStump: Minion = {
     name: "Axe Stump",
-    image: axestumpImage,
+    image: AxeStumpImage,
     maxHP: 17,
     armor: 10,
     damage: 2,
@@ -415,7 +415,7 @@ export const axeStump: Minion = {
 
 export const fireBoar: Minion = {
     name: "Fire Boar",
-    image: fireboarImage,
+    image: FireBoarImage,
     maxHP: 35,
     damage: 3,
     abilities: [
@@ -437,14 +437,14 @@ export const fireBoar: Minion = {
 
 export const ligator: Minion = {
     name: "Ligator",
-    image: ligatorImage,
+    image: LigatorImage,
     maxHP: 20,
     damage: 2,
 };
 
 export const eliteLigator: Minion = {
     name: "Ligator",
-    image: ligatorImage,
+    image: LigatorImage,
     maxHP: 35,
     damage: 2,
     effects: [elite, raging],
@@ -452,14 +452,14 @@ export const eliteLigator: Minion = {
 
 export const greenMushroom: Minion = {
     name: "Green Mushroom",
-    image: greenmushroomImage,
+    image: GreenMushroomImage,
     maxHP: 25,
     damage: 1,
 };
 
 export const hornyMushroom: Minion = {
     name: "Horny Mushroom",
-    image: hornymushroomImage,
+    image: HornyMushroomImage,
     maxHP: 30,
     damage: 2,
     effects: [thorns],
@@ -467,7 +467,7 @@ export const hornyMushroom: Minion = {
 
 export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
-    image: mutantSnailImage,
+    image: MutantSnailImage,
     isBoss: true,
     maxHP: 100,
     armor: 75,
@@ -476,7 +476,7 @@ export const mutantSnailEnemy: Minion = {
     effects: [
         {
             name: "Tough Shell",
-            icon: blueSnailShellImage,
+            icon: BlueSnailShellImage,
             preventArmorDecay: true,
             canBeSilenced: true,
             type: EFFECT_TYPES.NONE,
@@ -487,7 +487,7 @@ export const mutantSnailEnemy: Minion = {
         {
             ...hardy,
             name: "Tyrant Shell",
-            icon: snailShellImage,
+            icon: SnailShellImage,
             description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
             canBeSilenced: false,
         },
@@ -495,7 +495,7 @@ export const mutantSnailEnemy: Minion = {
     abilities: [
         {
             name: "Call Snail",
-            image: snailImage,
+            image: SnailImage,
             actions: [
                 {
                     // HACK: this is just for animation playback
@@ -507,7 +507,7 @@ export const mutantSnailEnemy: Minion = {
         },
         {
             name: "Call Snail",
-            image: bluesnailImage,
+            image: BlueSnailImage,
             minion: blueSnail,
             actions: [
                 {
@@ -531,7 +531,7 @@ export const mutantSnailEnemy: Minion = {
                         {
                             name: "Whipped",
                             description: "Whipped into a frenzy!",
-                            icon: weaponmasteryImage,
+                            icon: WeaponMasteryImage,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
                             attackPower: 1,
@@ -554,7 +554,7 @@ export const mutantSnailEnemy: Minion = {
                         {
                             name: "Frenzy",
                             description: "Entering a frenzy!",
-                            icon: weaponmasteryImage,
+                            icon: WeaponMasteryImage,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
                             attackPower: 1,
@@ -584,7 +584,7 @@ export const mutantSnailEnemy: Minion = {
 
 export const manoEnemy: Minion = {
     name: "Mano",
-    image: manoImage,
+    image: ManoImage,
     isBoss: true,
     maxHP: 75,
     armor: 100,
@@ -593,7 +593,7 @@ export const manoEnemy: Minion = {
     abilities: [
         {
             name: "Call Snail",
-            image: snailImage,
+            image: SnailImage,
             actions: [
                 {
                     // HACK: this is just for animation playback
@@ -605,7 +605,7 @@ export const manoEnemy: Minion = {
         },
         {
             name: "Call Snail",
-            image: bluesnailImage,
+            image: BlueSnailImage,
             minion: blueSnail,
             actions: [
                 {
@@ -653,13 +653,13 @@ export const manoEnemy: Minion = {
         {
             ...hardy,
             name: "Senior Shell",
-            icon: snailShellImage,
+            icon: SnailShellImage,
             description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
             canBeSilenced: false,
         },
         {
             name: "Tough Shell",
-            icon: blueSnailShellImage,
+            icon: BlueSnailShellImage,
             preventArmorDecay: true,
             canBeSilenced: true,
             type: EFFECT_TYPES.NONE,
@@ -669,7 +669,7 @@ export const manoEnemy: Minion = {
         },
         {
             name: "Weighted Shell",
-            icon: redSnailShellImage,
+            icon: RedSnailShellImage,
             canBeSilenced: false,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

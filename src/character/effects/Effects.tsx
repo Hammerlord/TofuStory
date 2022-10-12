@@ -4,10 +4,10 @@ import Burn from "./Burn";
 import Chill from "./Chill";
 import Healing from "./Healing";
 import Icon from "../../icon/Icon";
-import { Dizzy, SpeechBubble } from "../../images";
 import Bleed from "./Bleed";
 import Stealth from "./Stealth";
 import { getEnabledEffects } from "../../battle/utils";
+import { DizzyIcon, SpeechBubbleIcon } from "../../images/icons";
 
 const useStyles = createUseStyles({
     root: {
@@ -137,8 +137,8 @@ const Effects = ({ combatant, healing }) => {
                     <Stealth isStealthed={isStealthed} />
                 </span>
             }
-            {isSilenced && <Icon icon={<SpeechBubble />} size="xl" className={classes.silence} />}
-            {isStunned && <Icon icon={<Dizzy />} size="xl" className={classes.stun} />}
+            {isSilenced && <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />}
+            {isStunned && <Icon icon={<DizzyIcon />} size="xl" className={classes.stun} />}
             {isImmune && <div className={classes.immune} />}
             {bleeds.length > 0 && (
                 <div className={classes.bleed}>

@@ -1,15 +1,15 @@
 import {
-    brandishImage,
-    burningSoulBladeImage,
-    burningSoulBladeMinionImage,
-    chanceattack,
-    combofuryImage,
-    endureImage,
-    intrepidSlashImage,
-    punctureImage,
-    ragingblowImage,
-    risingrageImage,
-    worldreaverImage,
+    BrandishImage,
+    BurningSoulBladeImage,
+    BurningSoulBladeMinionImage,
+    ChanceAttackImage,
+    ComboFuryImage,
+    EndureImage,
+    IntrepidSlashImage,
+    PunctureImage,
+    RagingBlowImage,
+    RisingRageImage,
+    WorldReaverImage,
 } from "../../images";
 import { immunity, wound } from "../Effects";
 import { Ability, Action, ACTION_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
@@ -19,7 +19,7 @@ export const intrepidSlash: Ability = {
     name: "Intrepid Slash",
     resourceCost: 1,
     depletedOnUse: true,
-    image: intrepidSlashImage,
+    image: IntrepidSlashImage,
     description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [
         {
@@ -46,7 +46,7 @@ export const intrepidSlash: Ability = {
 export const puncture: Ability = {
     name: "Puncture",
     resourceCost: 1,
-    image: punctureImage,
+    image: PunctureImage,
     actions: [
         {
             damage: 4,
@@ -66,7 +66,7 @@ export const puncture: Ability = {
 export const chanceStrike: Ability = {
     name: "Chance Strike",
     resourceCost: 1,
-    image: chanceattack,
+    image: ChanceAttackImage,
     actions: [
         {
             damage: 5,
@@ -88,7 +88,7 @@ export const chanceStrike: Ability = {
 export const brandish: Ability = {
     name: "Brandish",
     resourceCost: 1,
-    image: brandishImage,
+    image: BrandishImage,
     description: "Hits twice",
     actions: [
         {
@@ -107,7 +107,7 @@ export const brandish: Ability = {
 export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
-    image: combofuryImage,
+    image: ComboFuryImage,
     description: "Deals 1 damage for every attack you made this turn, hitting twice",
     actions: [
         {
@@ -134,7 +134,7 @@ export const comboFury: Ability = {
 export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
-    image: endureImage,
+    image: EndureImage,
     description: "(Armor multiplied by the number of attacks made this turn)",
     actions: [
         {
@@ -153,7 +153,7 @@ const rageEffect = {
     name: "Rage",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: ragingblowImage,
+    icon: RagingBlowImage,
     skillBonus: [
         {
             skill: "Rising Rage",
@@ -172,7 +172,7 @@ const ragingBlowAction: Action = {
 export const ragingBlow: Ability = {
     name: "Raging Blow",
     resourceCost: 0,
-    image: ragingblowImage,
+    image: RagingBlowImage,
     description: "Hits twice",
     actions: [
         ragingBlowAction,
@@ -203,7 +203,7 @@ export const worldReaver: Ability = {
     name: "World Reaver",
     resourceCost: 1,
     depletedOnUse: true,
-    image: worldreaverImage,
+    image: WorldReaverImage,
     description: "Deals 3 damage for every attack you made this turn",
     actions: [
         {
@@ -231,7 +231,7 @@ export const worldReaver: Ability = {
 export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
-    image: risingrageImage,
+    image: RisingRageImage,
     description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
     actions: [
         {
@@ -250,17 +250,17 @@ export const risingRage: Ability = {
 export const burningSoulBlade: Ability = {
     name: "Burning Soul Blade",
     resourceCost: 1,
-    image: burningSoulBladeImage,
+    image: BurningSoulBladeImage,
     actions: [],
     minion: {
         name: "Burning Soul Blade",
-        image: burningSoulBladeMinionImage,
+        image: BurningSoulBladeMinionImage,
         maxHP: 1,
         damage: 2,
         effects: [
             {
                 name: "Burning Soul Blade",
-                icon: burningSoulBladeMinionImage,
+                icon: BurningSoulBladeMinionImage,
                 type: EFFECT_TYPES.IMMUNITY,
                 class: EFFECT_CLASSES.BUFF,
                 attackAreaIncrease: 1,

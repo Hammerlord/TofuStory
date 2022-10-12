@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Blood } from "../../images";
+import { BloodIcon } from "../../images/icons";
 import Icon from "./../../icon/Icon";
 
 const ANIMATION_DURATION = 3;
@@ -51,7 +51,7 @@ const Bleed = ({ amount }: { amount?: number }) => {
     return (
         <Icon
             size="lg"
-            icon={<Blood />}
+            icon={<BloodIcon />}
             text={amount}
             className={classNames({
                 [classes.refresh]: true,

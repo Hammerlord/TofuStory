@@ -1,6 +1,6 @@
 import { ACTION_TYPES, TARGET_TYPES } from "../../ability/types";
 import { miniBean } from "../../enemy/miniBean";
-import { cakeSliceImage, HenesysBGImage, MayaImage, miniBeanImage, unagiImage } from "../../images";
+import { CakeSliceImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
 import { Item, ITEM_TYPES } from "../../item/types";
 import { Scene, ScriptResponse } from "../types";
 import { Minion } from "./../../ability/types";
@@ -9,7 +9,7 @@ import PantryScene from "./PantryScene";
 
 const miniBeanCharacter = {
     name: "Mini Bean",
-    image: miniBeanImage,
+    image: MiniBeanImage,
 };
 
 const mayaCharacter = {
@@ -59,14 +59,14 @@ const mayaFight = {
 const cake: Item = {
     name: "Slice of Cake",
     healing: 10,
-    image: cakeSliceImage,
+    image: CakeSliceImage,
     type: ITEM_TYPES.CONSUMABLE,
 };
 
 const unagi: Item = {
     name: "Unagi",
     healing: 20,
-    image: unagiImage,
+    image: UnagiImage,
     type: ITEM_TYPES.CONSUMABLE,
 };
 
@@ -256,7 +256,7 @@ const pantry: Scene = {
     characters: [],
     script: [
         {
-            background: HenesysBGImage,
+            background: HenesysRegionBGImage,
             scene: PantryScene,
             speaker: mayaCharacter,
             dialog: ["Help! Help! Somebody, there's a monster in my home!"],

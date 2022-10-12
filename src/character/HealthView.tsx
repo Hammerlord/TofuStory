@@ -1,8 +1,8 @@
-import { Heart } from "../images";
 import Tooltip from "../view/Tooltip";
 import Icon from "../icon/Icon";
 import { createUseStyles } from "react-jss";
 import classNames from "classnames";
+import { HeartIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     icon: {
@@ -25,7 +25,7 @@ const Health = ({ HP, maxHP }) => {
         >
             <span>
                 <Icon
-                    icon={<Heart />}
+                    icon={<HeartIcon />}
                     size={"lg"}
                     text={HP}
                     className={classNames(classes.icon, {

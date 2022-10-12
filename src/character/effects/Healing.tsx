@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Sparkles } from "../../images";
+import { SparklesIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Icon from "./../../icon/Icon";
 
@@ -83,7 +83,7 @@ const Healing = ({ amount }: { amount: number }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<Sparkles />} className={classes.icon} style={style} />
+                <Icon key={i} icon={<SparklesIcon />} className={classes.icon} style={style} />
             ))}
             <span className={classes.text}>{amount}</span>
         </div>

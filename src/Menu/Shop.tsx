@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
-import { mesoCoinImage } from "../images";
+import { MesoCoinImage } from "../images";
 import { getRandomItem, shuffle } from "../utils";
 import Overlay from "../view/Overlay";
 import { SECONDARY_JOBS } from "./types";
@@ -116,7 +116,7 @@ const Shop = ({ player, updatePlayer, updateDeck, deck, merchant, hasDiscount, o
                                 <AbilityView ability={item} />
                             </div>
                             <div className={classes.priceContainer}>
-                                <img src={mesoCoinImage} alt={"Mesos"} />
+                                <img src={MesoCoinImage} alt={"Mesos"} />
                                 {price}
                                 {i === selectedItemIndex && (
                                     <div>

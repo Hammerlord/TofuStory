@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Combatant } from "../character/types";
-import { mesoCoinImage } from "../images";
+import { MesoCoinImage } from "../images";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 
@@ -75,7 +75,7 @@ const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[
                         {deck.length} abilities
                     </Button>
                     <div className={classes.mesos}>
-                        <img src={mesoCoinImage} className={classes.mesoImage} />
+                        <img src={MesoCoinImage} className={classes.mesoImage} />
                         {player.mesos}
                     </div>
                 </div>

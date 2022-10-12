@@ -1,17 +1,17 @@
 import {
-    darkimpaleImage,
-    darkspearImage,
-    darkThirstImage,
-    evileyeminion,
-    evileyeshockImage,
-    evileyeskill,
-    gungnirImage,
-    Heart,
-    lordOfDarknessImage,
-    nightshadeExplosionImage,
-    piercingdriveImage,
-    spearsweepImage,
+    DarkImpaleImage,
+    DarkSpearImage,
+    DarkThirstImage,
+    EvilEyeMinionImage,
+    EvilEyeShockImage,
+    EvilEyeImage,
+    GungnirImage,
+    LordOfDarknessImage,
+    NightShadeExplosionImage,
+    PiercingDriveImage,
+    SpearSweepImage,
 } from "../../images";
+import { HeartIcon } from "../../images/icons";
 import { silence, stealth, stun, wound } from "../Effects";
 import {
     Ability,
@@ -27,12 +27,12 @@ import {
 export const evilEye: Ability = {
     name: "Evil Eye",
     resourceCost: 1,
-    image: evileyeskill,
+    image: EvilEyeImage,
     description: "Heals a random ally for 2 each turn.",
 
     minion: {
         name: "Evil Eye",
-        image: evileyeminion,
+        image: EvilEyeMinionImage,
         damage: 0,
         maxHP: 1,
         effects: [
@@ -55,7 +55,7 @@ export const evilEye: Ability = {
                     },
                 },
                 duration: Infinity,
-                icon: Heart,
+                icon: HeartIcon,
             },
         ],
     },
@@ -65,7 +65,7 @@ export const evilEye: Ability = {
 export const darkImpale: Ability = {
     name: "Dark Impale",
     resourceCost: 2,
-    image: darkimpaleImage,
+    image: DarkImpaleImage,
     actions: [
         {
             damage: 5,
@@ -86,7 +86,7 @@ export const darkImpale: Ability = {
 export const darkThirst: Ability = {
     name: "Dark Thirst",
     resourceCost: 1,
-    image: darkThirstImage,
+    image: DarkThirstImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -94,7 +94,7 @@ export const darkThirst: Ability = {
             effects: [
                 {
                     name: "Dark Thirst",
-                    icon: darkThirstImage,
+                    icon: DarkThirstImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
@@ -114,7 +114,7 @@ export const darkThirst: Ability = {
 export const darkSpear: Ability = {
     name: "Dark Spear",
     resourceCost: 3,
-    image: darkspearImage,
+    image: DarkSpearImage,
     actions: [
         {
             damage: 7,
@@ -139,7 +139,7 @@ export const darkSpear: Ability = {
 export const piercingDrive: Ability = {
     name: "Piercing Drive",
     resourceCost: 1,
-    image: piercingdriveImage,
+    image: PiercingDriveImage,
     actions: [
         {
             area: 1,
@@ -163,7 +163,7 @@ export const piercingDrive: Ability = {
 export const spearSweep: Ability = {
     name: "Spear Sweep",
     resourceCost: 2,
-    image: spearsweepImage,
+    image: SpearSweepImage,
     actions: [
         {
             area: 2,
@@ -178,7 +178,7 @@ export const spearSweep: Ability = {
 export const evilEyeShock: Ability = {
     name: "Evil Eye Shock",
     resourceCost: 0,
-    image: evileyeshockImage,
+    image: EvilEyeShockImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -201,7 +201,7 @@ export const evilEyeShock: Ability = {
 export const lordOfDarkness: Ability = {
     name: "Lord of Darkness",
     resourceCost: 2,
-    image: lordOfDarknessImage,
+    image: LordOfDarknessImage,
     depletedOnUse: true,
     actions: [
         {
@@ -210,7 +210,7 @@ export const lordOfDarkness: Ability = {
             effects: [
                 {
                     name: "Lord of Darkness",
-                    icon: lordOfDarknessImage,
+                    icon: LordOfDarknessImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
@@ -231,7 +231,7 @@ export const gungnir: Ability = {
     name: "Gungnir",
     resourceCost: 3,
     depletedOnUse: true,
-    image: gungnirImage,
+    image: GungnirImage,
     description: "(Damage equal to 50% of your max HP)",
     actions: [
         {
@@ -255,7 +255,7 @@ export const gungnir: Ability = {
 export const nightshadeExplosion: Ability = {
     name: "Nightshade Explosion",
     resourceCost: 1,
-    image: nightshadeExplosionImage,
+    image: NightShadeExplosionImage,
     actions: [
         {
             damage: 5,

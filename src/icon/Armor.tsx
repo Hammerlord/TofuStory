@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Shield } from "../images";
+import { ShieldIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
@@ -101,7 +101,7 @@ const Armor = ({ amount, className }: ArmorInterface) => {
             title={
                 <div className={classes.tooltipContents}>
                     <div className={classes.iconContainer}>
-                        <Icon size="lg" icon={<Shield />} />
+                        <Icon size="lg" icon={<ShieldIcon />} />
                     </div>
                     <div className={classes.container}>
                         <div className={classes.tooltipTitle}>Armor</div>
@@ -117,7 +117,7 @@ const Armor = ({ amount, className }: ArmorInterface) => {
             <span>
                 <Icon
                     size="lg"
-                    icon={<Shield />}
+                    icon={<ShieldIcon />}
                     text={amount}
                     className={classNames(className, {
                         [classes.refresh]: amount > oldAmount,

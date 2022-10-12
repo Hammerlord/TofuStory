@@ -1,39 +1,38 @@
 import {
-    advancedWeaponMasteryImage,
-    bladestormImage,
-    blockImage,
-    brick,
-    bricks,
-    closecombatImage,
-    doubleTimeImage,
-    enrageImage,
-    extraStrikeImage,
-    Fireworks,
-    flag,
-    giganticSledgeImage,
-    hammer,
-    hyperbody,
-    ironbodyImage,
-    ironwill as ironwillImage,
-    mace,
-    magiccrashImage,
-    panicSkillImage,
-    powerstanceImage,
-    rage,
-    redFistOfFuryImage,
-    rushImage,
-    selfRecoveryImage,
-    shieldred,
-    shout,
-    slashblast,
-    spikes,
-    Tornado,
-    warleap,
-    warmush,
-    warriormasteryImage,
-    weaponbooster,
-    weaponmasteryImage,
+    AdvancedWeaponMasteryImage,
+    BladestormImage,
+    BlockImage,
+    BrickImage,
+    BricksImage,
+    CloseCombatImage,
+    DoubleTimeImage,
+    EnrageImage,
+    BlastExtraStrikeImage,
+    FlagImage,
+    GiganticSledgeImage,
+    HammerImage,
+    HyperBodyImage,
+    IronBodyImage,
+    IronWillImage,
+    SpikedMaceImage,
+    MagicCrashImage,
+    PanicImage,
+    PowerStanceImage,
+    RageImage,
+    RedFistOfFuryImage,
+    RushImage,
+    SelfRecoveryImage,
+    ShieldRedImage,
+    ShoutImage,
+    SlashBlastImage,
+    SpikeBallImage,
+    WarLeapImage,
+    WarMushImage,
+    WarriorMasteryImage,
+    WeaponBoosterImage,
+    WeaponMasteryImage,
 } from "../../images";
+import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { silence, stealth, stun, thorns, wound } from "../Effects";
 import {
     Ability,
@@ -53,7 +52,7 @@ export const bash2: Ability = {
     name: "Bash",
     level: 2,
     resourceCost: 0,
-    image: brick,
+    image: BrickImage,
     actions: [
         {
             damage: 5,
@@ -66,7 +65,7 @@ export const bash2: Ability = {
 export const bash: Ability = {
     name: "Bash",
     resourceCost: 0,
-    image: brick,
+    image: BrickImage,
     actions: [
         {
             damage: 3,
@@ -81,7 +80,7 @@ export const warLeap2: Ability = {
     name: "War Leap",
     level: 2,
     resourceCost: 0,
-    image: warleap,
+    image: WarLeapImage,
     actions: [
         {
             damage: 3,
@@ -105,7 +104,7 @@ export const warLeap2: Ability = {
 export const warLeap: Ability = {
     name: "War Leap",
     resourceCost: 0,
-    image: warleap,
+    image: WarLeapImage,
     actions: [
         {
             damage: 1,
@@ -131,7 +130,7 @@ export const slashBlast2: Ability = {
     name: "Slash Blast",
     level: 2,
     resourceCost: 1,
-    image: slashblast,
+    image: SlashBlastImage,
     actions: [
         {
             damage: 7,
@@ -145,7 +144,7 @@ export const slashBlast2: Ability = {
 export const slashBlast: Ability = {
     name: "Slash Blast",
     resourceCost: 1,
-    image: slashblast,
+    image: SlashBlastImage,
     actions: [
         {
             damage: 5,
@@ -161,7 +160,7 @@ export const slam2: Ability = {
     name: "Slam",
     level: 2,
     resourceCost: 1,
-    image: mace,
+    image: SpikedMaceImage,
     actions: [
         {
             damage: 10,
@@ -174,7 +173,7 @@ export const slam2: Ability = {
 export const slam: Ability = {
     name: "Slam",
     resourceCost: 1,
-    image: mace,
+    image: SpikedMaceImage,
     actions: [
         {
             damage: 7,
@@ -189,7 +188,7 @@ export const anger2: Ability = {
     name: "Anger",
     level: 2,
     resourceCost: 0,
-    image: rage,
+    image: RageImage,
     actions: [
         {
             damage: 3,
@@ -210,7 +209,7 @@ export const anger2: Ability = {
 export const anger: Ability = {
     name: "Anger",
     resourceCost: 0,
-    image: rage,
+    image: RageImage,
     actions: [
         {
             damage: 3,
@@ -226,7 +225,7 @@ export const shieldStrike2: Ability = {
     name: "Shield Strike",
     level: 2,
     resourceCost: 2,
-    image: shieldred,
+    image: ShieldRedImage,
     actions: [
         {
             damage: 10,
@@ -244,7 +243,7 @@ export const shieldStrike2: Ability = {
 export const shieldStrike: Ability = {
     name: "Shield Strike",
     resourceCost: 2,
-    image: shieldred,
+    image: ShieldRedImage,
     actions: [
         {
             damage: 7,
@@ -264,7 +263,7 @@ export const block2: Ability = {
     name: "Block",
     level: 2,
     resourceCost: 1,
-    image: blockImage,
+    image: BlockImage,
     actions: [
         {
             armor: 9,
@@ -277,7 +276,7 @@ export const block2: Ability = {
 export const block: Ability = {
     name: "Block",
     resourceCost: 1,
-    image: blockImage,
+    image: BlockImage,
     actions: [
         {
             armor: 6,
@@ -291,7 +290,7 @@ export const block: Ability = {
 const bloodthirst2: Ability = {
     name: "Bloodthirst",
     resourceCost: 1,
-    image: shout,
+    image: ShoutImage,
     depletedOnUse: true,
     actions: [
         {
@@ -302,7 +301,7 @@ const bloodthirst2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     lifeOnHit: 4,
-                    icon: shout,
+                    icon: ShoutImage,
                 },
             ],
             healing: 7,
@@ -315,7 +314,7 @@ const bloodthirst2: Ability = {
 export const bloodthirst: Ability = {
     name: "Bloodthirst",
     resourceCost: 1,
-    image: shout,
+    image: ShoutImage,
     depletedOnUse: true,
     actions: [
         {
@@ -326,7 +325,7 @@ export const bloodthirst: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     lifeOnHit: 3,
-                    icon: shout,
+                    icon: ShoutImage,
                 },
             ],
             healing: 5,
@@ -341,7 +340,7 @@ export const spikedArmor2: Ability = {
     name: "Spiked Armor",
     level: 2,
     resourceCost: 1,
-    image: spikes,
+    image: SpikeBallImage,
     actions: [
         {
             armor: 7,
@@ -355,7 +354,7 @@ export const spikedArmor2: Ability = {
 export const spikedArmor: Ability = {
     name: "Spiked Armor",
     resourceCost: 1,
-    image: spikes,
+    image: SpikeBallImage,
     actions: [
         {
             armor: 5,
@@ -377,7 +376,7 @@ const drumOfWar: Action = {
         {
             name: "Drums of War",
             description: "Attack power increased.",
-            icon: weaponmasteryImage,
+            icon: WeaponMasteryImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             attackPower: 1,
@@ -392,7 +391,7 @@ export const warBanner2: Ability = {
     resourceCost: 2,
     minion: {
         name: "War Banner",
-        image: flag,
+        image: FlagImage,
         maxHP: 5,
         damage: 0,
         onSummon: [
@@ -409,7 +408,7 @@ export const warBanner2: Ability = {
             },
             {
                 name: "War Banner",
-                icon: Fireworks,
+                icon: FireworksIcon,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
@@ -437,7 +436,7 @@ export const warBanner: Ability = {
     resourceCost: 2,
     minion: {
         name: "War Banner",
-        image: flag,
+        image: FlagImage,
         maxHP: 5,
         damage: 0,
         onSummon: [drumOfWar],
@@ -449,7 +448,7 @@ export const warBanner: Ability = {
             },
             {
                 name: "War Banner",
-                icon: Fireworks,
+                icon: FireworksIcon,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
@@ -471,7 +470,7 @@ export const yell2: Ability = {
     name: "Yell",
     level: 2,
     resourceCost: 1,
-    image: warmush,
+    image: WarMushImage,
     actions: [
         {
             area: 1,
@@ -485,7 +484,7 @@ export const yell2: Ability = {
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    icon: warmush,
+                    icon: WarMushImage,
                 },
             ],
         },
@@ -495,7 +494,7 @@ export const yell2: Ability = {
 export const yell: Ability = {
     name: "Yell",
     resourceCost: 2,
-    image: warmush,
+    image: WarMushImage,
     actions: [
         {
             area: 1,
@@ -509,7 +508,7 @@ export const yell: Ability = {
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    icon: warmush,
+                    icon: WarMushImage,
                 },
             ],
         },
@@ -521,7 +520,7 @@ export const bunchOBricks2: Ability = {
     name: "Bunch o' Bricks",
     level: 2,
     resourceCost: 1,
-    image: bricks,
+    image: BricksImage,
     actions: [
         {
             addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -534,7 +533,7 @@ export const bunchOBricks2: Ability = {
 export const bunchOBricks: Ability = {
     name: "Bunch o' Bricks",
     resourceCost: 1,
-    image: bricks,
+    image: BricksImage,
     actions: [
         {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -550,7 +549,7 @@ export const hammerang2: Ability = {
     level: 2,
     resourceCost: 1,
     reusable: true, // Hmm... beware of any ability that reduces resource cost
-    image: hammer,
+    image: HammerImage,
     actions: [
         {
             damage: 8,
@@ -561,7 +560,7 @@ export const hammerang2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             ricochet: true,
             animation: ANIMATION_TYPES.YOYO,
-            icon: hammer,
+            icon: HammerImage,
         },
     ],
 };
@@ -570,7 +569,7 @@ export const hammerang: Ability = {
     name: "Hammerang",
     resourceCost: 1,
     reusable: true, // Hmm... beware of any ability that reduces resource cost
-    image: hammer,
+    image: HammerImage,
     actions: [
         {
             damage: 6,
@@ -581,7 +580,7 @@ export const hammerang: Ability = {
             target: TARGET_TYPES.HOSTILE,
             ricochet: true,
             animation: ANIMATION_TYPES.YOYO,
-            icon: hammer,
+            icon: HammerImage,
         },
     ],
     upgrades: [hammerang2],
@@ -591,7 +590,7 @@ export const ironWill2: Ability = {
     name: "Iron Will",
     level: 2,
     resourceCost: 1,
-    image: ironwillImage,
+    image: IronWillImage,
     depletedOnUse: true,
     preemptive: true,
     actions: [
@@ -601,7 +600,7 @@ export const ironWill2: Ability = {
             effects: [
                 {
                     name: "Iron Will",
-                    icon: ironwillImage,
+                    icon: IronWillImage,
                     description: "Receiving +3 armor from armor sources",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
@@ -615,7 +614,7 @@ export const ironWill2: Ability = {
 export const ironWill: Ability = {
     name: "Iron Will",
     resourceCost: 1,
-    image: ironwillImage,
+    image: IronWillImage,
     depletedOnUse: true,
     actions: [
         {
@@ -624,7 +623,7 @@ export const ironWill: Ability = {
             effects: [
                 {
                     name: "Iron Will",
-                    icon: ironwillImage,
+                    icon: IronWillImage,
                     description: "Receiving +2 armor from armor sources",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
@@ -640,7 +639,7 @@ export const hyperBody2: Ability = {
     name: "Hyper Body",
     level: 2,
     resourceCost: 1,
-    image: hyperbody,
+    image: HyperBodyImage,
     depletedOnUse: true,
     preemptive: true,
     actions: [
@@ -650,7 +649,7 @@ export const hyperBody2: Ability = {
             effects: [
                 {
                     name: "Hyper Body",
-                    icon: hyperbody,
+                    icon: HyperBodyImage,
                     description: "Gaining +1 resource every 2 turns and +1 healing received",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
@@ -666,7 +665,7 @@ export const hyperBody2: Ability = {
 export const hyperBody: Ability = {
     name: "Hyper Body",
     resourceCost: 1,
-    image: hyperbody,
+    image: HyperBodyImage,
     depletedOnUse: true,
     actions: [
         {
@@ -675,7 +674,7 @@ export const hyperBody: Ability = {
             effects: [
                 {
                     name: "Hyper Body",
-                    icon: hyperbody,
+                    icon: HyperBodyImage,
                     description: "Gaining +1 resource every 2 turns",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
@@ -692,7 +691,7 @@ export const sweepingReach2: Ability = {
     name: "Sweeping Reach",
     level: 2,
     resourceCost: 1,
-    image: weaponbooster,
+    image: WeaponBoosterImage,
     description: "Increases the area of your next offensive ability by 1",
     actions: [
         {
@@ -703,7 +702,7 @@ export const sweepingReach2: Ability = {
                     name: "Sweeping Reach",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    icon: weaponbooster,
+                    icon: WeaponBoosterImage,
                     description: "Increases the area of your next offensive ability by 1",
                     attackAreaIncrease: 1,
                     onAttack: {
@@ -718,7 +717,7 @@ export const sweepingReach2: Ability = {
             addCards: [
                 {
                     name: "Sweeping Reach",
-                    image: weaponbooster,
+                    image: WeaponBoosterImage,
                     removeAfterTurn: true,
                     resourceCost: 0,
                     actions: [
@@ -730,7 +729,7 @@ export const sweepingReach2: Ability = {
                                     name: "Sweeping Reach",
                                     type: EFFECT_TYPES.NONE,
                                     class: EFFECT_CLASSES.BUFF,
-                                    icon: weaponbooster,
+                                    icon: WeaponBoosterImage,
                                     description: "Increases the area of your next offensive ability by 1",
                                     attackAreaIncrease: 1,
                                     onAttack: {
@@ -749,7 +748,7 @@ export const sweepingReach2: Ability = {
 export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
-    image: weaponbooster,
+    image: WeaponBoosterImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -759,7 +758,7 @@ export const sweepingReach: Ability = {
                     name: "Sweeping Reach",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    icon: weaponbooster,
+                    icon: WeaponBoosterImage,
                     description: "Increases the area of your next offensive ability by 1",
                     attackAreaIncrease: 1,
                     onAttack: {
@@ -776,7 +775,7 @@ export const sharpen2: Ability = {
     name: "Sharpen",
     level: 2,
     resourceCost: 0,
-    image: weaponmasteryImage,
+    image: WeaponMasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -784,7 +783,7 @@ export const sharpen2: Ability = {
             effects: [
                 {
                     name: "Sharpen",
-                    icon: weaponmasteryImage,
+                    icon: WeaponMasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 4,
@@ -801,7 +800,7 @@ export const sharpen2: Ability = {
 export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 0,
-    image: weaponmasteryImage,
+    image: WeaponMasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -809,7 +808,7 @@ export const sharpen: Ability = {
             effects: [
                 {
                     name: "Sharpen",
-                    icon: weaponmasteryImage,
+                    icon: WeaponMasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 3,
@@ -828,7 +827,7 @@ export const rush2: Ability = {
     name: "Rush",
     level: 2,
     resourceCost: 1,
-    image: rushImage,
+    image: RushImage,
     actions: [
         {
             damage: 7,
@@ -851,7 +850,7 @@ export const rush2: Ability = {
 export const rush: Ability = {
     name: "Rush",
     resourceCost: 1,
-    image: rushImage,
+    image: RushImage,
     actions: [
         {
             damage: 5,
@@ -876,7 +875,7 @@ export const berserk2: Ability = {
     name: "Berserk",
     level: 2,
     resourceCost: 1,
-    image: powerstanceImage,
+    image: PowerStanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
     actions: [
@@ -900,7 +899,7 @@ export const berserk2: Ability = {
 export const berserk: Ability = {
     name: "Berserk",
     resourceCost: 1,
-    image: powerstanceImage,
+    image: PowerStanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
     actions: [
@@ -927,7 +926,7 @@ export const closeCombat2: Ability = {
     level: 2,
     resourceCost: 1,
     preemptive: true,
-    image: closecombatImage,
+    image: CloseCombatImage,
     description: "Pulls enemies toward the selected target",
     actions: [
         {
@@ -944,7 +943,7 @@ export const closeCombat2: Ability = {
 export const closeCombat: Ability = {
     name: "Close Combat",
     resourceCost: 1,
-    image: closecombatImage,
+    image: CloseCombatImage,
     description: "Pulls enemies toward the selected target",
     actions: [
         {
@@ -963,7 +962,7 @@ export const recovery2: Ability = {
     name: "Recovery",
     level: 2,
     resourceCost: 1,
-    image: selfRecoveryImage,
+    image: SelfRecoveryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -972,7 +971,7 @@ export const recovery2: Ability = {
             effects: [
                 {
                     name: "Recovery",
-                    icon: selfRecoveryImage,
+                    icon: SelfRecoveryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
@@ -990,7 +989,7 @@ export const recovery2: Ability = {
 export const recovery: Ability = {
     name: "Recovery",
     resourceCost: 1,
-    image: selfRecoveryImage,
+    image: SelfRecoveryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -999,7 +998,7 @@ export const recovery: Ability = {
             effects: [
                 {
                     name: "Recovery",
-                    icon: selfRecoveryImage,
+                    icon: SelfRecoveryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
@@ -1019,7 +1018,7 @@ export const magicCrash2: Ability = {
     name: "Magic Crash",
     level: 2,
     resourceCost: 1,
-    image: magiccrashImage,
+    image: MagicCrashImage,
     actions: [
         {
             damage: 3,
@@ -1034,7 +1033,7 @@ export const magicCrash2: Ability = {
 export const magicCrash: Ability = {
     name: "Magic Crash",
     resourceCost: 2,
-    image: magiccrashImage,
+    image: MagicCrashImage,
     actions: [
         {
             damage: 1,
@@ -1050,7 +1049,7 @@ export const dash2: Ability = {
     name: "Dash",
     level: 2,
     resourceCost: 0,
-    image: warriormasteryImage,
+    image: WarriorMasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1066,7 +1065,7 @@ export const dash2: Ability = {
 export const dash: Ability = {
     name: "Dash",
     resourceCost: 0,
-    image: warriormasteryImage,
+    image: WarriorMasteryImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1083,7 +1082,7 @@ export const ironBody2: Ability = {
     name: "Iron Body",
     level: 2,
     resourceCost: 1,
-    image: ironbodyImage,
+    image: IronBodyImage,
     actions: [
         {
             armor: 8,
@@ -1092,7 +1091,7 @@ export const ironBody2: Ability = {
             effects: [
                 {
                     name: "Iron Body",
-                    icon: ironbodyImage,
+                    icon: IronBodyImage,
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
@@ -1106,7 +1105,7 @@ export const ironBody2: Ability = {
 export const ironBody: Ability = {
     name: "Iron Body",
     resourceCost: 1,
-    image: ironbodyImage,
+    image: IronBodyImage,
     actions: [
         {
             armor: 6,
@@ -1115,7 +1114,7 @@ export const ironBody: Ability = {
             effects: [
                 {
                     name: "Iron Body",
-                    icon: ironbodyImage,
+                    icon: IronBodyImage,
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     preventArmorDecay: true,
@@ -1131,7 +1130,7 @@ export const rendingStrike2: Ability = {
     name: "Rending Strike",
     level: 2,
     resourceCost: 1,
-    image: extraStrikeImage,
+    image: BlastExtraStrikeImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1158,7 +1157,7 @@ export const rendingStrike2: Ability = {
 export const rendingStrike: Ability = {
     name: "Rending Strike",
     resourceCost: 1,
-    image: extraStrikeImage,
+    image: BlastExtraStrikeImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1182,7 +1181,7 @@ export const rendingStrike: Ability = {
 export const whirlwind2: Ability = {
     name: "Whirlwind",
     level: 2,
-    image: panicSkillImage,
+    image: PanicImage,
     resourceCost: 1,
     actions: [
         {
@@ -1202,7 +1201,7 @@ export const whirlwind2: Ability = {
 
 export const whirlwind: Ability = {
     name: "Whirlwind",
-    image: panicSkillImage,
+    image: PanicImage,
     resourceCost: 1,
     actions: [
         {
@@ -1224,7 +1223,7 @@ export const whirlwind: Ability = {
 export const rupture2: Ability = {
     name: "Rupture",
     resourceCost: 0,
-    image: redFistOfFuryImage,
+    image: RedFistOfFuryImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1252,7 +1251,7 @@ export const rupture2: Ability = {
 export const rupture: Ability = {
     name: "Rupture",
     resourceCost: 0,
-    image: redFistOfFuryImage,
+    image: RedFistOfFuryImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1282,7 +1281,7 @@ export const bladestorm2: Ability = {
     name: "Bladestorm",
     level: 2,
     resourceCost: 0,
-    image: bladestormImage,
+    image: BladestormImage,
     depletedOnUse: true,
     actions: [
         {
@@ -1296,7 +1295,7 @@ export const bladestorm2: Ability = {
 export const bladestorm: Ability = {
     name: "Bladestorm",
     resourceCost: 0,
-    image: bladestormImage,
+    image: BladestormImage,
     depletedOnUse: true,
     actions: [
         {
@@ -1311,7 +1310,7 @@ export const bladestorm: Ability = {
 export const rally2: Ability = {
     name: "Rally",
     resourceCost: 1,
-    image: enrageImage,
+    image: EnrageImage,
     actions: [
         {
             area: 2,
@@ -1324,7 +1323,7 @@ export const rally2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 3,
                     duration: 0,
-                    icon: enrageImage,
+                    icon: EnrageImage,
                 },
             ],
         },
@@ -1334,7 +1333,7 @@ export const rally2: Ability = {
 export const rally: Ability = {
     name: "Rally",
     resourceCost: 1,
-    image: enrageImage,
+    image: EnrageImage,
     actions: [
         {
             area: 2,
@@ -1347,7 +1346,7 @@ export const rally: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 2,
                     duration: 0,
-                    icon: enrageImage,
+                    icon: EnrageImage,
                 },
             ],
         },
@@ -1359,7 +1358,7 @@ export const dustDevils2: Ability = {
     name: "Dust Devils",
     level: 2,
     resourceCost: 1,
-    image: Tornado,
+    image: TornadoIcon,
     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
     preemptive: true,
     actions: [
@@ -1372,7 +1371,7 @@ export const dustDevils2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 4,
-                    icon: Tornado,
+                    icon: TornadoIcon,
                     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
                     onAttack: {
                         ability: {
@@ -1384,7 +1383,7 @@ export const dustDevils2: Ability = {
                                     animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                                     damage: 2,
                                     secondaryDamage: 1,
-                                    icon: Tornado,
+                                    icon: TornadoIcon,
                                     playbackTime: 350,
                                     numTargets: 2, // Bug: 1 more target is hit than stated in this property
                                 },
@@ -1400,7 +1399,7 @@ export const dustDevils2: Ability = {
 export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
-    image: Tornado,
+    image: TornadoIcon,
     description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
     actions: [
         {
@@ -1412,7 +1411,7 @@ export const dustDevils: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 4,
-                    icon: Tornado,
+                    icon: TornadoIcon,
                     description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
                     onAttack: {
                         ability: {
@@ -1423,7 +1422,7 @@ export const dustDevils: Ability = {
                                     type: ACTION_TYPES.RANGE_ATTACK,
                                     animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                                     damage: 1,
-                                    icon: Tornado,
+                                    icon: TornadoIcon,
                                     playbackTime: 350,
                                     numTargets: 2, // Bug: 1 more target is hit than stated in this property
                                 },
@@ -1440,7 +1439,7 @@ export const dustDevils: Ability = {
 export const doubleTime2: Ability = {
     name: "Double Time",
     level: 2,
-    image: doubleTimeImage,
+    image: DoubleTimeImage,
     resourceCost: 1,
     description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
     actions: [
@@ -1460,7 +1459,7 @@ export const doubleTime2: Ability = {
 
 export const doubleTime: Ability = {
     name: "Double Time",
-    image: doubleTimeImage,
+    image: DoubleTimeImage,
     resourceCost: 1,
     description: "Create a copy of a card in your hand. It costs 1 less and is Ephemeral",
     actions: [
@@ -1483,7 +1482,7 @@ export const arsenal2: Ability = {
     name: "Arsenal",
     level: 2,
     resourceCost: 1,
-    image: advancedWeaponMasteryImage,
+    image: AdvancedWeaponMasteryImage,
     description: "Discover an offensive ability available to your class. It costs 2 less and is Ephemeral",
     actions: [
         {
@@ -1504,7 +1503,7 @@ export const arsenal2: Ability = {
 export const arsenal: Ability = {
     name: "Arsenal",
     resourceCost: 1,
-    image: advancedWeaponMasteryImage,
+    image: AdvancedWeaponMasteryImage,
     description: "Discover an offensive ability available to your class. It costs 1 less and is Ephemeral",
     actions: [
         {
@@ -1527,7 +1526,7 @@ export const sledge2: Ability = {
     name: "Sledge",
     resourceCost: 2,
     level: 2,
-    image: giganticSledgeImage,
+    image: GiganticSledgeImage,
     description: "Deplete another card in your hand to use this ability",
     depletedOnUse: true,
     selectCards: {
@@ -1546,7 +1545,7 @@ export const sledge2: Ability = {
 export const sledge: Ability = {
     name: "Sledge",
     resourceCost: 2,
-    image: giganticSledgeImage,
+    image: GiganticSledgeImage,
     description: "Deplete another card in your hand to use this ability",
     depletedOnUse: true,
     selectCards: {

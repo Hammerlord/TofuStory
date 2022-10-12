@@ -2,7 +2,8 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Lock, mesoCoinImage, treasureChest2Image } from "../../images";
+import { MesoImage, TreasureChestImage } from "../../images";
+import { LockIcon } from "../../images/icons";
 import { Item } from "../../item/types";
 import BannerNotice from "../../view/BannerNotice";
 
@@ -169,7 +170,7 @@ const TreasureBox = ({
             <div className={classes.inner}>
                 <div className={classes.chestContainer}>
                     <img
-                        src={treasureChest2Image}
+                        src={TreasureChestImage}
                         className={classNames(classes.treasureChest, {
                             open: completed,
                             fadeout: isChestOpened,
@@ -188,7 +189,7 @@ const TreasureBox = ({
                                     ))}
                                     {mesos > 0 && (
                                         <li className={classes.item}>
-                                            <img src={mesoCoinImage} /> {mesos}
+                                            <img src={MesoImage} /> {mesos}
                                         </li>
                                     )}
                                 </ul>
@@ -200,7 +201,7 @@ const TreasureBox = ({
                     )}
                     {!completed && (
                         <div className={classes.lockContainer}>
-                            <Lock className={classes.lock} />
+                            <LockIcon className={classes.lock} />
                         </div>
                     )}
                 </div>

@@ -1,14 +1,23 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicator, ropequestBG, shoImage, shoRopeImage, stefaImage, stefaRopeImage, swampBG, wessImage } from "../../../images";
+import {
+    ClickIndicatorImage,
+    RopeQuestImage,
+    ShoImage,
+    ShoRopeImage,
+    StefaImage,
+    StefaRopeImage,
+    SwampRegionBGImage,
+    WessImage,
+} from "../../../images";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
 import generateCombination from "./generateCombination";
 
 const useStyles = createUseStyles({
     root: {
-        background: `url(${swampBG}) no-repeat`,
+        background: `url(${SwampRegionBGImage}) no-repeat`,
         position: "relative",
         width: "100%",
         height: "100%",
@@ -203,14 +212,14 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
 
     const PARTYMEMBER_BASE_IMAGE_MAP = {
         player: player.image,
-        stefa: stefaImage,
-        sho: shoImage,
+        stefa: StefaImage,
+        sho: ShoImage,
     };
 
     const PARTY_MEMBER_ROPE_MAP = {
         player: player.image,
-        stefa: stefaRopeImage,
-        sho: shoRopeImage,
+        stefa: StefaRopeImage,
+        sho: ShoRopeImage,
     };
 
     const isUnassigned = (partyMemberName: string): boolean => {
@@ -245,10 +254,10 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
         <div className={classes.root}>
             <div className={classes.overlay}>
                 <div className={classes.inner}>
-                    <img src={ropequestBG} />
+                    <img src={RopeQuestImage} />
                     {answer.map((memberName: string | null, i: number) => (
                         <div className={classNames(classes[`rope${i + 1}`], classes.rope)} onClick={() => handleClickRope(i)} key={i}>
-                            {selectedPartyMember && <img src={ClickIndicator} className={classes.clickIndicator} />}
+                            {selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
                             {memberName && (
                                 <Tooltip title={getDialog(memberName)} open={Boolean(getDialog(memberName))} placement={"top"}>
                                     <img
@@ -267,7 +276,7 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                         if (isUnassigned(memberName)) {
                             return (
                                 <div className={classes[memberName]} key={memberName}>
-                                    {!selectedPartyMember && <img src={ClickIndicator} className={classes.clickIndicator} />}
+                                    {!selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
                                     <Tooltip title={getDialog(memberName)} open={Boolean(getDialog(memberName))} placement={"top"}>
                                         <img
                                             src={PARTYMEMBER_BASE_IMAGE_MAP[memberName]}
@@ -283,7 +292,7 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={wessImage} className={classNames(classes.wess)} />
+                        <img src={WessImage} className={classNames(classes.wess)} />
                     </Tooltip>
                 </div>
             </div>

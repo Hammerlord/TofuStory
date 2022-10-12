@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { kittenBarrelsImage, shoImage, stefaImage, wessImage } from "../../../images";
+import { KittenBarrelsImage, ShoImage, StefaImage, WessImage } from "../../../images";
 import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
     root: {
         position: "relative",
-        background: `url(${kittenBarrelsImage}) no-repeat`,
+        background: `url(${KittenBarrelsImage}) no-repeat`,
         width: "1050px",
         height: "525px",
     },
@@ -42,9 +42,9 @@ const KittenBarrels = ({ player }: SceneProps) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={stefaImage} className={classNames(classes.stefa, classes.character)} />
-            <img src={shoImage} className={classNames(classes.sho, classes.character)} />
-            <img src={wessImage} className={classNames(classes.wess, classes.character)} />
+            <img src={StefaImage} className={classNames(classes.stefa, classes.character)} />
+            <img src={ShoImage} className={classNames(classes.sho, classes.character)} />
+            <img src={WessImage} className={classNames(classes.wess, classes.character)} />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { CrossedSwords, Fireworks, Heart, Shield } from "../../images";
+import { CrossedSwordsIcon, FireworksIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { Aura } from "../types";
 
 const useStyles = createUseStyles({
@@ -39,21 +39,21 @@ const AuraView = ({ aura }: { aura: Aura }) => {
     return (
         <div className={classes.root}>
             <span className={classes.auraLabel}>
-                <Icon icon={<Fireworks />} size="sm" /> Aura
+                <Icon icon={<FireworksIcon />} size="sm" /> Aura
             </span>
             {damage > 0 && (
                 <div>
-                    Gain <Icon icon={<CrossedSwords />} text={damage} />
+                    Gain <Icon icon={<CrossedSwordsIcon />} text={damage} />
                 </div>
             )}
             {healing > 0 && (
                 <div>
-                    Gain <Icon icon={<Heart />} text={healing} /> per turn
+                    Gain <Icon icon={<HeartIcon />} text={healing} /> per turn
                 </div>
             )}
             {armor > 0 && (
                 <div>
-                    Gain <Icon icon={<Shield />} text={armor} /> per turn
+                    Gain <Icon icon={<ShieldIcon />} text={armor} /> per turn
                 </div>
             )}
         </div>

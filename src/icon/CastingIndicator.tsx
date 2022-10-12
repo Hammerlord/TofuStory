@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
-import { Hourglass, Warning } from "../images";
+import { HourglassIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 
@@ -37,7 +37,7 @@ const CastingIndicator = ({ casting, combatant }) => {
                 title={
                     <div className={classes.tooltipContents}>
                         <div className={classes.iconContainer}>
-                            <Icon icon={<Warning />} size="lg" />
+                            <Icon icon={<WarningIcon />} size="lg" />
                         </div>
                         <div className={classes.container}>
                             <div className={classes.tooltipTitle}>{name}</div>
@@ -52,7 +52,7 @@ const CastingIndicator = ({ casting, combatant }) => {
                 }
             >
                 <span>
-                    <Icon icon={<Warning />} text={channelDuration} />
+                    <Icon icon={<WarningIcon />} text={channelDuration} />
                 </span>
             </Tooltip>
 
@@ -61,7 +61,7 @@ const CastingIndicator = ({ casting, combatant }) => {
                     title={
                         <div className={classes.tooltipContents}>
                             <div className={classes.iconContainer}>
-                                <Icon icon={<Hourglass />} size="lg" />
+                                <Icon icon={<HourglassIcon />} size="lg" />
                             </div>
                             <div className={classes.container}>
                                 Special ability activates in {castTime} turn
@@ -71,7 +71,7 @@ const CastingIndicator = ({ casting, combatant }) => {
                     }
                 >
                     <span>
-                        <Icon icon={<Hourglass />} text={castTime} />
+                        <Icon icon={<HourglassIcon />} text={castTime} />
                     </span>
                 </Tooltip>
             )}

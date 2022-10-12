@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
-import { Fire } from "../images/";
+import { FireIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     root: {
@@ -20,5 +20,5 @@ interface FuryInterface {
 
 export const Fury = ({ text, className, size }: FuryInterface) => {
     const classes = useStyles();
-    return <Icon className={classNames(classes.root, className)} icon={<Fire />} background={"#eb4034"} text={text} size={size} />;
+    return <Icon className={classNames(classes.root, className)} icon={<FireIcon />} background={"#eb4034"} text={text} size={size} />;
 };

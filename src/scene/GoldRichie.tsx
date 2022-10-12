@@ -1,12 +1,12 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
 import { rally } from "../enemy/abilities";
-import { goldrichieImage, warriorImage, weaponmasteryImage, wizardImage } from "../images";
+import { GoldRichieImage, GuardWarriorImage, WeaponMasteryImage } from "../images";
 import { NPC } from "./types";
 
 const goldRichie: Minion = {
     name: "Gold Richie",
-    image: goldrichieImage,
+    image: GoldRichieImage,
     maxHP: 15,
     damage: 0,
     abilities: [
@@ -34,7 +34,7 @@ const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
 
 const goldRichie2: Minion = {
     name: "Gold Richie",
-    image: goldrichieImage,
+    image: GoldRichieImage,
     maxHP: 15,
     armor: 15,
     damage: 0,
@@ -60,7 +60,7 @@ const goldRichie2: Minion = {
                     area: 3,
                     effects: [
                         {
-                            icon: weaponmasteryImage,
+                            icon: WeaponMasteryImage,
                             name: "Bolster",
                             attackPower: 1,
                             duration: 3,
@@ -76,7 +76,7 @@ const goldRichie2: Minion = {
 
 const adventurerFighter = {
     name: "Fighter",
-    image: warriorImage,
+    image: GuardWarriorImage,
     HP: 40,
     maxHP: 40,
     damage: 2,
@@ -85,7 +85,7 @@ const adventurerFighter = {
 
 const adventurerIceWizard = {
     name: "Ice-Lightning Wizard",
-    image: wizardImage,
+    image: GuardWarriorImage,
     HP: 35,
     maxHP: 35,
     damage: 3,

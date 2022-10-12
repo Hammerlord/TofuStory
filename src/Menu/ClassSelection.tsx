@@ -4,11 +4,11 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { anonymushroom, classwarrior, warmush } from "../images";
+import { AnonymushroomImage, ClassWarriorImage, WarMushImage } from "../images";
 import { PLAYER_CLASSES } from "./types";
 
 const portraits = {
-    [PLAYER_CLASSES.WARRIOR]: warmush,
+    [PLAYER_CLASSES.WARRIOR]: WarMushImage,
 };
 
 const useStyles = createUseStyles({
@@ -114,7 +114,7 @@ const ClassSelection = ({ onSelectClass }) => {
                 <div>
                     <h1>You wake up without arms or legs.</h1>
                     <div className={classes.portraitContainer}>
-                        <img src={portraits[selectedClass] || anonymushroom} className={classes.portrait} />
+                        <img src={portraits[selectedClass] || AnonymushroomImage} className={classes.portrait} />
                     </div>
                     <p>After some time of fumbling around, you realize that you are in fact a mushroom.</p>
                     <p>You don't remember much, but you do remember you were a...</p>
@@ -127,7 +127,7 @@ const ClassSelection = ({ onSelectClass }) => {
                         })}
                     >
                         <div className={classes.iconContainer}>
-                            <img src={classwarrior} />
+                            <img src={ClassWarriorImage} />
                         </div>
                         <div>WARRIOR</div> <hr />A close-quarters fighter specializing in defenses and focused area attacks
                     </div>
