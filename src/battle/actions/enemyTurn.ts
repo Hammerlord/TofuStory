@@ -307,13 +307,16 @@ export const startEnemyTurn = () => {
 
         const acted = {};
         const ENEMY_TURN_DELAY = 1250;
+        const isEligibleToMove = (char: Combatant | null) => {
+            return char?.HP > 0 && !acted[char.id] && (char.abilities.length > 0 || char.damage > 0);
+        };
         const makeEnemyMove = () => {
             const { isEnded, isLost, enemySide } = getState().battle;
             if (isEnded || isLost) {
                 return;
             }
 
-            const eligible = enemySide.filter((char: Combatant | null) => char?.HP > 0 && !acted[char.id]);
+            const eligible = enemySide.filter(isEligibleToMove);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
                 setTimeout(() => {
