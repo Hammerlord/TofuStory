@@ -219,7 +219,7 @@ export const panlid: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Pan Lid",
+            name: "Pan Lid Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
