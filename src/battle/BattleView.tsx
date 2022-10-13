@@ -536,9 +536,6 @@ const BattlefieldContainer = () => {
     }, [disableActions, selectedAllyIndex, selectedAbilityId]);
 
     const targetLineColor = getAbilityColor(hand[abilityIndex]);
-    const shouldShowResourceBar = (combatant) => {
-        return combatant?.abilities.some(({ resourceCost }) => resourceCost > 0);
-    };
 
     let handleUseItem;
     if (isPlayerTurn && player?.HP > 0) {
@@ -571,7 +568,6 @@ const BattlefieldContainer = () => {
                                 {(events[0]?.enemySide || enemySide).map((enemy, i: number) => (
                                     <CombatantView
                                         combatant={enemy}
-                                        isAlly={false}
                                         onClick={(e) => handleEnemyClick(e, i)}
                                         isSelected={false}
                                         onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i })}
@@ -582,7 +578,6 @@ const BattlefieldContainer = () => {
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         ref={enemyRefs[i]}
-                                        showResourceBar={shouldShowResourceBar(enemy)}
                                     />
                                 ))}
                             </div>
@@ -598,7 +593,6 @@ const BattlefieldContainer = () => {
                                         return (
                                             <CombatantView
                                                 combatant={ally}
-                                                isAlly={true}
                                                 onClick={(e) => handleAllyClick(e, i)}
                                                 isSelected={selectedAllyIndex === i}
                                                 onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i })}

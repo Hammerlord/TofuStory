@@ -221,22 +221,18 @@ const CombatantView = forwardRef(
             onClick,
             isTargeted,
             event,
-            isAlly,
             isSelected,
             isHighlighted,
             showReticle,
-            showResourceBar,
             ...other
         }: {
             combatant: Combatant;
             onClick: (event: any) => void;
-            isTargeted: Boolean;
+            isTargeted: boolean;
             event: any; // AnimationEvent
-            isAlly: Boolean;
-            isSelected: Boolean;
-            isHighlighted: Boolean;
-            showReticle: Boolean;
-            showResourceBar?: Boolean;
+            isSelected: boolean;
+            isHighlighted: boolean;
+            showReticle: boolean;
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },
@@ -284,6 +280,7 @@ const CombatantView = forwardRef(
         };
 
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
+        const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
 
         const imageProps = {
             className: classNames(classes.portraitImage, {
