@@ -241,6 +241,7 @@ export const eat: Ability = {
         {
             type: ACTION_TYPES.SPECIAL,
             target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
             damage: 100,
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
                 ({ name }) => ({

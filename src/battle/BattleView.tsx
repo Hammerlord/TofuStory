@@ -393,7 +393,7 @@ const BattlefieldContainer = () => {
         const shouldTriggerPop = (prevEvents?.length === 0 && events.length > 0) || events.length < prevEvents.length;
         if (shouldTriggerPop) {
             // Play the next move slightly slower than the actual animation so that the animation has a bit of time to complete.
-            const delay = 100;
+            const delay = isPlayerTurn ? 50 : 500;
             setTimeout(() => {
                 dispatch(popEventQueue());
             }, playbackTime + delay);

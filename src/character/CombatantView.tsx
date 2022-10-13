@@ -245,10 +245,8 @@ const CombatantView = forwardRef(
         const classes = useStyles();
 
         useEffect(() => {
-            if (!combatant || !oldState || oldState.id !== combatant.id) {
-                if (combatant?.HP > 0) {
-                    setPlayDeathAnimation(false);
-                }
+            if (combatant?.HP > 0 || oldState?.id !== combatant?.id) {
+                setPlayDeathAnimation(false);
             }
 
             const statChanges = getCharacterStatChanges({
@@ -259,7 +257,7 @@ const CombatantView = forwardRef(
             const timeout = setTimeout(() => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0;
+                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0 && oldState?.id === combatant?.id;
                 if (isKillingBlow) {
                     setPlayDeathAnimation(true);
                 }
@@ -284,7 +282,7 @@ const CombatantView = forwardRef(
             className: classNames(classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !event?.action && playDeathAnimation,
-                [classes.dead]: !event?.action && !playDeathAnimation && oldState?.HP === 0,
+                [classes.dead]: !event?.action && oldState?.HP === 0,
                 [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST,
                 [classes.casting]: oldState?.casting,
             }),

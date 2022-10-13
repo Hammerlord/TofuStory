@@ -102,9 +102,7 @@ const AnimationCanvas = ({
         const { type, animation, ricochet } = action || {};
         const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
 
-        if (type === ACTION_TYPES.ATTACK) {
-            travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
-        } else if (type === ACTION_TYPES.RANGE_ATTACK) {
+        if (type === ACTION_TYPES.RANGE_ATTACK) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateRangeAttack = (target, projectileRefIndex: number) => {
                 travel({
@@ -123,6 +121,8 @@ const AnimationCanvas = ({
             } else {
                 allTargets.forEach(animateRangeAttack);
             }
+        } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
+            travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {
