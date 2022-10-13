@@ -41,6 +41,7 @@ export const travel = ({
     rotateToFaceTarget = false,
     returnToOrigin = false,
     sidewinder = false,
+    freezeAxis,
 }: {
     from: HTMLElement;
     to: HTMLElement | HTMLElement[];
@@ -49,6 +50,7 @@ export const travel = ({
     rotateToFaceTarget?: boolean;
     returnToOrigin?: boolean;
     sidewinder?: boolean;
+    freezeAxis?: "x" | "y";
 }) => {
     if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
@@ -67,7 +69,9 @@ export const travel = ({
     const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
         const { x, y } = getCenterCoords(from);
-        const { x: x2, y: y2 } = getCenterCoords(element);
+        const { x: toX, y: toY } = getCenterCoords(element);
+        const x2 = freezeAxis === "x" ? x : toX;
+        const y2 = freezeAxis === "y" ? y : toY;
         const xDiff = x2 - x;
         const yDiff = y2 - y;
         if (sidewinder) {

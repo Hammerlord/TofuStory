@@ -1,8 +1,11 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Action, ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
+import { Ability, Action, ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
 import { travel } from "../character/animations";
+import { Combatant } from "../character/types";
+import { Item } from "../item/types";
+import { BATTLEFIELD_SIDES, Event } from "./types";
 
 const PROJECTILE_WIDTH = 70;
 const PROJECTILE_HEIGHT = 70;
@@ -24,38 +27,69 @@ const useStyles = createUseStyles({
     },
 });
 
+const DISPLACEMENT_SPEED = 500;
+
 const AnimationCanvas = ({
-    actor,
-    target,
-    allTargets = [],
-    eventId,
-    action,
-    playbackTime = 1000,
+    event,
+    allyRefs = [],
+    enemyRefs = [],
+    initialBattlefield,
 }: {
-    actor?: HTMLElement;
-    target?: HTMLElement;
-    allTargets?: HTMLElement[];
-    eventId?: string;
-    action?: Action;
-    playbackTime?: number;
+    event?: Event;
+    allyRefs?: any[];
+    enemyRefs?: any[];
+    initialBattlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
+    const {
+        actorId,
+        targetSide,
+        selectedIndex,
+        allTargetIndices = [],
+        action,
+        id: eventId,
+        playbackTime,
+        playerSide,
+        enemySide,
+    } = event || {};
+
+    const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
+        if (!characterId) {
+            return;
+        }
+        const allyIndex = playerSide.findIndex((ally) => characterId === ally?.id);
+        if (allyIndex > -1) {
+            return allyRefs[allyIndex];
+        }
+
+        const enemyIndex = enemySide.findIndex((enemy) => characterId === enemy?.id);
+        if (enemyIndex > -1) {
+            return enemyRefs[enemyIndex];
+        }
+    };
+
+    const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
+    const targetElement = targets[selectedIndex]?.current;
+    const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v);
+    const actorElement = getRefFromCharacterId(actorId)?.current;
+
     const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
+    const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { left: actorLeft, top: actorTop } = useMemo(() => {
-        if (!actor?.getBoundingClientRect) {
+        if (!actorElement?.getBoundingClientRect) {
             return {};
         }
-        const { left, top, height, width } = actor?.getBoundingClientRect();
+        const { left, top, height, width } = actorElement?.getBoundingClientRect();
         return {
             left: left + width / 2,
             top: top + height / 2,
         };
-    }, [actor]);
+    }, [actorElement]);
     const classes = useStyles();
 
     useEffect(() => {
-        if (!target || !action || eventIdRef.current === eventId || !actor) {
+        if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
             return;
         }
 
@@ -66,14 +100,12 @@ const AnimationCanvas = ({
 
         eventIdRef.current = eventId;
         const { type, animation, ricochet } = action || {};
-        if (type === ACTION_TYPES.ATTACK && actor) {
-            const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
-            travel({ from: actor, to: target, returnToOrigin: true, spin, playbackTime });
-            return;
-        }
+        const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
+        console.log("actorLeft", actorLeft, actorTop);
 
-        if (type === ACTION_TYPES.RANGE_ATTACK) {
-            const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
+        if (type === ACTION_TYPES.ATTACK) {
+            travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
+        } else if (type === ACTION_TYPES.RANGE_ATTACK) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateRangeAttack = (target, projectileRefIndex: number) => {
                 travel({
@@ -93,6 +125,44 @@ const AnimationCanvas = ({
                 allTargets.forEach(animateRangeAttack);
             }
         }
+
+        const checkHandleDisplacement = (combatantId: string) => {
+            let side = BATTLEFIELD_SIDES.PLAYER_SIDE;
+            let currentIndex = playerSide.findIndex((combatant) => combatantId === combatant?.id);
+            if (currentIndex === -1) {
+                currentIndex = enemySide.findIndex((combatant) => combatantId === combatant?.id);
+                side = BATTLEFIELD_SIDES.ENEMY_SIDE;
+            }
+            if (currentIndex === -1) {
+                return;
+            }
+
+            const prevIndex = previousBattlefieldRef.current[side].findIndex((combatant) => combatantId === combatant?.id);
+            if (prevIndex === -1 || prevIndex === currentIndex) {
+                return;
+            }
+
+            const refs = side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
+            travel({
+                from: refs[prevIndex]?.current,
+                to: refs[currentIndex]?.current,
+                playbackTime: DISPLACEMENT_SPEED,
+                freezeAxis: "y",
+            });
+        };
+
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                checkHandleDisplacement(combatant.id);
+            }
+        });
+
+        setTimeout(() => {
+            previousBattlefieldRef.current = {
+                playerSide,
+                enemySide,
+            };
+        }, DISPLACEMENT_SPEED);
     }, [eventId]);
 
     const { icon, type, ricochet } = action || {};

@@ -246,12 +246,9 @@ const CombatantView = forwardRef(
 
         useEffect(() => {
             if (!combatant || !oldState || oldState.id !== combatant.id) {
-                setStatChanges({});
-                setOldState(combatant);
                 if (combatant?.HP > 0) {
                     setPlayDeathAnimation(false);
                 }
-                return;
             }
 
             const statChanges = getCharacterStatChanges({
@@ -262,7 +259,7 @@ const CombatantView = forwardRef(
             const timeout = setTimeout(() => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-                const isKillingBlow = oldState.HP > 0 && combatant.HP === 0;
+                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0;
                 if (isKillingBlow) {
                     setPlayDeathAnimation(true);
                 }
@@ -298,10 +295,10 @@ const CombatantView = forwardRef(
                     : undefined,
         };
         let imageNode = null;
-        if (typeof combatant?.image === "string") {
-            imageNode = <img src={combatant.image} {...imageProps} draggable="false" />;
-        } else if (typeof combatant?.image === "function") {
-            const ImageNode = combatant.image as Function;
+        if (typeof oldState?.image === "string") {
+            imageNode = <img src={oldState.image} {...imageProps} draggable="false" />;
+        } else if (typeof oldState?.image === "function") {
+            const ImageNode = oldState.image as Function;
             imageNode = <ImageNode {...imageProps} />;
         }
 
@@ -329,8 +326,8 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                     <div className={classes.combatantContainer} ref={weaponRef}>
-                        <span ref={ref as any} className={classNames(classes.portrait)}>
-                            {oldState && combatant && (
+                        <div ref={ref as any} className={classNames(classes.portrait)}>
+                            {oldState && (
                                 <>
                                     <Tooltip
                                         open={Boolean(event?.actionParent?.dialog)}
@@ -344,7 +341,7 @@ const CombatantView = forwardRef(
                                         <Weapon
                                             image={oldState.weapon}
                                             action={event?.action}
-                                            target={event?.target}
+                                            target={event?.targetRef}
                                             wielder={weaponRef?.current as any}
                                         />
                                     </div>
@@ -354,7 +351,7 @@ const CombatantView = forwardRef(
                                     </span>
                                 </>
                             )}
-                        </span>
+                        </div>
                         {oldState?.HP > 0 && (
                             <>
                                 <div className={classes.leftContainer}>

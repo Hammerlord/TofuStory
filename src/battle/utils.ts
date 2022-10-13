@@ -25,6 +25,9 @@ import { BATTLEFIELD_SIDES } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
+    if (!oldCharacter || !newCharacter || oldCharacter?.id !== newCharacter?.id) {
+        return updatedStatChanges;
+    }
     if (newCharacter.HP < oldCharacter.HP) {
         updatedStatChanges.damage = oldCharacter.HP - newCharacter.HP;
     }

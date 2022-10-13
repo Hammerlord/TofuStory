@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { Ability, Action, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
-import { Item } from "../item/types";
 import Header from "../Menu/Header";
 import { Fury } from "../resource/ResourcesView";
 import { onWaveClear, onWaveStart, useItem } from "./actions/actions";
@@ -334,56 +333,6 @@ const BattlefieldContainer = () => {
         setSelectedAbilityId(null);
     };
 
-    const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
-        if (!characterId) {
-            return;
-        }
-        const allyIndex = playerSide.findIndex((ally) => characterId === ally?.id);
-        if (allyIndex > -1) {
-            return allyRefs[allyIndex];
-        }
-
-        const enemyIndex = enemySide.findIndex((enemy) => characterId === enemy?.id);
-        if (enemyIndex > -1) {
-            return enemyRefs[enemyIndex];
-        }
-    };
-
-    /**
-     * Given a playback event, get the HTML Element refs associated to the actor/targets of that event.
-     */
-    const animationEvent = ((): {
-        action?: Action;
-        target?: HTMLElement;
-        eventId?: string;
-        allTargets: HTMLElement[];
-        actor?: HTMLElement;
-        playbackTime?: number;
-        actionParent?: Ability | Item;
-    } => {
-        let target;
-        if (!events.length) {
-            return { action: undefined, target: undefined, allTargets: [], actor: undefined };
-        }
-
-        const { actorId, targetSide, selectedIndex, allTargetIndices, id, action, playbackTime, actionParent } = (events[0] as Event) || {};
-        const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
-
-        if (typeof selectedIndex === "number" && targetSide) {
-            target = targets[selectedIndex]?.current;
-        }
-
-        return {
-            action,
-            actor: getRefFromCharacterId(actorId)?.current,
-            target,
-            allTargets: allTargetIndices.map((i) => targets[i]?.current).filter((v) => v),
-            eventId: id,
-            playbackTime,
-            actionParent,
-        };
-    })();
-
     const showWaveDescription = ({ description, i = 0, delay }: { description?: string | string[]; i?: number; delay: number }) => {
         setTimeout(() => {
             setNotification({
@@ -444,7 +393,7 @@ const BattlefieldContainer = () => {
         const shouldTriggerPop = (prevEvents?.length === 0 && events.length > 0) || events.length < prevEvents.length;
         if (shouldTriggerPop) {
             // Play the next move slightly slower than the actual animation so that the animation has a bit of time to complete.
-            const delay = 50;
+            const delay = 100;
             setTimeout(() => {
                 dispatch(popEventQueue());
             }, playbackTime + delay);
@@ -544,6 +493,15 @@ const BattlefieldContainer = () => {
         };
     }
 
+    const { targetSide, selectedIndex } = (events[0] as Event) || {};
+    const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
+
+    const combatantEvent = {
+        ...events[0],
+        // targetRef is used for weapon positioning
+        targetRef: targets[selectedIndex]?.current,
+    };
+
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
             <div className={classes.root} onClick={handleBattlefieldClick}>
@@ -574,7 +532,7 @@ const BattlefieldContainer = () => {
                                         onMouseLeave={() => setHoveredCombatant(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         key={i}
-                                        event={enemy?.id === events[0]?.actorId ? animationEvent : undefined}
+                                        event={enemy?.id === events[0]?.actorId ? combatantEvent : undefined}
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         ref={enemyRefs[i]}
@@ -599,7 +557,7 @@ const BattlefieldContainer = () => {
                                                 onMouseLeave={() => setHoveredCombatant(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 key={i}
-                                                event={ally?.id === events[0]?.actorId ? animationEvent : undefined}
+                                                event={ally?.id === events[0]?.actorId ? combatantEvent : undefined}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 ref={allyRefs[i]}
@@ -619,7 +577,12 @@ const BattlefieldContainer = () => {
                             </div>
                         </div>
                     </div>
-                    <AnimationCanvas {...animationEvent} />
+                    <AnimationCanvas
+                        event={events[0]}
+                        allyRefs={allyRefs}
+                        enemyRefs={enemyRefs}
+                        initialBattlefield={{ playerSide, enemySide }}
+                    />
                     <div className={classes.abilityContainer}>
                         {Array.from({ length: player.resources }).map((_, i) => (
                             <Fury key={i} className={classes.resource} />
