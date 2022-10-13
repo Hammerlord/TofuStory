@@ -287,7 +287,7 @@ export const endEnemyTurn = () => {
 
 export const startEnemyTurn = () => {
     return (dispatch, getState) => {
-        const { enemySide } = getState().battle;
+        const { enemySide, round } = getState().battle;
         const updateFns = [gainResources, clearTurnHistory, checkHalveArmor];
         const updated = updateCharacters(enemySide, compose(...updateFns));
         dispatch(
@@ -302,7 +302,9 @@ export const startEnemyTurn = () => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            if (round > 0) {
+                dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            }
         });
 
         const acted = {};

@@ -140,7 +140,9 @@ export const startPlayerTurn = () => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            if (round > 0) {
+                dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            }
         });
 
         const { battle } = getState();
