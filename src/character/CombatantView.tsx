@@ -280,6 +280,7 @@ const CombatantView = forwardRef(
         const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
 
         const imageProps = {
+            key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames(classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !event?.action && playDeathAnimation,

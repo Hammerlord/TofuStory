@@ -101,7 +101,6 @@ const AnimationCanvas = ({
         eventIdRef.current = eventId;
         const { type, animation, ricochet } = action || {};
         const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
-        console.log("actorLeft", actorLeft, actorTop);
 
         if (type === ACTION_TYPES.ATTACK) {
             travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
