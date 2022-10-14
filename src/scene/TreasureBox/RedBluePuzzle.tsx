@@ -19,12 +19,6 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%) translateY(-50%)",
         maxWidth: 40,
     },
-    center: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
-    },
 });
 
 const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {

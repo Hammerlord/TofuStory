@@ -6,6 +6,11 @@ import Map from "../Map/Map";
 import CardGame from "../scene/CardGame";
 import KittenBarrelsQuest from "../scene/Kerning/kpq/KittenBarrelsQuest";
 import RopeQuest from "../scene/Kerning/kpq/RopeQuest";
+import ComboPuzzle from "../scene/TreasureBox/ComboPuzzle";
+import SortingPuzzle from "../scene/TreasureBox/SortingPuzzle";
+import RedBluePuzzle from "../scene/TreasureBox/RedBluePuzzle";
+import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
+import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevStageBattle from "./DevStageBattle";
 
@@ -56,6 +61,13 @@ const QUEST_MAP = {
     "Kitten Barrels Quest": KittenBarrelsQuest,
 };
 
+const TREASURE_PUZZLE_MAP = {
+    "On/Off": RedBluePuzzle,
+    ReelLock: ReelLockPuzzle,
+    Combo: ComboPuzzle,
+    Sorting: SortingPuzzle,
+};
+
 const DevToolButton = () => {
     const [devToolsMenuAnchor, setDevToolsMenuAnchor] = useState(null);
     const [cardGameDifficulty, setCardGameDifficulty] = useState(null);
@@ -64,6 +76,7 @@ const DevToolButton = () => {
     const [isSceneViewerOpen, setIsSceneViewerOpen] = useState(false);
     const [questName, setQuestName] = useState("");
     const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
+    const [treasurePuzzleName, setTreasurePuzzleName] = useState(null);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -99,6 +112,12 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>Scene Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                                 <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
+                            </MenuList>
+                            Treasure Box Puzzles
+                            <MenuList>
+                                {Object.keys(TREASURE_PUZZLE_MAP).map((key) => (
+                                    <MenuItem onClick={() => setTreasurePuzzleName(key)}>{key}</MenuItem>
+                                ))}
                             </MenuList>
                         </div>
                     </ClickAwayListener>
@@ -150,6 +169,15 @@ const DevToolButton = () => {
                         <Map enableDraw={true} />
                     </div>
                 </div>
+            )}
+            {treasurePuzzleName && (
+                <TreasureBox
+                    onExit={() => setTreasurePuzzleName(null)}
+                    onLoot={() => {}}
+                    items={[]}
+                    mesos={123}
+                    Puzzle={TREASURE_PUZZLE_MAP[treasurePuzzleName]}
+                />
             )}
         </>
     );
