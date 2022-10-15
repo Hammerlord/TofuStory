@@ -376,7 +376,6 @@ const BattlefieldContainer = () => {
             }
 
             if (flagTurnEnd) {
-                dispatch(updateFlagTurnEnd(false));
                 if (isPlayerTurn) {
                     dispatch(playerEndTurn());
                 } else {

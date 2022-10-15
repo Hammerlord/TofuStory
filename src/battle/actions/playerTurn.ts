@@ -107,13 +107,16 @@ export const playerEndTurn = () => {
         const { playerSide, discard, hand } = getState().battle;
         dispatch(onEndTurnTriggers(playerSide));
 
-        dispatch(
-            updateBattle({
-                isPlayerTurn: false,
-                discard: [...discard, ...prepareForDiscard(hand)],
-                hand: [],
-            })
-        );
+        setTimeout(() => {
+            dispatch(
+                updateBattle({
+                    isPlayerTurn: false,
+                    discard: [...discard, ...prepareForDiscard(hand)],
+                    hand: [],
+                    flagTurnEnd: false,
+                })
+            );
+        }, 1000);
     };
 };
 

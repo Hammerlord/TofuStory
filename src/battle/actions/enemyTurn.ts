@@ -284,11 +284,14 @@ const enemyUseAbility = (combatantId: string) => {
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers(getState().battle.enemySide));
-        dispatch(
-            updateBattle({
-                isPlayerTurn: true,
-            })
-        );
+        setTimeout(() => {
+            dispatch(
+                updateBattle({
+                    isPlayerTurn: true,
+                    flagTurnEnd: false,
+                })
+            );
+        }, 1000);
     };
 };
 
@@ -315,7 +318,6 @@ export const startEnemyTurn = () => {
         });
 
         const acted = {};
-        const ENEMY_TURN_DELAY = 1250;
         const isEligibleToMove = (char: Combatant | null) => {
             return char?.HP > 0 && !acted[char.id] && (char.abilities.length > 0 || char.damage > 0);
         };
@@ -328,9 +330,7 @@ export const startEnemyTurn = () => {
             const eligible = enemySide.filter(isEligibleToMove);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
-                setTimeout(() => {
-                    dispatch(updateFlagTurnEnd(true));
-                }, ENEMY_TURN_DELAY);
+                dispatch(updateFlagTurnEnd(true));
                 return;
             }
 
@@ -343,7 +343,7 @@ export const startEnemyTurn = () => {
             }
             setTimeout(() => {
                 makeEnemyMove();
-            }, ENEMY_TURN_DELAY);
+            }, 1500);
         };
         makeEnemyMove();
     };
