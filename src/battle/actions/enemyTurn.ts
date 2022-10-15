@@ -215,7 +215,14 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
         if (lastAbilityUsed) {
             // Don't remove its only ability though
             if (otherAbilities.length > 1) {
-                otherAbilities = otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+                const filtered = otherAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
+                // Deprioritize defensive abilities
+                const isSupportAbility = ({ actions }) =>
+                    actions.every(({ targetType }) => ![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(targetType));
+                const isAllSupportAbilitiesRemaining = filtered.every(isSupportAbility);
+                if (!isAllSupportAbilitiesRemaining && !isSupportAbility(lastAbilityUsed)) {
+                    otherAbilities = filtered;
+                }
             }
             specialAbilities = specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
         }
