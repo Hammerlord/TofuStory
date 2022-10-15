@@ -1,7 +1,8 @@
-import { useState } from "react";
+import classNames from "classnames";
+import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BlueSnailImage, ShroomImage, SnailImage } from "../../images";
-import { getRandomInt, shuffle } from "../../utils";
+import { BlueSnailImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
+import { getRandomInt, getRandomItem, shuffle } from "../../utils";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -19,15 +20,32 @@ const useStyles = createUseStyles({
         left: "50%",
         top: "50%",
         transform: "translateX(-50%) translateY(-50%)",
+        maxWidth: 40,
+    },
+    "@keyframes fade": {
+        "0%": {
+            opacity: 0.3,
+        },
+        "100%": {
+            opacity: 0.9,
+        },
+    },
+    recentlySelected: {
+        animationName: "$fade",
+        animationDuration: "0.5s",
+        animationIterationCount: 3,
+        animationDirection: "alternate-reverse",
     },
 });
 
 const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const classes = useStyles();
-    const column = [SnailImage, BlueSnailImage, ShroomImage];
+    const column = [SnailImage, BlueSnailImage, ShroomImage, SlimeImage, RedSnailImage];
     const [currentCombo, setCurrentCombo] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)));
     const [correctAnswer] = useState(shuffle(currentCombo.map((_, i) => i)));
     const [currentAnswer, setCurrentAnswer] = useState([]);
+
+    const prevCombo = useRef(currentCombo);
 
     const onClickTile = (i: number) => {
         if (completed) {
@@ -35,11 +53,17 @@ const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
         }
         const numChanged = correctAnswer.indexOf(i) + 1;
         const newCombo = currentCombo.slice();
-        const increment = (value: number) => (((value + 1) % column.length) + column.length) % column.length;
         let count = 0;
+        const getNewTile = (index: number) => {
+            // A tile cannot turn into the same tile
+            const possibleOptions = Array.from({ length: column.length })
+                .map((_, i) => i)
+                .filter((i) => i !== currentCombo[index]);
+            return getRandomItem(possibleOptions);
+        };
         for (let j = 0; j < currentCombo.length; ++j) {
             if (typeof newCombo[i + j] === "number") {
-                newCombo[i + j] = increment(newCombo[i + j]);
+                newCombo[i + j] = getNewTile(i + j);
                 ++count;
                 if (count === numChanged) {
                     break;
@@ -47,7 +71,7 @@ const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
             }
 
             if (j > 0 && typeof newCombo[i - j] === "number") {
-                newCombo[i - j] = increment(newCombo[i - j]);
+                newCombo[i - j] = getNewTile(i - j);
                 ++count;
                 if (count === numChanged) {
                     break;
@@ -55,6 +79,7 @@ const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
             }
         }
 
+        prevCombo.current = currentCombo;
         setCurrentCombo(newCombo);
         if (correctAnswer[currentAnswer.length] === i) {
             const newAnswer = [...currentAnswer, i];
@@ -71,9 +96,15 @@ const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
 
     return (
         <>
-            {currentCombo.map((c, i) => (
+            {currentCombo.map((tileId, i: number) => (
                 <div className={classes.iconContainer} key={i} onClick={() => onClickTile(i)}>
-                    <img src={column[c]} className={classes.icon} key={column[c]} />
+                    <img
+                        src={column[tileId]}
+                        className={classNames(classes.icon, {
+                            [classes.recentlySelected]: currentCombo[i] !== prevCombo?.current?.[i],
+                        })}
+                        key={column[tileId]}
+                    />
                 </div>
             ))}
         </>

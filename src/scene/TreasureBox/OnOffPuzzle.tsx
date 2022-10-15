@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BlueSnailImage, RedSnailImage } from "../../images";
+import { MesoCoinImage, MesoImage } from "../../images";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -17,11 +17,11 @@ const useStyles = createUseStyles({
         left: "50%",
         top: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        maxWidth: 40,
+        width: 40,
     },
 });
 
-const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
+const OnOffPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
     const [answer, setAnswer] = useState(Array.from({ length: 6 }).map(() => Math.random() < 0.5));
 
     const onClickTile = (index: number) => {
@@ -48,7 +48,7 @@ const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; comple
             {answer.map((a: boolean, i: number) => (
                 <div key={i}>
                     <div className={classes.iconContainer} onClick={() => onClickTile(i)}>
-                        <img src={a ? BlueSnailImage : RedSnailImage} className={classes.icon} key={a ? BlueSnailImage : RedSnailImage} />
+                        <img src={a ? MesoCoinImage : MesoImage} className={classes.icon} key={a ? MesoCoinImage : MesoImage} />
                     </div>
                 </div>
             ))}
@@ -56,4 +56,4 @@ const RedBluePuzzle = ({ onComplete, completed }: { onComplete: Function; comple
     );
 };
 
-export default RedBluePuzzle;
+export default OnOffPuzzle;

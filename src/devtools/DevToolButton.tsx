@@ -8,7 +8,7 @@ import KittenBarrelsQuest from "../scene/Kerning/kpq/KittenBarrelsQuest";
 import RopeQuest from "../scene/Kerning/kpq/RopeQuest";
 import ComboPuzzle from "../scene/TreasureBox/ComboPuzzle";
 import SortingPuzzle from "../scene/TreasureBox/SortingPuzzle";
-import RedBluePuzzle from "../scene/TreasureBox/RedBluePuzzle";
+import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import DevAbilityViewer from "./DevAbilityViewer";
@@ -63,7 +63,7 @@ const QUEST_MAP = {
 };
 
 const TREASURE_PUZZLE_MAP = {
-    "On/Off": RedBluePuzzle,
+    "On/Off": OnOffPuzzle,
     ReelLock: ReelLockPuzzle,
     Combo: ComboPuzzle,
     Sorting: SortingPuzzle,
