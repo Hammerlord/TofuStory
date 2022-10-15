@@ -13,6 +13,7 @@ import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevStageBattle from "./DevStageBattle";
+import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -66,6 +67,7 @@ const TREASURE_PUZZLE_MAP = {
     ReelLock: ReelLockPuzzle,
     Combo: ComboPuzzle,
     Sorting: SortingPuzzle,
+    RowPuzzle: RowPuzzle,
 };
 
 const DevToolButton = () => {

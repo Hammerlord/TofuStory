@@ -2,6 +2,7 @@ import uuid from "uuid";
 import ComboPuzzle from "../../scene/TreasureBox/ComboPuzzle";
 import RedBluePuzzle from "../../scene/TreasureBox/RedBluePuzzle";
 import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
+import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
 import SortingPuzzle from "../../scene/TreasureBox/SortingPuzzle";
 import { NODE_TYPES, Route } from "../types";
 import { getRandomInt, getRandomItem } from "./../../utils";
@@ -59,7 +60,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 transformedNode.treasure = {
                     items,
                     mesos: getRandomInt(mesos.min, mesos.max),
-                    puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, RedBluePuzzle, SortingPuzzle]),
+                    puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, RedBluePuzzle, SortingPuzzle, RowPuzzle]),
                 };
                 --numTreasures;
             } else if (type === NODE_TYPES.EVENT) {
