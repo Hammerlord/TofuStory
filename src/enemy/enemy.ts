@@ -3,11 +3,13 @@ import {
     BlueSnailImage,
     BlueSnailShellImage,
     FireBoarImage,
+    FirewoodImage,
     GreenMushroomImage,
     HornyMushroomImage,
     LeetSinImage,
     LigatorImage,
     ManoImage,
+    MushroomOmokImage,
     MushroomSporeImage,
     MutantSnailImage,
     NoobClubAImage,
@@ -15,6 +17,7 @@ import {
     NoobWarriorAImage,
     NoobWarriorBImage,
     OctopusImage,
+    OctopusLegImage,
     OlafImage,
     OrangeMushroomImage,
     RedSnailImage,
@@ -34,6 +37,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
+    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
@@ -42,7 +46,7 @@ import { enemyHaste, loaf } from "./abilities";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 11,
+    maxHP: 13,
     abilities: [loaf],
     image: SnailImage,
     damage: 1,
@@ -51,7 +55,7 @@ export const snail: Minion = {
 export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 7,
-    armor: 15,
+    armor: 20,
     image: BlueSnailImage,
     damage: 2,
     effects: [
@@ -70,9 +74,9 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 15,
+    maxHP: 21,
     image: ShroomImage,
-    damage: 3,
+    damage: 2,
     abilities: [
         {
             name: "Poison Spore",
@@ -98,8 +102,8 @@ export const shroom: Minion = {
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 14,
-    armor: 25,
+    maxHP: 17,
+    armor: 32,
     image: RedSnailImage,
     damage: 2,
     abilities: [
@@ -143,10 +147,41 @@ export const redSnail: Minion = {
 
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 50,
+    maxHP: 60,
     image: OrangeMushroomImage,
-    damage: 5,
+    damage: 3,
     effects: [hardy],
+    abilities: [
+        {
+            name: "Whomp",
+            image: MushroomOmokImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                    area: 1,
+                    secondaryDamage: 3,
+                    effects: [
+                        {
+                            name: "Flattened",
+                            description: "Receiving increased damage from Whomp.",
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            abilityDamageReceived: [
+                                {
+                                    abilityName: "Whomp",
+                                    damage: 2,
+                                    type: SCALING_VALUE_TYPES.FLAT,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const noobA: Minion = {
@@ -352,15 +387,40 @@ export const olaf = {
 export const octopus: Minion = {
     name: "Octopus",
     image: OctopusImage,
-    maxHP: 7,
-    damage: 1,
+    maxHP: 25,
+    damage: 3,
+    abilities: [
+        {
+            name: "Constrict",
+            resourceCost: 3,
+            image: OctopusLegImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    effects: [
+                        {
+                            name: "Constricted!",
+                            description: "Resources per turn reduced by 1.",
+                            icon: OctopusLegImage,
+                            resourcesPerTurn: -1,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const wildBoar: Minion = {
     name: "Wild Boar",
     image: WildBoarImage,
-    maxHP: 12,
-    damage: 2,
+    maxHP: 30,
+    damage: 3,
     abilities: [
         {
             name: "Wild Charge",
@@ -369,7 +429,7 @@ export const wildBoar: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 7,
                 },
             ],
         },
@@ -379,17 +439,25 @@ export const wildBoar: Minion = {
 export const stump: Minion = {
     name: "Stump",
     image: StumpImage,
-    maxHP: 10,
-    armor: 5,
-    damage: 1,
-    effects: [hardy],
+    maxHP: 20,
+    damage: 2,
+    effects: [
+        {
+            ...hardy,
+            name: "Hardwood",
+            icon: FirewoodImage,
+            attackDamageReceived: -1,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+        },
+    ],
 };
 
 export const axeStump: Minion = {
     name: "Axe Stump",
     image: AxeStumpImage,
-    maxHP: 17,
-    armor: 10,
+    maxHP: 25,
+    armor: 15,
     damage: 2,
     abilities: [
         {
@@ -399,7 +467,7 @@ export const axeStump: Minion = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 3,
+                    armor: 15,
                     effects: [
                         {
                             ...thorns,
@@ -410,14 +478,23 @@ export const axeStump: Minion = {
             ],
         },
     ],
-    effects: [hardy],
+    effects: [
+        {
+            ...hardy,
+            name: "Hardwood",
+            icon: FirewoodImage,
+            attackDamageReceived: -1,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+        },
+    ],
 };
 
 export const fireBoar: Minion = {
     name: "Fire Boar",
     image: FireBoarImage,
-    maxHP: 35,
-    damage: 3,
+    maxHP: 50,
+    damage: 4,
     abilities: [
         {
             name: "Blazing Charge",
@@ -426,7 +503,7 @@ export const fireBoar: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                     effects: [{ ...burn, duration: 1 }],
                 },
             ],

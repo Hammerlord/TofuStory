@@ -22,7 +22,7 @@ export const slimeGlobule: Minion = {
             name: "Vulnerable",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.DEBUFF,
-            attackDamageReceived: 1,
+            attackDamageReceived: 3,
             canBeSilenced: false,
         },
     ],

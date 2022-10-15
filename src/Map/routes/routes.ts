@@ -16,8 +16,8 @@ import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const routeKerningToPerion = {
     enemies: {
-        easy: [stump, octopus],
-        normal: [blueSnail, redSnail, wildBoar],
+        easy: [stump],
+        normal: [octopus, redSnail, wildBoar],
         hard: [axeStump, orangeMushroom],
         hardest: [fireBoar],
     } as MapEnemies,
