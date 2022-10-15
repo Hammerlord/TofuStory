@@ -1,4 +1,5 @@
 import { KingSlimeImage, SlimeBubbleImage, SlimeImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
+import { MountainIcon } from "../images/icons";
 import { controlImmune, hardy } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -7,6 +8,7 @@ import {
     EFFECT_TYPES,
     Minion,
     MORPH_MINION_MODIFIERS,
+    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
@@ -138,14 +140,32 @@ export const kingSlimeEnemy: Minion = {
     abilities: [
         {
             name: "Earthquake",
-            resourceCost: 1,
+            resourceCost: 3,
+            image: MountainIcon,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 3,
                     area: 2,
                     animation: ANIMATION_TYPES.CAST,
+                    effects: [
+                        {
+                            name: "Quaking",
+                            description: "Receiving increased damage from Earthquake.",
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            icon: MountainIcon,
+                            abilityDamageReceived: [
+                                {
+                                    abilityName: "Earthquake",
+                                    damage: 2,
+                                    type: SCALING_VALUE_TYPES.FLAT,
+                                },
+                            ],
+                            duration: 3,
+                        },
+                    ],
                 },
             ],
         },

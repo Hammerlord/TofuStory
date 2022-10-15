@@ -22,6 +22,7 @@ export { default as LockIcon } from "./Lock.svg";
 export { default as MedalIcon } from "./Medal.svg";
 export { default as MilitaryMedalIcon } from "./MilitaryMedal.svg";
 export { default as MoneyBagIcon } from "./MoneyBag.svg";
+export { default as MountainIcon } from "./Mountain.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
 export { default as QuestionMarkIcon } from "./QuestionMark.svg";
 export { default as ShieldIcon } from "./Shield.svg";
