@@ -47,7 +47,8 @@ const RowPuzzle = ({ onComplete, completed }: { onComplete: Function; completed:
         const increment = (value: number) => (((value + 1) % tiles.length) + tiles.length) % tiles.length;
         let count = 0;
         for (let j = 0; j < numChanged; ++j) {
-            const dir = i < currentAnswer.length / 2 ? 1 : -1;
+            // Directionality only really matters for numChanged = 2; we want it to cover the numChanged = 1 tile or the puzzle is unsolveable
+            const dir = tilesChange[i + 1] === 3 ? -1 : 1;
             const k = j * dir;
             if (typeof newAnswer[i + k] === "number") {
                 newAnswer[i + k] = increment(newAnswer[i + k]);
