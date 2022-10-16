@@ -50,6 +50,7 @@ export const snail: Minion = {
     abilities: [loaf],
     image: SnailImage,
     damage: 1,
+    mesos: 3,
 };
 
 export const blueSnail: Minion = {
@@ -58,6 +59,7 @@ export const blueSnail: Minion = {
     armor: 20,
     image: BlueSnailImage,
     damage: 2,
+    mesos: 5,
     effects: [
         {
             name: "Tough Shell",
@@ -77,6 +79,7 @@ export const shroom: Minion = {
     maxHP: 21,
     image: ShroomImage,
     damage: 2,
+    mesos: 5,
     abilities: [
         {
             name: "Poison Spore",
@@ -106,10 +109,10 @@ export const redSnail: Minion = {
     armor: 32,
     image: RedSnailImage,
     damage: 2,
+    mesos: 15,
     abilities: [
         {
             name: "Rollout",
-            castTime: 1,
             channelDuration: 2,
             resourceCost: 3,
             actions: [
@@ -150,6 +153,7 @@ export const orangeMushroom: Minion = {
     maxHP: 60,
     image: OrangeMushroomImage,
     damage: 3,
+    mesos: 25,
     effects: [hardy],
     abilities: [
         {
@@ -186,9 +190,10 @@ export const orangeMushroom: Minion = {
 
 export const noobA: Minion = {
     name: "Beginner A",
-    maxHP: 30,
+    maxHP: 50,
     image: NoobClubAImage,
-    damage: 3,
+    damage: 2,
+    mesos: 1,
     abilities: [
         {
             name: "Club!",
@@ -197,7 +202,7 @@ export const noobA: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -207,7 +212,7 @@ export const noobA: Minion = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 2,
+                    armor: 5,
                 },
             ],
         },
@@ -216,9 +221,10 @@ export const noobA: Minion = {
 
 export const noobB: Minion = {
     name: "Beginner B",
-    maxHP: 30,
+    maxHP: 50,
     image: NoobClubBImage,
-    damage: 3,
+    damage: 2,
+    mesos: 1,
     abilities: [
         {
             name: "Flurry",
@@ -260,6 +266,7 @@ export const noobAWarrior = {
     maxHP: 40,
     image: NoobWarriorAImage,
     damage: 3,
+    mesos: 1,
     abilities: [
         {
             ...slashBlast,
@@ -277,6 +284,7 @@ export const noobBWarrior = {
     maxHP: 40,
     image: NoobWarriorBImage,
     damage: 3,
+    mesos: 1,
     abilities: [
         {
             ...slashBlast,
@@ -360,8 +368,9 @@ export const thiefAssassin: Minion = {
 
 export const olaf = {
     name: "Olaf",
-    maxHP: 35,
+    maxHP: 55,
     effects: [elite],
+    mesos: 10,
     abilities: [
         {
             name: "Double Punch",
@@ -387,7 +396,8 @@ export const olaf = {
 export const octopus: Minion = {
     name: "Octopus",
     image: OctopusImage,
-    maxHP: 25,
+    maxHP: 40,
+    mesos: 10,
     damage: 3,
     abilities: [
         {
@@ -419,7 +429,8 @@ export const octopus: Minion = {
 export const wildBoar: Minion = {
     name: "Wild Boar",
     image: WildBoarImage,
-    maxHP: 30,
+    maxHP: 50,
+    mesos: 10,
     damage: 3,
     abilities: [
         {
@@ -439,7 +450,8 @@ export const wildBoar: Minion = {
 export const stump: Minion = {
     name: "Stump",
     image: StumpImage,
-    maxHP: 20,
+    maxHP: 30,
+    mesos: 5,
     damage: 2,
     effects: [
         {
@@ -456,9 +468,10 @@ export const stump: Minion = {
 export const axeStump: Minion = {
     name: "Axe Stump",
     image: AxeStumpImage,
-    maxHP: 25,
+    maxHP: 45,
     armor: 15,
     damage: 2,
+    mesos: 25,
     abilities: [
         {
             name: "Barbs",
@@ -493,7 +506,8 @@ export const axeStump: Minion = {
 export const fireBoar: Minion = {
     name: "Fire Boar",
     image: FireBoarImage,
-    maxHP: 50,
+    maxHP: 80,
+    mesos: 25,
     damage: 4,
     abilities: [
         {
@@ -515,14 +529,16 @@ export const fireBoar: Minion = {
 export const ligator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 20,
+    maxHP: 30,
     damage: 2,
+    mesos: 10,
 };
 
 export const eliteLigator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 35,
+    maxHP: 60,
+    mesos: 25,
     damage: 2,
     effects: [elite, raging],
 };
@@ -532,6 +548,7 @@ export const greenMushroom: Minion = {
     image: GreenMushroomImage,
     maxHP: 25,
     damage: 1,
+    mesos: 5,
 };
 
 export const hornyMushroom: Minion = {
@@ -540,6 +557,7 @@ export const hornyMushroom: Minion = {
     maxHP: 30,
     damage: 2,
     effects: [thorns],
+    mesos: 7,
 };
 
 export const mutantSnailEnemy: Minion = {
@@ -550,6 +568,7 @@ export const mutantSnailEnemy: Minion = {
     armor: 75,
     resources: 0,
     damage: 5,
+    mesos: 100,
     effects: [
         {
             name: "Tough Shell",
@@ -667,6 +686,7 @@ export const manoEnemy: Minion = {
     armor: 100,
     resources: 0,
     damage: 3,
+    mesos: 100,
     abilities: [
         {
             name: "Call Snail",

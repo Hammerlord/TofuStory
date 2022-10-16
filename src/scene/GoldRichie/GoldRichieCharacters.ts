@@ -24,6 +24,7 @@ const richyRich: Effect = {
     icon: MesoCoinImage,
     canBeSilenced: false,
     onReceiveAttack: {
+        removeEffect: true,
         ability: {
             name: "Drop mesos",
             dialog: "No! My money!",
@@ -33,6 +34,12 @@ const richyRich: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     summon: [
+                        {
+                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                        },
+                        {
+                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                        },
                         {
                             minion: [mesoCoin, mesoCoin, goldMesoCoin],
                         },
@@ -87,7 +94,7 @@ export const goldRichie2: Minion = {
         },
         {
             name: "Bolster",
-            dialog: "The one who personally defeats that mushroom gets a hefty bonus!",
+            dialog: "Whoever defeats that mushroom gets a hefty bonus!",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -104,6 +111,7 @@ export const goldRichie2: Minion = {
                             class: EFFECT_CLASSES.BUFF,
                         },
                     ],
+                    playbackTime: 2000,
                 },
             ],
         },

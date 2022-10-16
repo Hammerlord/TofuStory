@@ -25,6 +25,7 @@ export interface BattleState {
     /** When interacting with cards in your hand, or discovering a card */
     selectCardsPrompt: PlayerSelectCardsPrompt | null;
     isLost: boolean;
+    mesosAccumulated: number;
 }
 
 export interface PlayerSelectCardsPrompt {

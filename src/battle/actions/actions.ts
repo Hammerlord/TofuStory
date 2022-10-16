@@ -54,14 +54,17 @@ export const findCombatant = (getState, combatantId: string): Combatant | undefi
 
 const onBattleEnd = () => {
     return (dispatch, getState) => {
-        // No more enemies
         dispatch(
             updateBattle({
                 isEnded: true,
             })
         );
 
-        const player = getState().battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const { playerSide, mesosAccumulated } = getState().battle;
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
+            return acc + mesosGained;
+        }, 1);
 
         dispatch(
             updatePlayer({
@@ -69,6 +72,7 @@ const onBattleEnd = () => {
                 HP: player.HP,
                 turnHistory: [],
                 abilityHistory: [],
+                mesos: player.mesos + Math.floor(mesosAccumulated * mesosGainedMultiplier),
             })
         );
     };
@@ -133,6 +137,7 @@ export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[];
                 round: 0,
                 selectCards: null,
                 isLost: false,
+                mesosAccumulated: 0,
             })
         );
 
@@ -286,7 +291,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
-        const { friendly, hostile } = orientate({ combatantId, ...getState().battle });
+        const { friendly, hostile, combatant } = orientate({ combatantId, ...getState().battle });
 
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { HP, id } = combatant || {};
@@ -296,6 +301,11 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         };
 
         dispatch(handleLifeOnKill(triggerSource));
+        dispatch(
+            updateBattle({
+                mesosAccumulated: getState().battle.mesosAccumulated + (combatant.mesos || 0),
+            })
+        );
 
         friendly.forEach((combatant: Combatant | null) => {
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onFriendlyDeath);

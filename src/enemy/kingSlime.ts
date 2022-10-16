@@ -93,7 +93,7 @@ export const kingSlimeEnemy: Minion = {
         },
         {
             name: "Squishy Inside",
-            description: "When all this character's armor has been destroyed, it will burst into three slimes.",
+            description: "When this character receives direct damage, it will burst into three vulnerable slimes.",
             canBeSilenced: false,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
