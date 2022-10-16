@@ -348,7 +348,7 @@ const BattlefieldContainer = () => {
     const eventQueueRef = useRef([]);
 
     useEffect(() => {
-        if (isEnded) {
+        if (isEnded || showWaveClear) {
             return;
         }
         if (!events.length) {
@@ -356,10 +356,14 @@ const BattlefieldContainer = () => {
 
             if (isWinConditionTriggered) {
                 setShowWaveClear(true);
+                dispatch(
+                    updateBattle({
+                        isPlayerTurn: true,
+                        flagTurnEnd: false,
+                    })
+                );
+
                 setTimeout(() => {
-                    if (flagTurnEnd) {
-                        dispatch(updateFlagTurnEnd(false));
-                    }
                     setShowWaveClear(false);
                     dispatch(onWaveClear());
                     if (!waves[currentWaveIndex + 1]) {
@@ -401,7 +405,7 @@ const BattlefieldContainer = () => {
     }, [events, flagTurnEnd]);
 
     useEffect(() => {
-        if (isEnded || isLost) {
+        if (isEnded || isLost || isWinConditionTriggered) {
             return;
         }
         setShowTurnAnnouncement(true);
