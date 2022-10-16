@@ -12,6 +12,7 @@ import {
     getBasicAttack,
     getHealableIndices,
     getMaxHP,
+    getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
     isUnableToAct,
@@ -55,17 +56,13 @@ const canUseAbility = ({ actor, ability, hostile, friendly }): boolean => {
     const movementAction = ability.actions.find((action) => action.movement);
     if (movementAction) {
         const index = friendly.findIndex((e: Combatant) => e && e.id === actor.id);
-        return false;
-        // TODO
-        /*
         return (
             getPossibleMoveIndices({
                 currentLocationIndex: index,
-                enemies,
+                friendly,
                 movement: movementAction.movement,
             }).length > 0
         );
-        */
     }
 
     return true;
