@@ -235,18 +235,15 @@ export const gungnir: Ability = {
     description: "(Damage equal to 50% of your max HP)",
     actions: [
         {
-            damage: 0,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             destroyArmor: 1,
-            bonus: {
-                damage: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.MAX_HP,
-                    value: 0.5,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                },
+            damage: 1,
+            multiplier: {
+                type: MULTIPLIER_TYPES.MAX_HP,
+                value: 0.5,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],

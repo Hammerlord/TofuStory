@@ -389,6 +389,7 @@ export const warBanner2: Ability = {
     name: "War Banner",
     level: 2,
     resourceCost: 2,
+    description: "When summoned or when your turn starts, grants 3 armor and +1 attack to allies within 2 spaces.",
     minion: {
         name: "War Banner",
         image: FlagImage,
@@ -434,6 +435,7 @@ export const warBanner2: Ability = {
 export const warBanner: Ability = {
     name: "War Banner",
     resourceCost: 2,
+    description: "When summoned or when your turn starts, grants 2 armor and +1 attack to nearby allies.",
     minion: {
         name: "War Banner",
         image: FlagImage,

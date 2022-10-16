@@ -105,6 +105,8 @@ const Buffs = ({ ability }) => {
                     healingReceived,
                     attackDamageReceived,
                     attackAreaIncrease,
+                    turnsTriggerFrequency,
+                    drawCardsPerTurn,
                     ...other
                 } = effect;
                 const effectComponents = [];
@@ -170,7 +172,8 @@ const Buffs = ({ ability }) => {
                 if (resourcesPerTurn > 0) {
                     effectComponents.push(
                         <>
-                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Fury size={"sm"} text={`+${resourcesPerTurn}`} /> per turn
+                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Fury size={"sm"} text={`+${resourcesPerTurn}`} />{" "}
+                            {turnsTriggerFrequency ? `every ${turnsTriggerFrequency} turns` : "per turn"}
                         </>
                     );
                 }
@@ -185,6 +188,10 @@ const Buffs = ({ ability }) => {
                             ))}
                         </>
                     );
+                }
+
+                if (drawCardsPerTurn) {
+                    effectComponents.push(<>+{drawCardsPerTurn} extra card draw</>);
                 }
 
                 if (attackAreaIncrease > 0) {

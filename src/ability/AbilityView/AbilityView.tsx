@@ -152,7 +152,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse, preemptive } = ability;
-    const { area = 0, target: targetType, damage, secondaryDamage, destroyArmor = 0 } = actions[0] || {};
+    const { area = 0, target: targetType, damage, secondaryDamage, destroyArmor = 0, ricochet, targetArea, numTargets } = actions[0] || {};
     const cardImage = minion?.image || image;
     let imageNode = null;
 
@@ -256,40 +256,39 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
+                        <DrawCards ability={ability} />
                         <Debuffs effects={getAllEffects(ability)} />
-                        <>
-                            {!healingCornerIcon && healing > 0 && (
-                                <div>
-                                    Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
-                                </div>
-                            )}
-                            {!armorCornerIcon && armor > 0 && (
-                                <div>
-                                    Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
-                                </div>
-                            )}
-                            {resourceGain > 0 && (
-                                <div>
-                                    Gain <Fury text={resourceGain} size={"sm"} />
-                                </div>
-                            )}
-                            {selfDamage > 0 && (
-                                <div>
-                                    Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
-                                </div>
-                            )}
-                            {ability.reusable && <div>Returns to your hand after use</div>}
-                        </>
+                        {ricochet && <div>Ricochets to {numTargets} other targets</div>}
+                        {!healingCornerIcon && healing > 0 && (
+                            <div>
+                                Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
+                            </div>
+                        )}
+                        {!armorCornerIcon && armor > 0 && (
+                            <div>
+                                Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
+                            </div>
+                        )}
+                        {resourceGain > 0 && (
+                            <div>
+                                Gain <Fury text={resourceGain} size={"sm"} />
+                            </div>
+                        )}
+                        {selfDamage > 0 && (
+                            <div>
+                                Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
+                            </div>
+                        )}
+                        {ability.reusable && <div>Returns to your hand after use</div>}
                         <Buffs ability={ability} />
                         <CardsToAdd ability={ability} />
                         <BonusView ability={ability} player={player} />
-                        <DrawCards ability={ability} />
                         <RadiateView ability={ability} />
                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
                     </div>
                     <div className={classes.footer}>
-                        {actions.length > 0 && area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
+                        {area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
                         <AbilityTypeView targetType={targetType} minion={minion} />
                         {minion && (
                             <div className={classes.minionStats}>
