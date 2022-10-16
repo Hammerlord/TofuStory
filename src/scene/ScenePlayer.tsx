@@ -182,9 +182,7 @@ const ScenePlayer = ({
     useEffect(() => {
         const { scene: newScene, background } = script[dialogIndex] || {};
         if (newScene && newScene !== Backdrop) {
-            onTransition(() => {
-                setBackdrop(() => newScene || null);
-            });
+            setBackdrop(() => newScene || null);
         }
 
         const transitioningPuzzle = (Puzzle && !puzzle) || (!puzzle && Puzzle);
@@ -202,8 +200,16 @@ const ScenePlayer = ({
 
     const handleClickDialog = () => {
         if (!responses && !items) {
-            if (dialogIndex + 1 <= script.length - 1) {
-                setDialogIndex(dialogIndex + 1);
+            const newDialogIndex = dialogIndex + 1;
+            if (newDialogIndex <= script.length - 1) {
+                const { scene: newScene } = script[newDialogIndex] || {};
+                if (newScene && newScene !== Backdrop) {
+                    onTransition(() => {
+                        setDialogIndex(newDialogIndex);
+                    });
+                } else {
+                    setDialogIndex(newDialogIndex);
+                }
             } else {
                 onExit();
             }
