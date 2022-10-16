@@ -1055,9 +1055,19 @@ export const dash2: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             drawCards: {
-                amount: 3,
+                amount: 2,
             },
             resources: 1,
+            effects: [
+                {
+                    name: "Dash",
+                    icon: WarriorMasteryImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    duration: 2,
+                    drawCardsPerTurn: 1,
+                },
+            ],
         },
     ],
 };
@@ -1073,6 +1083,16 @@ export const dash: Ability = {
             drawCards: {
                 amount: 2,
             },
+            effects: [
+                {
+                    name: "Dash",
+                    icon: WarriorMasteryImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    duration: 1,
+                    drawCardsPerTurn: 1,
+                },
+            ],
         },
     ],
     upgrades: [dash2],

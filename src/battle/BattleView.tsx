@@ -14,6 +14,7 @@ import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
+import { MAX_HAND_SIZE } from "./constants";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
@@ -143,7 +144,6 @@ const useStyles = createUseStyles({
 
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
-const MAX_HAND_SIZE = 10;
 
 const { popEventQueue, updateFlagTurnEnd, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
 

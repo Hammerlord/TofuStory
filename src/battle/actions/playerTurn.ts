@@ -1,9 +1,18 @@
 import { compose } from "ramda";
 import { EFFECT_CLASSES, EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant } from "../../character/types";
+import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
-import { checkHalveArmor, clearTurnHistory, gainResources, getBasicAttack, updateCardEffects, updateCharacters } from "../utils";
+import {
+    checkHalveArmor,
+    clearTurnHistory,
+    gainResources,
+    getBasicAttack,
+    getEnabledEffects,
+    updateCardEffects,
+    updateCharacters,
+} from "../utils";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 
 const { drawCards, updateBattle } = battleStateSlice.actions;
@@ -137,6 +146,19 @@ export const startPlayerTurn = () => {
             })
         );
 
+        const { battle } = getState();
+        const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const drawCardsPerTurn = getEnabledEffects(player).reduce(
+            (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
+            player.drawCardsPerTurn
+        );
+
+        dispatch(
+            drawCards({
+                amount: Math.min(MAX_HAND_SIZE - battle.hand.length, drawCardsPerTurn - battle.hand.length), // TODO card draw effects
+            })
+        );
+
         updatedPlayerSide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
@@ -147,14 +169,6 @@ export const startPlayerTurn = () => {
                 dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
             }
         });
-
-        const { battle } = getState();
-        const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
-        dispatch(
-            drawCards({
-                amount: player.drawCardsPerTurn - battle.hand.length, // TODO card draw effects
-            })
-        );
     };
 };
 

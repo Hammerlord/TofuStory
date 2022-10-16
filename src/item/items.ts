@@ -19,7 +19,7 @@ import {
     StolenFenceImage,
     SunshinePanImage,
 } from "../images";
-import { EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES } from "./types";
 
@@ -135,6 +135,15 @@ export const amethyst: Item = {
     ],
 };
 
+const sandalsEffect: Effect = {
+    name: "Leather Sandals",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: LeatherSandalsImage,
+    drawCardsPerTurn: 1,
+    duration: 1,
+};
+
 export const leatherSandals: Item = {
     name: "Leather Sandals",
     description: "The quintessential footwear of aspiring adventurers. On wave start, draw an extra card.",
@@ -148,9 +157,7 @@ export const leatherSandals: Item = {
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                drawCards: {
-                    amount: 1,
-                },
+                effects: [sandalsEffect],
             },
         },
     ],
