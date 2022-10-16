@@ -27,13 +27,27 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
         <div>
             Inflict{" "}
             {debuffs.map((effect: Effect, i) => {
-                const { duration, attackPower, type } = effect;
+                const { duration, attackPower, type, attackDamageReceived } = effect;
                 return (
                     <span key={i}>
-                        <Icon icon={getDebuffIcon(type)} size={"sm"} />
+                        {getDebuffIcon(type) && <Icon icon={getDebuffIcon(type)} size={"sm"} />}
                         {/** Chill's attack power decrease is explained in a tooltip */}
                         {attackPower && type !== EFFECT_TYPES.CHILL && (
-                            <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />
+                            <>
+                                <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />{" "}
+                                attack power{" "}
+                            </>
+                        )}
+                        {/** Bleed's attack damage received increase is explained in a tooltip */}
+                        {attackDamageReceived && type !== EFFECT_TYPES.BLEED && (
+                            <>
+                                <Icon
+                                    icon={<CrossedSwordsIcon />}
+                                    size={"sm"}
+                                    text={`${attackDamageReceived > 0 ? "+" : ""}${attackDamageReceived}`}
+                                />{" "}
+                                damage received from attacks
+                            </>
                         )}
                         <Icon icon={<HourglassIcon />} size={"sm"} text={duration === Infinity ? "∞" : duration} />
                     </span>
