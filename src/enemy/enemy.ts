@@ -418,12 +418,30 @@ export const thiefAssassin: Minion = {
     ],
 };
 
-export const olaf = {
+export const olaf: Minion = {
     name: "Olaf",
     maxHP: 55,
     effects: [elite],
     mesos: 10,
     abilities: [
+        {
+            name: "Flexin'",
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            name: "Flex",
+                            type: EFFECT_TYPES.RAGE,
+                            class: EFFECT_CLASSES.BUFF,
+                            icon: WeaponMasteryImage,
+                            attackPower: 1,
+                        },
+                    ],
+                },
+            ],
+        },
         {
             name: "Double Punch",
             resourceCost: 3,
@@ -441,7 +459,7 @@ export const olaf = {
             ],
         },
     ],
-    damage: 2,
+    damage: 1,
     image: OlafImage,
 };
 

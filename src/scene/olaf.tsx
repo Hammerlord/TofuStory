@@ -66,8 +66,10 @@ const olafFight: { characters: string[]; waves: Wave[] } = {
     waves: [
         {
             enemies: [null, null, olaf, null, null],
-            description:
-                "You've encountered an elite opponent. Elites typically have increased health, damage, and a few special abilities up their sleeve.",
+            description: [
+                "You've encountered an elite opponent.",
+                " Elites typically have increased health, damage, and a few special abilities up their sleeve.",
+            ],
         },
     ],
 };
@@ -107,7 +109,7 @@ export const lithEventsOlaf: Scene = {
             speaker: olafNPC,
             dialog: [
                 "Don't tell me a little creature like you's the culprit...",
-                "[Olaf pauses and laughs to himself.] Oh, who am I kidding. Monsters don't train on training dummies. And I don't have time for this.",
+                "Oh, who am I kidding. Monsters don't train on training dummies. And I don't have time for this.",
             ],
         },
         {
@@ -131,11 +133,9 @@ export const lithEventsOlaf: Scene = {
                             speaker: olafNPC,
                             dialog: [
                                 "Well, I hate to pick on naive creatures who've taken the wrong turn, but I should take care of this before the next batch of greenhorns come around...",
+                                "[Olaf makes a menacing gesture with his arms.]",
                             ],
-                            responses: [
-                                { text: "Fight!", encounter: olafFight, notoriety: 1, next: postFight },
-                                { text: "Leave before you attract any more attention.", isExit: true },
-                            ],
+                            responses: [{ text: "Prepare for Olaf's attack.", encounter: olafFight, notoriety: 1, next: postFight }],
                         },
                     ],
                 },
@@ -150,14 +150,10 @@ export const lithEventsOlaf: Scene = {
                             ],
                             responses: [
                                 { text: "Fight!", encounter: olafFight, notoriety: 1, next: postFight },
-                                { text: "Leave before you attract any more attention.", isExit: true },
+                                { text: "On second thought... [Leave before you attract any more attention.]", isExit: true },
                             ],
                         },
                     ],
-                },
-                {
-                    text: "Leave before you attract any more attention.",
-                    isExit: true,
                 },
             ],
         },

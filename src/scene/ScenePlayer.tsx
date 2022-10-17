@@ -339,7 +339,7 @@ const ScenePlayer = ({
                                             onClick={() => handleClickResponse(response)}
                                         >
                                             <span>
-                                                {response.text} {getResponseAffix(response)}
+                                                {interpolateDialog(response.text)} {getResponseAffix(response)}
                                             </span>
                                         </div>
                                     ))}
