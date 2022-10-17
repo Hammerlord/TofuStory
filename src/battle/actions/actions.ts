@@ -60,12 +60,15 @@ const onBattleEnd = () => {
             })
         );
 
-        const { playerSide, mesosAccumulated } = getState().battle;
+        const { playerSide, mesosAccumulated, isTutorial } = getState().battle;
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
             return acc + mesosGained;
         }, 1);
 
+        if (isTutorial) {
+            return;
+        }
         dispatch(
             updatePlayer({
                 armor: 0,
@@ -106,7 +109,17 @@ export const onWaveClear = () => {
     };
 };
 
-export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[]; deck?: Ability[]; addAbilities?: Ability[] }) => {
+export const startBattle = ({
+    waves,
+    addAbilities = [],
+    deck,
+    isTutorial,
+}: {
+    waves: Wave[];
+    deck?: Ability[];
+    addAbilities?: Ability[];
+    isTutorial?: boolean;
+}) => {
     return (dispatch, getState) => {
         const { character } = getState();
         const player = {
@@ -114,7 +127,7 @@ export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[];
             effects: aggregateItemEffects(character.player.items),
         };
         deck = deck || character?.deck;
-        const { presetDeck, description, enemies } = waves[0];
+        const { presetDeck, enemies } = waves[0];
         dispatch(
             updateBattle({
                 enemySide: enemies.map(createCombatant),
@@ -142,6 +155,7 @@ export const startBattle = ({ waves, addAbilities = [], deck }: { waves: Wave[];
                 selectCards: null,
                 isLost: false,
                 mesosAccumulated: 0,
+                isTutorial,
             })
         );
 

@@ -2,8 +2,7 @@ import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { startBattle } from "../battle/actions/actions";
-import { useAppDispatch } from "../hooks";
+import Rewards from "../battle/Rewards";
 import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
 import { WorldMapIcon } from "../images/icons";
 import tutorial from "../Menu/tutorial";
@@ -74,23 +73,33 @@ const useStyles = createUseStyles({
         height: "32px",
         margin: "auto",
     },
+    tutorialContainer: {
+        background: "rgba(0, 0, 0, 0.7)",
+        padding: 24,
+        paddingBottom: 48,
+        borderRadius: 8,
+    },
 });
 
-const LithHarbor = ({ player, onExit, onClickScene }) => {
+const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
     const [promptTutorial, setPromptTutorial] = useState(true);
-    const dispatch = useAppDispatch();
+    const [showAcquireAbility, setShowAcquireAbility] = useState(false);
 
     const handleTutorialConfirmation = () => {
-        dispatch(startBattle(tutorial));
+        onBattle && onBattle(tutorial, () => setPromptTutorial(false));
+    };
+
+    const handleTutorialCancel = () => {
         setPromptTutorial(false);
+        setShowAcquireAbility(true);
     };
 
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
                 <div className={classes.inner}>
-                    {!promptTutorial && (
+                    {!promptTutorial && !showAcquireAbility && (
                         <>
                             <h2>Lith Harbor</h2>
                             <div className={classes.eventsContainer}>
@@ -116,20 +125,23 @@ const LithHarbor = ({ player, onExit, onClickScene }) => {
                             </div>
                         </>
                     )}
-
                     {promptTutorial && (
-                        <div>
+                        <div className={classes.tutorialContainer}>
                             <h3>Play the tutorial?</h3>
-                            <p>The tutorial is an introduction to the basic mechanics of combat.</p>
+                            <p>The tutorial is an optional introduction to the basics of combat.</p>
                             <Button variant="contained" color="primary" onClick={handleTutorialConfirmation}>
                                 Yes
-                            </Button>
-                            <Button variant="contained" onClick={() => setPromptTutorial(false)}>
+                            </Button>{" "}
+                            <Button variant="contained" onClick={handleTutorialCancel}>
                                 No
                             </Button>
                         </div>
                     )}
                 </div>
+
+                {showAcquireAbility && (
+                    <Rewards deck={deck} player={player} updateDeck={updateDeck} onClose={() => setShowAcquireAbility(false)} />
+                )}
             </div>
         </div>
     );

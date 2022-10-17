@@ -266,6 +266,13 @@ const Main = () => {
         );
     };
 
+    const handleTownBattle = (battleConfig, callback: () => void) => {
+        handleTransition(() => {
+            dispatch(startBattle(battleConfig));
+            callback();
+        });
+    };
+
     const getTown = () => {
         const TOWN_MAP = {
             [TOWNS.KERNING]: KerningCity,
@@ -274,7 +281,17 @@ const Main = () => {
         };
 
         const Town = TOWN_MAP[town];
-        return <Town player={player} onExit={() => setTown(null)} onClickScene={setScene} />;
+        return (
+            <Town
+                player={player}
+                deck={deck}
+                updateDeck={updateDeck}
+                updatePlayer={updatePlayer}
+                onExit={() => setTown(null)}
+                onClickScene={setScene}
+                onBattle={handleTownBattle}
+            />
+        );
     };
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
