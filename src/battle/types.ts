@@ -61,11 +61,10 @@ export interface TriggerSource {
 }
 
 export interface Wave {
-    description?: string | string[];
+    description?: string | string[] | JSX.Element | JSX.Element[];
     enemies: Array<any>;
     presetDeck?: Ability[];
     winCondition?: {
-        surviveRounds?: number;
         defeatBoss?: boolean;
     };
 }

@@ -32,6 +32,7 @@ import {
 
 export const thorns: Effect = {
     name: "Thorns",
+    description: "Reflects 1 damage to attackers.",
     canBeSilenced: true,
     icon: CactusIcon,
     duration: Infinity,

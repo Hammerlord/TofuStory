@@ -5,14 +5,11 @@ import { createUseStyles } from "react-jss";
 const useStyles = createUseStyles({
     root: {
         padding: "8px 32px",
-        position: "fixed",
-        left: "50%",
-        top: "10%",
-        transform: "translateX(-50%)",
         zIndex: 4,
         cursor: "pointer",
         fontSize: "1.2rem",
         whiteSpace: "nowrap",
+        lineHeight: "1.5rem",
         "&.warning": {
             background: "#ffd342",
             color: "black",
@@ -22,8 +19,10 @@ const useStyles = createUseStyles({
             color: "white",
         },
         "&.info": {
-            background: "#1a1409",
             color: "white",
+            padding: "8px 64px",
+            background:
+                "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 85%, rgba(0,212,255,0) 100%)",
         },
     },
 });

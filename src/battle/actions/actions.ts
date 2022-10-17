@@ -80,7 +80,7 @@ const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { waves, currentWaveIndex, deck, playerSide, hand } = getState().battle;
+        const { waves, currentWaveIndex, deck, playerSide, hand, discard } = getState().battle;
         const { presetDeck, enemies } = waves[currentWaveIndex + 1] || {};
 
         playerSide.forEach((combatant: Combatant | null) => {
@@ -94,9 +94,13 @@ export const onWaveClear = () => {
 
         dispatch(
             updateBattle({
+                isPlayerTurn: true,
                 currentWaveIndex: currentWaveIndex + 1,
+                flagTurnEnd: false,
                 enemySide: enemies.map(createCombatant),
-                deck: presetDeck ? shuffle(presetDeck.slice()) : deck,
+                deck: presetDeck ? presetDeck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })) : deck,
+                hand: presetDeck ? [] : hand,
+                discard: presetDeck ? [] : discard,
             })
         );
     };

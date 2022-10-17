@@ -23,17 +23,11 @@ const WaveInfo = ({ waves, currentWaveIndex, cleared }: { waves: Wave[]; current
         return null;
     }
 
-    const { surviveRounds, defeatBoss } = wave.winCondition || {};
+    const { defeatBoss } = wave.winCondition || {};
     const classes = useStyles();
 
     let messageNode;
-    if (surviveRounds) {
-        messageNode = (
-            <div>
-                Survive {surviveRounds} round{surviveRounds > 1 && "s"}
-            </div>
-        );
-    } else if (defeatBoss) {
+    if (defeatBoss) {
         messageNode = <div>Defeat the boss</div>;
     } else {
         messageNode = <div>Defeat all enemies</div>;

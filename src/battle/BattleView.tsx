@@ -140,6 +140,20 @@ const useStyles = createUseStyles({
         top: 0,
         pointerEvents: "none",
     },
+    notificationContainer: {
+        position: "fixed",
+        left: "50%",
+        top: "42.5%",
+        transform: "translateX(-50%)",
+        zIndex: 4,
+    },
+    abilityNotificationContainer: {
+        position: "fixed",
+        left: "50%",
+        top: "12.5%",
+        transform: "translateX(-50%)",
+        zIndex: 4,
+    },
 });
 
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
@@ -160,7 +174,6 @@ const BattlefieldContainer = () => {
         charactersAttackedThisTurn,
         currentWaveIndex,
         waves,
-        round,
         flagTurnEnd,
         selectCardsPrompt,
         isEnded,
@@ -178,26 +191,22 @@ const BattlefieldContainer = () => {
     );
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
     const [notification, setNotification] = useState(null) as [BattleNotification, Function];
-    const [info, setInfo] = useState(null);
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles();
+    const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
     const isWinConditionTriggered = (() => {
-        const { winCondition = {} } = waves[currentWaveIndex] || {};
-        if (winCondition.surviveRounds) {
-            return round > winCondition.surviveRounds;
-        }
-
         if (winCondition.defeatBoss) {
             return enemySide.every((enemy) => !enemy?.isBoss || enemy?.HP <= 0);
         }
 
         return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     })();
+
     const disableActions = showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || isWinConditionTriggered;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
@@ -305,6 +314,15 @@ const BattlefieldContainer = () => {
     };
 
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
+        if (selectedMinion) {
+            if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
+                handleAllyAttack({ index });
+            } else {
+                setSelectedAllyIndex(null);
+            }
+            return;
+        }
+
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 if (selectedAbility.selectCards) {
@@ -320,12 +338,6 @@ const BattlefieldContainer = () => {
             }
             return;
         }
-
-        if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
-            handleAllyAttack({ index });
-        } else {
-            setSelectedAllyIndex(null);
-        }
     };
 
     const handleBattlefieldClick = () => {
@@ -333,7 +345,15 @@ const BattlefieldContainer = () => {
         setSelectedAbilityId(null);
     };
 
-    const showWaveDescription = ({ description, i = 0, delay }: { description?: string | string[]; i?: number; delay: number }) => {
+    const showWaveDescription = ({
+        description,
+        i = 0,
+        delay = 2500,
+    }: {
+        description?: string | string[] | JSX.Element | JSX.Element[];
+        i?: number;
+        delay?: number;
+    }) => {
         setTimeout(() => {
             setNotification({
                 text: Array.isArray(description) ? description[i] : description,
@@ -348,37 +368,39 @@ const BattlefieldContainer = () => {
     const eventQueueRef = useRef([]);
 
     useEffect(() => {
+        showWaveDescription({ description: waveDescription });
+    }, [currentWaveIndex]);
+
+    useEffect(() => {
+        if (events.length || !isWinConditionTriggered) {
+            return;
+        }
+
+        setShowWaveClear(true);
+        setTimeout(() => {
+            setShowWaveClear(false);
+            dispatch(onWaveClear());
+            if (!waves[currentWaveIndex + 1]) {
+                return;
+            }
+            setShowTurnAnnouncement(true);
+            setTimeout(() => {
+                setShowTurnAnnouncement(false);
+                dispatch(onWaveStart());
+                dispatch(startPlayerTurn());
+            }, TURN_ANNOUNCEMENT_TIME);
+        }, TURN_ANNOUNCEMENT_TIME);
+    }, [events, isWinConditionTriggered]);
+
+    useEffect(() => {
         if (isEnded || showWaveClear) {
             return;
         }
         if (!events.length) {
             eventQueueRef.current = events;
-
             if (isWinConditionTriggered) {
-                setShowWaveClear(true);
-                dispatch(
-                    updateBattle({
-                        isPlayerTurn: true,
-                        flagTurnEnd: false,
-                    })
-                );
-
-                setTimeout(() => {
-                    setShowWaveClear(false);
-                    dispatch(onWaveClear());
-                    if (!waves[currentWaveIndex + 1]) {
-                        return;
-                    }
-                    setShowTurnAnnouncement(true);
-                    setTimeout(() => {
-                        setShowTurnAnnouncement(false);
-                        dispatch(onWaveStart());
-                        dispatch(startPlayerTurn());
-                    }, TURN_ANNOUNCEMENT_TIME);
-                }, TURN_ANNOUNCEMENT_TIME);
                 return;
             }
-
             if (flagTurnEnd) {
                 if (isPlayerTurn) {
                     dispatch(playerEndTurn());
@@ -508,17 +530,18 @@ const BattlefieldContainer = () => {
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
             <div className={classes.root} onClick={handleBattlefieldClick}>
-                {info && (
-                    <Notification onClick={() => setInfo(null)} id={info.id}>
-                        {info.text}
-                    </Notification>
-                )}
                 {notification && (
-                    <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
-                        {notification.text}
-                    </Notification>
+                    <div className={classes.notificationContainer}>
+                        <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
+                            {notification.text}
+                        </Notification>
+                    </div>
                 )}
-                {events[0]?.actionParent && <AbilityNotification ability={events[0].actionParent} />}
+                {events[0]?.actionParent && (
+                    <div className={classes.abilityNotificationContainer}>
+                        <AbilityNotification ability={events[0].actionParent} />
+                    </div>
+                )}
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield}>
                         <div className={classes.waves}>

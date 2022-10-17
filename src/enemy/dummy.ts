@@ -2,12 +2,18 @@ import { Puppetree2Image, Puppetree3Image, PuppetreeImage } from "../images";
 import { hardy, thorns } from "./../ability/Effects";
 import { loaf, tantrum } from "./abilities";
 
+export const basicDummy2 = {
+    name: "Dummy",
+    image: PuppetreeImage,
+    maxHP: 5,
+    damage: 1,
+};
+
 export const basicDummy = {
     name: "Dummy",
     image: PuppetreeImage,
-    maxHP: 15,
+    maxHP: 12,
     abilities: [loaf],
-    effects: [hardy],
     damage: 1,
 };
 

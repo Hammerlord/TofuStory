@@ -96,7 +96,7 @@ const Main = () => {
     const [locationNode, setLocationNode] = useState(null);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     // TESTING: Allow selection of one reward at the start
-    const [rewardsOpen, setRewardsOpen] = useState(true);
+    const [rewardsOpen, setRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});

@@ -1,7 +1,12 @@
+import { Button } from "@material-ui/core";
 import classNames from "classnames";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { startBattle } from "../battle/actions/actions";
+import { useAppDispatch } from "../hooks";
 import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
 import { WorldMapIcon } from "../images/icons";
+import tutorial from "../Menu/tutorial";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
 
@@ -73,32 +78,57 @@ const useStyles = createUseStyles({
 
 const LithHarbor = ({ player, onExit, onClickScene }) => {
     const classes = useStyles();
+    const [promptTutorial, setPromptTutorial] = useState(true);
+    const dispatch = useAppDispatch();
+
+    const handleTutorialConfirmation = () => {
+        dispatch(startBattle(tutorial));
+        setPromptTutorial(false);
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
                 <div className={classes.inner}>
-                    <h2>Lith Harbor</h2>
-                    <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node, classes.balcony)} onClick={() => onClickScene(lithEventsOlaf)}>
-                            Event
-                            <img src={LithHarborBalconyImage} />
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node, classes.shark)} onClick={() => onClickScene(lithEventsTeoJohn)}>
-                            Event
-                            <img src={LithHarborSharkImage} />
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
-                            Exit to World Map
-                            <img src={LithHarborExitImage} />
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <WorldMapIcon />
+                    {!promptTutorial && (
+                        <>
+                            <h2>Lith Harbor</h2>
+                            <div className={classes.eventsContainer}>
+                                <div className={classNames(classes.node, classes.balcony)} onClick={() => onClickScene(lithEventsOlaf)}>
+                                    Event
+                                    <img src={LithHarborBalconyImage} />
+                                    <div className={classes.event}>?</div>
+                                </div>
+                                <div className={classNames(classes.node, classes.shark)} onClick={() => onClickScene(lithEventsTeoJohn)}>
+                                    Event
+                                    <img src={LithHarborSharkImage} />
+                                    <div className={classes.event}>?</div>
+                                </div>
+                                <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
+                                    Exit to World Map
+                                    <img src={LithHarborExitImage} />
+                                    <div className={classes.event}>
+                                        <div className={classes.eventInner}>
+                                            <WorldMapIcon />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        </>
+                    )}
+
+                    {promptTutorial && (
+                        <div>
+                            <h3>Play the tutorial?</h3>
+                            <p>The tutorial is an introduction to the basic mechanics of combat.</p>
+                            <Button variant="contained" color="primary" onClick={handleTutorialConfirmation}>
+                                Yes
+                            </Button>
+                            <Button variant="contained" onClick={() => setPromptTutorial(false)}>
+                                No
+                            </Button>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
