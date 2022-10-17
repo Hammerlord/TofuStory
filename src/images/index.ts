@@ -7,6 +7,7 @@ export { default as ArrowImage } from "./Arrow.png";
 export { default as AxeImage } from "./Axe.png";
 export { default as AxeStumpImage } from "./AxeStump.png";
 export { default as BananaGrahamPieImage } from "./BananaGrahamPie.png";
+export { default as BarrelsSceneImage } from "./BarrelsScene.png";
 export { default as BigBeefyImage } from "./BigBeefy.png";
 export { default as BlackManualImage } from "./BlackManual.png";
 export { default as BladestormImage } from "./Bladestorm.png";

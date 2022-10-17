@@ -2,8 +2,10 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { Ability } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
+import Camp from "../Map/Camp";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { Scene, ScriptResponse } from "./types";
 
@@ -162,6 +164,8 @@ const ScenePlayer = ({
     onExit,
     onShop,
     onTransition,
+    deck,
+    updateDeck,
 }: {
     scene: Scene;
     player: any;
@@ -170,12 +174,15 @@ const ScenePlayer = ({
     onExit: Function;
     onShop: Function;
     onTransition?: Function;
+    deck: Ability[];
+    updateDeck: (newDeck: Ability[]) => void;
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
     const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
     const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
+    const [showCamp, setShowCamp] = useState(false);
     const classes = useStyles();
     const { speaker, dialog = [], items, responses, puzzle, itemChoices } = script[dialogIndex] || {};
 
@@ -216,7 +223,7 @@ const ScenePlayer = ({
         }
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop }: ScriptResponse) => {
+    const handleClickResponse = ({ next, encounter, isExit, shop, camp }: ScriptResponse) => {
         const callback = () => {
             if (next) {
                 setScript(next);
@@ -227,6 +234,9 @@ const ScenePlayer = ({
             }
             if (isExit) {
                 onExit();
+            }
+            if (camp) {
+                setShowCamp(true);
             }
 
             if (!next && !shop && !isExit) {
@@ -291,7 +301,7 @@ const ScenePlayer = ({
             <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
             <div className={classes.backgroundOverlay} />
             <div className={classes.inner}>
-                {!Puzzle && (
+                {!Puzzle && !showCamp && (
                     <>
                         <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
@@ -352,6 +362,9 @@ const ScenePlayer = ({
                 )}
                 {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
             </div>
+            {showCamp && (
+                <Camp deck={deck} player={player} updateDeck={updateDeck} updatePlayer={updatePlayer} onExit={() => setShowCamp(false)} />
+            )}
             {itemChoices && <ItemSelection {...itemChoices} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />}
         </div>
     );

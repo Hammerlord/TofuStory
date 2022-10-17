@@ -30,7 +30,7 @@ import {
     WeaponMasteryImage,
     WildBoarImage,
 } from "../images";
-import { burn, elite, hardy, poison, raging, stealth, thorns } from "./../ability/Effects";
+import { burn, elite, hardy, poison, raging, stealth, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -532,6 +532,25 @@ export const ligator: Minion = {
     maxHP: 30,
     damage: 2,
     mesos: 10,
+    abilities: [
+        {
+            name: "Chomp",
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                    effects: [
+                        {
+                            ...wound,
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const eliteLigator: Minion = {
@@ -541,6 +560,25 @@ export const eliteLigator: Minion = {
     mesos: 25,
     damage: 2,
     effects: [elite, raging],
+    abilities: [
+        {
+            name: "Chomp",
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                    effects: [
+                        {
+                            ...wound,
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const greenMushroom: Minion = {

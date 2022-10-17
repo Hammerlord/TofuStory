@@ -25,6 +25,7 @@ export interface ScriptResponse {
         };
         hasDiscount?: boolean;
     };
+    camp?: boolean;
 }
 
 export interface ScriptNode {
@@ -44,7 +45,6 @@ export interface ScriptNode {
         // How many different options the player can pick from
         numChoices: number;
     };
-    healthRecovery?: number; // Percentage
 }
 
 export interface NPC {

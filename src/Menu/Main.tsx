@@ -293,6 +293,8 @@ const Main = () => {
 
                     {scene && (
                         <ScenePlayer
+                            deck={deck}
+                            updateDeck={updateDeck}
                             scene={scene}
                             player={player}
                             updatePlayer={setPlayer}
