@@ -1,6 +1,6 @@
 import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { rally } from "../../enemy/abilities";
-import { GoldRichieImage, GuardWarriorImage, MesoCoinImage, MesoImage, WeaponMasteryImage } from "../../images";
+import { GoldRichieImage, GuardWarriorImage, GuardWizardImage, MesoCoinImage, MesoImage, WeaponMasteryImage } from "../../images";
 
 const mesoCoin: Minion = {
     name: "Meso",
@@ -122,16 +122,14 @@ export const goldRichie2: Minion = {
 export const adventurerFighter = {
     name: "Fighter",
     image: GuardWarriorImage,
-    HP: 40,
-    maxHP: 40,
+    maxHP: 75,
     damage: 2,
     abilities: [rally],
 };
 
 export const adventurerIceWizard = {
     name: "Ice-Lightning Wizard",
-    image: GuardWarriorImage,
-    HP: 35,
-    maxHP: 35,
+    image: GuardWizardImage,
+    maxHP: 60,
     damage: 3,
 };

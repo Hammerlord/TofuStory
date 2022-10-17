@@ -27,9 +27,9 @@ export const rally: Ability = {
     resourceCost: 3,
     actions: [
         {
-            area: 1,
+            area: 2,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 2,
+            armor: 10,
             type: ACTION_TYPES.EFFECT,
         },
     ],
