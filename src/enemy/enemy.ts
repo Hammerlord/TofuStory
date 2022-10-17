@@ -27,6 +27,7 @@ import {
     ShroomImage,
     SnailImage,
     SnailShellImage,
+    StolenFenceImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
@@ -184,7 +185,7 @@ export const pig: Minion = {
     effects: [
         {
             name: "Pig-Headed",
-            description: "When stunned:",
+            description: "While stunned:",
             icon: PigsHeadImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
@@ -475,6 +476,16 @@ export const octopus: Minion = {
             ],
         },
     ],
+    effects: [
+        {
+            name: "Tentacular",
+            description: "Recovering 1 life on hit.",
+            icon: OctopusLegImage,
+            lifeOnHit: 1,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+        },
+    ],
 };
 
 export const wildBoar: Minion = {
@@ -493,6 +504,33 @@ export const wildBoar: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 7,
                 },
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stun,
+                            name: "Dazed",
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Pig-Headed",
+            description: "While stunned:",
+            icon: PigsHeadImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: 2,
+            conditions: [
+                {
+                    hasEffectType: [EFFECT_TYPES.STUN],
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
             ],
         },
     ],
@@ -506,12 +544,25 @@ export const stump: Minion = {
     damage: 2,
     effects: [
         {
-            ...hardy,
             name: "Hardwood",
+            description: "When this character is attacked, its damage received from attacks is reduced by 1.",
             icon: FirewoodImage,
             attackDamageReceived: -1,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            onReceiveAttack: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Hardwood Barricade",
+                        icon: StolenFenceImage,
+                        attackDamageReceived: -1,
+                        duration: 1,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                    },
+                ],
+            },
         },
     ],
 };
@@ -544,12 +595,25 @@ export const axeStump: Minion = {
     ],
     effects: [
         {
-            ...hardy,
             name: "Hardwood",
+            description: "When this character is attacked, its damage received from attacks is reduced by 1.",
             icon: FirewoodImage,
             attackDamageReceived: -1,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            onReceiveAttack: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Hardwood Barricade",
+                        icon: StolenFenceImage,
+                        attackDamageReceived: -1,
+                        duration: 1,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                    },
+                ],
+            },
         },
     ],
 };
@@ -571,10 +635,37 @@ export const fireBoar: Minion = {
                     damage: 7,
                     effects: [{ ...burn, duration: 1 }],
                 },
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stun,
+                            name: "Dazed",
+                            duration: 2,
+                        },
+                    ],
+                },
             ],
         },
     ],
-    effects: [hardy],
+    effects: [
+        hardy,
+        {
+            name: "Pig-Headed",
+            description: "While stunned:",
+            icon: PigsHeadImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: 2,
+            conditions: [
+                {
+                    hasEffectType: [EFFECT_TYPES.STUN],
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+        },
+    ],
 };
 
 export const ligator: Minion = {
@@ -638,6 +729,27 @@ export const greenMushroom: Minion = {
     maxHP: 25,
     damage: 1,
     mesos: 5,
+    abilities: [
+        {
+            name: "Poison Spore",
+            image: MushroomSporeImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MushroomSporeImage,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    damage: 1,
+                    effects: [
+                        {
+                            ...poison,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const hornyMushroom: Minion = {

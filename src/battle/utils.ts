@@ -54,7 +54,7 @@ export const gainResources = (character: Combatant): Combatant => {
 
     return {
         ...character,
-        resources: Math.min(character.maxResources, character.resources + resourcesGained),
+        resources: Math.max(Math.min(character.maxResources, character.resources + resourcesGained), 0),
     };
 };
 
