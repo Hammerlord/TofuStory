@@ -6,6 +6,7 @@ import {
     mutantSnailEnemy,
     octopus,
     orangeMushroom,
+    pig,
     redSnail,
     shroom,
     snail,
@@ -211,7 +212,7 @@ export const routeLith: Route = {
     enemies: {
         easy: [snail],
         normal: [blueSnail, shroom],
-        hard: [redSnail],
+        hard: [redSnail, pig],
         hardest: [orangeMushroom],
     } as MapEnemies,
     nodes: [
@@ -232,7 +233,7 @@ export const toLith: Route = {
     enemies: {
         easy: [snail],
         normal: [blueSnail, shroom],
-        hard: [redSnail],
+        hard: [redSnail, pig],
         hardest: [orangeMushroom],
     } as MapEnemies,
     nodes: [

@@ -144,6 +144,8 @@ export { default as PerionRegionBGImage } from "./PerionRegionBG.jpg";
 export { default as PiercingDriveImage } from "./PiercingDrive.png";
 export { default as PigImage } from "./Pig.png";
 export { default as PigCardImage } from "./PigCard.png";
+export { default as PigIdleImage } from "./PigIdle.gif";
+export { default as PigsHeadImage } from "./PigsHead.png";
 export { default as PoisonImage } from "./Poison.png";
 export { default as PowerStanceImage } from "./PowerStance.png";
 export { default as PunctureImage } from "./Puncture.png";

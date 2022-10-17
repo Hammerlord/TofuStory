@@ -20,6 +20,8 @@ import {
     OctopusLegImage,
     OlafImage,
     OrangeMushroomImage,
+    PigIdleImage,
+    PigsHeadImage,
     RedSnailImage,
     RedSnailShellImage,
     ShroomImage,
@@ -30,7 +32,8 @@ import {
     WeaponMasteryImage,
     WildBoarImage,
 } from "../images";
-import { burn, elite, hardy, poison, raging, stealth, thorns, wound } from "./../ability/Effects";
+import { AngerIcon } from "../images/icons";
+import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -148,9 +151,57 @@ export const redSnail: Minion = {
     ],
 };
 
+export const pig: Minion = {
+    name: "Pig",
+    maxHP: 55,
+    image: PigIdleImage,
+    mesos: 15,
+    damage: 2,
+    abilities: [
+        {
+            name: "Headlong Rush",
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stun,
+                            name: "Dazed",
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Pig-Headed",
+            description: "When stunned:",
+            icon: PigsHeadImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: 2,
+            conditions: [
+                {
+                    hasEffectType: [EFFECT_TYPES.STUN],
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+        },
+    ],
+};
+
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 60,
+    maxHP: 65,
     image: OrangeMushroomImage,
     damage: 3,
     mesos: 25,
