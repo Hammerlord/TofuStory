@@ -72,7 +72,7 @@ export const lithEventsTeoJohn: Scene = {
             speaker: teo,
             dialog: [
                 "There, see? A mushroom got into Lith Harbor.",
-                "I hear there's an awful of them around Henesys lately. Maybe they've started to migrate over here.",
+                "I hear there's an awful lot of them around Henesys lately. Maybe they've started to migrate over here.",
             ],
         },
         {
