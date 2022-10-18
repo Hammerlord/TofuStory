@@ -295,7 +295,7 @@ const Main = () => {
     };
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
-    const setDeck = (deck) => dispatch(updateDeck(deck));
+    const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
 
     const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town || upgradingAbility;
 
@@ -311,7 +311,7 @@ const Main = () => {
                     {scene && (
                         <ScenePlayer
                             deck={deck}
-                            updateDeck={updateDeck}
+                            updateDeck={handleUpdateDeck}
                             scene={scene}
                             player={player}
                             updatePlayer={setPlayer}
@@ -326,7 +326,7 @@ const Main = () => {
                             onExit={() => setIsResting(false)}
                             player={player}
                             deck={deck}
-                            updateDeck={setDeck}
+                            updateDeck={handleUpdateDeck}
                             updatePlayer={setPlayer}
                         />
                     )}
@@ -337,12 +337,12 @@ const Main = () => {
                             {...shop}
                             onExit={() => setShop(null)}
                             deck={deck}
-                            updateDeck={setDeck}
+                            updateDeck={handleUpdateDeck}
                             updatePlayer={setPlayer}
                         />
                     )}
                     {!isSelectingSecondaryJob && rewardsOpen && (
-                        <Rewards deck={deck} player={player} updateDeck={setDeck} onClose={handleCloseRewards} />
+                        <Rewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseRewards} />
                     )}
 
                     {treasure && (
