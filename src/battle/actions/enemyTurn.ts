@@ -255,25 +255,28 @@ const enemyUseAbility = (combatantId: string) => {
 
         if (!ability.castTime && !ability.channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
-        } else {
-            const casting = {
-                ability,
-                castTime: ability.castTime,
-                channelDuration: ability.channelDuration,
-                selectedIndex: index,
-                selectedSide: side,
-            };
+            return;
+        }
+        const casting = {
+            ability,
+            castTime: ability.castTime,
+            channelDuration: ability.channelDuration,
+            selectedIndex: index,
+            selectedSide: side,
+        };
 
-            const resourceCost = (ability.resourceCost === "x" ? actor.resources : ability.resourceCost) || 0;
-            dispatch(
-                updateCombatant({
-                    combatantId,
-                    newProperties: {
-                        casting,
-                        resources: actor.resources - resourceCost,
-                    },
-                })
-            );
+        const resourceCost = (ability.resourceCost === "x" ? actor.resources : ability.resourceCost) || 0;
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    casting,
+                    resources: actor.resources - resourceCost,
+                },
+            })
+        );
+        if (!ability.castTime) {
+            dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
         }
     };
 };
