@@ -8,7 +8,9 @@ import {
     orangeMushroom,
     pig,
     redSnail,
+    ribbonPig,
     shroom,
+    slime,
     snail,
     stump,
     wildBoar,
@@ -210,10 +212,10 @@ export const routeLith: Route = {
         y: 0.7956483387239047,
     },
     enemies: {
-        easy: [snail],
-        normal: [blueSnail, shroom],
-        hard: [redSnail, pig],
-        hardest: [orangeMushroom],
+        easy: [snail, blueSnail],
+        normal: [shroom, redSnail],
+        hard: [pig, slime],
+        hardest: [orangeMushroom, ribbonPig],
     } as MapEnemies,
     nodes: [
         { x: 0.16, y: 0.7301997386596976 },
@@ -231,10 +233,10 @@ export const toLith: Route = {
         y: 0.730697961704756,
     },
     enemies: {
-        easy: [snail],
-        normal: [blueSnail, shroom],
-        hard: [redSnail, pig],
-        hardest: [orangeMushroom],
+        easy: [snail, blueSnail],
+        normal: [shroom, redSnail],
+        hard: [pig, slime],
+        hardest: [orangeMushroom, ribbonPig],
     } as MapEnemies,
     nodes: [
         {

@@ -16,24 +16,30 @@ import {
     NoobClubBImage,
     NoobWarriorAImage,
     NoobWarriorBImage,
-    OctopusImage,
+    OctopusIdleImage,
     OctopusLegImage,
     OlafImage,
-    OrangeMushroomImage,
+    OmokPigImage,
+    OrangeMushroomIdleImage,
     PigIdleImage,
     PigsHeadImage,
+    PigsRibbonImage,
     RedSnailImage,
     RedSnailShellImage,
+    RibbonPigIdleImage,
     ShroomImage,
+    SlimeIdleImage,
+    SlimeOmokImage,
     SnailImage,
     SnailShellImage,
+    SquishyLiquidImage,
     StolenFenceImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
     WildBoarImage,
+    WoodenClubImage,
 } from "../images";
-import { AngerIcon } from "../images/icons";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -59,11 +65,12 @@ export const snail: Minion = {
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 7,
-    armor: 20,
+    maxHP: 3,
+    armor: 12,
     image: BlueSnailImage,
-    damage: 2,
-    mesos: 5,
+    abilities: [loaf],
+    damage: 1,
+    mesos: 4,
     effects: [
         {
             name: "Tough Shell",
@@ -73,7 +80,6 @@ export const blueSnail: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "Prevents armor decay.",
-            duration: 5,
         },
     ],
 };
@@ -109,11 +115,11 @@ export const shroom: Minion = {
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 17,
-    armor: 32,
+    maxHP: 3,
+    armor: 20,
     image: RedSnailImage,
-    damage: 2,
-    mesos: 15,
+    damage: 1,
+    mesos: 5,
     abilities: [
         {
             name: "Rollout",
@@ -125,7 +131,6 @@ export const redSnail: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
                     animation: ANIMATION_TYPES.YOYO,
-                    playbackTime: 600,
                 },
             ],
         },
@@ -136,7 +141,6 @@ export const redSnail: Minion = {
             icon: RedSnailShellImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            duration: 5,
             preventArmorDecay: true,
             canBeSilenced: true,
             description: "Prevents armor decay. While this character has armor, its damage is increased.",
@@ -152,15 +156,58 @@ export const redSnail: Minion = {
     ],
 };
 
+export const slime: Minion = {
+    name: "Slime",
+    maxHP: 30,
+    armor: 10,
+    image: SlimeIdleImage,
+    damage: 3,
+    mesos: 15,
+    effects: [
+        {
+            name: "Thick Slime",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: -1,
+            icon: SquishyLiquidImage,
+            description: "Prevents armor decay. While this character has armor:",
+            preventArmorDecay: true,
+            conditions: [
+                {
+                    comparator: "gt",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+        },
+        {
+            name: "Squishy Inside",
+            icon: SlimeOmokImage,
+            description: "When all this character's armor has been destroyed:",
+            attackDamageReceived: 3,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            conditions: [
+                {
+                    comparator: "eq",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+        },
+    ],
+};
+
 export const pig: Minion = {
     name: "Pig",
-    maxHP: 55,
+    maxHP: 50,
     image: PigIdleImage,
     mesos: 15,
     damage: 2,
     abilities: [
         {
             name: "Headlong Rush",
+            image: OmokPigImage,
             resourceCost: 3,
             actions: [
                 {
@@ -200,10 +247,93 @@ export const pig: Minion = {
     ],
 };
 
+export const ribbonPig: Minion = {
+    maxHP: 65,
+    name: "Ribbon Pig",
+    image: RibbonPigIdleImage,
+    damage: 3,
+    mesos: 25,
+    abilities: [
+        {
+            name: "Headlong Rush",
+            image: OmokPigImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 7,
+                },
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stun,
+                            name: "Dazed",
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Champion's Ribbon",
+            description: "Once per turn, this character will counter when attacked.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: PigsRibbonImage,
+            onTurnEnd: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Retaliation",
+                        description: "Countering on the next attack",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: OmokPigImage,
+                        duration: 1,
+                        onReceiveAttack: {
+                            removeEffect: true,
+                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                            ability: {
+                                name: "Retaliate",
+                                actions: [
+                                    {
+                                        type: ACTION_TYPES.ATTACK,
+                                        target: TARGET_TYPES.HOSTILE,
+                                        damage: 3,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            name: "Pig-Headed",
+            description: "While stunned:",
+            icon: PigsHeadImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: 2,
+            conditions: [
+                {
+                    hasEffectType: [EFFECT_TYPES.STUN],
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+        },
+    ],
+};
+
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 65,
-    image: OrangeMushroomImage,
+    maxHP: 60,
+    image: OrangeMushroomIdleImage,
     damage: 3,
     mesos: 25,
     effects: [hardy],
@@ -225,6 +355,7 @@ export const orangeMushroom: Minion = {
                             description: "Receiving increased damage from Whomp.",
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
+                            icon: MushroomOmokImage,
                             abilityDamageReceived: [
                                 {
                                     abilityName: "Whomp",
@@ -249,6 +380,7 @@ export const noobA: Minion = {
     abilities: [
         {
             name: "Club!",
+            image: WoodenClubImage,
             resourceCost: 3,
             actions: [
                 {
@@ -465,7 +597,7 @@ export const olaf: Minion = {
 
 export const octopus: Minion = {
     name: "Octopus",
-    image: OctopusImage,
+    image: OctopusIdleImage,
     maxHP: 40,
     mesos: 10,
     damage: 3,
@@ -816,14 +948,14 @@ export const mutantSnailEnemy: Minion = {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [snail] }, { minion: [snail] }],
+                    summon: [{ minion: [snail, blueSnail] }, { minion: [snail, blueSnail] }],
                 },
             ],
         },
         {
             name: "Call Snail",
-            image: BlueSnailImage,
-            minion: blueSnail,
+            image: RedSnailImage,
+            minion: redSnail,
             actions: [
                 {
                     // HACK: this is just for animation playback
@@ -915,14 +1047,14 @@ export const manoEnemy: Minion = {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [snail] }, { minion: [snail] }],
+                    summon: [{ minion: [snail, blueSnail] }, { minion: [snail, blueSnail] }],
                 },
             ],
         },
         {
             name: "Call Snail",
-            image: BlueSnailImage,
-            minion: blueSnail,
+            image: RedSnailImage,
+            minion: redSnail,
             actions: [
                 {
                     // HACK: this is just for animation playback

@@ -1,4 +1,4 @@
-import { KingSlimeImage, SlimeBubbleImage, SlimeImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
+import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
 import { MountainIcon } from "../images/icons";
 import { controlImmune, hardy } from "./../ability/Effects";
 import {
@@ -15,7 +15,7 @@ import {
 
 export const slimeGlobule: Minion = {
     name: "Slime Globule",
-    image: SlimeImage,
+    image: SlimeIdleImage,
     isBoss: true,
     maxHP: 100,
     effects: [
