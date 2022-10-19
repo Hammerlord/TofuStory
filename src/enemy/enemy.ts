@@ -296,6 +296,7 @@ export const ribbonPig: Minion = {
                         icon: OmokPigImage,
                         duration: 1,
                         onReceiveAttack: {
+                            usableWhileStunned: false,
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ACTOR,
                             ability: {

@@ -205,6 +205,7 @@ export const avenger: Effect = {
     description: "Grows powerful when one of its allies falls in combat.",
     onFriendlyDeath: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        usableWhileStunned: true,
         ability: {
             name: "Vengeful",
             image: JapaneseOgreIcon,
@@ -266,6 +267,7 @@ const volcano: Minion = {
             description: "Erupting for damage equal to the character's max health when this effect expires",
             duration: 2,
             onEnd: {
+                usableWhileStunned: true,
                 ability: {
                     name: "Erupt",
                     image: VolcanoIcon,
@@ -303,6 +305,7 @@ export const eruptive: Effect = {
     description: "Periodically summoning volcanoes that erupt, dealing area damage",
     turnsTriggerFrequency: 3,
     onTurnStart: {
+        usableWhileStunned: true,
         ability: {
             name: "Raise Volcano",
             image: VolcanoIcon,
@@ -329,6 +332,7 @@ export const explosive: Effect = {
     icon: BombImage,
     description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 2 turns.",
     onDeath: {
+        usableWhileStunned: true,
         ability: {
             name: "Explode",
             actions: [

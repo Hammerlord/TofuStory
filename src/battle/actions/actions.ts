@@ -37,6 +37,7 @@ import {
     getValidTargetIndices,
     hasEffectType,
     isSilenced,
+    isUnableToAct,
     orientate,
     updateHP,
 } from "../utils";
@@ -493,7 +494,7 @@ const onEffectEventTrigger = ({
 }) => {
     return (dispatch, getState) => {
         const { canBeSilenced, area = 0, excludeEffectOwner } = effect;
-        const { removeEffect, targetType, ability, conditions, randomOptions = {}, ...other } = effectEvent;
+        const { removeEffect, targetType, ability, conditions, randomOptions = {}, usableWhileStunned, ...other } = effectEvent;
 
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES): string[] => {
             const targetIds =
@@ -520,7 +521,9 @@ const onEffectEventTrigger = ({
                 dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
             }
         };
-        if (canBeSilenced && isSilenced(findCombatant(getState, ownerId))) {
+        const combatant = findCombatant(getState, ownerId);
+        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isUnableToAct(combatant));
+        if (cannotTrigger) {
             if (conditionsPassed) {
                 checkRemoveEffect();
             }
