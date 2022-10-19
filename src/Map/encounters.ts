@@ -84,21 +84,14 @@ const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
 
 const getWaveDifficulties = (numWaves: number): ENEMY_DIFFICULTY[] => {
     if (numWaves === 1) {
-        return [ENEMY_DIFFICULTY.HARD];
+        return [ENEMY_DIFFICULTY.HARD, ENEMY_DIFFICULTY.HARDEST];
     }
     if (numWaves === 2) {
         return [
             getRandomItem([ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.NORMAL]),
-            getRandomItem([ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.HARD]),
+            getRandomItem([ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.HARD]),
         ];
     }
-
-    const remainder = numWaves - 2;
-    return shuffle([
-        getRandomItem([ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.NORMAL]),
-        getRandomItem([ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.NORMAL]),
-        ...Array.from({ length: remainder }).map(() => ENEMY_DIFFICULTY.EASY),
-    ]);
 };
 
 export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.ELITE_ENCOUNTER, possibleEnemies: MapEnemies): Wave[] => {
@@ -113,7 +106,7 @@ export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.E
         }
     }
 
-    const numWaves = getRandomItem([1, 2, 3]);
+    const numWaves = getRandomItem([1, 2]);
     const waveDifficulties = getWaveDifficulties(numWaves);
 
     const generateEnemies = (i: number) => {
