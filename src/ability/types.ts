@@ -417,6 +417,7 @@ export enum ANIMATION_TYPES {
     DROP = "drop",
     // This is the same as ACTION_TYPES.EFFECT
     CAST = "cast",
+    SHOUT = "shout",
 }
 
 export interface AbilityEffects {

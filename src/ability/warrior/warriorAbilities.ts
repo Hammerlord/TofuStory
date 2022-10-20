@@ -478,6 +478,7 @@ export const yell2: Ability = {
             area: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.SHOUT,
             effects: [
                 {
                     name: "Admonished",
@@ -502,6 +503,7 @@ export const yell: Ability = {
             area: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.SHOUT,
             effects: [
                 {
                     name: "Admonished",

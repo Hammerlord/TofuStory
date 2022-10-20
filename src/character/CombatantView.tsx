@@ -212,6 +212,28 @@ const useStyles = createUseStyles({
     poisoned: {
         filter: "sepia(0.9) hue-rotate(-300deg) saturate(2)",
     },
+    "@keyframes shoutAnimation": {
+        from: {
+            transform: "translateX(-50%) scale(1)",
+            opacity: 0.75,
+        },
+        to: {
+            transform: "translateX(-50%) scale(3)",
+            opacity: 0,
+            WebkitFilter: "brightness(0.5)",
+            filter: "brightness(0.5)",
+        },
+    },
+    shouting: {
+        animation: "$shoutAnimation",
+        transitionTimingFunction: "ease-in-out",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        transformOrigin: "50% 50%",
+        animationIterationCount: 1,
+        animationDuration: "0.5s",
+    },
 });
 
 const CombatantView = forwardRef(
@@ -276,6 +298,9 @@ const CombatantView = forwardRef(
 
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
+        const isApplyingEffect =
+            event?.action?.animation !== ANIMATION_TYPES.SHOUT &&
+            (event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST);
 
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
@@ -283,7 +308,7 @@ const CombatantView = forwardRef(
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !event?.action && playDeathAnimation,
                 [classes.dead]: !event?.action && oldState?.HP === 0,
-                [classes.applyingEffect]: event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST,
+                [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
             }),
             style:
@@ -293,17 +318,17 @@ const CombatantView = forwardRef(
                       }
                     : undefined,
         };
-        let imageNode = null;
-        if (typeof oldState?.image === "string") {
-            imageNode = <img src={oldState.image} {...imageProps} draggable="false" />;
-        } else if (typeof oldState?.image === "function") {
-            const ImageNode = oldState.image as Function;
-            imageNode = (
-                <span>
-                    <ImageNode {...imageProps} />
-                </span>
-            );
-        }
+
+        const getImageNode = (props) => {
+            if (typeof oldState?.image === "string") {
+                return <img src={oldState.image} {...props} draggable="false" />;
+            } else if (typeof oldState?.image === "function") {
+                const ImageNode = oldState.image as Function;
+                return <ImageNode {...props} />;
+            }
+        };
+
+        const imageNode = getImageNode(imageProps);
 
         return (
             <div
@@ -337,9 +362,13 @@ const CombatantView = forwardRef(
                                         title={event?.actionParent?.dialog || ""}
                                         placement="top"
                                     >
-                                        {imageNode}
+                                        <span>{imageNode}</span>
                                     </Tooltip>
 
+                                    {event?.action?.animation === ANIMATION_TYPES.SHOUT &&
+                                        Array.from({ length: 3 }).map((_, i) =>
+                                            getImageNode({ key: i, className: classes.shouting, style: { animationDelay: `${0.1 * i}s` } })
+                                        )}
                                     <div className={classes.weaponContainer}>
                                         <Weapon
                                             image={oldState.weapon}
