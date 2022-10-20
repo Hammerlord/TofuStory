@@ -82,7 +82,7 @@ const stalagmite: Minion = {
     effects: [
         {
             name: "Heavy",
-            description: "Immune to most debuff types. Targets struck by Stalagmite will suffer -1 armor received from sources.",
+            description: "Immune to most debuff types. Targets struck by Stalagmite will receive -1 armor from armor sources.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

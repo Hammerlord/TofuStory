@@ -96,7 +96,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         description,
         duration = Infinity,
         canBeSilenced,
-        onAttack = {},
+        lifeOnHit = 0,
+        armorReceived = 0,
     } = effects[0];
 
     if (!icon) {
@@ -116,8 +117,6 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     if (!passedConditions && onlyVisibleWhenProcced) {
         return null;
     }
-
-    const { multiplier, healing: lifePerHit } = onAttack; // TODO the difference between life on attack and life per enemy hit
 
     const allSameDuration = effects.every(({ duration }) => duration === effects[0].duration);
     let durationDisplay: string | number = "";
@@ -168,9 +167,9 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                         <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per <Fury /> spent
                     </div>
                 )}
-                {lifePerHit > 0 && (
+                {lifeOnHit > 0 && (
                     <div>
-                        Gaining <Icon icon={<HeartIcon />} text={lifePerHit} size={"sm"} /> per hit
+                        Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
                     </div>
                 )}
                 {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
@@ -178,6 +177,12 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     <span>
                         <Icon icon={<HourglassIcon />} text={duration} /> turns remaining
                     </span>
+                )}
+                {armorReceived !== 0 && (
+                    <div>
+                        Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} /> from
+                        armor sources
+                    </div>
                 )}
                 {!allSameDuration && (
                     <span>
