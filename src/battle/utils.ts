@@ -254,6 +254,10 @@ export const getMultiplier = ({
         return Math.ceil(getMaxHP(character) * numValue);
     }
 
+    if (multiplier.type === MULTIPLIER_TYPES.HP) {
+        return Math.ceil(character.HP * numValue);
+    }
+
     if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
         return getEnabledEffects(character).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF).length || 1;
     }

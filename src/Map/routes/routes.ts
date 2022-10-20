@@ -15,6 +15,7 @@ import {
     stump,
     wildBoar,
 } from "../../enemy/enemy";
+import { strangePig } from "../../enemy/strangePig";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const routeKerningToPerion = {
@@ -153,6 +154,8 @@ export const routeHenesysEllinia = {
         {
             x: 0.5906735751295337,
             y: 0.6574536900911496,
+            type: NODE_TYPES.BOSS,
+            encounter: [{ enemies: [null, null, strangePig, null, null] }],
         },
         {
             x: 0.6308290155440415,

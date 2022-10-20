@@ -261,6 +261,7 @@ export enum MULTIPLIER_TYPES {
     ARMOR = "armor",
     // This is for players only; count the number of cards they own with a particular name
     ABILITIES_WITH_NAME = "abilitiesWithName",
+    HP = "HP",
     MAX_HP = "maxHP",
     DEBUFFS = "debuffs",
     BLEEDS = "bleeds",
@@ -351,7 +352,7 @@ export interface Action {
             minion: Minion | string; // Minion object or a string name
             positionIndex?: number;
         }[];
-        modifiers: {
+        modifiers?: {
             HP: MORPH_MINION_MODIFIERS;
         };
     };

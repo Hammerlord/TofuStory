@@ -53,6 +53,7 @@ import {
 } from "./../ability/types";
 import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { enemyHaste, loaf } from "./abilities";
+import { championsRibbon } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -279,41 +280,7 @@ export const ribbonPig: Minion = {
         },
     ],
     effects: [
-        {
-            name: "Champion's Ribbon",
-            description: "Once per turn, this character will counter when attacked.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            icon: PigsRibbonImage,
-            onTurnEnd: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Retaliation",
-                        description: "Countering on the next attack",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: OmokPigImage,
-                        duration: 1,
-                        onReceiveAttack: {
-                            usableWhileStunned: false,
-                            removeEffect: true,
-                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                            ability: {
-                                name: "Retaliate",
-                                actions: [
-                                    {
-                                        type: ACTION_TYPES.ATTACK,
-                                        target: TARGET_TYPES.HOSTILE,
-                                        damage: 3,
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                ],
-            },
-        },
+        championsRibbon,
         {
             name: "Pig-Headed",
             description: "While stunned:",

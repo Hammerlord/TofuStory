@@ -310,7 +310,10 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
-        const { friendly, hostile, combatant } = orientate({ combatantId, ...getState().battle });
+        const { friendly, hostile, combatant } = orientate({ combatantId, ...getState().battle }) || {};
+        if (!combatant) {
+            return;
+        }
 
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { HP, id } = combatant || {};
@@ -854,8 +857,8 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
         }
 
         const targets = morphTargetIds.map((id) => findCombatant(getState, id));
-        const { friendly, friendlySide } = orientate({ combatantId: morphTargetIds[0], ...getState().battle });
-        const { minions, modifiers } = action.morph;
+        const { friendly, friendlySide, combatantIndex } = orientate({ combatantId: morphTargetIds[0], ...getState().battle });
+        const { minions, modifiers = {} } = action.morph;
         const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
             let value = targets.reduce((acc, combatant) => {
                 return acc + (combatant[property] || 0);
@@ -874,8 +877,21 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
             return combatant;
         });
 
+        const getSummonPos = (positionIndex) => {
+            if (typeof positionIndex === "number") {
+                return positionIndex;
+            }
+
+            // If there is only one mutate target, replace the target
+            if (targets.length === 1) {
+                return combatantIndex;
+            }
+
+            return getRandomItem(getPossibleSummonIndices(friendly));
+        };
+
         for (const { minion, positionIndex } of minions) {
-            const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
+            const pos = getSummonPos(positionIndex);
             const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
             if (!minionToSummon) {
                 console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);

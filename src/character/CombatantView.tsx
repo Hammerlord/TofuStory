@@ -298,7 +298,11 @@ const CombatantView = forwardRef(
             imageNode = <img src={oldState.image} {...imageProps} draggable="false" />;
         } else if (typeof oldState?.image === "function") {
             const ImageNode = oldState.image as Function;
-            imageNode = <ImageNode {...imageProps} />;
+            imageNode = (
+                <span>
+                    <ImageNode {...imageProps} />
+                </span>
+            );
         }
 
         return (
