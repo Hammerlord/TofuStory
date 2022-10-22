@@ -115,7 +115,10 @@ export interface Effect {
     duration?: number;
     attackPower?: number;
     description?: string;
+    // The icon to display below the combatant
     icon?: string;
+    // The larger, possibly animated effect image to display on top of the combatant portrait
+    image?: string;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     isAuraEffect?: boolean;
@@ -307,7 +310,7 @@ export interface Action {
     numTargets?: number;
     // Bounces between numTargets within targetArea
     ricochet?: boolean;
-    effects?: Effect[];
+    effects?: (string | Effect)[]; // If a string (name of effect) is provided, attempt to look up the corresponding effect
     description?: string;
     movement?: number;
     resources?: number;
@@ -418,6 +421,7 @@ export enum ANIMATION_TYPES {
     // This is the same as ACTION_TYPES.EFFECT
     CAST = "cast",
     SHOUT = "shout",
+    SNOOZE = "snooze",
 }
 
 export interface AbilityEffects {

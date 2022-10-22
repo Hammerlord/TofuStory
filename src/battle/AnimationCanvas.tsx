@@ -1,10 +1,9 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability, Action, ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
-import { travel } from "../character/animations";
+import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
+import { getCenterCoords, travel } from "../character/animations";
 import { Combatant } from "../character/types";
-import { Item } from "../item/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 
 const PROJECTILE_WIDTH = 70;
@@ -13,17 +12,22 @@ const PROJECTILE_HEIGHT = 70;
 const useStyles = createUseStyles({
     root: {
         pointerEvents: "none", // Not an interactable layer
+        position: "fixed",
+        width: "100%",
+        height: "100%",
     },
     projectile: {
-        maxWidth: PROJECTILE_WIDTH,
         objectFit: "contain",
         WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        maxHeight: PROJECTILE_HEIGHT,
+        position: "fixed",
+        zIndex: 5,
     },
     iconProjectile: {
         width: PROJECTILE_WIDTH,
         height: PROJECTILE_HEIGHT,
+        position: "fixed",
+        zIndex: 5,
     },
 });
 
@@ -76,15 +80,12 @@ const AnimationCanvas = ({
     const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
-    const { left: actorLeft, top: actorTop } = useMemo(() => {
+    const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {
-            return {};
+            return { x: 0, y: 0 };
         }
-        const { left, top, height, width } = actorElement?.getBoundingClientRect();
-        return {
-            left: left + width / 2,
-            top: top + height / 2,
-        };
+
+        return getCenterCoords(actorElement);
     }, [actorElement]);
     const classes = useStyles();
 
@@ -99,15 +100,16 @@ const AnimationCanvas = ({
         setTimeout(() => setIsAnimationPlaying(false), playbackTime);
 
         eventIdRef.current = eventId;
-        const { type, animation, ricochet } = action || {};
+        const { type, animation, ricochet, icon } = action || {};
         const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
 
-        if (type === ACTION_TYPES.RANGE_ATTACK) {
+        if (icon) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateRangeAttack = (target, projectileRefIndex: number) => {
                 travel({
-                    from: projectileRefs[projectileRefIndex].current,
+                    from: actorElement,
                     to: target,
+                    object: projectileRefs[projectileRefIndex].current,
                     spin,
                     rotateToFaceTarget,
                     sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
@@ -164,14 +166,25 @@ const AnimationCanvas = ({
         }, DISPLACEMENT_SPEED);
     }, [eventId]);
 
-    const { icon, type, ricochet } = action || {};
+    const { icon, ricochet } = action || {};
     const getProjectileElement = (i: number) => {
+        const projectileDimensions = projectileRefs[i].current?.getBoundingClientRect() || { width: 70, height: 70 };
+        const props = {
+            key: i,
+            ref: projectileRefs[i],
+            style: {
+                visibility: isAnimationPlaying ? "visible" : "hidden",
+                left: actorX - projectileDimensions.width / 2,
+                top: actorY - projectileDimensions.height / 2,
+            },
+        } as any;
+
         if (typeof icon === "string") {
-            return <img src={icon} className={classNames(classes.projectile)} ref={projectileRefs[i]} />;
+            return <img src={icon} className={classNames(classes.projectile)} {...props} />;
         } else if (typeof icon === "function") {
             const Icon: Function = icon;
             return (
-                <div className={classNames(classes.iconProjectile)} ref={projectileRefs[i]}>
+                <div className={classNames(classes.iconProjectile)} {...props}>
                     <Icon />
                 </div>
             );
@@ -182,27 +195,7 @@ const AnimationCanvas = ({
     const projectileTargets = ricochet ? [allTargets[0]] : allTargets;
 
     return (
-        <div className={classes.root}>
-            {type === ACTION_TYPES.RANGE_ATTACK && icon && (
-                <>
-                    {projectileTargets
-                        .filter((val) => val)
-                        .map((tar, i) => (
-                            <span
-                                style={{
-                                    position: "fixed",
-                                    left: actorLeft - PROJECTILE_WIDTH / 2,
-                                    top: actorTop - PROJECTILE_HEIGHT / 2,
-                                    visibility: isAnimationPlaying ? "visible" : "hidden",
-                                }}
-                                key={i}
-                            >
-                                {getProjectileElement(i)}
-                            </span>
-                        ))}
-                </>
-            )}
-        </div>
+        <div className={classes.root}>{icon && <>{projectileTargets.filter((val) => val).map((tar, i) => getProjectileElement(i))}</>}</div>
     );
 };
 

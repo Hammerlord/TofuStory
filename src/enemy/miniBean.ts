@@ -132,6 +132,7 @@ export const moldyCheese: Minion = {
 
 const suckIn: Ability = {
     name: "Suck In",
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,

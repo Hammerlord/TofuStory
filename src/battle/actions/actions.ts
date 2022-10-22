@@ -1,3 +1,4 @@
+import { enemyEffectNameMap } from "./../../enemy/effect";
 import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -436,7 +437,7 @@ export const getUpdatedTargets = ({
             isTargetSelected: targetIndex === selectedIndex,
             actionParent,
         });
-        const { healing = 0, effects = [], resources = 0, destroyArmor = 0, resurrect } = action;
+        const { healing = 0, effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect } = action;
         const totalHealing =
             healing * getMultiplier({ actor, allTargets: targets, sourceTargets, target, multiplier: action.multiplier, actionParent });
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
@@ -459,7 +460,19 @@ export const getUpdatedTargets = ({
             );
         };
 
-        const newEffects = [
+        const effects: Effect[] = actionEffects
+            .map((effect: String | Effect) => {
+                if (typeof effect === "string") {
+                    return {
+                        ...enemyEffectNameMap[effect],
+                    };
+                }
+
+                return effect as Effect;
+            })
+            .filter((v) => v);
+
+        const newEffects: CombatEffect[] = [
             ...target.effects,
             ...effects
                 .filter((effect) => !isImmuneTo(effect))
@@ -467,7 +480,7 @@ export const getUpdatedTargets = ({
                     ...cloneDeep(effect),
                     uptime: 0,
                     id: uuid.v4(),
-                    applier: actorId,
+                    applierId: actorId,
                 })),
         ];
 
@@ -540,14 +553,17 @@ const onEffectEventTrigger = ({
         }
 
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
+        const targetIds = getCalculationTargetIds(targetType);
+        const {
+            friendly: combatants,
+            combatantIndex: i,
+            friendlySide,
+        } = orientate({ combatantId: targetIds[0], ...getState().battle }) || {};
 
         $applyStatChanges: {
-            const targetIds = getCalculationTargetIds(targetType);
             if (!targetIds.length) {
                 break $applyStatChanges;
             }
-
-            const { friendly: combatants, combatantIndex: i } = orientate({ combatantId: targetIds[0], ...getState().battle });
 
             const isAffected = (combatant: Combatant, j: number): boolean => {
                 const isWithinArea = Math.abs(j - i) <= area || targetIds.includes(combatant?.id); // Should it be an area around EACH target?
@@ -581,6 +597,8 @@ const onEffectEventTrigger = ({
 
         ability?.actions.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
+                initialSelectedIndex: i,
+                initialSelectedSide: friendlySide,
                 action,
                 actorId: ownerId,
                 getState,

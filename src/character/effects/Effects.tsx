@@ -96,8 +96,17 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
     },
+    customEffect: {
+        position: "absolute",
+        top: -50,
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
 });
 
+/**
+ * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
+ */
 const Effects = ({ combatant, healing }) => {
     const classes = useStyles();
 
@@ -144,6 +153,14 @@ const Effects = ({ combatant, healing }) => {
                 <div className={classes.bleed}>
                     <Bleed />
                 </div>
+            )}
+            {effects.map(
+                (effect, i) =>
+                    effect.image && (
+                        <div className={classes.customEffect} key={i}>
+                            <img src={effect.image} key={effect.image} />
+                        </div>
+                    )
             )}
         </div>
     );

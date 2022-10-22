@@ -53,7 +53,7 @@ import {
 } from "./../ability/types";
 import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { enemyHaste, loaf } from "./abilities";
-import { championsRibbon } from "./effect";
+import { championsRibbon, hardwood } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -660,29 +660,7 @@ export const stump: Minion = {
     maxHP: 30,
     mesos: 5,
     damage: 2,
-    effects: [
-        {
-            name: "Hardwood",
-            description: "When this character is attacked, its damage received from attacks is reduced by 1.",
-            icon: FirewoodImage,
-            attackDamageReceived: -1,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onReceiveAttack: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Hardwood Barricade",
-                        icon: StolenFenceImage,
-                        attackDamageReceived: -1,
-                        duration: 1,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                    },
-                ],
-            },
-        },
-    ],
+    effects: [hardwood],
 };
 
 export const axeStump: Minion = {
@@ -711,29 +689,7 @@ export const axeStump: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "Hardwood",
-            description: "When this character is attacked, its damage received from attacks is reduced by 1.",
-            icon: FirewoodImage,
-            attackDamageReceived: -1,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onReceiveAttack: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Hardwood Barricade",
-                        icon: StolenFenceImage,
-                        attackDamageReceived: -1,
-                        duration: 1,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                    },
-                ],
-            },
-        },
-    ],
+    effects: [hardwood],
 };
 
 export const fireBoar: Minion = {

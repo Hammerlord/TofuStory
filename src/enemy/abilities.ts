@@ -1,6 +1,6 @@
 import { HasteImage } from "../images";
 import { ZzzIcon } from "../images/icons";
-import { Ability, ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 export const loaf: Ability = {
     name: "Loaf",
     image: ZzzIcon,
@@ -8,6 +8,7 @@ export const loaf: Ability = {
         {
             description: "{{caster}} is loafing around.",
             type: ACTION_TYPES.NONE,
+            animation: ANIMATION_TYPES.SNOOZE,
         },
     ],
 };

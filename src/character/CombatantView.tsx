@@ -394,7 +394,7 @@ const CombatantView = forwardRef(
                                 <div className={classes.rightContainer}>
                                     <AttackPower combatant={oldState} />
                                 </div>
-                                {event?.action?.type === ACTION_TYPES.NONE && (
+                                {event?.action?.animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
                                 )}
                             </>

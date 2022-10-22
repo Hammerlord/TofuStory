@@ -56,6 +56,7 @@ export const hardy: Effect = {
     description: "After being stunned or frozen, gains temporary immunity to those effects.",
     icon: HelmetIcon,
     onReceiveEffect: {
+        usableWhileStunned: true,
         conditions: [
             {
                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
@@ -387,6 +388,7 @@ export const eliteSquad: Effect = {
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     onReceiveEffect: {
+        usableWhileStunned: true,
         conditions: [
             {
                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

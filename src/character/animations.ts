@@ -1,6 +1,6 @@
 import { getRandomArbitrary } from "./../utils";
 
-const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
+export const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
     const { x, y, height, width } = element.getBoundingClientRect();
     return {
         x: x + width / 2,
@@ -34,6 +34,7 @@ const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }) => {
 };
 
 export const travel = ({
+    object,
     from,
     to,
     playbackTime,
@@ -43,6 +44,7 @@ export const travel = ({
     sidewinder = false,
     freezeAxis,
 }: {
+    object?: HTMLElement; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     to: HTMLElement | HTMLElement[];
     playbackTime: number;
@@ -125,7 +127,7 @@ export const travel = ({
     animationFrames[0].easing = "ease-out";
     animationFrames[animationFrames.length - 1].easing = "ease-in";
 
-    from.animate(animationFrames, {
+    (object || from).animate(animationFrames, {
         duration: playbackTime,
     });
 };

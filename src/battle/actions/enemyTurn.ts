@@ -33,7 +33,17 @@ const { updateBattle, updateFlagTurnEnd, pushEventQueue } = battleStateSlice.act
  * 4) If the ability applies a buff that the actor already has, don't use it.
  * 5) If the ability only heals, do not use it at full health.
  */
-const canUseAbility = ({ actor, ability, hostile, friendly }): boolean => {
+const canUseAbility = ({
+    actor,
+    ability,
+    hostile,
+    friendly,
+}: {
+    actor: Combatant;
+    ability: Ability;
+    hostile: (Combatant | null)[];
+    friendly: (Combatant | null)[];
+}): boolean => {
     const resourceCost = ability.resourceCost || 0;
     if ((actor.resources || 0) < resourceCost) {
         return false;
@@ -63,6 +73,11 @@ const canUseAbility = ({ actor, ability, hostile, friendly }): boolean => {
                 movement: movementAction.movement,
             }).length > 0
         );
+    }
+
+    if (ability.depletedOnUse) {
+        // If it is a deplete ability, never use it again
+        return actor.abilityHistory.every((a) => a.name !== ability.name);
     }
 
     return true;
@@ -180,6 +195,13 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
         (a) => a.resourceCost > 0,
         actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
     );
+
+    const validPreemptiveAbilities = specialAbilities
+        .concat(regularAbilities)
+        .filter((ability: Ability) => ability.preemptive && actor.abilityHistory.every(({ name }) => name !== ability.name));
+    if (validPreemptiveAbilities.length > 0) {
+        return getRandomItem(validPreemptiveAbilities);
+    }
 
     // If we are capped resources, we should always use a special ability, preferably the most expensive ones
     if (specialAbilities.length > 0 && actor.resources === actor.maxResources) {
@@ -345,6 +367,8 @@ export const startEnemyTurn = () => {
                 makeEnemyMove();
             }, 1500);
         };
-        makeEnemyMove();
+        setTimeout(() => {
+            makeEnemyMove();
+        }, 1500);
     };
 };
