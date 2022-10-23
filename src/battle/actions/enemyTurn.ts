@@ -358,17 +358,19 @@ export const startEnemyTurn = () => {
 
             const { id, casting } = enemy;
             acted[id] = true;
-            if (casting) {
-                dispatch(handleCastTick(id));
-            } else if (!isUnableToAct(enemy)) {
-                dispatch(enemyUseAbility(id));
-            }
+            const unableToAct = isUnableToAct(enemy);
+            const delay = unableToAct ? 500 : 1500;
             setTimeout(() => {
+                // Enemies who are unable to act still must lose a turn when casting an ability
+                if (casting) {
+                    dispatch(handleCastTick(id));
+                } else if (!unableToAct) {
+                    dispatch(enemyUseAbility(id));
+                }
                 makeEnemyMove();
-            }, 1500);
+            }, delay);
         };
-        setTimeout(() => {
-            makeEnemyMove();
-        }, 1500);
+
+        makeEnemyMove();
     };
 };
