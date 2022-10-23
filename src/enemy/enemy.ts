@@ -324,6 +324,7 @@ export const orangeMushroom: Minion = {
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
                             icon: MushroomOmokImage,
+                            duration: 6,
                             abilityDamageReceived: [
                                 {
                                     abilityName: "Whomp",

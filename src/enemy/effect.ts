@@ -1,11 +1,18 @@
-import { controlImmune } from "../ability/Effects";
+import { controlImmune, hardy } from "../ability/Effects";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
+    AncientFairyImage,
     BatsEffectImage,
+    BlueSnailShellImage,
     FirewoodImage,
+    GreenFairiesImage,
     OmokPigImage,
     PigsHeadImage,
     PigsRibbonImage,
+    PurpleFairiesImage,
+    RedSnailShellImage,
+    ShiningFairyImage,
+    SnailShellImage,
     StolenFenceImage,
     StumpyBatImage,
     TreeBranchImage,
@@ -174,7 +181,112 @@ export const bats: Effect = {
     },
 };
 
+export const fairySwarm: Effect = {
+    name: "Fairy Swarm",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    attackDamageReceived: -5,
+    duration: 2,
+    icon: ShiningFairyImage,
+    image: GreenFairiesImage,
+    onTurnStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        usableWhileStunned: true,
+        healing: 3,
+    },
+    onEnd: {
+        usableWhileStunned: true,
+        ability: {
+            name: "Migrate",
+            image: AncientFairyImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: PurpleFairiesImage,
+                    effects: ["Fairy Frenzy"],
+                },
+            ],
+        },
+    },
+};
+
+const frenziedFairies: Effect = {
+    name: "Fairy Frenzy",
+    description: "Receiving 3 damage on turn end.",
+    armorReceived: -1,
+    duration: 1,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.DEBUFF,
+    icon: AncientFairyImage,
+    image: PurpleFairiesImage,
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        damage: 3,
+    },
+    onEnd: {
+        usableWhileStunned: true,
+        ability: {
+            name: "Migrate",
+            image: ShiningFairyImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: GreenFairiesImage,
+                    targetArea: 5,
+                    effects: ["Fairy Swarm"],
+                },
+            ],
+        },
+    },
+};
+
+export const agedShell: Effect = {
+    ...hardy,
+    name: "Aged Shell",
+    icon: SnailShellImage,
+    description: "After being stunned or frozen, gains temporary immunity to those effects.",
+    canBeSilenced: false,
+};
+
+export const toughShell: Effect = {
+    name: "Tough Shell",
+    icon: BlueSnailShellImage,
+    preventArmorDecay: true,
+    canBeSilenced: true,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Prevents armor decay.",
+};
+
+export const weightedShell: Effect = {
+    name: "Weighted Shell",
+    icon: RedSnailShellImage,
+    canBeSilenced: false,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "While this character has armor, its damage is increased.",
+    attackPower: 1,
+    skillBonus: [
+        {
+            skill: "Rollout",
+            damage: 3,
+        },
+    ],
+    conditions: [
+        {
+            comparator: "gt",
+            armor: 0,
+            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        },
+    ],
+};
+
 export const enemyEffectNameMap = {
     [roostingBats.name]: roostingBats,
     [bats.name]: bats,
+    [fairySwarm.name]: fairySwarm,
+    [frenziedFairies.name]: frenziedFairies,
 };

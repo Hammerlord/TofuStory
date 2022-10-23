@@ -196,6 +196,7 @@ const BattlefieldContainer = () => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
+    const [initialized, setInitialized] = useState(false);
     const classes = useStyles();
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
@@ -207,7 +208,7 @@ const BattlefieldContainer = () => {
         return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     })();
 
-    const disableActions = showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || isWinConditionTriggered;
+    const disableActions = showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || isWinConditionTriggered || !initialized;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actor = selectedMinion || player;
@@ -427,7 +428,7 @@ const BattlefieldContainer = () => {
     }, [events, flagTurnEnd]);
 
     useEffect(() => {
-        if (isEnded || isLost || isWinConditionTriggered) {
+        if (isEnded || isLost || isWinConditionTriggered || !initialized) {
             return;
         }
         setShowTurnAnnouncement(true);
@@ -441,7 +442,16 @@ const BattlefieldContainer = () => {
                 }, 500);
             }
         }, TURN_ANNOUNCEMENT_TIME);
-    }, [isPlayerTurn]);
+    }, [isPlayerTurn, initialized]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            dispatch(onWaveStart());
+            setTimeout(() => {
+                setInitialized(true);
+            }, 1500);
+        }, 1500);
+    }, []);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";

@@ -160,8 +160,6 @@ export const startBattle = ({
                 isTutorial,
             })
         );
-
-        dispatch(onWaveStart());
     };
 };
 
