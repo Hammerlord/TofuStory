@@ -230,7 +230,18 @@ export const miniBean: Minion = {
             actions: [...suckIn.actions, ...suckIn.actions],
         },
     ],
-    effects: [hardy],
+    effects: [
+        hardy,
+        {
+            name: "Suck In",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                removeEffect: true,
+                ability: suckIn,
+            },
+        },
+    ],
 };
 
 export const eat: Ability = {
