@@ -64,23 +64,13 @@ export const kingSlimeEnemy: Minion = {
     armor: 20,
     effects: [
         {
+            ...hardy,
             name: "Thick Slime",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             attackDamageReceived: -3,
             canBeSilenced: false,
             icon: SquishyLiquidImage,
-            onReceiveEffect: {
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                        comparator: "eq",
-                    },
-                ],
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [controlImmune],
-            },
         },
         {
             name: "Bubbly",
@@ -99,6 +89,7 @@ export const kingSlimeEnemy: Minion = {
             class: EFFECT_CLASSES.BUFF,
             icon: SlimeOmokImage,
             onReceiveDamage: {
+                usableWhileStunned: true,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

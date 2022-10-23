@@ -67,7 +67,6 @@ export const hardy: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [controlImmune],
     },
-    duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
 };
