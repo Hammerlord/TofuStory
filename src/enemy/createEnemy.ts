@@ -24,7 +24,7 @@ export const createCombatant = (combatant): Combatant => {
             })) || []),
         ],
         armor: combatant.armor || 0,
-        resources: combatant.resources || 1,
+        resources: typeof combatant.resources === "number" ? combatant.resources : 1,
         maxResources: combatant.maxResources || 3,
         resourcesPerTurn: combatant.resourcesPerTurn || 1,
         casting: null,

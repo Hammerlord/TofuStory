@@ -215,7 +215,6 @@ export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: MiniBeanImage,
     maxHP: 300,
-    resources: 0,
     damage: 3,
     isBoss: true,
     abilities: [

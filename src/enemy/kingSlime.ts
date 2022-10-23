@@ -18,6 +18,7 @@ export const slimeGlobule: Minion = {
     image: SlimeIdleImage,
     isBoss: true,
     maxHP: 100,
+    resources: 0,
     effects: [
         hardy,
         {
@@ -61,7 +62,6 @@ export const kingSlimeEnemy: Minion = {
     maxHP: 300,
     damage: 5,
     armor: 20,
-    resources: 0,
     effects: [
         {
             name: "Thick Slime",

@@ -842,7 +842,6 @@ export const mutantSnailEnemy: Minion = {
     isBoss: true,
     maxHP: 100,
     armor: 75,
-    resources: 0,
     damage: 5,
     mesos: 100,
     effects: [
@@ -960,7 +959,6 @@ export const manoEnemy: Minion = {
     isBoss: true,
     maxHP: 75,
     armor: 100,
-    resources: 0,
     damage: 3,
     mesos: 100,
     abilities: [
