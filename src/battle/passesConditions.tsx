@@ -2,7 +2,15 @@ import { Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TRIGGER_TARG
 import { Combatant } from "../character/types";
 import { getMaxHP } from "./utils";
 
-const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: "eq" | "lt" | "gt" }): boolean => {
+const passesValueComparison = ({
+    val,
+    otherVal,
+    comparator,
+}: {
+    val: any;
+    otherVal: any;
+    comparator: "eq" | "lt" | "gt" | "not";
+}): boolean => {
     switch (comparator) {
         case "eq":
             return val === otherVal;
@@ -10,6 +18,8 @@ const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherV
             return val < otherVal;
         case "gt":
             return val > otherVal;
+        case "not":
+            return val !== otherVal;
         default:
             return false;
     }
@@ -42,9 +52,21 @@ export const passesConditions = ({
                     : passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator });
 
             const meetsArmor = armor === undefined ? true : passesValueComparison({ val: combatant.armor, otherVal: armor, comparator });
-            const meetsEffectType = hasEffectType === undefined ? true : otherEffects.some(({ type }) => hasEffectType.includes(type));
-            const meetsEffectClass =
-                hasEffectClass === undefined ? true : otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass);
+            const meetsEffectType = (() => {
+                if (hasEffectType === undefined) return true;
+                if (comparator === "not") {
+                    return otherEffects.every(({ type }) => !hasEffectType.includes(type));
+                }
+
+                return otherEffects.some(({ type }) => hasEffectType.includes(type));
+            })();
+            const meetsEffectClass = (() => {
+                if (hasEffectClass === undefined) return true;
+                if (comparator === "not") {
+                    return otherEffects.every(({ class: effectClass }) => effectClass !== hasEffectClass);
+                }
+                return otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass);
+            })();
 
             const nameIncludes = characterName === undefined ? true : combatant.name?.includes(characterName);
             return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && nameIncludes;

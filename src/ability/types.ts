@@ -240,8 +240,8 @@ export interface Bonus {
 }
 
 export interface Condition {
-    /** Equals | Less than | Greater than -- Only used in pass/fail check */
-    comparator?: "eq" | "lt" | "gt";
+    /** Equals | Less than | Greater than | Not equals/has -- Only used in pass/fail check */
+    comparator?: "eq" | "lt" | "gt" | "not";
 
     /** Unique effects, not stacks */
     numDebuffs?: number;

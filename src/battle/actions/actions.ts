@@ -522,12 +522,13 @@ const onEffectEventTrigger = ({
             return targetIds.filter((v) => v);
         };
 
-        const conditionsPassed = passesConditions({
-            getCalculationTarget: (targetType: TRIGGER_TARGET_TYPES) => {
-                return getCalculationTargetIds(targetType).map((id) => findCombatant(getState, id));
-            },
-            proc: effectEvent,
-        });
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES) => {
+            return getCalculationTargetIds(targetType).map((id) => findCombatant(getState, id));
+        };
+
+        // Must pass parent effect conditions as well as child effectEvent conditions (if any)
+        const conditionsPassed =
+            passesConditions({ getCalculationTarget, proc: effect }) && passesConditions({ getCalculationTarget, proc: effectEvent });
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
@@ -536,17 +537,15 @@ const onEffectEventTrigger = ({
             }
         };
         const combatant = findCombatant(getState, ownerId);
-        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isUnableToAct(combatant));
-        if (cannotTrigger) {
-            if (conditionsPassed) {
-                checkRemoveEffect();
-            }
-            return;
-        }
 
         if (conditionsPassed) {
             checkRemoveEffect();
         } else {
+            return;
+        }
+
+        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isUnableToAct(combatant));
+        if (cannotTrigger) {
             return;
         }
 

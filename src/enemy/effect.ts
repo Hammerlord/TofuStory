@@ -74,36 +74,40 @@ export const pigHeaded: Effect = {
 export const hardwood: Effect = {
     name: "Hardwood",
     description:
-        "When stunned, frozen, or silenced, gains temporary immunity to those effects. When this character is attacked, its damage received from attacks is reduced by 1.",
+        "When this character is attacked, it receives -1 damage from additional attacks for the turn. Effect is disabled if the character is burning.",
     icon: FirewoodImage,
     attackDamageReceived: -1,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    conditions: [
+        {
+            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            comparator: "not",
+            hasEffectType: [EFFECT_TYPES.BURN],
+        },
+    ],
     onReceiveAttack: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {
                 name: "Hardwood Barricade",
+                description: "Effect is disabled if the character is burning.",
                 icon: StolenFenceImage,
                 attackDamageReceived: -1,
                 canBeSilenced: true,
                 duration: 1,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        comparator: "not",
+                        hasEffectType: [EFFECT_TYPES.BURN],
+                    },
+                ],
             },
         ],
-    },
-    onReceiveEffect: {
-        usableWhileStunned: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
-                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                comparator: "eq",
-            },
-        ],
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [controlImmune],
     },
 };
 
@@ -123,61 +127,23 @@ export const dryBranch: Effect = {
     ],
 };
 
-const roostingBats = {
-    name: "Roosting Bats",
-    description: "Receiving 3 healing per turn.",
-    icon: StumpyBatImage,
-    duration: 3,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    onTurnStart: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        usableWhileStunned: true,
-        healing: 3,
-    },
-    onEnd: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
-        usableWhileStunned: true,
-        ability: {
-            name: "",
-            actions: [
-                {
-                    type: ACTION_TYPES.NONE,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: BatsEffectImage,
-                    effects: ["Bats!"],
-                },
-            ],
-        },
-    },
-};
-
 export const bats: Effect = {
     name: "Bats!",
-    description: "Receiving 3 damage per turn.",
+    description: "Leeching health to the character who applied this effect.",
     icon: StumpyBatImage,
     image: BatsEffectImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    duration: 3,
+    duration: 5,
+    armorReceived: -1,
+    healingReceived: -1,
+    onTurnStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
+        healing: 2,
+    },
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        damage: 3,
-    },
-    onEnd: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
-        usableWhileStunned: true,
-        ability: {
-            name: "Roosting Bats",
-            actions: [
-                {
-                    type: ACTION_TYPES.NONE,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: BatsEffectImage,
-                    effects: ["Roosting Bats"],
-                },
-            ],
-        },
+        damage: 2,
     },
 };
 
@@ -285,7 +251,6 @@ export const weightedShell: Effect = {
 };
 
 export const enemyEffectNameMap = {
-    [roostingBats.name]: roostingBats,
     [bats.name]: bats,
     [fairySwarm.name]: fairySwarm,
     [frenziedFairies.name]: frenziedFairies,

@@ -51,8 +51,9 @@ export const stumpy: Minion = {
     maxHP: 250,
     abilities: [
         {
-            name: "Flock of Bats",
+            name: "Bats!",
             image: StumpyBatImage,
+            resourceCost: 3,
             depletedOnUse: true,
             preemptive: true,
             actions: [
@@ -75,13 +76,14 @@ export const stumpy: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.CAST,
-                    damage: 3,
+                    damage: 4,
                     area: 2,
                 },
             ],
         },
     ],
     effects: [
+        hardy,
         hardwood,
         dryBranch,
         {
