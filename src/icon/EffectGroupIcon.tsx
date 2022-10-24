@@ -126,6 +126,9 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         durationDisplay = duration;
     }
 
+    const silenced = isSilenced && canBeSilenced;
+    const disabled = silenced || !passedConditions;
+
     const tooltipContent = (
         <div className={classes.tooltipContents}>
             <div className={classNames(classes.iconContainer)}>
@@ -134,55 +137,69 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
             <div className={classes.container}>
                 <div className={classes.tooltipTitle}>
                     {name}
-                    {effects.length > 1 ? ` x${effects.length}` : ""}
+                    {effects.length > 1 ? ` x${effects.length}` : ""}{" "}
+                    {
+                        <span className={classes.silenced}>
+                            {silenced && "(Silenced)"}
+                            {!silenced && disabled && "(Inactive)"}
+                        </span>
+                    }
                 </div>
                 <div>{description}</div>
-                {attackPower !== 0 && (
-                    <div>
-                        <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
-                    </div>
-                )}
-                {attackDamageReceived !== 0 && (
-                    <div>
-                        Receiving{" "}
-                        <Icon
-                            icon={<CrossedSwordsIcon />}
-                            text={attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`}
-                        />
-                        damage from attacks
-                    </div>
-                )}
-                {armor > 0 && (
-                    <div>
-                        <Icon icon={<ShieldIcon />} text={armor} /> per turn
-                    </div>
-                )}
-                {healing > 0 && (
-                    <div>
-                        <Icon icon={<HeartIcon />} text={healing} /> per turn
-                    </div>
-                )}
-                {healthPerResourcesSpent > 0 && (
-                    <div>
-                        <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per <Fury /> spent
-                    </div>
-                )}
-                {lifeOnHit > 0 && (
-                    <div>
-                        Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
-                    </div>
-                )}
-                {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
+                <div className={classNames({ [classes.disabled]: disabled })}>
+                    {attackPower !== 0 && (
+                        <div>
+                            <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
+                        </div>
+                    )}
+                    {attackDamageReceived !== 0 && (
+                        <div>
+                            Receiving{" "}
+                            <Icon
+                                icon={<CrossedSwordsIcon />}
+                                text={attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`}
+                            />
+                            damage from attacks
+                        </div>
+                    )}
+                    {armor > 0 && (
+                        <div>
+                            <Icon icon={<ShieldIcon />} text={armor} /> per turn
+                        </div>
+                    )}
+                    {healing > 0 && (
+                        <div>
+                            <Icon icon={<HeartIcon />} text={healing} /> per turn
+                        </div>
+                    )}
+                    {healthPerResourcesSpent > 0 && (
+                        <div>
+                            <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per <Fury /> spent
+                        </div>
+                    )}
+                    {lifeOnHit > 0 && (
+                        <div>
+                            Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
+                        </div>
+                    )}
+                    {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
+                    {armorReceived !== 0 && (
+                        <div>
+                            Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
+                            from armor sources
+                        </div>
+                    )}
+                    {skillBonus.map(({ skill, damage = 0 }) => (
+                        <div key={skill}>
+                            {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
+                        </div>
+                    ))}
+                </div>
+                {canBeSilenced && <div>◆ Can be silenced</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
                         <Icon icon={<HourglassIcon />} text={duration} /> turns remaining
                     </span>
-                )}
-                {armorReceived !== 0 && (
-                    <div>
-                        Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} /> from
-                        armor sources
-                    </div>
                 )}
                 {!allSameDuration && (
                     <span>
@@ -192,12 +209,6 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                         turns remaining
                     </span>
                 )}
-                {skillBonus.map(({ skill, damage = 0 }) => (
-                    <div key={skill}>
-                        {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
-                    </div>
-                ))}
-                {isSilenced && canBeSilenced && <div className={classes.silenced}>Silenced</div>}
             </div>
         </div>
     );
@@ -207,7 +218,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                 <Icon
                     icon={icon}
                     className={classNames({
-                        [classes.disabled]: isSilenced,
+                        [classes.disabled]: disabled,
                     })}
                 >
                     <>

@@ -74,7 +74,7 @@ export const pigHeaded: Effect = {
 export const hardwood: Effect = {
     name: "Hardwood",
     description:
-        "When this character is attacked, it receives -1 damage from additional attacks for the turn. Effect is disabled if the character is burning.",
+        "When attacked, character receives -1 damage from additional attacks for the turn. Effect is disabled if the character is burning.",
     icon: FirewoodImage,
     attackDamageReceived: -1,
     type: EFFECT_TYPES.NONE,
