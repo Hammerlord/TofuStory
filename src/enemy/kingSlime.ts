@@ -139,7 +139,7 @@ export const kingSlimeEnemy: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
                     area: 2,
-                    animation: ANIMATION_TYPES.CAST,
+                    animation: ANIMATION_TYPES.STOMP,
                     effects: [
                         {
                             name: "Quaking",

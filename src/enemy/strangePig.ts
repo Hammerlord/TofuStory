@@ -1,4 +1,4 @@
-import { Action } from "./../ability/types";
+import { Action, ANIMATION_TYPES } from "./../ability/types";
 import { stun } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -186,6 +186,7 @@ export const mutantRibbonPig: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.STOMP,
                     summon: [{ minion: [stalagmite] }],
                 },
                 throwRocks,
@@ -204,6 +205,7 @@ export const mutantRibbonPig: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.STOMP,
                     summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
                 },
             ],

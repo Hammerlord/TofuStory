@@ -168,6 +168,32 @@ const useStyles = createUseStyles({
         animationName: "$applyEffect",
         transition: "1s filter linear, 1s -webkit-filter linear",
     },
+    "@keyframes stompingAnimation": {
+        "0%": {
+            transform: "translateY(0)",
+        },
+        "60%": {
+            transform: "translateY(-100px)",
+        },
+        "75%": {
+            transform: "translateY(5)",
+        },
+        "75.5%": {
+            transform: "translateY(0) scaleX(1.05) scaleY(0.85)",
+        },
+        "80%": {
+            transform: "scaleX(1.05) scaleY(0.85)",
+        },
+        "100%": {
+            transform: "scaleX(1) scaleY(1)",
+        },
+    },
+    stomping: {
+        animationDuration: "1s",
+        transitionTimingFunction: "ease-in-out",
+        animationName: "$stompingAnimation",
+        transformOrigin: "center bottom",
+    },
     highlightText: {
         "& .text": {
             color: "#42f57b",
@@ -325,7 +351,7 @@ const CombatantView = forwardRef(
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
         const isApplyingEffect =
-            ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE].includes(animation) &&
+            ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
             (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
 
         const imageProps = {
@@ -336,12 +362,11 @@ const CombatantView = forwardRef(
                 [classes.dead]: !event?.action && oldState?.HP === 0,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
+                [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
             }),
-            style: isApplyingEffect
-                ? {
-                      animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
-                  }
-                : undefined,
+            style: {
+                animationDuration: `${(event?.playbackTime || 1000) / 1000}s`,
+            },
         };
 
         const getImageNode = (props) => {

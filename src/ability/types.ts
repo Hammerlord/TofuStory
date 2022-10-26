@@ -424,6 +424,7 @@ export enum ANIMATION_TYPES {
     SNOOZE = "snooze",
     BEAM = "beam",
     EXPLODE = "explode",
+    STOMP = "stomp",
 }
 
 export interface AbilityEffects {
