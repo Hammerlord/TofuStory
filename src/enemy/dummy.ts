@@ -20,7 +20,7 @@ export const basicDummy = {
 export const spikedDummy = {
     name: "Spiked Dummy",
     image: Puppetree2Image,
-    maxHP: 15,
+    maxHP: 14,
     abilities: [loaf],
     damage: 1,
     effects: [thorns],

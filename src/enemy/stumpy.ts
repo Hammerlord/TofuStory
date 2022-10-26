@@ -54,7 +54,6 @@ export const stumpy: Minion = {
             name: "Bats!",
             image: StumpyBatImage,
             resourceCost: 3,
-            depletedOnUse: true,
             preemptive: true,
             actions: [
                 {

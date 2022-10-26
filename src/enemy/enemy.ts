@@ -57,7 +57,7 @@ import { championsRibbon, hardwood } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 13,
+    maxHP: 11,
     abilities: [loaf],
     image: SnailImage,
     damage: 1,
@@ -67,7 +67,7 @@ export const snail: Minion = {
 export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 3,
-    armor: 12,
+    armor: 10,
     image: BlueSnailImage,
     abilities: [loaf],
     damage: 1,
@@ -87,7 +87,7 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 21,
+    maxHP: 17,
     image: ShroomImage,
     damage: 2,
     mesos: 5,
@@ -116,15 +116,14 @@ export const shroom: Minion = {
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 3,
-    armor: 20,
+    maxHP: 5,
+    armor: 14,
     image: RedSnailImage,
     damage: 1,
     mesos: 5,
     abilities: [
         {
             name: "Rollout",
-            channelDuration: 2,
             resourceCost: 3,
             actions: [
                 {
@@ -159,8 +158,8 @@ export const redSnail: Minion = {
 
 export const slime: Minion = {
     name: "Slime",
-    maxHP: 30,
-    armor: 10,
+    maxHP: 25,
+    armor: 12,
     image: SlimeIdleImage,
     damage: 3,
     mesos: 15,
@@ -169,7 +168,7 @@ export const slime: Minion = {
             name: "Thick Slime",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -1,
+            attackDamageReceived: -2,
             icon: SquishyLiquidImage,
             description: "Prevents armor decay. While this character has armor:",
             preventArmorDecay: true,
@@ -185,7 +184,7 @@ export const slime: Minion = {
             name: "Squishy Inside",
             icon: SlimeOmokImage,
             description: "When all this character's armor has been destroyed:",
-            attackDamageReceived: 3,
+            attackDamageReceived: 2,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             conditions: [
@@ -201,7 +200,7 @@ export const slime: Minion = {
 
 export const pig: Minion = {
     name: "Pig",
-    maxHP: 50,
+    maxHP: 45,
     image: PigIdleImage,
     mesos: 15,
     damage: 2,
@@ -757,7 +756,6 @@ export const ligator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
                     effects: [
                         {
                             ...wound,
