@@ -98,6 +98,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         canBeSilenced,
         lifeOnHit = 0,
         armorReceived = 0,
+        drawCardsPerTurn = 0,
     } = effects[0];
 
     if (!icon) {
@@ -189,6 +190,12 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                             from armor sources
                         </div>
                     )}
+                    {drawCardsPerTurn !== 0 && (
+                        <div>
+                            {drawCardsPerTurn < 0 ? "-" : "+"}
+                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw on turn start
+                        </div>
+                    )}
                     {skillBonus.map(({ skill, damage = 0 }) => (
                         <div key={skill}>
                             {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
@@ -198,7 +205,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                 {canBeSilenced && <div>◆ Can be silenced</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
-                        <Icon icon={<HourglassIcon />} text={duration} /> turns remaining
+                        <Icon icon={<HourglassIcon />} text={duration} /> turn{duration !== 1 ? "s" : ""} remaining
                     </span>
                 )}
                 {!allSameDuration && (
@@ -206,7 +213,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                         {effects.map((e, i) => (
                             <Icon key={i} icon={<HourglassIcon />} text={e.duration === Infinity ? "∞" : e.duration} />
                         ))}{" "}
-                        turns remaining
+                        turn{duration !== 1 ? "s" : ""} remaining
                     </span>
                 )}
             </div>
