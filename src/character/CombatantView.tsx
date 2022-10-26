@@ -234,6 +234,31 @@ const useStyles = createUseStyles({
         animationIterationCount: 1,
         animationDuration: "0.5s",
     },
+    "@keyframes explodeAnimation": {
+        from: {
+            transform: "translateX(-50%) scale(1)",
+            WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            opacity: 0.8,
+        },
+        to: {
+            transform: "translateX(-50%) scale(7)",
+            opacity: 0,
+            WebkitFilter: "brightness(2) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(2) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+    },
+    exploding: {
+        animation: "$explodeAnimation",
+        transitionTimingFunction: "ease-in-out",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        transformOrigin: "50% 50%",
+        animationIterationCount: 1,
+        animationDuration: "0.75s",
+        zIndex: -1,
+    },
 });
 
 const CombatantView = forwardRef(
@@ -296,11 +321,12 @@ const CombatantView = forwardRef(
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
+        const { animation, type: actionType } = event?.action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
         const isApplyingEffect =
-            event?.action?.animation !== ANIMATION_TYPES.SHOUT &&
-            (event?.action?.type === ACTION_TYPES.EFFECT || event?.action?.animation === ANIMATION_TYPES.CAST);
+            ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE].includes(animation) &&
+            (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
 
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
@@ -311,12 +337,11 @@ const CombatantView = forwardRef(
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
             }),
-            style:
-                event?.action?.type === ACTION_TYPES.EFFECT
-                    ? {
-                          animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
-                      }
-                    : undefined,
+            style: isApplyingEffect
+                ? {
+                      animationDuration: `${(event.playbackTime || 1000) / 1000}s`,
+                  }
+                : undefined,
         };
 
         const getImageNode = (props) => {
@@ -357,6 +382,8 @@ const CombatantView = forwardRef(
                         <div ref={ref as any} className={classNames(classes.portrait)}>
                             {oldState && (
                                 <>
+                                    {animation === ANIMATION_TYPES.EXPLODE && getImageNode({ className: classes.exploding })}
+
                                     <Tooltip
                                         open={Boolean(event?.actionParent?.dialog)}
                                         title={event?.actionParent?.dialog || ""}
@@ -365,7 +392,7 @@ const CombatantView = forwardRef(
                                         <span>{imageNode}</span>
                                     </Tooltip>
 
-                                    {event?.action?.animation === ANIMATION_TYPES.SHOUT &&
+                                    {animation === ANIMATION_TYPES.SHOUT &&
                                         Array.from({ length: 3 }).map((_, i) =>
                                             getImageNode({ key: i, className: classes.shouting, style: { animationDelay: `${0.1 * i}s` } })
                                         )}
@@ -394,7 +421,7 @@ const CombatantView = forwardRef(
                                 <div className={classes.rightContainer}>
                                     <AttackPower combatant={oldState} />
                                 </div>
-                                {event?.action?.animation === ANIMATION_TYPES.SNOOZE && (
+                                {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
                                 )}
                             </>
