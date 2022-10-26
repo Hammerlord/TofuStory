@@ -279,7 +279,7 @@ export const block: Ability = {
     image: BlockImage,
     actions: [
         {
-            armor: 6,
+            armor: 7,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -343,7 +343,7 @@ export const spikedArmor2: Ability = {
     image: SpikeBallImage,
     actions: [
         {
-            armor: 7,
+            armor: 8,
             target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, duration: 4 }],
             type: ACTION_TYPES.EFFECT,
@@ -357,7 +357,7 @@ export const spikedArmor: Ability = {
     image: SpikeBallImage,
     actions: [
         {
-            armor: 5,
+            armor: 6,
             target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, duration: 3 }],
             type: ACTION_TYPES.EFFECT,
@@ -1109,7 +1109,7 @@ export const ironBody2: Ability = {
     image: IronBodyImage,
     actions: [
         {
-            armor: 8,
+            armor: 9,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1132,7 +1132,7 @@ export const ironBody: Ability = {
     image: IronBodyImage,
     actions: [
         {
-            armor: 6,
+            armor: 7,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
