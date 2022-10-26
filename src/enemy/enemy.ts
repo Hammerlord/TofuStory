@@ -41,7 +41,7 @@ import {
     WildBoarImage,
     WoodenClubImage,
 } from "../images";
-import { DizzyIcon, EyeIcon, ZzzIcon } from "../images/icons";
+import { CrossedSwordsIcon, DizzyIcon, EyeIcon, ZzzIcon } from "../images/icons";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -1072,6 +1072,7 @@ export const curseEye: Minion = {
     damage: 2,
     attack: {
         name: "Attack",
+        image: CrossedSwordsIcon,
         actions: [
             {
                 type: ACTION_TYPES.ATTACK,
@@ -1079,6 +1080,12 @@ export const curseEye: Minion = {
                 damage: 2,
                 bonus: {
                     damage: 1,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                        },
+                    ],
                     multiplier: {
                         type: MULTIPLIER_TYPES.DEBUFFS,
                         calculationTarget: CONDITION_TARGETS.TARGET,
@@ -1103,18 +1110,11 @@ export const curseEye: Minion = {
                         {
                             name: "Dazed",
                             icon: DizzyIcon,
-                            type: EFFECT_TYPES.STUN,
+                            image: DizzyIcon,
+                            type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
                             drawCardsPerTurn: -1,
                             duration: 1,
-                        },
-                        {
-                            name: "Vulnerable",
-                            icon: EyeIcon,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            armorReceived: -1,
-                            duration: 2,
                         },
                         {
                             name: "Weakened",
@@ -1122,7 +1122,15 @@ export const curseEye: Minion = {
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
                             attackPower: -1,
-                            duration: 1,
+                            duration: 2,
+                        },
+                        {
+                            name: "Vulnerable",
+                            icon: EyeIcon,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            armorReceived: -1,
+                            duration: 3,
                         },
                     ],
                 },
