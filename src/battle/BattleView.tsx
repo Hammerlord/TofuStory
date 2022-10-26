@@ -21,7 +21,7 @@ import Hand from "./Hand";
 import AbilityNotification from "./Notification/AbilityNotification";
 import Notification from "./Notification/Notification";
 import TurnAnnouncement from "./Notification/TurnNotification";
-import { BattleState, battleStateSlice, PlayerSelectCardsPrompt } from "./reducer";
+import { BattleState, battleStateSlice, BATTLE_STATES, PlayerSelectCardsPrompt } from "./reducer";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
@@ -159,7 +159,7 @@ const useStyles = createUseStyles({
 const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 const BATTLEFIELD_SIZE = 5;
 
-const { popEventQueue, updateFlagTurnEnd, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
+const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
@@ -174,10 +174,8 @@ const BattlefieldContainer = () => {
         charactersAttackedThisTurn,
         currentWaveIndex,
         waves,
-        flagTurnEnd,
         selectCardsPrompt,
-        isEnded,
-        isLost,
+        state: battleState,
     }: BattleState = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -196,7 +194,6 @@ const BattlefieldContainer = () => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
-    const [initialized, setInitialized] = useState(false);
     const classes = useStyles();
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
@@ -208,7 +205,7 @@ const BattlefieldContainer = () => {
         return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     })();
 
-    const disableActions = showTurnAnnouncement || flagTurnEnd || !isPlayerTurn || showWaveClear || isWinConditionTriggered || !initialized;
+    const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actor = selectedMinion || player;
@@ -372,43 +369,64 @@ const BattlefieldContainer = () => {
         showWaveDescription({ description: waveDescription });
     }, [currentWaveIndex]);
 
-    useEffect(() => {
-        if (events.length || !isWinConditionTriggered) {
+    const handleBattlePhase = () => {
+        if (isWinConditionTriggered) {
+            setShowWaveClear(true);
+            setTimeout(() => {
+                setShowWaveClear(false);
+                dispatch(onWaveClear());
+                if (waves[currentWaveIndex + 1]) {
+                    dispatch(updateBattle({ isPlayerTurn: true }));
+                    dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
+                } else {
+                    dispatch(updateBattleState(BATTLE_STATES.VICTORY));
+                }
+            }, TURN_ANNOUNCEMENT_TIME);
+        }
+
+        if (battleState === BATTLE_STATES.WAVE_START) {
+            dispatch(onWaveStart());
+            dispatch(updateBattleState(BATTLE_STATES.TURN_START));
             return;
         }
 
-        setShowWaveClear(true);
-        setTimeout(() => {
-            setShowWaveClear(false);
-            dispatch(onWaveClear());
-            if (!waves[currentWaveIndex + 1]) {
-                return;
-            }
+        if (battleState === BATTLE_STATES.TURN_START) {
             setShowTurnAnnouncement(true);
             setTimeout(() => {
                 setShowTurnAnnouncement(false);
-                dispatch(onWaveStart());
-                dispatch(startPlayerTurn());
+                if (isPlayerTurn) {
+                    dispatch(startPlayerTurn());
+                } else {
+                    dispatch(startEnemyTurn());
+                }
+                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
             }, TURN_ANNOUNCEMENT_TIME);
-        }, TURN_ANNOUNCEMENT_TIME);
-    }, [events, isWinConditionTriggered]);
-
-    useEffect(() => {
-        if (isEnded || showWaveClear) {
             return;
         }
+        if (battleState === BATTLE_STATES.TURN_END) {
+            if (isPlayerTurn) {
+                dispatch(playerEndTurn());
+            } else {
+                dispatch(endEnemyTurn());
+            }
+
+            setTimeout(() => {
+                dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
+                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
+            }, 1000);
+
+            return;
+        }
+    };
+
+    useEffect(() => {
+        if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(battleState)) {
+            return;
+        }
+
         if (!events.length) {
             eventQueueRef.current = events;
-            if (isWinConditionTriggered) {
-                return;
-            }
-            if (flagTurnEnd) {
-                if (isPlayerTurn) {
-                    dispatch(playerEndTurn());
-                } else {
-                    dispatch(endEnemyTurn());
-                }
-            }
+            handleBattlePhase();
             return;
         }
 
@@ -418,40 +436,13 @@ const BattlefieldContainer = () => {
         // Disregard pushes to the queue unless going from 0 to n events; this is to smoothen playback
         const shouldTriggerPop = (prevEvents?.length === 0 && events.length > 0) || events.length < prevEvents.length;
         if (shouldTriggerPop) {
-            // Play the next move slightly slower than the actual animation so that the animation has a bit of time to complete.
-            const delay = isPlayerTurn ? 50 : 500;
             setTimeout(() => {
                 dispatch(popEventQueue());
-            }, playbackTime + delay);
+                // Play the next move slightly slower than the actual animation so that the animation has a bit of time to complete.
+            }, playbackTime + 200);
         }
         eventQueueRef.current = events;
-    }, [events, flagTurnEnd]);
-
-    useEffect(() => {
-        if (isEnded || isLost || isWinConditionTriggered || !initialized) {
-            return;
-        }
-        setShowTurnAnnouncement(true);
-        setTimeout(() => {
-            setShowTurnAnnouncement(false);
-            if (isPlayerTurn) {
-                dispatch(startPlayerTurn());
-            } else {
-                setTimeout(() => {
-                    dispatch(startEnemyTurn());
-                }, 500);
-            }
-        }, TURN_ANNOUNCEMENT_TIME);
-    }, [isPlayerTurn, initialized]);
-
-    useEffect(() => {
-        setTimeout(() => {
-            dispatch(onWaveStart());
-            setTimeout(() => {
-                setInitialized(true);
-            }, 1500);
-        }, 1500);
-    }, []);
+    }, [events, battleState]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
@@ -607,7 +598,7 @@ const BattlefieldContainer = () => {
                                     disabled={disableActions}
                                     highlight={noMoreMoves}
                                     onClick={() => {
-                                        dispatch(updateFlagTurnEnd(true));
+                                        dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                                     }}
                                 />
                             </div>

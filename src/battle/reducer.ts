@@ -11,7 +11,6 @@ export interface BattleState {
     deck: HandAbility[];
     discard: HandAbility[];
     hand: HandAbility[];
-    flagTurnEnd: boolean; // Signals intention to end the turn (to be applied at the end of animations)
     isPlayerTurn: boolean | null;
     eventQueue: Event[];
     playerActionQueue: object[];
@@ -21,11 +20,10 @@ export interface BattleState {
     round: number;
     waves: Wave[];
     currentWaveIndex: number;
-    isEnded: boolean; // Actually the victory state
     /** When interacting with cards in your hand, or discovering a card */
     selectCardsPrompt: PlayerSelectCardsPrompt | null;
-    isLost: boolean;
     mesosAccumulated: number;
+    state: BATTLE_STATES;
 }
 
 export interface PlayerSelectCardsPrompt {
@@ -35,6 +33,19 @@ export interface PlayerSelectCardsPrompt {
         selectedTargetIndex: number;
         selectedTargetSide: BATTLEFIELD_SIDES;
     };
+}
+
+/**
+ * These signal the phase of a battle and what events to subsequently trigger (after completing animation playback of the current set of actions)
+ */
+export enum BATTLE_STATES {
+    WAVE_START = "wave-start",
+    TURN_START = "turn-start",
+    TURN_IN_PROGRESS = "turn-in-progress",
+    TURN_END = "turn-end",
+    WAVE_END = "wave-end",
+    VICTORY = "victory",
+    DEFEAT = "defeat",
 }
 
 /**
@@ -100,10 +111,14 @@ export const battleStateSlice = createSlice({
         closeBattle: () => {
             return null;
         },
-        updateFlagTurnEnd: (state, action: PayloadAction<boolean>) => {
+        updateBattleState: (state, action: PayloadAction<BATTLE_STATES>) => {
+            // If the fight is over, don't overwrite the state
+            if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state.state)) {
+                return state;
+            }
             return {
                 ...state,
-                flagTurnEnd: action.payload,
+                state: action.payload,
             };
         },
     },

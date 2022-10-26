@@ -1,3 +1,4 @@
+import { BATTLE_STATES } from "./../reducer";
 import { cloneDeep } from "lodash";
 import { compose, partition } from "ramda";
 import { Ability, Action, ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
@@ -23,7 +24,7 @@ import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLEFIELD_SIDES } from "./../types";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 
-const { updateBattle, updateFlagTurnEnd, pushEventQueue } = battleStateSlice.actions;
+const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
 /**
  * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
@@ -310,7 +311,6 @@ export const endEnemyTurn = () => {
             dispatch(
                 updateBattle({
                     isPlayerTurn: true,
-                    flagTurnEnd: false,
                 })
             );
         }, 1000);
@@ -344,15 +344,15 @@ export const startEnemyTurn = () => {
             return char?.HP > 0 && !acted[char.id] && (char.abilities.length > 0 || char.damage > 0);
         };
         const makeEnemyMove = () => {
-            const { isEnded, isLost, enemySide } = getState().battle;
-            if (isEnded || isLost) {
+            const { state, enemySide } = getState().battle;
+            if (state === BATTLE_STATES.DEFEAT || state === BATTLE_STATES.VICTORY) {
                 return;
             }
 
             const eligible = enemySide.filter(isEligibleToMove);
             const enemy = getRandomItem(eligible);
             if (!enemy) {
-                dispatch(updateFlagTurnEnd(true));
+                dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                 return;
             }
 

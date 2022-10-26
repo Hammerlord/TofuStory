@@ -122,7 +122,6 @@ export const playerEndTurn = () => {
                     isPlayerTurn: false,
                     discard: [...discard, ...prepareForDiscard(hand)],
                     hand: [],
-                    flagTurnEnd: false,
                 })
             );
         }, 1000);

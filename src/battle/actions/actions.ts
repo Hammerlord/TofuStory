@@ -1,3 +1,4 @@
+import { BATTLE_STATES } from "./../reducer";
 import { enemyEffectNameMap } from "./../../enemy/effect";
 import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
@@ -46,7 +47,7 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { aggregateItemEffects } from "./../../Menu/utils";
 import { TriggerSource } from "./../types";
 
-const { drawCards, updateBattle, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
+const { drawCards, updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 export const findCombatant = (getState, combatantId: string): Combatant | undefined => {
@@ -56,11 +57,7 @@ export const findCombatant = (getState, combatantId: string): Combatant | undefi
 
 const onBattleEnd = () => {
     return (dispatch, getState) => {
-        dispatch(
-            updateBattle({
-                isEnded: true,
-            })
-        );
+        dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
         const { playerSide, mesosAccumulated, isTutorial } = getState().battle;
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -101,7 +98,6 @@ export const onWaveClear = () => {
             updateBattle({
                 isPlayerTurn: true,
                 currentWaveIndex: currentWaveIndex + 1,
-                flagTurnEnd: false,
                 enemySide: enemies.map(createCombatant),
                 deck: presetDeck ? presetDeck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })) : deck,
                 hand: presetDeck ? [] : hand,
@@ -152,12 +148,11 @@ export const startBattle = ({
                 playerSummonsInPlay: {},
                 currentWaveIndex: 0,
                 waves,
-                isEnded: false,
                 round: 0,
                 selectCards: null,
-                isLost: false,
                 mesosAccumulated: 0,
                 isTutorial,
+                state: BATTLE_STATES.WAVE_START,
             })
         );
     };
@@ -336,16 +331,11 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
-        const { playerSide, enemySide, waves, currentWave, playerSummonsInPlay, discard } = getState().battle;
+        const { playerSide, playerSummonsInPlay, discard } = getState().battle;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         if (player.HP === 0) {
-            // Game over
-            dispatch(
-                updateBattle({
-                    isLost: true,
-                })
-            );
+            dispatch(updateBattleState(BATTLE_STATES.DEFEAT));
             dispatch(updatePlayer(player));
             return;
         }

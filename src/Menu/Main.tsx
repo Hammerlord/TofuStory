@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { Ability, Effect } from "../ability/types";
 import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
-import { battleStateSlice } from "../battle/reducer";
+import { battleStateSlice, BATTLE_STATES } from "../battle/reducer";
 import Rewards from "../battle/Rewards";
 import { getMaxHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
@@ -125,10 +125,10 @@ const Main = () => {
     }, [player]);
 
     useEffect(() => {
-        if (battle?.isEnded) {
+        if (battle?.state === BATTLE_STATES.VICTORY) {
             setRewardsOpen(true);
         }
-    }, [battle?.isEnded]);
+    }, [battle?.state]);
 
     const handleEventNode = ({ npc }: { npc: NPC }) => {
         const { character, scenes } = npc;
