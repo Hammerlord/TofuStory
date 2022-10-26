@@ -43,6 +43,7 @@ export { default as CoffeePotImage } from "./CoffeePot.png";
 export { default as ColdEyeCardImage } from "./ColdEyeCard.png";
 export { default as ComboFuryImage } from "./ComboFury.png";
 export { default as CrabCardImage } from "./CrabCard.png";
+export { default as CurseEyeImage } from "./CurseEye.gif";
 export { default as CurseEyeCardImage } from "./CurseEyeCard.png";
 export { default as DarkImpaleImage } from "./DarkImpale.png";
 export { default as DarkSpearImage } from "./DarkSpear.png";

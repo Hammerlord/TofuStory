@@ -43,8 +43,9 @@ export const travel = ({
     returnToOrigin = false,
     sidewinder = false,
     freezeAxis,
+    fadeIn = false,
 }: {
-    object?: HTMLElement; // Object to move. If not supplied, `from` is used instead.
+    object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     to: HTMLElement | HTMLElement[];
     playbackTime: number;
@@ -53,6 +54,7 @@ export const travel = ({
     returnToOrigin?: boolean;
     sidewinder?: boolean;
     freezeAxis?: "x" | "y";
+    fadeIn?: boolean;
 }) => {
     if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
@@ -62,6 +64,7 @@ export const travel = ({
         transform?: string;
         easing?: "ease-in" | "ease-out";
         offset?: number;
+        opacity?: number;
     }[] = [
         {
             transform: `unset`,
@@ -112,8 +115,11 @@ export const travel = ({
             .slice(0, i + 1)
             .reduce((acc, { xDiff, yDiff }) => acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)), 0);
 
+        const opacity = fadeIn && i === 0 ? 0 : 1;
+
         animationFrames.push({
             transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
+            opacity,
             offset: travelDist / totalTravelDistance || null,
         });
     });
@@ -126,8 +132,12 @@ export const travel = ({
 
     animationFrames[0].easing = "ease-out";
     animationFrames[animationFrames.length - 1].easing = "ease-in";
+    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
-    (object || from).animate(animationFrames, {
-        duration: playbackTime,
+    elementsToAnimate.forEach((el, i) => {
+        el.animate(animationFrames, {
+            duration: playbackTime,
+            delay: i * 50,
+        });
     });
 };

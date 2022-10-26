@@ -6,8 +6,8 @@ import { getCenterCoords, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 
-const PROJECTILE_WIDTH = 70;
-const PROJECTILE_HEIGHT = 70;
+const PROJECTILE_WIDTH = 50;
+const PROJECTILE_HEIGHT = 50;
 
 const useStyles = createUseStyles({
     root: {
@@ -32,6 +32,7 @@ const useStyles = createUseStyles({
 });
 
 const DISPLACEMENT_SPEED = 500;
+const MAX_BEAM_PROJECTILES = 5;
 
 const AnimationCanvas = ({
     event,
@@ -77,7 +78,7 @@ const AnimationCanvas = ({
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
     const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
-    const projectileRefs = Array.from({ length: 5 }).map(() => useRef() as any);
+    const projectileRefs = Array.from({ length: MAX_BEAM_PROJECTILES * 5 }).map(() => useRef() as any);
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { x: actorX, y: actorY } = useMemo(() => {
@@ -88,6 +89,11 @@ const AnimationCanvas = ({
         return getCenterCoords(actorElement);
     }, [actorElement]);
     const classes = useStyles();
+
+    const { icon, ricochet, animation } = action || {};
+
+    // "Beam" animations shoot a bunch of projectile images
+    const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
 
     useEffect(() => {
         if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
@@ -105,23 +111,27 @@ const AnimationCanvas = ({
 
         if (icon) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
-            const animateRangeAttack = (target, projectileRefIndex: number) => {
+            const animateProjectile = (target, projectileRefIndex: number) => {
+                const refsFrom = projectileRefIndex * beamProjectileMultiplier;
+                const refsTo = refsFrom + 1 * beamProjectileMultiplier;
+                const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
                 travel({
                     from: actorElement,
                     to: target,
-                    object: projectileRefs[projectileRefIndex].current,
+                    object,
                     spin,
                     rotateToFaceTarget,
                     sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                     playbackTime,
+                    fadeIn: animation === ANIMATION_TYPES.BEAM,
                 });
             };
 
             if (ricochet) {
-                animateRangeAttack(allTargets, 0);
+                animateProjectile(allTargets, 0);
             } else {
-                allTargets.forEach(animateRangeAttack);
+                allTargets.forEach(animateProjectile);
             }
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
             travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
@@ -166,7 +176,6 @@ const AnimationCanvas = ({
         }, DISPLACEMENT_SPEED);
     }, [eventId]);
 
-    const { icon, ricochet } = action || {};
     const getProjectileElement = (i: number) => {
         const projectileDimensions = projectileRefs[i].current?.getBoundingClientRect() || { width: 70, height: 70 };
         const props = {
@@ -193,9 +202,10 @@ const AnimationCanvas = ({
 
     // TODO This gnarly bit of code is really just because there's one ability that ricochets right now and it's single target, so don't spawn more projectiles than needed
     const projectileTargets = ricochet ? [allTargets[0]] : allTargets;
+    const numProjectiles = projectileTargets.filter((val) => val).length * beamProjectileMultiplier;
 
     return (
-        <div className={classes.root}>{icon && <>{projectileTargets.filter((val) => val).map((tar, i) => getProjectileElement(i))}</>}</div>
+        <div className={classes.root}>{icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}</div>
     );
 };
 

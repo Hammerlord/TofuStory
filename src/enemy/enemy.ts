@@ -2,6 +2,7 @@ import {
     AxeStumpImage,
     BlueSnailImage,
     BlueSnailShellImage,
+    CurseEyeImage,
     FireBoarImage,
     FirewoodImage,
     GreenMushroomImage,
@@ -40,13 +41,16 @@ import {
     WildBoarImage,
     WoodenClubImage,
 } from "../images";
+import { DizzyIcon, EyeIcon, ZzzIcon } from "../images/icons";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
+    MULTIPLIER_TYPES,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -1057,6 +1061,81 @@ export const manoEnemy: Minion = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
+        },
+    ],
+};
+
+export const curseEye: Minion = {
+    name: "Curse Eye",
+    maxHP: 80,
+    image: CurseEyeImage,
+    damage: 2,
+    attack: {
+        name: "Attack",
+        actions: [
+            {
+                type: ACTION_TYPES.ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                damage: 2,
+                bonus: {
+                    damage: 1,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.DEBUFFS,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                },
+            },
+        ],
+    },
+    abilities: [
+        {
+            name: "Eye Beam",
+            resourceCost: 3,
+            castTime: 1,
+            image: EyeIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: EyeIcon,
+                    animation: ANIMATION_TYPES.BEAM,
+                    effects: [
+                        {
+                            name: "Dazed",
+                            icon: DizzyIcon,
+                            type: EFFECT_TYPES.STUN,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            drawCardsPerTurn: -1,
+                            duration: 1,
+                        },
+                        {
+                            name: "Vulnerable",
+                            icon: EyeIcon,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            armorReceived: -1,
+                            duration: 2,
+                        },
+                        {
+                            name: "Weakened",
+                            icon: ZzzIcon,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            attackPower: -1,
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Predatory",
+            icon: EyeIcon,
+            description: "Deals extra damage against targets suffering from status ailments.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
         },
     ],
 };

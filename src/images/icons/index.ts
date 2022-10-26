@@ -9,6 +9,7 @@ export { default as CloudyIcon } from "./Cloudy.svg";
 export { default as CrossedSwordsIcon } from "./CrossedSwords.svg";
 export { default as CrossmarkIcon } from "./Crossmark.svg";
 export { default as DizzyIcon } from "./Dizzy.svg";
+export { default as EyeIcon } from "./Eye.svg";
 export { default as FireIcon } from "./Fire.svg";
 export { default as FireworksIcon } from "./Fireworks.svg";
 export { default as GreenHeartIcon } from "./GreenHeart.svg";
