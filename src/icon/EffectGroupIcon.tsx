@@ -51,6 +51,7 @@ const useStyles = createUseStyles({
     },
     disabled: {
         opacity: 0.7,
+        filter: "saturate(0%)",
     },
     "@keyframes fade": {
         "0%": {
