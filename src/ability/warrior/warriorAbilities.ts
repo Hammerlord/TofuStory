@@ -395,13 +395,6 @@ export const warBanner2: Ability = {
         image: FlagImage,
         maxHP: 5,
         damage: 0,
-        onSummon: [
-            {
-                ...drumOfWar,
-                armor: 3,
-                area: 2,
-            },
-        ],
         effects: [
             {
                 ...stealth,
@@ -414,6 +407,19 @@ export const warBanner2: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Drumbeat of War",
+                        actions: [
+                            {
+                                ...drumOfWar,
+                                armor: 3,
+                                area: 2,
+                            },
+                        ],
+                    },
+                },
+                onSummoned: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Drumbeat of War",
@@ -441,8 +447,6 @@ export const warBanner: Ability = {
         image: FlagImage,
         maxHP: 5,
         damage: 0,
-        onSummon: [drumOfWar],
-
         effects: [
             {
                 ...stealth,
@@ -455,6 +459,13 @@ export const warBanner: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
                 onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Drumbeat of War",
+                        actions: [drumOfWar],
+                    },
+                },
+                onSummoned: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Drumbeat of War",

@@ -94,6 +94,7 @@ export enum EFFECT_EVENT_KEYS {
     onEnd = "onEnd",
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
+    onSummoned = "onSummoned",
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -159,6 +160,7 @@ export interface Effect {
     onWaveStart?: EffectEventTrigger;
     onWaveClear?: EffectEventTrigger;
     onEffectRemoved?: EffectEventTrigger;
+    onSummoned?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
@@ -203,7 +205,6 @@ export interface Minion {
     /** Enemy basic attack. If not provided, one will be generated. */
     attack?: Ability;
     /** Actions to perform when this minion has been summoned */
-    onSummon?: Action[];
     isBoss?: boolean;
     mesos?: number;
 }

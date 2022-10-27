@@ -837,20 +837,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                 })
             );
 
-            if (summonedMinion.onSummon) {
-                summonedMinion.onSummon.forEach((action) => {
-                    const { index, side } = autoSelectActionTarget({ action, actorId: summonedMinion.id, getState });
-                    dispatch(
-                        performAction({
-                            action,
-                            selectedIndex: index,
-                            side,
-                            actorId: summonedMinion.id,
-                            parentSource: { ...parentSource, isProc: true },
-                        })
-                    );
-                });
-            }
+            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
         }
     };
 };
@@ -895,6 +882,7 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
             return getRandomItem(getPossibleSummonIndices(friendly));
         };
 
+        const summons = [];
         for (const { minion, positionIndex } of minions) {
             const pos = getSummonPos(positionIndex);
             const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
@@ -908,6 +896,8 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
                     ...createCombatant(minionToSummon),
                     ...modifierValues,
                 };
+
+                summons.push(combatants[pos]);
             }
         }
 
@@ -916,6 +906,10 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
                 [friendlySide]: combatants,
             })
         );
+
+        summons.forEach((summon) => {
+            dispatch(checkEventTrigger({ combatantId: summon.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
+        });
     };
 };
 
@@ -1298,22 +1292,7 @@ const checkSummonMinion = ({
             }
 
             dispatch(updateBattle(newBattleProps));
-            if (summonedMinion.onSummon) {
-                summonedMinion.onSummon.forEach((action) => {
-                    const { index, side } = autoSelectActionTarget({ action, actorId: summonedMinion.id, getState });
-                    dispatch(
-                        performAction({
-                            action,
-                            selectedIndex: index,
-                            side,
-                            actorId: summonedMinion.id,
-                            parentSource: { source: ability, actorId, type: TRIGGER_SOURCE_TYPES.ABILITY, isProc: true },
-                        })
-                    );
-                });
-            }
-
-            // TODO on summon event triggers?
+            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
         }
     };
 };
