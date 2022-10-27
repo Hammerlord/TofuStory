@@ -59,6 +59,7 @@ export const strangePig: Minion = {
                     actions: [
                         {
                             type: ACTION_TYPES.EFFECT,
+                            animation: ANIMATION_TYPES.EXPLODE,
                             target: TARGET_TYPES.SELF,
                             morph: {
                                 minions: [
@@ -211,5 +212,25 @@ export const mutantRibbonPig: Minion = {
             ],
         },
     ],
-    effects: [championsRibbon, pigHeaded],
+    effects: [
+        championsRibbon,
+        pigHeaded,
+        {
+            name: "Roar",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onSummoned: {
+                ability: {
+                    name: "Roar",
+                    actions: [
+                        {
+                            target: TARGET_TYPES.HOSTILE,
+                            type: ACTION_TYPES.EFFECT,
+                            animation: ANIMATION_TYPES.SHOUT,
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };

@@ -2,7 +2,8 @@ import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
-import { getCharacterStatChanges, getMaxHP } from "../battle/utils";
+import { Event } from "../battle/types";
+import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
 import HitIcon from "../icon/HitIcon";
@@ -263,15 +264,15 @@ const useStyles = createUseStyles({
     "@keyframes explodeAnimation": {
         from: {
             transform: "translateX(-50%) scale(1)",
-            WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             opacity: 0.8,
         },
         to: {
             transform: "translateX(-50%) scale(7)",
             opacity: 0,
-            WebkitFilter: "brightness(2) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            filter: "brightness(2) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
     },
     exploding: {
@@ -294,15 +295,17 @@ const CombatantView = forwardRef(
             onClick,
             isTargeted,
             event,
+            events,
             isSelected,
             isHighlighted,
             showReticle,
             ...other
         }: {
-            combatant: Combatant;
+            combatant?: Combatant;
             onClick: (event: any) => void;
             isTargeted: boolean;
-            event: any; // AnimationEvent
+            event: any; // extension of Event
+            events: Event[]; // Current event queue
             isSelected: boolean;
             isHighlighted: boolean;
             showReticle: boolean;
@@ -318,7 +321,8 @@ const CombatantView = forwardRef(
         const classes = useStyles();
 
         useEffect(() => {
-            if (combatant?.HP > 0 || oldState?.id !== combatant?.id) {
+            const isCombatantChanged = oldState?.id !== combatant?.id;
+            if (combatant?.HP > 0 || isCombatantChanged) {
                 setPlayDeathAnimation(false);
             }
 
@@ -327,27 +331,34 @@ const CombatantView = forwardRef(
                 newCharacter: combatant,
             });
 
-            const timeout = setTimeout(() => {
+            const callback = () => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0 && oldState?.id === combatant?.id;
-                if (isKillingBlow) {
+                const willPerformOnDeathActions = events.some(({ actorId }) => actorId === combatant?.id);
+                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0 && !isCombatantChanged;
+                if (isKillingBlow && !willPerformOnDeathActions) {
                     setPlayDeathAnimation(true);
                 }
-            }, 500);
-
-            return () => {
-                clearTimeout(timeout);
-                setStatChanges(statChanges);
-                setOldState(combatant);
             };
+
+            const isOnBattlefield = event.enemySide?.concat(event.playerSide).some((combatant) => combatant?.id === oldState?.id);
+            if (isCombatantChanged && !isOnBattlefield) {
+                // Morphs/summons should play immediately
+                callback();
+                return;
+            }
+
+            setTimeout(() => {
+                callback();
+            }, 500);
         }, [combatant]);
 
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
-        const { animation, type: actionType } = event?.action || {};
+        const { action, actionParent, targetRef } = (event?.actorId === combatant?.id && event) || {};
+        const { animation, type: actionType } = action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
         const isApplyingEffect =
@@ -358,8 +369,8 @@ const CombatantView = forwardRef(
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames(classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                [classes.dying]: !event?.action && playDeathAnimation,
-                [classes.dead]: !event?.action && oldState?.HP === 0,
+                [classes.dying]: !action && playDeathAnimation,
+                [classes.dead]: !action && oldState?.HP === 0,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
@@ -409,11 +420,7 @@ const CombatantView = forwardRef(
                                 <>
                                     {animation === ANIMATION_TYPES.EXPLODE && getImageNode({ className: classes.exploding })}
 
-                                    <Tooltip
-                                        open={Boolean(event?.actionParent?.dialog)}
-                                        title={event?.actionParent?.dialog || ""}
-                                        placement="top"
-                                    >
+                                    <Tooltip open={Boolean(actionParent?.dialog)} title={actionParent?.dialog || ""} placement="top">
                                         <span>{imageNode}</span>
                                     </Tooltip>
 
@@ -424,8 +431,8 @@ const CombatantView = forwardRef(
                                     <div className={classes.weaponContainer}>
                                         <Weapon
                                             image={oldState.weapon}
-                                            action={event?.action}
-                                            target={event?.targetRef}
+                                            action={action}
+                                            target={targetRef}
                                             wielder={weaponRef?.current as any}
                                         />
                                     </div>

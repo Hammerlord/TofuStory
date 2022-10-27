@@ -559,7 +559,8 @@ const BattlefieldContainer = () => {
                                         onMouseLeave={() => setHoveredCombatant(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         key={i}
-                                        event={enemy?.id === events[0]?.actorId ? combatantEvent : undefined}
+                                        event={combatantEvent}
+                                        events={events}
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         ref={enemyRefs[i]}
@@ -584,7 +585,8 @@ const BattlefieldContainer = () => {
                                                 onMouseLeave={() => setHoveredCombatant(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 key={i}
-                                                event={ally?.id === events[0]?.actorId ? combatantEvent : undefined}
+                                                event={combatantEvent}
+                                                events={events}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 ref={allyRefs[i]}
