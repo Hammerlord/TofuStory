@@ -362,6 +362,43 @@ const BattlefieldContainer = () => {
     const eventQueueRef = useRef([]);
 
     useEffect(() => {
+        // Preload character sprites, projectiles, etc. or they may be invisible
+        // TODO this does not include minion/effect string references
+        const imagesMap = playerSide.concat(enemySide).reduce((acc, combatant) => {
+            const traverseObjForImages = (obj) => {
+                if (!obj) {
+                    return;
+                }
+                Object.entries(obj).forEach(([key, value]) => {
+                    // Image properties are typically named either icon or image.
+                    if (["image", "icon"].includes(key) && typeof value === "string") {
+                        acc[value] = true;
+                    } else if (typeof value === "object") {
+                        traverseObjForImages(value);
+                    }
+                });
+            };
+
+            traverseObjForImages(combatant);
+            return acc;
+        }, {});
+
+        const imageUrls = Object.keys(imagesMap);
+
+        imageUrls.forEach((image) => {
+            const newImage = new Image();
+            newImage.src = image;
+            window[image] = newImage;
+        });
+
+        () => {
+            imageUrls.forEach((image) => {
+                delete window[image];
+            });
+        };
+    }, []);
+
+    useEffect(() => {
         showWaveDescription({ description: waveDescription });
     }, [currentWaveIndex]);
 
