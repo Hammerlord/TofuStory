@@ -385,8 +385,11 @@ const BattlefieldContainer = () => {
         }
 
         if (battleState === BATTLE_STATES.WAVE_START) {
-            dispatch(onWaveStart());
-            dispatch(updateBattleState(BATTLE_STATES.TURN_START));
+            setTimeout(() => {
+                dispatch(onWaveStart());
+                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
+            }, 1000);
+
             return;
         }
 
