@@ -1,16 +1,8 @@
-import { burn, stun, thorns } from "./../ability/Effects";
-import { bats, dryBranch, hardwood } from "./effect";
-import {
-    ACTION_TYPES,
-    Minion,
-    TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
-    EFFECT_TYPES,
-    EFFECT_CLASSES,
-    ANIMATION_TYPES,
-} from "./../ability/types";
 import { BarrelImage, BatsEffectImage, BombImage, StumpyBatImage, StumpyImage } from "../images";
 import { MountainIcon } from "../images/icons";
+import { burn, hardy } from "./../ability/Effects";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "./../ability/types";
+import { bats, dryBranch, hardwood } from "./effect";
 
 const explosiveBarrel: Minion = {
     name: "Explosive Barrel",
@@ -75,7 +67,7 @@ export const stumpy: Minion = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.CAST,
+                    animation: ANIMATION_TYPES.STOMP,
                     damage: 4,
                     area: 2,
                 },
