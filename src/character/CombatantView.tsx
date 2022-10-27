@@ -15,6 +15,7 @@ import AttackPower from "./AttackPower";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import Health from "./HealthView";
+import PlayerResources from "./PlayerResources";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 import { Combatant } from "./types";
@@ -452,6 +453,7 @@ const CombatantView = forwardRef(
 
                                 <div className={classes.rightContainer}>
                                     <AttackPower combatant={oldState} />
+                                    {combatant.isPlayer && <PlayerResources player={combatant} />}
                                 </div>
                                 {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />

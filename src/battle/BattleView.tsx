@@ -8,7 +8,6 @@ import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
-import { Fury } from "../resource/ResourcesView";
 import { onWaveClear, onWaveStart, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -107,9 +106,6 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
         textAlign: "center",
-    },
-    resource: {
-        margin: "0 1px",
     },
     abilities: {
         display: "flex",
@@ -616,9 +612,6 @@ const BattlefieldContainer = () => {
                         initialBattlefield={{ playerSide, enemySide }}
                     />
                     <div className={classes.abilityContainer}>
-                        {Array.from({ length: player.resources }).map((_, i) => (
-                            <Fury key={i} className={classes.resource} />
-                        ))}
                         <Hand
                             className={classes.abilities}
                             hand={hand}
