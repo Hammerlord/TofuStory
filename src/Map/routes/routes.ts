@@ -17,9 +17,10 @@ import {
 } from "../../enemy/enemy";
 import { strangePig } from "../../enemy/strangePig";
 import { stumpy } from "../../enemy/stumpy";
+import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, PerionRegionBGImage } from "../../images";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
-export const routeKerningToPerion = {
+export const routeKerningToPerion: Route = {
     enemies: {
         easy: [stump],
         normal: [octopus, redSnail, wildBoar],
@@ -30,70 +31,88 @@ export const routeKerningToPerion = {
         {
             x: 0.18263888888888888,
             y: 0.3499464292311671,
+            regionBG: KerningCityBGImage,
         },
         {
             x: 0.22256944444444443,
             y: 0.3291388037093139,
+            regionBG: KerningCityBGImage,
         },
         {
             x: 0.27847222222222223,
             y: 0.33481361066981935,
+            regionBG: PerionRegionBGImage,
         },
         {
             x: 0.3138888888888889,
             y: 0.29840026600657626,
+            regionBG: PerionRegionBGImage,
         },
         {
             x: 0.31875,
             y: 0.24827280452211178,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, stumpy, null, null] }],
+            regionBG: PerionRegionBGImage,
         },
         {
             x: 0.3371527777777778,
             y: 0.2113865592788266,
+            regionBG: PerionRegionBGImage,
         },
     ] as RouteNode[],
 };
 
-const toKerning = {
+const toKerning: Route = {
     elites: [snail, blueSnail, shroom],
     nodes: [
         {
             x: 0.19591836734693877,
             y: 0.609017912291538,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.17551020408163265,
             y: 0.5558987029030266,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.1877818778187782,
             y: 0.4992147419118417,
+            regionBG: KerningCityBGImage,
         },
-        { x: 0.18412698412698414, y: 0.4544662963518991 },
+        {
+            x: 0.18412698412698414,
+            y: 0.4544662963518991,
+            regionBG: KerningCityBGImage,
+        },
         {
             x: 0.14982728842832468,
             y: 0.39576595119082625,
             type: NODE_TYPES.TOWN,
             town: TOWNS.KERNING,
         },
-    ],
+    ] as RouteNode[],
     next: [routeKerningToPerion],
 };
 
-const toKerningForest = {
+const toKerningForest: Route = {
     nodes: [
         {
             x: 0.24807256235827665,
             y: 0.6016059295861643,
         },
-        { x: 0.23139329805996472, y: 0.5596757243657109 },
+        {
+            x: 0.23139329805996472,
+            y: 0.5596757243657109,
+            regionBG: HenesysRegionBGImage,
+        },
         {
             x: 0.2324514991181658,
             y: 0.5092328479207326,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, snail, mutantSnailEnemy, snail, null] }],
+            regionBG: HenesysRegionBGImage,
         },
     ],
     next: [toKerning],
@@ -140,43 +159,57 @@ export const routeElliniaPerion = {
     ],
 };
 
-export const routeHenesysEllinia = {
+export const routeHenesysEllinia: Route = {
     nodes: [
         {
             x: 0.5246113989637305,
             y: 0.8079976477506615,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.5531088082901554,
             y: 0.7603645986474566,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.5613126079447323,
             y: 0.7062628638635695,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.5906735751295337,
             y: 0.6574536900911496,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, strangePig, null, null] }],
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.6308290155440415,
             y: 0.6356953837106734,
+            regionBG: ElliniaBGImage,
         },
         {
             x: 0.6640759930915371,
             y: 0.6080564539841223,
+            regionBG: ElliniaBGImage,
         },
     ],
     next: [],
 };
 
-export const toHenesys = {
+export const toHenesys: Route = {
     elites: [snail, blueSnail, shroom],
     nodes: [
-        { x: 0.38765432098765434, y: 0.7446329379972977 },
-        { x: 0.3950617283950617, y: 0.8070860231196517 },
+        {
+            x: 0.38765432098765434,
+            y: 0.7446329379972977,
+            regionBG: HenesysRegionBGImage,
+        },
+        {
+            x: 0.3950617283950617,
+            y: 0.8070860231196517,
+            regionBG: HenesysRegionBGImage,
+        },
         {
             x: 0.45509499136442144,
             y: 0.8068215230814466,
@@ -196,17 +229,24 @@ export const toHenesysForest: Route = {
         {
             x: 0.3143350604490501,
             y: 0.7221405468979711,
+            regionBG: HenesysRegionBGImage,
         },
         {
             x: 0.3333333333333333,
             y: 0.7680094089973537,
+            regionBG: HenesysRegionBGImage,
         },
-        { x: 0.363668430335097, y: 0.7907521393184207 },
+        {
+            x: 0.363668430335097,
+            y: 0.7907521393184207,
+            regionBG: HenesysRegionBGImage,
+        },
         {
             x: 0.37178130511463847,
             y: 0.6970725116348897,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, snail, manoEnemy, snail, null] }],
+            regionBG: HenesysRegionBGImage,
         },
     ],
     next: [toHenesys],

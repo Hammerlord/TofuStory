@@ -53,6 +53,7 @@ export { default as DoubleTimeImage } from "./DoubleTime.png";
 export { default as DrakeBloodImage } from "./DrakeBlood.png";
 export { default as DrakeCardImage } from "./DrakeCard.png";
 export { default as ElementalForceImage } from "./ElementalForce.png";
+export { default as ElliniaBGImage } from "./ElliniaBG.jpg";
 export { default as EndureImage } from "./Endure.png";
 export { default as EnrageImage } from "./Enrage.png";
 export { default as EvilEyeImage } from "./EvilEye.png";

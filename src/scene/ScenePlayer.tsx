@@ -169,7 +169,7 @@ const ScenePlayer = ({
 }: {
     scene: Scene;
     player: any;
-    updatePlayer: Function;
+    updatePlayer: (updated: any) => void;
     onBattle: Function;
     onExit: Function;
     onShop: Function;

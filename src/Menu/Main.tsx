@@ -1,13 +1,11 @@
 import classNames from "classnames";
-import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability, Effect } from "../ability/types";
+import { Ability } from "../ability/types";
 import { startBattle } from "../battle/actions/actions";
 import BattlefieldContainer from "../battle/BattleView";
 import { battleStateSlice, BATTLE_STATES } from "../battle/reducer";
 import Rewards from "../battle/Rewards";
-import { getMaxHP } from "../battle/utils";
 import JobUp from "../character/JobUp";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -18,7 +16,7 @@ import KerningCity from "../Map/KerningCity";
 import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { routeLith, toLith } from "../Map/routes/routes";
+import { toLith } from "../Map/routes/routes";
 import { NODE_TYPES, TOWNS } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
@@ -354,7 +352,7 @@ const Main = () => {
                             Puzzle={treasure.puzzle}
                         />
                     )}
-                    {battle && <BattlefieldContainer />}
+                    {battle && <BattlefieldContainer backgroundImage={locationNode?.regionBG} />}
                     {upgradingAbility && (
                         <Overlay>
                             <CardUpgradeGrid

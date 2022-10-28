@@ -31,7 +31,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        backgroundImage: `url(${LithRegionBGImage})`,
+        backgroundImage: (props: { backgroundImage: string }) => `url(${props.backgroundImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         overflow: "hidden",
@@ -157,7 +157,7 @@ const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
 
-const BattlefieldContainer = () => {
+const BattlefieldContainer = ({ backgroundImage = LithRegionBGImage }: { backgroundImage?: string }) => {
     const dispatch = useAppDispatch();
     const {
         deck,
@@ -190,7 +190,7 @@ const BattlefieldContainer = () => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [hoveredCombatant, setHoveredCombatant] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
-    const classes = useStyles();
+    const classes = useStyles({ backgroundImage } as any);
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
     const isWinConditionTriggered = (() => {

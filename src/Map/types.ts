@@ -29,6 +29,7 @@ export interface RouteNode {
         puzzle: Function;
     };
     town?: TOWNS;
+    regionBG?: string; // Path to background URL
 }
 
 export interface MapEnemies {
