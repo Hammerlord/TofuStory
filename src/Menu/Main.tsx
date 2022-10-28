@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability } from "../ability/types";
-import { startBattle } from "../battle/actions/actions";
+import { startBattle } from "../battle/actions/phases";
 import BattlefieldContainer from "../battle/BattleView";
 import { battleStateSlice, BATTLE_STATES } from "../battle/reducer";
 import Rewards from "../battle/Rewards";

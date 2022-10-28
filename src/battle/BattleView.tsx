@@ -8,8 +8,9 @@ import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
-import { onWaveClear, onWaveStart, useItem } from "./actions/actions";
+import { useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
+import { onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
@@ -364,6 +365,7 @@ const BattlefieldContainer = ({ backgroundImage = LithRegionBGImage }: { backgro
     useEffect(() => {
         // Preload character sprites, projectiles, etc. or they may be invisible
         // TODO this does not include minion/effect string references
+        // Also next wave?
         const imagesMap = playerSide.concat(enemySide).reduce((acc, combatant) => {
             const traverseObjForImages = (obj) => {
                 if (!obj) {
