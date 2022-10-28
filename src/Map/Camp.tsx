@@ -83,7 +83,19 @@ const useStyles = createUseStyles({
 });
 
 const HEALTH_REGAINED = 0.25;
-const Camp = ({ onExit, deck, player, updateDeck, updatePlayer }) => {
+const Camp = ({
+    onExit,
+    deck,
+    player,
+    updateDeck,
+    updatePlayer,
+}: {
+    onExit: () => void;
+    deck: Ability[];
+    player: any;
+    updateDeck: (updated: Ability[]) => void;
+    updatePlayer: (updated: any) => void;
+}) => {
     const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
