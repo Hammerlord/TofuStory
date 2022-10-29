@@ -24,6 +24,7 @@ export interface BattleState {
     selectCardsPrompt: PlayerSelectCardsPrompt | null;
     mesosAccumulated: number;
     state: BATTLE_STATES;
+    backgroundImage?: string; // Path to background image
 }
 
 export interface PlayerSelectCardsPrompt {

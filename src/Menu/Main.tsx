@@ -168,7 +168,7 @@ const Main = () => {
 
         const callback = () => {
             if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER || node.type === NODE_TYPES.BOSS) {
-                dispatch(startBattle({ waves: node.encounter }));
+                dispatch(startBattle({ waves: node.encounter, backgroundImage: node.regionBG }));
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
@@ -231,8 +231,8 @@ const Main = () => {
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            const { characters = [], waves, addAbilities } = encounter;
-            dispatch(startBattle({ waves, addAbilities }));
+            const { characters = [], waves, addAbilities, backgroundImage } = encounter;
+            dispatch(startBattle({ waves, addAbilities, backgroundImage }));
             setEncounterVictoryCallback(() => onVictory);
             const newVisited = characters.reduce((acc, character: string) => {
                 return {
@@ -352,7 +352,7 @@ const Main = () => {
                             Puzzle={treasure.puzzle}
                         />
                     )}
-                    {battle && <BattlefieldContainer backgroundImage={locationNode?.regionBG} />}
+                    {battle && <BattlefieldContainer />}
                     {upgradingAbility && (
                         <Overlay>
                             <CardUpgradeGrid

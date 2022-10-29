@@ -87,7 +87,14 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
     const [showAcquireAbility, setShowAcquireAbility] = useState(false);
 
     const handleTutorialConfirmation = () => {
-        onBattle && onBattle(tutorial, () => setPromptTutorial(false));
+        onBattle &&
+            onBattle(
+                {
+                    ...tutorial,
+                    backgroundImage: LithHarborCityBGImage,
+                },
+                () => setPromptTutorial(false)
+            );
     };
 
     const handleTutorialCancel = () => {

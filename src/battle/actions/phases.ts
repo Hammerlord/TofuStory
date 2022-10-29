@@ -70,11 +70,13 @@ export const startBattle = ({
     addAbilities = [],
     deck,
     isTutorial,
+    backgroundImage,
 }: {
     waves: Wave[];
     deck?: Ability[];
     addAbilities?: Ability[];
     isTutorial?: boolean;
+    backgroundImage?: string;
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
@@ -111,6 +113,7 @@ export const startBattle = ({
                 mesosAccumulated: 0,
                 isTutorial,
                 state: BATTLE_STATES.WAVE_START,
+                backgroundImage,
             })
         );
     };

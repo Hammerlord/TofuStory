@@ -32,7 +32,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        backgroundImage: (props: { backgroundImage: string }) => `url(${props.backgroundImage})`,
+        backgroundImage: (props: { backgroundImage: string }) => `url(${props.backgroundImage || LithRegionBGImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         overflow: "hidden",
@@ -158,7 +158,7 @@ const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
 
-const BattlefieldContainer = ({ backgroundImage = LithRegionBGImage }: { backgroundImage?: string }) => {
+const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
     const {
         deck,
@@ -173,6 +173,7 @@ const BattlefieldContainer = ({ backgroundImage = LithRegionBGImage }: { backgro
         waves,
         selectCardsPrompt,
         state: battleState,
+        backgroundImage,
     }: BattleState = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);

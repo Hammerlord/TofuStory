@@ -2,7 +2,7 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
+import { Ability, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Camp from "../Map/Camp";
@@ -170,7 +170,17 @@ const ScenePlayer = ({
     scene: Scene;
     player: any;
     updatePlayer: (updated: any) => void;
-    onBattle: Function;
+    onBattle: (
+        props: {
+            addAbilities?: Ability[];
+            characters: string[];
+            waves: {
+                enemies: Minion[];
+            }[];
+            backgroundImage?: string;
+        },
+        callback: () => void
+    ) => void;
     onExit: Function;
     onShop: Function;
     onTransition?: Function;
@@ -247,7 +257,13 @@ const ScenePlayer = ({
         if (encounter) {
             //callback();
             // skip battles
-            onBattle(encounter, callback);
+            onBattle(
+                {
+                    ...encounter,
+                    backgroundImage: background,
+                },
+                callback
+            );
         } else {
             callback();
         }
