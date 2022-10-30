@@ -1147,3 +1147,62 @@ export const curseEye: Minion = {
         },
     ],
 };
+
+export const snailFriend: Minion = {
+    name: "Snail Friend",
+    maxHP: 11,
+    image: SnailImage,
+    damage: 1,
+    effects: [
+        {
+            name: "Summon Friend",
+            description: "The first time this character survives damage, it summons a snail.",
+            icon: SnailShellImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onReceiveDamage: {
+                removeEffect: true,
+                ability: {
+                    name: "Get in here!",
+                    image: SnailImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            summon: [{ minion: ["Snail Friend"] }],
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+};
+
+export const bob: Minion = {
+    name: "Bob",
+    maxHP: 30,
+    image: SnailImage,
+    damage: 3,
+    effects: [
+        {
+            name: "Summon Friend",
+            description: "When this character survives damage, it summons a snail.",
+            icon: SnailShellImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onReceiveDamage: {
+                ability: {
+                    name: "Get in here!",
+                    image: SnailImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            summon: [{ minion: ["Snail Friend"] }],
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+};

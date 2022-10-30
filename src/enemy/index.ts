@@ -1,3 +1,4 @@
+import { snailFriend } from "./enemy";
 import { mutantRibbonPig } from "./strangePig";
 import { kingSlimeEnemy, slimeGlobule } from "./kingSlime";
 
@@ -7,4 +8,5 @@ export const enemyNameMap = {
     [kingSlimeEnemy.name]: kingSlimeEnemy,
     [slimeGlobule.name]: slimeGlobule,
     [mutantRibbonPig.name]: mutantRibbonPig,
+    [snailFriend.name]: snailFriend,
 };
