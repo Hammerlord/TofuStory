@@ -54,7 +54,7 @@ export interface TriggerSource {
     // sufficiently "rare" enough occurrences they are allowed to trigger procs despite technically being procs themselves
     isProc?: boolean;
     actorId?: string;
-    // The selected target during the action
+    // The selected target during the action (or the summoned minion)
     targetId?: string;
     // All targets affected by the action
     allTargetIds?: string[];

@@ -18,6 +18,7 @@ import {
     SapOfNependeathImage,
     StolenFenceImage,
     SunshinePanImage,
+    WeaponMasteryImage,
 } from "../images";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
@@ -100,7 +101,6 @@ export const drakeBlood: Item = {
     ],
 };
 
-// TODO doesn't do anything yet
 export const luckSack: Item = {
     name: "Luck Sack",
     description: "Gain 20% more mesos.",
@@ -250,7 +250,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Your maximum health increases by 5. You emit an aura that increases ally attack power by 2.",
+    description: "Increases your maximum health by 5. When you summon a minion, its attack power is increased by 1.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -265,9 +265,18 @@ export const alligatorTube: Item = {
             name: "Alligator Tube",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            area: 1,
-            excludeEffectOwner: true,
-            attackPower: 2,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        name: "Attack Power Increase",
+                        icon: WeaponMasteryImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        attackPower: 1,
+                    },
+                ],
+            },
         },
     ],
 };

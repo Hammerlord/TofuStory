@@ -96,6 +96,8 @@ export enum EFFECT_EVENT_KEYS {
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
+    onHostileSummon = "onHostileSummon",
+    onFriendlySummon = "onFriendlySummon",
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -126,8 +128,6 @@ export interface Effect {
     isAuraEffect?: boolean;
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
-    /** Area causes it to affect surrounding targets like an aura */
-    area?: number;
     /** If true, effect has no effect on its owner */
     excludeEffectOwner?: boolean;
     immunities?: EFFECT_TYPES[];
@@ -161,7 +161,12 @@ export interface Effect {
     onWaveStart?: EffectEventTrigger;
     onWaveClear?: EffectEventTrigger;
     onEffectRemoved?: EffectEventTrigger;
+    /** When the effect owner is summoned */
     onSummoned?: EffectEventTrigger;
+    /** When a minion friendly to the effect owner is summoned */
+    onFriendlySummon?: EffectEventTrigger;
+    /** When a minion hostile to the effect owner is summoned */
+    onHostileSummon?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */

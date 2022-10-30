@@ -289,7 +289,7 @@ const onEffectEventTrigger = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { canBeSilenced, area = 0, excludeEffectOwner } = effect;
+        const { canBeSilenced, excludeEffectOwner } = effect;
         const { removeEffect, targetType, ability, conditions, randomOptions = {}, usableWhileStunned, ...other } = effectEvent;
 
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES): string[] => {
@@ -345,9 +345,8 @@ const onEffectEventTrigger = ({
             }
 
             const isAffected = (combatant: Combatant, j: number): boolean => {
-                const isWithinArea = Math.abs(j - i) <= area || targetIds.includes(combatant?.id); // Should it be an area around EACH target?
                 const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
-                return combatant?.HP > 0 && isWithinArea && !isExcludingPrimaryTarget;
+                return combatant?.HP > 0 && targetIds.includes(combatant?.id) && !isExcludingPrimaryTarget;
             };
 
             const targetIndices = combatants.reduce((acc, character: Combatant | null, i: number) => {
@@ -607,6 +606,25 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
     };
 };
 
+const onSummonTriggers =
+    ({ summonedId, summonerId, parentSource }: { summonedId: string; summonerId: string; parentSource: TriggerSource }) =>
+    (dispatch, getState) => {
+        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId] };
+        dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
+        const { hostile, friendly } = orientate({ combatantId: summonerId, ...getState().battle }) || {};
+        hostile?.forEach((combatant) => {
+            if (combatant?.id !== summonedId) {
+                dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onHostileSummon, source }));
+            }
+        });
+
+        friendly?.forEach((combatant) => {
+            if (combatant?.id !== summonedId) {
+                dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onFriendlySummon, source }));
+            }
+        });
+    };
+
 const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
         if (!action.summon) {
@@ -635,12 +653,28 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                 })
             );
 
-            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
+            dispatch(
+                onSummonTriggers({
+                    summonedId: summonedMinion.id,
+                    summonerId: actorId,
+                    parentSource,
+                })
+            );
         }
     };
 };
 
-const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTargetIds: string[] }) => {
+const checkHandleMorph = ({
+    action,
+    morphTargetIds,
+    actorId,
+    parentSource,
+}: {
+    action: Action;
+    morphTargetIds: string[];
+    actorId: string;
+    parentSource: TriggerSource;
+}) => {
     return (dispatch, getState) => {
         if (!action.morph) {
             return;
@@ -706,7 +740,13 @@ const checkHandleMorph = ({ action, morphTargetIds }: { action: Action; morphTar
         );
 
         summons.forEach((summon) => {
-            dispatch(checkEventTrigger({ combatantId: summon.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
+            dispatch(
+                onSummonTriggers({
+                    summonedId: summon.id,
+                    summonerId: actorId,
+                    parentSource,
+                })
+            );
         });
     };
 };
@@ -920,7 +960,7 @@ const performAction = ({
                 })
             );
         });
-        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds }));
+        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
     };
 };
 
@@ -1054,11 +1094,13 @@ const checkSummonMinion = ({
     selectedIndex,
     side,
     actorId,
+    parentSource,
 }: {
     side: BATTLEFIELD_SIDES;
     selectedIndex: number;
     ability: HandAbility;
     actorId: string;
+    parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         const { minion, removeAfterTurn, depletedOnUse } = ability;
@@ -1080,7 +1122,7 @@ const checkSummonMinion = ({
             }
 
             dispatch(updateBattle(newBattleProps));
-            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onSummoned }));
+            dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
         }
     };
 };
@@ -1108,12 +1150,13 @@ export const useAbility = ({
             resourceCost: totalResourceCost,
         };
 
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, isProc: false, actorId };
+
         dispatch(
             updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
         );
-        dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId }));
+        dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, isProc: false };
         const handleAction = (action: Action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: selectedIndex,
