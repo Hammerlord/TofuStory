@@ -347,7 +347,7 @@ export interface Action {
     playbackTime?: number;
     summon?: {
         // If more than one minion is provided, chooses one randomly.
-        minion: Minion[];
+        minion: (Minion | string)[];
         // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
         positionIndex?: number;
     }[];

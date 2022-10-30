@@ -617,12 +617,11 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
             const { friendly, friendlySide } = orientate({ combatantId: actorId, ...getState().battle });
             const { minion, positionIndex } = summon;
             const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
-            const minionToSummon = getRandomItem(minion);
             if (typeof pos !== "number") {
                 break;
             }
-
-            const summonedMinion = createCombatant(minionToSummon);
+            const minionToSummon = getRandomItem(minion);
+            const summonedMinion = createCombatant(typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon);
 
             dispatch(
                 updateBattle({
