@@ -385,9 +385,18 @@ export const calculateArmor = ({ actor, target, action }: { actor: Combatant; ta
     if (!action.armor) {
         return 0;
     }
-    const targetArmor = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
-    const armor = targetArmor + (action.armor || 0);
-    return Math.max(0, armor * getMultiplier({ multiplier: action.multiplier, target: target, actor }));
+    const targetArmorReceived = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
+    const armor = targetArmorReceived + action.armor * getMultiplier({ multiplier: action.multiplier, target: target, actor });
+    return Math.max(0, armor);
+};
+
+export const calculateHealing = ({ actor, target, action }: { actor: Combatant; target?: Combatant; action: Action }): number => {
+    if (!action.healing) {
+        return 0;
+    }
+    const healingReceived = getEnabledEffects(target).reduce((acc: number, { healingReceived = 0 }) => acc + healingReceived, 0) || 0;
+    const healing = healingReceived + action.healing * getMultiplier({ multiplier: action.multiplier, target, actor });
+    return Math.max(0, healing);
 };
 
 /**

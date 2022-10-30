@@ -1,6 +1,4 @@
-import { BATTLE_STATES } from "./../reducer";
-import { enemyEffectNameMap } from "./../../enemy/effect";
-import { cloneDeep, uniq } from "lodash";
+import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
 import {
@@ -12,7 +10,6 @@ import {
     EffectEventTrigger,
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
-    EFFECT_TYPES,
     HandAbility,
     MORPH_MINION_MODIFIERS,
     TARGET_TYPES,
@@ -25,27 +22,22 @@ import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES, Wave } from "../types";
+import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
-    calculateArmor,
-    calculateBonus,
-    calculateDamage,
     getEnabledEffects,
     getInducedAttack,
-    getMultiplier,
     getPossibleSummonIndices,
     getValidTargetIndices,
-    hasEffectType,
     isSilenced,
     isUnableToAct,
     orientate,
-    updateHP,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
-import { aggregateItemEffects } from "./../../Menu/utils";
+import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
+import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
 
 const { drawCards, updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -69,7 +61,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             killedBy = findCombatant(getState, actorId);
         }
 
-        if (!killedBy || killedBy.HP === 0) {
+        if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
@@ -80,7 +72,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
 
         const { combatantIndex } = orientate({ combatantId: killedBy.id, ...getState().battle });
 
-        const [updated, action] = getUpdatedTargets({
+        const updated = getUpdatedStats({
             actorId: killedBy.id,
             targetIds: [killedBy.id],
             targetIndices: [combatantIndex],
@@ -94,15 +86,17 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
                 isProc: true,
             },
             getCombatantById: (id) => findCombatant(getState, id),
-        })[0];
+        });
 
+        dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
         dispatch(
-            updateCombatant({
-                combatantId: killedBy.id,
-                newProperties: updated,
-                // This is technically a proc in concept, but it is allowed to proc procs
-                source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id },
-            })
+            triggerStatChangeEvents(
+                updated.map(([statUpdate, action]) => ({
+                    statUpdate,
+                    // This is technically a proc in concept, but it is allowed to proc procs
+                    source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id },
+                }))
+            )
         );
     };
 };
@@ -124,14 +118,14 @@ const checkHitEffects = ({
         }
 
         const actor = findCombatant(getState, actorId);
-        if (!actor || actor?.HP === 0) {
+        if (!actor || actor?.HP <= 0) {
             return;
         }
 
         const { combatantIndex } = orientate({ combatantId: actorId, ...getState().battle });
         const lifeOnHit = getEnabledEffects(actor).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
         if (lifeOnHit) {
-            const [lifeOnHitTarget, healAction] = getUpdatedTargets({
+            const updated = getUpdatedStats({
                 actorId: actor.id,
                 targetIds: [actor.id],
                 targetIndices: [combatantIndex],
@@ -145,14 +139,16 @@ const checkHitEffects = ({
                     isProc: true,
                 },
                 getCombatantById: (id) => findCombatant(getState, id),
-            })[0];
+            });
 
+            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
             dispatch(
-                updateCombatant({
-                    combatantId: actorId,
-                    newProperties: lifeOnHitTarget,
-                    source: { isProc: true, source: healAction, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
-                })
+                triggerStatChangeEvents(
+                    updated.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+                    }))
+                )
             );
         }
 
@@ -163,7 +159,7 @@ const checkHitEffects = ({
         }, 0);
 
         if (totalThorns) {
-            const [thornsTarget, thornsAction] = getUpdatedTargets({
+            const updated = getUpdatedStats({
                 targetIds: [actor.id],
                 targetIndices: [combatantIndex],
                 action: {
@@ -175,14 +171,16 @@ const checkHitEffects = ({
                     isProc: true,
                 },
                 getCombatantById: (id) => findCombatant(getState, id),
-            })[0];
+            });
 
+            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
             dispatch(
-                updateCombatant({
-                    combatantId: actorId,
-                    newProperties: thornsTarget,
-                    source: { isProc: true, source: thornsAction, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: actorId },
-                })
+                triggerStatChangeEvents(
+                    updated.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+                    }))
+                )
             );
         }
     };
@@ -222,7 +220,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         const { playerSide, playerSummonsInPlay, discard } = getState().battle;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        if (player.HP === 0) {
+        if (player.HP <= 0) {
             dispatch(updateBattleState(BATTLE_STATES.DEFEAT));
             dispatch(updatePlayer(player));
             return;
@@ -274,103 +272,9 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
                 newProperties: {
                     turnHistory: [...turnHistory, action],
                 },
-                source,
             })
         );
     };
-};
-
-export const getUpdatedTargets = ({
-    actorId,
-    targetIds,
-    targetIndices,
-    selectedIndex,
-    action: initialAction,
-    actionParent,
-    source,
-    getCombatantById,
-}: {
-    actorId?: string;
-    targetIds: string[];
-    targetIndices: number[];
-    selectedIndex?: number; // Only applicable for abilities with manual selection?
-    action: Action;
-    actionParent?: Ability | Item;
-    source: TriggerSource;
-    getCombatantById: (id: string) => Combatant;
-}): [Combatant, Action][] => {
-    const actor = getCombatantById(actorId);
-    const targets = targetIds.map(getCombatantById);
-    const sourceTargets = (source.allTargetIds || []).map(getCombatantById);
-
-    return targets.map((target: Combatant, i: number) => {
-        const targetIndex = targetIndices[i];
-        const action = calculateBonus({
-            action: initialAction,
-            target: target,
-            actor,
-            allTargets: targets,
-            isTargetSelected: targetIndex === selectedIndex,
-            actionParent,
-        });
-        const { healing = 0, effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect } = action;
-        const totalHealing =
-            healing * getMultiplier({ actor, allTargets: targets, sourceTargets, target, multiplier: action.multiplier, actionParent });
-        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
-        const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
-        const armor = calculateArmor({ target, action, actor });
-        const updatedArmor = Math.max(0, baseArmor - damage + armor);
-        const healthDamage = Math.max(0, damage - baseArmor);
-        let HP = Math.max(0, target.HP - healthDamage);
-        if (HP > 0 || resurrect) {
-            HP = updateHP({ ...target, HP }, totalHealing);
-        }
-
-        const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
-        const isImmuneTo = (effect: Effect): boolean => {
-            if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
-                return false;
-            }
-            return getEnabledEffects(target).some((targetEffect: Effect) =>
-                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
-            );
-        };
-
-        const effects: Effect[] = actionEffects
-            .map((effect: String | Effect) => {
-                if (typeof effect === "string") {
-                    return {
-                        ...enemyEffectNameMap[effect],
-                    };
-                }
-
-                return effect as Effect;
-            })
-            .filter((v) => v);
-
-        const newEffects: CombatEffect[] = [
-            ...target.effects,
-            ...effects
-                .filter((effect) => !isImmuneTo(effect))
-                .map((effect) => ({
-                    ...cloneDeep(effect),
-                    uptime: 0,
-                    id: uuid.v4(),
-                    applierId: actorId,
-                })),
-        ];
-
-        return [
-            {
-                ...target,
-                HP,
-                armor: updatedArmor,
-                resources: Math.min(target.maxResources, (target.resources || 0) + resources),
-                effects: newEffects,
-            },
-            action,
-        ];
-    });
 };
 
 const onEffectEventTrigger = ({
@@ -454,7 +358,7 @@ const onEffectEventTrigger = ({
                 return acc;
             }, []);
 
-            getUpdatedTargets({
+            const updated = getUpdatedStats({
                 targetIds,
                 targetIndices,
                 actorId: ownerId,
@@ -464,10 +368,17 @@ const onEffectEventTrigger = ({
                 },
                 source: procSource,
                 getCombatantById: (id: string) => findCombatant(getState, id),
-            }).forEach((updated: [Combatant, Action]) => {
-                const [combatant] = updated;
-                dispatch(updateCombatant({ combatantId: combatant.id, newProperties: combatant, source: procSource }));
             });
+
+            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(
+                triggerStatChangeEvents(
+                    updated.map(([statUpdate]) => ({
+                        statUpdate,
+                        source: procSource,
+                    }))
+                )
+            );
         }
 
         ability?.actions.forEach((action) => {
@@ -521,7 +432,7 @@ export const checkEventTrigger = ({
 
         const combatant = findCombatant(getState, combatantId);
         // Dead characters generally cannot trigger effects except in case of killing blows
-        if (!combatant || (effectEventKey !== EFFECT_EVENT_KEYS.onDeath && combatant.HP === 0)) {
+        if (!combatant || (effectEventKey !== EFFECT_EVENT_KEYS.onDeath && combatant.HP <= 0)) {
             return;
         }
 
@@ -541,45 +452,9 @@ export const checkEventTrigger = ({
     };
 };
 
-const getDiff = (
-    oldCombatant: Combatant,
-    newCombatant: Combatant
-): {
-    isDeathBlow: boolean;
-    resourcesSpent: number;
-    healing: number;
-    armor: number;
-    totalDamageTaken: number;
-    effectsGained: Effect[];
-    effectsRemoved: Effect[];
-} => {
-    const newEffectsIds = newCombatant.effects.reduce((acc, effect) => ({ ...acc, [effect.id]: effect }), {});
-    const oldEffectsIds = oldCombatant.effects.reduce((acc, effect) => ({ ...acc, [effect.id]: effect }), {});
-
-    return {
-        isDeathBlow: oldCombatant.HP > 0 && newCombatant.HP === 0,
-        resourcesSpent: oldCombatant.resources - newCombatant.resources,
-        healing: newCombatant.HP - oldCombatant.HP,
-        armor: newCombatant.armor - oldCombatant.armor,
-        totalDamageTaken: oldCombatant.armor + oldCombatant.HP - (newCombatant.armor + newCombatant.HP),
-        effectsGained: newCombatant.effects.filter((e) => !oldEffectsIds[e.id]),
-        effectsRemoved: oldCombatant.effects.filter((e) => !newEffectsIds[e.id]),
-    };
-};
-
-/**
- * Updates a combatant given its ID, and uses state diffing to trigger events
- */
-export const updateCombatant = ({
-    combatantId,
-    newProperties,
-    source,
-}: {
-    combatantId: string;
-    newProperties: any;
-    source?: TriggerSource;
-}) => {
-    return (dispatch, getState) => {
+const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
+    // Apply the stat updates first before triggering any related events
+    statUpdates.forEach(({ combatantId, healthDamage, armor, resources, healing, effects }) => {
         const oldCombatant = findCombatant(getState, combatantId);
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
@@ -588,20 +463,34 @@ export const updateCombatant = ({
         const { enemySide, playerSide } = getState().battle;
         const { friendly, friendlySide } = orientate({ combatantId, enemySide, playerSide });
 
-        const newCombatant = { ...oldCombatant, ...newProperties };
-        const diff = getDiff(oldCombatant, newCombatant);
-
         dispatch(
             updateBattle({
-                [friendlySide]: friendly.map((combatant: Combatant | null) => (combatant?.id !== combatantId ? combatant : newCombatant)),
+                [friendlySide]: friendly.map((combatant: Combatant | null) => {
+                    if (combatant?.id !== combatantId) {
+                        return combatant;
+                    }
+
+                    return {
+                        ...oldCombatant,
+                        HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
+                        armor: oldCombatant.armor + armor,
+                        resources: oldCombatant.resources + resources,
+                        effects: [...oldCombatant.effects, ...effects],
+                    };
+                }),
             })
         );
+    });
+};
 
-        const { isDeathBlow, resourcesSpent, healing, armor, totalDamageTaken, effectsGained, effectsRemoved } = diff;
+const triggerStatChangeEvents = (statChanges: { statUpdate: UpdatedCombatantStats; source: TriggerSource }[]) => (dispatch, getState) => {
+    statChanges.forEach(({ statUpdate, source }) => {
+        const { combatantId, rawDamage, healthDamage, armor, resources, healing, effects, isDeathBlow } = statUpdate;
         const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
-            dispatch(checkEventTrigger({ combatantId: combatantId, effectEventKey, source }));
+            dispatch(checkEventTrigger({ combatantId, effectEventKey, source }));
         };
-        if (resourcesSpent > 0) {
+
+        if (resources < 0) {
             dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
         }
 
@@ -613,17 +502,16 @@ export const updateCombatant = ({
             dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor);
         }
 
-        if (totalDamageTaken > 0) {
+        if (rawDamage > 0) {
             dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
         }
 
-        effectsGained.forEach((e) => {
+        effects.forEach((e) => {
             // TODO probably include effects in the event trigger payload?
             dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
         });
 
-        const combatant = findCombatant(getState, combatantId);
-        if (combatant?.HP > 0) {
+        /**
             effectsRemoved.forEach((e: CombatEffect) => {
                 // TODO probably include effects in the event trigger payload?
                 // Removal should only apply to dispels?
@@ -638,11 +526,34 @@ export const updateCombatant = ({
                     );
                 }
             });
-        }
+            */
 
         if (isDeathBlow) {
             dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
         }
+    });
+};
+
+/**
+ * Updates a combatant given its ID. This overwrites the combatant.
+ */
+export const updateCombatant = ({ combatantId, newProperties }: { combatantId: string; newProperties: any }) => {
+    return (dispatch, getState) => {
+        const oldCombatant = findCombatant(getState, combatantId);
+        // Due to morph, the combatant may no longer exist
+        if (!oldCombatant) {
+            return;
+        }
+        const { enemySide, playerSide } = getState().battle;
+        const { friendly, friendlySide } = orientate({ combatantId, enemySide, playerSide });
+
+        const newCombatant = { ...oldCombatant, ...newProperties };
+
+        dispatch(
+            updateBattle({
+                [friendlySide]: friendly.map((combatant: Combatant | null) => (combatant?.id !== combatantId ? combatant : newCombatant)),
+            })
+        );
     };
 };
 
@@ -872,7 +783,6 @@ const pushPlaybackQueue = ({
     allTargetIndices,
     actionParent,
     side,
-    battlefield,
 }: {
     action: Action;
     actorId: string;
@@ -880,7 +790,6 @@ const pushPlaybackQueue = ({
     allTargetIndices: number[];
     actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
-    battlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     return (dispatch, getState) => {
         const MULTI_ACTION_PLAYBACK_SPEED = 600;
@@ -888,7 +797,7 @@ const pushPlaybackQueue = ({
 
         dispatch(
             pushEventQueue({
-                ...battlefield,
+                ...getState().battle,
                 action,
                 actorId,
                 id: uuid.v4(),
@@ -957,7 +866,7 @@ const performAction = ({
         }, []);
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
-        const updated = getUpdatedTargets({
+        const updated = getUpdatedStats({
             targetIds,
             targetIndices,
             selectedIndex,
@@ -967,18 +876,12 @@ const performAction = ({
             source: parentSource,
             getCombatantById: (id: string) => findCombatant(getState, id),
         });
-        const updatedCombatants = updated.map(([combatant]) => combatant);
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
+        dispatch(applyStatChanges(updated.map((update) => update[0])));
         dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
-        const updatedBattlefield = {
-            ...getState().battle,
-            [side]: combatants.map((combatant) => {
-                return updatedCombatants.find((updatedCombatant) => updatedCombatant.id === combatant?.id) || combatant;
-            }),
-        };
 
         dispatch(
             pushPlaybackQueue({
@@ -988,19 +891,17 @@ const performAction = ({
                 allTargetIndices,
                 actionParent: parent,
                 side,
-                battlefield: updatedBattlefield,
             })
         );
 
-        updated.forEach(([combatant, action]) => {
-            dispatch(
-                updateCombatant({
-                    combatantId: combatant.id,
-                    newProperties: combatant,
+        dispatch(
+            triggerStatChangeEvents(
+                updated.map(([statUpdate, action]) => ({
+                    statUpdate,
                     source: { ...source, source: action },
-                })
-            );
-        });
+                }))
+            )
+        );
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
@@ -1012,11 +913,11 @@ const performAction = ({
             })
         );
 
-        updated.forEach(([combatant, action]) => {
+        updated.forEach(([updated, action]) => {
             dispatch(
                 onReceiveAction({
                     action,
-                    source: { ...source, targetId: combatant.id },
+                    source: { ...source, targetId: updated.combatantId },
                 })
             );
         });

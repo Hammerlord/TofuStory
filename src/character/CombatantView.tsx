@@ -336,7 +336,7 @@ const CombatantView = forwardRef(
                 setStatChanges(statChanges);
                 setOldState(combatant);
                 const willPerformOnDeathActions = events.some(({ actorId }) => actorId === combatant?.id);
-                const isKillingBlow = oldState?.HP > 0 && combatant?.HP === 0 && !isCombatantChanged;
+                const isKillingBlow = oldState?.HP > 0 && combatant?.HP <= 0 && !isCombatantChanged;
                 if (isKillingBlow && !willPerformOnDeathActions) {
                     setPlayDeathAnimation(true);
                 }
@@ -371,7 +371,7 @@ const CombatantView = forwardRef(
             className: classNames(classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !action && playDeathAnimation,
-                [classes.dead]: !action && oldState?.HP === 0,
+                [classes.dead]: !action && oldState?.HP <= 0,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
