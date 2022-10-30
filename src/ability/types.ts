@@ -24,6 +24,7 @@ export enum EFFECT_TYPES {
 export enum EFFECT_CLASSES {
     BUFF = "buff",
     DEBUFF = "debuff",
+    NONE = "none",
 }
 
 export enum CONDITION_TARGETS {
