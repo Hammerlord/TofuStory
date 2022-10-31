@@ -103,7 +103,9 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
         setTrackIndex(indexInTracks);
         if (playlistAudio.src !== tracks[indexInTracks]) {
             playlistAudio.src = tracks[indexInTracks];
-            playlistAudio.play();
+            if (playing) {
+                playlistAudio.play();
+            }
         }
         const onEnded = () => {
             const newIndex = (trackIndex + 1) % tracks.length;
@@ -119,7 +121,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
     }, [tracks, trackIndex]);
 
     useEffect(() => {
-        if (!playing) {
+        if (!playing || playTrack === overrideAudio?.src) {
             return;
         }
 
@@ -144,7 +146,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
                 fadeInAudio(newOverrideAudio);
             }, TRANSITION_TIME);
         }
-    }, [playTrack]);
+    }, [playTrack, playing]);
 
     return (
         <IconButton
