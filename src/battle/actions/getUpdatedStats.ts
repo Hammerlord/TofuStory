@@ -1,3 +1,4 @@
+import { getMaxHP } from "./../utils";
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { Ability, Action, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
@@ -59,10 +60,12 @@ export const getUpdatedStats = ({
         const updatedTargetArmor = baseArmor + calculateArmor({ target, action, actor });
         const armorGained = updatedTargetArmor - target.armor;
         const healthDamage = Math.max(0, damage - updatedTargetArmor);
-        let healing = 0;
+        let rawHealing = 0;
         if (target.HP - healthDamage > 0 || resurrect) {
-            healing = calculateHealing({ actor, target, action });
+            rawHealing = calculateHealing({ actor, target, action });
         }
+
+        const healing = Math.min(getMaxHP(target) - target.HP, rawHealing);
 
         const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
@@ -99,6 +102,7 @@ export const getUpdatedStats = ({
                 rawDamage: damage,
                 healthDamage,
                 healing,
+                rawHealing,
                 armor: Math.max(-updatedTargetArmor, armorGained - damage),
                 resources: resourcesGained,
                 overcappedResources: resources - resourcesGained,
