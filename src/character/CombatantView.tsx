@@ -453,7 +453,7 @@ const CombatantView = forwardRef(
 
                                 <div className={classes.rightContainer}>
                                     <AttackPower combatant={oldState} />
-                                    {combatant.isPlayer && <PlayerResources player={combatant} />}
+                                    {combatant?.isPlayer && <PlayerResources player={combatant} />}
                                 </div>
                                 {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
