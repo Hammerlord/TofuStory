@@ -46,7 +46,7 @@ const useStyles = createUseStyles({
         top: 4,
     },
     iconButton: {
-        background: "rgba(40, 40, 40, 0.25) !important",
+        background: "rgba(110, 110, 110, 0.9) !important",
     },
 });
 
