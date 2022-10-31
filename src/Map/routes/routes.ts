@@ -17,7 +17,7 @@ import {
 } from "../../enemy/enemy";
 import { strangePig } from "../../enemy/strangePig";
 import { stumpy } from "../../enemy/stumpy";
-import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, PerionRegionBGImage } from "../../images";
+import { REGIONS } from "../regions";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const routeKerningToPerion: Route = {
@@ -31,34 +31,34 @@ export const routeKerningToPerion: Route = {
         {
             x: 0.18263888888888888,
             y: 0.3499464292311671,
-            regionBG: KerningCityBGImage,
+            region: REGIONS.KERNING,
         },
         {
             x: 0.22256944444444443,
             y: 0.3291388037093139,
-            regionBG: KerningCityBGImage,
+            region: REGIONS.KERNING,
         },
         {
             x: 0.27847222222222223,
             y: 0.33481361066981935,
-            regionBG: PerionRegionBGImage,
+            region: REGIONS.PERION,
         },
         {
             x: 0.3138888888888889,
             y: 0.29840026600657626,
-            regionBG: PerionRegionBGImage,
+            region: REGIONS.PERION,
         },
         {
             x: 0.31875,
             y: 0.24827280452211178,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, stumpy, null, null] }],
-            regionBG: PerionRegionBGImage,
+            region: REGIONS.PERION,
         },
         {
             x: 0.3371527777777778,
             y: 0.2113865592788266,
-            regionBG: PerionRegionBGImage,
+            region: REGIONS.PERION,
         },
     ] as RouteNode[],
 };
@@ -69,28 +69,29 @@ const toKerning: Route = {
         {
             x: 0.19591836734693877,
             y: 0.609017912291538,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.17551020408163265,
             y: 0.5558987029030266,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.1877818778187782,
             y: 0.4992147419118417,
-            regionBG: KerningCityBGImage,
+            region: REGIONS.KERNING,
         },
         {
             x: 0.18412698412698414,
             y: 0.4544662963518991,
-            regionBG: KerningCityBGImage,
+            region: REGIONS.KERNING,
         },
         {
             x: 0.14982728842832468,
             y: 0.39576595119082625,
             type: NODE_TYPES.TOWN,
             town: TOWNS.KERNING,
+            region: REGIONS.KERNING,
         },
     ] as RouteNode[],
     next: [routeKerningToPerion],
@@ -101,18 +102,19 @@ const toKerningForest: Route = {
         {
             x: 0.24807256235827665,
             y: 0.6016059295861643,
+            region: REGIONS.LITH_HARBOR,
         },
         {
             x: 0.23139329805996472,
             y: 0.5596757243657109,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.2324514991181658,
             y: 0.5092328479207326,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, snail, mutantSnailEnemy, snail, null] }],
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
     ],
     next: [toKerning],
@@ -164,34 +166,34 @@ export const routeHenesysEllinia: Route = {
         {
             x: 0.5246113989637305,
             y: 0.8079976477506615,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.5531088082901554,
             y: 0.7603645986474566,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.5613126079447323,
             y: 0.7062628638635695,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.5906735751295337,
             y: 0.6574536900911496,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, strangePig, null, null] }],
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.6308290155440415,
             y: 0.6356953837106734,
-            regionBG: ElliniaBGImage,
+            region: REGIONS.ELLINIA,
         },
         {
             x: 0.6640759930915371,
             y: 0.6080564539841223,
-            regionBG: ElliniaBGImage,
+            region: REGIONS.ELLINIA,
         },
     ],
     next: [],
@@ -203,18 +205,19 @@ export const toHenesys: Route = {
         {
             x: 0.38765432098765434,
             y: 0.7446329379972977,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.3950617283950617,
             y: 0.8070860231196517,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.45509499136442144,
             y: 0.8068215230814466,
             type: NODE_TYPES.TOWN,
             town: TOWNS.HENESYS,
+            region: REGIONS.HENESYS,
         },
     ],
     next: [routeHenesysEllinia],
@@ -225,28 +228,29 @@ export const toHenesysForest: Route = {
         {
             x: 0.30483592400690845,
             y: 0.6727433107909438,
+            region: REGIONS.LITH_HARBOR,
         },
         {
             x: 0.3143350604490501,
             y: 0.7221405468979711,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.3333333333333333,
             y: 0.7680094089973537,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.363668430335097,
             y: 0.7907521393184207,
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
         {
             x: 0.37178130511463847,
             y: 0.6970725116348897,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, snail, manoEnemy, snail, null] }],
-            regionBG: HenesysRegionBGImage,
+            region: REGIONS.HENESYS,
         },
     ],
     next: [toHenesys],
@@ -264,11 +268,31 @@ export const routeLith: Route = {
         hardest: [orangeMushroom, ribbonPig],
     } as MapEnemies,
     nodes: [
-        { x: 0.16, y: 0.7301997386596976 },
-        { x: 0.1887719298245614, y: 0.690057868209819 },
-        { x: 0.23333333333333334, y: 0.6852790741086429 },
-        { x: 0.2729824561403509, y: 0.6675975359342916 },
-        { x: 0.29157894736842105, y: 0.6241105096135897 },
+        {
+            x: 0.16,
+            y: 0.7301997386596976,
+            region: REGIONS.LITH_HARBOR,
+        },
+        {
+            x: 0.1887719298245614,
+            y: 0.690057868209819,
+            region: REGIONS.LITH_HARBOR,
+        },
+        {
+            x: 0.23333333333333334,
+            y: 0.6852790741086429,
+            region: REGIONS.LITH_HARBOR,
+        },
+        {
+            x: 0.2729824561403509,
+            y: 0.6675975359342916,
+            region: REGIONS.LITH_HARBOR,
+        },
+        {
+            x: 0.29157894736842105,
+            y: 0.6241105096135897,
+            region: REGIONS.LITH_HARBOR,
+        },
     ],
     next: [toHenesysForest, toKerningForest],
 };
@@ -289,7 +313,8 @@ export const toLith: Route = {
             x: 0.15716753022452504,
             y: 0.7956483387239047,
             type: NODE_TYPES.TOWN,
-            town: TOWNS.LITH_HARBOUR,
+            town: TOWNS.LITH_HARBOR,
+            region: REGIONS.LITH_HARBOR,
         },
     ],
     next: [routeLith],

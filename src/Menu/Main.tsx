@@ -11,13 +11,11 @@ import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import Camp from "../Map/Camp";
-import Henesys from "../Map/Henesys";
-import KerningCity from "../Map/KerningCity";
-import LithHarbor from "../Map/LithHarbor";
 import Map from "../Map/Map";
+import { REGIONS } from "../Map/regions";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { toLith } from "../Map/routes/routes";
-import { NODE_TYPES, TOWNS } from "../Map/types";
+import { BG_MAP, NODE_TYPES, RouteNode, TOWN_MAP } from "../Map/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
@@ -27,6 +25,7 @@ import ClassSelection from "./ClassSelection";
 import GameOver from "./GameOver";
 import Header from "./Header";
 import Shop from "./Shop";
+import Sound from "./Sound";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 
@@ -81,12 +80,19 @@ const useStyles = createUseStyles({
             pointerEvents: "none",
         },
     },
+    soundContainer: {
+        position: "absolute",
+        left: 16,
+        bottom: 16,
+        zIndex: 5,
+    },
 });
 
 const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable } = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
+    const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
     const [scene, setScene] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
@@ -128,8 +134,8 @@ const Main = () => {
         }
     }, [battle?.state]);
 
-    const handleEventNode = ({ npc }: { npc: NPC }) => {
-        const { character, scenes } = npc;
+    const handleEventNode = ({ npc }: { npc?: NPC }) => {
+        const { character, scenes } = npc || {};
         const visited = visitedNPCs[character] as NPCTracker;
         if (!visited) {
             setScene(scenes.intro);
@@ -163,12 +169,12 @@ const Main = () => {
         }, TRANSITION_TIME * 1000);
     };
 
-    const handleSelectNode = (node) => {
+    const handleSelectNode = (node: RouteNode) => {
         setLocationNode(node);
 
         const callback = () => {
             if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER || node.type === NODE_TYPES.BOSS) {
-                dispatch(startBattle({ waves: node.encounter, backgroundImage: node.regionBG }));
+                dispatch(startBattle({ waves: node.encounter, backgroundImage: BG_MAP[node.region] }));
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
@@ -272,12 +278,6 @@ const Main = () => {
     };
 
     const getTown = () => {
-        const TOWN_MAP = {
-            [TOWNS.KERNING]: KerningCity,
-            [TOWNS.LITH_HARBOUR]: LithHarbor,
-            [TOWNS.HENESYS]: Henesys,
-        };
-
         const Town = TOWN_MAP[town];
         return (
             <Town
@@ -313,10 +313,14 @@ const Main = () => {
                             scene={scene}
                             player={player}
                             updatePlayer={setPlayer}
-                            onExit={() => setScene(null)}
+                            onExit={() => {
+                                setScene(null);
+                                setSceneRegion(null);
+                            }}
                             onBattle={handleSceneBattle}
                             onShop={setShop}
                             onTransition={handleTransition}
+                            onChangeRegion={setSceneRegion}
                         />
                     )}
                     {isResting && (
@@ -388,6 +392,9 @@ const Main = () => {
                     }}
                 />
             )}
+            <div className={classes.soundContainer}>
+                <Sound region={sceneRegion || locationNode?.region} />
+            </div>
             <div
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,

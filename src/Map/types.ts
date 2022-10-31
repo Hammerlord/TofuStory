@@ -1,9 +1,12 @@
-import { Item } from "../item/types";
-import { NPC } from "./../scene/types";
-import KerningCity from "./KerningCity";
-import LithHarbor from "./LithHarbor";
 import { Minion } from "../ability/types";
 import { Wave } from "../battle/types";
+import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, LithRegionBGImage, PerionRegionBGImage } from "../images";
+import { Item } from "../item/types";
+import { NPC } from "./../scene/types";
+import Henesys from "./Henesys";
+import KerningCity from "./KerningCity";
+import LithHarbor from "./LithHarbor";
+import { REGIONS } from "./regions";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
@@ -29,7 +32,7 @@ export interface RouteNode {
         puzzle: Function;
     };
     town?: TOWNS;
-    regionBG?: string; // Path to background URL
+    region: REGIONS;
 }
 
 export interface MapEnemies {
@@ -65,12 +68,21 @@ export interface Route {
 export enum TOWNS {
     HENESYS = "Henesys",
     KERNING = "Kerning City",
-    LITH_HARBOUR = "Lith Harbour",
+    LITH_HARBOR = "Lith Harbor",
     PERION = "Perion",
     ELLINIA = "Ellinia",
 }
 
 export const TOWN_MAP = {
     [TOWNS.KERNING]: KerningCity,
-    [TOWNS.LITH_HARBOUR]: LithHarbor,
+    [TOWNS.LITH_HARBOR]: LithHarbor,
+    [TOWNS.HENESYS]: Henesys,
+};
+
+export const BG_MAP = {
+    [REGIONS.HENESYS]: HenesysRegionBGImage,
+    [REGIONS.KERNING]: KerningCityBGImage,
+    [REGIONS.LITH_HARBOR]: LithRegionBGImage,
+    [REGIONS.PERION]: PerionRegionBGImage,
+    [REGIONS.ELLINIA]: ElliniaBGImage,
 };

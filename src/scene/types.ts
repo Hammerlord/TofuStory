@@ -1,6 +1,7 @@
 import { Ability, Minion } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
+import { REGIONS } from "../Map/regions";
 
 export interface Scene {
     characters: string[]; // Character names to mark who you have interacted with
@@ -45,6 +46,7 @@ export interface ScriptNode {
         // How many different options the player can pick from
         numChoices: number;
     };
+    region?: REGIONS;
 }
 
 export interface NPC {

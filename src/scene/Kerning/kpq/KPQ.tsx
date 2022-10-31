@@ -1,6 +1,7 @@
 import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../enemy/enemy";
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
 import { KerningCityBGImage, SleepywoodRegionBGImage, SwampRegionBGImage } from "../../../images";
+import { REGIONS } from "../../../Map/regions";
 import { Scene } from "../../types";
 import Barrels from "./Barrels";
 import Barrels2 from "./Barrels2";
@@ -421,6 +422,7 @@ export const KPQ: Scene = {
                                         },
                                         {
                                             background: SwampRegionBGImage,
+                                            region: REGIONS.KERNING_SEWERS,
                                             scene: KPQSewer,
                                             speaker: thief,
                                             dialog: ["Hey, you got us in, mushroom guy. Not bad."],
@@ -605,6 +607,7 @@ export const KPQ: Scene = {
                                                                                                             background:
                                                                                                                 SleepywoodRegionBGImage,
                                                                                                             scene: KittenBarrels,
+                                                                                                            region: REGIONS.SLEEPYWOOD,
                                                                                                             speaker: magician,
                                                                                                             dialog: [
                                                                                                                 "You've gotta be kidding me.",

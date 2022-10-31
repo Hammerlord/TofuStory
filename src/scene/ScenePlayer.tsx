@@ -6,8 +6,9 @@ import { Ability, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Camp from "../Map/Camp";
+import { REGIONS } from "../Map/regions";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { Scene, ScriptResponse } from "./types";
+import { Scene, ScriptNode, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -166,6 +167,7 @@ const ScenePlayer = ({
     onTransition,
     deck,
     updateDeck,
+    onChangeRegion,
 }: {
     scene: Scene;
     player: any;
@@ -186,6 +188,7 @@ const ScenePlayer = ({
     onTransition?: Function;
     deck: Ability[];
     updateDeck: (newDeck: Ability[]) => void;
+    onChangeRegion: (region: REGIONS) => void;
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
@@ -197,7 +200,13 @@ const ScenePlayer = ({
     const { speaker, dialog = [], items, responses, puzzle, itemChoices } = script[dialogIndex] || {};
 
     useEffect(() => {
-        const { scene: newScene, background } = script[dialogIndex] || {};
+        if (!script[dialogIndex]) {
+            return;
+        }
+        const { scene: newScene, background, region }: ScriptNode = script[dialogIndex];
+        if (region) {
+            onChangeRegion(region);
+        }
         if (newScene && newScene !== Backdrop) {
             setBackdrop(() => newScene || null);
         }
