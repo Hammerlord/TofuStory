@@ -50,10 +50,38 @@ const useStyles = createUseStyles({
     },
 });
 
-const Sound = ({ region = REGIONS.LITH_HARBOR }: { region: REGIONS }) => {
+const TRANSITION_TIME = 500;
+
+const fadeOutAudio = (audio) => {
+    const interval = setInterval(() => {
+        if (audio.volume > 0) {
+            audio.volume -= 0.1;
+        }
+    }, TRANSITION_TIME / 10);
+    setTimeout(() => {
+        audio.pause();
+        clearInterval(interval);
+    }, TRANSITION_TIME);
+};
+
+const fadeInAudio = (audio) => {
+    audio.volume = 0;
+    const interval = setInterval(() => {
+        if (audio.volume < 1) {
+            audio.volume += 0.1;
+        }
+    }, TRANSITION_TIME / 10);
+    setTimeout(() => {
+        clearInterval(interval);
+    }, TRANSITION_TIME);
+};
+
+const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGIONS; playTrack?: string }) => {
     const [trackIndex, setTrackIndex] = useState(0);
-    const tracks = musicMap[region] || [];
-    const [audio] = useState(new Audio(tracks[trackIndex]));
+    const tracks = musicMap[playlist] || [];
+    const [overrideAudio, setOverrideAudio] = useState(null);
+    const [playlistAudio] = useState(new Audio(tracks[trackIndex]));
+    const audio = overrideAudio || playlistAudio;
     const [playing, setPlaying] = useState(true);
     const classes = useStyles();
     const togglePlaying = () => setPlaying(!playing);
@@ -67,27 +95,56 @@ const Sound = ({ region = REGIONS.LITH_HARBOR }: { region: REGIONS }) => {
     }, [playing]);
 
     useEffect(() => {
-        let indexInTracks = tracks.findIndex((track) => track === audio.src);
+        // Loop playlist audio
+        let indexInTracks = tracks.findIndex((track) => track === playlistAudio.src);
         if (indexInTracks === -1) {
             indexInTracks = 0;
         }
         setTrackIndex(indexInTracks);
-        if (audio.src !== tracks[indexInTracks]) {
-            audio.src = tracks[indexInTracks];
-            audio.play();
+        if (playlistAudio.src !== tracks[indexInTracks]) {
+            playlistAudio.src = tracks[indexInTracks];
+            playlistAudio.play();
         }
         const onEnded = () => {
             const newIndex = (trackIndex + 1) % tracks.length;
-            audio.src = tracks[newIndex];
-            audio.play();
+            playlistAudio.src = tracks[newIndex];
+            playlistAudio.play();
             setTrackIndex(newIndex);
         };
-        audio.addEventListener("ended", onEnded);
+        playlistAudio.addEventListener("ended", onEnded);
 
         return () => {
-            audio.removeEventListener("ended", onEnded);
+            playlistAudio.removeEventListener("ended", onEnded);
         };
     }, [tracks, trackIndex]);
+
+    useEffect(() => {
+        if (!playing) {
+            return;
+        }
+
+        if (overrideAudio) {
+            fadeOutAudio(overrideAudio);
+            setTimeout(() => {
+                overrideAudio.src = "";
+                setOverrideAudio(null);
+                playlistAudio.play();
+                fadeInAudio(playlistAudio);
+            }, TRANSITION_TIME);
+            return;
+        }
+
+        if (playTrack) {
+            fadeOutAudio(playlistAudio);
+            const newOverrideAudio = new Audio(playTrack);
+            newOverrideAudio.loop = true;
+            setOverrideAudio(newOverrideAudio);
+            setTimeout(() => {
+                newOverrideAudio.play();
+                fadeInAudio(newOverrideAudio);
+            }, TRANSITION_TIME);
+        }
+    }, [playTrack]);
 
     return (
         <IconButton

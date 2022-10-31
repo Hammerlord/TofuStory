@@ -1,3 +1,4 @@
+import { Minion } from "./../../ability/types";
 import uuid from "uuid";
 import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
@@ -9,6 +10,7 @@ import { Wave } from "../types";
 import { aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
+import { BOSS_MUSIC } from "../constants";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -71,12 +73,14 @@ export const startBattle = ({
     deck,
     isTutorial,
     backgroundImage,
+    backgroundMusic,
 }: {
     waves: Wave[];
     deck?: Ability[];
     addAbilities?: Ability[];
     isTutorial?: boolean;
     backgroundImage?: string;
+    backgroundMusic?: string;
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
@@ -114,6 +118,7 @@ export const startBattle = ({
                 isTutorial,
                 state: BATTLE_STATES.WAVE_START,
                 backgroundImage,
+                backgroundMusic: backgroundMusic || enemies.some((enemy) => enemy?.isBoss) ? BOSS_MUSIC : undefined,
             })
         );
     };

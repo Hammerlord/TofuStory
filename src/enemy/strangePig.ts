@@ -17,6 +17,7 @@ import { championsRibbon, pigHeaded } from "./effect";
 export const strangePig: Minion = {
     name: "Strange Pig",
     image: StrangePigImage,
+    isBoss: true,
     damage: 2,
     HP: 30,
     maxHP: 50,

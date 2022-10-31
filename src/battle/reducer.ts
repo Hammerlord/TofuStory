@@ -25,6 +25,7 @@ export interface BattleState {
     mesosAccumulated: number;
     state: BATTLE_STATES;
     backgroundImage?: string; // Path to background image
+    backgroundMusic?: "boss" | string; // 'boss' or path to music URL
 }
 
 export interface PlayerSelectCardsPrompt {
