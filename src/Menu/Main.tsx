@@ -237,8 +237,8 @@ const Main = () => {
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            const { characters = [], waves, addAbilities, backgroundImage } = encounter;
-            dispatch(startBattle({ waves, addAbilities, backgroundImage }));
+            const { characters = [], ...other } = encounter;
+            dispatch(startBattle({ ...other }));
             setEncounterVictoryCallback(() => onVictory);
             const newVisited = characters.reduce((acc, character: string) => {
                 return {

@@ -118,7 +118,7 @@ export const startBattle = ({
                 isTutorial,
                 state: BATTLE_STATES.WAVE_START,
                 backgroundImage,
-                backgroundMusic: backgroundMusic || enemies.some((enemy) => enemy?.isBoss) ? BOSS_MUSIC : undefined,
+                backgroundMusic: backgroundMusic || (enemies.some((enemy) => enemy?.isBoss) ? BOSS_MUSIC : undefined),
             })
         );
     };

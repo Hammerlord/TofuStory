@@ -25,6 +25,7 @@ const miniBeanFight = {
             enemies: [null, null, miniBean, null, null],
         },
     ],
+    backgroundMusic: "https://maplestory.io/api/GMS/236/music/Bgm16/FightingPinkBeen",
 };
 
 const mayaEnemy: Minion = {
