@@ -1,4 +1,4 @@
-import { IconButton } from "@material-ui/core";
+import { IconButton, Slider } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -37,40 +37,67 @@ const musicMap = {
 };
 
 const useStyles = createUseStyles({
+    root: {
+        display: "flex",
+        padding: 8,
+    },
     soundOff: {
         filter: "saturate(0%)",
     },
     xIcon: {
         position: "absolute",
-        right: 4,
-        top: 4,
+        right: 8,
+        top: 8,
+        filter: "brightness(1.5)",
     },
     iconButton: {
-        background: "rgba(110, 110, 110, 0.9) !important",
+        background: "rgba(50, 50, 50, 0.9) !important",
+    },
+    volumeSliderContainer: {
+        background: "rgba(50, 50, 50, 0.9)",
+        borderRadius: 4,
+        marginLeft: 8,
+        padding: "0px 24px",
+        display: "flex",
+    },
+    volumeSlider: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+        width: 100,
+    },
+    speakerButton: {
+        margin: "4px 8px !important",
+        display: "flex !important",
+        flexDirection: "column",
+        justifyContent: "space-around !important",
+        height: 44,
     },
 });
 
 const TRANSITION_TIME = 500;
+const FADE_INCREMENT = 10;
 
-const fadeOutAudio = (audio) => {
+const fadeOutAudio = (audio: HTMLAudioElement) => {
+    const currentVolume = audio.volume;
     const interval = setInterval(() => {
         if (audio.volume > 0) {
-            audio.volume -= 0.1;
+            audio.volume -= currentVolume / FADE_INCREMENT;
         }
-    }, TRANSITION_TIME / 10);
+    }, TRANSITION_TIME / FADE_INCREMENT);
     setTimeout(() => {
         audio.pause();
         clearInterval(interval);
     }, TRANSITION_TIME);
 };
 
-const fadeInAudio = (audio) => {
-    audio.volume = 0;
+const fadeInAudio = (audio: HTMLAudioElement, currentVolume: number) => {
     const interval = setInterval(() => {
-        if (audio.volume < 1) {
-            audio.volume += 0.1;
+        if (audio.volume < currentVolume) {
+            audio.volume += currentVolume / FADE_INCREMENT;
         }
-    }, TRANSITION_TIME / 10);
+    }, TRANSITION_TIME / FADE_INCREMENT);
+
     setTimeout(() => {
         clearInterval(interval);
     }, TRANSITION_TIME);
@@ -78,21 +105,42 @@ const fadeInAudio = (audio) => {
 
 const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGIONS; playTrack?: string }) => {
     const [trackIndex, setTrackIndex] = useState(0);
-    const tracks = musicMap[playlist] || [];
+    const [volume, setVolume] = useState(0.75);
+    const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [overrideAudio, setOverrideAudio] = useState(null);
-    const [playlistAudio] = useState(new Audio(tracks[trackIndex]));
+    const tracks = musicMap[playlist] || [];
+    const [playlistAudio, setPlaylistAudio] = useState(new Audio(tracks[trackIndex]));
     const audio = overrideAudio || playlistAudio;
-    const [playing, setPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(true);
     const classes = useStyles();
-    const togglePlaying = () => setPlaying(!playing);
 
-    useEffect(() => {
-        if (playing) {
+    const togglePlaying = () => {
+        const newIsPlaying = !isPlaying;
+        setIsPlaying(newIsPlaying);
+        if (newIsPlaying) {
             audio.play();
         } else {
             audio.pause();
         }
-    }, [playing]);
+
+        if (volume === 0) {
+            const minVolume = 0.5;
+            setVolume(minVolume);
+            playlistAudio.volume = minVolume;
+            if (overrideAudio) {
+                overrideAudio.volume = minVolume;
+            }
+        }
+    };
+
+    useEffect(() => {
+        const audio = new Audio(tracks[trackIndex]);
+        audio.volume = volume;
+        if (isPlaying) {
+            audio.play();
+        }
+        setPlaylistAudio(audio);
+    }, []);
 
     useEffect(() => {
         // Loop playlist audio
@@ -100,18 +148,27 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
         if (indexInTracks === -1) {
             indexInTracks = 0;
         }
+
         setTrackIndex(indexInTracks);
         if (playlistAudio.src !== tracks[indexInTracks]) {
+            fadeOutAudio(playlistAudio);
             playlistAudio.src = tracks[indexInTracks];
-            if (playing) {
-                playlistAudio.play();
-            }
+            setTimeout(() => {
+                if (isPlaying) {
+                    playlistAudio.play();
+                }
+                fadeInAudio(playlistAudio, volume);
+            }, TRANSITION_TIME);
         }
         const onEnded = () => {
             const newIndex = (trackIndex + 1) % tracks.length;
             playlistAudio.src = tracks[newIndex];
-            playlistAudio.play();
             setTrackIndex(newIndex);
+            setTimeout(() => {
+                if (isPlaying) {
+                    playlistAudio.play();
+                }
+            }, TRANSITION_TIME);
         };
         playlistAudio.addEventListener("ended", onEnded);
 
@@ -121,7 +178,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
     }, [tracks, trackIndex]);
 
     useEffect(() => {
-        if (!playing || playTrack === overrideAudio?.src) {
+        if (!isPlaying || playTrack === overrideAudio?.src) {
             return;
         }
 
@@ -131,7 +188,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
                 overrideAudio.src = "";
                 setOverrideAudio(null);
                 playlistAudio.play();
-                fadeInAudio(playlistAudio);
+                fadeInAudio(playlistAudio, volume);
             }, TRANSITION_TIME);
             return;
         }
@@ -142,23 +199,55 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
             newOverrideAudio.loop = true;
             setOverrideAudio(newOverrideAudio);
             setTimeout(() => {
+                newOverrideAudio.volume = 0;
                 newOverrideAudio.play();
-                fadeInAudio(newOverrideAudio);
+                fadeInAudio(newOverrideAudio, volume);
             }, TRANSITION_TIME);
         }
-    }, [playTrack, playing]);
+    }, [playTrack, isPlaying]);
+
+    const handleChangeVolume = (e, value: number) => {
+        setVolume(value);
+        playlistAudio.volume = value;
+        if (overrideAudio) {
+            overrideAudio.volume = value;
+        }
+
+        setIsPlaying(value > 0);
+        if (value > 0) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+    };
 
     return (
-        <IconButton
-            onClick={togglePlaying}
-            className={classNames(classes.iconButton, {
-                [classes.soundOff]: !playing,
-            })}
-            title="Toggle music on/off"
-        >
-            <Icon icon={MusicIcon} />
-            {!playing && <Icon icon={XIcon} className={classes.xIcon} size="sm" />}
-        </IconButton>
+        <div className={classes.root} onMouseEnter={() => setShowVolumeSlider(true)} onMouseLeave={() => setShowVolumeSlider(false)}>
+            <IconButton
+                onClick={togglePlaying}
+                title="Toggle music on/off"
+                className={classNames(classes.iconButton, {
+                    [classes.soundOff]: !isPlaying,
+                })}
+            >
+                <Icon icon={MusicIcon} />
+                {!isPlaying && <Icon icon={XIcon} className={classes.xIcon} size="sm" />}
+            </IconButton>
+            {showVolumeSlider && (
+                <div className={classes.volumeSliderContainer}>
+                    <div className={classes.volumeSlider}>
+                        <Slider
+                            aria-label="Volume"
+                            value={isPlaying ? volume : 0}
+                            onChange={handleChangeVolume}
+                            min={0}
+                            max={1}
+                            step={0.05}
+                        />
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 
