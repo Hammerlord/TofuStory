@@ -76,6 +76,7 @@ const useStyles = createUseStyles({
 });
 
 const TRANSITION_TIME = 500;
+const NEXT_TRACK_TRANSITION_TIME = 3000;
 const FADE_INCREMENT = 10;
 
 const fadeOutAudio = (audio: HTMLAudioElement) => {
@@ -109,9 +110,16 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [overrideAudio, setOverrideAudio] = useState(null);
     const tracks = musicMap[playlist] || [];
-    const [playlistAudio, setPlaylistAudio] = useState(new Audio(tracks[trackIndex]));
-    const audio = overrideAudio || playlistAudio;
     const [isPlaying, setIsPlaying] = useState(true);
+    const [playlistAudio] = useState(() => {
+        const audio = new Audio(tracks[trackIndex]);
+        audio.volume = volume;
+        if (isPlaying) {
+            audio.play();
+        }
+        return audio;
+    });
+    const audio = overrideAudio || playlistAudio;
     const classes = useStyles();
 
     const togglePlaying = () => {
@@ -132,15 +140,6 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
             }
         }
     };
-
-    useEffect(() => {
-        const audio = new Audio(tracks[trackIndex]);
-        audio.volume = volume;
-        if (isPlaying) {
-            audio.play();
-        }
-        setPlaylistAudio(audio);
-    }, []);
 
     useEffect(() => {
         // Loop playlist audio
@@ -168,7 +167,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
                 if (isPlaying) {
                     playlistAudio.play();
                 }
-            }, TRANSITION_TIME);
+            }, NEXT_TRACK_TRANSITION_TIME);
         };
         playlistAudio.addEventListener("ended", onEnded);
 
@@ -196,13 +195,19 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
         if (playTrack) {
             fadeOutAudio(playlistAudio);
             const newOverrideAudio = new Audio(playTrack);
-            newOverrideAudio.loop = true;
             setOverrideAudio(newOverrideAudio);
             setTimeout(() => {
                 newOverrideAudio.volume = 0;
                 newOverrideAudio.play();
                 fadeInAudio(newOverrideAudio, volume);
             }, TRANSITION_TIME);
+
+            const onEnded = () => {
+                setTimeout(() => {
+                    newOverrideAudio.play();
+                }, NEXT_TRACK_TRANSITION_TIME);
+            };
+            newOverrideAudio.addEventListener("ended", onEnded);
         }
     }, [playTrack, isPlaying]);
 
