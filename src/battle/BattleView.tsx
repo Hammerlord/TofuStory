@@ -86,6 +86,7 @@ const useStyles = createUseStyles({
         width: "90%",
         maxWidth: "60rem",
         margin: "auto",
+        maxHeight: 225,
     },
     combatants: {
         display: "flex",
@@ -97,8 +98,11 @@ const useStyles = createUseStyles({
         height: "100%",
     },
     divider: {
-        paddingTop: "32px",
-        borderBottom: "1px solid rgba(0, 0, 0, 0.15)",
+        maxHeight: "80",
+        height: "8vh",
+        borderBottom: "2px solid rgba(0, 0, 0, 0.1)",
+        width: "95%",
+        margin: "auto",
         marginBottom: "32px",
     },
     abilityContainer: {

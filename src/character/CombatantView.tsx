@@ -43,7 +43,7 @@ const useStyles = createUseStyles({
         height: "100%",
         position: "absolute",
         left: "0",
-        top: "0",
+        top: 16,
     },
     header: {
         textAlign: "center",
@@ -422,7 +422,7 @@ const CombatantView = forwardRef(
                                     {animation === ANIMATION_TYPES.EXPLODE && getImageNode({ className: classes.exploding })}
 
                                     <Tooltip open={Boolean(actionParent?.dialog)} title={actionParent?.dialog || ""} placement="top">
-                                        <span>{imageNode}</span>
+                                        <div>{imageNode}</div>
                                     </Tooltip>
 
                                     {animation === ANIMATION_TYPES.SHOUT &&
