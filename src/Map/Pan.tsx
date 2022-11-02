@@ -3,8 +3,8 @@ import { createRef, useEffect, useRef, useState } from "react";
 const Pan = ({ defaultPosition, children, style }) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
-    const [mousePos, setLastMousePos] = useState([null, null]);
-    const [isMouseDown, setIsMouseDown] = useState(false);
+    const [position, setLastInteractionPos] = useState([null, null]);
+    const [isInteracting, setIsInteracting] = useState(false);
     const containerRef = useRef() as any;
     const [isPanning, setIsPanning] = useState(false);
     const [isIntroPan, setIsIntroPan] = useState(true);
@@ -34,34 +34,40 @@ const Pan = ({ defaultPosition, children, style }) => {
         setY(defaultPosition.y);
     }, [defaultPosition.x, defaultPosition.y]);
 
-    const handleMouseDown = (e) => {
-        setLastMousePos([e.screenX, e.screenY]);
-        setIsMouseDown(true);
+    const handleStartInteraction = (e) => {
+        const { screenX, screenY } = e.touches?.[0] || e;
+        setLastInteractionPos([screenX, screenY]);
+        setIsInteracting(true);
     };
 
-    const handleMouseUp = (e) => {
-        setIsMouseDown(false);
+    const handleStopPan = () => {
+        setIsInteracting(false);
         if (isPanning) {
             setIsPanning(false);
         }
     };
 
-    const handleMouseMove = (e) => {
-        if (!isMouseDown) {
+    const handlePan = (e) => {
+        if (!isInteracting) {
             return;
         }
 
+        const { screenX, screenY } = e.touches?.[0] || e;
         setIsPanning(true);
-        setX(x - (mousePos[0] - e.screenX));
-        setY(y - (mousePos[1] - e.screenY));
-        setLastMousePos([e.screenX, e.screenY]);
+        setX(x - (position[0] - screenX));
+        setY(y - (position[1] - screenY));
+        setLastInteractionPos([screenX, screenY]);
     };
+
     return (
         <div
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onMouseDown={handleStartInteraction}
+            onMouseMove={handlePan}
+            onMouseUp={handleStopPan}
+            onMouseLeave={handleStopPan}
+            onTouchStart={handleStartInteraction}
+            onTouchMove={handlePan}
+            onTouchEnd={handleStopPan}
             ref={containerRef}
             style={{
                 ...style,
