@@ -1,6 +1,6 @@
 import { createRef, useEffect, useRef, useState } from "react";
 
-const Pan = ({ defaultPosition, children }) => {
+const Pan = ({ defaultPosition, children, style }) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [mousePos, setLastMousePos] = useState([null, null]);
@@ -64,8 +64,8 @@ const Pan = ({ defaultPosition, children }) => {
             onMouseLeave={handleMouseUp}
             ref={containerRef}
             style={{
+                ...style,
                 transform: `translate(${x}px, ${y}px)`,
-                width: `150%`,
                 height: "max-content",
             }}
         >

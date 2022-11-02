@@ -186,7 +186,7 @@ const Map = ({
     return (
         <Overlay>
             <div className={classes.root}>
-                <Pan defaultPosition={pan}>
+                <Pan defaultPosition={pan} style={{ minWidth: "2500px", width: "175%" }}>
                     <img src={VictoriaIslandImage} className={classes.image} ref={containerRef} onLoad={updateContainer} />
                     <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
                         {lines}
