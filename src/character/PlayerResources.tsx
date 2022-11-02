@@ -5,8 +5,10 @@ import { Combatant } from "./types";
 const PlayerResources = ({ player }: { player: Combatant }) => {
     const tooltipContents = (
         <div>
-            Your current resources. Abilities often cost resources in order to be used. <hr />
-            Gaining a baseline <Fury text={player.resourcesPerTurn} /> per turn.
+            {player.resources} / {player.maxResources} <Fury size="sm" /> <br />
+            Gaining a baseline <Fury text={player.resourcesPerTurn} size="sm" /> per turn.
+            <hr />
+            These are your current resources. Abilities often cost resources in order to be used.
         </div>
     );
     return (
