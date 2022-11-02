@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import Button from "../view/Button";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability } from "../ability/types";

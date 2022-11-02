@@ -1,4 +1,3 @@
-import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -6,6 +5,7 @@ import { MesoImage, TreasureChestImage } from "../../images";
 import { LockIcon } from "../../images/icons";
 import { Item } from "../../item/types";
 import BannerNotice from "../../view/BannerNotice";
+import Button from "../../view/Button";
 
 const useStyles = createUseStyles({
     root: {

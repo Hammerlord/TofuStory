@@ -1,10 +1,10 @@
-import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { shuffle } from "../utils";
+import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
@@ -35,6 +35,9 @@ const useStyles = createUseStyles({
         "&.selected": {
             boxShadow: "0 0 8px 4px #45ff61",
         },
+    },
+    selectContainer: {
+        marginBottom: 40,
     },
 });
 
@@ -87,12 +90,14 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} color="primary" disabled={!rolledAbilities[selectedAbilityIndex]} onClick={handleSelectClick}>
-                    Select!
-                </Button>{" "}
-                <Button variant={"contained"} onClick={onClose}>
-                    Exit without taking anything
-                </Button>
+                <div className={classes.selectContainer}>
+                    <Button color="primary" disabled={!rolledAbilities[selectedAbilityIndex]} onClick={handleSelectClick}>
+                        Select!
+                    </Button>
+                </div>
+                <div>
+                    <Button onClick={onClose}>Ignore and Exit</Button>
+                </div>
             </div>
         </Overlay>
     );

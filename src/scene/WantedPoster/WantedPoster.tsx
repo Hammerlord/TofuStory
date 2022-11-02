@@ -1,8 +1,8 @@
-import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import BannerNotice from "../../view/BannerNotice";
+import Button from "../../view/Button";
 import Overlay from "../../view/Overlay";
 
 const PADDING = 32;

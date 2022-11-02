@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import Button from "../view/Button";
 import classNames from "classnames";
 import { compose, flatten, repeat } from "ramda";
 import React, { useEffect, useState } from "react";

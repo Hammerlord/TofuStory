@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import Button from "../view/Button";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -136,11 +136,11 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         <div className={classes.tutorialContainer}>
                             <h3>Play the tutorial?</h3>
                             <p>The tutorial is an optional introduction to the basics of combat.</p>
-                            <Button variant="contained" color="primary" onClick={handleTutorialConfirmation}>
+                            <Button color="primary" onClick={handleTutorialConfirmation}>
                                 Yes
                             </Button>{" "}
-                            <Button variant="contained" onClick={handleTutorialCancel}>
-                                No
+                            <Button color="secondary" onClick={handleTutorialCancel}>
+                                Skip
                             </Button>
                         </div>
                     )}

@@ -1,8 +1,9 @@
-import { Button, ClickAwayListener, Menu, MenuItem, Popper } from "@material-ui/core";
+import { ClickAwayListener, Popper } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Item, ITEM_TYPES } from "../item/types";
+import Button from "../view/Button";
 
 const useStyles = createUseStyles({
     root: {

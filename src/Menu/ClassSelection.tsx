@@ -1,10 +1,10 @@
-import { Button } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { AnonymushroomImage, ClassWarriorImage, WarMushImage } from "../images";
+import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
 
 const portraits = {
@@ -100,7 +100,7 @@ const ClassSelection = ({ onSelectClass }) => {
                                 </div>
                             ))}
                     </div>
-                    <Button variant="contained" color="primary" onClick={handleSelectClass}>
+                    <Button color="primary" onClick={handleSelectClass}>
                         Continue
                     </Button>
                 </div>
@@ -135,7 +135,7 @@ const ClassSelection = ({ onSelectClass }) => {
                     <div className={classes.classCard}>Not yet available</div>
                     <div className={classes.classCard}>Not yet available</div>
                 </div>
-                <Button variant="contained" color="primary" onClick={handleConfirm}>
+                <Button color="primary" disabled={!selectedClass} onClick={handleConfirm}>
                     Select!
                 </Button>
             </div>

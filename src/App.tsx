@@ -5,19 +5,13 @@ import { Provider } from "react-redux";
 import DevToolButton from "./devtools/DevToolButton";
 import { useMemo } from "react";
 import classNames from "classnames";
+import { createTheme, ThemeProvider } from "@material-ui/core";
 
 const useStyles = createUseStyles({
     app: {
         fontFamily: "Barlow, Arial",
         userSelect: "none",
-        "& button": {
-            fontFamily: "Barlow, Arial",
-            cursor: "pointer",
-            "&:active": {
-                transform: "translateX(1px) translateY(1px)",
-                transition: "transform 0.2s",
-            },
-        },
+        letterSpacing: "0.02rem",
         "& ::-webkit-scrollbar": {
             width: "10px",
         },
@@ -43,12 +37,18 @@ const useStyles = createUseStyles({
         bottom: 0,
         right: 0,
     },
-    button: {
-        padding: "8px 32px",
-        fontFamily: "Barlow, Arial",
-        fontSize: "1.1rem",
-        fontWeight: 500,
-        border: 0,
+});
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: "#790",
+            contrastText: "white",
+        },
+        secondary: {
+            main: "#d58a00",
+            contrastText: "white",
+        },
     },
 });
 
@@ -58,7 +58,7 @@ export const App = () => {
     const devStore = useMemo(() => (isDevToolEnabled ? getConfiguredStore() : undefined), [isDevToolEnabled]);
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <Provider store={store}>
                 <div className={classNames(classes.app, classes.root)}>
                     <Main />
@@ -71,6 +71,6 @@ export const App = () => {
                     </div>
                 </Provider>
             )}
-        </>
+        </ThemeProvider>
     );
 };

@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import Button from "../view/Button";
 import { createUseStyles } from "react-jss";
 import { MesoBagImage, MesoCoinImage, MesoImage, MesoStackImage } from "../images";
 import BannerNotice from "../view/BannerNotice";

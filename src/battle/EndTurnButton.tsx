@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
     root: {
+        fontFamily: "Barlow, Arial",
         padding: "8px 16px",
         background: "#ffd736",
         fontSize: "16px",

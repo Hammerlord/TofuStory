@@ -1,4 +1,4 @@
-import { Button, ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
+import { ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import defaultCharacterProperties from "../character/defaultCharacterProperties";
@@ -14,6 +14,7 @@ import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevStageBattle from "./DevStageBattle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
+import Button from "../view/Button";
 
 const useStyles = createUseStyles({
     buttonContainer: {
