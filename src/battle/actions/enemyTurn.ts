@@ -21,6 +21,7 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
+import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES } from "./../types";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 
@@ -349,8 +350,10 @@ export const startEnemyTurn = () => {
                 return;
             }
 
-            const eligible = enemySide.filter(isEligibleToMove);
-            const enemy = getRandomItem(eligible);
+            const eligible = shuffle(enemySide)
+                .filter(isEligibleToMove)
+                .sort((a, b) => (b?.isBoss || false) - (a?.isBoss || false));
+            const enemy = eligible[0];
             if (!enemy) {
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                 return;
