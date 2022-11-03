@@ -343,9 +343,9 @@ const CombatantView = forwardRef(
                 }
             };
 
-            const isOnBattlefield = event.enemySide?.concat(event.playerSide).some((combatant) => combatant?.id === oldState?.id);
-            if (isCombatantChanged && !isOnBattlefield) {
-                // Morphs/summons should play immediately
+            const { vacuum } = event?.action || {};
+            if (isCombatantChanged && !vacuum) {
+                // Morphs/summons should play immediately (except in conjunction with vacuum; vacuum requires a delay to have the correct animation)
                 callback();
                 return;
             }
