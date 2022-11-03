@@ -381,7 +381,11 @@ const onEffectEventTrigger = ({
             );
         }
 
-        ability?.actions.forEach((action) => {
+        if (!ability) {
+            return;
+        }
+
+        ability.actions.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: i,
                 initialSelectedSide: friendlySide,
@@ -411,6 +415,15 @@ const onEffectEventTrigger = ({
                 );
             }
         });
+
+        dispatch(
+            updateCombatant({
+                combatantId: ownerId,
+                newProperties: {
+                    abilityHistory: [...combatant.abilityHistory, ability],
+                },
+            })
+        );
     };
 };
 
