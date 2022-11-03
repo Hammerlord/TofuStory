@@ -257,6 +257,7 @@ const useStyles = createUseStyles({
         transitionTimingFunction: "ease-in-out",
         position: "absolute",
         left: "50%",
+        top: 0,
         transform: "translateX(-50%)",
         transformOrigin: "50% 50%",
         animationIterationCount: 1,
