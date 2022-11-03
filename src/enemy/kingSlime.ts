@@ -8,6 +8,7 @@ import {
     EFFECT_TYPES,
     Minion,
     MORPH_MINION_MODIFIERS,
+    MORPH_TYPES,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -39,6 +40,7 @@ export const slimeGlobule: Minion = {
                     target: TARGET_TYPES.SELF,
                     area: 5,
                     morph: {
+                        type: MORPH_TYPES.MERGE,
                         minions: [
                             {
                                 minion: "King Slime",
@@ -104,6 +106,7 @@ export const kingSlimeEnemy: Minion = {
                             type: ACTION_TYPES.EFFECT,
                             target: TARGET_TYPES.SELF,
                             morph: {
+                                type: MORPH_TYPES.MERGE,
                                 minions: [
                                     {
                                         minion: slimeGlobule.name,

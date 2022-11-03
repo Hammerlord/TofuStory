@@ -260,7 +260,7 @@ export interface Condition {
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
     armor?: number;
-    /** Whether the name of the target matches the condition. This is always an "includes" check: */
+    /** Whether the name of the target matches the condition depending on comparator */
     characterName?: string;
     calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES;
 }
@@ -302,6 +302,13 @@ export interface SelectCards {
 export enum MORPH_MINION_MODIFIERS {
     SUM = "sum",
     DIVIDE_EVENLY = "divide-evenly",
+}
+
+export enum MORPH_TYPES {
+    /** For each minion, transform it to another minion */
+    MAP = "map",
+    /** Replace targeted minions with one or more minions */
+    MERGE = "merge",
 }
 
 export interface Action {
@@ -358,9 +365,11 @@ export interface Action {
     }[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
     morph?: {
+        type: MORPH_TYPES;
         minions: {
             minion: Minion | string; // Minion object or a string name
-            positionIndex?: number;
+            positionIndex?: number; // Only applicable for MORPH_TYPES.MERGE (place the new minion in a specific index on the board)
+            conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
         }[];
         modifiers?: {
             HP: MORPH_MINION_MODIFIERS;

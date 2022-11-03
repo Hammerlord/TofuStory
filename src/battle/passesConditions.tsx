@@ -43,7 +43,7 @@ export const passesConditions = ({
         }
 
         const checkPass = (combatant) => {
-            const procId = (proc as any).id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
+            const procId = (proc as any)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
             const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
 
             const meetsHealthPercentage =
@@ -68,8 +68,25 @@ export const passesConditions = ({
                 return otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass);
             })();
 
-            const nameIncludes = characterName === undefined ? true : combatant.name?.includes(characterName);
-            return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && nameIncludes;
+            const meetsCharacterName = (() => {
+                if (!characterName) {
+                    return true;
+                }
+
+                if (comparator === "eq") {
+                    return characterName === combatant.name;
+                }
+
+                if (comparator === "not") {
+                    return characterName !== combatant.name;
+                }
+
+                return true;
+            })();
+            if (characterName) {
+                console.log("characterName?", "comparator:", comparator, "to name:", characterName, combatant);
+            }
+            return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && meetsCharacterName;
         };
 
         return Array.isArray(combatant) ? combatant.some(checkPass) : checkPass(combatant);

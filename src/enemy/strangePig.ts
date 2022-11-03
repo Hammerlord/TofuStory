@@ -1,4 +1,4 @@
-import { Action, ANIMATION_TYPES } from "./../ability/types";
+import { Action, ANIMATION_TYPES, MORPH_TYPES } from "./../ability/types";
 import { stun } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -63,6 +63,7 @@ export const strangePig: Minion = {
                             animation: ANIMATION_TYPES.EXPLODE,
                             target: TARGET_TYPES.SELF,
                             morph: {
+                                type: MORPH_TYPES.MAP,
                                 minions: [
                                     {
                                         minion: "Mutant Ribbon Pig",

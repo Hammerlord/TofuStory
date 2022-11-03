@@ -6,18 +6,17 @@ import {
     Action,
     ACTION_TYPES,
     CombatEffect,
-    Effect,
     EffectEventTrigger,
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
     HandAbility,
     MORPH_MINION_MODIFIERS,
+    MORPH_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
-import { createCombatant } from "../../enemy/createEnemy";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
@@ -35,6 +34,7 @@ import {
     orientate,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
+import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
@@ -609,7 +609,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
 const onSummonTriggers =
     ({ summonedId, summonerId, parentSource }: { summonedId: string; summonerId: string; parentSource: TriggerSource }) =>
     (dispatch, getState) => {
-        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId] };
+        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId], isProc: false };
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
         const { hostile, friendly } = orientate({ combatantId: summonerId, ...getState().battle }) || {};
         hostile?.forEach((combatant) => {
@@ -664,6 +664,102 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
     };
 };
 
+/**
+ * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
+ * This ignores morph conditions
+ */
+const getMorphMerge = ({ targets, battlefield, morph }) => {
+    const { minions, modifiers = {} } = morph;
+    const targetIds = targets.map((t: Combatant) => t.id);
+    const { friendly, friendlySide, combatantIndex } = orientate({ combatantId: targetIds[0], ...battlefield });
+    const combatants = friendly.map((combatant: Combatant | null) => {
+        if (targetIds.includes(combatant?.id)) {
+            return null;
+        }
+        return combatant;
+    });
+
+    const summons = [];
+    const getSummonPos = (positionIndex?: number): number => {
+        if (typeof positionIndex === "number") {
+            return positionIndex;
+        }
+
+        // If there is only one mutate target, replace the target
+        if (targets.length === 1) {
+            return combatantIndex;
+        }
+
+        return getRandomItem(getPossibleSummonIndices(friendly));
+    };
+
+    const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
+        let value = targets.reduce((acc, combatant) => {
+            return acc + (combatant[property] || 0);
+        }, 0); // Default is sum
+        if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
+            value = Math.ceil(value / minions.length);
+        }
+        acc[property] = value;
+        return acc;
+    }, {});
+
+    for (const { minion, positionIndex } of minions) {
+        const pos = getSummonPos(positionIndex);
+        const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
+        if (!minionToSummon) {
+            console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
+            return;
+        }
+
+        if (typeof pos === "number") {
+            combatants[pos] = {
+                ...createCombatant(minionToSummon),
+                ...modifierValues,
+            };
+
+            summons.push(combatants[pos]);
+        }
+    }
+
+    return { side: friendlySide, combatants, summons };
+};
+
+/**
+ * Handle MORPH_TYPES.MAP (for each minion, transform it to another minion)
+ */
+const getMorphMap = ({ targets, battlefield, morph }) => {
+    const { minions } = morph;
+    const targetIds = targets.map((t: Combatant) => t.id);
+    const { friendly, friendlySide } = orientate({ combatantId: targetIds[0], ...battlefield });
+    const summons = [];
+    const combatants = friendly.map((combatant) => {
+        if (!targetIds.includes(combatant?.id)) {
+            return combatant;
+        }
+
+        const minion = minions.find((minionConfig) => {
+            const getCalculationTarget = () => combatant; // Current combatant will always be the target
+            return passesConditions({ getCalculationTarget, proc: minionConfig });
+        })?.minion;
+
+        if (minion) {
+            const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
+            if (minionToSummon) {
+                const summon = createCombatant(minionToSummon);
+                summons.push(summon);
+                return summon;
+            } else {
+                console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
+            }
+        }
+
+        return combatant;
+    });
+
+    return { side: friendlySide, combatants, summons };
+};
+
 const checkHandleMorph = ({
     action,
     morphTargetIds,
@@ -681,61 +777,23 @@ const checkHandleMorph = ({
         }
 
         const targets = morphTargetIds.map((id) => findCombatant(getState, id));
-        const { friendly, friendlySide, combatantIndex } = orientate({ combatantId: morphTargetIds[0], ...getState().battle });
-        const { minions, modifiers = {} } = action.morph;
-        const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
-            let value = targets.reduce((acc, combatant) => {
-                return acc + (combatant[property] || 0);
-            }, 0); // Default is sum
-            if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
-                value = Math.ceil(value / minions.length);
-            }
-            acc[property] = value;
-            return acc;
-        }, {});
+        const type = action.morph.type;
+        let transformed = {} as any;
+        const morphProps = { targets, battlefield: getState().battle, morph: action.morph };
+        if (type === MORPH_TYPES.MAP) {
+            transformed = getMorphMap(morphProps);
+        } else {
+            transformed = getMorphMerge(morphProps);
+        }
 
-        const combatants = friendly.map((combatant: Combatant | null) => {
-            if (morphTargetIds.includes(combatant?.id)) {
-                return null;
-            }
-            return combatant;
-        });
-
-        const getSummonPos = (positionIndex) => {
-            if (typeof positionIndex === "number") {
-                return positionIndex;
-            }
-
-            // If there is only one mutate target, replace the target
-            if (targets.length === 1) {
-                return combatantIndex;
-            }
-
-            return getRandomItem(getPossibleSummonIndices(friendly));
-        };
-
-        const summons = [];
-        for (const { minion, positionIndex } of minions) {
-            const pos = getSummonPos(positionIndex);
-            const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
-            if (!minionToSummon) {
-                console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
-                return;
-            }
-
-            if (typeof pos === "number") {
-                combatants[pos] = {
-                    ...createCombatant(minionToSummon),
-                    ...modifierValues,
-                };
-
-                summons.push(combatants[pos]);
-            }
+        const { side, combatants, summons } = transformed;
+        if (!side) {
+            return;
         }
 
         dispatch(
             updateBattle({
-                [friendlySide]: combatants,
+                [side]: combatants,
             })
         );
 

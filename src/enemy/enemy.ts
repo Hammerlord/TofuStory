@@ -50,6 +50,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
+    MORPH_TYPES,
     MULTIPLIER_TYPES,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
@@ -879,18 +880,6 @@ export const mutantSnailEnemy: Minion = {
             ],
         },
         {
-            name: "Call Snail",
-            image: RedSnailImage,
-            minion: redSnail,
-            actions: [
-                {
-                    // HACK: this is just for animation playback
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                },
-            ],
-        },
-        {
             name: "Whip",
             resourceCost: 1,
             actions: [
@@ -949,6 +938,43 @@ export const mutantSnailEnemy: Minion = {
                     damage: 2,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
+                },
+            ],
+        },
+        {
+            name: "Mutate",
+            resourceCost: 3,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    excludePrimaryTarget: true,
+                    area: 2,
+                    morph: {
+                        type: MORPH_TYPES.MAP,
+                        minions: [
+                            {
+                                conditions: [
+                                    {
+                                        characterName: "Blue Snail",
+                                        comparator: "eq",
+                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                                    },
+                                ],
+                                minion: redSnail,
+                            },
+                            {
+                                conditions: [
+                                    {
+                                        characterName: "Snail",
+                                        comparator: "eq",
+                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                                    },
+                                ],
+                                minion: blueSnail,
+                            },
+                        ],
+                    },
                 },
             ],
         },
