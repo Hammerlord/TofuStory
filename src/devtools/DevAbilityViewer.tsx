@@ -21,6 +21,10 @@ const useStyles = createUseStyles({
             cursor: "default",
         },
     },
+    viewer: {
+        height: "85%",
+        overflowY: "scroll",
+    },
 });
 
 const DevAbilityViewer = ({ onClose }) => {
@@ -42,11 +46,11 @@ const DevAbilityViewer = ({ onClose }) => {
                 {PLAYER_CLASSES.WARRIOR}
             </div>
             {selectedClass && (
-                <div>
+                <div className={classes.viewer}>
                     <p>{selectedClass}</p>
                     <Grid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
-                        <div>
+                        <div key={secondaryClass}>
                             <hr />
                             <p>{secondaryClass}</p>
                             <Grid cards={JOB_CARD_MAP[secondaryClass]?.all || []} />

@@ -44,7 +44,6 @@ const useStyles = createUseStyles({
         zIndex: "999",
         width: "100%",
         height: "100%",
-        overflowY: "scroll",
     },
     menu: {
         background: "rgba(50, 46, 46, 0.9)",
@@ -119,7 +118,9 @@ const DevToolButton = () => {
                             Treasure Box Puzzles
                             <MenuList>
                                 {Object.keys(TREASURE_PUZZLE_MAP).map((key) => (
-                                    <MenuItem onClick={() => setTreasurePuzzleName(key)}>{key}</MenuItem>
+                                    <MenuItem key={key} onClick={() => setTreasurePuzzleName(key)}>
+                                        {key}
+                                    </MenuItem>
                                 ))}
                             </MenuList>
                         </div>
