@@ -26,6 +26,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
+    MULTIPLIER_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
@@ -180,8 +181,13 @@ const throwFood: Ability = {
                     duration: 0,
                     onAttack: {
                         removeEffect: true,
-                        damage: 5,
+                        damage: 1,
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        multiplier: {
+                            type: MULTIPLIER_TYPES.HP,
+                            value: 0.5,
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                        },
                     },
                 },
             ],
