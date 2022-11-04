@@ -17,10 +17,10 @@ const useStyles = createUseStyles({
                 transition: "transform 0.2s",
             },
             "&.primary": {
-                background: "linear-gradient(360deg, rgba(119,153,0,1) 0%, rgba(153,187,34,1) 100%) !important",
+                background: "linear-gradient(360deg, rgba(119,153,0,1) 0%, #adcb08 100%) !important",
             },
             "&.secondary": {
-                background: "linear-gradient(360deg, rgb(181,121,0) 0%, rgb(241,161,0) 100%) !important;",
+                background: "linear-gradient(360deg, #d1830d 0%, #f4b902 100%) !important;",
             },
             "&.base": {
                 background: "rgba(120, 120, 120) !important",
