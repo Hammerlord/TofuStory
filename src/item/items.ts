@@ -80,22 +80,21 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "Grants 1 attack power and 3 health per kill, but you take 3 damage per turn.",
+    description: "Grants 1 attack power, but you take 1 damage per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: DrakeBloodImage,
     sellPrice: 10,
     effects: [
         {
             name: "Drake Blood",
-            description: "Grants 1 attack power and 3 health per kill, but you take 3 damage per turn.",
+            description: "Gaining 1 attack power and taking 1 damage per turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: DrakeBloodImage,
             attackPower: 1,
-            lifeOnKill: 3,
             onTurnEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 3,
+                damage: 1,
             },
         },
     ],
