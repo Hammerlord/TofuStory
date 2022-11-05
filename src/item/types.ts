@@ -8,6 +8,7 @@ export enum ITEM_TYPES {
 export interface Item {
     name: string;
     description?: string;
+    flavourText?: string;
     /** HP restored when consuming this item */
     healing?: number;
     /** Resources gained when consuming this item */

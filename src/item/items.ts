@@ -121,18 +121,11 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Increases maximum HP by 10 and heals for 1 HP per turn.",
+    description: "Heals for 1 HP per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
     sellPrice: 10,
     effects: [
-        {
-            name: "Amethyst HP",
-            description: "Increasing maximum HP by 10.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            maxHP: 10,
-        },
         {
             name: "Amethyst",
             description: "Healing for 1 HP per turn.",
@@ -157,7 +150,8 @@ const sandalsEffect: Effect = {
 
 export const leatherSandals: Item = {
     name: "Leather Sandals",
-    description: "The quintessential footwear of aspiring adventurers. On wave start, draw an extra card.",
+    description: "On wave start, draw an extra card.",
+    flavourText: "The quintessential footwear of aspiring adventurers.",
     type: ITEM_TYPES.EQUIPMENT,
     image: LeatherSandalsImage,
     sellPrice: 10,
@@ -183,7 +177,8 @@ export const blackScroll: Item = {
 
 export const engravedStone: Item = {
     name: "Engraved Stone",
-    description: "A mysterious keepsake you found on your person. When you are attacked, gain 1 resource. This may occur once per turn.",
+    description: "When you are attacked, gain 1 resource. This may occur once per turn.",
+    flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -230,7 +225,7 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "On wave start, grants 7 armor and prevents armor decay by 1 turn",
+    description: "On wave start, grants 5 armor and prevents armor decay by 1 turn",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -240,7 +235,7 @@ export const panlid: Item = {
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 7,
+                armor: 5,
                 effects: [
                     {
                         name: "Pan Lid",
@@ -307,7 +302,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every three turns, your first attack inflicts poison. Lasts 1 turn.",
+    description: "Every three turns, your first attack inflicts poison.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SapOfNependeathImage,
     effects: [
@@ -368,20 +363,12 @@ export const respawnToken: Item = {
 
 export const sunshinePan: Item = {
     name: "Sunshine Pan",
-    description: "Restore an additional 10 HP when camping and increases healing received by 1.",
+    description: "Restore an additional 10 HP when camping.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SunshinePanImage,
     camp: {
         healing: 10,
     },
-    effects: [
-        {
-            name: "Sunshine Pan",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            healingReceived: 1,
-        },
-    ],
 };
 
 export const goldenHammer: Item = {
