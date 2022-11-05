@@ -41,7 +41,7 @@ export const stumpy: Minion = {
     image: StumpyImage,
     isBoss: true,
     damage: 2,
-    maxHP: 250,
+    maxHP: 200,
     abilities: [
         {
             name: "Bats!",

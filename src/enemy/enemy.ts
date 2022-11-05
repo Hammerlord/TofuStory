@@ -4,7 +4,6 @@ import {
     BlueSnailShellImage,
     CurseEyeImage,
     FireBoarImage,
-    FirewoodImage,
     GreenMushroomImage,
     HornyMushroomImage,
     LeetSinImage,
@@ -24,7 +23,6 @@ import {
     OrangeMushroomIdleImage,
     PigIdleImage,
     PigsHeadImage,
-    PigsRibbonImage,
     RedSnailImage,
     RedSnailShellImage,
     RibbonPigIdleImage,
@@ -34,7 +32,6 @@ import {
     SnailImage,
     SnailShellImage,
     SquishyLiquidImage,
-    StolenFenceImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
@@ -62,7 +59,7 @@ import { championsRibbon, hardwood } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 11,
+    maxHP: 10,
     abilities: [loaf],
     image: SnailImage,
     damage: 1,
@@ -72,7 +69,7 @@ export const snail: Minion = {
 export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 3,
-    armor: 10,
+    armor: 9,
     image: BlueSnailImage,
     abilities: [loaf],
     damage: 1,
@@ -92,7 +89,7 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 17,
+    maxHP: 15,
     image: ShroomImage,
     damage: 2,
     mesos: 5,
@@ -106,7 +103,7 @@ export const shroom: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: MushroomSporeImage,
                     animation: ANIMATION_TYPES.ONE_WAY,
-                    damage: 1,
+                    damage: 0,
                     effects: [
                         {
                             ...poison,
@@ -205,7 +202,7 @@ export const slime: Minion = {
 
 export const pig: Minion = {
     name: "Pig",
-    maxHP: 45,
+    maxHP: 40,
     image: PigIdleImage,
     mesos: 15,
     damage: 2,
@@ -253,7 +250,7 @@ export const pig: Minion = {
 };
 
 export const ribbonPig: Minion = {
-    maxHP: 65,
+    maxHP: 60,
     name: "Ribbon Pig",
     image: RibbonPigIdleImage,
     damage: 3,
@@ -304,7 +301,7 @@ export const ribbonPig: Minion = {
 
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 60,
+    maxHP: 55,
     image: OrangeMushroomIdleImage,
     damage: 3,
     mesos: 25,
@@ -346,7 +343,7 @@ export const orangeMushroom: Minion = {
 
 export const noobA: Minion = {
     name: "Beginner A",
-    maxHP: 50,
+    maxHP: 40,
     image: NoobClubAImage,
     damage: 2,
     mesos: 1,
@@ -378,7 +375,7 @@ export const noobA: Minion = {
 
 export const noobB: Minion = {
     name: "Beginner B",
-    maxHP: 50,
+    maxHP: 40,
     image: NoobClubBImage,
     damage: 2,
     mesos: 1,
@@ -602,9 +599,9 @@ export const octopus: Minion = {
     effects: [
         {
             name: "Tentacular",
-            description: "Recovering 1 life on hit.",
+            description: "Recovering 3 life on hit.",
             icon: OctopusLegImage,
-            lifeOnHit: 1,
+            lifeOnHit: 3,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
         },
@@ -750,7 +747,7 @@ export const fireBoar: Minion = {
 export const ligator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 30,
+    maxHP: 25,
     damage: 2,
     mesos: 10,
     abilities: [
@@ -776,7 +773,7 @@ export const ligator: Minion = {
 export const eliteLigator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 60,
+    maxHP: 45,
     mesos: 25,
     damage: 2,
     effects: [elite, raging],
@@ -788,7 +785,6 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
                     effects: [
                         {
                             ...wound,
@@ -804,7 +800,7 @@ export const eliteLigator: Minion = {
 export const greenMushroom: Minion = {
     name: "Green Mushroom",
     image: GreenMushroomImage,
-    maxHP: 25,
+    maxHP: 20,
     damage: 1,
     mesos: 5,
     abilities: [
@@ -833,7 +829,7 @@ export const greenMushroom: Minion = {
 export const hornyMushroom: Minion = {
     name: "Horny Mushroom",
     image: HornyMushroomImage,
-    maxHP: 30,
+    maxHP: 25,
     damage: 2,
     effects: [thorns],
     mesos: 7,
@@ -843,9 +839,9 @@ export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: MutantSnailImage,
     isBoss: true,
-    maxHP: 100,
+    maxHP: 75,
     armor: 75,
-    damage: 5,
+    damage: 3,
     mesos: 100,
     effects: [
         {
@@ -856,7 +852,6 @@ export const mutantSnailEnemy: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "Prevents armor decay.",
-            duration: 5,
         },
         {
             ...hardy,
@@ -985,7 +980,7 @@ export const manoEnemy: Minion = {
     name: "Mano",
     image: ManoImage,
     isBoss: true,
-    maxHP: 75,
+    maxHP: 50,
     armor: 100,
     damage: 3,
     mesos: 100,
@@ -1064,7 +1059,6 @@ export const manoEnemy: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "Prevents armor decay.",
-            duration: 10,
         },
         {
             name: "Weighted Shell",
@@ -1176,7 +1170,7 @@ export const curseEye: Minion = {
 
 export const snailFriend: Minion = {
     name: "Snail Friend",
-    maxHP: 11,
+    maxHP: 10,
     image: SnailImage,
     damage: 1,
     effects: [
