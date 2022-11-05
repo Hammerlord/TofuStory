@@ -57,6 +57,7 @@ import {
     warLeap,
     whirlwind,
     yell,
+    bladedArmor,
 } from "./warrior/warriorAbilities";
 import {
     blast,
@@ -107,6 +108,7 @@ export const JOB_CARD_MAP = {
             doubleTime,
             arsenal,
             sledge,
+            bladedArmor,
         ],
         starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, block, bash, bash],
     },

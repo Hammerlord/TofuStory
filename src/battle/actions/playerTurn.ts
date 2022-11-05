@@ -4,16 +4,9 @@ import { Combatant } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
-import {
-    checkHalveArmor,
-    clearTurnHistory,
-    gainResources,
-    getBasicAttack,
-    getEnabledEffects,
-    updateCardEffects,
-    updateCharacters,
-} from "../utils";
+import { clearTurnHistory, gainResources, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
+import { checkHalveArmor } from "./checkHalveArmor";
 
 const { drawCards, updateBattle } = battleStateSlice.actions;
 
@@ -132,10 +125,6 @@ export const startPlayerTurn = () => {
     return (dispatch, getState) => {
         const { playerSide, round } = getState().battle;
         const updateFns = [gainResources, clearTurnHistory];
-        if (round > 0) {
-            updateFns.push(checkHalveArmor);
-        }
-
         const updatedPlayerSide = updateCharacters(playerSide, compose(...updateFns));
         dispatch(
             updateBattle({
@@ -144,6 +133,10 @@ export const startPlayerTurn = () => {
                 playerSide: updatedPlayerSide,
             })
         );
+
+        if (round > 0) {
+            dispatch(checkHalveArmor(playerSide));
+        }
 
         const { battle } = getState();
         const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);

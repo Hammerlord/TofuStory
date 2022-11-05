@@ -31,6 +31,7 @@ import {
     WarriorMasteryImage,
     WeaponBoosterImage,
     WeaponMasteryImage,
+    MetalAxeImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { silence, stealth, stun, thorns, wound } from "../Effects";
@@ -1595,4 +1596,42 @@ export const sledge: Ability = {
         },
     ],
     upgrades: [sledge2],
+};
+
+export const bladedArmor: Ability = {
+    name: "Bladed Armor",
+    resourceCost: 1,
+    image: MetalAxeImage,
+    description: "When you lose armor, hurl a sidearm at a random enemy for 2 damage",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Bladed Armor",
+                    icon: MetalAxeImage,
+                    duration: 5,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onArmorLoss: {
+                        ability: {
+                            name: "Sidearm",
+                            image: MetalAxeImage,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.RANGE_ATTACK,
+                                    animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+                                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                                    icon: MetalAxeImage,
+                                    damage: 2,
+                                    playbackTime: 400,
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
 };

@@ -187,7 +187,7 @@ const checkHitEffects = ({
     };
 };
 
-const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource: TriggerSource }) => {
+const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
@@ -465,9 +465,9 @@ export const checkEventTrigger = ({
     };
 };
 
-const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
+export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
-    statUpdates.forEach(({ combatantId, healthDamage, armor, resources, healing, effects }) => {
+    statUpdates.forEach(({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [] }) => {
         const oldCombatant = findCombatant(getState, combatantId);
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
@@ -496,35 +496,47 @@ const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, ge
     });
 };
 
-const triggerStatChangeEvents = (statChanges: { statUpdate: UpdatedCombatantStats; source: TriggerSource }[]) => (dispatch, getState) => {
-    statChanges.forEach(({ statUpdate, source }) => {
-        const { combatantId, rawDamage, healthDamage, armor, resources, healing, effects, isDeathBlow } = statUpdate;
-        const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
-            dispatch(checkEventTrigger({ combatantId, effectEventKey, source }));
-        };
+export const triggerStatChangeEvents =
+    (statChanges: { statUpdate: UpdatedCombatantStats; source?: TriggerSource }[]) => (dispatch, getState) => {
+        statChanges.forEach(({ statUpdate, source }) => {
+            const {
+                combatantId,
+                rawDamage = 0,
+                healthDamage = 0,
+                armor = 0,
+                resources = 0,
+                healing = 0,
+                effects = [],
+                isDeathBlow = false,
+            } = statUpdate;
+            const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
+                dispatch(checkEventTrigger({ combatantId, effectEventKey, source }));
+            };
 
-        if (resources < 0) {
-            dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
-        }
+            if (resources < 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
+            }
 
-        if (healing > 0) {
-            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing);
-        }
+            if (healing > 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing);
+            }
 
-        if (armor > 0) {
-            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor);
-        }
+            if (armor > 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor);
+            } else if (armor < 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onArmorLoss);
+            }
 
-        if (rawDamage > 0) {
-            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
-        }
+            if (rawDamage > 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
+            }
 
-        effects.forEach((e) => {
-            // TODO probably include effects in the event trigger payload?
-            dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
-        });
+            effects.forEach((e) => {
+                // TODO probably include effects in the event trigger payload?
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
+            });
 
-        /**
+            /**
             effectsRemoved.forEach((e: CombatEffect) => {
                 // TODO probably include effects in the event trigger payload?
                 // Removal should only apply to dispels?
@@ -541,11 +553,11 @@ const triggerStatChangeEvents = (statChanges: { statUpdate: UpdatedCombatantStat
             });
             */
 
-        if (isDeathBlow) {
-            dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
-        }
-    });
-};
+            if (isDeathBlow) {
+                dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
+            }
+        });
+    };
 
 /**
  * Updates a combatant given its ID. This overwrites the combatant.

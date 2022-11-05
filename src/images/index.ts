@@ -127,6 +127,7 @@ export { default as MesoImage } from "./Meso.png";
 export { default as MesoBagImage } from "./MesoBag.png";
 export { default as MesoCoinImage } from "./MesoCoin.png";
 export { default as MesoStackImage } from "./MesoStack.png";
+export { default as MetalAxeImage } from "./MetalAxe.png";
 export { default as MiniBeanImage } from "./MiniBean.gif";
 export { default as MossyMushroomImage } from "./MossyMushroom.gif";
 export { default as MossySnailImage } from "./MossySnail.gif";

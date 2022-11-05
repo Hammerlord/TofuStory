@@ -437,12 +437,14 @@ const BattlefieldContainer = () => {
             setShowTurnAnnouncement(true);
             setTimeout(() => {
                 setShowTurnAnnouncement(false);
-                if (isPlayerTurn) {
-                    dispatch(startPlayerTurn());
-                } else {
-                    dispatch(startEnemyTurn());
-                }
-                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
+                setTimeout(() => {
+                    if (isPlayerTurn) {
+                        dispatch(startPlayerTurn());
+                    } else {
+                        dispatch(startEnemyTurn());
+                    }
+                    dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
+                }, 250);
             }, TURN_ANNOUNCEMENT_TIME);
             return;
         }

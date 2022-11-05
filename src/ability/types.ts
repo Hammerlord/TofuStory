@@ -98,6 +98,7 @@ export enum EFFECT_EVENT_KEYS {
     onSummoned = "onSummoned",
     onHostileSummon = "onHostileSummon",
     onFriendlySummon = "onFriendlySummon",
+    onArmorLoss = "onArmorLoss",
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -167,6 +168,8 @@ export interface Effect {
     onFriendlySummon?: EffectEventTrigger;
     /** When a minion hostile to the effect owner is summoned */
     onHostileSummon?: EffectEventTrigger;
+    /** Whenever character loses armor -- this includes armor decay */
+    onArmorLoss?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
@@ -428,6 +431,7 @@ export enum ACTION_TYPES {
 export enum ANIMATION_TYPES {
     // 'icon' travels from actor to target spinning
     ONE_WAY_SPIN = "one-way-spin",
+    ONE_WAY_SPIN_FAST = "one-way-spin-fast",
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
     ONE_WAY = "one-way",

@@ -4,7 +4,6 @@ import { Combatant } from "../../character/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import {
-    checkHalveArmor,
     clearTurnHistory,
     gainResources,
     getBasicAttack,
@@ -21,6 +20,7 @@ import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES } from "./../types";
 import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+import { checkHalveArmor } from "./checkHalveArmor";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
@@ -318,13 +318,17 @@ export const endEnemyTurn = () => {
 export const startEnemyTurn = () => {
     return (dispatch, getState) => {
         const { enemySide, round } = getState().battle;
-        const updateFns = [gainResources, clearTurnHistory, checkHalveArmor];
+        const updateFns = [gainResources, clearTurnHistory];
         const updated = updateCharacters(enemySide, compose(...updateFns));
         dispatch(
             updateBattle({
                 enemySide: updated,
             })
         );
+
+        if (round > 0) {
+            dispatch(checkHalveArmor(enemySide));
+        }
 
         updated.forEach((combatant: Combatant | null) => {
             if (!combatant) {

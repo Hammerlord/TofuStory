@@ -97,16 +97,6 @@ export const clearTurnHistory = (character: Combatant): Combatant => {
     };
 };
 
-export const checkHalveArmor = (target: Combatant): Combatant => {
-    if (getEnabledEffects(target).some((effect) => effect.preventArmorDecay)) {
-        return target;
-    }
-    return {
-        ...target,
-        armor: Math.floor(target.armor / 2),
-    };
-};
-
 export const hasEffectType = (target: Combatant, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
     return (
         target &&

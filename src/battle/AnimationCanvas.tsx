@@ -107,7 +107,12 @@ const AnimationCanvas = ({
 
         eventIdRef.current = eventId;
         const { type, animation, ricochet, icon } = action || {};
-        const spin = animation === ANIMATION_TYPES.YOYO || animation === ANIMATION_TYPES.ONE_WAY_SPIN;
+        let spin = 0;
+        if (animation === ANIMATION_TYPES.ONE_WAY_SPIN_FAST) {
+            spin = 900;
+        } else if ([ANIMATION_TYPES.YOYO, ANIMATION_TYPES.ONE_WAY_SPIN].includes(animation)) {
+            spin = 360;
+        }
 
         if (icon) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
