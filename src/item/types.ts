@@ -21,5 +21,6 @@ export interface Item {
     camp?: {
         abilityChoices?: number;
         healing?: number;
+        extraActivities?: number;
     };
 }

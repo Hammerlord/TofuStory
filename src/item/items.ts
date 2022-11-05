@@ -336,14 +336,13 @@ export const nependeathSap: Item = {
     ],
 };
 
-// TODO doesn't do anything yet
 export const coffeePot: Item = {
     name: "Coffee Pot",
-    description: "You can now learn an ability when camping.",
+    description: "You can now perform an extra activity while camping.",
     type: ITEM_TYPES.EQUIPMENT,
     image: CoffeePotImage,
     camp: {
-        abilityChoices: 3,
+        extraActivities: 1,
     },
 };
 

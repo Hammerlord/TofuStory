@@ -106,11 +106,14 @@ const Camp = ({
     const [hasUpgradedAbility, setHasUpgradedAbility] = useState(false);
     const [isLearningAbility, setIsLearningAbility] = useState(false);
     const [selectedAbilityToLearn, setSelectedAbilityToLearn] = useState(null);
+    const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
+        1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
+    );
 
     useEffect(() => {
         const maxHP = getMaxHP(player);
-        const healthRegained =
-            Math.floor(maxHP * HEALTH_REGAINED) + player.items.reduce((acc, item: Item) => acc + (item.camp?.healing || 0), 0);
+        const additionalHealing = player.items.reduce((acc: number, item: Item) => acc + (item.camp?.healing || 0), 0);
+        const healthRegained = Math.floor(maxHP * HEALTH_REGAINED) + additionalHealing;
         updatePlayer({
             HP: Math.min(maxHP, player.HP + healthRegained),
         });
@@ -125,6 +128,7 @@ const Camp = ({
         const updatedDeck = deck.slice();
         updatedDeck.splice(selectedAbilityIndexToRemove, 1);
         updateDeck(updatedDeck);
+        setNumActivitiesRemaining((prev) => prev - 1);
     };
 
     const handleLearnAbility = () => {
@@ -140,6 +144,7 @@ const Camp = ({
             items: newItems,
         });
         setIsLearningAbility(false);
+        setNumActivitiesRemaining((prev) => prev - 1);
     };
 
     if (isRemovingAbility) {
@@ -158,7 +163,7 @@ const Camp = ({
                     </div>
                     <Button variant={"contained"} color={"secondary"} onClick={handleRemoveAbility}>
                         Ommmmmm (confirm)
-                    </Button>
+                    </Button>{" "}
                     <Button variant={"contained"} onClick={() => setIsRemovingAbility(false)}>
                         Cancel
                     </Button>
@@ -187,7 +192,7 @@ const Camp = ({
                     </div>
                     <Button variant={"contained"} color={"primary"} onClick={handleLearnAbility}>
                         Confirm
-                    </Button>
+                    </Button>{" "}
                     <Button variant={"contained"} onClick={() => setIsLearningAbility(false)}>
                         Cancel
                     </Button>
@@ -205,10 +210,13 @@ const Camp = ({
                     updateDeck(updatedDeck);
                     setHasUpgradedAbility(true);
                     setIsUpgradingAbility(false);
+                    setNumActivitiesRemaining((prev) => prev - 1);
                 }}
             />
         );
     }
+
+    const canRemoveAbility = !hasRemovedAbility && numActivitiesRemaining > 0;
 
     return (
         <div className={classes.root}>
@@ -223,16 +231,16 @@ const Camp = ({
                     <div className={classes.activityContainer}>
                         <div
                             className={classNames(classes.activity, {
-                                disabled: hasRemovedAbility,
+                                disabled: !canRemoveAbility,
                             })}
                             onClick={() => {
-                                if (!hasRemovedAbility) {
+                                if (canRemoveAbility) {
                                     setIsRemovingAbility(true);
                                 }
                             }}
                         >
                             <div className={classes.activityName}>Meditate</div>
-                            Remove one of your abilities.{" "}
+                            Remove one of your abilities.
                         </div>
                         {player.items.filter((item) => item.name === blackScroll.name).length >= 3 && (
                             <div className={classes.activity} onClick={() => setIsLearningAbility(true)}>
@@ -242,7 +250,7 @@ const Camp = ({
                         )}
                         <div
                             className={classNames(classes.activity, {
-                                disabled: hasUpgradedAbility,
+                                disabled: hasUpgradedAbility || numActivitiesRemaining === 0,
                             })}
                             onClick={() => {
                                 if (!hasUpgradedAbility) {
