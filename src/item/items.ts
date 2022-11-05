@@ -60,20 +60,20 @@ export const stolenFence: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Restores 5 HP on wave clear.",
+    description: "Restores 3 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SafetyCharmImage,
     sellPrice: 10,
     effects: [
         {
             name: "Safety Charm",
-            description: "Restores 5 HP on wave clear.",
+            description: "Restores 3 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SafetyCharmImage,
             onWaveClear: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                healing: 5,
+                healing: 3,
             },
         },
     ],
@@ -120,17 +120,27 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Increases maximum HP by 10.",
+    description: "Increases maximum HP by 10 and heals for 1 HP per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
     sellPrice: 10,
     effects: [
         {
-            name: "Amethyst",
+            name: "Amethyst HP",
             description: "Increasing maximum HP by 10.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 10,
+        },
+        {
+            name: "Amethyst",
+            description: "Healing for 1 HP per turn.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                healing: 1,
+            },
         },
     ],
 };
@@ -296,7 +306,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every three turns, your first attack inflicts poison.",
+    description: "Every three turns, your first attack inflicts poison. Lasts 1 turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SapOfNependeathImage,
     effects: [
@@ -317,7 +327,7 @@ export const nependeathSap: Item = {
                         onAttack: {
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                            effects: [{ ...poison }],
+                            effects: [{ ...poison, duration: 1 }],
                         },
                     },
                 ],
