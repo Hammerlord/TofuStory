@@ -1,14 +1,16 @@
-import Button from "../view/Button";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import { Ability } from "../ability/types";
-import { updateHPByPercentage } from "../battle/utils";
+import { getMaxHP } from "../battle/utils";
 import { CampfireImage, PerionCampImage } from "../images";
 import { blackScroll } from "../item/items";
+import { Item } from "../item/types";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
+import Button from "../view/Button";
+
 const useStyles = createUseStyles({
     root: {
         width: "100%",
@@ -106,8 +108,11 @@ const Camp = ({
     const [selectedAbilityToLearn, setSelectedAbilityToLearn] = useState(null);
 
     useEffect(() => {
+        const maxHP = getMaxHP(player);
+        const healthRegained =
+            Math.floor(maxHP * HEALTH_REGAINED) + player.items.reduce((acc, item: Item) => acc + (item.camp?.healing || 0), 0);
         updatePlayer({
-            HP: updateHPByPercentage(player, HEALTH_REGAINED),
+            HP: Math.min(maxHP, player.HP + healthRegained),
         });
     }, []);
 

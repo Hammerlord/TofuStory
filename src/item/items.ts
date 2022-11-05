@@ -334,16 +334,9 @@ export const coffeePot: Item = {
     description: "You can now learn an ability when camping.",
     type: ITEM_TYPES.EQUIPMENT,
     image: CoffeePotImage,
-    effects: [
-        {
-            name: "Coffee Pot",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onCamp: {
-                abilityChoices: 3,
-            },
-        },
-    ],
+    camp: {
+        abilityChoices: 3,
+    },
 };
 
 export const respawnToken: Item = {
@@ -365,20 +358,20 @@ export const respawnToken: Item = {
     ],
 };
 
-// TODO doesn't do anything yet
 export const sunshinePan: Item = {
     name: "Sunshine Pan",
-    description: "Restore an additional 15 HP when camping.",
+    description: "Restore an additional 10 HP when camping and increases healing received by 1.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SunshinePanImage,
+    camp: {
+        healing: 10,
+    },
     effects: [
         {
             name: "Sunshine Pan",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onCamp: {
-                healing: 15,
-            },
+            healingReceived: 1,
         },
     ],
 };

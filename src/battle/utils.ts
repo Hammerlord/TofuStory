@@ -73,11 +73,6 @@ export const updateHP = (character: Combatant, amount: number): number => {
     return Math.min(getMaxHP(character), character.HP + amount);
 };
 
-export const updateHPByPercentage = (character: Combatant, percentage: number): number => {
-    const maxHP = getMaxHP(character);
-    return Math.min(maxHP, character.HP + Math.floor(maxHP * percentage));
-};
-
 export const isSilenced = (character: Combatant): boolean => {
     return character?.effects?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };

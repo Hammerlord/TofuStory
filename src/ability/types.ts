@@ -185,10 +185,6 @@ export interface Effect {
     onEncounterEnd?: {
         abilityChoices?: number;
     };
-    onCamp?: {
-        abilityChoices?: number;
-        healing?: number;
-    };
 }
 
 export interface CombatEffect extends Effect {

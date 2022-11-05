@@ -17,4 +17,8 @@ export interface Item {
     sellPrice?: number;
     effects?: Effect[];
     upgradeCard?: boolean;
+    camp?: {
+        abilityChoices?: number;
+        healing?: number;
+    };
 }
