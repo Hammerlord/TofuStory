@@ -13,6 +13,7 @@ import {
     guideBook,
     alligatorTube,
     cactus,
+    pieceOfIce,
 } from "./../../item/items";
 import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
 import { noob } from "../../scene/Noob";
@@ -32,6 +33,7 @@ export const ALL_ITEMS = [
     guideBook,
     alligatorTube,
     cactus,
+    pieceOfIce,
 ];
 
 export const treasure = [

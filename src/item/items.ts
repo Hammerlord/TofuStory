@@ -1,4 +1,4 @@
-import { poison, thorns } from "../ability/Effects";
+import { chill, poison, thorns } from "../ability/Effects";
 import {
     AlligatorTubeImage,
     AmethystImage,
@@ -13,6 +13,7 @@ import {
     LeatherSandalsImage,
     LuckSackImage,
     PanlidImage,
+    PieceOfIceImage,
     RespawnTokenImage,
     SafetyCharmImage,
     SapOfNependeathImage,
@@ -379,4 +380,36 @@ export const goldenHammer: Item = {
     type: ITEM_TYPES.MATERIAL,
     image: GoldenHammerImage,
     upgradeCard: true,
+};
+
+export const pieceOfIce: Item = {
+    name: "Piece of Ice",
+    description: "Every 3 turns, your first attack inflicts chill.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: PieceOfIceImage,
+    effects: [
+        {
+            name: "Piece of Ice",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Icy",
+                        description: "Next attack applying chill.",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: PieceOfIceImage,
+                        onAttack: {
+                            removeEffect: true,
+                            targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                            effects: [{ ...chill, duration: 1 }],
+                        },
+                    },
+                ],
+            },
+        },
+    ],
 };

@@ -154,6 +154,7 @@ export { default as PanlidImage } from "./Panlid.png";
 export { default as ParashockGuardImage } from "./ParashockGuard.png";
 export { default as PerionCampImage } from "./PerionCamp.png";
 export { default as PerionRegionBGImage } from "./PerionRegionBG.jpg";
+export { default as PieceOfIceImage } from "./PieceOfIce.png";
 export { default as PiercingDriveImage } from "./PiercingDrive.png";
 export { default as PigImage } from "./Pig.png";
 export { default as PigCardImage } from "./PigCard.png";
