@@ -394,7 +394,7 @@ export const goldenHammer: Item = {
 
 export const pieceOfIce: Item = {
     name: "Piece of Ice",
-    description: "Every 3 turns, your first attack inflicts chill.",
+    description: "Every 3 turns, you apply chill to attackers.",
     type: ITEM_TYPES.EQUIPMENT,
     image: PieceOfIceImage,
     effects: [
@@ -408,14 +408,14 @@ export const pieceOfIce: Item = {
                 effects: [
                     {
                         name: "Icy",
-                        description: "Next attack applying chill.",
+                        description: "Attackers are chilled.",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: PieceOfIceImage,
-                        onAttack: {
-                            removeEffect: true,
-                            targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                            effects: [{ ...chill, duration: 1 }],
+                        duration: 2,
+                        onReceiveAttack: {
+                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                            effects: [{ ...chill, duration: 2 }],
                         },
                     },
                 ],
