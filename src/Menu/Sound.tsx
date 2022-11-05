@@ -79,6 +79,9 @@ const TRANSITION_TIME = 500;
 const NEXT_TRACK_TRANSITION_TIME = 3000;
 const FADE_INCREMENT = 10;
 
+const MUSIC_VOLUME_KEY = "musicVolume";
+const MUSIC_PLAYING_KEY = "musicPlaying";
+
 const fadeOutAudio = (audio: HTMLAudioElement) => {
     const currentVolume = audio.volume;
     const interval = setInterval(() => {
@@ -104,13 +107,31 @@ const fadeInAudio = (audio: HTMLAudioElement, currentVolume: number) => {
     }, TRANSITION_TIME);
 };
 
+const getDefaultPlaying = (): boolean => {
+    const value = localStorage.getItem(MUSIC_PLAYING_KEY);
+    if (value === null) {
+        return true;
+    }
+
+    return JSON.parse(value);
+};
+
+const getDefaultVolume = (): number => {
+    const value = localStorage.getItem(MUSIC_VOLUME_KEY);
+    if (value === null) {
+        return 0.75;
+    }
+
+    return JSON.parse(value);
+};
+
 const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGIONS; playTrack?: string }) => {
     const [trackIndex, setTrackIndex] = useState(0);
-    const [volume, setVolume] = useState(0.75);
+    const [volume, setVolume] = useState(getDefaultVolume());
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [overrideAudio, setOverrideAudio] = useState(null);
     const tracks = musicMap[playlist] || [];
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(volume > 0 && getDefaultPlaying());
     const [playlistAudio] = useState(() => {
         const audio = new Audio(tracks[trackIndex]);
         audio.volume = volume;
@@ -125,6 +146,8 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
     const togglePlaying = () => {
         const newIsPlaying = !isPlaying;
         setIsPlaying(newIsPlaying);
+        localStorage.setItem(MUSIC_PLAYING_KEY, JSON.stringify(newIsPlaying));
+
         if (newIsPlaying) {
             audio.play();
         } else {
@@ -213,6 +236,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
 
     const handleChangeVolume = (e, value: number) => {
         setVolume(value);
+        localStorage.setItem(MUSIC_VOLUME_KEY, JSON.stringify(value));
         playlistAudio.volume = value;
         if (overrideAudio) {
             overrideAudio.volume = value;
