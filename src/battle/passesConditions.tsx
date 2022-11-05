@@ -83,9 +83,7 @@ export const passesConditions = ({
 
                 return true;
             })();
-            if (characterName) {
-                console.log("characterName?", "comparator:", comparator, "to name:", characterName, combatant);
-            }
+
             return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && meetsCharacterName;
         };
 
