@@ -2,6 +2,7 @@ import { chill, poison, thorns } from "../ability/Effects";
 import {
     AlligatorTubeImage,
     AmethystImage,
+    AquamarineImage,
     BlackManualImage,
     CactusImage,
     CoffeePotImage,
@@ -419,6 +420,21 @@ export const pieceOfIce: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const aquamarine: Item = {
+    name: "Aquamarine",
+    description: "Receive +1 armor from armor sources",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: AquamarineImage,
+    effects: [
+        {
+            name: "Aquamarine",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            armorReceived: 1,
         },
     ],
 };

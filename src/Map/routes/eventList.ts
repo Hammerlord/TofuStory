@@ -14,6 +14,7 @@ import {
     alligatorTube,
     cactus,
     pieceOfIce,
+    aquamarine,
 } from "./../../item/items";
 import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
 import { noob } from "../../scene/Noob";
@@ -34,6 +35,7 @@ export const ALL_ITEMS = [
     alligatorTube,
     cactus,
     pieceOfIce,
+    aquamarine,
 ];
 
 export const treasure = [

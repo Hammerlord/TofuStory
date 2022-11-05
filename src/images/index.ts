@@ -4,6 +4,7 @@ export { default as AlligatorTubeImage } from "./AlligatorTube.png";
 export { default as AmethystImage } from "./Amethyst.png";
 export { default as AncientFairyImage } from "./AncientFairy.png";
 export { default as AnonymushroomImage } from "./Anonymushroom.png";
+export { default as AquamarineImage } from "./Aquamarine.png";
 export { default as ArrowImage } from "./Arrow.png";
 export { default as AxeImage } from "./Axe.png";
 export { default as AxeStumpImage } from "./AxeStump.png";
