@@ -17,6 +17,13 @@ export const basicDummy = {
     damage: 1,
 };
 
+export const devDummy = {
+    name: "Dummy",
+    image: PuppetreeImage,
+    maxHP: 15,
+    damage: 1,
+};
+
 export const spikedDummy = {
     name: "Spiked Dummy",
     image: Puppetree2Image,
