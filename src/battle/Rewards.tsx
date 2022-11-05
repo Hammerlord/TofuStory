@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { Item } from "../item/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
@@ -62,8 +63,9 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
             ...(JOB_CARD_MAP[player.secondaryClass]?.all || []),
         ];
         const shuffled = shuffle(potentialAbilities);
+        const numChoices = 3 + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
         // Use deck to determine which abilities have a higher chance to roll
-        setRolledAbiliies(shuffled.slice(0, 3));
+        setRolledAbiliies(shuffled.slice(0, numChoices));
     }, []);
 
     const handleSelectClick = () => {

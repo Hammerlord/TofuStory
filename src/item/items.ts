@@ -200,20 +200,18 @@ export const engravedStone: Item = {
     ],
 };
 
-// TODO doesn't do anything yet
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "Enemy encounters now offer 1 extra ability choice.",
+    description: "Increases max HP by 5. Enemy encounters now offer another ability choice.",
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
+    abilityChoices: 1,
     effects: [
         {
             name: "Guide Book",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onEncounterEnd: {
-                abilityChoices: 1,
-            },
+            maxHP: 5,
         },
     ],
 };
@@ -249,7 +247,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Increases your maximum health by 5. When you summon a minion, its attack power is increased by 1.",
+    description: "Increases max HP by 5. When you summon a minion, its attack power is increased by 1.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [

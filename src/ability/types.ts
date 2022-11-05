@@ -182,9 +182,6 @@ export interface Effect {
     mesosGained?: number; // Percentage; 1 = 100%
     maxHP?: number;
     dotDamageIncrease?: number;
-    onEncounterEnd?: {
-        abilityChoices?: number;
-    };
 }
 
 export interface CombatEffect extends Effect {
