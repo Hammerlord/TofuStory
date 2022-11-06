@@ -42,6 +42,7 @@ export { default as ClickIndicatorImage } from "./ClickIndicator.gif";
 export { default as CloseCombatImage } from "./CloseCombat.png";
 export { default as CoffeePotImage } from "./CoffeePot.png";
 export { default as ColdEyeCardImage } from "./ColdEyeCard.png";
+export { default as CombatOrdersImage } from "./CombatOrders.png";
 export { default as ComboFuryImage } from "./ComboFury.png";
 export { default as CrabCardImage } from "./CrabCard.png";
 export { default as CurseEyeImage } from "./CurseEye.gif";

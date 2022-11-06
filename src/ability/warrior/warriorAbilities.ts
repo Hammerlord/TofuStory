@@ -32,6 +32,7 @@ import {
     WeaponBoosterImage,
     WeaponMasteryImage,
     MetalAxeImage,
+    CombatOrdersImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { silence, stealth, stun, thorns, wound } from "../Effects";
@@ -1343,36 +1344,14 @@ export const bladestorm: Ability = {
     upgrades: [bladestorm2],
 };
 
-export const rally2: Ability = {
-    name: "Rally",
+export const combatOrders2: Ability = {
+    name: "Combat Orders",
     resourceCost: 1,
-    image: EnrageImage,
+    image: CombatOrdersImage,
+    description: "Commands all targeted allies to attack",
     actions: [
         {
-            area: 2,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [
-                {
-                    name: "Inspired",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 3,
-                    duration: 0,
-                    icon: EnrageImage,
-                },
-            ],
-        },
-    ],
-};
-
-export const rally: Ability = {
-    name: "Rally",
-    resourceCost: 1,
-    image: EnrageImage,
-    actions: [
-        {
-            area: 2,
+            area: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
             effects: [
@@ -1382,12 +1361,40 @@ export const rally: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 2,
                     duration: 0,
-                    icon: EnrageImage,
+                    icon: CombatOrdersImage,
                 },
             ],
+            induceCombatantAttack: true,
+            playbackTime: 1200,
         },
     ],
-    upgrades: [rally2],
+};
+
+export const combatOrders: Ability = {
+    name: "Combat Orders",
+    resourceCost: 1,
+    image: CombatOrdersImage,
+    description: "Commands all targeted allies to attack",
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [
+                {
+                    name: "Inspired",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    duration: 0,
+                    icon: CombatOrdersImage,
+                },
+            ],
+            induceCombatantAttack: true,
+            playbackTime: 1200,
+        },
+    ],
+    upgrades: [combatOrders2],
 };
 
 export const dustDevils2: Ability = {
