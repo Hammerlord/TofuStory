@@ -193,11 +193,10 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
             }, NEXT_TRACK_TRANSITION_TIME);
         };
         playlistAudio.addEventListener("ended", onEnded);
-
         return () => {
             playlistAudio.removeEventListener("ended", onEnded);
         };
-    }, [tracks, trackIndex]);
+    }, [tracks, trackIndex, isPlaying]);
 
     useEffect(() => {
         if (!isPlaying || playTrack === overrideAudio?.src) {
