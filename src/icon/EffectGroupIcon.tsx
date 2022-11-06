@@ -230,7 +230,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     })}
                 >
                     <>
-                        {durationDisplay && (
+                        {duration !== Infinity && (
                             <span className={classes.duration}>
                                 <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                             </span>
