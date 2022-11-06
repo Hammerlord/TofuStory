@@ -35,7 +35,7 @@ export const halfEatenHotdog: Item = {
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "Reduces damage received by 1 when health is less than half.",
+    description: "Reduce damage received by 1 when your health is less than half.",
     type: ITEM_TYPES.EQUIPMENT,
     image: StolenFenceImage,
     sellPrice: 10,
@@ -61,14 +61,14 @@ export const stolenFence: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Restores 3 HP on wave clear.",
+    description: "Restore 3 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SafetyCharmImage,
     sellPrice: 10,
     effects: [
         {
             name: "Safety Charm",
-            description: "Restores 3 HP on wave clear.",
+            description: "Restoring 3 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SafetyCharmImage,
@@ -82,7 +82,7 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "Grants 1 attack power, but you take 1 damage per turn.",
+    description: "Gain 1 attack power, but you take 1 damage per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: DrakeBloodImage,
     sellPrice: 10,
@@ -121,7 +121,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heals for 1 HP per turn.",
+    description: "Heal for 1 HP per turn.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
     sellPrice: 10,
@@ -209,7 +209,7 @@ export const engravedStone: Item = {
 
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "Increases max HP by 5. Enemy encounters now offer another ability choice.",
+    description: "+5 max HP. Ability acquisition screens now offer another card to choose from.",
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     abilityChoices: 1,
@@ -225,7 +225,7 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "On wave start, grants 5 armor and prevents armor decay by 1 turn",
+    description: "On wave start, gain 5 armor and prevent armor decay for 1 turn.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -254,7 +254,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Increases max HP by 5. When you summon a minion, its attack power is increased by 1.",
+    description: "+5 max HP. When you summon a minion, its attack power is increased by 1.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -302,7 +302,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every three turns, your first attack inflicts poison.",
+    description: "Every 3 turns, your first attack inflicts poison.",
     type: ITEM_TYPES.EQUIPMENT,
     image: SapOfNependeathImage,
     effects: [
@@ -373,7 +373,7 @@ export const sunshinePan: Item = {
 
 export const goldenHammer: Item = {
     name: "Golden Hammer",
-    description: "Use this item to upgrade a card.",
+    description: "Use this item to upgrade an ability.",
     type: ITEM_TYPES.MATERIAL,
     image: GoldenHammerImage,
     upgradeCard: true,
@@ -381,7 +381,7 @@ export const goldenHammer: Item = {
 
 export const pieceOfIce: Item = {
     name: "Piece of Ice",
-    description: "Every 3 turns, you apply chill to attackers.",
+    description: "Every 3 turns, characters who attack you are chilled.",
     type: ITEM_TYPES.EQUIPMENT,
     image: PieceOfIceImage,
     effects: [
@@ -413,7 +413,7 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "Receive +1 armor from armor sources",
+    description: "Receive +1 armor from armor sources.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AquamarineImage,
     effects: [

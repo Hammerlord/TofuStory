@@ -1,9 +1,31 @@
 import { createUseStyles } from "react-jss";
-import { ALL_ITEMS } from "../Map/routes/eventList";
+import {
+    alligatorTube,
+    amethyst,
+    aquamarine,
+    blackScroll,
+    cactus,
+    coffeePot,
+    drakeBlood,
+    engravedStone,
+    goldenHammer,
+    guideBook,
+    leatherSandals,
+    luckSack,
+    nependeathSap,
+    panlid,
+    pieceOfIce,
+    respawnToken,
+    safetyCharm,
+    stolenFence,
+    sunshinePan,
+} from "../item/items";
 
 const useStyles = createUseStyles({
     root: {
         marginTop: 64,
+        overflowY: "scroll",
+        maxHeight: "calc(100% - 64px)",
         "& hr": {
             opacity: 0.7,
         },
@@ -11,7 +33,7 @@ const useStyles = createUseStyles({
     item: {
         display: "inline-block",
         borderRadius: "8px",
-        margin: 24,
+        margin: 16,
         padding: 24,
         verticalAlign: "bottom",
         background: "#666",
@@ -23,11 +45,33 @@ const useStyles = createUseStyles({
     },
 });
 
+export const ITEM_MASTERLIST = [
+    goldenHammer,
+    blackScroll,
+    leatherSandals,
+    safetyCharm,
+    drakeBlood,
+    nependeathSap,
+    coffeePot,
+    respawnToken,
+    sunshinePan,
+    stolenFence,
+    panlid,
+    luckSack,
+    engravedStone,
+    guideBook,
+    alligatorTube,
+    cactus,
+    pieceOfIce,
+    amethyst,
+    aquamarine,
+];
+
 const DevItemViewer = () => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            {ALL_ITEMS.map((item) => (
+            {ITEM_MASTERLIST.map((item) => (
                 <div key={item.name} className={classes.item}>
                     <img src={item.image} className={classes.itemImage} />
                     <div>{item.name}</div>
