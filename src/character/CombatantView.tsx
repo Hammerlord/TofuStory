@@ -28,12 +28,12 @@ const useStyles = createUseStyles({
         cursor: "pointer",
         position: "relative",
 
-        "&.-highlighted img": {
+        "&.-highlighted .portrait": {
             WebkitFilter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
             filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
         },
 
-        "&.-selected img": {
+        "&.-selected .portrait": {
             WebkitFilter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
             filter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
         },
@@ -369,7 +369,7 @@ const CombatantView = forwardRef(
 
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
-            className: classNames(classes.portraitImage, {
+            className: classNames("portrait", classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !action && playDeathAnimation,
                 [classes.dead]: !action && oldState?.HP <= 0,
