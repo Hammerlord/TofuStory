@@ -37,7 +37,6 @@ const useStyles = createUseStyles({
         height: "48px",
         position: "absolute",
         left: "35%",
-        top: "-75px",
         animationName: "$upAndDown",
         animationDuration: "1s",
         animationIterationCount: "infinite",
@@ -58,7 +57,6 @@ const useStyles = createUseStyles({
         height: "48px",
         position: "absolute",
         right: "25%",
-        top: -72,
         animationName: "$silenceAnimation",
         animationDuration: "2s",
         animationIterationCount: "infinite",
@@ -67,7 +65,6 @@ const useStyles = createUseStyles({
     bleed: {
         display: "flex",
         position: "absolute",
-        top: -72,
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -98,7 +95,6 @@ const useStyles = createUseStyles({
     },
     customEffect: {
         position: "absolute",
-        top: -50,
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -114,7 +110,7 @@ const Effects = ({ combatant, healing }) => {
         return null;
     }
 
-    const effects = getEnabledEffects(combatant);
+    const effects = getEnabledEffects({ combatant });
     const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
         return effects.some((effect) => effect.type === type);
     };
