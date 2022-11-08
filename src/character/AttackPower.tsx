@@ -24,7 +24,7 @@ const AttackPower = ({ combatant }) => {
         return null;
     }
 
-    const damageEffects = getEnabledEffects(combatant).filter(({ attackPower: damage = 0 }) => {
+    const damageEffects = getEnabledEffects({ combatant }).filter(({ attackPower: damage = 0 }) => {
         return damage !== 0;
     });
     const damageFromEffects = damageEffects.reduce((acc: number, { attackPower: damage }) => {

@@ -67,6 +67,7 @@ export const passesConditions = ({
                     : passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator });
 
             const meetsArmor = armor === undefined ? true : passesValueComparison({ val: combatant.armor, otherVal: armor, comparator });
+
             const meetsEffectType = (() => {
                 if (hasEffectType === undefined) return true;
                 if (comparator === "not") {
@@ -75,6 +76,7 @@ export const passesConditions = ({
 
                 return otherEffects.some(({ type }) => hasEffectType.includes(type));
             })();
+
             const meetsEffectClass = (() => {
                 if (hasEffectClass === undefined) return true;
                 if (comparator === "not") {

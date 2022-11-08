@@ -139,8 +139,8 @@ export const startPlayerTurn = () => {
         }
 
         const { battle } = getState();
-        const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const drawCardsPerTurn = getEnabledEffects(player).reduce(
+        const player: Combatant = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const drawCardsPerTurn = getEnabledEffects({ combatant: player }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
             player.drawCardsPerTurn
         );
