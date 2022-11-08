@@ -33,6 +33,7 @@ const useStyles = createUseStyles({
         },
     },
     stun: {
+        top: -70,
         width: "48px",
         height: "48px",
         position: "absolute",
@@ -53,6 +54,7 @@ const useStyles = createUseStyles({
         },
     },
     silence: {
+        top: -60,
         width: "48px",
         height: "48px",
         position: "absolute",
@@ -63,6 +65,7 @@ const useStyles = createUseStyles({
         animationDirection: "alternate-reverse",
     },
     bleed: {
+        top: -60,
         display: "flex",
         position: "absolute",
         left: "50%",
@@ -95,6 +98,7 @@ const useStyles = createUseStyles({
     },
     customEffect: {
         position: "absolute",
+        top: -30,
         left: "50%",
         transform: "translateX(-50%)",
     },
