@@ -490,7 +490,7 @@ export const getHealableIndices = (characters: (Combatant | null)[]): number[] =
 };
 
 export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?: number }): HandAbility => {
-    const newCard = { ...card };
+    const newCard = { ...card, effects: { ...card.effects } };
     Object.entries(newEffects).forEach(([key, value]) => {
         newCard.effects[key] = (newCard.effects[key] || 0) + value;
     });
