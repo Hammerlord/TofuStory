@@ -126,7 +126,6 @@ export interface Effect {
     image?: string;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
-    isAuraEffect?: boolean;
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
     /** If true, effect has no effect on its owner */
@@ -188,10 +187,6 @@ export interface CombatEffect extends Effect {
     id: string;
     uptime: number;
     applierId?: string;
-}
-
-export interface Aura extends Effect {
-    area?: number;
 }
 
 export interface Minion {

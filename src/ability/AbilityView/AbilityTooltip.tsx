@@ -117,20 +117,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
     });
 
-    /**
-    if (aura) {
-        tooltips.push(
-            <AbilityTooltipSection
-                icon={<Fireworks />}
-                title={"Aura"}
-                description={"Grants effects to allies who are directly adjacent to this minion's placement."}
-                key={"aura"}
-            />
-        );
-    }
-     */
     const cardsToAdd = Object.values(cardsToAddMap);
-
     const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
     const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
 
