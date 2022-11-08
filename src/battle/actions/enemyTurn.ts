@@ -261,15 +261,16 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
         const { side, index } = autoPickTarget({ ability, actor: actorData });
+        const { castTime, channelDuration } = ability;
 
-        if (!ability.castTime && !ability.channelDuration) {
+        if (!castTime && !channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
             return;
         }
         const casting = {
             ability,
-            castTime: ability.castTime,
-            channelDuration: ability.channelDuration,
+            castTime,
+            channelDuration: !castTime ? (channelDuration || 1) - 1 : channelDuration,
             selectedIndex: index,
             selectedSide: side,
         };
