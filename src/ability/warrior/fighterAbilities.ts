@@ -63,24 +63,31 @@ export const puncture: Ability = {
     ],
 };
 
-export const chanceStrike: Ability = {
-    name: "Chance Strike",
+export const chanceAttack: Ability = {
+    name: "Chance Attack",
     resourceCost: 1,
     image: ChanceAttackImage,
+    depletedOnUse: true,
+    description: "against debuffed enemies",
     actions: [
         {
-            damage: 5,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                damage: 5,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    },
-                ],
-            },
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Chance Attack",
+                    icon: ChanceAttackImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };

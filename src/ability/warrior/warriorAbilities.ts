@@ -193,7 +193,7 @@ export const anger2: Ability = {
     image: RageImage,
     actions: [
         {
-            damage: 3,
+            damage: 1,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -214,7 +214,7 @@ export const anger: Ability = {
     image: RageImage,
     actions: [
         {
-            damage: 3,
+            damage: 1,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -253,7 +253,7 @@ export const shieldStrike: Ability = {
             type: ACTION_TYPES.ATTACK,
         },
         {
-            armor: 7,
+            armor: 8,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -289,53 +289,60 @@ export const block: Ability = {
     upgrades: [block2],
 };
 
-const bloodthirst2: Ability = {
-    name: "Bloodthirst",
-    resourceCost: 1,
+const shout2: Ability = {
+    name: "Shout",
+    level: 2,
+    resourceCost: 0,
     image: ShoutImage,
     depletedOnUse: true,
     actions: [
         {
             effects: [
                 {
-                    name: "Bloodthirst",
+                    name: "Shout",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    lifeOnHit: 4,
+                    lifeOnHit: 1,
                     icon: ShoutImage,
                 },
             ],
-            healing: 7,
+            resources: 1,
+            drawCards: {
+                amount: 2,
+            },
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
     ],
 };
 
-export const bloodthirst: Ability = {
-    name: "Bloodthirst",
-    resourceCost: 1,
+export const shout: Ability = {
+    name: "Shout",
+    resourceCost: 0,
     image: ShoutImage,
     depletedOnUse: true,
     actions: [
         {
             effects: [
                 {
-                    name: "Bloodthirst",
+                    name: "Shout",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
-                    lifeOnHit: 3,
+                    lifeOnHit: 1,
                     icon: ShoutImage,
                 },
             ],
-            healing: 5,
+            resources: 1,
+            drawCards: {
+                amount: 1,
+            },
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
     ],
-    upgrades: [bloodthirst2],
+    upgrades: [shout2],
 };
 
 export const spikedArmor2: Ability = {
@@ -400,7 +407,7 @@ export const warBanner2: Ability = {
         effects: [
             {
                 ...stealth,
-                duration: 3,
+                duration: 4,
             },
             {
                 name: "War Banner",
@@ -453,7 +460,7 @@ export const warBanner: Ability = {
         effects: [
             {
                 ...stealth,
-                duration: 2,
+                duration: 3,
             },
             {
                 name: "War Banner",
@@ -511,7 +518,7 @@ export const yell2: Ability = {
 
 export const yell: Ability = {
     name: "Yell",
-    resourceCost: 2,
+    resourceCost: 1,
     image: WarMushImage,
     actions: [
         {
@@ -709,7 +716,7 @@ export const hyperBody: Ability = {
 export const sweepingReach2: Ability = {
     name: "Sweeping Reach",
     level: 2,
-    resourceCost: 1,
+    resourceCost: 0,
     image: WeaponBoosterImage,
     description: "Increases the area of your next offensive ability by 1",
     actions: [
@@ -766,7 +773,7 @@ export const sweepingReach2: Ability = {
 
 export const sweepingReach: Ability = {
     name: "Sweeping Reach",
-    resourceCost: 1,
+    resourceCost: 0,
     image: WeaponBoosterImage,
     actions: [
         {
@@ -1178,15 +1185,15 @@ export const rendingStrike2: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
             ],
         },
@@ -1205,11 +1212,11 @@ export const rendingStrike: Ability = {
             effects: [
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
                 {
                     ...wound,
-                    duration: 5,
+                    duration: 3,
                 },
             ],
         },

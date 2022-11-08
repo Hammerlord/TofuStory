@@ -14,7 +14,7 @@ import {
 import {
     brandish,
     burningSoulBlade,
-    chanceStrike,
+    chanceAttack,
     comboFury,
     intrepidSlash,
     parry,
@@ -30,7 +30,7 @@ import {
     berserk,
     bladestorm,
     block,
-    bloodthirst,
+    shout,
     bunchOBricks,
     closeCombat,
     dash,
@@ -82,7 +82,7 @@ export const JOB_CARD_MAP = {
             slam,
             anger,
             shieldStrike,
-            bloodthirst,
+            shout,
             spikedArmor,
             warBanner,
             yell,
@@ -114,7 +114,7 @@ export const JOB_CARD_MAP = {
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],
-        all: [intrepidSlash, puncture, brandish, comboFury, chanceStrike, parry, ragingBlow, worldReaver, risingRage, burningSoulBlade],
+        all: [intrepidSlash, puncture, brandish, comboFury, chanceAttack, parry, ragingBlow, worldReaver, risingRage, burningSoulBlade],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         onJobUp: [evilEye, piercingDrive],
