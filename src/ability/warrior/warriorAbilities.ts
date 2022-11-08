@@ -404,7 +404,8 @@ export const warBanner2: Ability = {
             },
             {
                 name: "War Banner",
-                icon: FireworksIcon,
+                description: "Granting 3 armor and +1 attack to allies within 2 slots every turn.",
+                icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
@@ -456,7 +457,8 @@ export const warBanner: Ability = {
             },
             {
                 name: "War Banner",
-                icon: FireworksIcon,
+                description: "Granting 2 armor and +1 attack to nearby allies every turn.",
+                icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 excludeEffectOwner: true,
