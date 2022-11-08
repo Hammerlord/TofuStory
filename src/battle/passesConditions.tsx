@@ -25,26 +25,41 @@ const passesValueComparison = ({
     }
 };
 
+export interface IndexedCombatant {
+    combatant?: Combatant;
+    index: number;
+}
+
 export const passesConditions = ({
     getCalculationTarget, // If targets are an array, check that at least one satisfies conditions (OR).
     proc,
 }: {
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
-    ) => Combatant | Combatant[] | undefined;
+    ) => IndexedCombatant | IndexedCombatant[] | undefined;
     proc: Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
 }): boolean => {
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
-        const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName } = condition;
-        const combatant: Combatant | Combatant[] = getCalculationTarget(calculationTarget);
-        if (!combatant) {
+        const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName, proximity } =
+            condition;
+        const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
+        if (!calcTargets) {
             return false;
         }
 
-        const checkPass = (combatant) => {
+        let effectOwner = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER);
+        if (Array.isArray(effectOwner)) {
+            effectOwner = effectOwner[0];
+        }
+
+        const checkPass = (calcTarget: IndexedCombatant) => {
+            const { combatant, index } = calcTarget;
+            if (!combatant) {
+                return false;
+            }
             const procId = (proc as any)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
-            const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
+            const otherEffects = procId ? combatant?.effects.filter((e) => e.id !== procId) : combatant.effects;
 
             const meetsHealthPercentage =
                 healthPercentage === undefined
@@ -73,21 +88,26 @@ export const passesConditions = ({
                     return true;
                 }
 
-                if (comparator === "eq") {
-                    return characterName === combatant.name;
-                }
-
-                if (comparator === "not") {
-                    return characterName !== combatant.name;
-                }
-
-                return true;
+                return passesValueComparison({ val: characterName, otherVal: combatant.name, comparator });
             })();
 
-            return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && meetsCharacterName;
+            const withinProximity = (() => {
+                if (proximity === undefined) {
+                    return true;
+                }
+
+                const effectOwnerIndex = (effectOwner as IndexedCombatant)?.index;
+
+                if (effectOwnerIndex === undefined || index === undefined) {
+                    return false;
+                }
+                return passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator });
+            })();
+
+            return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && meetsCharacterName && withinProximity;
         };
 
-        return Array.isArray(combatant) ? combatant.some(checkPass) : checkPass(combatant);
+        return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
     };
     const { conditions = [] } = proc;
     return !conditions.length || conditions.some(passesCondition);

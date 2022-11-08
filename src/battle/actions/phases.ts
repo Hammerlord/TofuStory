@@ -1,16 +1,15 @@
-import { Minion } from "./../../ability/types";
 import uuid from "uuid";
 import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
 import { shuffle } from "../../utils";
+import { BOSS_MUSIC } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { Wave } from "../types";
 import { aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
-import { BOSS_MUSIC } from "../constants";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;

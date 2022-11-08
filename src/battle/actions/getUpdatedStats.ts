@@ -1,12 +1,12 @@
-import { getMaxHP } from "./../utils";
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { Ability, Action, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
-import { Combatant } from "../../character/types";
 import { Item } from "../../item/types";
 import { calculateArmor, calculateBonus, calculateDamage, calculateHealing, getEnabledEffects, hasEffectType } from "../utils";
 import { enemyEffectNameMap } from "./../../enemy/effect";
+import { IndexedCombatant } from "./../passesConditions";
 import { TriggerSource } from "./../types";
+import { getMaxHP } from "./../utils";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
@@ -23,28 +23,26 @@ export interface UpdatedCombatantStats {
 export const getUpdatedStats = ({
     actorId,
     targetIds,
-    targetIndices,
     selectedIndex,
     action: initialAction,
     actionParent,
     source,
-    getCombatantById,
+    getCombatantById: getCalculationTarget,
 }: {
     actorId?: string;
     targetIds: string[];
-    targetIndices: number[];
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
     actionParent?: Ability | Item;
     source: TriggerSource;
-    getCombatantById: (id: string) => Combatant;
+    getCombatantById: (id: string) => IndexedCombatant;
 }): [UpdatedCombatantStats, Action][] => {
-    const actor = getCombatantById(actorId);
-    const targets = targetIds.map(getCombatantById);
-    const sourceTargets = (source.allTargetIds || []).map(getCombatantById); // TODO used to be used in calculating multipliers
+    const actor = getCalculationTarget(actorId);
+    const targets = targetIds.map(getCalculationTarget);
+    const sourceTargets = (source.allTargetIds || []).map(getCalculationTarget); // TODO used to be used in calculating multipliers
 
-    return targets.map((target: Combatant, i: number) => {
-        const targetIndex = targetIndices[i];
+    return targets.map((target: IndexedCombatant) => {
+        const { combatant: targetCombatant, index: targetIndex } = target;
         const action = calculateBonus({
             action: initialAction,
             target,
@@ -56,18 +54,18 @@ export const getUpdatedStats = ({
         const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect } = action;
 
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent });
-        const baseArmor = Math.floor(target.armor * (1 - destroyArmor));
+        const baseArmor = Math.floor(targetCombatant.armor * (1 - destroyArmor));
         const updatedTargetArmor = baseArmor + calculateArmor({ target, action, actor });
-        const armorGained = updatedTargetArmor - target.armor;
+        const armorGained = updatedTargetArmor - targetCombatant.armor;
         const healthDamage = Math.max(0, damage - updatedTargetArmor);
         let rawHealing = 0;
-        if (target.HP - healthDamage > 0 || resurrect) {
+        if (targetCombatant.HP - healthDamage > 0 || resurrect) {
             rawHealing = calculateHealing({ actor, target, action });
         }
 
-        const healing = Math.min(getMaxHP(target) - target.HP, rawHealing);
+        const healing = Math.min(getMaxHP(targetCombatant) - targetCombatant.HP, rawHealing);
 
-        const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
+        const targetIsImmune = hasEffectType(targetCombatant, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;
@@ -95,10 +93,10 @@ export const getUpdatedStats = ({
                 applierId: actorId,
             }));
 
-        const resourcesGained = Math.min(target.maxResources - target.resources, resources);
+        const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources);
         return [
             {
-                combatantId: target.id,
+                combatantId: targetCombatant.id,
                 rawDamage: damage,
                 healthDamage,
                 healing,
@@ -107,7 +105,7 @@ export const getUpdatedStats = ({
                 resources: resourcesGained,
                 overcappedResources: resources - resourcesGained,
                 effects,
-                isDeathBlow: target.HP > 0 && target.HP - healthDamage + healing <= 0,
+                isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
             },
             action,
         ];

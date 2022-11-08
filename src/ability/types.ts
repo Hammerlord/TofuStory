@@ -259,6 +259,8 @@ export interface Condition {
     /** Whether the name of the target matches the condition depending on comparator */
     characterName?: string;
     calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES;
+    /** How far away the target/actor are from each other. Similar to area. 0 = directly across from each other. */
+    proximity?: number;
 }
 
 export enum MULTIPLIER_TYPES {

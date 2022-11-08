@@ -4,6 +4,7 @@ import {
     amethyst,
     aquamarine,
     blackScroll,
+    boneHelm,
     cactus,
     coffeePot,
     drakeBlood,
@@ -65,6 +66,7 @@ export const ITEM_MASTERLIST = [
     pieceOfIce,
     amethyst,
     aquamarine,
+    boneHelm,
 ];
 
 const DevItemViewer = () => {

@@ -13,13 +13,12 @@ import {
     getPossibleSummonIndices,
     getValidTargetIndices,
     isUnableToAct,
-    orientate,
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
-import { BATTLEFIELD_SIDES } from "./../types";
-import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
+import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
@@ -85,18 +84,8 @@ const canUseAbility = ({
 /**
  * Given an ability, pick a target that makes sense
  */
-const autoPickTarget = ({
-    ability,
-    actorId,
-    playerSide,
-    enemySide,
-}: {
-    ability: Ability;
-    actorId: string;
-    playerSide: (Combatant | null)[];
-    enemySide: (Combatant | null)[];
-}): { index: number; side: BATTLEFIELD_SIDES } => {
-    const { hostile, friendly, friendlySide, hostileSide, combatantIndex } = orientate({ combatantId: actorId, playerSide, enemySide });
+const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: CombatantInfo }): { index: number; side: BATTLEFIELD_SIDES } => {
+    const { hostile, friendly, friendlySide, hostileSide, index } = actor;
 
     const { actions = [], minion } = ability;
     if (minion) {
@@ -140,13 +129,13 @@ const autoPickTarget = ({
     // Else it is assumed to be a self-targeting ability
     return {
         side: friendlySide,
-        index: combatantIndex,
+        index: index,
     };
 };
 
 const handleCastTick = (actorId: string) => {
     return (dispatch, getState) => {
-        const combatant: Combatant = findCombatant(getState, actorId);
+        const { combatant } = findCombatantData(getState, actorId);
         const { ability, castTime = 0, channelDuration, selectedIndex, selectedSide } = combatant.casting;
 
         const updatedCasting = { ...combatant.casting };
@@ -172,10 +161,10 @@ const handleCastTick = (actorId: string) => {
         }
 
         const battle = getState().battle;
-        const { playerSide, enemySide } = battle;
 
         // If the original selected target is no longer valid, switch to a random new target. TODO area abilities could still be valid in the same spot
-        const index = battle[selectedIndex]?.HP > 0 ? selectedIndex : autoPickTarget({ ability, actorId, playerSide, enemySide }).index;
+        const index =
+            battle[selectedIndex]?.HP > 0 ? selectedIndex : autoPickTarget({ ability, actor: findCombatantData(getState, actorId) }).index;
         if (typeof index === "number") {
             dispatch(useAbility({ actorId, ability, side: selectedSide, selectedIndex: index }));
         }
@@ -265,14 +254,13 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
 
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
-        const actor = findCombatant(getState, combatantId);
-        const { playerSide, enemySide } = getState().battle;
-        const { friendly, hostile } = orientate({ combatantId, playerSide, enemySide });
+        const actorData = findCombatantData(getState, combatantId);
+        const { combatant: actor, friendly, hostile } = actorData;
         const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
         if (!ability) {
             return;
         }
-        const { side, index } = autoPickTarget({ ability, actorId: combatantId, playerSide, enemySide });
+        const { side, index } = autoPickTarget({ ability, actor: actorData });
 
         if (!ability.castTime && !ability.channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));

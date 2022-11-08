@@ -183,7 +183,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, action: Action) => {
             const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
-            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: player });
+            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: { combatant: player, index: undefined } });
             if (multiplier > 1) {
                 hasMultiplier = true;
             }

@@ -24,6 +24,7 @@ export { default as BlueSnailImage } from "./BlueSnail.png";
 export { default as BlueSnailCardImage } from "./BlueSnailCard.png";
 export { default as BlueSnailShellImage } from "./BlueSnailShell.gif";
 export { default as BombImage } from "./Bomb.png";
+export { default as BoneHelmImage } from "./BoneHelm.png";
 export { default as BrandishImage } from "./Brandish.png";
 export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";

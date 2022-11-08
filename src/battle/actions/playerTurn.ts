@@ -5,7 +5,7 @@ import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
 import { clearTurnHistory, gainResources, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
-import { checkEventTrigger, findCombatant, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
+import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 
 const { drawCards, updateBattle } = battleStateSlice.actions;
@@ -91,7 +91,7 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
             useAbility({
                 selectedIndex,
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
-                ability: getBasicAttack(findCombatant(getState, actorId)),
+                ability: getBasicAttack(findCombatantData(getState, actorId)?.combatant),
                 actorId,
             })
         );

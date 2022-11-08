@@ -211,12 +211,13 @@ const BattlefieldContainer = () => {
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actor = selectedMinion || player;
+    const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actor?.id);
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0) {
             return false;
         }
-        const damageFromEffects = getEnabledEffects(ally).reduce((acc: number, { attackPower = 0 }) => acc + attackPower, 0);
+        const damageFromEffects = getEnabledEffects({ combatant: ally }).reduce((acc: number, { attackPower = 0 }) => acc + attackPower, 0);
         const totalDamage = (ally.damage || 0) + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
@@ -501,7 +502,7 @@ const BattlefieldContainer = () => {
 
         return (
             selectedAbility &&
-            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, enemySide, playerSide, actor }) &&
+            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, enemySide, playerSide, actor, actorIndex }) &&
             isWithinAbilityArea({ ability: selectedAbility, actor, selectedIndex: hoveredIndex, targetIndex: i })
         );
     };
@@ -519,6 +520,7 @@ const BattlefieldContainer = () => {
                 playerSide,
                 enemySide,
                 actor,
+                actorIndex,
             })
         ) {
             if (
@@ -530,6 +532,7 @@ const BattlefieldContainer = () => {
                     playerSide,
                     enemySide,
                     actor,
+                    actorIndex,
                 })
             ) {
                 return true;

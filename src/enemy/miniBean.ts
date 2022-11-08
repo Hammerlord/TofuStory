@@ -265,6 +265,7 @@ export const eat: Ability = {
                 ({ name }) => ({
                     calculationTarget: CONDITION_TARGETS.TARGET,
                     characterName: name,
+                    comparator: "eq",
                 })
             ),
         },

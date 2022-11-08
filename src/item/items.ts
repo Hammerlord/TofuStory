@@ -4,6 +4,7 @@ import {
     AmethystImage,
     AquamarineImage,
     BlackManualImage,
+    BoneHelmImage,
     CactusImage,
     CoffeePotImage,
     DrakeBloodImage,
@@ -422,6 +423,28 @@ export const aquamarine: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             armorReceived: 1,
+        },
+    ],
+};
+
+export const boneHelm: Item = {
+    name: "Bone Helm",
+    description: "Receive 1 less damage when attacked by the enemy directly in front of you.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: BoneHelmImage,
+    effects: [
+        {
+            name: "Bone Helm",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: -1,
+            conditions: [
+                {
+                    comparator: "eq",
+                    proximity: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                },
+            ],
         },
     ],
 };

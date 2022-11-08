@@ -21,12 +21,13 @@ const Health = ({ combatant }: { combatant: Combatant }) => {
     const maxHP = getMaxHP(combatant);
     const toOneDecimal = (num) => Math.round(num * 10) / 10;
     const classes = useStyles();
-    const effects = getEnabledEffects(combatant);
+    const effects = getEnabledEffects({ combatant });
     const damageModifiers = effects.filter((effect) => {
         return (
             effect.attackDamageReceived &&
             passesConditions({
-                getCalculationTarget: (targetType) => (targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? combatant : undefined),
+                getCalculationTarget: (targetType) =>
+                    targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? { combatant, index: undefined } : undefined,
                 proc: effect,
             })
         );

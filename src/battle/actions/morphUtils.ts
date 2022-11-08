@@ -1,19 +1,20 @@
+import { findCombatantData } from "./actions";
 import { MORPH_MINION_MODIFIERS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
 import { getRandomItem } from "../../utils";
 import { passesConditions } from "../passesConditions";
-import { getPossibleSummonIndices, orientate } from "../utils";
+import { getPossibleSummonIndices } from "../utils";
 
 /**
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
  * This ignores morph conditions
  */
-export const getMorphMerge = ({ targets, battlefield, morph }) => {
+export const getMorphMerge = ({ targets, morph, findCombatantData }) => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: Combatant) => t.id);
-    const { friendly, friendlySide, combatantIndex } = orientate({ combatantId: targetIds[0], ...battlefield });
+    const { friendly, friendlySide, index } = findCombatantData(targetIds[0]);
     const combatants = friendly.map((combatant: Combatant | null) => {
         if (targetIds.includes(combatant?.id)) {
             return null;
@@ -29,7 +30,7 @@ export const getMorphMerge = ({ targets, battlefield, morph }) => {
 
         // If there is only one mutate target, replace the target
         if (targets.length === 1) {
-            return combatantIndex;
+            return index;
         }
 
         return getRandomItem(getPossibleSummonIndices(friendly));
@@ -70,18 +71,18 @@ export const getMorphMerge = ({ targets, battlefield, morph }) => {
 /**
  * Handle MORPH_TYPES.MAP (for each minion, transform it to another minion)
  */
-export const getMorphMap = ({ targets, battlefield, morph }) => {
+export const getMorphMap = ({ targets, morph, findCombatantData }) => {
     const { minions } = morph;
     const targetIds = targets.map((t: Combatant) => t.id);
-    const { friendly, friendlySide } = orientate({ combatantId: targetIds[0], ...battlefield });
+    const { friendly, friendlySide } = findCombatantData(targetIds[0]);
     const summons = [];
-    const combatants = friendly.map((combatant) => {
+    const combatants = friendly.map((combatant, i) => {
         if (!targetIds.includes(combatant?.id)) {
             return combatant;
         }
 
         const minion = minions.find((minionConfig) => {
-            const getCalculationTarget = () => combatant; // Current combatant will always be the target
+            const getCalculationTarget = () => ({ combatant, index: i }); // Current combatant will always be the target
             return passesConditions({ getCalculationTarget, proc: minionConfig });
         })?.minion;
 

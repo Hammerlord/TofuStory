@@ -10,7 +10,6 @@ import {
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
     HandAbility,
-    MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
@@ -19,9 +18,9 @@ import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
-import { passesConditions } from "../passesConditions";
+import { IndexedCombatant, passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
@@ -31,7 +30,6 @@ import {
     getValidTargetIndices,
     isSilenced,
     isUnableToAct,
-    orientate,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
@@ -43,9 +41,31 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 const { drawCards, updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
-export const findCombatant = (getState, combatantId: string): Combatant | undefined => {
-    const battle = getState().battle;
-    return [...battle.enemySide, ...battle.playerSide].find((c) => c?.id === combatantId);
+export const findCombatantData = (getState, combatantId: string): CombatantInfo | undefined => {
+    const { playerSide, enemySide } = getState().battle;
+    const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
+    if (enemyIndex > -1) {
+        return {
+            combatant: enemySide[enemyIndex],
+            index: enemyIndex,
+            friendly: enemySide.slice(),
+            hostile: playerSide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        };
+    }
+
+    const index = playerSide.findIndex((c: Combatant | null) => c?.id === combatantId);
+    if (index > -1) {
+        return {
+            combatant: playerSide[index],
+            index,
+            friendly: playerSide.slice(),
+            hostile: enemySide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        };
+    }
 };
 
 const handleLifeOnKill = (triggerSource?: TriggerSource) => {
@@ -55,29 +75,30 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
         }
 
         const { type, source, actorId } = triggerSource;
-        let killedBy: Combatant | undefined;
+        let killedByInfo: CombatantInfo;
         if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
-            killedBy = findCombatant(getState, (source as CombatEffect)?.applierId);
+            killedByInfo = findCombatantData(getState, (source as CombatEffect)?.applierId);
         } else if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
-            killedBy = findCombatant(getState, actorId);
+            killedByInfo = findCombatantData(getState, actorId);
         }
 
+        const { combatant: killedBy, index } = killedByInfo || {};
         if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
-        const lifeOnKill = getEnabledEffects(killedBy).reduce((acc, { lifeOnHit: lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+        const lifeOnKill = getEnabledEffects({ combatant: killedBy, index }).reduce(
+            (acc, { lifeOnHit: lifeOnKill = 0 }) => acc + lifeOnKill,
+            0
+        );
         if (lifeOnKill === 0) {
             return;
         }
 
-        const { combatantIndex } = orientate({ combatantId: killedBy.id, ...getState().battle });
-
         const updated = getUpdatedStats({
             actorId: killedBy.id,
             targetIds: [killedBy.id],
-            targetIndices: [combatantIndex],
-            selectedIndex: combatantIndex,
+            selectedIndex: index,
             action: {
                 type: ACTION_TYPES.EFFECT,
                 healing: lifeOnKill,
@@ -86,7 +107,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
                 ...triggerSource,
                 isProc: true,
             },
-            getCombatantById: (id) => findCombatant(getState, id),
+            getCombatantById: (id) => findCombatantData(getState, id),
         });
 
         dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
@@ -118,19 +139,17 @@ const checkHitEffects = ({
             return;
         }
 
-        const actor = findCombatant(getState, actorId);
+        const { combatant: actor, index } = findCombatantData(getState, actorId) || {};
         if (!actor || actor?.HP <= 0) {
             return;
         }
 
-        const { combatantIndex } = orientate({ combatantId: actorId, ...getState().battle });
-        const lifeOnHit = getEnabledEffects(actor).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+        const lifeOnHit = getEnabledEffects({ combatant: actor, index }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
         if (lifeOnHit) {
             const updated = getUpdatedStats({
                 actorId: actor.id,
                 targetIds: [actor.id],
-                targetIndices: [combatantIndex],
-                selectedIndex: combatantIndex,
+                selectedIndex: index,
                 action: {
                     type: ACTION_TYPES.EFFECT,
                     healing: lifeOnHit * affectedTargets.length,
@@ -139,7 +158,7 @@ const checkHitEffects = ({
                     ...source,
                     isProc: true,
                 },
-                getCombatantById: (id) => findCombatant(getState, id),
+                getCombatantById: (id) => findCombatantData(getState, id),
             });
 
             dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
@@ -154,15 +173,14 @@ const checkHitEffects = ({
         }
 
         const totalThorns = affectedTargets.reduce((acc, id: string) => {
-            const combatant = findCombatant(getState, id);
-            getEnabledEffects(combatant).forEach(({ thorns = 0 }) => (acc += thorns));
+            const combatantData = findCombatantData(getState, id);
+            getEnabledEffects(combatantData).forEach(({ thorns = 0 }) => (acc += thorns));
             return acc;
         }, 0);
 
         if (totalThorns) {
             const updated = getUpdatedStats({
                 targetIds: [actor.id],
-                targetIndices: [combatantIndex],
                 action: {
                     type: ACTION_TYPES.EFFECT,
                     damage: totalThorns,
@@ -171,7 +189,7 @@ const checkHitEffects = ({
                     ...source,
                     isProc: true,
                 },
-                getCombatantById: (id) => findCombatant(getState, id),
+                getCombatantById: (id) => findCombatantData(getState, id),
             });
 
             dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
@@ -191,7 +209,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     return (dispatch, getState) => {
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
-        const { friendly, hostile, combatant } = orientate({ combatantId, ...getState().battle }) || {};
+        const { friendly, hostile, combatant } = findCombatantData(getState, combatantId) || {};
         if (!combatant) {
             return;
         }
@@ -265,7 +283,8 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
             );
         }
 
-        const { turnHistory } = findCombatant(getState, actorId);
+        const { combatant } = findCombatantData(getState, actorId) || {};
+        const turnHistory = combatant?.turnHistory || [];
 
         dispatch(
             updateCombatant({
@@ -305,8 +324,8 @@ const onEffectEventTrigger = ({
             return targetIds.filter((v) => v);
         };
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES) => {
-            return getCalculationTargetIds(targetType).map((id) => findCombatant(getState, id));
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo[] => {
+            return getCalculationTargetIds(targetType).map((id) => findCombatantData(getState, id));
         };
 
         // Must pass parent effect conditions as well as child effectEvent conditions (if any)
@@ -315,11 +334,11 @@ const onEffectEventTrigger = ({
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
-                const newEffects = findCombatant(getState, ownerId).effects.filter(({ id }) => id !== effect.id);
+                const { combatant } = findCombatantData(getState, ownerId) || {};
+                const newEffects = combatant.effects.filter(({ id }) => id !== effect.id);
                 dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
             }
         };
-        const combatant = findCombatant(getState, ownerId);
 
         if (conditionsPassed) {
             checkRemoveEffect();
@@ -327,6 +346,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
+        const { combatant } = findCombatantData(getState, ownerId) || {};
         const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isUnableToAct(combatant));
         if (cannotTrigger) {
             return;
@@ -334,11 +354,7 @@ const onEffectEventTrigger = ({
 
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
         const targetIds = getCalculationTargetIds(targetType);
-        const {
-            friendly: combatants,
-            combatantIndex: i,
-            friendlySide,
-        } = orientate({ combatantId: targetIds[0], ...getState().battle }) || {};
+        const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]);
 
         $applyStatChanges: {
             if (!targetIds.length) {
@@ -350,24 +366,23 @@ const onEffectEventTrigger = ({
                 return combatant?.HP > 0 && targetIds.includes(combatant?.id) && !isExcludingPrimaryTarget;
             };
 
-            const targetIndices = combatants.reduce((acc, character: Combatant | null, i: number) => {
+            const affectedTargetIds = targets.reduce((acc, character: Combatant | null, i: number) => {
                 if (isAffected(character, i)) {
-                    acc.push(i);
+                    acc.push(character.id);
                 }
 
                 return acc;
             }, []);
 
             const updated = getUpdatedStats({
-                targetIds,
-                targetIndices,
+                targetIds: affectedTargetIds,
                 actorId: ownerId,
                 action: {
                     ...other,
                     type: ACTION_TYPES.EFFECT,
                 },
                 source: procSource,
-                getCombatantById: (id: string) => findCombatant(getState, id),
+                getCombatantById: (id: string) => findCombatantData(getState, id),
             });
 
             dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
@@ -394,8 +409,8 @@ const onEffectEventTrigger = ({
                 getState,
             });
 
-            const getCalculationTarget = () => {
-                return getState().battle[side]?.[index] || null;
+            const getCalculationTarget = (): IndexedCombatant => {
+                return { combatant: getState().battle[side]?.[index], index };
             };
 
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
@@ -443,7 +458,7 @@ export const checkEventTrigger = ({
             return;
         }
 
-        const combatant = findCombatant(getState, combatantId);
+        const { combatant } = findCombatantData(getState, combatantId) || {};
         // Dead characters generally cannot trigger effects except in case of killing blows
         if (!combatant || (effectEventKey !== EFFECT_EVENT_KEYS.onDeath && combatant.HP <= 0)) {
             return;
@@ -468,13 +483,11 @@ export const checkEventTrigger = ({
 export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach(({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [] }) => {
-        const oldCombatant = findCombatant(getState, combatantId);
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
             return;
         }
-        const { enemySide, playerSide } = getState().battle;
-        const { friendly, friendlySide } = orientate({ combatantId, enemySide, playerSide });
 
         dispatch(
             updateBattle({
@@ -564,13 +577,11 @@ export const triggerStatChangeEvents =
  */
 export const updateCombatant = ({ combatantId, newProperties }: { combatantId: string; newProperties: any }) => {
     return (dispatch, getState) => {
-        const oldCombatant = findCombatant(getState, combatantId);
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
             return;
         }
-        const { enemySide, playerSide } = getState().battle;
-        const { friendly, friendlySide } = orientate({ combatantId, enemySide, playerSide });
 
         const newCombatant = { ...oldCombatant, ...newProperties };
 
@@ -587,7 +598,7 @@ export const updateCombatant = ({ combatantId, newProperties }: { combatantId: s
  */
 export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_CLASSES) => {
     return (dispatch, getState) => {
-        const combatant = findCombatant(getState, combatantId);
+        const { combatant } = findCombatantData(getState, combatantId) || {};
         if (!combatant) {
             return;
         }
@@ -637,7 +648,7 @@ const onSummonTriggers =
     (dispatch, getState) => {
         const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId], isProc: false };
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
-        const { hostile, friendly } = orientate({ combatantId: summonerId, ...getState().battle }) || {};
+        const { hostile, friendly } = findCombatantData(getState, summonerId) || {};
         hostile?.forEach((combatant) => {
             if (combatant?.id !== summonedId) {
                 dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onHostileSummon, source }));
@@ -658,7 +669,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
         }
 
         for (const summon of action.summon) {
-            const { friendly, friendlySide } = orientate({ combatantId: actorId, ...getState().battle });
+            const { friendly, friendlySide } = findCombatantData(getState, actorId);
             const { minion, positionIndex } = summon;
             const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
             if (typeof pos !== "number") {
@@ -706,10 +717,11 @@ const checkHandleMorph = ({
             return;
         }
 
-        const targets = morphTargetIds.map((id) => findCombatant(getState, id));
+        const findCombatantDataById = (id) => findCombatantData(getState, id);
+        const targets = morphTargetIds.map(findCombatantDataById);
         const type = action.morph.type;
         let transformed = {} as any;
-        const morphProps = { targets, battlefield: getState().battle, morph: action.morph };
+        const morphProps = { targets, morph: action.morph, findCombatantData: findCombatantDataById };
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
         } else {
@@ -758,7 +770,7 @@ const checkInduceAttack = ({
             return;
         }
         shuffle(affectedTargetIds).forEach((id) => {
-            const { hostileSide, combatant } = orientate({ combatantId: id, ...getState().battle }); // Make sure combatant's not stale
+            const { hostileSide, combatant } = findCombatantData(getState, id) || {};
             if (!combatant.HP) {
                 return;
             }
@@ -857,7 +869,7 @@ const performAction = ({
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const actor = findCombatant(getState, actorId);
+        const { combatant: actor } = findCombatantData(getState, actorId) || {};
         if (!actor) {
             return;
         }
@@ -895,13 +907,12 @@ const performAction = ({
 
         const updated = getUpdatedStats({
             targetIds,
-            targetIndices,
             selectedIndex,
             action,
             actorId,
             actionParent: parent,
             source: parentSource,
-            getCombatantById: (id: string) => findCombatant(getState, id),
+            getCombatantById: (id: string) => findCombatantData(getState, id),
         });
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
@@ -970,8 +981,7 @@ const autoSelectActionTarget = ({
     getState: Function;
     numTargets?: number;
 }) => {
-    const { enemySide, playerSide } = getState().battle;
-    const { friendly, hostile, friendlySide, hostileSide } = orientate({ combatantId: actorId, enemySide, playerSide });
+    const { friendly, hostile, friendlySide, hostileSide } = findCombatantData(getState, actorId);
     const { targetArea: area = 0, target } = action;
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
@@ -1036,7 +1046,7 @@ const checkCastRadiate = ({
 const checkCardActions = (action: Action, actorId: string) => {
     return (dispatch, getState) => {
         // "Card" mechanics are only applicable to the player
-        if (!findCombatant(getState, actorId)?.isPlayer) {
+        if (!findCombatantData(getState, actorId)?.combatant?.isPlayer) {
             return;
         }
         const { drawCards: cardsToDraw, addCards, currentHandEffects, selectCards } = action;
@@ -1105,7 +1115,7 @@ const checkSummonMinion = ({
             };
 
             // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
-            if (findCombatant(getState, actorId).isPlayer && !removeAfterTurn && !depletedOnUse) {
+            if (findCombatantData(getState, actorId)?.combatant?.isPlayer && !removeAfterTurn && !depletedOnUse) {
                 newBattleProps.playerSummonsInPlay = { [summonedMinion.id]: ability };
             }
 
@@ -1129,7 +1139,7 @@ export const useAbility = ({
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = {} } = ability;
-        const combatant = findCombatant(getState, actorId);
+        const { combatant } = findCombatantData(getState, actorId) || {};
         const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + (effects.resourceCost || 0));
 
         // Append the final resource cost. This value may be used in calculations
@@ -1154,8 +1164,8 @@ export const useAbility = ({
                 getState,
             });
 
-            const getCalculationTarget = () => {
-                return getState().battle[side]?.[index] || null;
+            const getCalculationTarget = (): IndexedCombatant => {
+                return { combatant: getState().battle[side]?.[index], index };
             };
 
             if (passesConditions({ getCalculationTarget, proc: action })) {
@@ -1165,7 +1175,7 @@ export const useAbility = ({
 
         actions.forEach(handleAction);
 
-        const actor = findCombatant(getState, actorId);
+        const { combatant: actor } = findCombatantData(getState, actorId) || {};
         // Due to morph, the combatant may no longer exist
         if (!actor) {
             return;
@@ -1192,7 +1202,7 @@ export const useAbility = ({
 
 export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
-        const { combatantIndex, friendlySide, combatant } = orientate({ combatantId: actorId, ...getState().battle }) || {};
+        const { index, friendlySide, combatant } = findCombatantData(getState, actorId) || {};
         if (!friendlySide) {
             return;
         }
@@ -1208,7 +1218,7 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
                     effects: item.effects,
                 },
                 actorId,
-                selectedIndex: combatantIndex,
+                selectedIndex: index,
                 side: friendlySide,
                 parent: item,
                 parentSource: {
@@ -1225,7 +1235,7 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    items: findCombatant(getState, actorId).items.filter((item, i) => i !== itemIndex),
+                    items: findCombatantData(getState, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
                 },
             })
         );

@@ -192,6 +192,7 @@ export const evilEyeShock: Ability = {
                 {
                     calculationTarget: CONDITION_TARGETS.TARGET,
                     characterName: "Evil Eye",
+                    comparator: "eq",
                 },
             ],
         },

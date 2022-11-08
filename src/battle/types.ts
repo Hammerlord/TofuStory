@@ -68,3 +68,12 @@ export interface Wave {
         defeatBoss?: boolean;
     };
 }
+
+export interface CombatantInfo {
+    combatant: Combatant;
+    index: number;
+    friendly: (Combatant | null)[];
+    hostile: (Combatant | null)[];
+    friendlySide: BATTLEFIELD_SIDES;
+    hostileSide: BATTLEFIELD_SIDES;
+}

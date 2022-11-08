@@ -112,7 +112,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
 
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? owner : undefined,
+            // index: undefined - Technically the index can be provided here even if it's not expected to do much
+            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? { combatant: owner, index: undefined } : undefined,
         proc: effects[0],
     });
 

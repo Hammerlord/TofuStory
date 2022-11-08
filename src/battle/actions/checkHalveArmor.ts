@@ -22,7 +22,7 @@ export const checkHalveArmor = (side) => (dispatch) => {
 };
 
 const getHalveArmorAmount = (target: Combatant): number => {
-    if (getEnabledEffects(target).some((effect) => effect.preventArmorDecay)) {
+    if (getEnabledEffects({ combatant: target }).some((effect) => effect.preventArmorDecay)) {
         return 0;
     }
 
