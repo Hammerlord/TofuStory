@@ -102,7 +102,6 @@ const Camp = ({
     const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
-    const [selectedAbilityIndexToRemove, setSelectedAbilityIndexToRemove] = useState(null);
     const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
     const [hasUpgradedAbility, setHasUpgradedAbility] = useState(false);
     const [isLearningAbility, setIsLearningAbility] = useState(false);
