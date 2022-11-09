@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HandAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { shuffle } from "../utils";
-import { BATTLEFIELD_SIDES, Event, Wave } from "./types";
+import { BATTLEFIELD_SIDES, BATTLE_TYPES, Event, Wave } from "./types";
 
 export interface BattleState {
     enemySide: (Combatant | null)[];
@@ -25,7 +25,8 @@ export interface BattleState {
     mesosAccumulated: number;
     state: BATTLE_STATES;
     backgroundImage?: string; // Path to background image
-    backgroundMusic?: "boss" | string; // 'boss' or path to music URL
+    backgroundMusic?: string; // 'boss' or path to music URL
+    type: BATTLE_TYPES; // Determines the rewards at the end of battle
 }
 
 export interface PlayerSelectCardsPrompt {

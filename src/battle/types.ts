@@ -77,3 +77,9 @@ export interface CombatantInfo {
     friendlySide: BATTLEFIELD_SIDES;
     hostileSide: BATTLEFIELD_SIDES;
 }
+
+export enum BATTLE_TYPES {
+    ENCOUNTER = "encounter",
+    ELITE_ENCOUNTER = "eliteEncounter",
+    BOSS = "bossEncounter",
+}

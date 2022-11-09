@@ -29,6 +29,8 @@ import Shop from "./Shop";
 import Sound from "./Sound";
 import { NPCTracker, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
+import { BATTLE_TYPES } from "../battle/types";
+import ItemRewards from "./ItemRewards";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -100,8 +102,8 @@ const Main = () => {
     const [route, setRoute] = useState(null);
     const [locationNode, setLocationNode] = useState(null);
     const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
-    // TESTING: Allow selection of one reward at the start
-    const [rewardsOpen, setRewardsOpen] = useState(false);
+    const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
+    const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
     const [treasure, setTreasure] = useState(null);
     const [visitedNPCs, setVisitedNPCs] = useState({});
@@ -132,7 +134,7 @@ const Main = () => {
 
     useEffect(() => {
         if (battle?.state === BATTLE_STATES.VICTORY) {
-            setRewardsOpen(true);
+            setCardRewardsOpen(true);
         }
     }, [battle?.state]);
 
@@ -175,8 +177,14 @@ const Main = () => {
         setLocationNode(node);
 
         const callback = () => {
-            if (node.type === NODE_TYPES.ENCOUNTER || node.type === NODE_TYPES.ELITE_ENCOUNTER || node.type === NODE_TYPES.BOSS) {
-                dispatch(startBattle({ waves: node.encounter, backgroundImage: BG_MAP[node.region] }));
+            if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
+                dispatch(
+                    startBattle({
+                        waves: node.encounter,
+                        backgroundImage: BG_MAP[node.region],
+                        type: node.type as unknown as BATTLE_TYPES, // NODE_TYPES.ENCOUNTER, ELITE_ENCOUNTER, BOSS are enums equivalent to BATTLE_TYPES
+                    })
+                );
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
@@ -190,8 +198,7 @@ const Main = () => {
         handleTransition(callback);
     };
 
-    const handleCloseRewards = () => {
-        setRewardsOpen(false);
+    const handleExitRewards = () => {
         if (battle) {
             dispatch(closeBattle());
 
@@ -206,6 +213,20 @@ const Main = () => {
                 setEncounterVictoryCallback(null);
             }
         }
+    };
+
+    const handleCloseCardRewards = () => {
+        setCardRewardsOpen(false);
+        if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type)) {
+            setItemRewardsOpen(true);
+        } else {
+            handleExitRewards();
+        }
+    };
+
+    const handleCloseItemRewards = () => {
+        setItemRewardsOpen(false);
+        handleExitRewards();
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
@@ -261,7 +282,7 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const handleLootTreasureBox = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
+    const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         const newItems = [...player.items, ...items];
         dispatch(
             updatePlayer({
@@ -297,7 +318,8 @@ const Main = () => {
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
 
-    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town || upgradingAbility || removingAbility;
+    const isActivityOpen =
+        battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility;
 
     return (
         <>
@@ -345,14 +367,22 @@ const Main = () => {
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {!isSelectingSecondaryJob && rewardsOpen && (
-                        <CardRewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseRewards} />
+                    {cardRewardsOpen && (
+                        <CardRewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseCardRewards} />
+                    )}
+                    {itemRewardsOpen && (
+                        <ItemRewards
+                            currentItems={player.items}
+                            onLoot={handleObtainLoot}
+                            onClose={handleCloseItemRewards}
+                            rewardType={battle.type}
+                        />
                     )}
 
                     {treasure && (
                         <TreasureBox
                             onExit={() => setTreasure(null)}
-                            onLoot={handleLootTreasureBox}
+                            onLoot={handleObtainLoot}
                             items={treasure.items}
                             mesos={treasure.mesos}
                             Puzzle={treasure.puzzle}

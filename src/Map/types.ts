@@ -1,5 +1,5 @@
 import { Minion } from "../ability/types";
-import { Wave } from "../battle/types";
+import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, LithRegionBGImage, PerionRegionBGImage } from "../images";
 import { Item } from "../item/types";
 import { NPC } from "./../scene/types";
