@@ -8,6 +8,7 @@ import { CampfireImage, PerionCampImage } from "../images";
 import { blackScroll } from "../item/items";
 import { Item } from "../item/types";
 import CardGrid from "../Menu/CardGrid";
+import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import Button from "../view/Button";
 
@@ -119,14 +120,9 @@ const Camp = ({
         });
     }, []);
 
-    const handleRemoveAbility = () => {
-        if (selectedAbilityIndexToRemove === null) {
-            return;
-        }
+    const handleRemoveAbility = (updatedDeck: Ability[]) => {
         setHasRemovedAbility(true);
         setIsRemovingAbility(false);
-        const updatedDeck = deck.slice();
-        updatedDeck.splice(selectedAbilityIndexToRemove, 1);
         updateDeck(updatedDeck);
         setNumActivitiesRemaining((prev) => prev - 1);
     };
@@ -148,28 +144,7 @@ const Camp = ({
     };
 
     if (isRemovingAbility) {
-        return (
-            <div className={classes.root}>
-                <div className={classes.inner}>
-                    <h3>Select an ability to remove</h3>
-                    <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
-                    <div className={classes.abilitySection}>
-                        <CardGrid
-                            cards={deck}
-                            selectedAbilityIndex={selectedAbilityIndexToRemove}
-                            highlightColour={"#45ff61"}
-                            onClickAbility={(_, i: number) => setSelectedAbilityIndexToRemove(i)}
-                        />
-                    </div>
-                    <Button variant={"contained"} color={"secondary"} onClick={handleRemoveAbility}>
-                        Ommmmmm (confirm)
-                    </Button>{" "}
-                    <Button variant={"contained"} onClick={() => setIsRemovingAbility(false)}>
-                        Cancel
-                    </Button>
-                </div>
-            </div>
-        );
+        return <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} onCancel={() => setIsRemovingAbility(false)} />;
     }
 
     if (isLearningAbility) {

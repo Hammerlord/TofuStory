@@ -5,6 +5,7 @@ import {
     AquamarineImage,
     BlackManualImage,
     BoneHelmImage,
+    BronzeIncenseBurnerImage,
     CactusImage,
     CoffeePotImage,
     DrakeBloodImage,
@@ -447,4 +448,12 @@ export const boneHelm: Item = {
             ],
         },
     ],
+};
+
+export const incense: Item = {
+    name: "Incense",
+    image: BronzeIncenseBurnerImage,
+    description: "Use this item to remove an ability from your deck.",
+    type: ITEM_TYPES.CONSUMABLE,
+    removeCard: true,
 };

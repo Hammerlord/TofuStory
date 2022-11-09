@@ -20,6 +20,7 @@ import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { NPC } from "../scene/types";
 import Overlay from "../view/Overlay";
+import CardRemovalGrid from "./CardRemovalGrid";
 import CardUpgradeGrid from "./CardUpgradeGrid";
 import ClassSelection from "./ClassSelection";
 import GameOver from "./GameOver";
@@ -106,6 +107,7 @@ const Main = () => {
     const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const [upgradingAbility, setUpgradingAbility] = useState(null);
+    const [removingAbility, setRemovingAbility] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown] = useState(null);
     const classes = useStyles();
@@ -211,18 +213,18 @@ const Main = () => {
     };
 
     const handleUseItem = (itemIndex: number) => {
-        if (player.items[itemIndex].upgradeCard) {
-            setUpgradingAbility(
-                () => () =>
-                    dispatch(
-                        updatePlayer({
-                            items: player.items.filter((item, i: number) => i !== itemIndex),
-                        })
-                    )
-            );
-        } else {
-            dispatch(useConsumable(itemIndex));
+        const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
+        if (upgradeCard) {
+            setUpgradingAbility(() => () => dispatch(useConsumable(itemIndex)));
+            return;
         }
+
+        if (removeCard) {
+            setRemovingAbility(() => () => dispatch(useConsumable(itemIndex)));
+            return;
+        }
+
+        dispatch(useConsumable(itemIndex));
     };
 
     const handleJobUp = ({ job, jobUpAbilities }) => {
@@ -295,7 +297,7 @@ const Main = () => {
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
 
-    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town || upgradingAbility;
+    const isActivityOpen = battle || isResting || scene || shop || rewardsOpen || treasure || town || upgradingAbility || removingAbility;
 
     return (
         <>
@@ -368,6 +370,21 @@ const Main = () => {
                                         upgradingAbility();
                                     }
                                     setUpgradingAbility(null);
+                                }}
+                            />
+                        </Overlay>
+                    )}
+                    {removingAbility && (
+                        <Overlay>
+                            <CardRemovalGrid
+                                cards={deck}
+                                onCancel={() => setRemovingAbility(null)}
+                                onRemoveAbility={(updatedDeck) => {
+                                    dispatch(updateDeck(updatedDeck));
+                                    if (typeof removingAbility === "function") {
+                                        removingAbility();
+                                    }
+                                    setRemovingAbility(null);
                                 }}
                             />
                         </Overlay>

@@ -28,6 +28,7 @@ export { default as BoneHelmImage } from "./BoneHelm.png";
 export { default as BrandishImage } from "./Brandish.png";
 export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";
+export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
 export { default as BurningSoulBladeImage } from "./BurningSoulBlade.png";
 export { default as BurningSoulBladeMinionImage } from "./BurningSoulBladeMinion.png";
 export { default as BystanderImage } from "./Bystander.png";
