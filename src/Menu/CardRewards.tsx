@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Rewards = ({ deck, player, updateDeck, onClose }) => {
+const CardRewards = ({ deck, player, updateDeck, onClose }) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
@@ -105,4 +105,4 @@ const Rewards = ({ deck, player, updateDeck, onClose }) => {
     );
 };
 
-export default Rewards;
+export default CardRewards;

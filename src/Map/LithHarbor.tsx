@@ -2,7 +2,7 @@ import Button from "../view/Button";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import Rewards from "../battle/Rewards";
+import CardRewards from "../Menu/CardRewards";
 import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
 import { WorldMapIcon } from "../images/icons";
 import tutorial from "../Menu/tutorial";
@@ -147,7 +147,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                 </div>
 
                 {showAcquireAbility && (
-                    <Rewards deck={deck} player={player} updateDeck={updateDeck} onClose={() => setShowAcquireAbility(false)} />
+                    <CardRewards deck={deck} player={player} updateDeck={updateDeck} onClose={() => setShowAcquireAbility(false)} />
                 )}
             </div>
         </div>

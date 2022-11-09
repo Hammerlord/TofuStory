@@ -5,7 +5,7 @@ import { Ability } from "../ability/types";
 import { startBattle } from "../battle/actions/phases";
 import BattlefieldContainer from "../battle/BattleView";
 import { battleStateSlice, BATTLE_STATES } from "../battle/reducer";
-import Rewards from "../battle/Rewards";
+import CardRewards from "./CardRewards";
 import JobUp from "../character/JobUp";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -346,7 +346,7 @@ const Main = () => {
                         />
                     )}
                     {!isSelectingSecondaryJob && rewardsOpen && (
-                        <Rewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseRewards} />
+                        <CardRewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseRewards} />
                     )}
 
                     {treasure && (
