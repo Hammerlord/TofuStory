@@ -95,6 +95,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
+        const procDepth = (triggerSource.procDepth || 0) + 1;
         const updated = getUpdatedStats({
             actorId: killedBy.id,
             targetIds: [killedBy.id],
@@ -105,7 +106,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             },
             source: {
                 ...triggerSource,
-                isProc: true,
+                procDepth,
             },
             getCombatantById: (id) => findCombatantData(getState, id),
         });
@@ -115,8 +116,14 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             triggerStatChangeEvents(
                 updated.map(([statUpdate, action]) => ({
                     statUpdate,
-                    // This is technically a proc in concept, but it is allowed to proc procs
-                    source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id, statUpdate },
+                    source: {
+                        source: action,
+                        type: TRIGGER_SOURCE_TYPES.EFFECT,
+                        actorId: killedBy.id,
+                        targetId: killedBy.id,
+                        statUpdate,
+                        procDepth,
+                    },
                 }))
             )
         );
@@ -135,7 +142,7 @@ const checkHitEffects = ({
     source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        if (source.isProc || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
+        if (source.procDepth > 1 || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
             return;
         }
 
@@ -145,6 +152,8 @@ const checkHitEffects = ({
         }
 
         const lifeOnHit = getEnabledEffects({ combatant: actor, index }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+        const procDepth = (source.procDepth || 0) + 1;
+
         if (lifeOnHit) {
             const updated = getUpdatedStats({
                 actorId: actor.id,
@@ -156,7 +165,7 @@ const checkHitEffects = ({
                 },
                 source: {
                     ...source,
-                    isProc: true,
+                    procDepth, // Why does this care about procDepth/whether the source is a proc?
                 },
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
@@ -166,7 +175,7 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate },
+                        source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate, procDepth },
                     }))
                 )
             );
@@ -187,7 +196,7 @@ const checkHitEffects = ({
                 },
                 source: {
                     ...source,
-                    isProc: true,
+                    procDepth,
                 },
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
@@ -197,7 +206,7 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate },
+                        source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate, procDepth },
                     }))
                 )
             );
@@ -352,7 +361,8 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
+        const procDepth = (source?.procDepth || 0) + 1;
+        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, procDepth };
         const targetIds = getCalculationTargetIds(targetType);
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]);
 
@@ -452,14 +462,14 @@ export const checkEventTrigger = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        // At the moment, procs may not proc procs unless it is a kill event.
+        // Procs may not proc procs unless it is a kill event.
         const allowedEvents = [
             EFFECT_EVENT_KEYS.onDeath,
             EFFECT_EVENT_KEYS.onFriendlyDeath,
             EFFECT_EVENT_KEYS.onHostileDeath,
             EFFECT_EVENT_KEYS.onReceiveOverhealing,
         ];
-        if (!combatantId || (source?.isProc && !allowedEvents.includes(effectEventKey))) {
+        if (!combatantId || (source?.procDepth > 1 && !allowedEvents.includes(effectEventKey))) {
             return;
         }
 
@@ -471,7 +481,9 @@ export const checkEventTrigger = ({
 
         combatant.effects.forEach((effect: CombatEffect) => {
             const { uptime, turnsTriggerFrequency, [effectEventKey]: effectEvent } = effect;
-            if (effectEvent && (!turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0)) {
+            const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
+            const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
+            if (effectEvent && notTriggeringSameEffect && isTurnToTrigger) {
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent,
@@ -662,7 +674,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
 const onSummonTriggers =
     ({ summonedId, summonerId, parentSource }: { summonedId: string; summonerId: string; parentSource: TriggerSource }) =>
     (dispatch, getState) => {
-        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId], isProc: false };
+        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId], procDepth: 0 };
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
         const { hostile, friendly } = findCombatantData(getState, summonerId) || {};
         hostile?.forEach((combatant) => {
@@ -1164,7 +1176,7 @@ export const useAbility = ({
             resourceCost: totalResourceCost,
         };
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, isProc: false, actorId };
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, procDepth: 0 };
 
         dispatch(
             updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
@@ -1243,6 +1255,7 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
                     allTargetIds: [actorId],
                     source: item,
                     type: TRIGGER_SOURCE_TYPES.ITEM,
+                    procDepth: 0,
                 },
             })
         );

@@ -55,7 +55,7 @@ export interface TriggerSource {
     // Is this an extra effect or action triggered conditionally from another effect?
     // TODO there are some exceptions around certain events -- for example, lifeOnKill, onWaveStart are
     // sufficiently "rare" enough occurrences they are allowed to trigger procs despite technically being procs themselves
-    isProc?: boolean;
+    procDepth: number;
     actorId?: string;
     // The selected target during the action (or the summoned minion)
     targetId?: string;
