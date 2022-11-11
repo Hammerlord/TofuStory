@@ -527,6 +527,7 @@ export const triggerStatChangeEvents =
                 overhealing = 0,
                 effects = [],
                 isDeathBlow = false,
+                rawResources = 0,
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
                 dispatch(checkEventTrigger({ combatantId, effectEventKey, source: { ...source, statUpdate } }));
@@ -534,6 +535,11 @@ export const triggerStatChangeEvents =
 
             if (resources < 0) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
+            }
+
+            if (rawResources > 0) {
+                // This event currently includes overcapping resources; use overcappedResources when nuance required
+                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesGained);
             }
 
             if (healing > 0) {

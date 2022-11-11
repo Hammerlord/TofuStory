@@ -1,12 +1,12 @@
-import { compose } from "ramda";
 import { EFFECT_CLASSES, EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
-import { clearTurnHistory, gainResources, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
+import { clearTurnHistory, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
+import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { drawCards, updateBattle } = battleStateSlice.actions;
 
@@ -124,13 +124,11 @@ export const playerEndTurn = () => {
 export const startPlayerTurn = () => {
     return (dispatch, getState) => {
         const { playerSide, round } = getState().battle;
-        const updateFns = [gainResources, clearTurnHistory];
-        const updatedPlayerSide = updateCharacters(playerSide, compose(...updateFns));
         dispatch(
             updateBattle({
                 round: round + 1,
                 charactersAttackedThisTurn: [],
-                playerSide: updatedPlayerSide,
+                playerSide: updateCharacters(playerSide, clearTurnHistory),
             })
         );
 
@@ -151,7 +149,7 @@ export const startPlayerTurn = () => {
             })
         );
 
-        updatedPlayerSide.forEach((combatant: Combatant | null) => {
+        playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
             }
@@ -159,6 +157,8 @@ export const startPlayerTurn = () => {
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
+
+        dispatch(checkTurnResourceGain(playerSide));
     };
 };
 

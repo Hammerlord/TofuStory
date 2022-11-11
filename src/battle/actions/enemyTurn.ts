@@ -5,7 +5,6 @@ import { getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
-    gainResources,
     getBasicAttack,
     getHealableIndices,
     getMaxHP,
@@ -20,6 +19,7 @@ import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
+import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
@@ -307,11 +307,10 @@ export const endEnemyTurn = () => {
 export const startEnemyTurn = () => {
     return (dispatch, getState) => {
         const { enemySide, round } = getState().battle;
-        const updateFns = [gainResources, clearTurnHistory];
-        const updated = updateCharacters(enemySide, compose(...updateFns));
+
         dispatch(
             updateBattle({
-                enemySide: updated,
+                enemySide: updateCharacters(enemySide, clearTurnHistory),
             })
         );
 
@@ -319,7 +318,7 @@ export const startEnemyTurn = () => {
             dispatch(checkHalveArmor(enemySide));
         }
 
-        updated.forEach((combatant: Combatant | null) => {
+        enemySide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
             }
@@ -327,6 +326,8 @@ export const startEnemyTurn = () => {
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
+
+        dispatch(checkTurnResourceGain(enemySide));
 
         const acted = {};
         const isEligibleToMove = (char: Combatant | null) => {

@@ -70,6 +70,7 @@ export { default as FlagImage } from "./Flag.png";
 export { default as FlameChargeImage } from "./FlameCharge.png";
 export { default as FlanImage } from "./Flan.png";
 export { default as ForkedTurkeyImage } from "./ForkedTurkey.png";
+export { default as GarnetImage } from "./Garnet.png";
 export { default as GemHeartImage } from "./GemHeart.gif";
 export { default as GiganticSledgeImage } from "./GiganticSledge.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";

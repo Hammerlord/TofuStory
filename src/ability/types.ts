@@ -90,6 +90,7 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveEffect = "onReceiveEffect",
     onEffectRemoved = "onEffectRemoved",
     onResourcesSpent = "onResourcesSpent",
+    onResourcesGained = "onResourcesGained",
     onTurnStart = "onTurnStart",
     onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
@@ -156,6 +157,7 @@ export interface Effect {
     onReceiveArmor?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
     onResourcesSpent?: EffectEventTrigger;
+    onResourcesGained?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
     onTurnEnd?: EffectEventTrigger;
     onEnd?: EffectEventTrigger;
@@ -250,6 +252,8 @@ export interface Condition {
     hasEffectClass?: EFFECT_CLASSES.BUFF | EFFECT_CLASSES.DEBUFF;
     /** Unique effects, not stacks */
     numEffects?: number;
+    /** This should be a decimal value up to 1 */
+    resourcePercentage?: number;
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
     armor?: number;

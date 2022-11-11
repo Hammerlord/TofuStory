@@ -2,7 +2,7 @@ import { Combatant } from "../../character/types";
 import { getEnabledEffects } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
-export const checkHalveArmor = (side) => (dispatch) => {
+export const checkHalveArmor = (side: (Combatant | null)[]) => (dispatch) => {
     const statChanges = side
         .map((combatant) => {
             if (!combatant) {

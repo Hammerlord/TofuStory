@@ -18,15 +18,16 @@ import { getMaxHP } from "./../utils";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
-    rawDamage: number;
-    healthDamage: number;
-    overhealing: number;
-    healing: number;
-    armor: number;
-    resources: number;
-    overcappedResources: number;
-    effects: Effect[];
-    isDeathBlow: boolean;
+    rawDamage?: number;
+    healthDamage?: number;
+    overhealing?: number;
+    healing?: number;
+    armor?: number;
+    resources?: number;
+    rawResources?: number;
+    overcappedResources?: number;
+    effects?: Effect[];
+    isDeathBlow?: boolean;
 }
 
 export const getUpdatedStats = ({
@@ -117,6 +118,7 @@ export const getUpdatedStats = ({
                 overhealing,
                 armor: Math.max(-updatedTargetArmor, armorGained - damage),
                 resources: resourcesGained,
+                rawResources: resources,
                 overcappedResources: resources - resourcesGained,
                 effects,
                 isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,

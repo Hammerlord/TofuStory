@@ -41,8 +41,17 @@ export const passesConditions = ({
 }): boolean => {
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
-        const { hasEffectType, hasEffectClass, healthPercentage, armor, comparator, calculationTarget, characterName, proximity } =
-            condition;
+        const {
+            hasEffectType,
+            hasEffectClass,
+            healthPercentage,
+            resourcePercentage,
+            armor,
+            comparator,
+            calculationTarget,
+            characterName,
+            proximity,
+        } = condition;
         const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
             return false;
@@ -106,7 +115,27 @@ export const passesConditions = ({
                 return passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator });
             })();
 
-            return meetsEffectType && meetsHealthPercentage && meetsArmor && meetsEffectClass && meetsCharacterName && withinProximity;
+            const meetsResourcePercentage = (() => {
+                if (resourcePercentage === undefined) {
+                    return true;
+                }
+
+                return passesValueComparison({
+                    val: combatant.resources / combatant.maxResources,
+                    otherVal: resourcePercentage,
+                    comparator,
+                });
+            })();
+
+            return (
+                meetsEffectType &&
+                meetsHealthPercentage &&
+                meetsArmor &&
+                meetsEffectClass &&
+                meetsCharacterName &&
+                withinProximity &&
+                meetsResourcePercentage
+            );
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);

@@ -9,6 +9,7 @@ import {
     CactusImage,
     CoffeePotImage,
     DrakeBloodImage,
+    GarnetImage,
     GoldenHammerImage,
     GuidebookImage,
     HotdogImage,
@@ -464,4 +465,38 @@ export const incense: Item = {
     description: "Use this item to remove an ability from your deck.",
     type: ITEM_TYPES.CONSUMABLE,
     removeCard: true,
+};
+
+export const garnet: Item = {
+    name: "Garnet",
+    image: GarnetImage,
+    description: "When you cap resources, gain +1 attack power for the rest of the turn.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Garnet",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onResourcesGained: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        resourcePercentage: 1,
+                        comparator: "eq",
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Attack Power",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: WeaponMasteryImage,
+                        duration: 1,
+                        attackPower: 1,
+                    },
+                ],
+            },
+        },
+    ],
 };

@@ -44,21 +44,6 @@ export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCha
     return updatedStatChanges;
 };
 
-export const gainResources = (character: Combatant): Combatant => {
-    if (isSilenced(character) || isUnableToAct(character)) {
-        return character;
-    }
-
-    const resourcesGained =
-        character.resourcesPerTurn +
-        getEnabledEffects({ combatant: character }).reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0);
-
-    return {
-        ...character,
-        resources: Math.max(Math.min(character.maxResources, character.resources + resourcesGained), 0),
-    };
-};
-
 export const getMaxHP = (character: Combatant): number => {
     const silenced = isSilenced(character);
     const enabledEffects = character.effects?.filter((effect) => {
