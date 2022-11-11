@@ -1,3 +1,4 @@
+import { TriggerSource } from "./types";
 /**
  * @file Helpers for various battle functions
  */
@@ -201,6 +202,7 @@ export const getMultiplier = ({
     sourceTargets = [],
     actionParent,
     multiplier,
+    source,
 }: {
     actor?: IndexedCombatant;
     target?: IndexedCombatant;
@@ -208,6 +210,7 @@ export const getMultiplier = ({
     sourceTargets?: IndexedCombatant[];
     actionParent?: Ability | Item;
     multiplier?: Multiplier;
+    source?: TriggerSource;
 }): number => {
     const getCalculationTarget = (calculationTarget) => {
         if (calculationTarget === CONDITION_TARGETS.ACTOR) {
@@ -232,6 +235,10 @@ export const getMultiplier = ({
 
     if (multiplier.type === MULTIPLIER_TYPES.NUM_SOURCE_TARGETS) {
         return sourceTargets.length * numValue || 1;
+    }
+
+    if (multiplier.type === MULTIPLIER_TYPES.OVERHEALING) {
+        return (source.statUpdate?.overhealing || 1) * numValue;
     }
 
     if (!combatant) {
@@ -413,42 +420,26 @@ export const calculateDamage = ({
         return (damage + additionalDamageReceived) * (multiplier || 1);
     };
 
-    const damage = (damageFromEffects + baseDamage) * getMultiplier({ multiplier: action.multiplier, actor, target });
+    const damage = damageFromEffects + baseDamage;
     const total = Math.ceil(applyAbilityDamageReceived(damage));
     return Math.max(0, total);
 };
 
-export const calculateArmor = ({
-    actor,
-    target,
-    action,
-}: {
-    actor: IndexedCombatant;
-    target?: IndexedCombatant;
-    action: Action;
-}): number => {
+export const calculateArmor = ({ target, action }: { target?: IndexedCombatant; action: Action }): number => {
     if (!action.armor) {
         return 0;
     }
     const targetArmorReceived = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
-    const armor = targetArmorReceived + action.armor * getMultiplier({ multiplier: action.multiplier, target, actor });
+    const armor = targetArmorReceived + action.armor;
     return Math.max(0, armor);
 };
 
-export const calculateHealing = ({
-    actor,
-    target,
-    action,
-}: {
-    actor: IndexedCombatant;
-    target?: IndexedCombatant;
-    action: Action;
-}): number => {
+export const calculateHealing = ({ target, action }: { target?: IndexedCombatant; action: Action }): number => {
     if (!action.healing) {
         return 0;
     }
     const healingReceived = getEnabledEffects(target).reduce((acc: number, { healingReceived = 0 }) => acc + healingReceived, 0) || 0;
-    const healing = healingReceived + action.healing * getMultiplier({ multiplier: action.multiplier, target, actor });
+    const healing = healingReceived + action.healing;
     return Math.max(0, healing);
 };
 
@@ -607,6 +598,7 @@ export const calculateBonus = ({
     actor,
     isTargetSelected,
     actionParent,
+    source,
 }: {
     action: Action; // The action to apply the bonus to
     target: IndexedCombatant;
@@ -614,6 +606,7 @@ export const calculateBonus = ({
     actor: IndexedCombatant;
     isTargetSelected: boolean;
     actionParent?: Ability | Item;
+    source: TriggerSource;
 }): Action => {
     if (!action.bonus) {
         return action;
@@ -621,7 +614,7 @@ export const calculateBonus = ({
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = action;
     const { excludePrimaryTarget = false } = bonus;
-    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier, actionParent });
+    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier, actionParent, source });
 
     const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): IndexedCombatant => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {

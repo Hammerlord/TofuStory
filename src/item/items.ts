@@ -24,7 +24,7 @@ import {
     SunshinePanImage,
     WeaponMasteryImage,
 } from "../images";
-import { Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES } from "./types";
 
@@ -123,19 +123,27 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heal for 1 HP per turn.",
+    description: "Heal for 1 HP per turn. Overhealing causes you to gain armor for the overhealed amount.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
     sellPrice: 10,
     effects: [
         {
             name: "Amethyst",
-            description: "Healing for 1 HP per turn.",
+            description: "Healing for 1 HP per turn. Gaining armor when overhealed.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
+            },
+            onReceiveOverhealing: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.OVERHEALING,
+                    value: 1,
+                },
             },
         },
     ],

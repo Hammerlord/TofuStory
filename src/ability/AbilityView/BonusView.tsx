@@ -68,7 +68,7 @@ const BonusView = ({ ability, player }) => {
                         }
                     }
                 );
-                const bonusMultiplier = getMultiplier({ actor: player, multiplier });
+                const bonusMultiplier = getMultiplier({ actor: { combatant: player, index: undefined }, multiplier });
                 const totalDamage = damage * bonusMultiplier;
                 const totalHealing = healing * bonusMultiplier;
                 const totalArmor = armor * bonusMultiplier;

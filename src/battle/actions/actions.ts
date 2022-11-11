@@ -116,7 +116,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
                 updated.map(([statUpdate, action]) => ({
                     statUpdate,
                     // This is technically a proc in concept, but it is allowed to proc procs
-                    source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id },
+                    source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId: killedBy.id, targetId: killedBy.id, statUpdate },
                 }))
             )
         );
@@ -166,7 +166,7 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate },
                     }))
                 )
             );
@@ -197,7 +197,7 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId },
+                        source: { isProc: true, source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate },
                     }))
                 )
             );
@@ -453,8 +453,13 @@ export const checkEventTrigger = ({
 }) => {
     return (dispatch, getState) => {
         // At the moment, procs may not proc procs unless it is a kill event.
-        const killEvents = [EFFECT_EVENT_KEYS.onDeath, EFFECT_EVENT_KEYS.onFriendlyDeath, EFFECT_EVENT_KEYS.onHostileDeath];
-        if (!combatantId || (source?.isProc && !killEvents.includes(effectEventKey))) {
+        const allowedEvents = [
+            EFFECT_EVENT_KEYS.onDeath,
+            EFFECT_EVENT_KEYS.onFriendlyDeath,
+            EFFECT_EVENT_KEYS.onHostileDeath,
+            EFFECT_EVENT_KEYS.onReceiveOverhealing,
+        ];
+        if (!combatantId || (source?.isProc && !allowedEvents.includes(effectEventKey))) {
             return;
         }
 
@@ -519,11 +524,12 @@ export const triggerStatChangeEvents =
                 armor = 0,
                 resources = 0,
                 healing = 0,
+                overhealing = 0,
                 effects = [],
                 isDeathBlow = false,
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
-                dispatch(checkEventTrigger({ combatantId, effectEventKey, source }));
+                dispatch(checkEventTrigger({ combatantId, effectEventKey, source: { ...source, statUpdate } }));
             };
 
             if (resources < 0) {
@@ -532,6 +538,10 @@ export const triggerStatChangeEvents =
 
             if (healing > 0) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing);
+            }
+
+            if (overhealing > 0) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveOverhealing);
             }
 
             if (armor > 0) {

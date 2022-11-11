@@ -1,6 +1,7 @@
 import { Combatant } from "./../character/types";
 import { Ability, Action, CombatEffect } from "./../ability/types";
 import { Item } from "../item/types";
+import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;
@@ -48,6 +49,8 @@ export enum TRIGGER_SOURCE_TYPES {
  */
 export interface TriggerSource {
     source: Action | CombatEffect | Ability | Item;
+    // The amount of, eg. block, healing, overhealing done by the source
+    statUpdate?: UpdatedCombatantStats;
     type: TRIGGER_SOURCE_TYPES;
     // Is this an extra effect or action triggered conditionally from another effect?
     // TODO there are some exceptions around certain events -- for example, lifeOnKill, onWaveStart are

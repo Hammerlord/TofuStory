@@ -91,6 +91,7 @@ export enum EFFECT_EVENT_KEYS {
     onEffectRemoved = "onEffectRemoved",
     onResourcesSpent = "onResourcesSpent",
     onTurnStart = "onTurnStart",
+    onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
     onEnd = "onEnd",
     onWaveStart = "onWaveStart",
@@ -161,6 +162,7 @@ export interface Effect {
     onWaveStart?: EffectEventTrigger;
     onWaveClear?: EffectEventTrigger;
     onEffectRemoved?: EffectEventTrigger;
+    onReceiveOverhealing?: EffectEventTrigger;
     /** When the effect owner is summoned */
     onSummoned?: EffectEventTrigger;
     /** When a minion friendly to the effect owner is summoned */
@@ -278,6 +280,7 @@ export enum MULTIPLIER_TYPES {
      */
     NUM_SOURCE_TARGETS = "numSourceCharactersAffected",
     RESOURCES_SPENT = "resourcesSpent",
+    OVERHEALING = "overhealing",
 }
 
 export interface Radiate {
