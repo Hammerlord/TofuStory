@@ -13,6 +13,7 @@ import {
     FishSpearImage,
     GarnetImage,
     GoldenHammerImage,
+    GreenBambooHatImage,
     GuidebookImage,
     HotdogImage,
     HumilityStoneImage,
@@ -615,6 +616,24 @@ export const ballerCane: Item = {
             onAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 mesos: 1,
+            },
+        },
+    ],
+};
+
+export const greenBambooHat: Item = {
+    name: "Green Bamboo Hat",
+    image: GreenBambooHatImage,
+    description: "When you receive an effect, you gain 1 armor.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Green Bamboo Hat",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onReceiveEffect: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 1,
             },
         },
     ],

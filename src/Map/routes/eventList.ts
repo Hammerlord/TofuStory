@@ -12,6 +12,7 @@ import {
     engravedStone,
     fishSpear,
     garnet,
+    greenBambooHat,
     guideBook,
     ironMace,
     luckSack,
@@ -53,4 +54,5 @@ export const ITEMS = [
     fishSpear,
     pigsRibbonItem,
     ballerCane,
+    greenBambooHat,
 ];
