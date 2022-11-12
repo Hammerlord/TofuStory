@@ -9,6 +9,7 @@ import {
     coffeePot,
     drakeBlood,
     engravedStone,
+    garnet,
     goldenHammer,
     guideBook,
     leatherSandals,
@@ -67,6 +68,7 @@ export const ITEM_MASTERLIST = [
     amethyst,
     aquamarine,
     boneHelm,
+    garnet,
 ];
 
 const DevItemViewer = () => {

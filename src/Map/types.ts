@@ -27,9 +27,9 @@ export interface RouteNode {
     encounter?: Wave[];
     npc?: NPC;
     treasure?: {
-        mesos?: number;
-        items?: Item[];
         puzzle: Function;
+        mesos?: number[]; // [min, max]
+        items?: Item[]; // If not provided, it will grant a piece of equipment not already owned by the player
     };
     town?: TOWNS;
     region: REGIONS;

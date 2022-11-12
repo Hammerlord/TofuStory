@@ -181,8 +181,8 @@ const DevToolButton = () => {
                 <TreasureBox
                     onExit={() => setTreasurePuzzleName(null)}
                     onLoot={() => {}}
-                    items={[]}
-                    mesos={123}
+                    initItems={[]}
+                    initMesos={[123, 123]}
                     Puzzle={TREASURE_PUZZLE_MAP[treasurePuzzleName]}
                 />
             )}

@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { blackScroll, goldenHammer, incense } from "../item/items";
 import { Item, ITEM_TYPES } from "../item/types";
-import { ALL_ITEMS } from "../Map/routes/eventList";
+import { ITEMS } from "../Map/routes/eventList";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
@@ -72,7 +72,7 @@ const ItemRewards = ({
         }, {});
 
         const items = [];
-        const equipment = getRandomItem(ALL_ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+        const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
         if (equipment) {
             items.push(equipment);
         }

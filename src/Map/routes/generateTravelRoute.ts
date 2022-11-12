@@ -5,10 +5,10 @@ import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
 import SortingPuzzle from "../../scene/TreasureBox/SortingPuzzle";
 import { NODE_TYPES, Route } from "../types";
-import { getRandomInt, getRandomItem } from "./../../utils";
+import { getRandomItem } from "./../../utils";
 import { generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
-import { events, treasure } from "./eventList";
+import { events } from "./eventList";
 
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
@@ -56,11 +56,9 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 }
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.TREASURE) {
-                const { items, mesos } = getRandomItem(treasure);
                 transformedNode.treasure = {
-                    items,
-                    mesos: getRandomInt(mesos.min, mesos.max),
                     puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
+                    mesos: [20, 40],
                 };
                 --numTreasures;
             } else if (type === NODE_TYPES.EVENT) {

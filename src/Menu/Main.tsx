@@ -383,9 +383,10 @@ const Main = () => {
                         <TreasureBox
                             onExit={() => setTreasure(null)}
                             onLoot={handleObtainLoot}
-                            items={treasure.items}
-                            mesos={treasure.mesos}
+                            currentItems={player.items}
                             Puzzle={treasure.puzzle}
+                            initItems={treasure.items}
+                            initMesos={treasure.mesos}
                         />
                     )}
                     {battle && <BattlefieldContainer />}

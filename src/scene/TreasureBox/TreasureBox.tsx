@@ -1,9 +1,11 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { MesoImage, TreasureChestImage } from "../../images";
 import { LockIcon } from "../../images/icons";
-import { Item } from "../../item/types";
+import { Item, ITEM_TYPES } from "../../item/types";
+import { ITEMS } from "../../Map/routes/eventList";
+import { getRandomInt, getRandomItem } from "../../utils";
 import BannerNotice from "../../view/BannerNotice";
 import Button from "../../view/Button";
 
@@ -138,22 +140,26 @@ const useStyles = createUseStyles({
 
 const TreasureBox = ({
     onExit,
-    items = [],
-    mesos = 0,
+    initItems = [],
+    initMesos,
     title = "Treasure Box",
     onLoot,
+    currentItems = [],
     Puzzle,
 }: {
     onExit: any;
-    items?: Item[];
-    mesos?: number;
+    initItems?: Item[];
+    initMesos?: number | number[]; // [min, max]
     title?: string;
-    onLoot: Function;
+    currentItems?: Item[]; // Items already held by the player
+    onLoot: ({ mesos, items }: { mesos: number; items: Item[] }) => void;
     Puzzle?: ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => JSX.Element;
 }) => {
     const classes = useStyles();
     const [completed, setCompleted] = useState(!Puzzle);
     const [isChestOpened, setIsChestOpened] = useState(false);
+    const [items, setItems] = useState([]);
+    const [mesos, setMesos] = useState(0);
 
     const handleClickChest = () => {
         if (completed) {
@@ -161,6 +167,29 @@ const TreasureBox = ({
             onLoot({ mesos, items });
         }
     };
+
+    useEffect(() => {
+        if (initItems?.length > 0) {
+            setItems(initItems);
+        } else {
+            const alreadyObtained = currentItems.reduce((acc, item: Item) => {
+                if (item.type === ITEM_TYPES.EQUIPMENT) {
+                    acc[item.name] = true;
+                }
+                return acc;
+            }, {});
+
+            const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+            setItems([equipment]);
+        }
+        if (Array.isArray(initMesos)) {
+            setMesos(getRandomInt(initMesos[0], initMesos[1]));
+        } else if (initMesos) {
+            setMesos(initMesos);
+        } else {
+            setMesos(30);
+        }
+    }, []);
 
     return (
         <div className={classes.root}>
