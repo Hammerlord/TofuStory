@@ -8,6 +8,7 @@ export { default as AquamarineImage } from "./Aquamarine.png";
 export { default as ArrowImage } from "./Arrow.png";
 export { default as AxeImage } from "./Axe.png";
 export { default as AxeStumpImage } from "./AxeStump.png";
+export { default as BallerCaneImage } from "./BallerCane.png";
 export { default as BananaGrahamPieImage } from "./BananaGrahamPie.png";
 export { default as BarrelImage } from "./Barrel.png";
 export { default as BarrelsSceneImage } from "./BarrelsScene.png";

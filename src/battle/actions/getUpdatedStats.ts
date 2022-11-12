@@ -28,6 +28,7 @@ export interface UpdatedCombatantStats {
     overcappedResources?: number;
     effects?: Effect[];
     isDeathBlow?: boolean;
+    mesos?: number;
 }
 
 export const getUpdatedStats = ({
@@ -62,8 +63,9 @@ export const getUpdatedStats = ({
             actionParent,
             source,
         });
-        const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect } = action;
+        const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect, mesos = 0 } = action;
 
+        const enabledEffects = getEnabledEffects(target);
         const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
         const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent }) * multiplier;
         const baseArmor = Math.floor(targetCombatant.armor * (1 - destroyArmor));
@@ -84,7 +86,7 @@ export const getUpdatedStats = ({
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;
             }
-            return getEnabledEffects(target).some((targetEffect: Effect) =>
+            return enabledEffects.some((targetEffect: Effect) =>
                 targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
             );
         };
@@ -122,6 +124,7 @@ export const getUpdatedStats = ({
                 overcappedResources: resources - resourcesGained,
                 effects,
                 isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
+                mesos,
             },
             action,
         ];

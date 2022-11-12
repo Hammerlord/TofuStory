@@ -3,6 +3,7 @@ import {
     AlligatorTubeImage,
     AmethystImage,
     AquamarineImage,
+    BallerCaneImage,
     BlackManualImage,
     BoneHelmImage,
     BronzeIncenseBurnerImage,
@@ -594,6 +595,26 @@ export const pigsRibbonItem: Item = {
                         },
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const ballerCane: Item = {
+    name: "Baller Cane",
+    image: BallerCaneImage,
+    description: "+5 max HP. Whenever you play an ability, gain 1 meso.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Baller Cane",
+            description: "Gaining 1 meso for every ability used.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 5,
+            onAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                mesos: 1,
             },
         },
     ],

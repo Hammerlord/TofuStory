@@ -54,6 +54,7 @@ export interface EffectEventTrigger {
     };
 
     targetType?: TRIGGER_TARGET_TYPES;
+    mesos?: number;
     // Stat changes that do not trigger an 'action'
     effects?: Effect[];
     armor?: number;
@@ -379,6 +380,7 @@ export interface Action {
     };
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
+    mesos?: number;
 }
 
 export interface Ability {

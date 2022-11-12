@@ -499,7 +499,7 @@ export const checkEventTrigger = ({
 
 export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
-    statUpdates.forEach(({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [] }) => {
+    statUpdates.forEach(({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0 }) => {
         const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
@@ -519,6 +519,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
                         armor: oldCombatant.armor + armor,
                         resources: oldCombatant.resources + resources,
                         effects: [...oldCombatant.effects, ...effects],
+                        mesos: oldCombatant.mesos + mesos,
                     };
                 }),
             })

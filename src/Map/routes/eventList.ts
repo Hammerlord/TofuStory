@@ -4,6 +4,7 @@ import {
     alligatorTube,
     amethyst,
     aquamarine,
+    ballerCane,
     boneHelm,
     cactus,
     coffeePot,
@@ -51,4 +52,5 @@ export const ITEMS = [
     ironMace,
     fishSpear,
     pigsRibbonItem,
+    ballerCane,
 ];
