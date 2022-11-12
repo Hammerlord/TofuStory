@@ -2,6 +2,7 @@ import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
 import { noob } from "../../scene/Noob";
 import {
     alligatorTube,
+    amethyst,
     aquamarine,
     boneHelm,
     cactus,
@@ -45,6 +46,7 @@ export const ITEMS = [
     pieceOfIce,
     aquamarine,
     boneHelm,
+    amethyst,
     garnet,
     ironMace,
     fishSpear,
