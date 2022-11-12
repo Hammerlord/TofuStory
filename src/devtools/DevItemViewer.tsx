@@ -12,6 +12,7 @@ import {
     garnet,
     goldenHammer,
     guideBook,
+    incense,
     leatherSandals,
     luckSack,
     nependeathSap,
@@ -22,6 +23,7 @@ import {
     stolenFence,
     sunshinePan,
 } from "../item/items";
+import { ITEMS } from "../Map/routes/eventList";
 
 const useStyles = createUseStyles({
     root: {
@@ -47,29 +49,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const ITEM_MASTERLIST = [
-    goldenHammer,
-    blackScroll,
-    leatherSandals,
-    safetyCharm,
-    drakeBlood,
-    nependeathSap,
-    coffeePot,
-    respawnToken,
-    sunshinePan,
-    stolenFence,
-    panlid,
-    luckSack,
-    engravedStone,
-    guideBook,
-    alligatorTube,
-    cactus,
-    pieceOfIce,
-    amethyst,
-    aquamarine,
-    boneHelm,
-    garnet,
-];
+export const ITEM_MASTERLIST = [goldenHammer, blackScroll, incense, leatherSandals, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();

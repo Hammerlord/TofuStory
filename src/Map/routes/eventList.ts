@@ -10,6 +10,7 @@ import {
     engravedStone,
     garnet,
     guideBook,
+    ironMace,
     luckSack,
     nependeathSap,
     panlid,
@@ -43,4 +44,5 @@ export const ITEMS = [
     aquamarine,
     boneHelm,
     garnet,
+    ironMace,
 ];
