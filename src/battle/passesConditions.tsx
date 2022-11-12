@@ -128,7 +128,7 @@ export const passesConditions = ({
                 });
             })();
 
-            const meetsEliteStatus = isElite === undefined || combatant.isBoss || combatant.isElite;
+            const meetsEliteStatus = isElite === undefined || Boolean(combatant.isBoss || combatant.isElite) === isElite;
 
             return (
                 meetsEffectType &&

@@ -66,6 +66,7 @@ export { default as EvilEyeMinionImage } from "./EvilEyeMinion.png";
 export { default as EvilEyeShockImage } from "./EvilEyeShock.png";
 export { default as FireBoarImage } from "./FireBoar.png";
 export { default as FirewoodImage } from "./Firewood.png";
+export { default as FishSpearImage } from "./FishSpear.png";
 export { default as FlagImage } from "./Flag.png";
 export { default as FlameChargeImage } from "./FlameCharge.png";
 export { default as FlanImage } from "./Flan.png";

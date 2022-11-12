@@ -9,6 +9,7 @@ import {
     CactusImage,
     CoffeePotImage,
     DrakeBloodImage,
+    FishSpearImage,
     GarnetImage,
     GoldenHammerImage,
     GuidebookImage,
@@ -517,6 +518,27 @@ export const ironMace: Item = {
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                     isElite: true,
+                },
+            ],
+        },
+    ],
+};
+
+export const fishSpear: Item = {
+    name: "Fish Spear",
+    image: FishSpearImage,
+    description: "Gain +1 attack power against common enemies.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Fish Spear",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    isElite: false,
                 },
             ],
         },

@@ -8,6 +8,7 @@ import {
     coffeePot,
     drakeBlood,
     engravedStone,
+    fishSpear,
     garnet,
     guideBook,
     ironMace,
@@ -45,4 +46,5 @@ export const ITEMS = [
     boneHelm,
     garnet,
     ironMace,
+    fishSpear,
 ];
