@@ -16,6 +16,7 @@ import {
     nependeathSap,
     panlid,
     pieceOfIce,
+    pigsRibbonItem,
     respawnToken,
     safetyCharm,
     stolenFence,
@@ -47,4 +48,5 @@ export const ITEMS = [
     garnet,
     ironMace,
     fishSpear,
+    pigsRibbonItem,
 ];

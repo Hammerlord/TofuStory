@@ -1,28 +1,5 @@
 import { createUseStyles } from "react-jss";
-import {
-    alligatorTube,
-    amethyst,
-    aquamarine,
-    blackScroll,
-    boneHelm,
-    cactus,
-    coffeePot,
-    drakeBlood,
-    engravedStone,
-    garnet,
-    goldenHammer,
-    guideBook,
-    incense,
-    leatherSandals,
-    luckSack,
-    nependeathSap,
-    panlid,
-    pieceOfIce,
-    respawnToken,
-    safetyCharm,
-    stolenFence,
-    sunshinePan,
-} from "../item/items";
+import { blackScroll, goldenHammer, incense, leatherSandals } from "../item/items";
 import { ITEMS } from "../Map/routes/eventList";
 
 const useStyles = createUseStyles({

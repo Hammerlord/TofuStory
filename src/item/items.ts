@@ -20,6 +20,7 @@ import {
     LuckSackImage,
     PanlidImage,
     PieceOfIceImage,
+    PigsRibbonImage,
     RespawnTokenImage,
     SafetyCharmImage,
     SapOfNependeathImage,
@@ -27,7 +28,15 @@ import {
     SunshinePanImage,
     WeaponMasteryImage,
 } from "../images";
-import { Effect, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 
 import { Item, ITEM_TYPES } from "./types";
 
@@ -541,6 +550,51 @@ export const fishSpear: Item = {
                     isElite: false,
                 },
             ],
+        },
+    ],
+};
+
+export const pigsRibbonItem: Item = {
+    name: "Pig's Ribbon",
+    image: PigsRibbonImage,
+    description: "Once per turn, you counter for 1 base damage when attacked.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Pig's Ribbon",
+            description: "Once per turn, this character will counter when attacked.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
+            onTurnEnd: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Retaliation",
+                        description: "Countering on the next attack",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: PigsRibbonImage,
+                        canBeSilenced: true,
+                        duration: 1,
+                        onReceiveAttack: {
+                            usableWhileStunned: false,
+                            removeEffect: true,
+                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                            ability: {
+                                name: "Retaliate",
+                                actions: [
+                                    {
+                                        type: ACTION_TYPES.ATTACK,
+                                        target: TARGET_TYPES.HOSTILE,
+                                        damage: 1,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
         },
     ],
 };
