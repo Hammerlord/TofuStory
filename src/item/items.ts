@@ -14,6 +14,7 @@ import {
     GuidebookImage,
     HotdogImage,
     HumilityStoneImage,
+    IronMaceImage,
     LeatherSandalsImage,
     LuckSackImage,
     PanlidImage,
@@ -25,7 +26,7 @@ import {
     SunshinePanImage,
     WeaponMasteryImage,
 } from "../images";
-import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { Effect, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES } from "./types";
 
@@ -497,6 +498,27 @@ export const garnet: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const ironMace: Item = {
+    name: "Iron Mace",
+    image: IronMaceImage,
+    description: "Gain +1 attack power against elite enemies and bosses.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Iron Mace",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    isElite: true,
+                },
+            ],
         },
     ],
 };

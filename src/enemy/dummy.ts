@@ -35,6 +35,7 @@ export const spikedDummy = {
 
 export const ragingDummy = {
     name: "Raging Dummy",
+    isElite: true,
     image: Puppetree3Image,
     maxHP: 30,
     abilities: [tantrum],

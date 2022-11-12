@@ -14,6 +14,7 @@ const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
 
     const enemy = {
         ...baseEnemy,
+        isElite: true,
         maxHP: Math.floor(baseEnemy.maxHP * 1.2 + 20),
         abilities: [...(baseEnemy.abilities || [])],
         effects: [eliteSquad, affix],
@@ -28,6 +29,7 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     const baseEnemy = getRandomItem([...possibleEnemies.easy, ...possibleEnemies.normal]);
     const enemy = {
         ...baseEnemy,
+        isElite: true,
         maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 30),
         abilities: [...(baseEnemy.abilities || []), ability],
         effects: [eliteSquad, affix],
@@ -74,6 +76,7 @@ const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     const baseEnemy = getRandomItem(concat(possibleEnemies.hard, possibleEnemies.hardest));
     const enemy = {
         ...baseEnemy,
+        isElite: true,
         maxHP: Math.floor(baseEnemy.maxHP * 1.5 + 50),
         abilities: [...(baseEnemy.abilities || []), tantrum],
         effects: [elite, affix],

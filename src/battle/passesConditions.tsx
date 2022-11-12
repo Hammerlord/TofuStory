@@ -51,6 +51,7 @@ export const passesConditions = ({
             calculationTarget,
             characterName,
             proximity,
+            isElite,
         } = condition;
         const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
@@ -127,6 +128,8 @@ export const passesConditions = ({
                 });
             })();
 
+            const meetsEliteStatus = isElite === undefined || combatant.isBoss || combatant.isElite;
+
             return (
                 meetsEffectType &&
                 meetsHealthPercentage &&
@@ -134,7 +137,8 @@ export const passesConditions = ({
                 meetsEffectClass &&
                 meetsCharacterName &&
                 withinProximity &&
-                meetsResourcePercentage
+                meetsResourcePercentage &&
+                meetsEliteStatus
             );
         };
 

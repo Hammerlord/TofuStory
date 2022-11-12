@@ -523,6 +523,7 @@ export const thiefAssassin: Minion = {
 export const olaf: Minion = {
     name: "Olaf",
     maxHP: 55,
+    isElite: true,
     effects: [elite],
     mesos: 10,
     abilities: [

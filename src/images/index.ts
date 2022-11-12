@@ -99,6 +99,7 @@ export { default as HumilityStoneImage } from "./HumilityStone.png";
 export { default as HyperBodyImage } from "./HyperBody.png";
 export { default as IntrepidSlashImage } from "./IntrepidSlash.png";
 export { default as IronBodyImage } from "./IronBody.png";
+export { default as IronMaceImage } from "./IronMace.png";
 export { default as IronWillImage } from "./IronWill.png";
 export { default as JohnImage } from "./John.png";
 export { default as KargoCardImage } from "./KargoCard.png";

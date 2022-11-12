@@ -205,8 +205,8 @@ export interface Minion {
     resources?: number;
     /** Enemy basic attack. If not provided, one will be generated. */
     attack?: Ability;
-    /** Actions to perform when this minion has been summoned */
     isBoss?: boolean;
+    isElite?: boolean;
     mesos?: number;
 }
 
@@ -262,6 +262,8 @@ export interface Condition {
     calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES;
     /** How far away the target/actor are from each other. Similar to area. 0 = directly across from each other. */
     proximity?: number;
+    /** If the character is an elite enemy or boss */
+    isElite?: boolean;
 }
 
 export enum MULTIPLIER_TYPES {
