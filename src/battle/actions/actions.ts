@@ -441,15 +441,7 @@ const onEffectEventTrigger = ({
             }
         });
 
-        dispatch(
-            updateCombatant({
-                combatantId: ownerId,
-                newProperties: {
-                    abilityHistory: [...combatant.abilityHistory, ability],
-                },
-            })
-        );
-        dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onAbility, source }));
+        dispatch(onUseAbility({ actor: combatant, source, ability }));
     };
 };
 
@@ -972,7 +964,7 @@ const performAction = ({
         );
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
-        dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side }));
+        dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
         dispatch(checkCardActions(action, actorId));
         dispatch(
             onAction({
@@ -1048,11 +1040,13 @@ const checkCastRadiate = ({
     selectedIndex,
     side,
     source,
+    parent,
 }: {
     action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     source: TriggerSource;
+    parent?: Ability | Item;
 }) => {
     return (dispatch, getState) => {
         if (!action.radiate) {
@@ -1068,6 +1062,7 @@ const checkCastRadiate = ({
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
                 actorId: getState().battle[side][selectedIndex]?.id,
                 parentSource: source,
+                parent,
             })
         );
     };
@@ -1207,26 +1202,9 @@ export const useAbility = ({
 
         const { combatant: actor } = findCombatantData(getState, actorId) || {};
         // Due to morph, the combatant may no longer exist
-        if (!actor) {
-            return;
+        if (actor) {
+            dispatch(onUseAbility({ actor, source, ability }));
         }
-
-        dispatch(
-            updateCombatant({
-                combatantId: actorId,
-                newProperties: {
-                    abilityHistory: [...actor.abilityHistory, ability],
-                },
-            })
-        );
-
-        dispatch(
-            checkEventTrigger({
-                combatantId: actorId,
-                effectEventKey: EFFECT_EVENT_KEYS.onAbility,
-                source: source,
-            })
-        );
     };
 };
 
@@ -1272,3 +1250,34 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
         );
     };
 };
+
+const onUseAbility =
+    ({ actor, source, ability }: { actor: Combatant; source: TriggerSource; ability: Ability }) =>
+    (dispatch) => {
+        dispatch(
+            updateCombatant({
+                combatantId: actor.id,
+                newProperties: {
+                    abilityHistory: [...actor.abilityHistory, ability],
+                },
+            })
+        );
+
+        dispatch(
+            checkEventTrigger({
+                combatantId: actor.id,
+                effectEventKey: EFFECT_EVENT_KEYS.onAbility,
+                source: source,
+            })
+        );
+
+        if (ability.depletedOnUse) {
+            dispatch(
+                checkEventTrigger({
+                    combatantId: actor.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
+                    source: source,
+                })
+            );
+        }
+    };

@@ -80,6 +80,7 @@ export interface EffectEventTrigger {
 
 export enum EFFECT_EVENT_KEYS {
     onAbility = "onAbility",
+    onDepleteAbility = "onDepleteAbility",
     onAttack = "onAttack",
     onDeath = "onDeath",
     onFriendlyDeath = "onFriendlyDeath",
@@ -148,6 +149,7 @@ export interface Effect {
     unique?: boolean;
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
+    onDepleteAbility?: EffectEventTrigger;
     onAttack?: EffectEventTrigger;
     onDeath?: EffectEventTrigger;
     onFriendlyDeath?: EffectEventTrigger;
@@ -356,6 +358,9 @@ export interface Action {
         damage?: number;
         area?: number;
         effects?: Effect[];
+        icon?: string;
+        animation?: ANIMATION_TYPES;
+        playbackTime?: number;
     };
     /** Percentage of armor on the target to remove */
     destroyArmor?: number;
@@ -447,6 +452,7 @@ export enum ANIMATION_TYPES {
     BEAM = "beam",
     EXPLODE = "explode",
     STOMP = "stomp",
+    ACTION_EXPLODE = "action-image-explode",
 }
 
 export interface AbilityEffects {

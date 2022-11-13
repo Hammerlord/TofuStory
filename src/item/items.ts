@@ -29,6 +29,7 @@ import {
     RisingStarImage,
     SafetyCharmImage,
     SapOfNependeathImage,
+    StarfallMagicSquareImage,
     StolenFenceImage,
     SunshinePanImage,
     WeaponMasteryImage,
@@ -719,6 +720,42 @@ export const bouquet: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             healingReceived: 1,
+        },
+    ],
+};
+
+export const starfallMagicSquare: Item = {
+    name: "Starfall Magic Square",
+    image: StarfallMagicSquareImage,
+    description: "When you use a Deplete ability, you Radiate 2 damage to enemies.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Starfall Magic Square Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDepleteAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                ability: {
+                    name: "Starfall",
+                    image: StarfallMagicSquareImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            icon: StarfallMagicSquareImage,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            radiate: {
+                                area: 2,
+                                damage: 2,
+                                icon: StarfallMagicSquareImage,
+                                animation: ANIMATION_TYPES.BEAM,
+                                playbackTime: 400,
+                            },
+                        },
+                    ],
+                },
+            },
         },
     ],
 };

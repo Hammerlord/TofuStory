@@ -29,6 +29,26 @@ const useStyles = createUseStyles({
         position: "fixed",
         zIndex: 5,
     },
+    "@keyframes explodeAnimation": {
+        from: {
+            transform: "scale(1)",
+            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            opacity: 0.8,
+        },
+        to: {
+            transform: "scale(7)",
+            opacity: 0,
+            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+    },
+    exploding: {
+        animation: "$explodeAnimation",
+        transitionTimingFunction: "ease-in-out",
+        animationIterationCount: 1,
+        animationDuration: ({ playbackTime = 0 }: any) => `${playbackTime / 1000}s`,
+    },
 });
 
 const DISPLACEMENT_SPEED = 500;
@@ -88,7 +108,7 @@ const AnimationCanvas = ({
 
         return getCenterCoords(actorElement);
     }, [actorElement]);
-    const classes = useStyles();
+    const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation } = action || {};
 
@@ -103,7 +123,7 @@ const AnimationCanvas = ({
         // HACK: If a one-way projectile animation finishes playing, there can be a flicker where it teleports back to the origination as we wait for the next event to occur.
         // Make the projectile turn invisible when the animation is done in that case.
         setIsAnimationPlaying(true);
-        setTimeout(() => setIsAnimationPlaying(false), playbackTime);
+        setTimeout(() => setIsAnimationPlaying(false), playbackTime - 10);
 
         eventIdRef.current = eventId;
         const { type, animation, ricochet, icon } = action || {};
@@ -114,7 +134,7 @@ const AnimationCanvas = ({
             spin = 360;
         }
 
-        if (icon) {
+        if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateProjectile = (target, projectileRefIndex: number) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
@@ -194,11 +214,24 @@ const AnimationCanvas = ({
         } as any;
 
         if (typeof icon === "string") {
-            return <img src={icon} className={classNames(classes.projectile)} {...props} />;
+            return (
+                <img
+                    src={icon}
+                    className={classNames(classes.projectile, {
+                        [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
+                    })}
+                    {...props}
+                />
+            );
         } else if (typeof icon === "function") {
             const Icon: Function = icon;
             return (
-                <div className={classNames(classes.iconProjectile)} {...props}>
+                <div
+                    className={classNames(classes.iconProjectile, {
+                        [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
+                    })}
+                    {...props}
+                >
                     <Icon />
                 </div>
             );

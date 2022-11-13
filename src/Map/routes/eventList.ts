@@ -25,6 +25,7 @@ import {
     respawnToken,
     risingStar,
     safetyCharm,
+    starfallMagicSquare,
     stolenFence,
     sunshinePan,
 } from "./../../item/items";
@@ -61,4 +62,5 @@ export const ITEMS = [
     koreanFan,
     risingStar,
     bouquet,
+    starfallMagicSquare,
 ];

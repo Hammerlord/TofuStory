@@ -216,6 +216,7 @@ export { default as SpearSweepImage } from "./SpearSweep.png";
 export { default as SpikeBallImage } from "./SpikeBall.png";
 export { default as SpikedMaceImage } from "./SpikedMace.png";
 export { default as SquishyLiquidImage } from "./SquishyLiquid.png";
+export { default as StarfallMagicSquareImage } from "./StarfallMagicSquare.png";
 export { default as StefaImage } from "./Stefa.png";
 export { default as StefaRopeImage } from "./StefaRope.png";
 export { default as StolenFenceImage } from "./StolenFence.png";
