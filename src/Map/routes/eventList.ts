@@ -6,6 +6,7 @@ import {
     aquamarine,
     ballerCane,
     boneHelm,
+    bouquet,
     cactus,
     coffeePot,
     drakeBlood,
@@ -59,4 +60,5 @@ export const ITEMS = [
     greenBambooHat,
     koreanFan,
     risingStar,
+    bouquet,
 ];

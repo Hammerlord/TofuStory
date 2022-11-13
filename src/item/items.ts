@@ -6,6 +6,7 @@ import {
     BallerCaneImage,
     BlackManualImage,
     BoneHelmImage,
+    BouquetImage,
     BronzeIncenseBurnerImage,
     CactusImage,
     CoffeePotImage,
@@ -703,6 +704,21 @@ export const risingStar: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const bouquet: Item = {
+    name: "Bouquet",
+    image: BouquetImage,
+    description: "You receive +1 healing from healing sources in battle.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Bouquet - +Healing Received",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            healingReceived: 1,
         },
     ],
 };
