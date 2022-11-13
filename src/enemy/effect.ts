@@ -176,6 +176,22 @@ export const fairySwarm: Effect = {
             ],
         },
     },
+    onDeath: {
+        usableWhileStunned: true,
+        removeEffect: true,
+        ability: {
+            name: "Migrate",
+            image: AncientFairyImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: PurpleFairiesImage,
+                    effects: ["Fairy Frenzy"],
+                },
+            ],
+        },
+    },
 };
 
 const frenziedFairies: Effect = {
@@ -193,6 +209,23 @@ const frenziedFairies: Effect = {
     },
     onEnd: {
         usableWhileStunned: true,
+        ability: {
+            name: "Migrate",
+            image: ShiningFairyImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: GreenFairiesImage,
+                    targetArea: 5,
+                    effects: ["Fairy Swarm"],
+                },
+            ],
+        },
+    },
+    onDeath: {
+        usableWhileStunned: true,
+        removeEffect: true,
         ability: {
             name: "Migrate",
             image: ShiningFairyImage,
