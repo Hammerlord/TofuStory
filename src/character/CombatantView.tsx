@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
 import { Event } from "../battle/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import Armor from "../icon/Armor";
@@ -290,6 +290,10 @@ const useStyles = createUseStyles({
     },
 });
 
+interface CurrentEvent extends Event {
+    targetRef?: HTMLElement;
+}
+
 const CombatantView = forwardRef(
     (
         {
@@ -306,7 +310,7 @@ const CombatantView = forwardRef(
             combatant?: Combatant;
             onClick: (event: any) => void;
             isTargeted: boolean;
-            event: any; // extension of Event
+            event: CurrentEvent;
             events: Event[]; // Current event queue
             isSelected: boolean;
             isHighlighted: boolean;
@@ -392,6 +396,7 @@ const CombatantView = forwardRef(
         };
 
         const imageNode = getImageNode(imageProps);
+        const dialog = (actionParent as unknown as Ability)?.dialog || "";
 
         return (
             <div
@@ -421,8 +426,7 @@ const CombatantView = forwardRef(
                             {oldState && (
                                 <>
                                     {animation === ANIMATION_TYPES.EXPLODE && getImageNode({ className: classes.exploding })}
-
-                                    <Tooltip open={Boolean(actionParent?.dialog)} title={actionParent?.dialog || ""} placement="top">
+                                    <Tooltip open={Boolean(dialog)} title={dialog} placement="top">
                                         <div>{imageNode}</div>
                                     </Tooltip>
 
