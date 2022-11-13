@@ -15,6 +15,7 @@ import {
     greenBambooHat,
     guideBook,
     ironMace,
+    koreanFan,
     luckSack,
     nependeathSap,
     panlid,
@@ -55,4 +56,5 @@ export const ITEMS = [
     pigsRibbonItem,
     ballerCane,
     greenBambooHat,
+    koreanFan,
 ];

@@ -112,6 +112,7 @@ export { default as KerningSewerFullImage } from "./KerningSewerFull.png";
 export { default as KerningSewerFull2Image } from "./KerningSewerFull2.png";
 export { default as KingSlimeImage } from "./KingSlime.png";
 export { default as KittenBarrelsImage } from "./KittenBarrels.png";
+export { default as KoreanFanImage } from "./KoreanFan.png";
 export { default as LakelisImage } from "./Lakelis.png";
 export { default as LeatherSandalsImage } from "./LeatherSandals.png";
 export { default as LeetSinImage } from "./LeetSin.png";

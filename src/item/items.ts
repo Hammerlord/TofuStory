@@ -1,4 +1,4 @@
-import { chill, poison, thorns } from "../ability/Effects";
+import { chill, poison, thorns, wound } from "../ability/Effects";
 import {
     AlligatorTubeImage,
     AmethystImage,
@@ -18,6 +18,7 @@ import {
     HotdogImage,
     HumilityStoneImage,
     IronMaceImage,
+    KoreanFanImage,
     LeatherSandalsImage,
     LuckSackImage,
     PanlidImage,
@@ -32,6 +33,7 @@ import {
 } from "../images";
 import {
     ACTION_TYPES,
+    ANIMATION_TYPES,
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -604,7 +606,7 @@ export const pigsRibbonItem: Item = {
 export const ballerCane: Item = {
     name: "Baller Cane",
     image: BallerCaneImage,
-    description: "+5 max HP. Whenever you play an ability, gain 1 meso.",
+    description: "+5 max HP. Whenever you use an ability, gain 1 meso.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -624,7 +626,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive an effect, you gain 1 armor.",
+    description: "When you receive a status effect, you gain 1 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -634,6 +636,37 @@ export const greenBambooHat: Item = {
             onReceiveEffect: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 1,
+            },
+        },
+    ],
+};
+
+export const koreanFan: Item = {
+    name: "Korean Fan",
+    image: KoreanFanImage,
+    description: "Every 3 turns, hurl a fan that inflicts a wound. The effect lasts 1 turn.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Korean Fan",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            onTurnStart: {
+                ability: {
+                    name: "Hidden Fan",
+                    image: KoreanFanImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            icon: KoreanFanImage,
+                            playbackTime: 600,
+                            effects: [{ ...wound, duration: 1 }],
+                        },
+                    ],
+                },
             },
         },
     ],
