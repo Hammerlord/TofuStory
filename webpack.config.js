@@ -27,7 +27,10 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js']
+        extensions: ['.tsx', '.ts', '.js'],
+        alias: {
+            'handlebars': 'handlebars/dist/handlebars.js'
+        }
     },
     devServer: {
         hot: true,
