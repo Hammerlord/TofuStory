@@ -340,6 +340,7 @@ export const shout: Ability = {
             },
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.SHOUT,
         },
     ],
     upgrades: [shout2],
