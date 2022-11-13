@@ -324,6 +324,7 @@ const CombatantView = forwardRef(
         const [oldState, setOldState] = useState(combatant);
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
+        const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles();
 
         useEffect(() => {
@@ -340,9 +341,8 @@ const CombatantView = forwardRef(
             const callback = () => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
-                const willPerformOnDeathActions = events.some(({ actorId }) => actorId === combatant?.id);
                 const isKillingBlow = oldState?.HP > 0 && combatant?.HP <= 0 && !isCombatantChanged;
-                if (isKillingBlow && !willPerformOnDeathActions) {
+                if (isKillingBlow && !willPerformActions) {
                     setPlayDeathAnimation(true);
                 }
             };
@@ -376,7 +376,7 @@ const CombatantView = forwardRef(
             className: classNames("portrait", classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !action && playDeathAnimation,
-                [classes.dead]: !action && oldState?.HP <= 0,
+                [classes.dead]: !action && oldState?.HP <= 0 && !willPerformActions,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
