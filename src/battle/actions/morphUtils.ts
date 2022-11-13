@@ -1,20 +1,20 @@
-import { findCombatantData } from "./actions";
-import { MORPH_MINION_MODIFIERS } from "../../ability/types";
+import { Morph, MORPH_MINION_MODIFIERS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
 import { getRandomItem } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { getPossibleSummonIndices } from "../utils";
+import { CombatantInfo } from "../types";
 
 /**
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
  * This ignores morph conditions
  */
-export const getMorphMerge = ({ targets, morph, findCombatantData }) => {
+export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; morph: Morph }) => {
     const { minions, modifiers = {} } = morph;
-    const targetIds = targets.map((t: Combatant) => t.id);
-    const { friendly, friendlySide, index } = findCombatantData(targetIds[0]);
+    const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
+    const { friendly, friendlySide, index } = targets[0];
     const combatants = friendly.map((combatant: Combatant | null) => {
         if (targetIds.includes(combatant?.id)) {
             return null;
@@ -71,10 +71,10 @@ export const getMorphMerge = ({ targets, morph, findCombatantData }) => {
 /**
  * Handle MORPH_TYPES.MAP (for each minion, transform it to another minion)
  */
-export const getMorphMap = ({ targets, morph, findCombatantData }) => {
+export const getMorphMap = ({ targets, morph }: { targets: CombatantInfo[]; morph: Morph }) => {
     const { minions } = morph;
-    const targetIds = targets.map((t: Combatant) => t.id);
-    const { friendly, friendlySide } = findCombatantData(targetIds[0]);
+    const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
+    const { friendly, friendlySide } = targets[0];
     const summons = [];
     const combatants = friendly.map((combatant, i) => {
         if (!targetIds.includes(combatant?.id)) {

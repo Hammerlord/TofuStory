@@ -317,6 +317,18 @@ export enum MORPH_TYPES {
     MERGE = "merge",
 }
 
+export interface Morph {
+    type: MORPH_TYPES;
+    minions: {
+        minion: Minion | string; // Minion object or a string name
+        positionIndex?: number; // Only applicable for MORPH_TYPES.MERGE (place the new minion in a specific index on the board)
+        conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
+    }[];
+    modifiers?: {
+        HP: MORPH_MINION_MODIFIERS;
+    };
+}
+
 export interface Action {
     damage?: number;
     secondaryDamage?: number;
@@ -373,17 +385,7 @@ export interface Action {
         positionIndex?: number;
     }[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
-    morph?: {
-        type: MORPH_TYPES;
-        minions: {
-            minion: Minion | string; // Minion object or a string name
-            positionIndex?: number; // Only applicable for MORPH_TYPES.MERGE (place the new minion in a specific index on the board)
-            conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
-        }[];
-        modifiers?: {
-            HP: MORPH_MINION_MODIFIERS;
-        };
-    };
+    morph?: Morph;
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     mesos?: number;

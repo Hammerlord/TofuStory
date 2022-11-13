@@ -739,11 +739,10 @@ const checkHandleMorph = ({
             return;
         }
 
-        const findCombatantDataById = (id) => findCombatantData(getState, id);
-        const targets = morphTargetIds.map(findCombatantDataById);
+        const targets = morphTargetIds.map((id: string) => findCombatantData(getState, id));
         const type = action.morph.type;
         let transformed = {} as any;
-        const morphProps = { targets, morph: action.morph, findCombatantData: findCombatantDataById };
+        const morphProps = { targets, morph: action.morph };
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
         } else {
