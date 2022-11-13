@@ -188,6 +188,7 @@ export { default as RespawnTokenImage } from "./RespawnToken.png";
 export { default as RibbonPigCardImage } from "./RibbonPigCard.png";
 export { default as RibbonPigIdleImage } from "./RibbonPigIdle.gif";
 export { default as RisingRageImage } from "./RisingRage.png";
+export { default as RisingStarImage } from "./RisingStar.png";
 export { default as RoastedTurkeyImage } from "./RoastedTurkey.png";
 export { default as RopeQuestImage } from "./RopeQuest.png";
 export { default as RubberImage } from "./Rubber.png";

@@ -22,6 +22,7 @@ import {
     pieceOfIce,
     pigsRibbonItem,
     respawnToken,
+    risingStar,
     safetyCharm,
     stolenFence,
     sunshinePan,
@@ -57,4 +58,5 @@ export const ITEMS = [
     ballerCane,
     greenBambooHat,
     koreanFan,
+    risingStar,
 ];

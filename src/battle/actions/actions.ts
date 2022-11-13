@@ -449,6 +449,7 @@ const onEffectEventTrigger = ({
                 },
             })
         );
+        dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onAbility, source }));
     };
 };
 

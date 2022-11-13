@@ -9,7 +9,7 @@ const passesValueComparison = ({
 }: {
     val: any;
     otherVal: any;
-    comparator: "eq" | "lt" | "gt" | "not";
+    comparator: "eq" | "lt" | "gt" | "not" | "modulo";
 }): boolean => {
     switch (comparator) {
         case "eq":
@@ -20,6 +20,8 @@ const passesValueComparison = ({
             return val > otherVal;
         case "not":
             return val !== otherVal;
+        case "modulo":
+            return val !== 0 && val % otherVal === 0;
         default:
             return false;
     }
@@ -52,6 +54,7 @@ export const passesConditions = ({
             characterName,
             proximity,
             isElite,
+            numAbilitiesUsed,
         } = condition;
         const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
@@ -128,6 +131,18 @@ export const passesConditions = ({
                 });
             })();
 
+            const meetsAbilitiesUsed = (() => {
+                if (numAbilitiesUsed === undefined) {
+                    return true;
+                }
+
+                return passesValueComparison({
+                    val: combatant.abilityHistory.length,
+                    otherVal: numAbilitiesUsed,
+                    comparator,
+                });
+            })();
+
             const meetsEliteStatus = isElite === undefined || Boolean(combatant.isBoss || combatant.isElite) === isElite;
 
             return (
@@ -138,7 +153,8 @@ export const passesConditions = ({
                 meetsCharacterName &&
                 withinProximity &&
                 meetsResourcePercentage &&
-                meetsEliteStatus
+                meetsEliteStatus &&
+                meetsAbilitiesUsed
             );
         };
 

@@ -25,6 +25,7 @@ import {
     PieceOfIceImage,
     PigsRibbonImage,
     RespawnTokenImage,
+    RisingStarImage,
     SafetyCharmImage,
     SapOfNependeathImage,
     StolenFenceImage,
@@ -667,6 +668,40 @@ export const koreanFan: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const risingStar: Item = {
+    name: "Rising Star",
+    image: RisingStarImage,
+    description: "When you use 7 abilities, gain 1 attack power. This effect may occur once per battle.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Rising Star",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                removeEffect: true,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numAbilitiesUsed: 7,
+                        comparator: "modulo",
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Rising Star - Attack Power",
+                        icon: RisingStarImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        attackPower: 1,
+                    },
+                ],
             },
         },
     ],
