@@ -88,6 +88,7 @@ export enum EFFECT_EVENT_KEYS {
     onFriendlyDeath = "onFriendlyDeath",
     onHostileDeath = "onHostileDeath",
     onReceiveAttack = "onReceiveAttack",
+    onFriendlyReceiveAttack = "onFriendlyReceiveAttack",
     onReceiveDamage = "onReceiveDamage",
     onReceiveHealing = "onReceiveHealing",
     onReceiveArmor = "onReceiveArmor",
@@ -158,6 +159,7 @@ export interface Effect {
     onHostileDeath?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;
+    onFriendlyReceiveAttack?: EffectEventTrigger;
     onReceiveHealing?: EffectEventTrigger;
     onReceiveArmor?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;

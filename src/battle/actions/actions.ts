@@ -266,17 +266,48 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     };
 };
 
-const onReceiveAction = ({ action, source }: { action: Action; source?: TriggerSource }) => {
+const handleOnReceiveAction = ({
+    updatedStats,
+    source,
+    combatants,
+}: {
+    updatedStats: [UpdatedCombatantStats, Action][];
+    source?: TriggerSource;
+    combatants: (Combatant | null)[];
+}) => {
     return (dispatch) => {
-        if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
+        const isAttack = (action: Action) => [ACTION_TYPES.RANGE_ATTACK, ACTION_TYPES.ATTACK].includes(action.type);
+        updatedStats.forEach(([stats, action]) => {
+            if (!isAttack(action)) {
+                return;
+            }
             dispatch(
                 checkEventTrigger({
                     combatantId: source?.targetId,
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack,
-                    source,
+                    source: { ...source, targetId: stats.combatantId },
                 })
             );
-        }
+        });
+
+        combatants.forEach((combatant: Combatant | null) => {
+            if (!combatant) {
+                return;
+            }
+
+            updatedStats.forEach(([stats, action]) => {
+                if (stats.combatantId === combatant.id || !isAttack(action)) {
+                    return;
+                }
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onFriendlyReceiveAttack,
+                        source: { ...source, targetId: stats.combatantId },
+                    })
+                );
+            });
+        });
     };
 };
 
@@ -974,14 +1005,13 @@ const performAction = ({
             })
         );
 
-        updated.forEach(([updated, action]) => {
-            dispatch(
-                onReceiveAction({
-                    action,
-                    source: { ...source, targetId: updated.combatantId },
-                })
-            );
-        });
+        dispatch(
+            handleOnReceiveAction({
+                updatedStats: updated,
+                source,
+                combatants,
+            })
+        );
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
     };
 };

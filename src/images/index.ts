@@ -50,6 +50,7 @@ export { default as ColdEyeCardImage } from "./ColdEyeCard.png";
 export { default as CombatOrdersImage } from "./CombatOrders.png";
 export { default as ComboFuryImage } from "./ComboFury.png";
 export { default as CrabCardImage } from "./CrabCard.png";
+export { default as CursedDollImage } from "./CursedDoll.png";
 export { default as CurseEyeImage } from "./CurseEye.gif";
 export { default as CurseEyeCardImage } from "./CurseEyeCard.png";
 export { default as DarkImpaleImage } from "./DarkImpale.png";

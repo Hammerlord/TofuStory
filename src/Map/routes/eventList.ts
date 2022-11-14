@@ -9,6 +9,7 @@ import {
     bouquet,
     cactus,
     coffeePot,
+    cursedDoll,
     drakeBlood,
     engravedStone,
     fishSpear,
@@ -63,4 +64,5 @@ export const ITEMS = [
     risingStar,
     bouquet,
     starfallMagicSquare,
+    cursedDoll,
 ];

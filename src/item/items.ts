@@ -11,6 +11,7 @@ import {
     BronzeIncenseBurnerImage,
     CactusImage,
     CoffeePotImage,
+    CursedDollImage,
     DrakeBloodImage,
     FishSpearImage,
     GarnetImage,
@@ -761,6 +762,47 @@ export const starfallMagicSquare: Item = {
                                 animation: ANIMATION_TYPES.BEAM,
                                 playbackTime: 400,
                             },
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+};
+
+export const cursedDoll: Item = {
+    name: "Cursed Doll",
+    image: CursedDollImage,
+    description: "On wave start, apply a curse on a random enemy. That enemy receives 1 damage for each different target you attack.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Cursed Doll Holder",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                ability: {
+                    name: "Curse",
+                    image: CursedDollImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.NONE,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            icon: CursedDollImage,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            effects: [
+                                {
+                                    name: "Lupin Curse",
+                                    icon: CursedDollImage,
+                                    description: "Receiving 1 damage for every attack against a target friendly to this character.",
+                                    type: EFFECT_TYPES.NONE,
+                                    class: EFFECT_CLASSES.DEBUFF,
+                                    onFriendlyReceiveAttack: {
+                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                        damage: 1,
+                                    },
+                                },
+                            ],
                         },
                     ],
                 },
