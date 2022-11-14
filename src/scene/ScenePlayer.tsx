@@ -8,6 +8,7 @@ import { Item } from "../item/types";
 import Camp from "../Map/Camp";
 import { REGIONS } from "../Map/regions";
 import { PLAYER_CLASSES } from "../Menu/types";
+import Button from "../view/Button";
 import { Scene, ScriptNode, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
@@ -146,6 +147,11 @@ const useStyles = createUseStyles({
             transform: "rotate(90deg)",
             display: "inline-block",
         },
+    },
+    skipButton: {
+        position: "absolute",
+        right: 0,
+        top: -40,
     },
 });
 
@@ -314,12 +320,26 @@ const ScenePlayer = ({
         }
     };
 
+    const handleSkip = () => {
+        const newDialogIndex = script.findIndex((scriptNode: ScriptNode, i) => {
+            const { responses, items, itemChoices, puzzle, scene } = scriptNode || {};
+            return i > dialogIndex && (responses || items || itemChoices || puzzle || scene);
+        });
+        if (newDialogIndex > -1) {
+            setDialogIndex(newDialogIndex);
+        } else {
+            setDialogIndex(script.length - 1);
+        }
+    };
+
     const interpolateDialog = (text: string) => {
         return Handlebars.compile(text)({
             class: classesInterpolation[player.class],
             classPlural: classesPluralInterpolation[player.class],
         });
     };
+
+    const canSkip = !responses && !items && !itemChoices;
 
     return (
         <div className={classes.root}>
@@ -332,6 +352,11 @@ const ScenePlayer = ({
 
                         <div className={classes.wrapper}>
                             <div className={classes.dialogContainer}>
+                                {canSkip && (
+                                    <div className={classes.skipButton}>
+                                        <Button onClick={handleSkip}>Skip</Button>
+                                    </div>
+                                )}
                                 <div className={classes.portraitContainer}>
                                     {speaker && (
                                         <>
