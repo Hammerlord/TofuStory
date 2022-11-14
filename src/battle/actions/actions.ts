@@ -1,3 +1,4 @@
+import { getRandomInt } from "./../../utils";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -965,7 +966,7 @@ const performAction = ({
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
-        dispatch(checkCardActions(action, actorId));
+        dispatch(checkCardActions(action));
         dispatch(
             onAction({
                 action,
@@ -1068,13 +1069,9 @@ const checkCastRadiate = ({
     };
 };
 
-const checkCardActions = (action: Action, actorId: string) => {
+const checkCardActions = (action: Action) => {
     return (dispatch, getState) => {
-        // "Card" mechanics are only applicable to the player
-        if (!findCombatantData(getState, actorId)?.combatant?.isPlayer) {
-            return;
-        }
-        const { drawCards: cardsToDraw, addCards, currentHandEffects, selectCards } = action;
+        const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
         if (cardsToDraw) {
             dispatch(drawCards(cardsToDraw));
         }
@@ -1084,7 +1081,37 @@ const checkCardActions = (action: Action, actorId: string) => {
                 updateBattle({
                     hand: [
                         ...getState().battle.hand,
-                        ...addCards.map((card) => ({
+                        ...addCards.map((card: Ability) => ({
+                            ...card,
+                            instanceId: uuid.v4(),
+                        })),
+                    ],
+                })
+            );
+        }
+
+        if (addCardsToDeck) {
+            const updatedDeck = [...getState().battle.deck];
+            addCardsToDeck.forEach((card: Ability) => {
+                const index = getRandomInt(1, updatedDeck.length - 1);
+                updatedDeck.splice(index, 0, {
+                    ...card,
+                    instanceId: uuid.v4(),
+                });
+            });
+            dispatch(
+                updateBattle({
+                    deck: updatedDeck,
+                })
+            );
+        }
+
+        if (addCardsToDiscard) {
+            dispatch(
+                updateBattle({
+                    discard: [
+                        ...getState().battle.discard,
+                        ...addCardsToDiscard.map((card: Ability) => ({
                             ...card,
                             instanceId: uuid.v4(),
                         })),

@@ -21,6 +21,7 @@ const useStyles = createUseStyles({
         WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         position: "fixed",
+        minWidth: 40,
         zIndex: 5,
     },
     iconProjectile: {
@@ -128,10 +129,12 @@ const AnimationCanvas = ({
         eventIdRef.current = eventId;
         const { type, animation, ricochet, icon } = action || {};
         let spin = 0;
-        if (animation === ANIMATION_TYPES.ONE_WAY_SPIN_FAST) {
+        if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
             spin = 900;
         } else if ([ANIMATION_TYPES.YOYO, ANIMATION_TYPES.ONE_WAY_SPIN].includes(animation)) {
             spin = 360;
+        } else if ([ANIMATION_TYPES.SPIN].includes(animation)) {
+            spin = 720;
         }
 
         if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
@@ -160,6 +163,8 @@ const AnimationCanvas = ({
             }
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
             travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
+        } else if (animation === ANIMATION_TYPES.SPIN) {
+            travel({ from: actorElement, to: targetElement, spin, playbackTime });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {

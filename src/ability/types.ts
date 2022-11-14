@@ -355,6 +355,7 @@ export interface Action {
     currentHandEffects?: AbilityEffects;
     /** Adds cards to your current hand */
     addCards?: Ability[];
+    addCardsToDeck?: Ability[];
     /** Adds cards to your current discard pile */
     addCardsToDiscard?: Ability[];
     drawCards?: {
@@ -438,6 +439,7 @@ export enum ACTION_TYPES {
     BLEED = "bleed",
     BURN = "burn",
     SPECIAL = "special",
+    HINDER = "hindrance",
 }
 
 export enum ANIMATION_TYPES {
@@ -458,6 +460,7 @@ export enum ANIMATION_TYPES {
     EXPLODE = "explode",
     STOMP = "stomp",
     ACTION_EXPLODE = "action-image-explode",
+    SPIN = "spin", // Spin in place
 }
 
 export interface AbilityEffects {

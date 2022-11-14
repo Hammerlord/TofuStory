@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
+import { getAbilityColor } from "../ability/AbilityView/utils";
 import { HandAbility, SELECT_CARD_TYPES } from "../ability/types";
-import { getAbilityColor } from "../ability/utils";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";

@@ -18,7 +18,11 @@ const CardToAddCount = ({ count, card }) => {
 };
 
 const CardsToAdd = ({ ability }) => {
-    const { addCards = {}, addCardsToDiscard = {} } = ability.actions.reduce((acc, { addCards = [], addCardsToDiscard = [] }) => {
+    const {
+        addCards = {},
+        addCardsToDeck = {},
+        addCardsToDiscard = {},
+    } = ability.actions.reduce((acc, { addCards = [], addCardsToDeck = [], addCardsToDiscard = [] }) => {
         if (!acc.addCards) {
             acc.addCards = {};
         }
@@ -29,15 +33,28 @@ const CardsToAdd = ({ ability }) => {
             };
         });
 
+        if (!acc.addCardsToDeck) {
+            acc.addCardsToDeck = {};
+        }
+
+        addCardsToDeck.forEach((card) => {
+            acc.addCardsToDeck[card.name] = {
+                count: (acc.addCardsToDeck[card.name]?.count || 0) + 1,
+                card,
+            };
+        });
+
         if (!acc.addCardsToDiscard) {
             acc.addCardsToDiscard = {};
         }
+
         addCardsToDiscard.forEach((card) => {
             acc.addCardsToDiscard[card.name] = {
                 count: (acc.addCardsToDiscard[card.name]?.count || 0) + 1,
                 card,
             };
         });
+
         return acc;
     }, {});
 
@@ -51,6 +68,16 @@ const CardsToAdd = ({ ability }) => {
                         return <CardToAddCount card={card} count={count} key={card.name} />;
                     })}
                     to your hand
+                </div>
+            )}
+            {Object.keys(addCardsToDeck).length > 0 && (
+                <div>
+                    Add{" "}
+                    {Object.values(addCardsToDeck).map((val) => {
+                        const { count, card } = val as { count: number; card: Ability };
+                        return <CardToAddCount card={card} count={count} key={card.name} />;
+                    })}
+                    to your deck
                 </div>
             )}
             {Object.keys(addCardsToDiscard).length > 0 && (

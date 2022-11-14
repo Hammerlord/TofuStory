@@ -8,7 +8,6 @@ import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { Fury } from "../../resource/ResourcesView";
 import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
-import { getAbilityColor } from "../utils";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
@@ -20,7 +19,7 @@ import Debuffs from "./Debuffs";
 import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import ResourceIcon from "./ResourceIcon";
-import { getAllEffects } from "./utils";
+import { getAbilityColor, getAllEffects } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -152,7 +151,17 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse, preemptive } = ability;
-    const { area = 0, target: targetType, damage, secondaryDamage, destroyArmor = 0, ricochet, targetArea, numTargets } = actions[0] || {};
+    const {
+        area = 0,
+        target: targetType,
+        type,
+        damage,
+        secondaryDamage,
+        destroyArmor = 0,
+        ricochet,
+        targetArea,
+        numTargets,
+    } = actions[0] || {};
     const cardImage = minion?.image || image;
     let imageNode = null;
 
@@ -289,7 +298,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                     </div>
                     <div className={classes.footer}>
                         {area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
-                        <AbilityTypeView targetType={targetType} minion={minion} />
+                        <AbilityTypeView targetType={targetType} type={type} minion={minion} />
                         {minion && (
                             <div className={classes.minionStats}>
                                 <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />

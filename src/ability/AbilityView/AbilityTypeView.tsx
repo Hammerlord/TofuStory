@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { TARGET_TYPES } from "../types";
+import { ACTION_TYPES, Minion, TARGET_TYPES } from "../types";
+import { BLUE, GREEN, GREY, RED } from "./constants";
 
 const SIZE = "5px";
 const useStyles = createUseStyles({
@@ -32,29 +33,37 @@ const useStyles = createUseStyles({
         },
     },
     offensive: {
-        borderBottomColor: "rgb(221, 46, 68)",
+        borderBottomColor: RED,
         "&:after": {
-            borderTopColor: "rgb(221, 46, 68)",
+            borderTopColor: RED,
         },
     },
     support: {
-        borderBottomColor: "rgb(23, 111, 189)",
+        borderBottomColor: BLUE,
         "&:after": {
-            borderTopColor: "rgb(23, 111, 189)",
+            borderTopColor: BLUE,
         },
     },
     minion: {
-        borderBottomColor: "rgb(50, 168, 82)",
+        borderBottomColor: GREEN,
         "&:after": {
-            borderTopColor: "rgb(50, 168, 82)",
+            borderTopColor: GREEN,
+        },
+    },
+    hindrance: {
+        borderBottomColor: GREY,
+        "&:after": {
+            borderTopColor: GREY,
         },
     },
 });
 
-const AbilityTypeView = ({ targetType, minion }) => {
+const AbilityTypeView = ({ targetType, type, minion }: { targetType: TARGET_TYPES; type: ACTION_TYPES; minion: Minion }) => {
     let typeLabel;
     if (minion) {
         typeLabel = "Summon";
+    } else if (type === ACTION_TYPES.HINDER) {
+        typeLabel = "Hindrance";
     } else if (targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE) {
         typeLabel = "Offensive";
     } else if (targetType === TARGET_TYPES.FRIENDLY) {
@@ -70,6 +79,7 @@ const AbilityTypeView = ({ targetType, minion }) => {
                 [classes.offensive]: targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE,
                 [classes.support]: targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
                 [classes.minion]: Boolean(minion),
+                [classes.hindrance]: type === ACTION_TYPES.HINDER,
             })}
         />
     );

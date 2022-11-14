@@ -37,3 +37,11 @@ export const multiplierTypeKeyLabelMap = {
     [NUM_AFFECTED_TARGETS]: "for each affected target",
     [NUM_SOURCE_TARGETS]: "for each affected target",
 };
+
+/**
+ * Colour coding ability cards, eg. red is offensive, blue is support, green is minion, grey are negative/useless cards that act like a debuff
+ */
+export const RED = "rgb(221, 46, 68)";
+export const BLUE = "rgb(23, 111, 189)";
+export const GREEN = "rgb(50, 168, 82)";
+export const GREY = "rgb(100, 100, 100)";

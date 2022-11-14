@@ -1,5 +1,6 @@
 import {
     AxeStumpImage,
+    BananaPeelImage,
     BlueSnailImage,
     BlueSnailShellImage,
     CurseEyeImage,
@@ -8,7 +9,9 @@ import {
     HornyMushroomImage,
     LeetSinImage,
     LigatorImage,
+    LupinImage,
     ManoImage,
+    MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
     MutantSnailImage,
@@ -1262,6 +1265,45 @@ export const bob: Minion = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const bananaPeelCard = {
+    name: "Banana Peel",
+    image: BananaPeelImage,
+    depletedOnUse: true,
+    resourceCost: 0,
+    actions: [
+        {
+            type: ACTION_TYPES.HINDER,
+            target: TARGET_TYPES.SELF,
+            damage: 1,
+            animation: ANIMATION_TYPES.SPIN,
+        },
+    ],
+};
+
+export const lupin: Minion = {
+    name: "Lupin",
+    maxHP: 70,
+    image: LupinImage,
+    damage: 3,
+    abilities: [
+        {
+            name: "Throw Banana",
+            image: MonkeyBananaImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MonkeyBananaImage,
+                    damage: 3,
+                    animation: ANIMATION_TYPES.CAST,
+                    addCardsToDeck: [bananaPeelCard],
+                },
+            ],
         },
     ],
 };
