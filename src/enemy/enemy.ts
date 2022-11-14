@@ -836,6 +836,44 @@ export const hornyMushroom: Minion = {
     mesos: 7,
 };
 
+export const elliniaGreenMushroom: Minion = {
+    name: "Green Mushroom",
+    image: GreenMushroomImage,
+    maxHP: 40,
+    damage: 2,
+    mesos: 10,
+    abilities: [
+        {
+            name: "Poison Spore",
+            image: MushroomSporeImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MushroomSporeImage,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    damage: 1,
+                    effects: [
+                        {
+                            ...poison,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const elliniaHornyMushroom: Minion = {
+    name: "Horny Mushroom",
+    image: HornyMushroomImage,
+    maxHP: 45,
+    damage: 3,
+    effects: [thorns],
+    mesos: 10,
+};
+
 export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: MutantSnailImage,

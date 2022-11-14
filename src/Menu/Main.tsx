@@ -302,6 +302,11 @@ const Main = () => {
 
     const getTown = () => {
         const Town = TOWN_MAP[town];
+        if (!Town) {
+            // Towns are a WIP
+            setTown(null);
+            return null;
+        }
         return (
             <Town
                 player={player}

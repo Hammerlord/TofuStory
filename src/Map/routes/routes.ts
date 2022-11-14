@@ -1,3 +1,4 @@
+import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom, greenMushroom, hornyMushroom } from "./../../enemy/enemy";
 import {
     axeStump,
     blueSnail,
@@ -22,42 +23,34 @@ import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 
 export const routeKerningToPerion: Route = {
     enemies: {
-        easy: [stump],
-        normal: [octopus, redSnail, wildBoar],
+        easy: [stump, redSnail],
+        normal: [octopus, wildBoar],
         hard: [axeStump, orangeMushroom],
         hardest: [fireBoar],
     } as MapEnemies,
     nodes: [
+        { x: 0.18101545253863136, y: 0.3502607225066942, region: REGIONS.KERNING },
+        { x: 0.21444339325134026, y: 0.32964451811635537, region: REGIONS.KERNING },
+        { x: 0.2532324187953327, y: 0.33093303089075154, region: REGIONS.KERNING },
+        { x: 0.28981393882056133, y: 0.33308055218141186, region: REGIONS.PERION },
         {
-            x: 0.18263888888888888,
-            y: 0.3499464292311671,
-            region: REGIONS.KERNING,
-        },
-        {
-            x: 0.22256944444444443,
-            y: 0.3291388037093139,
-            region: REGIONS.KERNING,
-        },
-        {
-            x: 0.27847222222222223,
-            y: 0.33481361066981935,
-            region: REGIONS.PERION,
-        },
-        {
-            x: 0.3138888888888889,
-            y: 0.29840026600657626,
-            region: REGIONS.PERION,
-        },
-        {
-            x: 0.31875,
-            y: 0.24827280452211178,
+            x: 0.3169347209082308,
+            y: 0.2961431859820548,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, stumpy, null, null] }],
             region: REGIONS.PERION,
         },
         {
-            x: 0.3371527777777778,
-            y: 0.2113865592788266,
+            x: 0.31875,
+            y: 0.24827280452211178,
+            region: REGIONS.PERION,
+        },
+        { x: 0.34058656575212864, y: 0.20809481306498265, region: REGIONS.PERION },
+        {
+            x: 0.38385146804835923,
+            y: 0.18406351073213761,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.PERION,
             region: REGIONS.PERION,
         },
     ] as RouteNode[],
@@ -162,38 +155,32 @@ export const routeElliniaPerion = {
 };
 
 export const routeHenesysEllinia: Route = {
+    enemies: {
+        easy: [stump, redSnail],
+        normal: [elliniaGreenMushroom, elliniaHornyMushroom],
+        hard: [axeStump, orangeMushroom],
+        hardest: [curseEye],
+    } as MapEnemies,
     nodes: [
+        { x: 0.5162946428571429, y: 0.814892576037545, region: REGIONS.HENESYS },
+        { x: 0.546875, y: 0.7790196702466737, region: REGIONS.HENESYS },
+        { x: 0.5584821428571428, y: 0.7282503883223052, region: REGIONS.HENESYS },
         {
-            x: 0.5246113989637305,
-            y: 0.8079976477506615,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.5531088082901554,
-            y: 0.7603645986474566,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.5613126079447323,
-            y: 0.7062628638635695,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.5906735751295337,
-            y: 0.6574536900911496,
+            x: 0.5734375,
+            y: 0.6790011447789057,
             type: NODE_TYPES.BOSS,
             encounter: [{ enemies: [null, null, strangePig, null, null] }],
             region: REGIONS.HENESYS,
         },
+        { x: 0.6104910714285714, y: 0.6504244232166863, region: REGIONS.ELLINIA },
+        { x: 0.6424107142857143, y: 0.6276238475021494, region: REGIONS.ELLINIA },
+        { x: 0.6698660714285715, y: 0.6023912103780621, region: REGIONS.ELLINIA },
         {
-            x: 0.6308290155440415,
-            y: 0.6356953837106734,
+            x: 0.6968911917098446,
+            y: 0.5492502205233755,
             region: REGIONS.ELLINIA,
-        },
-        {
-            x: 0.6640759930915371,
-            y: 0.6080564539841223,
-            region: REGIONS.ELLINIA,
+            town: TOWNS.ELLINIA,
+            type: NODE_TYPES.TOWN,
         },
     ],
     next: [],
