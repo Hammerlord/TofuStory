@@ -1,4 +1,3 @@
-import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom, greenMushroom, hornyMushroom } from "./../../enemy/enemy";
 import {
     axeStump,
     blueSnail,
@@ -20,6 +19,7 @@ import { strangePig } from "../../enemy/strangePig";
 import { stumpy } from "../../enemy/stumpy";
 import { REGIONS } from "../regions";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
+import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
 
 export const routeKerningToPerion: Route = {
     enemies: {
@@ -174,7 +174,7 @@ export const routeHenesysEllinia: Route = {
         },
         { x: 0.6104910714285714, y: 0.6504244232166863, region: REGIONS.ELLINIA },
         { x: 0.6424107142857143, y: 0.6276238475021494, region: REGIONS.ELLINIA },
-        { x: 0.6698660714285715, y: 0.6023912103780621, region: REGIONS.ELLINIA },
+        { x: 0.6756696428571428, y: 0.5969190722065733, region: REGIONS.ELLINIA },
         {
             x: 0.6968911917098446,
             y: 0.5492502205233755,
