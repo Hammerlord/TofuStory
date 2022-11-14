@@ -1,3 +1,5 @@
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+
 export enum TARGET_TYPES {
     HOSTILE = "hostile",
     SELF = "self",
@@ -268,6 +270,7 @@ export interface Condition {
     /** If the character is an elite enemy or boss */
     isElite?: boolean;
     numAbilitiesUsed?: number;
+    sourceType?: TRIGGER_SOURCE_TYPES;
 }
 
 export enum MULTIPLIER_TYPES {

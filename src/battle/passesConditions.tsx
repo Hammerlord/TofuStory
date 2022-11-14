@@ -1,5 +1,6 @@
 import { Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
+import { TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 
 const passesValueComparison = ({
@@ -35,11 +36,13 @@ export interface IndexedCombatant {
 export const passesConditions = ({
     getCalculationTarget, // If targets are an array, check that at least one satisfies conditions (OR).
     proc,
+    source,
 }: {
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => IndexedCombatant | IndexedCombatant[] | undefined;
     proc: Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
+    source?: TriggerSource;
 }): boolean => {
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
@@ -55,6 +58,7 @@ export const passesConditions = ({
             proximity,
             isElite,
             numAbilitiesUsed,
+            sourceType,
         } = condition;
         const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
@@ -143,6 +147,18 @@ export const passesConditions = ({
                 });
             })();
 
+            const meetsSourceType = (() => {
+                if (sourceType === undefined) {
+                    return true;
+                }
+
+                return passesValueComparison({
+                    val: source?.type,
+                    otherVal: sourceType,
+                    comparator,
+                });
+            })();
+
             const meetsEliteStatus = isElite === undefined || Boolean(combatant.isBoss || combatant.isElite) === isElite;
 
             return (
@@ -154,7 +170,8 @@ export const passesConditions = ({
                 withinProximity &&
                 meetsResourcePercentage &&
                 meetsEliteStatus &&
-                meetsAbilitiesUsed
+                meetsAbilitiesUsed &&
+                meetsSourceType
             );
         };
 

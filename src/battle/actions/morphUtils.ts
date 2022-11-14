@@ -5,7 +5,7 @@ import { createCombatant } from "../../enemy/createEnemy";
 import { getRandomItem } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { getPossibleSummonIndices } from "../utils";
-import { CombatantInfo } from "../types";
+import { CombatantInfo, TriggerSource } from "../types";
 
 /**
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
@@ -71,7 +71,7 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
 /**
  * Handle MORPH_TYPES.MAP (for each minion, transform it to another minion)
  */
-export const getMorphMap = ({ targets, morph }: { targets: CombatantInfo[]; morph: Morph }) => {
+export const getMorphMap = ({ targets, morph, source }: { targets: CombatantInfo[]; morph: Morph; source: TriggerSource }) => {
     const { minions } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide } = targets[0];
@@ -83,7 +83,7 @@ export const getMorphMap = ({ targets, morph }: { targets: CombatantInfo[]; morp
 
         const minion = minions.find((minionConfig) => {
             const getCalculationTarget = () => ({ combatant, index: i }); // Current combatant will always be the target
-            return passesConditions({ getCalculationTarget, proc: minionConfig });
+            return passesConditions({ getCalculationTarget, proc: minionConfig, source });
         })?.minion;
 
         if (minion) {

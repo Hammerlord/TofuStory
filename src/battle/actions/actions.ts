@@ -339,7 +339,8 @@ const onEffectEventTrigger = ({
 
         // Must pass parent effect conditions as well as child effectEvent conditions (if any)
         const conditionsPassed =
-            passesConditions({ getCalculationTarget, proc: effect }) && passesConditions({ getCalculationTarget, proc: effectEvent });
+            passesConditions({ getCalculationTarget, proc: effect, source }) &&
+            passesConditions({ getCalculationTarget, proc: effectEvent, source });
 
         const checkRemoveEffect = () => {
             if (removeEffect) {
@@ -424,7 +425,7 @@ const onEffectEventTrigger = ({
             };
 
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
-            if (passesConditions({ getCalculationTarget, proc: action })) {
+            if (passesConditions({ getCalculationTarget, proc: action, source })) {
                 dispatch(
                     performAction({
                         action,
@@ -742,7 +743,7 @@ const checkHandleMorph = ({
         const targets = morphTargetIds.map((id: string) => findCombatantData(getState, id));
         const type = action.morph.type;
         let transformed = {} as any;
-        const morphProps = { targets, morph: action.morph };
+        const morphProps = { targets, morph: action.morph, source: parentSource };
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
         } else {
@@ -1192,7 +1193,7 @@ export const useAbility = ({
                 return { combatant: getState().battle[side]?.[index], index };
             };
 
-            if (passesConditions({ getCalculationTarget, proc: action })) {
+            if (passesConditions({ getCalculationTarget, proc: action, source })) {
                 dispatch(performAction({ action, selectedIndex: index, side, actorId, parent: ability, parentSource: source }));
             }
         };

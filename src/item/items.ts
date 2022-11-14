@@ -1,4 +1,5 @@
 import { chill, poison, thorns, wound } from "../ability/Effects";
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AlligatorTubeImage,
     AmethystImage,
@@ -37,6 +38,7 @@ import {
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CONDITION_TARGETS,
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -629,7 +631,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect, you gain 1 armor.",
+    description: "When you receive a status effect from an ability, you gain 2 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -638,7 +640,14 @@ export const greenBambooHat: Item = {
             class: EFFECT_CLASSES.BUFF,
             onReceiveEffect: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 1,
+                armor: 2,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        comparator: "eq",
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    },
+                ],
             },
         },
     ],
