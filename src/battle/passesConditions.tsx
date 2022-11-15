@@ -75,104 +75,97 @@ export const passesConditions = ({
             if (!combatant) {
                 return false;
             }
+
+            if (
+                healthPercentage !== undefined &&
+                !passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator })
+            ) {
+                return false;
+            }
+
+            if (armor !== undefined && !passesValueComparison({ val: combatant.armor, otherVal: armor, comparator })) {
+                return false;
+            }
+
             const procId = (proc as any)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
             const otherEffects = procId ? combatant?.effects.filter((e) => e.id !== procId) : combatant.effects;
 
-            const meetsHealthPercentage =
-                healthPercentage === undefined
-                    ? true
-                    : passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator });
-
-            const meetsArmor = armor === undefined ? true : passesValueComparison({ val: combatant.armor, otherVal: armor, comparator });
-
-            const meetsEffectType = (() => {
-                if (hasEffectType === undefined) return true;
+            if (hasEffectType !== undefined) {
                 if (comparator === "not") {
-                    return otherEffects.every(({ type }) => !hasEffectType.includes(type));
+                    if (!otherEffects.every(({ type }) => !hasEffectType.includes(type))) {
+                        return false;
+                    }
+                } else if (!otherEffects.some(({ type }) => hasEffectType.includes(type))) {
+                    return false;
                 }
+            }
 
-                return otherEffects.some(({ type }) => hasEffectType.includes(type));
-            })();
-
-            const meetsEffectClass = (() => {
-                if (hasEffectClass === undefined) return true;
+            if (hasEffectClass !== undefined) {
                 if (comparator === "not") {
-                    return otherEffects.every(({ class: effectClass }) => effectClass !== hasEffectClass);
+                    if (!otherEffects.every(({ class: effectClass }) => effectClass !== hasEffectClass)) {
+                        return false;
+                    }
+                } else if (!otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass)) {
+                    return false;
                 }
-                return otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass);
-            })();
+            }
 
-            const meetsCharacterName = (() => {
-                if (!characterName) {
-                    return true;
+            if (characterName) {
+                if (!passesValueComparison({ val: characterName, otherVal: combatant.name, comparator })) {
+                    return false;
                 }
+            }
 
-                return passesValueComparison({ val: characterName, otherVal: combatant.name, comparator });
-            })();
-
-            const withinProximity = (() => {
-                if (proximity === undefined) {
-                    return true;
-                }
-
+            if (proximity !== undefined) {
                 const effectOwnerIndex = (effectOwner as IndexedCombatant)?.index;
-
                 if (effectOwnerIndex === undefined || index === undefined) {
                     return false;
                 }
-                return passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator });
-            })();
 
-            const meetsResourcePercentage = (() => {
-                if (resourcePercentage === undefined) {
-                    return true;
+                if (!passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator })) {
+                    return false;
                 }
+            }
 
-                return passesValueComparison({
-                    val: combatant.resources / combatant.maxResources,
-                    otherVal: resourcePercentage,
-                    comparator,
-                });
-            })();
-
-            const meetsAbilitiesUsed = (() => {
-                if (numAbilitiesUsed === undefined) {
-                    return true;
+            if (resourcePercentage !== undefined) {
+                if (
+                    !passesValueComparison({
+                        val: combatant.resources / combatant.maxResources,
+                        otherVal: resourcePercentage,
+                        comparator,
+                    })
+                ) {
+                    return false;
                 }
+            }
 
-                return passesValueComparison({
-                    val: combatant.abilityHistory.length,
-                    otherVal: numAbilitiesUsed,
-                    comparator,
-                });
-            })();
-
-            const meetsSourceType = (() => {
-                if (sourceType === undefined) {
-                    return true;
+            if (numAbilitiesUsed !== undefined) {
+                if (
+                    !passesValueComparison({
+                        val: combatant.abilityHistory.length,
+                        otherVal: numAbilitiesUsed,
+                        comparator,
+                    })
+                ) {
+                    return false;
                 }
+            }
 
-                return passesValueComparison({
-                    val: source?.type,
-                    otherVal: sourceType,
-                    comparator,
-                });
-            })();
+            if (sourceType !== undefined) {
+                if (
+                    !passesValueComparison({
+                        val: source?.type,
+                        otherVal: sourceType,
+                        comparator,
+                    })
+                ) {
+                    return false;
+                }
+            }
 
-            const meetsEliteStatus = isElite === undefined || Boolean(combatant.isBoss || combatant.isElite) === isElite;
-
-            return (
-                meetsEffectType &&
-                meetsHealthPercentage &&
-                meetsArmor &&
-                meetsEffectClass &&
-                meetsCharacterName &&
-                withinProximity &&
-                meetsResourcePercentage &&
-                meetsEliteStatus &&
-                meetsAbilitiesUsed &&
-                meetsSourceType
-            );
+            if (isElite !== undefined && Boolean(combatant.isBoss || combatant.isElite) !== isElite) {
+                return false;
+            }
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
