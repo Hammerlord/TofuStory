@@ -15,7 +15,7 @@ const defaultCharacterProperties = {
     maxHP: 50,
     resourcesPerTurn: 1,
     maxResources: 5,
-    resources: 2,
+    resources: 1,
     armor: 0,
     turnHistory: [],
     abilityHistory: [],

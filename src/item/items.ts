@@ -27,6 +27,7 @@ import {
     PanlidImage,
     PieceOfIceImage,
     PigsRibbonImage,
+    RedHeadbandImage,
     RespawnTokenImage,
     RisingStarImage,
     SafetyCharmImage,
@@ -806,6 +807,33 @@ export const cursedDoll: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const redHeadband: Item = {
+    name: "Red Headband",
+    image: RedHeadbandImage,
+    description: "On wave start, gain an extra resource.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Red Headband",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Red Headband - Extra Resource",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: RedHeadbandImage,
+                        resourcesPerTurn: 1,
+                        duration: 1,
+                    },
+                ],
             },
         },
     ],
