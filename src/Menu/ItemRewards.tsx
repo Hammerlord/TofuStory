@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { blackScroll, goldenHammer, incense } from "../item/items";
+import ItemView from "../item/ItemView";
 import { Item, ITEM_TYPES } from "../item/types";
 import { ITEMS } from "../Map/routes/eventList";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
+
 const useStyles = createUseStyles({
     inner: {
         position: "absolute",
@@ -32,21 +34,9 @@ const useStyles = createUseStyles({
     selectContainer: {
         marginBottom: 40,
     },
-    item: {
-        display: "inline-block",
-        borderRadius: "8px",
+    itemContainer: {
         margin: 16,
-        padding: 24,
-        verticalAlign: "bottom",
-        background: "#666",
-        width: "200px",
-        minHeight: "150px",
-        "& hr": {
-            opacity: 0.6,
-        },
-    },
-    itemImage: {
-        margin: "8px 0",
+        display: "inline-block",
     },
 });
 
@@ -103,17 +93,14 @@ const ItemRewards = ({
                 </div>
 
                 <div className={classes.container}>
-                    {rewards.map((item: Item) => (
-                        <div key={item.name} className={classes.item}>
-                            <img src={item.image} className={classes.itemImage} />
-                            <div>{item.name}</div>
-                            <hr />
-                            <div>{item.description}</div>
+                    {rewards.map((item: Item, i) => (
+                        <div className={classes.itemContainer} key={i}>
+                            <ItemView item={item} />
                         </div>
                     ))}
                 </div>
                 <Button color="primary" onClick={onClose}>
-                    Exit
+                    Continue
                 </Button>
             </div>
         </Overlay>
