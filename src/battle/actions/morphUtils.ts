@@ -37,8 +37,8 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
     };
 
     const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
-        let value = targets.reduce((acc, combatant) => {
-            return acc + (combatant[property] || 0);
+        let value = targets.reduce((acc, targetInfo: CombatantInfo) => {
+            return acc + (targetInfo.combatant[property] || 0);
         }, 0); // Default is sum
         if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
             value = Math.ceil(value / minions.length);
