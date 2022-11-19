@@ -16,6 +16,7 @@ import DevStageBattle from "./DevStageBattle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 import Button from "../view/Button";
 import DevItemViewer from "./DevItemViewer";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -81,6 +82,7 @@ const DevToolButton = () => {
     const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
     const [treasurePuzzleName, setTreasurePuzzleName] = useState(null);
     const [isItemViewerOpen, setIsItemViewerOpen] = useState(false);
+    const [isShopOpen, setIsShopOpen] = useState(false);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -115,6 +117,7 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>Ability Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsItemViewerOpen((prev) => !prev)}>Item Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>Scene Viewer</MenuItem>
+                                <MenuItem onClick={() => setIsShopOpen((prev) => !prev)}>Shop Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                                 <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
                             </MenuList>
@@ -192,6 +195,15 @@ const DevToolButton = () => {
                         <DevItemViewer />
                     </div>
                 </div>
+            )}
+            {isShopOpen && (
+                <Shop
+                    player={{ ...defaultCharacterProperties, mesos: 1000 }}
+                    deck={[]}
+                    updateDeck={() => {}}
+                    updatePlayer={() => {}}
+                    onExit={() => setIsShopOpen(false)}
+                />
             )}
         </>
     );
