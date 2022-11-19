@@ -254,12 +254,18 @@ const ScenePlayer = ({
                 setScript(next);
                 setDialogIndex(0);
             }
+
             if (shop) {
                 onShop(shop);
+                if (!next) {
+                    onExit();
+                }
             }
+
             if (isExit) {
                 onExit();
             }
+
             if (camp) {
                 setShowCamp(true);
             }
