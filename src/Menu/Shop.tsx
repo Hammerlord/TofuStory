@@ -1,4 +1,3 @@
-import Button from "../view/Button";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -6,23 +5,36 @@ import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import { MesoBagImage, MesoCoinImage } from "../images";
-import { getRandomInt, getRandomItem, shuffle } from "../utils";
-import Overlay from "../view/Overlay";
-import { SECONDARY_JOBS } from "./types";
-import { Item, ITEM_TYPES } from "../item/types";
-import { ITEMS } from "../Map/routes/eventList";
 import { blackScroll, goldenHammer, incense } from "../item/items";
 import ItemView from "../item/ItemView";
+import { Item, ITEM_TYPES } from "../item/types";
+import { ITEMS } from "../Map/routes/eventList";
+import { getRandomInt, getRandomItem, shuffle } from "../utils";
+import Button from "../view/Button";
+import { SECONDARY_JOBS } from "./types";
+
+const HEADER_BAR = 72;
 
 const useStyles = createUseStyles({
+    root: {
+        position: "fixed",
+        left: 0,
+        right: 0,
+        top: 0,
+        paddingTop: HEADER_BAR,
+        bottom: 0,
+        maxHeight: `calc(100% - ${HEADER_BAR}px)`,
+        background: "rgba(40, 40, 40, 0.9)",
+        overflowY: "scroll",
+    },
     inner: {
         position: "absolute",
+        maxHeight: `calc(100% - ${HEADER_BAR * 2}px)`,
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
         textAlign: "center",
         width: "100%",
-        background: "rgb(50, 50, 50)",
         padding: "64px 0",
         "& .selected": {
             boxShadow: "0 0 8px 4px #45ff61",
@@ -46,32 +58,39 @@ const useStyles = createUseStyles({
         verticalAlign: "top",
     },
     ability: {
-        margin: "0 24px",
         verticalAlign: "bottom",
         borderRadius: 4,
     },
     item: {
-        margin: "0 24px",
         verticalAlign: "bottom",
         borderRadius: 8,
     },
     abilitiesSection: {
-        marginBottom: "32px",
+        marginBottom: "24px",
     },
     abilityContainer: {
         display: "inline-block",
-        minHeight: "350px",
+        minHeight: "360px",
         verticalAlign: "bottom",
+        margin: 16,
     },
     itemContainer: {
         display: "inline-block",
         minHeight: "300px",
         verticalAlign: "bottom",
+        margin: 16,
     },
     priceContainer: {
         textAlign: "center",
         color: "white",
         margin: "12px 0",
+    },
+    priceContainerInner: {
+        background:
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
+        padding: "4px 0",
+        maxWidth: "150px",
+        margin: "auto",
     },
     priceLabel: {
         marginLeft: 4,
@@ -81,7 +100,11 @@ const useStyles = createUseStyles({
     doneContainer: {
         position: "absolute",
         right: "32px",
-        top: "32px",
+        paddingTop: "32px",
+    },
+    cannotAfford: {
+        filter: "saturate(0%)",
+        color: "rgba(200, 200, 200, 0.8)",
     },
 });
 
@@ -193,7 +216,7 @@ const Shop = ({
     };
 
     return (
-        <Overlay>
+        <div className={classes.root}>
             <div className={classes.inner}>
                 <div className={classes.doneContainer}>
                     <Button color="primary" variant="contained" onClick={onExit}>
@@ -224,8 +247,14 @@ const Shop = ({
                                     <AbilityView ability={item} />
                                 </div>
                                 <div className={classes.priceContainer}>
-                                    <img src={MesoCoinImage} alt={"Mesos"} />
-                                    <span className={classes.priceLabel}>{price}</span>
+                                    <div
+                                        className={classNames(classes.priceContainerInner, {
+                                            [classes.cannotAfford]: player.mesos < price,
+                                        })}
+                                    >
+                                        <img src={MesoCoinImage} alt={"Mesos"} />
+                                        <span className={classes.priceLabel}>{price}</span>
+                                    </div>
                                 </div>
                                 {i === selectedAbilityIndex && (
                                     <div>
@@ -255,8 +284,14 @@ const Shop = ({
                                     <ItemView item={item} />
                                 </div>
                                 <div className={classes.priceContainer}>
-                                    <img src={MesoCoinImage} alt={"Mesos"} />
-                                    <span className={classes.priceLabel}>{price}</span>
+                                    <div
+                                        className={classNames(classes.priceContainerInner, {
+                                            [classes.cannotAfford]: player.mesos < price,
+                                        })}
+                                    >
+                                        <img src={MesoCoinImage} alt={"Mesos"} />
+                                        <span className={classes.priceLabel}>{price}</span>
+                                    </div>
                                 </div>
                                 {i === selectedItemIndex && (
                                     <div>
@@ -270,7 +305,7 @@ const Shop = ({
                     </div>
                 </div>
             </div>
-        </Overlay>
+        </div>
     );
 };
 
