@@ -1,5 +1,5 @@
 import { Ability, Minion } from "../ability/types";
-import { BATTLE_TYPES } from "../battle/types";
+import { BATTLE_TYPES, Wave } from "../battle/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
@@ -12,10 +12,7 @@ export interface Scene {
 export interface SceneEncounter {
     addAbilities?: Ability[];
     characters: string[];
-    waves: {
-        enemies: Minion[];
-        description?: string | string[];
-    }[];
+    waves: Wave[];
     itemRewards?: Item[];
     type?: BATTLE_TYPES;
 }

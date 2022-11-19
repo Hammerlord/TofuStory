@@ -38,7 +38,14 @@ export const routeKerningToPerion: Route = {
             x: 0.3169347209082308,
             y: 0.2961431859820548,
             type: NODE_TYPES.BOSS,
-            encounter: [{ enemies: [null, null, stumpy, null, null] }],
+            encounter: [
+                {
+                    enemies: [null, null, stumpy, null, null],
+                    winCondition: {
+                        defeatBoss: true,
+                    },
+                },
+            ],
             region: REGIONS.PERION,
         },
         {
@@ -107,7 +114,14 @@ const toKerningForest: Route = {
             x: 0.2324514991181658,
             y: 0.5092328479207326,
             type: NODE_TYPES.BOSS,
-            encounter: [{ enemies: [null, snail, mutantSnailEnemy, snail, null] }],
+            encounter: [
+                {
+                    enemies: [null, snail, mutantSnailEnemy, snail, null],
+                    winCondition: {
+                        defeatBoss: true,
+                    },
+                },
+            ],
             region: REGIONS.HENESYS,
         },
     ],
@@ -170,7 +184,14 @@ export const routeHenesysEllinia: Route = {
             x: 0.5734375,
             y: 0.6790011447789057,
             type: NODE_TYPES.BOSS,
-            encounter: [{ enemies: [null, null, strangePig, null, null] }],
+            encounter: [
+                {
+                    enemies: [null, null, strangePig, null, null],
+                    winCondition: {
+                        defeatBoss: true,
+                    },
+                },
+            ],
             region: REGIONS.HENESYS,
         },
         { x: 0.6104910714285714, y: 0.6504244232166863, region: REGIONS.ELLINIA },
@@ -237,7 +258,14 @@ export const toHenesysForest: Route = {
             x: 0.37178130511463847,
             y: 0.6970725116348897,
             type: NODE_TYPES.BOSS,
-            encounter: [{ enemies: [null, snail, manoEnemy, snail, null] }],
+            encounter: [
+                {
+                    enemies: [null, snail, manoEnemy, snail, null],
+                    winCondition: {
+                        defeatBoss: true,
+                    },
+                },
+            ],
             region: REGIONS.HENESYS,
         },
     ],

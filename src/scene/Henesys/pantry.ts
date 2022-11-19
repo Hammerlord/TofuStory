@@ -1,4 +1,5 @@
 import { ACTION_TYPES, TARGET_TYPES } from "../../ability/types";
+import { BATTLE_TYPES } from "../../battle/types";
 import { miniBean } from "../../enemy/miniBean";
 import { CakeSliceImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
 import { Item, ITEM_TYPES } from "../../item/types";
@@ -23,9 +24,13 @@ const miniBeanFight = {
     waves: [
         {
             enemies: [null, null, miniBean, null, null],
+            winCondition: {
+                defeatBoss: true,
+            },
         },
     ],
     backgroundMusic: "https://maplestory.io/api/GMS/236/music/Bgm16/FightingPinkBeen",
+    type: BATTLE_TYPES.BOSS,
 };
 
 const mayaEnemy: Minion = {

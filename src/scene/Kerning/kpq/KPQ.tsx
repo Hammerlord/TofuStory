@@ -1,3 +1,4 @@
+import { BATTLE_TYPES } from "../../../battle/types";
 import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../enemy/enemy";
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
 import { KerningCityBGImage, SleepywoodRegionBGImage, SwampRegionBGImage } from "../../../images";
@@ -54,6 +55,7 @@ const kingSlimeFight = {
             enemies: [null, null, kingSlimeEnemy, null, null],
         },
     ],
+    type: BATTLE_TYPES.BOSS,
 };
 
 const lastStage = {
