@@ -166,6 +166,8 @@ export const passesConditions = ({
             if (isElite !== undefined && Boolean(combatant.isBoss || combatant.isElite) !== isElite) {
                 return false;
             }
+
+            return true;
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
