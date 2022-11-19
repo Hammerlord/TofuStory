@@ -143,6 +143,7 @@ const throwRocks: Action = {
 export const mutantRibbonPig: Minion = {
     name: "Mutant Ribbon Pig",
     image: MutantRibbonPigImage,
+    isBoss: true,
     damage: 5,
     maxHP: 200,
     abilities: [
