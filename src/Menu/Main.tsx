@@ -377,7 +377,8 @@ const Main = () => {
                     )}
                     {itemRewardsOpen && (
                         <ItemRewards
-                            currentItems={player.items}
+                            playerCurrentItems={player.items}
+                            overrideItems={battle.itemRewards}
                             onLoot={handleObtainLoot}
                             onClose={handleCloseItemRewards}
                             rewardType={battle.type}

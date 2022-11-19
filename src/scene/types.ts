@@ -1,4 +1,5 @@
 import { Ability, Minion } from "../ability/types";
+import { BATTLE_TYPES } from "../battle/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
@@ -8,16 +9,21 @@ export interface Scene {
     script: ScriptNode[];
 }
 
+export interface SceneEncounter {
+    addAbilities?: Ability[];
+    characters: string[];
+    waves: {
+        enemies: Minion[];
+        description?: string | string[];
+    }[];
+    itemRewards?: Item[];
+    type?: BATTLE_TYPES;
+}
+
 export interface ScriptResponse {
     text: string;
     isExit?: boolean;
-    encounter?: {
-        addAbilities?: Ability[];
-        characters: string[];
-        waves: {
-            enemies: Minion[];
-        }[];
-    };
+    encounter?: SceneEncounter;
     next?: ScriptNode[];
     notoriety?: number;
     shop?: {

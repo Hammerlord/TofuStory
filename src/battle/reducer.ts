@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { HandAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
+import { Item } from "../item/types";
 import { shuffle } from "../utils";
 import { BATTLEFIELD_SIDES, BATTLE_TYPES, Event, Wave } from "./types";
 
@@ -27,6 +28,7 @@ export interface BattleState {
     backgroundImage?: string; // Path to background image
     backgroundMusic?: string; // 'boss' or path to music URL
     type: BATTLE_TYPES; // Determines the rewards at the end of battle
+    itemRewards?: Item[];
 }
 
 export interface PlayerSelectCardsPrompt {

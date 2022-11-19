@@ -1,8 +1,9 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { Wave } from "../battle/types";
+import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
 import { LithHarborBalconyFullImage, OlafImage, PuppetreeImage } from "../images";
+import { redHeadband } from "../item/items";
 import { Scene } from "./types";
 
 const olafNPC = {
@@ -61,7 +62,7 @@ const Olaf = ({ player }) => {
     );
 };
 
-const olafFight: { characters: string[]; waves: Wave[] } = {
+const olafFight = {
     characters: [olafNPC.name],
     waves: [
         {
@@ -72,6 +73,8 @@ const olafFight: { characters: string[]; waves: Wave[] } = {
             ],
         },
     ],
+    itemRewards: [redHeadband],
+    type: BATTLE_TYPES.ELITE_ENCOUNTER,
 };
 
 const postFight = [

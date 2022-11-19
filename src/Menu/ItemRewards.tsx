@@ -51,20 +51,23 @@ const useStyles = createUseStyles({
 });
 
 const ItemRewards = ({
-    currentItems,
+    playerCurrentItems,
     onLoot,
     onClose,
     rewardType,
+    overrideItems,
 }: {
-    currentItems: Item[];
+    playerCurrentItems: Item[];
     onLoot: ({ items }: { items: Item[] }) => void;
     onClose: () => void;
     rewardType: BATTLE_TYPES;
+    // Eg. encounter-specific item(s); it takes the place of the auto-generated item from elites/bosses
+    overrideItems: Item[];
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState([]);
     useEffect(() => {
-        const alreadyObtained = currentItems.reduce((acc, item: Item) => {
+        const alreadyObtained = playerCurrentItems.reduce((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
                 acc[item.name] = true;
             }
@@ -72,10 +75,16 @@ const ItemRewards = ({
         }, {});
 
         const items = [];
-        const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
-        if (equipment) {
-            items.push(equipment);
+
+        if (overrideItems?.length > 0) {
+            items.push(...overrideItems);
+        } else {
+            const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+            if (equipment) {
+                items.push(equipment);
+            }
         }
+
         if (rewardType === BATTLE_TYPES.BOSS) {
             items.push(...[incense, goldenHammer, blackScroll]);
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {

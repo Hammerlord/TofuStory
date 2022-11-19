@@ -3,6 +3,7 @@ import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
+import { Item } from "../../item/types";
 import { shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -74,6 +75,7 @@ export const startBattle = ({
     backgroundImage,
     backgroundMusic,
     type = BATTLE_TYPES.ENCOUNTER,
+    itemRewards,
 }: {
     waves: Wave[];
     deck?: Ability[];
@@ -82,6 +84,7 @@ export const startBattle = ({
     backgroundImage?: string;
     backgroundMusic?: string;
     type?: BATTLE_TYPES;
+    itemRewards?: Item[];
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
@@ -122,6 +125,7 @@ export const startBattle = ({
                 backgroundImage,
                 backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
                 type,
+                itemRewards,
             })
         );
     };
