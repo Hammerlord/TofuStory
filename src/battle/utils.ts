@@ -302,8 +302,11 @@ export const getEnabledEffects = ({
     };
 
     return combatant.effects?.filter((effect) => {
-        const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
-        return !disabled && passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect });
+        const { canBeSilenced, turnsTriggerFrequency, uptime } = effect;
+        const disabled = silenced && canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
+
+        const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
+        return !disabled && passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect }) && isTurnToTrigger;
     });
 };
 

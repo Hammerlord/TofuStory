@@ -133,7 +133,7 @@ export const startPlayerTurn = () => {
         );
 
         if (round > 0) {
-            dispatch(checkHalveArmor(playerSide));
+            dispatch(checkHalveArmor(getState().battle.playerSide));
         }
 
         const { battle } = getState();
@@ -149,6 +149,8 @@ export const startPlayerTurn = () => {
             })
         );
 
+        dispatch(checkTurnResourceGain(getState().battle.playerSide));
+
         playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
@@ -157,8 +159,6 @@ export const startPlayerTurn = () => {
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
-
-        dispatch(checkTurnResourceGain(playerSide));
     };
 };
 

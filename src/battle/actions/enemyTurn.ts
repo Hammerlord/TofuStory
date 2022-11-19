@@ -315,8 +315,10 @@ export const startEnemyTurn = () => {
         );
 
         if (round > 0) {
-            dispatch(checkHalveArmor(enemySide));
+            dispatch(checkHalveArmor(getState().battle.enemySide));
         }
+
+        dispatch(checkTurnResourceGain(getState().battle.enemySide));
 
         enemySide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
@@ -326,8 +328,6 @@ export const startEnemyTurn = () => {
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
             dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
         });
-
-        dispatch(checkTurnResourceGain(enemySide));
 
         const acted = {};
         const isEligibleToMove = (char: Combatant | null) => {
