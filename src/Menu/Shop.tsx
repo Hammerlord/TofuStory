@@ -126,16 +126,12 @@ const createShopItems = ({
 
 const Shop = ({
     player,
-    updatePlayer,
-    updateDeck,
-    deck,
+    onBuyItem,
     merchant,
     onExit,
 }: {
     player: any;
-    updatePlayer: (player: any) => void;
-    updateDeck: (deck: Ability[]) => void;
-    deck: Ability[];
+    onBuyItem: ({ items, mesosSpent, type }: { items: Item[] | Ability[]; mesosSpent: number; type: "item" | "ability" }) => void;
     merchant?: { name: string };
     onExit: () => void;
 }) => {
@@ -191,10 +187,7 @@ const Shop = ({
         if (abilities[selectedAbilityIndex]) {
             const { price, item } = abilities[selectedAbilityIndex];
             if (player.mesos >= price) {
-                updateDeck([item, ...deck]);
-                updatePlayer({
-                    mesos: player.mesos - price,
-                });
+                onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
                 const updatedAbilities = abilities.slice();
                 updatedAbilities.splice(selectedAbilityIndex, 1);
                 setAbilities(updatedAbilities);
@@ -203,10 +196,7 @@ const Shop = ({
         } else if (items[selectedItemIndex]) {
             const { price, item } = items[selectedItemIndex];
             if (player.mesos >= price) {
-                updatePlayer({
-                    mesos: player.mesos - price,
-                    items: [...player.items, item],
-                });
+                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
                 const updatedItems = items.slice();
                 updatedItems.splice(selectedItemIndex, 1);
                 setItems(updatedItems);

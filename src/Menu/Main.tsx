@@ -91,7 +91,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable } = playerStateSlice.actions;
+const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems } = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
@@ -282,15 +282,31 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} />;
     }
 
-    const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
-        const newItems = [...player.items, ...items];
+    const handleBuyItem = ({ items, mesosSpent, type }: { items: Item[] | Ability[]; mesosSpent: number; type: "item" | "ability" }) => {
         dispatch(
             updatePlayer({
-                mesos: player.mesos + mesos,
-                effects: aggregateItemEffects(newItems),
-                items: newItems,
+                mesos: Math.max(0, player.mesos - mesosSpent),
             })
         );
+
+        if (type === "ability") {
+            dispatch(updateDeck([...items, ...deck]));
+            return;
+        }
+
+        if (type === "item") {
+            dispatch(acquireItems(items as Item[]));
+        }
+    };
+
+    const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
+        dispatch(
+            updatePlayer({
+                mesos: Math.max(0, player.mesos + mesos),
+            })
+        );
+
+        dispatch(acquireItems(items));
     };
 
     const handleTownBattle = (battleConfig, callback: () => void) => {
@@ -361,17 +377,7 @@ const Main = () => {
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {shop && (
-                        <Shop
-                            player={player}
-                            mesos={player.mesos}
-                            {...shop}
-                            onExit={() => setShop(null)}
-                            deck={deck}
-                            updateDeck={handleUpdateDeck}
-                            updatePlayer={setPlayer}
-                        />
-                    )}
+                    {shop && <Shop player={player} mesos={player.mesos} {...shop} onExit={() => setShop(null)} onBuyItem={handleBuyItem} />}
                     {cardRewardsOpen && (
                         <CardRewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseCardRewards} />
                     )}

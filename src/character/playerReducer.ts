@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
 import { getMaxHP } from "../battle/utils";
+import { Item, ITEM_TYPES } from "../item/types";
 
 export const playerStateSlice = createSlice({
     name: "player",
@@ -42,6 +43,21 @@ export const playerStateSlice = createSlice({
             return {
                 player: null,
                 deck: [],
+            };
+        },
+        acquireItems: (state, action: PayloadAction<Item[]>) => {
+            const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];
+            const newItems = [...state.player.items, ...action.payload].sort((a: Item, b: Item) => {
+                return order.findIndex((type) => type === a.type) - order.findIndex((type) => type === b.type);
+            });
+
+            return {
+                ...state,
+                player: {
+                    ...state.player,
+                    effects: aggregateItemEffects(newItems),
+                    items: newItems,
+                },
             };
         },
         useConsumable: (state, action: PayloadAction<number>) => {

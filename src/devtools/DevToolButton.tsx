@@ -197,13 +197,7 @@ const DevToolButton = () => {
                 </div>
             )}
             {isShopOpen && (
-                <Shop
-                    player={{ ...defaultCharacterProperties, mesos: 1000 }}
-                    deck={[]}
-                    updateDeck={() => {}}
-                    updatePlayer={() => {}}
-                    onExit={() => setIsShopOpen(false)}
-                />
+                <Shop player={{ ...defaultCharacterProperties, mesos: 1000 }} onBuyItem={() => {}} onExit={() => setIsShopOpen(false)} />
             )}
         </>
     );
