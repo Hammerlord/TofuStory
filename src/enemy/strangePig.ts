@@ -1,5 +1,5 @@
 import { Action, ANIMATION_TYPES, MORPH_TYPES } from "./../ability/types";
-import { stun } from "../ability/Effects";
+import { hardy, stun } from "../ability/Effects";
 import {
     ACTION_TYPES,
     CONDITION_TARGETS,
@@ -216,6 +216,7 @@ export const mutantRibbonPig: Minion = {
         },
     ],
     effects: [
+        hardy,
         championsRibbon,
         pigHeaded,
         {
@@ -224,7 +225,7 @@ export const mutantRibbonPig: Minion = {
             class: EFFECT_CLASSES.NONE,
             onSummoned: {
                 ability: {
-                    name: "Roar",
+                    name: "",
                     actions: [
                         {
                             target: TARGET_TYPES.HOSTILE,

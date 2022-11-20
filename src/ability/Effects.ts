@@ -410,6 +410,7 @@ export const elite: Effect = {
         "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     icon: MilitaryMedalIcon,
     onReceiveEffect: {
+        usableWhileStunned: true,
         conditions: [
             {
                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
