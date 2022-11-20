@@ -139,11 +139,13 @@ const SelectCardOverlay = ({
                 <Button variant={"contained"} color="primary" disabled={!selectedAbility} onClick={handleSelectClick}>
                     Select!
                 </Button>
-                <div className={classes.cancel}>
-                    <Button variant={"contained"} onClick={onCancel}>
-                        Cancel
-                    </Button>
-                </div>
+                {type !== SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && (
+                    <div className={classes.cancel}>
+                        <Button variant={"contained"} onClick={onCancel}>
+                            Cancel
+                        </Button>
+                    </div>
+                )}
             </div>
         </Overlay>
     );
