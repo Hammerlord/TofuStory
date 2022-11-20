@@ -42,10 +42,10 @@ export const thorns: Effect = {
 };
 
 export const controlImmune: Effect = {
-    name: "Stun Immunity",
-    description: "Target cannot be stunned or frozen.",
+    name: "Control Immunity",
+    description: "Target cannot be stunned, frozen, or silenced.",
     icon: NoStunIcon,
-    immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+    immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
     duration: 5,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -53,14 +53,14 @@ export const controlImmune: Effect = {
 
 export const hardy: Effect = {
     name: "Hardy",
-    description: "After being stunned or frozen, gains temporary immunity to those effects.",
+    description: "After being stunned, frozen or silenced, this character gains temporary immunity to those effects.",
     icon: HelmetIcon,
     onReceiveEffect: {
         usableWhileStunned: true,
         conditions: [
             {
                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
-                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
                 comparator: "eq",
             },
         ],
@@ -378,6 +378,7 @@ export const explosive: Effect = {
 };
 
 export const eliteSquad: Effect = {
+    ...hardy,
     name: "Elite Squadmember",
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
@@ -385,42 +386,19 @@ export const eliteSquad: Effect = {
     attackPower: 1,
     icon: MedalIcon,
     description:
-        "A member of an elite triad, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
-    onReceiveEffect: {
-        usableWhileStunned: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                comparator: "eq",
-            },
-        ],
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [controlImmune],
-    },
+        "A member of an elite triad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
 
 export const elite: Effect = {
+    ...hardy,
     name: "Elite",
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 2,
-    description:
-        "An elite champion, tougher and stronger than most enemies. After being stunned or frozen, gains temporary immunity to those effects.",
     icon: MilitaryMedalIcon,
-    onReceiveEffect: {
-        usableWhileStunned: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                comparator: "eq",
-            },
-        ],
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [controlImmune],
-    },
+    description:
+        "An elite champion, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
 
 export const healingOverTime: Effect = {
