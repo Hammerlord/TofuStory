@@ -12,7 +12,7 @@ import {
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
-import { getRandomItem, shuffle } from "../../utils";
+import { shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
@@ -24,7 +24,9 @@ const getStoredSummonerEffect = (summoner): CombatEffect => {
         class: EFFECT_CLASSES.NONE,
         id: uuid.v4(),
         uptime: 0,
+        canBeSilenced: false,
         onDeath: {
+            usableWhileStunned: true,
             ability: {
                 name: "Reveal",
                 actions: [
