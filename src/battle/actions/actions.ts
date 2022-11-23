@@ -281,9 +281,10 @@ const handleOnReceiveAction = ({
             if (!isAttack(action)) {
                 return;
             }
+
             dispatch(
                 checkEventTrigger({
-                    combatantId: source?.targetId,
+                    combatantId: stats.combatantId,
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack,
                     source: { ...source, targetId: stats.combatantId },
                 })
@@ -495,6 +496,7 @@ export const checkEventTrigger = ({
             EFFECT_EVENT_KEYS.onHostileDeath,
             EFFECT_EVENT_KEYS.onReceiveOverhealing,
         ];
+
         if (!combatantId || (source?.procDepth > 1 && !allowedEvents.includes(effectEventKey))) {
             return;
         }
@@ -775,7 +777,13 @@ const checkHandleMorph = ({
         const targets = morphTargetIds.map((id: string) => findCombatantData(getState, id));
         const type = action.morph.type;
         let transformed = {} as any;
-        const morphProps = { targets, morph: action.morph, source: parentSource };
+        const morphProps = {
+            targets,
+            morph: action.morph,
+            source: parentSource,
+            summoner: findCombatantData(getState, actorId)?.combatant,
+        };
+
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
         } else {

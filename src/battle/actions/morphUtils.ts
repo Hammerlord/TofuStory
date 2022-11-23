@@ -1,17 +1,56 @@
-import { Morph, MORPH_MINION_MODIFIERS } from "../../ability/types";
+import uuid from "uuid";
+import {
+    ACTION_TYPES,
+    CombatEffect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Morph,
+    MORPH_MINION_MODIFIERS,
+    MORPH_TYPES,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
-import { getRandomItem } from "../../utils";
+import { getRandomItem, shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
-import { getPossibleSummonIndices } from "../utils";
 import { CombatantInfo, TriggerSource } from "../types";
+import { getPossibleSummonIndices } from "../utils";
+
+const getStoredSummonerEffect = (summoner): CombatEffect => {
+    return {
+        name: "Reveal",
+        type: EFFECT_TYPES.NONE,
+        class: EFFECT_CLASSES.NONE,
+        id: uuid.v4(),
+        uptime: 0,
+        onDeath: {
+            ability: {
+                name: "Reveal",
+                actions: [
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        target: TARGET_TYPES.SELF,
+                        morph: {
+                            type: MORPH_TYPES.MAP,
+                            minions: [
+                                {
+                                    minion: summoner,
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+    };
+};
 
 /**
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
  * This ignores morph conditions
  */
-export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; morph: Morph }) => {
+export const getMorphMerge = ({ targets, morph, summoner }: { targets: CombatantInfo[]; morph: Morph; summoner: Combatant }) => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide, index } = targets[0];
@@ -22,6 +61,7 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
         return combatant;
     });
 
+    const possibleSummonIndices = shuffle(getPossibleSummonIndices(friendly));
     const summons = [];
     const getSummonPos = (positionIndex?: number): number => {
         if (typeof positionIndex === "number") {
@@ -29,11 +69,11 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
         }
 
         // If there is only one mutate target, replace the target
-        if (targets.length === 1) {
+        if (targets.length === 1 && minions.length === 1) {
             return index;
         }
 
-        return getRandomItem(getPossibleSummonIndices(friendly));
+        return possibleSummonIndices.shift();
     };
 
     const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
@@ -47,7 +87,7 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
         return acc;
     }, {});
 
-    for (const { minion, positionIndex } of minions) {
+    for (const { minion, positionIndex, storeSummoner } of minions) {
         const pos = getSummonPos(positionIndex);
         const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
         if (!minionToSummon) {
@@ -60,6 +100,10 @@ export const getMorphMerge = ({ targets, morph }: { targets: CombatantInfo[]; mo
                 ...createCombatant(minionToSummon),
                 ...modifierValues,
             };
+
+            if (storeSummoner && summoner) {
+                combatants[pos].effects.push(getStoredSummonerEffect(summoner));
+            }
 
             summons.push(combatants[pos]);
         }

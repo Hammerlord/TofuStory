@@ -1,0 +1,354 @@
+import { poison, stealth, wound } from "../ability/Effects";
+import {
+    AvengerImage,
+    KumbiImage,
+    SapOfNependeathImage,
+    SubiImage,
+    DarkLordImage,
+    BystanderImage,
+    FlashJumpImage,
+    DarkSightImage,
+    AssassinateImage,
+} from "../images";
+import { CloudyIcon } from "../images/icons";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+    CONDITION_TARGETS,
+    MORPH_TYPES,
+    Effect,
+} from "./../ability/types";
+
+const shadowClone: Minion = {
+    name: "Shadow Clone",
+    maxHP: 5,
+    armor: 25,
+    damage: 1,
+    image: DarkLordImage,
+    attack: {
+        name: "Throw Star",
+        image: KumbiImage,
+        actions: [
+            {
+                type: ACTION_TYPES.RANGE_ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                damage: 0,
+                icon: SubiImage,
+            },
+        ],
+    },
+    effects: [
+        {
+            name: "Shadow Clone",
+            icon: BystanderImage,
+            description: "Preventing armor decay.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            preventArmorDecay: true,
+        },
+    ],
+};
+
+const realShadow: Minion = {
+    name: "Shadow Clone",
+    maxHP: 5,
+    armor: 25,
+    damage: 1,
+    image: DarkLordImage,
+    attack: {
+        name: "Throw Star",
+        image: KumbiImage,
+        actions: [
+            {
+                type: ACTION_TYPES.RANGE_ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                damage: 0,
+                icon: KumbiImage,
+            },
+        ],
+    },
+    effects: [
+        {
+            name: "Real Clone",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onDeath: {
+                ability: {
+                    name: "Reveal",
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            damage: 100,
+                            area: 5,
+                            excludePrimaryTarget: true,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            name: "Shadow Clone",
+            icon: BystanderImage,
+            description: "Preventing armor decay.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            preventArmorDecay: true,
+        },
+    ],
+};
+
+const shadowClonesEffect: Effect = {
+    name: "Shadow Clones",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    conditions: [
+        {
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+            healthPercentage: 0.7,
+            comparator: "lt",
+        },
+    ],
+    onReceiveDamage: {
+        removeEffect: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        ability: {
+            name: "Shadow Clones",
+            resourceCost: 0,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    morph: {
+                        type: MORPH_TYPES.MERGE,
+                        minions: [
+                            {
+                                minion: shadowClone,
+                            },
+                            {
+                                minion: shadowClone,
+                            },
+                            {
+                                minion: realShadow,
+                                storeSummoner: true,
+                            },
+                            {
+                                minion: shadowClone,
+                            },
+                            {
+                                minion: shadowClone,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    },
+};
+
+export const darkLord: Minion = {
+    name: "Dark Lord",
+    isBoss: true,
+    maxHP: 200,
+    damage: 3,
+    image: DarkLordImage,
+    attack: {
+        name: "Throw Star",
+        image: KumbiImage,
+        actions: [
+            {
+                type: ACTION_TYPES.RANGE_ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                damage: 0,
+                icon: KumbiImage,
+            },
+        ],
+    },
+    abilities: [
+        {
+            name: "Lucky Seven",
+            image: KumbiImage,
+            resourceCost: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 0,
+                    icon: KumbiImage,
+                },
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 0,
+                    icon: KumbiImage,
+                },
+            ],
+        },
+        {
+            name: "Avenger",
+            image: AvengerImage,
+            resourceCost: 1,
+            actions: [
+                {
+                    damage: 5,
+                    targetArea: 2,
+                    numTargets: 2,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    ricochet: true,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: AvengerImage,
+                },
+            ],
+        },
+        {
+            name: "Dark Sight",
+            resourceCost: 3,
+            preemptive: true,
+            image: DarkSightImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    icon: DarkSightImage,
+                    effects: [
+                        {
+                            type: EFFECT_TYPES.STEALTH,
+                            class: EFFECT_CLASSES.BUFF,
+                            name: "Stealth",
+                            icon: CloudyIcon,
+                            canBeSilenced: true,
+                            duration: 3,
+                            description:
+                                "Untargetable by attacks. Healing for 7 HP per turn while active. Effect ends if this character is hit by area damage",
+                            onTurnStart: {
+                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                healing: 7,
+                            },
+                            onReceiveAttack: {
+                                removeEffect: true,
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Assassinate",
+            resourceCost: 3,
+            image: AssassinateImage,
+            castTime: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    bonus: {
+                        damage: 1,
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                hasEffectType: [EFFECT_TYPES.STEALTH],
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    bonus: {
+                        damage: 1,
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                hasEffectType: [EFFECT_TYPES.STEALTH],
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    bonus: {
+                        damage: 1,
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                hasEffectType: [EFFECT_TYPES.STEALTH],
+                            },
+                        ],
+                    },
+                    effects: [
+                        {
+                            ...wound,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Venom",
+            description: "This character's attacks apply poison for 2 turns.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: SapOfNependeathImage,
+            onAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [{ ...poison, duration: 2 }],
+            },
+        },
+        {
+            name: "Flash Jump",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            turnsTriggerFrequency: 5,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                ability: {
+                    name: "Flash Jump",
+                    image: FlashJumpImage,
+                    resourceCost: 0,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.EFFECT,
+                            resources: 3,
+                            armor: 15,
+                        },
+                    ],
+                },
+            },
+        },
+        shadowClonesEffect,
+        {
+            ...shadowClonesEffect,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    healthPercentage: 0.3,
+                    comparator: "lt",
+                },
+            ],
+        },
+    ],
+};

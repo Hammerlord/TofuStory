@@ -328,6 +328,7 @@ export interface Morph {
         minion: Minion | string; // Minion object or a string name
         positionIndex?: number; // Only applicable for MORPH_TYPES.MERGE (place the new minion in a specific index on the board)
         conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
+        storeSummoner?: true; // This minion takes the place of its summoner. When killed, the summoner will reappear in its place.
     }[];
     modifiers?: {
         HP: MORPH_MINION_MODIFIERS;
