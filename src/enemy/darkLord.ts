@@ -26,13 +26,13 @@ import {
 
 const shadowClone: Minion = {
     name: "Shadow Clone",
-    maxHP: 5,
-    armor: 25,
+    maxHP: 1,
+    armor: 29,
     damage: 1,
     image: DarkLordImage,
     attack: {
         name: "Throw Star",
-        image: KumbiImage,
+        image: SubiImage,
         actions: [
             {
                 type: ACTION_TYPES.RANGE_ATTACK,
@@ -57,8 +57,8 @@ const shadowClone: Minion = {
 
 const realShadow: Minion = {
     name: "Shadow Clone",
-    maxHP: 5,
-    armor: 25,
+    maxHP: 1,
+    armor: 29,
     damage: 1,
     image: DarkLordImage,
     attack: {
