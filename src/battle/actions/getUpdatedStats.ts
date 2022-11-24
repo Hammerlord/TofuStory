@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Ability, Action, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import { Ability, Action, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
 import { Item } from "../../item/types";
 import {
     calculateArmor,
@@ -29,6 +29,7 @@ export interface UpdatedCombatantStats {
     effects?: Effect[];
     isDeathBlow?: boolean;
     mesos?: number;
+    removedEffects?: CombatEffect[];
 }
 
 export const getUpdatedStats = ({
@@ -63,7 +64,7 @@ export const getUpdatedStats = ({
             actionParent,
             source,
         });
-        const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect, mesos = 0 } = action;
+        const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect, mesos = 0, removeDebuffs } = action;
 
         const enabledEffects = getEnabledEffects(target);
         const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
@@ -110,6 +111,12 @@ export const getUpdatedStats = ({
             }));
 
         const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources);
+        const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
+            if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF) {
+                return true;
+            }
+        });
+
         return [
             {
                 combatantId: targetCombatant.id,
@@ -125,6 +132,7 @@ export const getUpdatedStats = ({
                 effects,
                 isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
                 mesos,
+                removedEffects,
             },
             action,
         ];

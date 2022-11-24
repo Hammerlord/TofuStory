@@ -49,6 +49,7 @@ const useStyles = createUseStyles({
         transitionTimingFunction: "ease-in-out",
         animationIterationCount: 1,
         animationDuration: ({ playbackTime = 0 }: any) => `${playbackTime / 1000}s`,
+        maxWidth: "100px",
     },
 });
 

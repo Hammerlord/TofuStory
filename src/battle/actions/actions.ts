@@ -16,7 +16,7 @@ import {
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
-import { enemyNameMap } from "../../enemy";
+import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { IndexedCombatant, passesConditions } from "../passesConditions";
@@ -351,8 +351,20 @@ const onEffectEventTrigger = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
+        if (!effectEvent) {
+            return;
+        }
+
         const { canBeSilenced, excludeEffectOwner } = effect;
-        const { removeEffect, targetType, ability, conditions, randomOptions = {}, usableWhileStunned, ...other } = effectEvent;
+        const {
+            removeEffect,
+            targetType,
+            ability: effectEventAbility,
+            conditions,
+            randomOptions = {},
+            usableWhileStunned,
+            ...other
+        } = effectEvent;
 
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES): string[] => {
             const targetIds =
@@ -440,11 +452,13 @@ const onEffectEventTrigger = ({
             );
         }
 
-        if (!ability) {
+        if (!effectEventAbility) {
             return;
         }
 
-        ability.actions.forEach((action) => {
+        const ability = typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
+
+        ability?.actions.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: i,
                 initialSelectedSide: friendlySide,
@@ -527,32 +541,38 @@ export const checkEventTrigger = ({
 
 export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
-    statUpdates.forEach(({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0 }) => {
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
-        // Due to morph, the combatant may no longer exist
-        if (!oldCombatant) {
-            return;
+    statUpdates.forEach(
+        ({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0, removedEffects = [] }) => {
+            const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
+            // Due to morph, the combatant may no longer exist
+            if (!oldCombatant) {
+                return;
+            }
+
+            dispatch(
+                updateBattle({
+                    [friendlySide]: friendly.map((combatant: Combatant | null) => {
+                        if (combatant?.id !== combatantId) {
+                            return combatant;
+                        }
+
+                        const combatantEffects = oldCombatant.effects.filter((effect: CombatEffect) =>
+                            removedEffects.every(({ id }) => id !== effect.id)
+                        );
+
+                        return {
+                            ...oldCombatant,
+                            HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
+                            armor: oldCombatant.armor + armor,
+                            resources: oldCombatant.resources + resources,
+                            effects: [...combatantEffects, ...effects],
+                            mesos: oldCombatant.mesos + mesos,
+                        };
+                    }),
+                })
+            );
         }
-
-        dispatch(
-            updateBattle({
-                [friendlySide]: friendly.map((combatant: Combatant | null) => {
-                    if (combatant?.id !== combatantId) {
-                        return combatant;
-                    }
-
-                    return {
-                        ...oldCombatant,
-                        HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
-                        armor: oldCombatant.armor + armor,
-                        resources: oldCombatant.resources + resources,
-                        effects: [...oldCombatant.effects, ...effects],
-                        mesos: oldCombatant.mesos + mesos,
-                    };
-                }),
-            })
-        );
-    });
+    );
 };
 
 export const triggerStatChangeEvents =
@@ -569,6 +589,7 @@ export const triggerStatChangeEvents =
                 effects = [],
                 isDeathBlow = false,
                 rawResources = 0,
+                removedEffects = [],
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
                 dispatch(checkEventTrigger({ combatantId, effectEventKey, source: { ...source, statUpdate } }));
@@ -606,22 +627,10 @@ export const triggerStatChangeEvents =
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
             });
 
-            /**
-            effectsRemoved.forEach((e: CombatEffect) => {
+            removedEffects.forEach((e: CombatEffect) => {
                 // TODO probably include effects in the event trigger payload?
-                // Removal should only apply to dispels?
                 dispatchEvent(EFFECT_EVENT_KEYS.onEffectRemoved);
-                if (e.onEnd) {
-                    dispatch(
-                        onEffectEventTrigger({
-                            effectEvent: e.onEnd,
-                            effect: e,
-                            ownerId: combatantId,
-                        })
-                    );
-                }
             });
-            */
 
             if (isDeathBlow) {
                 dispatch(onCombatantDeath({ combatantId, triggerSource: source }));
@@ -682,7 +691,7 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
         );
 
         effectsEnded.forEach((effect: CombatEffect) => {
-            onEffectEventTrigger({ ownerId: combatantId, effectEvent: effect.onEnd, effect });
+            dispatch(onEffectEventTrigger({ ownerId: combatantId, effectEvent: effect.onEnd, effect }));
         });
     };
 };

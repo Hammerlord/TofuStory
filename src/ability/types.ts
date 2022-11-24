@@ -76,7 +76,8 @@ export interface EffectEventTrigger {
     usableWhileStunned?: boolean;
     // If you are providing an ability to be applied to a target, you probably don't want to do any of the other properties.
     // (Ability actions already have their own targeting and effects and whatnot)
-    ability?: Ability;
+    // If a string is supplied, it is a reference
+    ability?: Ability | string;
     multiplier?: Multiplier;
 }
 
@@ -167,6 +168,7 @@ export interface Effect {
     onResourcesGained?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
     onTurnEnd?: EffectEventTrigger;
+    /** When the effect ticks down and ends naturally, not when it is removed or dispelled */
     onEnd?: EffectEventTrigger;
     onWaveStart?: EffectEventTrigger;
     onWaveClear?: EffectEventTrigger;
@@ -396,6 +398,8 @@ export interface Action {
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     mesos?: number;
+    // Dispels all debuffs currently on the character
+    removeDebuffs?: boolean;
 }
 
 export interface Ability {
