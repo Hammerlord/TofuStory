@@ -411,7 +411,7 @@ export const warBanner2: Ability = {
                 duration: 4,
             },
             {
-                name: "War Banner",
+                name: "War Banner - Drumbeat of War",
                 description: "Granting 3 armor and +1 attack to allies within 2 slots every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
@@ -464,7 +464,7 @@ export const warBanner: Ability = {
                 duration: 3,
             },
             {
-                name: "War Banner",
+                name: "War Banner - Drumbeat of War",
                 description: "Granting 2 armor and +1 attack to nearby allies every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
