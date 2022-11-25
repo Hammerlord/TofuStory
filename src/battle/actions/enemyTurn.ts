@@ -51,8 +51,6 @@ const canUseAbility = ({
     const getCalculationTarget = (type: CONDITION_TARGETS) => {
         if (!type || type === CONDITION_TARGETS.ACTOR) {
             return { combatant: actor, index: friendly.findIndex((c) => c?.id === actor.id) };
-        } else {
-            console.warn("Calculation target type for passing prerequisites to use ability was:", type, ", but only ACTOR is valid.");
         }
     };
 
