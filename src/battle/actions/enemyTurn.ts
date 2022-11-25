@@ -1,5 +1,6 @@
+import { passesConditions } from "./../passesConditions";
 import { compose, partition } from "ramda";
-import { Ability, Action, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { Ability, Action, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
@@ -47,6 +48,18 @@ const canUseAbility = ({
         return false;
     }
 
+    const getCalculationTarget = (type: CONDITION_TARGETS) => {
+        if (!type || type === CONDITION_TARGETS.ACTOR) {
+            return { combatant: actor, index: friendly.findIndex((c) => c?.id === actor.id) };
+        } else {
+            console.warn("Calculation target type for passing prerequisites to use ability was:", type, ", but only ACTOR is valid.");
+        }
+    };
+
+    if (!passesConditions({ getCalculationTarget, proc: ability })) {
+        return false;
+    }
+
     if (ability.minion) {
         return friendly.some((combatant) => !combatant || combatant.HP === 0);
     }
@@ -54,9 +67,11 @@ const canUseAbility = ({
     const abilityEffects = ability.actions.reduce((acc, { effects = [] }) => {
         return [...acc, ...effects];
     }, []);
+
     if (actor.effects.some(({ name }) => abilityEffects.some((effect) => effect.name === name))) {
         return false;
     }
+
     if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
         return actor.HP < getMaxHP(actor); // ? It's not just the actor who needs a healing
     }
@@ -184,11 +199,12 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
         actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
     );
 
-    const validPreemptiveAbilities = specialAbilities
-        .concat(regularAbilities)
-        .filter((ability: Ability) => ability.preemptive && actor.abilityHistory.every(({ name }) => name !== ability.name));
-    if (validPreemptiveAbilities.length > 0) {
-        return getRandomItem(validPreemptiveAbilities);
+    const validPriorityAbilities = specialAbilities.concat(regularAbilities).filter((ability: Ability) => {
+        return ability.priority || (ability.preemptive && actor.abilityHistory.every(({ name }) => name !== ability.name));
+    });
+
+    if (validPriorityAbilities.length > 0) {
+        return getRandomItem(validPriorityAbilities);
     }
 
     // If we are capped resources, we should always use a special ability, preferably the most expensive ones
@@ -244,7 +260,7 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
             }
         });
 
-        if (Math.random() < actor.resources / (mostExpensive + 1)) {
+        if (Math.random() < actor.resources / actor.maxResources) {
             return getRandomItem(specialAbilities);
         }
     }

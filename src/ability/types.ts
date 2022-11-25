@@ -79,6 +79,7 @@ export interface EffectEventTrigger {
     // If a string is supplied, it is a reference
     ability?: Ability | string;
     multiplier?: Multiplier;
+    removeEffects?: string[];
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -259,6 +260,7 @@ export interface Condition {
     numBuffs?: number;
     hasEffectType?: EFFECT_TYPES[];
     hasEffectClass?: EFFECT_CLASSES.BUFF | EFFECT_CLASSES.DEBUFF;
+    hasEffect?: string; // Effect name
     /** Unique effects, not stacks */
     numEffects?: number;
     /** This should be a decimal value up to 1 */
@@ -400,6 +402,8 @@ export interface Action {
     mesos?: number;
     // Dispels all debuffs currently on the character
     removeDebuffs?: boolean;
+    // Names of effects to be removed
+    removeEffects?: string[];
 }
 
 export interface Ability {
@@ -427,6 +431,10 @@ export interface Ability {
     preemptive?: boolean;
     /** This is treated as a prerequisite to using the ability */
     selectCards?: SelectCards;
+    /** Prerequisite to use the ability at all */
+    conditions?: Condition[];
+    /** Enemies should prefer to use this ability if it is available */
+    priority?: boolean;
 }
 
 /**

@@ -10,6 +10,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
+    MULTIPLIER_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
@@ -21,6 +22,7 @@ import {
     DancesWithBalrogImage,
     FireMarbleImage,
     GiganticSledgeImage,
+    HighPaladinImage,
     IntrepidSlashImage,
     JrBalrogImage,
     MossySnailImage,
@@ -33,6 +35,34 @@ import {
     WarLeapImage,
     WildBoarImage,
 } from "../images";
+
+const golemStanceEligible: Effect = {
+    name: "Stone Golem Stance Ready",
+    description: "Character may cast Stone Golem Stance.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+};
+
+const boarStanceEligible: Effect = {
+    name: "Boar Stance Ready",
+    description: "Character may cast Boar Stance.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+};
+
+const snailStanceEligible: Effect = {
+    name: "Snail Stance Ready",
+    description: "Character may cast Snail Stance.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+};
+
+const balrogStanceEligible: Effect = {
+    name: "Balrog Stance Ready",
+    description: "Character may cast Balrog Stance.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+};
 
 const golemStanceEffect: Effect = {
     name: "Stone Golem Stance - Unrelenting Strength",
@@ -61,7 +91,7 @@ const golemStanceEffect: Effect = {
     onEnd: {
         usableWhileStunned: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        ability: "Boar Stance",
+        effects: [boarStanceEligible],
     },
     onReceiveDamage: {
         usableWhileStunned: true,
@@ -75,50 +105,18 @@ const golemStanceEffect: Effect = {
         ],
         removeEffect: true,
     },
-};
-
-const golemStanceAbility: Ability = {
-    name: "Golem Stance",
-    image: StoneGolemIconImage,
-    actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            icon: StoneGolemImage,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            removeDebuffs: true,
-            effects: [golemStanceEffect],
-        },
-    ],
 };
 
 const snailStanceRedEffect: Effect = {
     name: "Snail Stance - Defensive Offence",
-    icon: RedSnailShellImage,
     canBeSilenced: false,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "While this character has armor, its damage is increased.",
     duration: 3,
-    attackPower: 1,
-    conditions: [
-        {
-            comparator: "gt",
-            armor: 0,
-            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        },
-    ],
-    onReceiveDamage: {
+    onEnd: {
         usableWhileStunned: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                healthPercentage: 0.25,
-                comparator: "lt",
-            },
-        ],
-        removeEffect: true,
+        effects: [golemStanceEligible],
     },
 };
 
@@ -128,45 +126,13 @@ const snailStanceBlueEffect: Effect = {
     canBeSilenced: true,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Gaining 3 armor on attack. Preventing armor decay.",
+    description: "Gaining 5 armor on attack. Preventing armor decay.",
     duration: 3,
     preventArmorDecay: true,
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        armor: 3,
+        armor: 5,
     },
-    onEnd: {
-        usableWhileStunned: true,
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        ability: golemStanceAbility,
-    },
-    onReceiveDamage: {
-        usableWhileStunned: true,
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                healthPercentage: 0.25,
-                comparator: "lt",
-            },
-        ],
-        removeEffect: true,
-    },
-};
-
-const snailStanceAbility: Ability = {
-    name: "Snail Stance",
-    image: RedSnailShellImage,
-    actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            icon: MossySnailImage,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            effects: [snailStanceRedEffect, snailStanceBlueEffect],
-            armor: 20,
-        },
-    ],
 };
 
 const dancesWithBalrogWarLeap: Ability = {
@@ -236,25 +202,14 @@ const boarStanceEffect: Effect = {
     onEnd: {
         usableWhileStunned: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        ability: snailStanceAbility,
-    },
-    onReceiveDamage: {
-        usableWhileStunned: true,
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                healthPercentage: 0.25,
-                comparator: "lt",
-            },
-        ],
-        removeEffect: true,
+        effects: [snailStanceEligible],
     },
 };
 
 export const boarStanceAbility: Ability = {
     name: "Boar Stance",
     image: BoarIconImage,
+    priority: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -262,6 +217,7 @@ export const boarStanceAbility: Ability = {
             effects: [boarStanceEffect],
             icon: WildBoarImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            removeEffects: [boarStanceEligible.name],
         },
         {
             damage: 1,
@@ -321,33 +277,6 @@ const balrogStanceEffect: Effect = {
     },
 };
 
-const balrogStanceAbility: Ability = {
-    name: "Balrog Stance",
-    image: BalrogIconImage,
-    actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            effects: [balrogStanceEffect],
-            icon: JrBalrogImage,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-        },
-        {
-            damage: 3,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            icon: FireMarbleImage,
-            area: 3,
-            effects: [
-                {
-                    ...burn,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
-};
-
 export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
@@ -356,11 +285,11 @@ export const dancesWithBalrog: Minion = {
     abilities: [
         {
             name: "Slash Blast",
-            resourceCost: 0,
+            resourceCost: 1,
             image: SlashBlastImage,
             actions: [
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     area: 1,
@@ -374,7 +303,7 @@ export const dancesWithBalrog: Minion = {
             description: "Hits twice",
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                 },
@@ -392,6 +321,18 @@ export const dancesWithBalrog: Minion = {
             image: IntrepidSlashImage,
             castTime: 1,
             description: "Deal {{damage}} damage to a random enemy in the area, x3",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: boarStanceEffect.name,
+                    comparator: "eq",
+                },
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: balrogStanceEffect.name,
+                    comparator: "eq",
+                },
+            ],
             actions: [
                 {
                     damage: 3,
@@ -418,12 +359,141 @@ export const dancesWithBalrog: Minion = {
             resourceCost: 3,
             castTime: 1,
             image: GiganticSledgeImage,
+            description: "Destroy 50% armor and deal 7 damage",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: golemStanceEffect.name,
+                    comparator: "eq",
+                },
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: balrogStanceEffect.name,
+                    comparator: "eq",
+                },
+            ],
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 7,
                     destroyArmor: 0.5,
+                },
+            ],
+        },
+        {
+            name: "Judgment",
+            resourceCost: 3,
+            castTime: 1,
+            image: HighPaladinImage,
+            description: "Dealing 1 damage multiplied by this character's armor",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: snailStanceRedEffect.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    damage: 1,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.ARMOR,
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                    },
+                },
+            ],
+        },
+        {
+            name: "Snail Stance",
+            image: RedSnailShellImage,
+            priority: true,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: snailStanceEligible.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    icon: MossySnailImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    effects: [snailStanceRedEffect, snailStanceBlueEffect],
+                    armor: 40,
+                    removeEffects: [snailStanceEligible.name],
+                },
+            ],
+        },
+        {
+            name: "Golem Stance",
+            image: StoneGolemIconImage,
+            priority: true,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: golemStanceEligible.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    icon: StoneGolemImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    removeDebuffs: true,
+                    effects: [golemStanceEffect],
+                    removeEffects: [golemStanceEligible.name],
+                },
+            ],
+        },
+        {
+            ...boarStanceAbility,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: boarStanceEligible.name,
+                    comparator: "eq",
+                },
+            ],
+        },
+        {
+            name: "Balrog Stance",
+            image: BalrogIconImage,
+            priority: true,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: balrogStanceEligible.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    effects: [balrogStanceEffect],
+                    icon: JrBalrogImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    removeEffects: [balrogStanceEligible.name],
+                },
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: FireMarbleImage,
+                    area: 3,
+                    effects: [
+                        {
+                            ...burn,
+                            duration: 2,
+                        },
+                    ],
                 },
             ],
         },
@@ -456,7 +526,16 @@ export const dancesWithBalrog: Minion = {
                     },
                 ],
                 removeEffect: true,
-                ability: balrogStanceAbility,
+                effects: [balrogStanceEligible],
+                removeEffects: [
+                    boarStanceEligible.name,
+                    snailStanceEligible.name,
+                    golemStanceEligible.name,
+                    boarStanceEffect.name,
+                    snailStanceBlueEffect.name,
+                    snailStanceRedEffect.name,
+                    golemStanceEffect.name,
+                ],
             },
         },
     ],

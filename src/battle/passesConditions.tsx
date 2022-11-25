@@ -1,4 +1,4 @@
-import { Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import { TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
@@ -41,7 +41,7 @@ export const passesConditions = ({
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => IndexedCombatant | IndexedCombatant[] | undefined;
-    proc: Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
+    proc: Ability | Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
     const passesCondition = (condition: Condition) => {
@@ -49,6 +49,7 @@ export const passesConditions = ({
         const {
             hasEffectType,
             hasEffectClass,
+            hasEffect,
             healthPercentage,
             resourcePercentage,
             armor,
@@ -106,6 +107,16 @@ export const passesConditions = ({
                         return false;
                     }
                 } else if (!otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass)) {
+                    return false;
+                }
+            }
+
+            if (hasEffect) {
+                if (comparator === "not") {
+                    if (!otherEffects.every(({ name }) => name !== hasEffect)) {
+                        return false;
+                    }
+                } else if (!otherEffects.some(({ name }) => name === hasEffect)) {
                     return false;
                 }
             }

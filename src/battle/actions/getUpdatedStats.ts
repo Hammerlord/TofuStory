@@ -64,7 +64,15 @@ export const getUpdatedStats = ({
             actionParent,
             source,
         });
-        const { effects: actionEffects = [], resources = 0, destroyArmor = 0, resurrect, mesos = 0, removeDebuffs } = action;
+        const {
+            effects: actionEffects = [],
+            resources = 0,
+            destroyArmor = 0,
+            resurrect,
+            mesos = 0,
+            removeDebuffs,
+            removeEffects = [],
+        } = action;
 
         const enabledEffects = getEnabledEffects(target);
         const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
@@ -113,6 +121,10 @@ export const getUpdatedStats = ({
         const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources);
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
             if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF) {
+                return true;
+            }
+
+            if (removeEffects.some((name) => name === effect.name)) {
                 return true;
             }
         });
