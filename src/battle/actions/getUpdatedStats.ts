@@ -76,11 +76,15 @@ export const getUpdatedStats = ({
 
         const enabledEffects = getEnabledEffects(target);
         const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
-        const damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent }) * multiplier;
-        const baseArmor = Math.floor(targetCombatant.armor * (1 - destroyArmor));
-        const updatedTargetArmor = baseArmor + calculateArmor({ target, action }) * multiplier;
+        const damage =
+            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent }) * multiplier +
+            Math.floor(targetCombatant.armor * destroyArmor);
+
+        const totalArmor = targetCombatant.armor + calculateArmor({ target, action }) * multiplier;
+        const updatedTargetArmor = Math.max(0, totalArmor - damage);
         const armorGained = updatedTargetArmor - targetCombatant.armor;
-        const healthDamage = Math.max(0, damage - updatedTargetArmor);
+        const healthDamage = Math.max(0, damage - totalArmor);
+
         let rawHealing = 0;
         if (targetCombatant.HP - healthDamage > 0 || resurrect) {
             rawHealing = calculateHealing({ target, action }) * multiplier;
@@ -137,7 +141,7 @@ export const getUpdatedStats = ({
                 healing,
                 rawHealing,
                 overhealing,
-                armor: Math.max(-updatedTargetArmor, armorGained - damage),
+                armor: armorGained,
                 resources: resourcesGained,
                 rawResources: resources,
                 overcappedResources: resources - resourcesGained,
