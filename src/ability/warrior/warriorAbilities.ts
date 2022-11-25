@@ -376,23 +376,23 @@ export const spikedArmor: Ability = {
     upgrades: [spikedArmor2],
 };
 
+const drumOfWarAttackPower = {
+    name: "Drums of War",
+    description: "Attack power increased.",
+    icon: WeaponMasteryImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    duration: 1,
+};
+
 const drumOfWar: Action = {
     type: ACTION_TYPES.EFFECT,
     target: TARGET_TYPES.SELF,
     excludePrimaryTarget: true,
     armor: 2,
     area: 1,
-    effects: [
-        {
-            name: "Drums of War",
-            description: "Attack power increased.",
-            icon: WeaponMasteryImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackPower: 1,
-            duration: 1,
-        },
-    ],
+    effects: [drumOfWarAttackPower],
 };
 
 export const warBanner2: Ability = {
@@ -426,6 +426,12 @@ export const warBanner2: Ability = {
                                 ...drumOfWar,
                                 armor: 3,
                                 area: 2,
+                                effects: [
+                                    {
+                                        ...drumOfWarAttackPower,
+                                        duration: 2, // Tick down occurs after onTurnStart events
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -474,7 +480,17 @@ export const warBanner: Ability = {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Drumbeat of War",
-                        actions: [drumOfWar],
+                        actions: [
+                            {
+                                ...drumOfWar,
+                                effects: [
+                                    {
+                                        ...drumOfWarAttackPower,
+                                        duration: 2, // Tick down occurs after onTurnStart events
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 },
                 onSummoned: {
