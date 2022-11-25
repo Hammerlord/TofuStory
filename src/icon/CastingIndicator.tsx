@@ -1,5 +1,6 @@
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
+import { Action } from "../ability/types";
 import { HourglassIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
@@ -20,6 +21,9 @@ const useStyles = createUseStyles({
     iconContainer: {
         marginRight: "16px",
     },
+    abilityIcon: {
+        width: 30,
+    },
 });
 
 const CastingIndicator = ({ casting, combatant }) => {
@@ -28,9 +32,20 @@ const CastingIndicator = ({ casting, combatant }) => {
         return null;
     }
 
-    const { ability, channelDuration, castTime, description = "" } = casting;
-    const { name } = ability;
-    const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name });
+    const { ability, channelDuration, castTime } = casting;
+    const { image, name, description = "", actions } = ability;
+
+    let imageNode;
+    if (typeof image === "string") {
+        imageNode = <img src={image} className={classes.abilityIcon} />;
+    } else if (typeof image === "function") {
+        const ImageNode = image as Function;
+        imageNode = <ImageNode className={classes.abilityIcon} />;
+    }
+
+    const damage = actions.find((action: Action) => action.damage > 0)?.damage;
+    const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name, damage });
+
     return (
         <div>
             <Tooltip
@@ -40,7 +55,9 @@ const CastingIndicator = ({ casting, combatant }) => {
                             <Icon icon={<WarningIcon />} size="lg" />
                         </div>
                         <div className={classes.container}>
-                            <div className={classes.tooltipTitle}>{name}</div>
+                            <div className={classes.tooltipTitle}>
+                                {imageNode} {name}
+                            </div>
                             <div>{interpolatedDescription}</div>
                             {channelDuration > 0 && (
                                 <div>

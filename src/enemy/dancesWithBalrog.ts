@@ -320,7 +320,7 @@ export const dancesWithBalrog: Minion = {
             depletedOnUse: true,
             image: IntrepidSlashImage,
             castTime: 1,
-            description: "Deal {{damage}} damage to a random enemy in the area, x3",
+            description: "Deal {{damage}} damage to a random enemy within the targeted area, x3",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -386,7 +386,7 @@ export const dancesWithBalrog: Minion = {
             resourceCost: 3,
             castTime: 1,
             image: HighPaladinImage,
-            description: "Dealing 1 damage multiplied by this character's armor",
+            description: "Deal 1 damage times character armor",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
