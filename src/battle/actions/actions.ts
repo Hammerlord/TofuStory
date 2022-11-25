@@ -30,6 +30,7 @@ import {
     getPossibleSummonIndices,
     getValidTargetIndices,
     isSilenced,
+    isStealthed,
     isUnableToAct,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
@@ -457,6 +458,7 @@ const onEffectEventTrigger = ({
         }
 
         const ability = typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
+        let abilityUsed = false; // One or more actions must have been performed to trigger onUseAbility
 
         ability?.actions.forEach((action) => {
             const { index, side } = autoSelectActionTarget({
@@ -471,8 +473,15 @@ const onEffectEventTrigger = ({
                 return { combatant: getState().battle[side]?.[index], index };
             };
 
+            const target = getState().battle[side]?.[index];
+            if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && isStealthed(target)) {
+                return;
+            }
+
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
             if (passesConditions({ getCalculationTarget, proc: action, source })) {
+                abilityUsed = true;
+
                 dispatch(
                     performAction({
                         action,
@@ -489,7 +498,9 @@ const onEffectEventTrigger = ({
             }
         });
 
-        dispatch(onUseAbility({ actor: combatant, source, ability }));
+        if (abilityUsed) {
+            dispatch(onUseAbility({ actor: combatant, source, ability }));
+        }
     };
 };
 
