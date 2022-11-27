@@ -559,7 +559,7 @@ export const getBasicAttack = (actor: Combatant): Ability => {
 export const getInducedAttack = (actor: Combatant): Action => {
     return {
         damage: actor.damage || 0,
-        target: TARGET_TYPES.RANDOM_HOSTILE,
+        target: TARGET_TYPES.HOSTILE,
         type: ACTION_TYPES.ATTACK,
         playbackTime: 400,
     };

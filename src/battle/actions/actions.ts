@@ -856,18 +856,33 @@ const checkInduceAttack = ({
         }
         shuffle(affectedTargetIds).forEach((id) => {
             const { hostileSide, combatant } = findCombatantData(getState, id) || {};
-            if (!combatant.HP) {
+            if (!combatant.HP || isUnableToAct(combatant)) {
                 return;
             }
-            dispatch(
-                performAction({
-                    action: getInducedAttack(combatant),
-                    selectedIndex,
-                    side: hostileSide,
-                    actorId: id,
-                    parentSource,
-                })
-            );
+
+            if (combatant.attack) {
+                combatant.attack.actions.forEach((action) => {
+                    dispatch(
+                        performAction({
+                            action: { ...action, playbackTime: 400 },
+                            selectedIndex,
+                            side: hostileSide,
+                            actorId: id,
+                            parentSource,
+                        })
+                    );
+                });
+            } else {
+                dispatch(
+                    performAction({
+                        action: getInducedAttack(combatant),
+                        selectedIndex,
+                        side: hostileSide,
+                        actorId: id,
+                        parentSource,
+                    })
+                );
+            }
         });
     };
 };
