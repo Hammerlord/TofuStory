@@ -25,10 +25,12 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from ".
 import {
     applyVacuum,
     calculateActionArea,
+    canTargetIfStealthed,
     getEnabledEffects,
     getInducedAttack,
     getPossibleSummonIndices,
     getValidTargetIndices,
+    hasTruesight,
     isSilenced,
     isStealthed,
     isUnableToAct,
@@ -474,7 +476,8 @@ const onEffectEventTrigger = ({
             };
 
             const target = getState().battle[side]?.[index];
-            if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && isStealthed(target)) {
+            const actor = findCombatantData(getState, ownerId)?.combatant;
+            if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && !canTargetIfStealthed(actor, target)) {
                 return;
             }
 

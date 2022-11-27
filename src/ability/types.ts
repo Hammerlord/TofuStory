@@ -80,6 +80,8 @@ export interface EffectEventTrigger {
     ability?: Ability | string;
     multiplier?: Multiplier;
     removeEffects?: string[];
+    area?: number;
+    excludePrimaryTarget?: boolean;
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -195,6 +197,8 @@ export interface Effect {
     mesosGained?: number; // Percentage; 1 = 100%
     maxHP?: number;
     dotDamageIncrease?: number;
+    // Ignore stealth
+    truesight?: boolean;
 }
 
 export interface CombatEffect extends Effect {

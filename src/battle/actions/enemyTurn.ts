@@ -12,6 +12,7 @@ import {
     getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
+    hasTruesight,
     isUnableToAct,
     updateCharacters,
 } from "../utils";
@@ -116,7 +117,7 @@ const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: Combatant
             index: getRandomItem(
                 getValidTargetIndices(hostile, {
                     // TODO area attacks are still applicable to stealthed units
-                    excludeStealth: true,
+                    excludeStealth: !hasTruesight(actor.combatant),
                 })
             ),
         };

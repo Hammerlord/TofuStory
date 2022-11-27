@@ -25,7 +25,7 @@ import { BattleState, battleStateSlice, BATTLE_STATES, PlayerSelectCardsPrompt }
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
-import { canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
+import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
 
 const useStyles = createUseStyles({
@@ -332,7 +332,7 @@ const BattlefieldContainer = () => {
                 }
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
-            } else if (isStealthed(enemySide[index])) {
+            } else if (!canTargetIfStealthed(player, enemySide[index])) {
                 warn("That character is stealthed and cannot be targeted directly.");
             } else {
                 setSelectedAbilityId(null);

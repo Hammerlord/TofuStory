@@ -63,12 +63,24 @@ export const isSilenced = (character: Combatant): boolean => {
     return character?.effects?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };
 
+export const canTargetIfStealthed = (actor: Combatant, target: Combatant): boolean => {
+    return !isStealthed(target) || hasTruesight(actor);
+};
+
 export const isStealthed = (character?: Combatant): boolean => {
     if (!character) {
         return false;
     }
     const silenced = isSilenced(character);
     return character.effects?.some(({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced));
+};
+
+export const hasTruesight = (character?: Combatant): boolean => {
+    if (!character) {
+        return false;
+    }
+    const silenced = isSilenced(character);
+    return character.effects?.some(({ truesight, canBeSilenced }) => truesight && (!canBeSilenced || !silenced));
 };
 
 export const clearTurnHistory = (character: Combatant): Combatant => {
