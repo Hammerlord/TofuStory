@@ -6,6 +6,7 @@ import {
     AquamarineImage,
     BallerCaneImage,
     BlackManualImage,
+    BluePotionImage,
     BoneHelmImage,
     BouquetImage,
     BronzeIncenseBurnerImage,
@@ -28,6 +29,7 @@ import {
     PieceOfIceImage,
     PigsRibbonImage,
     RedHeadbandImage,
+    RedPotionImage,
     RespawnTokenImage,
     RisingStarImage,
     SafetyCharmImage,
@@ -837,4 +839,20 @@ export const redHeadband: Item = {
             },
         },
     ],
+};
+
+export const redPotion: Item = {
+    name: "Red Potion",
+    image: RedPotionImage,
+    description: "Recover 15 HP.",
+    type: ITEM_TYPES.CONSUMABLE,
+    healing: 15,
+};
+
+export const bluePotion: Item = {
+    name: "Blue Potion",
+    image: BluePotionImage,
+    description: "Gain 2 resources.",
+    type: ITEM_TYPES.CONSUMABLE,
+    resources: 2,
 };

@@ -29,6 +29,7 @@ export interface BattleState {
     backgroundMusic?: string; // 'boss' or path to music URL
     type: BATTLE_TYPES; // Determines the rewards at the end of battle
     itemRewards?: Item[];
+    disableCardRewards: boolean;
 }
 
 export interface PlayerSelectCardsPrompt {
@@ -117,6 +118,9 @@ export const battleStateSlice = createSlice({
             return null;
         },
         updateBattleState: (state, action: PayloadAction<BATTLE_STATES>) => {
+            if (!state) {
+                return state;
+            }
             // If the fight is over, don't overwrite the state
             if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state.state)) {
                 return state;

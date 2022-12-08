@@ -5,6 +5,8 @@ import { createUseStyles } from "react-jss";
 import { shuffle } from "../utils";
 import Overlay from "../view/Overlay";
 import { Item } from "./types";
+import { ITEMS } from "../Map/routes/eventList";
+import ItemView from "./ItemView";
 
 const useStyles = createUseStyles({
     inner: {
@@ -28,14 +30,9 @@ const useStyles = createUseStyles({
         verticalAlign: "top",
     },
     item: {
+        margin: 16,
         display: "inline-block",
-        borderRadius: "8px",
-        margin: "0 24px",
-        verticalAlign: "bottom",
-        background: "#666",
-        width: "200px",
-        minHeight: "150px",
-        cursor: "pointer",
+        borderRadius: 8,
 
         "&.selected": {
             boxShadow: "0 0 8px 4px #45ff61",
@@ -43,18 +40,23 @@ const useStyles = createUseStyles({
     },
 });
 
+const getInitItems = (itemOption: Item[], numChoices: number) => {
+    const items = Array.isArray(itemOption) ? itemOption : ITEMS;
+    return shuffle(items).slice(0, numChoices);
+};
+
 const ItemSelection = ({
     items,
     numChoices,
     onSelectClick,
     onClose,
 }: {
-    items: Item[];
+    items?: Item[];
     numChoices: number;
     onSelectClick: (item: Item) => void;
     onClose: () => void;
 }) => {
-    const [choices] = useState(shuffle(items).slice(0, numChoices));
+    const [choices] = useState(getInitItems(items, numChoices));
     const [selectedIndex, setSelectedIndex] = useState(null);
     const classes = useStyles();
 
@@ -75,9 +77,7 @@ const ItemSelection = ({
                             className={classNames({ selected: i === selectedIndex }, classes.item)}
                             key={i}
                         >
-                            <div>{choice.name}</div>
-                            <img src={choice.image} />
-                            <div>{choice.description}</div>
+                            <ItemView item={choice} />
                         </div>
                     ))}
                 </div>

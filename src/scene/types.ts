@@ -13,6 +13,7 @@ export interface SceneEncounter {
     addAbilities?: Ability[];
     characters: string[];
     waves: Wave[];
+    disableCardRewards?: boolean;
     itemRewards?: Item[];
     type?: BATTLE_TYPES;
 }
@@ -44,8 +45,8 @@ export interface ScriptNode {
     responses?: ScriptResponse[];
     items?: Item[];
     itemChoices?: {
-        // The pool of items that can be shown as options
-        items: Item[];
+        // The pool of items that can be shown as options. If not provided, it will select unobtained items
+        items?: Item[];
         // How many different options the player can pick from
         numChoices: number;
     };

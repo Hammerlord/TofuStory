@@ -133,7 +133,13 @@ const Main = () => {
     }, [player]);
 
     useEffect(() => {
-        if (battle?.state === BATTLE_STATES.VICTORY) {
+        if (battle?.state !== BATTLE_STATES.VICTORY) {
+            return;
+        }
+
+        if (battle?.disableCardRewards) {
+            handleExitBattle();
+        } else {
             setCardRewardsOpen(true);
         }
     }, [battle?.state]);
@@ -198,7 +204,7 @@ const Main = () => {
         handleTransition(callback);
     };
 
-    const handleExitRewards = () => {
+    const handleExitBattle = () => {
         if (battle) {
             dispatch(closeBattle());
 
@@ -220,13 +226,13 @@ const Main = () => {
         if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type)) {
             setItemRewardsOpen(true);
         } else {
-            handleExitRewards();
+            handleExitBattle();
         }
     };
 
     const handleCloseItemRewards = () => {
         setItemRewardsOpen(false);
-        handleExitRewards();
+        handleExitBattle();
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {

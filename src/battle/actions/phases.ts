@@ -76,6 +76,7 @@ export const startBattle = ({
     backgroundMusic,
     type = BATTLE_TYPES.ENCOUNTER,
     itemRewards,
+    disableCardRewards,
 }: {
     waves: Wave[];
     deck?: Ability[];
@@ -85,6 +86,7 @@ export const startBattle = ({
     backgroundMusic?: string;
     type?: BATTLE_TYPES;
     itemRewards?: Item[];
+    disableCardRewards?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
@@ -126,6 +128,7 @@ export const startBattle = ({
                 backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
                 type,
                 itemRewards,
+                disableCardRewards,
             })
         );
     };

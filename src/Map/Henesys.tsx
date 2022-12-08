@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { HenesysRegionBGImage } from "../images";
 import { WorldMapIcon } from "../images/icons";
+import { gachaponEvents } from "../scene/gachapon/Gachapon";
 import pantry from "../scene/Henesys/pantry";
 
 const useStyles = createUseStyles({
@@ -79,6 +80,10 @@ const Henesys = ({ player, onExit, onClickScene }) => {
                     <h2>Henesys</h2>
                     <div className={classes.eventsContainer}>
                         <div className={classNames(classes.node)} onClick={() => onClickScene(pantry)}>
+                            Event
+                            <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(gachaponEvents)}>
                             Event
                             <div className={classes.event}>?</div>
                         </div>
