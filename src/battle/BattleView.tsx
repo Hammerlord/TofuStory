@@ -157,7 +157,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const TURN_ANNOUNCEMENT_TIME = 1500; // MS
+const TURN_ANNOUNCEMENT_TIME = 2000; // MS
 const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
@@ -675,7 +675,7 @@ const BattlefieldContainer = () => {
                 {showWaveClear && (
                     <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
                 )}
-                {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
+                {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
                 {selectCardsPrompt && (
                     <SelectCardOverlay
                         player={player}

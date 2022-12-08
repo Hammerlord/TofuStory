@@ -120,6 +120,7 @@ const getRandomizedDeck = (difficulty: "easy" | "medium" | "hard") => {
 };
 
 const CARD_RANGE_TO_FLIP = 3;
+const TURN_ANNOUNCEMENT_TIME = 1500;
 
 const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "medium" | "hard" }) => {
     const [cardLayout] = useState(getRandomizedDeck(difficulty));
@@ -213,7 +214,7 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
                 } else {
                     setDisableUI(false);
                 }
-            }, 1000);
+            }, TURN_ANNOUNCEMENT_TIME);
         }, 500);
     }, [isPlayerTurn]);
 
@@ -305,7 +306,7 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
                     </div>
                 )}
             </div>
-            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} />}
+            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
         </div>
     );
 };
