@@ -29,6 +29,7 @@ import {
     starfallMagicSquare,
     stolenFence,
     sunshinePan,
+    workGloves,
 } from "./../../item/items";
 
 export const events = [goldRichieMerchant, noob];
@@ -65,4 +66,5 @@ export const ITEMS = [
     bouquet,
     starfallMagicSquare,
     cursedDoll,
+    workGloves,
 ];

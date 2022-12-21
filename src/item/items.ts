@@ -38,6 +38,7 @@ import {
     StolenFenceImage,
     SunshinePanImage,
     WeaponMasteryImage,
+    WorkGlovesImage,
 } from "../images";
 import {
     ACTION_TYPES,
@@ -834,6 +835,39 @@ export const redHeadband: Item = {
                         icon: RedHeadbandImage,
                         resourcesPerTurn: 1,
                         duration: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const workGloves: Item = {
+    name: "Work Gloves",
+    image: WorkGlovesImage,
+    description: "For every 10 abilities you use, gain 1 attack power.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Work Gloves",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numAbilitiesUsed: 10,
+                        comparator: "modulo",
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Attack Power",
+                        icon: WeaponMasteryImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        attackPower: 1,
                     },
                 ],
             },

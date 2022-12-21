@@ -280,6 +280,7 @@ export { default as WhiteRockImage } from "./WhiteRock.png";
 export { default as WildBoarImage } from "./WildBoar.png";
 export { default as WolfImage } from "./Wolf.gif";
 export { default as WoodenClubImage } from "./WoodenClub.png";
+export { default as WorkGlovesImage } from "./WorkGloves.png";
 export { default as WorldReaverImage } from "./WorldReaver.png";
 export { default as WraithCardImage } from "./WraithCard.png";
 export { default as YuckImage } from "./Yuck.png";
