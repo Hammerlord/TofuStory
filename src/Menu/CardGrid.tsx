@@ -15,7 +15,7 @@ const CardGrid = ({
     cards,
     selectedAbilityIndex,
     highlightColour = "#45ff61",
-    onClickAbility,
+    onClickAbility = () => {},
 }: {
     cards: Ability[];
     selectedAbilityIndex?: number;

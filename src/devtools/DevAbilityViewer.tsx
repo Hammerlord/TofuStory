@@ -5,6 +5,7 @@ import { JOB_CARD_MAP } from "../ability";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { PLAYER_CLASSES, SECONDARY_JOBS } from "../Menu/types";
+import { shellThrow } from "../ability/neutralAbilities";
 
 const useStyles = createUseStyles({
     class: {
@@ -47,6 +48,9 @@ const DevAbilityViewer = ({ onClose }) => {
             </div>
             {selectedClass && (
                 <div className={classes.viewer}>
+                    <p>Neutral Cards</p>
+                    <Grid cards={[shellThrow]} />
+                    <hr />
                     <p>{selectedClass}</p>
                     <Grid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
