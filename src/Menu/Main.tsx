@@ -189,6 +189,7 @@ const Main = () => {
                         waves: node.encounter,
                         backgroundImage: BG_MAP[node.region],
                         type: node.type as unknown as BATTLE_TYPES, // NODE_TYPES.ENCOUNTER, ELITE_ENCOUNTER, BOSS are enums equivalent to BATTLE_TYPES
+                        cardRewards: node.cardRewards,
                     })
                 );
             } else if (node.type === NODE_TYPES.EVENT) {
@@ -385,7 +386,13 @@ const Main = () => {
                     )}
                     {shop && <Shop player={player} mesos={player.mesos} {...shop} onExit={() => setShop(null)} onBuyItem={handleBuyItem} />}
                     {cardRewardsOpen && (
-                        <CardRewards deck={deck} player={player} updateDeck={handleUpdateDeck} onClose={handleCloseCardRewards} />
+                        <CardRewards
+                            deck={deck}
+                            player={player}
+                            updateDeck={handleUpdateDeck}
+                            onClose={handleCloseCardRewards}
+                            cardRewardOptions={battle.cardRewards}
+                        />
                     )}
                     {itemRewardsOpen && (
                         <ItemRewards

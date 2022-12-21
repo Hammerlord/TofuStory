@@ -1,4 +1,4 @@
-import { Minion } from "../ability/types";
+import { Ability, Minion } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, LithRegionBGImage, PerionRegionBGImage } from "../images";
 import { Item } from "../item/types";
@@ -31,6 +31,7 @@ export interface RouteNode {
         mesos?: number[]; // [min, max]
         items?: Item[]; // If not provided, it will grant a piece of equipment not already owned by the player
     };
+    cardRewards?: Ability[]; // If this is a battle, these abilities will be included in the card rewards screen upon victory
     town?: TOWNS;
     region: REGIONS;
 }

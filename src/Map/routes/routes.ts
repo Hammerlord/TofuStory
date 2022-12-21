@@ -1,3 +1,4 @@
+import { shellThrow } from "./../../ability/neutralAbilities";
 import {
     axeStump,
     blueSnail,
@@ -122,6 +123,7 @@ const toKerningForest: Route = {
                     },
                 },
             ],
+            cardRewards: [shellThrow],
             region: REGIONS.HENESYS,
         },
     ],
@@ -266,6 +268,7 @@ export const toHenesysForest: Route = {
                     },
                 },
             ],
+            cardRewards: [shellThrow],
             region: REGIONS.HENESYS,
         },
     ],

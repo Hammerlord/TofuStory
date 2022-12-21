@@ -42,7 +42,9 @@ const useStyles = createUseStyles({
     },
 });
 
-const CardRewards = ({ deck, player, updateDeck, onClose }) => {
+const BASE_NUM_CHOICES = 3;
+
+const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = [] }) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
@@ -62,8 +64,8 @@ const CardRewards = ({ deck, player, updateDeck, onClose }) => {
             ...all.filter((card) => starters.every(({ name }) => name !== card.name)),
             ...(JOB_CARD_MAP[player.secondaryClass]?.all || []),
         ];
-        const shuffled = shuffle(potentialAbilities);
-        const numChoices = 3 + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
+        const shuffled = [...cardRewardOptions, ...shuffle(potentialAbilities)];
+        const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
         // Use deck to determine which abilities have a higher chance to roll
         setRolledAbiliies(shuffled.slice(0, numChoices));
     }, []);

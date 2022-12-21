@@ -69,13 +69,14 @@ export const onWaveClear = () => {
 
 export const startBattle = ({
     waves,
-    addAbilities = [],
+    addAbilities = [], // This adds abilities to the player's deck on battle start
     deck,
     isTutorial,
     backgroundImage,
     backgroundMusic,
     type = BATTLE_TYPES.ENCOUNTER,
     itemRewards,
+    cardRewards,
     disableCardRewards,
 }: {
     waves: Wave[];
@@ -86,6 +87,7 @@ export const startBattle = ({
     backgroundMusic?: string;
     type?: BATTLE_TYPES;
     itemRewards?: Item[];
+    cardRewards?: Ability[];
     disableCardRewards?: boolean;
 }) => {
     return (dispatch, getState) => {
@@ -128,6 +130,7 @@ export const startBattle = ({
                 backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
                 type,
                 itemRewards,
+                cardRewards,
                 disableCardRewards,
             })
         );
