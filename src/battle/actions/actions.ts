@@ -30,9 +30,7 @@ import {
     getInducedAttack,
     getPossibleSummonIndices,
     getValidTargetIndices,
-    hasTruesight,
     isSilenced,
-    isStealthed,
     isUnableToAct,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
@@ -45,6 +43,12 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 const { drawCards, updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
+/**
+ * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
+ * @param getState - Redux getState function
+ * @param combatantId - Combatant UUID
+ * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
+ */
 export const findCombatantData = (getState, combatantId: string): CombatantInfo | undefined => {
     const { playerSide, enemySide } = getState().battle;
     const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
@@ -723,6 +727,9 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
     };
 };
 
+/**
+ * Called when a combatant is summoned on the board, typically handling status effect events
+ */
 const onSummonTriggers =
     ({ summonedId, summonerId, parentSource }: { summonedId: string; summonerId: string; parentSource: TriggerSource }) =>
     (dispatch, getState) => {
@@ -742,6 +749,9 @@ const onSummonTriggers =
         });
     };
 
+/**
+ * Handle action that summons a combatant in an empty slot on the board
+ */
 const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
         if (!action.summon) {
@@ -781,6 +791,9 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
     };
 };
 
+/**
+ * Handle action that transforms combatants to another combatant, eg. Mutant Snail casts Mutate and transforms Blue Snails to Red Snails
+ */
 const checkHandleMorph = ({
     action,
     morphTargetIds,
@@ -1112,6 +1125,10 @@ const autoSelectActionTarget = ({
     return { index: initialSelectedIndex, side: initialSelectedSide };
 };
 
+/**
+ * Handle the action's "radiate" effect, which is when the actor "radiates" damage or debuffs to opposing targets on the board
+ * (typically the directly opposing enemy and adjacent combatants).
+ */
 const checkCastRadiate = ({
     action,
     selectedIndex,
@@ -1145,6 +1162,9 @@ const checkCastRadiate = ({
     };
 };
 
+/**
+ * Handle effects that add card(s) to the player's hand, deck, discard.
+ */
 const checkCardActions = (action: Action) => {
     return (dispatch, getState) => {
         const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
