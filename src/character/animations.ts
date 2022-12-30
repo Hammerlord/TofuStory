@@ -39,6 +39,7 @@ export const travel = ({
     to,
     playbackTime,
     spin = 0,
+    rotation: initialRotation = 0,
     rotateToFaceTarget = false,
     returnToOrigin = false,
     sidewinder = false,
@@ -50,6 +51,7 @@ export const travel = ({
     to: HTMLElement | HTMLElement[];
     playbackTime: number;
     spin?: number;
+    rotation?: number;
     rotateToFaceTarget?: boolean;
     returnToOrigin?: boolean;
     sidewinder?: boolean;
@@ -104,12 +106,12 @@ export const travel = ({
     const totalTravelDistance = getTotalTravelDistance({ travelCoordinates, returnToOrigin });
 
     travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
-        let rotation = 0;
+        let rotation = initialRotation;
         if (spin) {
             const isEven = i % 2 === 0;
             rotation = spin * (isEven ? -1 : 1);
         } else if (rotateToFaceTarget) {
-            rotation = getRotationToFaceTarget({ x, y, x2, y2 });
+            rotation += getRotationToFaceTarget({ x, y, x2, y2 });
         }
         const travelDist = travelCoordinates
             .slice(0, i + 1)

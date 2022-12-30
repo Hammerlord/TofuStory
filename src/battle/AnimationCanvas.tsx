@@ -128,7 +128,7 @@ const AnimationCanvas = ({
         setTimeout(() => setIsAnimationPlaying(false), playbackTime - 10);
 
         eventIdRef.current = eventId;
-        const { type, animation, ricochet, icon } = action || {};
+        const { type, animation, ricochet, icon, animationOptions } = action || {};
         let spin = 0;
         if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
             spin = 900;
@@ -138,6 +138,7 @@ const AnimationCanvas = ({
             spin = 720;
         }
 
+        const options = { spin, rotation: animationOptions?.rotate, playbackTime };
         if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
             const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateProjectile = (target, projectileRefIndex: number) => {
@@ -148,12 +149,11 @@ const AnimationCanvas = ({
                     from: actorElement,
                     to: target,
                     object,
-                    spin,
                     rotateToFaceTarget,
                     sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
-                    playbackTime,
                     fadeIn: animation === ANIMATION_TYPES.BEAM,
+                    ...options,
                 });
             };
 
@@ -163,9 +163,9 @@ const AnimationCanvas = ({
                 allTargets.forEach(animateProjectile);
             }
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            travel({ from: actorElement, to: targetElement, returnToOrigin: true, spin, playbackTime });
+            travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
         } else if (animation === ANIMATION_TYPES.SPIN) {
-            travel({ from: actorElement, to: targetElement, spin, playbackTime });
+            travel({ from: actorElement, to: targetElement, ...options });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {

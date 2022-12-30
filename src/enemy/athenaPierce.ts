@@ -80,6 +80,9 @@ export const athena: Minion = {
                 animation: ANIMATION_TYPES.ONE_WAY,
                 icon: AvengersArrowImage,
                 playbackTime: 400,
+                animationOptions: {
+                    rotate: -45,
+                },
             },
         ],
     },
@@ -97,6 +100,9 @@ export const athena: Minion = {
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: AvengersArrowImage,
                     playbackTime: 400,
+                    animationOptions: {
+                        rotate: -45,
+                    },
                 },
                 {
                     armor: 5,
@@ -144,6 +150,9 @@ export const athena: Minion = {
                             },
                         ],
                     },
+                    animationOptions: {
+                        rotate: -45,
+                    },
                 },
             ],
         },
@@ -157,30 +166,46 @@ export const athena: Minion = {
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.BEAM,
                     icon: AvengersArrowImage,
                     targetArea: 3,
+                    animationOptions: {
+                        rotate: -45,
+                    },
+                    damage: 1,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.BEAM,
                     icon: AvengersArrowImage,
                     targetArea: 3,
+                    animationOptions: {
+                        rotate: -45,
+                    },
+                    damage: 1,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.BEAM,
                     icon: AvengersArrowImage,
                     targetArea: 3,
+                    animationOptions: {
+                        rotate: -45,
+                    },
+                    damage: 2,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.BEAM,
                     icon: AvengersArrowImage,
                     targetArea: 3,
+                    animationOptions: {
+                        rotate: -45,
+                    },
+                    damage: 2,
                 },
             ],
         },
@@ -206,6 +231,9 @@ export const athena: Minion = {
                             icon: AvengersArrowImage,
                             playbackTime: 400,
                             damage: 5,
+                            animationOptions: {
+                                rotate: -45,
+                            },
                         },
                     ],
                 },

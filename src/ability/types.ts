@@ -408,6 +408,9 @@ export interface Action {
     removeDebuffs?: boolean;
     // Names of effects to be removed
     removeEffects?: string[];
+    animationOptions?: {
+        rotate?: number; // Degrees to rotate a sprite; for example, an arrow sprite might be at 45 degrees and need to be oriented to point at a target
+    };
 }
 
 export interface Ability {
