@@ -606,7 +606,7 @@ export const calculateBonus = ({
     actor: IndexedCombatant;
     isTargetSelected: boolean;
     actionParent?: Ability | Item;
-    source: TriggerSource;
+    source?: TriggerSource;
 }): Action => {
     if (!action.bonus) {
         return action;

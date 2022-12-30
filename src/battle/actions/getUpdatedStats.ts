@@ -46,7 +46,7 @@ export const getUpdatedStats = ({
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
     actionParent?: Ability | Item;
-    source: TriggerSource;
+    source?: TriggerSource;
     getCombatantById: (id: string) => IndexedCombatant;
 }): [UpdatedCombatantStats, Action][] => {
     const actor = getCalculationTarget(actorId);

@@ -1,4 +1,3 @@
-import { getRandomInt } from "./../../utils";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -10,6 +9,7 @@ import {
     EffectEventTrigger,
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
+    EFFECT_TYPES,
     HandAbility,
     MORPH_TYPES,
     TARGET_TYPES,
@@ -35,6 +35,7 @@ import {
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
+import { getRandomInt } from "./../../utils";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
@@ -345,6 +346,62 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
         );
     };
 };
+
+/**
+ * Trigger damage over time (DoT) effects. DoT effects of a class, such as burn, should be rolled into a single instance of damage
+ * (so that 5x bleed doesn't trigger damage received events 5x).
+ * @param combatantId - Combatant UUID
+ */
+const handleDoTs =
+    ({ combatantId, dotType, source }: { combatantId: string; dotType: EFFECT_TYPES; source?: TriggerSource }) =>
+    (dispatch, getState) => {
+        const { combatant, index } = findCombatantData(getState, combatantId) || {};
+        if (!combatant?.HP) {
+            return;
+        }
+
+        const dotDamageMap = {
+            [EFFECT_TYPES.BLEED]: 1,
+            [EFFECT_TYPES.POISON]: 2,
+            [EFFECT_TYPES.BURN]: 3,
+        };
+
+        const activeEffects = getEnabledEffects({ combatant });
+        const damage = activeEffects.reduce((acc, effect) => {
+            if (effect.type === dotType) {
+                return acc + (dotDamageMap[effect.type] || 0);
+            }
+            return acc;
+        }, 0);
+
+        if (damage) {
+            const updated = getUpdatedStats({
+                targetIds: [combatantId],
+                selectedIndex: index,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    damage,
+                },
+                getCombatantById: (id) => findCombatantData(getState, id),
+            });
+
+            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(
+                triggerStatChangeEvents(
+                    updated.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: {
+                            source: action,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            targetId: combatantId,
+                            statUpdate,
+                            procDepth: (source?.procDepth || 0) + 1,
+                        },
+                    }))
+                )
+            );
+        }
+    };
 
 const onEffectEventTrigger = ({
     effectEvent,
@@ -716,6 +773,16 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
 
 export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
     return (dispatch) => {
+        [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
+            side.forEach((combatant: Combatant | null) => {
+                if (!combatant) {
+                    return;
+                }
+
+                dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
+            });
+        });
+
         side.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
