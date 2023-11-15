@@ -191,6 +191,7 @@ const Camp = ({
     }
 
     const canRemoveAbility = !hasRemovedAbility && numActivitiesRemaining > 0;
+    const canUpgradeAbility = !hasUpgradedAbility && numActivitiesRemaining > 0;
 
     return (
         <div className={classes.root}>
@@ -224,10 +225,10 @@ const Camp = ({
                         )}
                         <div
                             className={classNames(classes.activity, {
-                                disabled: hasUpgradedAbility || numActivitiesRemaining === 0,
+                                disabled: !canUpgradeAbility,
                             })}
                             onClick={() => {
-                                if (!hasUpgradedAbility) {
+                                if (canUpgradeAbility) {
                                     setIsUpgradingAbility(true);
                                 }
                             }}
