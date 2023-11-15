@@ -474,7 +474,7 @@ const onEffectEventTrigger = ({
         const procDepth = (source?.procDepth || 0) + 1;
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, procDepth };
         const targetIds = getCalculationTargetIds(targetType);
-        const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]);
+        const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
         $applyStatChanges: {
             if (!targetIds.length) {
