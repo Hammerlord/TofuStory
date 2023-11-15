@@ -30,11 +30,12 @@ const useStyles = createUseStyles({
         border: "2px solid rgba(214, 214, 128, 0.8)",
         background: "rgba(165, 155, 129, 0.5)",
         borderRadius: "8px",
+        marginBottom: "96px",
     },
     bannerContainer: {
         position: "fixed",
         width: "40%",
-        top: "64px",
+        top: "25%",
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -223,9 +224,6 @@ const TreasureBox = ({
                                     )}
                                 </ul>
                             </div>
-                            <Button variant="contained" color="primary" onClick={onExit}>
-                                Exit
-                            </Button>
                         </div>
                     )}
                     {!completed && (
@@ -239,6 +237,9 @@ const TreasureBox = ({
                         <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
                     </div>
                 )}
+                <Button color={isChestOpened ? "primary" : "secondary"} onClick={onExit}>
+                    {isChestOpened ? "Continue Journey" : "Abandon"}
+                </Button>
             </div>
         </div>
     );
