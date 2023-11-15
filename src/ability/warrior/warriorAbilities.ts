@@ -194,7 +194,7 @@ export const anger2: Ability = {
     actions: [
         {
             damage: 1,
-            resources: 2,
+            resources: 3,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -218,6 +218,13 @@ export const anger: Ability = {
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
         },
     ],
     upgrades: [anger2],
@@ -307,9 +314,9 @@ const shout2: Ability = {
                     icon: ShoutImage,
                 },
             ],
-            resources: 1,
+            resources: 3,
             drawCards: {
-                amount: 2,
+                amount: 3,
             },
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -331,12 +338,13 @@ export const shout: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 0,
                     lifeOnHit: 1,
+                    attackPower: 1,
                     icon: ShoutImage,
                 },
             ],
-            resources: 1,
+            resources: 2,
             drawCards: {
-                amount: 1,
+                amount: 2,
             },
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -1372,7 +1380,7 @@ export const bladestorm: Ability = {
 
 export const combatOrders2: Ability = {
     name: "Combat Orders",
-    resourceCost: 1,
+    resourceCost: 0,
     image: CombatOrdersImage,
     description: "Commands all targeted allies to attack",
     actions: [
@@ -1398,7 +1406,7 @@ export const combatOrders2: Ability = {
 
 export const combatOrders: Ability = {
     name: "Combat Orders",
-    resourceCost: 1,
+    resourceCost: 0,
     image: CombatOrdersImage,
     description: "Commands all targeted allies to attack",
     actions: [
@@ -1509,7 +1517,7 @@ export const doubleTime2: Ability = {
     name: "Double Time",
     level: 2,
     image: DoubleTimeImage,
-    resourceCost: 1,
+    resourceCost: 0,
     description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
     actions: [
         {
@@ -1529,7 +1537,7 @@ export const doubleTime2: Ability = {
 export const doubleTime: Ability = {
     name: "Double Time",
     image: DoubleTimeImage,
-    resourceCost: 1,
+    resourceCost: 0,
     description: "Create a copy of a card in your hand. It costs 1 less and is Ephemeral",
     actions: [
         {
@@ -1605,7 +1613,7 @@ export const sledge2: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 20,
+            damage: 25,
             destroyArmor: 0.5,
         },
     ],
@@ -1624,7 +1632,7 @@ export const sledge: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 15,
+            damage: 20,
             destroyArmor: 0.5,
         },
     ],
