@@ -12,7 +12,7 @@ const useSectionStyles = createUseStyles({
         fontFamily: "Barlow",
         fontWeight: "500",
         lineHeight: "24px",
-        background: "rgba(50, 50, 50, 0.9)",
+        background: "rgba(25, 25, 25, 0.9)",
         marginBottom: 8,
         borderRadius: "8px",
         padding: "16px",
@@ -66,7 +66,7 @@ const useTooltipStyles = createUseStyles({
     },
     cards: {
         display: "flex",
-        background: "rgba(50, 50, 50, 0.9)",
+        background: "rgba(25, 25, 25, 0.9)",
         borderRadius: "8px",
         padding: "16px",
         marginBottom: 8,

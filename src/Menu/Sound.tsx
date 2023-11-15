@@ -54,7 +54,7 @@ const useStyles = createUseStyles({
         background: "rgba(50, 50, 50, 0.9) !important",
     },
     volumeSliderContainer: {
-        background: "rgba(50, 50, 50, 0.9)",
+        background: "rgba(25, 25, 25, 0.9)",
         borderRadius: 4,
         marginLeft: 8,
         padding: "0px 24px",

@@ -16,7 +16,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: "rgba(30, 30, 30, 0.9)",
+        background: "rgba(25, 25, 25, 0.9)",
         color: "white",
     },
     inner: {
