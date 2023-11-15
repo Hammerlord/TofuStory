@@ -28,6 +28,7 @@ import {
     PigsHeadImage,
     RedSnailImage,
     RedSnailShellImage,
+    RedWhipImage,
     RibbonPigIdleImage,
     ShroomImage,
     SlimeIdleImage,
@@ -926,6 +927,8 @@ export const mutantSnailEnemy: Minion = {
                     area: 2,
                     excludePrimaryTarget: true,
                     damage: 3,
+                    icon: RedWhipImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [
                         {
                             name: "Whipped",

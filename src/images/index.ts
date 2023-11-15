@@ -210,6 +210,7 @@ export { default as RedHeadbandImage } from "./RedHeadband.png";
 export { default as RedPotionImage } from "./RedPotion.png";
 export { default as RedSnailImage } from "./RedSnail.png";
 export { default as RedSnailShellImage } from "./RedSnailShell.gif";
+export { default as RedWhipImage } from "./RedWhip.png";
 export { default as RegalTofuImage } from "./RegalTofu.png";
 export { default as RespawnTokenImage } from "./RespawnToken.png";
 export { default as RibbonPigCardImage } from "./RibbonPigCard.png";
