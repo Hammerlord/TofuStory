@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
-import { CampfireImage, PerionCampImage } from "../images";
+import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
 import { blackScroll } from "../item/items";
 import { Item } from "../item/types";
 import CardGrid from "../Menu/CardGrid";
@@ -16,14 +16,14 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: "rgba(50, 50, 50, 0.9)",
+        background: "rgba(30, 30, 30, 0.9)",
         color: "white",
     },
     inner: {
         textAlign: "center",
         margin: "auto",
         position: "absolute",
-        top: "50%",
+        top: "45%",
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
@@ -52,11 +52,12 @@ const useStyles = createUseStyles({
     activity: {
         width: "175px",
         margin: "16px",
-        background: "#666",
+        background: "#555",
         padding: "24px",
         borderRadius: "8px",
         fontSize: "1rem",
         cursor: "pointer",
+        boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
 
         "&.disabled": {
             opacity: 0.5,
@@ -64,7 +65,7 @@ const useStyles = createUseStyles({
         },
     },
     activityName: {
-        fontSize: "20px",
+        fontSize: "16px",
         marginBottom: "8px",
         paddingBottom: "8px",
         borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
@@ -82,6 +83,16 @@ const useStyles = createUseStyles({
         width: "80vw",
         height: "70vh",
         overflow: "auto",
+    },
+    exitSection: {
+        marginTop: "2rem",
+    },
+    iconContainer: {
+        marginBottom: "8px",
+        textAlign: "center",
+        "& img": {
+            maxWidth: "32px",
+        },
     },
 });
 
@@ -214,7 +225,10 @@ const Camp = ({
                                 }
                             }}
                         >
-                            <div className={classes.activityName}>Meditate</div>
+                            <div className={classes.iconContainer}>
+                                <img src={SelfRecoveryImage} />
+                            </div>
+                            <div className={classes.activityName}>MEDITATE</div>
                             Remove one of your abilities.
                         </div>
                         {player.items.filter((item) => item.name === blackScroll.name).length >= 3 && (
@@ -233,11 +247,18 @@ const Camp = ({
                                 }
                             }}
                         >
-                            <div className={classes.activityName}>Hone</div>Upgrade one of your abilities.
+                            <div className={classes.iconContainer}>
+                                <img src={WeaponMasteryImage} />
+                            </div>
+                            <div className={classes.activityName}>HONE</div>
+                            Upgrade one of your abilities.
                         </div>
-                        <div className={classes.activity} onClick={onExit}>
-                            Continue journey
-                        </div>
+                    </div>
+                    <p>Activities remaining: {numActivitiesRemaining}</p>
+                    <div className={classes.exitSection}>
+                        <Button color={numActivitiesRemaining === 0 ? "primary" : "secondary"} onClick={onExit}>
+                            Exit
+                        </Button>
                     </div>
                 </div>
             </div>
