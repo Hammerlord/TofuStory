@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { KerningCityBGImage, KerningSewerImage } from "../images";
 import { WorldMapIcon } from "../images/icons";
+import { barScene } from "../scene/Kerning/darkLord";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 
@@ -83,6 +84,10 @@ const KerningCity = ({ player, onExit, onClickScene }) => {
                         </div>
                         <div className={classNames(classes.node)} onClick={() => onClickScene(kerningMatchingCards)}>
                             Event
+                            <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(barScene)}>
+                            Dark Lord - Test
                             <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
