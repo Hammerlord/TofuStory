@@ -73,21 +73,26 @@ const useStyles = createUseStyles({
     },
     "@keyframes immuneAnimation": {
         from: {
+            minHeight: "140px",
             width: "80%",
-            height: "80%",
+            height: "100%",
             opacity: "0.3",
         },
         to: {
+            minHeight: "160px",
             opacity: "1",
             width: "100%",
-            height: "100%",
+            height: "120%",
         },
     },
     immune: {
         position: "absolute",
         borderRadius: "100px",
         border: "2px solid rgba(255, 255, 240, 0.9)",
-        boxShadow: "0 0 20px 4px rgb(255, 255, 220), 0 0 15px 4px rgb(255, 255, 220)",
+        boxShadow: Array.from({ length: 5 })
+            .map((_, i) => `0 0 20px 4px rgb(235, 230, ${200 - i * 3})`)
+            .join(", "),
+        background: "rgb(255, 255, 240, 0.2)",
         top: "60%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
@@ -95,6 +100,7 @@ const useStyles = createUseStyles({
         animationDuration: "2s",
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
+        minHeight: "140px",
     },
     customEffect: {
         position: "absolute",
