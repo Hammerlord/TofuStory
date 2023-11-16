@@ -169,6 +169,7 @@ const useStyles = createUseStyles({
         animationDuration: "1s",
         animationName: "$applyEffect",
         transition: "1s filter linear, 1s -webkit-filter linear",
+        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
     },
     "@keyframes stompingAnimation": {
         "0%": {
@@ -195,6 +196,7 @@ const useStyles = createUseStyles({
         transitionTimingFunction: "ease-in-out",
         animationName: "$stompingAnimation",
         transformOrigin: "center bottom",
+        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
     },
     highlightText: {
         "& .text": {
@@ -228,6 +230,7 @@ const useStyles = createUseStyles({
     dying: {
         animation: "$deadAnimation 1s forwards",
         transitionTimingFunction: "ease-in-out",
+        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
     },
     dead: {
         opacity: 0,
