@@ -262,6 +262,7 @@ const useStyles = createUseStyles({
         transformOrigin: "50% 50%",
         animationIterationCount: 1,
         animationDuration: "0.5s",
+        zIndex: -1,
     },
     "@keyframes explodeAnimation": {
         from: {
