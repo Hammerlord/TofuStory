@@ -117,20 +117,29 @@ const Main = () => {
     const { character, battle } = useAppSelector((state) => state);
     const { player, deck } = character || {};
 
-    useEffect(() => {
+    const resetTravels = () => {
         const route = generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 });
         setRoute(route);
         setLocationNode(route);
+        setSceneRegion(null);
+        setScene(null);
+    };
+
+    useEffect(() => {
+        resetTravels();
     }, []);
 
     useEffect(() => {
         // Check game over when player updates
-        if (player?.HP <= 0) {
-            setTimeout(() => {
+        if (player?.HP <= 0 && (battle?.eventQueue || []).length === 0) {
+            handleTransition(() => setIsGameOver(true));
+            const timeout = setTimeout(() => {
                 setIsGameOver(true);
             }, 1500);
+
+            return () => clearTimeout(timeout);
         }
-    }, [player]);
+    }, [player, battle?.eventQueue]);
 
     useEffect(() => {
         if (battle?.state !== BATTLE_STATES.VICTORY) {
@@ -457,9 +466,10 @@ const Main = () => {
                     player={player}
                     onExit={() => {
                         const callback = () => {
-                            setIsGameOver(false);
-                            dispatch(closeBattle());
                             dispatch(restartGame());
+                            resetTravels();
+                            dispatch(closeBattle());
+                            setIsGameOver(false);
                         };
 
                         handleTransition(callback);

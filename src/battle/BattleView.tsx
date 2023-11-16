@@ -466,7 +466,7 @@ const BattlefieldContainer = () => {
     };
 
     useEffect(() => {
-        if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(battleState)) {
+        if ([BATTLE_STATES.VICTORY].includes(battleState)) {
             return;
         }
 

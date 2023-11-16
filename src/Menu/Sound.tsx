@@ -165,6 +165,21 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
     };
 
     useEffect(() => {
+        // Audio object clean up for gameover
+        return () => {
+            if (playlistAudio) {
+                playlistAudio.pause();
+                playlistAudio.src = null;
+            }
+
+            if (overrideAudio) {
+                overrideAudio.pause();
+                overrideAudio.src = null;
+            }
+        };
+    }, [playlistAudio, overrideAudio]);
+
+    useEffect(() => {
         // Loop playlist audio
         let indexInTracks = tracks.findIndex((track) => track === playlistAudio.src);
         if (indexInTracks === -1) {
