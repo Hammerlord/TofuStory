@@ -19,7 +19,8 @@ const useStyles = createUseStyles({
         minWidth: "500px",
         transform: "translateY(-50%)",
         animationName: "$textAnimation",
-        animationDuration: `${duration / 1000}s`,
+        // Make animation slightly longer than visibility duration of the banner to prevent 'flickering' due to position reset
+        animationDuration: `${duration / 1000 + 0.001}s`,
         transitionTimingFunction: "ease-in-out",
     }),
     "@keyframes textAnimation": {
