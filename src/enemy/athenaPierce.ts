@@ -10,6 +10,7 @@ import {
     SharpEyesImage,
     SoaringHawkImage,
     VitalHunterImage,
+    WeaponMasteryImage,
     WolfImage,
 } from "../images";
 import { TornadoIcon } from "../images/icons";
@@ -218,13 +219,29 @@ export const athena: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: CallOfTheWildImage,
-            description: "This character retaliates if an animal companion falls in combat.",
+            description: "Retaliating if an animal companion falls in combat.",
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
                 ability: {
-                    name: "Revenge Shot",
+                    name: "Revenge",
                     image: AvengersArrowImage,
                     actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            icon: CallOfTheWildImage,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            area: 2,
+                            effects: [
+                                {
+                                    name: "Vengeful",
+                                    type: EFFECT_TYPES.RAGE,
+                                    class: EFFECT_CLASSES.BUFF,
+                                    icon: WeaponMasteryImage,
+                                    attackPower: 1,
+                                },
+                            ],
+                        },
                         {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.HOSTILE,

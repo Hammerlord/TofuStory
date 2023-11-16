@@ -4,6 +4,7 @@ import { HenesysRegionBGImage } from "../images";
 import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
 import { gachaponEvents } from "../scene/gachapon/Gachapon";
 import pantry from "../scene/Henesys/pantry";
+import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
 
 const useStyles = createUseStyles({
     root: {
@@ -100,6 +101,10 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop }) => {
                                     <MoneyBagIcon />
                                 </div>
                             </div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(athenaPierceScene)}>
+                            Athena Pierce - Test
+                            <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
                             Exit to World Map
