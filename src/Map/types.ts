@@ -6,6 +6,7 @@ import { NPC } from "./../scene/types";
 import Henesys from "./Henesys";
 import KerningCity from "./KerningCity";
 import LithHarbor from "./LithHarbor";
+import Perion from "./Perion";
 import { REGIONS } from "./regions";
 
 export enum NODE_TYPES {
@@ -78,6 +79,7 @@ export const TOWN_MAP = {
     [TOWNS.KERNING]: KerningCity,
     [TOWNS.LITH_HARBOR]: LithHarbor,
     [TOWNS.HENESYS]: Henesys,
+    [TOWNS.PERION]: Perion,
 };
 
 export const BG_MAP = {
