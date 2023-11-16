@@ -16,6 +16,7 @@ import {
     StolenFenceImage,
     StumpyBatImage,
     TreeBranchImage,
+    WeaponMasteryImage,
 } from "../images";
 import { Effect } from "./../ability/types";
 

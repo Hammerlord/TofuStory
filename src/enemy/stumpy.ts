@@ -1,7 +1,15 @@
-import { BarrelImage, BatsEffectImage, BombImage, StumpyBatImage, StumpyImage } from "../images";
+import { BarrelImage, BatsEffectImage, BombImage, StumpyBatImage, StumpyImage, WeaponMasteryImage } from "../images";
 import { MountainIcon } from "../images/icons";
 import { burn, hardy } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 import { bats, dryBranch, hardwood } from "./effect";
 
 const explosiveBarrel: Minion = {
@@ -76,7 +84,33 @@ export const stumpy: Minion = {
     ],
     effects: [
         hardy,
-        hardwood,
+        {
+            ...hardwood,
+            name: "Warped Wood",
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Growing Strength",
+                        description: "Effect is removed if the character is burning.",
+                        icon: WeaponMasteryImage,
+                        attackPower: 1,
+                        canBeSilenced: true,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        onReceiveEffect: {
+                            conditions: [
+                                {
+                                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                    hasEffectType: [EFFECT_TYPES.BURN],
+                                },
+                            ],
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
+        },
         dryBranch,
         {
             name: "Summon Barrel",
