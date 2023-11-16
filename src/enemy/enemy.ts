@@ -43,6 +43,7 @@ import {
     WoodenClubImage,
 } from "../images";
 import { CrossedSwordsIcon, DizzyIcon, EyeIcon, ZzzIcon } from "../images/icons";
+import { redPotion } from "../item/items";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -351,6 +352,7 @@ export const noobA: Minion = {
     image: NoobClubAImage,
     damage: 2,
     mesos: 1,
+    items: [redPotion],
     abilities: [
         {
             name: "Club!",
@@ -383,6 +385,7 @@ export const noobB: Minion = {
     image: NoobClubBImage,
     damage: 2,
     mesos: 1,
+    items: [redPotion],
     abilities: [
         {
             name: "Flurry",
@@ -406,13 +409,12 @@ export const noobB: Minion = {
             ],
         },
         {
-            name: "Potion",
-            resourceCost: 3,
+            name: "Block",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    healing: 5,
+                    armor: 5,
                 },
             ],
         },
@@ -457,9 +459,10 @@ export const noobBWarrior = {
 
 export const thiefAssassin: Minion = {
     name: "XxLeetSinxX",
-    maxHP: 40,
+    maxHP: 75,
     image: LeetSinImage,
     damage: 2,
+    items: [redPotion, redPotion],
     attack: {
         name: "Attack",
         actions: [
@@ -497,36 +500,25 @@ export const thiefAssassin: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    damage: 0,
+                    damage: 3,
                     icon: SubiImage,
                 },
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    damage: 0,
+                    damage: 3,
                     icon: SubiImage,
                 },
             ],
         },
         enemyHaste,
-        {
-            name: "Potion",
-            resourceCost: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    healing: 5,
-                },
-            ],
-        },
     ],
 };
 
 export const olaf: Minion = {
     name: "Olaf",
-    maxHP: 55,
+    maxHP: 60,
     isElite: true,
     effects: [elite],
     mesos: 10,

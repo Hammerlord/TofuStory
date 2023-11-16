@@ -1,4 +1,5 @@
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { Item } from "../item/types";
 
 export enum TARGET_TYPES {
     HOSTILE = "hostile",
@@ -222,6 +223,7 @@ export interface Minion {
     isBoss?: boolean;
     isElite?: boolean;
     mesos?: number;
+    items?: Item[];
 }
 
 export interface Multiplier {

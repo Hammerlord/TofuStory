@@ -2,7 +2,7 @@ import { passesConditions } from "./../passesConditions";
 import { compose, partition } from "ramda";
 import { Ability, Action, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
-import { getRandomItem, shuffle } from "../../utils";
+import { getRandomInt, getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
@@ -19,9 +19,18 @@ import {
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, updateCombatant, useAbility } from "./actions";
+import {
+    checkEventTrigger,
+    findCombatantData,
+    onEndTurnTriggers,
+    tickDownStatusEffects,
+    updateCombatant,
+    useAbility,
+    useItem,
+} from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import { ITEM_TYPES, Item } from "../../item/types";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
@@ -267,9 +276,29 @@ const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: 
     return getRandomItem(otherAbilities);
 };
 
+const enemyAction = (combatantId: string) => {
+    return (dispatch, getState) => {
+        const actorData = findCombatantData(getState, combatantId);
+        if (!actorData) {
+            return;
+        }
+
+        const itemIndex = checkUseItem(actorData.combatant);
+        if (itemIndex !== undefined) {
+            dispatch(useItem({ itemIndex, actorId: combatantId }));
+        } else {
+            dispatch(enemyUseAbility(combatantId));
+        }
+    };
+};
+
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
         const actorData = findCombatantData(getState, combatantId);
+        if (!actorData) {
+            return;
+        }
+
         const { combatant: actor, friendly, hostile } = actorData;
         const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
         if (!ability) {
@@ -380,7 +409,7 @@ export const startEnemyTurn = () => {
                 if (casting) {
                     dispatch(handleCastTick(id));
                 } else if (!unableToAct) {
-                    dispatch(enemyUseAbility(id));
+                    dispatch(enemyAction(id));
                 }
                 makeEnemyMove();
             }, delay);
@@ -388,4 +417,22 @@ export const startEnemyTurn = () => {
 
         makeEnemyMove();
     };
+};
+
+/**
+ * Decides whether the enemy should use an item should be used. If true, it returns the index of the item to use.
+ */
+const checkUseItem = (combatant: Combatant): number | undefined => {
+    const { items = [], maxHP, HP } = combatant || {};
+
+    const missingHP = maxHP - HP;
+    const consumablesWorthUsing = items.filter((item: Item) => item.type === ITEM_TYPES.CONSUMABLE && item.healing <= missingHP);
+    if (consumablesWorthUsing.length === 0) {
+        return;
+    }
+
+    // Chance whether it uses an item this turn
+    if (Math.random() > HP / maxHP) {
+        return getRandomInt(0, consumablesWorthUsing.length - 1);
+    }
 };
