@@ -19,7 +19,7 @@ const musicMap = {
     ],
     [REGIONS.KERNING_SEWERS]: ["https://maplestory.io/api/GMS/93T/music/Bgm02/JungleBook"],
     [REGIONS.HENESYS]: [
-        "https://maplestory.io/api/GMS/40B/music/Bgm01/CavaBien",
+        "https://maplestory.io/api/GMS/210.1.1/music/Bgm00/RestNPeace",
         "https://maplestory.io/api/GMS/236/music/Bgm00/FloralLife",
         "https://maplestory.io/api/GMS/236/music/Bgm00/GoPicnic",
     ],
