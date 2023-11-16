@@ -22,6 +22,7 @@ import { stumpy } from "../../enemy/stumpy";
 import { REGIONS } from "../regions";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
+import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 
 export const routeKerningToPerion: Route = {
     enemies: {
@@ -76,7 +77,7 @@ const toKerning: Route = {
         {
             x: 0.17551020408163265,
             y: 0.5558987029030266,
-            region: REGIONS.HENESYS,
+            region: REGIONS.KERNING,
         },
         {
             x: 0.1877818778187782,
@@ -131,42 +132,67 @@ const toKerningForest: Route = {
 };
 
 export const routeElliniaPerion = {
+    enemies: {
+        easy: [stump, orangeMushroom],
+        normal: [elliniaGreenMushroom, elliniaHornyMushroom, axeStump],
+        hard: [fireBoar],
+        hardest: [curseEye, lupin],
+    } as MapEnemies,
     nodes: [
         {
             x: 0.6398963730569949,
             y: 0.5545427815348427,
+            region: REGIONS.ELLINIA,
         },
         {
             x: 0.5949913644214162,
             y: 0.5468979711849457,
+            region: REGIONS.ELLINIA,
         },
         {
             x: 0.5703799654576857,
             y: 0.5004410467509556,
+            region: REGIONS.ELLINIA,
+            type: NODE_TYPES.BOSS,
+            encounter: [
+                {
+                    enemies: [null, mossyMushroom, null, mossySnail, null],
+                    winCondition: {
+                        defeatBoss: true,
+                    },
+                },
+            ],
         },
         {
             x: 0.5699481865284974,
             y: 0.4392825639517789,
+            region: REGIONS.PERION,
         },
+
         {
             x: 0.5651986183074266,
             y: 0.37283152014113496,
+            region: REGIONS.PERION,
         },
         {
             x: 0.5379965457685665,
             y: 0.32225815936489266,
+            region: REGIONS.PERION,
         },
         {
             x: 0.5086355785837651,
             y: 0.2752131725962952,
+            region: REGIONS.PERION,
         },
         {
             x: 0.4641623488773748,
             y: 0.25169067921199645,
+            region: REGIONS.PERION,
         },
         {
             x: 0.42918825561312607,
             y: 0.2211114378124081,
+            region: REGIONS.PERION,
         },
     ],
 };
@@ -207,7 +233,7 @@ export const routeHenesysEllinia: Route = {
             type: NODE_TYPES.TOWN,
         },
     ],
-    next: [],
+    next: [routeElliniaPerion],
 };
 
 export const toHenesys: Route = {

@@ -15,6 +15,7 @@ export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
     maxHP: 150,
     damage: 2,
+    isBoss: true,
     image: MossyMushroomImage,
     abilities: [
         {
@@ -78,6 +79,7 @@ export const mossySnail: Minion = {
     armor: 100,
     damage: 1,
     image: MossySnailImage,
+    isBoss: true,
     abilities: [
         {
             name: "Rollout",
