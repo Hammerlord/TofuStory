@@ -42,7 +42,7 @@ import {
     WildBoarImage,
     WoodenClubImage,
 } from "../images";
-import { CrossedSwordsIcon, DizzyIcon, EyeIcon, ZzzIcon } from "../images/icons";
+import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MuscleIcon, ZzzIcon } from "../images/icons";
 import { redPotion } from "../item/items";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
 import {
@@ -525,10 +525,13 @@ export const olaf: Minion = {
     abilities: [
         {
             name: "Flexin'",
+            image: MuscleIcon,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
+                    icon: MuscleIcon,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [
                         {
                             name: "Flex",
@@ -912,6 +915,7 @@ export const mutantSnailEnemy: Minion = {
         {
             name: "Whip",
             resourceCost: 1,
+            image: RedWhipImage,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,

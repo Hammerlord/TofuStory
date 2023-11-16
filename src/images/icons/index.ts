@@ -24,6 +24,7 @@ export { default as MedalIcon } from "./Medal.svg";
 export { default as MilitaryMedalIcon } from "./MilitaryMedal.svg";
 export { default as MoneyBagIcon } from "./MoneyBag.svg";
 export { default as MountainIcon } from "./Mountain.svg";
+export { default as MuscleIcon } from "./Muscle.svg";
 export { default as MusicIcon } from "./Music.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
 export { default as QuestionMarkIcon } from "./QuestionMark.svg";
