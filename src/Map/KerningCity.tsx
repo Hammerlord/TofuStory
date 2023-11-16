@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { KerningCityBGImage, KerningSewerImage } from "../images";
-import { WorldMapIcon } from "../images/icons";
+import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLord";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
@@ -69,7 +69,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const KerningCity = ({ player, onExit, onClickScene }) => {
+const store = {
+    merchant: {
+        name: "Cutthroat Manny and Don Hwang",
+    },
+};
+
+const KerningCity = ({ player, onExit, onClickScene, onClickShop }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -89,6 +95,14 @@ const KerningCity = ({ player, onExit, onClickScene }) => {
                         <div className={classNames(classes.node)} onClick={() => onClickScene(barScene)}>
                             Dark Lord - Test
                             <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
+                            Shop
+                            <div className={classes.event}>
+                                <div className={classes.eventInner}>
+                                    <MoneyBagIcon />
+                                </div>
+                            </div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
                             Exit to World Map

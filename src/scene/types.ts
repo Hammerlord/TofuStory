@@ -18,18 +18,20 @@ export interface SceneEncounter {
     type?: BATTLE_TYPES;
 }
 
+export interface Shop {
+    merchant: {
+        name: string;
+    };
+    hasDiscount?: boolean;
+}
+
 export interface ScriptResponse {
     text: string;
     isExit?: boolean;
     encounter?: SceneEncounter;
     next?: ScriptNode[];
     notoriety?: number;
-    shop?: {
-        merchant: {
-            name: string;
-        };
-        hasDiscount?: boolean;
-    };
+    shop?: Shop;
     camp?: boolean;
 }
 

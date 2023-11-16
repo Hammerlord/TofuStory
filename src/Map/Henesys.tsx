@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { HenesysRegionBGImage } from "../images";
-import { WorldMapIcon } from "../images/icons";
+import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
 import { gachaponEvents } from "../scene/gachapon/Gachapon";
 import pantry from "../scene/Henesys/pantry";
 
@@ -71,7 +71,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const Henesys = ({ player, onExit, onClickScene }) => {
+const store = {
+    merchant: {
+        name: "Karl and Sam",
+    },
+};
+
+const Henesys = ({ player, onExit, onClickScene, onClickShop }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -86,6 +92,14 @@ const Henesys = ({ player, onExit, onClickScene }) => {
                         <div className={classNames(classes.node)} onClick={() => onClickScene(gachaponEvents)}>
                             Event
                             <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
+                            Shop
+                            <div className={classes.event}>
+                                <div className={classes.eventInner}>
+                                    <MoneyBagIcon />
+                                </div>
+                            </div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
                             Exit to World Map

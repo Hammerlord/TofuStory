@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { PerionRegionBGImage } from "../images";
-import { WorldMapIcon } from "../images/icons";
+import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 
 const useStyles = createUseStyles({
@@ -70,7 +70,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const Perion = ({ player, onExit, onClickScene }) => {
+const store = {
+    merchant: {
+        name: "River and Harry",
+    },
+};
+
+const Perion = ({ player, onExit, onClickScene, onClickShop }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -81,6 +87,14 @@ const Perion = ({ player, onExit, onClickScene }) => {
                         <div className={classNames(classes.node)} onClick={() => onClickScene(dancesWithBalrogScene)}>
                             Dances With Balrog - Test
                             <div className={classes.event}>?</div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
+                            Shop
+                            <div className={classes.event}>
+                                <div className={classes.eventInner}>
+                                    <MoneyBagIcon />
+                                </div>
+                            </div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
                             Exit to World Map

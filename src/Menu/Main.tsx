@@ -338,6 +338,7 @@ const Main = () => {
                 updatePlayer={updatePlayer}
                 onExit={() => setTown(null)}
                 onClickScene={setScene}
+                onClickShop={setShop}
                 onBattle={handleTownBattle}
             />
         );
