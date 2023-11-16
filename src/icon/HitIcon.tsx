@@ -18,7 +18,10 @@ const useStyles = createUseStyles({
             marginLeft: "-35px",
         },
         "& .text": {
-            fontSize: "20px",
+            fontSize: "22px",
+            textShadow: Array.from({ length: 10 })
+                .map(() => "0 0 3px black")
+                .join(", "),
         },
     },
 });
