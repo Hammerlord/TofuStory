@@ -370,7 +370,7 @@ const CombatantView = forwardRef(
         const { action, actionParent, targetRef } = (event?.actorId === combatant?.id && event) || {};
         const { animation, type: actionType } = action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
-        const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost > 0);
+        const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
         const isApplyingEffect =
             ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
             (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
