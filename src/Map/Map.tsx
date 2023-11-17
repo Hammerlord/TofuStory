@@ -181,12 +181,12 @@ const Map = ({
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
     const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
     const absoluteNodeLocation = { x: (currentNode?.x || 0) * -mapWidth, y: (currentNode?.y || 0) * -mapHeight };
-    const pan = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
+    const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
 
     return (
         <Overlay>
             <div className={classes.root}>
-                <Pan defaultPosition={pan} style={{ minWidth: "2500px", width: "175%" }}>
+                <Pan userPosition={panPosition} style={{ minWidth: "2500px", width: "175%" }}>
                     <img src={VictoriaIslandImage} className={classes.image} ref={containerRef} onLoad={updateContainer} />
                     <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
                         {lines}
