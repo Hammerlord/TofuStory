@@ -12,7 +12,7 @@ import {
     SpearSweepImage,
 } from "../../images";
 import { HeartIcon } from "../../images/icons";
-import { silence, stealth, stun, wound } from "../Effects";
+import { attackPower, silence, stealth, stun, wound } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -204,6 +204,7 @@ export const lordOfDarkness: Ability = {
     resourceCost: 2,
     image: LordOfDarknessImage,
     depletedOnUse: true,
+    description: "Retaliation: gain +1 attack power for 5 turns",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -215,12 +216,11 @@ export const lordOfDarkness: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
-                    duration: 2,
+                    duration: 5,
                     lifeOnHit: 1,
                     onReceiveDamage: {
-                        parentEffect: {
-                            damage: 1,
-                        },
+                        effects: [{ ...attackPower, duration: 5 }],
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     },
                 },
             ],

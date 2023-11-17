@@ -70,7 +70,7 @@ import {
     lightningCharge,
     parashockGuard,
     shieldMastery,
-} from "./warrior/whiteknightAbilities";
+} from "./warrior/whiteKnightAbilities";
 
 export const JOB_CARD_MAP = {
     [PLAYER_CLASSES.WARRIOR]: {

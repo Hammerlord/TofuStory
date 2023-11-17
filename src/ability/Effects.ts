@@ -423,3 +423,13 @@ export const poison: Effect = {
     duration: 3,
     healingReceived: -1,
 };
+
+export const attackPower: Effect = {
+    name: "Attack Power",
+    description: "Attack power increased.",
+    icon: WeaponMasteryImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    duration: 1,
+};
