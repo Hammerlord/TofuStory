@@ -43,7 +43,7 @@ const Pan = ({ userPosition, children, style }) => {
     const classes = useStyles();
 
     const panToUserPosition = (panTime = 400) => {
-        if (!userPosition) {
+        if ([x, y, userPosition?.x, userPosition?.y].some((coords) => isNaN(coords) || coords === null)) {
             return;
         }
 

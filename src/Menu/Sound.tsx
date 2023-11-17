@@ -87,9 +87,8 @@ const MUSIC_PLAYING_KEY = "musicPlaying";
 const fadeOutAudio = (audio: HTMLAudioElement) => {
     const currentVolume = audio.volume;
     const interval = setInterval(() => {
-        if (audio.volume > 0) {
-            audio.volume -= currentVolume / FADE_INCREMENT;
-        }
+        const decrementAmount = Math.min(audio.volume, currentVolume / FADE_INCREMENT);
+        audio.volume -= decrementAmount;
     }, TRANSITION_TIME / FADE_INCREMENT);
     setTimeout(() => {
         audio.pause();
@@ -99,9 +98,8 @@ const fadeOutAudio = (audio: HTMLAudioElement) => {
 
 const fadeInAudio = (audio: HTMLAudioElement, currentVolume: number) => {
     const interval = setInterval(() => {
-        if (audio.volume < currentVolume) {
-            audio.volume += currentVolume / FADE_INCREMENT;
-        }
+        const incrementAmount = Math.min(1 - audio.volume, currentVolume / FADE_INCREMENT);
+        audio.volume += incrementAmount;
     }, TRANSITION_TIME / FADE_INCREMENT);
 
     setTimeout(() => {
