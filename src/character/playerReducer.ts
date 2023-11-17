@@ -5,14 +5,31 @@ import defaultCharacterProperties from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
 import { getMaxHP } from "../battle/utils";
 import { Item, ITEM_TYPES } from "../item/types";
+import { BATTLE_TYPES } from "../battle/types";
+
+const INITIAL_STATE = {
+    player: null,
+    deck: [],
+    battlesWon: {
+        [BATTLE_TYPES.ENCOUNTER]: 0,
+        [BATTLE_TYPES.ELITE_ENCOUNTER]: 0,
+        [BATTLE_TYPES.BOSS]: 0,
+    },
+};
 
 export const playerStateSlice = createSlice({
     name: "player",
-    initialState: {
-        player: null,
-        deck: [],
-    },
+    initialState: INITIAL_STATE,
     reducers: {
+        incrementEncounterTypeWon: (state, action: PayloadAction<BATTLE_TYPES>) => {
+            return {
+                ...state,
+                battlesWon: {
+                    ...state.battlesWon,
+                    [action.payload]: state.battlesWon[action.payload] + 1,
+                },
+            };
+        },
         updatePlayer: (state, action: PayloadAction<object>) => {
             return {
                 ...state,
@@ -40,10 +57,7 @@ export const playerStateSlice = createSlice({
             };
         },
         restartGame: () => {
-            return {
-                player: null,
-                deck: [],
-            };
+            return INITIAL_STATE;
         },
         acquireItems: (state, action: PayloadAction<Item[]>) => {
             const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];

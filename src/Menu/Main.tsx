@@ -91,7 +91,8 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems } = playerStateSlice.actions;
+const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems, incrementEncounterTypeWon } =
+    playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
@@ -115,7 +116,7 @@ const Main = () => {
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
-    const { player, deck } = character || {};
+    const { player, deck, battlesWon } = character || {};
 
     const resetTravels = () => {
         const route = generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 });
@@ -128,6 +129,13 @@ const Main = () => {
     useEffect(() => {
         resetTravels();
     }, []);
+
+    useEffect(() => {
+        const isJobUpTime = battlesWon.bossEncounter === 3 && !isActivityOpen && !player.secondaryClass;
+        if (isJobUpTime) {
+            setIsSelectingSecondaryJob(true);
+        }
+    }, [battlesWon]);
 
     useEffect(() => {
         // Check game over when player updates
@@ -216,8 +224,8 @@ const Main = () => {
 
     const handleExitBattle = () => {
         if (battle) {
+            dispatch(incrementEncounterTypeWon(battle.type));
             dispatch(closeBattle());
-
             dispatch(
                 updatePlayer({
                     effects: aggregateItemEffects(player.items),
