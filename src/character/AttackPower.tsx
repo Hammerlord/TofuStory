@@ -4,6 +4,8 @@ import { getEnabledEffects } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
+import { Combatant } from "./types";
+import { Action } from "../ability/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -16,11 +18,38 @@ const useStyles = createUseStyles({
             color: "#ff9b94",
         },
     },
+    isCasting: {
+        "& .text": {
+            color: "#00baff",
+        },
+    },
+    timesToAttack: {
+        fontWeight: "bold",
+        position: "absolute",
+        bottom: "-18px",
+        right: "12px",
+    },
 });
 
-const AttackPower = ({ combatant }) => {
+const AttackPower = ({ combatant }: { combatant: Combatant }) => {
     const classes = useStyles();
-    if (!combatant?.HP || !combatant.damage) {
+    const damageCount = combatant.casting?.ability?.actions.reduce(
+        (acc, action: Action) => {
+            let timesToAttack = acc.timesToAttack;
+            if (action.damage) {
+                ++timesToAttack;
+            }
+
+            return {
+                timesToAttack,
+                // TODO just taking the last damage number in the actions array; but sometimes they will be different
+                damage: action.damage || acc.damage,
+            };
+        },
+        { damage: 0, timesToAttack: 0 }
+    ) || { damage: combatant.damage || 0, timesToAttack: 1 };
+
+    if (!combatant?.HP || !damageCount.damage) {
         return null;
     }
 
@@ -32,10 +61,10 @@ const AttackPower = ({ combatant }) => {
     }, 0);
 
     const totalDamage = (() => {
-        if (!combatant.damage) {
+        if (!damageCount.damage) {
             return null;
         }
-        const total = damageFromEffects + combatant.damage;
+        const total = damageFromEffects + damageCount.damage;
         if (total < 0) {
             return 0;
         }
@@ -44,7 +73,7 @@ const AttackPower = ({ combatant }) => {
 
     const tooltip = (
         <div>
-            The base attack power of this character.
+            Attack power. Estimates the damage dealt by this character's next attack, if it attacks.
             {damageEffects.length > 0 && (
                 <>
                     <hr />
@@ -70,8 +99,10 @@ const AttackPower = ({ combatant }) => {
                     className={classNames({
                         [classes.bonus]: damageFromEffects > 0,
                         [classes.negative]: damageFromEffects < 0,
+                        [classes.isCasting]: combatant.casting,
                     })}
                 />
+                {damageCount.timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${damageCount.timesToAttack}`}</span>}
             </span>
         </Tooltip>
     );
