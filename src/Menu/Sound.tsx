@@ -32,6 +32,8 @@ const musicMap = {
         "https://maplestory.io/api/GMS/236/music/Bgm01/HighlandStar",
         "https://maplestory.io/api/GMS/236/music/Bgm12/AcientRemain",
         "https://maplestory.io/api/GMS/236/music/Bgm00/Nightmare",
+        "https://maplestory.io/api/GMS/93T/music/Bgm12/RuinCastle",
+        "https://maplestory.io/api/GMS/93T/music/Bgm12/WaterWay",
     ],
     [REGIONS.SLEEPYWOOD]: ["https://maplestory.io/api/GMS/93T/music/Bgm00/SleepyWood"],
 };
