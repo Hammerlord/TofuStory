@@ -24,6 +24,7 @@ import {
     IronMaceImage,
     KoreanFanImage,
     LeatherSandalsImage,
+    LetterImage,
     LuckSackImage,
     PanlidImage,
     PieceOfIceImage,
@@ -889,4 +890,18 @@ export const bluePotion: Item = {
     description: "Gain 2 resources.",
     type: ITEM_TYPES.CONSUMABLE,
     resources: 2,
+};
+
+export const unsignedLetter: Item = {
+    name: "Unsigned Letter",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: LetterImage,
+    effects: [
+        {
+            name: "Unsigned Letter",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 5,
+        },
+    ],
 };
