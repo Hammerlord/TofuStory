@@ -1,6 +1,6 @@
 import uuid from "uuid";
-import { FishSpearImage, FrozenTunaImage, OldGladiusImage, PicoPicoHammerImage, WarMushImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { BlueUmbrellaImage, FrozenTunaImage, OldGladiusImage, PicoPicoHammerImage, WarMushImage, YellowUmbrellaImage } from "../images";
 import { engravedStone } from "./../item/items";
 import { Combatant } from "./types";
 
@@ -29,6 +29,8 @@ const defaultCharacterProperties = {
         { name: "Old Gladius", image: OldGladiusImage },
         { name: "Pico Pico", image: PicoPicoHammerImage },
         { name: "Frozen Tuna", image: FrozenTunaImage },
+        { name: "Blue Umbrella", image: BlueUmbrellaImage },
+        { name: "Yellow Umbrella", image: YellowUmbrellaImage },
     ],
 } as Combatant;
 
