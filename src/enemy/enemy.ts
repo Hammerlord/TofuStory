@@ -51,9 +51,9 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Minion,
     MORPH_TYPES,
     MULTIPLIER_TYPES,
+    Minion,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -512,7 +512,10 @@ export const thiefAssassin: Minion = {
                 },
             ],
         },
-        enemyHaste,
+        {
+            ...enemyHaste,
+            dialog: "I am speed.",
+        },
     ],
 };
 

@@ -106,6 +106,8 @@ export const enemyHaste: Ability = {
             area: 1,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: HasteImage,
             effects: [
                 {
                     name: "Haste",
