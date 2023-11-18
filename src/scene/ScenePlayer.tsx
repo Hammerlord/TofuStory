@@ -10,6 +10,7 @@ import { REGIONS } from "../Map/regions";
 import { PLAYER_CLASSES } from "../Menu/types";
 import Button from "../view/Button";
 import { Scene, ScriptNode, ScriptResponse } from "./types";
+import CardRemovalGrid from "../Menu/CardRemovalGrid";
 
 const useStyles = createUseStyles({
     root: {
@@ -203,6 +204,7 @@ const ScenePlayer = ({
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const [showCamp, setShowCamp] = useState(false);
     const classes = useStyles();
+    const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const { speaker, dialog = [], items, responses, puzzle, itemChoices } = script[dialogIndex] || {};
 
     useEffect(() => {
@@ -248,7 +250,7 @@ const ScenePlayer = ({
         }
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop, camp }: ScriptResponse) => {
+    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility }: ScriptResponse) => {
         const callback = () => {
             if (next) {
                 setScript(next);
@@ -268,6 +270,10 @@ const ScenePlayer = ({
 
             if (camp) {
                 setShowCamp(true);
+            }
+
+            if (removeAbility) {
+                setIsRemovingAbility(true);
             }
 
             if (!next && !shop && !isExit) {
@@ -345,6 +351,11 @@ const ScenePlayer = ({
         });
     };
 
+    const handleRemoveAbility = (updatedDeck: Ability[]) => {
+        setIsRemovingAbility(false);
+        updateDeck(updatedDeck);
+    };
+
     const canSkip = !responses && !items && !itemChoices;
 
     return (
@@ -352,7 +363,7 @@ const ScenePlayer = ({
             <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
             <div className={classes.backgroundOverlay} />
             <div className={classes.inner}>
-                {!Puzzle && !showCamp && (
+                {!Puzzle && !showCamp && !isRemovingAbility && (
                     <>
                         <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
@@ -422,6 +433,7 @@ const ScenePlayer = ({
                 <Camp deck={deck} player={player} updateDeck={updateDeck} updatePlayer={updatePlayer} onExit={() => setShowCamp(false)} />
             )}
             {itemChoices && <ItemSelection {...itemChoices} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />}
+            {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
         </div>
     );
 };

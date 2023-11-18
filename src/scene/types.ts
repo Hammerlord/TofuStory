@@ -33,6 +33,7 @@ export interface ScriptResponse {
     notoriety?: number;
     shop?: Shop;
     camp?: boolean;
+    removeAbility?: boolean;
 }
 
 export interface ScriptNode {

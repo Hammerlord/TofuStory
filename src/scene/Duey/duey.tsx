@@ -288,7 +288,8 @@ export const randomEventDuey: Scene = {
                             ],
                             responses: [
                                 {
-                                    text: "Remove an ability from your deck. [WIP this does nothing]",
+                                    text: "Remove an ability from your deck.",
+                                    removeAbility: true,
                                     next: [
                                         {
                                             speaker: duey,

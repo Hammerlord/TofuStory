@@ -35,7 +35,7 @@ const CardRemovalGrid = ({
 }: {
     cards: Ability[];
     onRemoveAbility: (updatedDeck: Ability[]) => void;
-    onCancel: () => void;
+    onCancel?: () => void;
 }) => {
     const classes = useStyles();
     const [selectedAbilityIndexToRemove, setSelectedAbilityIndexToRemove] = useState(null);
@@ -66,9 +66,11 @@ const CardRemovalGrid = ({
                 <Button variant={"contained"} color={"secondary"} onClick={handleRemoveAbility}>
                     Remove Selection
                 </Button>{" "}
-                <Button variant={"contained"} onClick={onCancel}>
-                    Cancel
-                </Button>
+                {onCancel && (
+                    <Button variant={"contained"} onClick={onCancel}>
+                        Cancel
+                    </Button>
+                )}
             </div>
         </div>
     );
