@@ -7,6 +7,7 @@ import { Combatant } from "../character/types";
 import { MesoCoinImage } from "../images";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
+import WeaponSkins from "./WeaponSkins";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -61,7 +62,17 @@ const useStyles = createUseStyles({
     },
 });
 
-const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[]; onUseItem?: (itemIndex: number) => void }) => {
+const Header = ({
+    player,
+    deck,
+    onUseItem,
+    onSelectWeaponSkin,
+}: {
+    player: Combatant;
+    deck: Ability[];
+    onUseItem?: (itemIndex: number) => void;
+    onSelectWeaponSkin: (weaponSkin: string) => void;
+}) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
 
@@ -80,6 +91,7 @@ const Header = ({ player, deck, onUseItem }: { player: Combatant; deck: Ability[
                     </div>
                 </div>
                 {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
+                <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                 <Inventory inventory={player.items} onUseItem={onUseItem} />
             </div>
         </>

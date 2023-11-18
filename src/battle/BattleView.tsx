@@ -8,7 +8,7 @@ import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
-import { useItem } from "./actions/actions";
+import { updateCombatant, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -27,6 +27,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
+import { playerStateSlice } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     root: {
@@ -161,6 +162,7 @@ const TURN_ANNOUNCEMENT_TIME = 2000; // MS
 const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
+const { updatePlayer } = playerStateSlice.actions;
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
@@ -671,7 +673,27 @@ const BattlefieldContainer = () => {
                         />
                     </div>
                 </div>
-                <Header player={player} deck={originalDeck} onUseItem={handleUseItem} />
+                <Header
+                    player={player}
+                    deck={originalDeck}
+                    onUseItem={handleUseItem}
+                    onSelectWeaponSkin={(weaponSkin: string) => {
+                        dispatch(
+                            updateCombatant({
+                                combatantId: player.id,
+                                newProperties: {
+                                    weapon: weaponSkin,
+                                },
+                            })
+                        );
+
+                        dispatch(
+                            updatePlayer({
+                                weapon: weaponSkin,
+                            })
+                        );
+                    }}
+                />
                 {showWaveClear && (
                     <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
                 )}

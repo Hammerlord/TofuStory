@@ -237,8 +237,8 @@ const useStyles = createUseStyles({
     },
     weaponContainer: {
         position: "absolute",
-        top: -70,
-        left: -25,
+        top: -50,
+        left: 25,
     },
     poisoned: {
         filter: "sepia(0.9) hue-rotate(-300deg) saturate(2)",

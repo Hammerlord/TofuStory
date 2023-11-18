@@ -363,6 +363,7 @@ const Main = () => {
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
+    const handleSelectWeaponSkin = (weaponSkin: string) => dispatch(updatePlayer({ weapon: weaponSkin }));
 
     const isActivityOpen =
         battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility;
@@ -466,7 +467,7 @@ const Main = () => {
                 </div>
             )}
             {/** BattleView has its own header */}
-            {!battle && <Header player={player} deck={deck} onUseItem={handleUseItem} />}
+            {!battle && <Header player={player} deck={deck} onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
 
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && (

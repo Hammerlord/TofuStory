@@ -1,5 +1,5 @@
 import uuid from "uuid";
-import { OldGladiusImage, WarMushImage } from "../images";
+import { FishSpearImage, FrozenTunaImage, OldGladiusImage, PicoPicoHammerImage, WarMushImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { engravedStone } from "./../item/items";
 import { Combatant } from "./types";
@@ -25,6 +25,11 @@ const defaultCharacterProperties = {
     effects: [],
     items: [engravedStone],
     drawCardsPerTurn: 3,
+    weaponSkins: [
+        { name: "Old Gladius", image: OldGladiusImage },
+        { name: "Pico Pico", image: PicoPicoHammerImage },
+        { name: "Frozen Tuna", image: FrozenTunaImage },
+    ],
 } as Combatant;
 
 export default defaultCharacterProperties;
