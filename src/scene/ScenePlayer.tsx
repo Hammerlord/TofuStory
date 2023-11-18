@@ -330,6 +330,10 @@ const ScenePlayer = ({
         if (response.shop) {
             return "[Shop]";
         }
+
+        if (response.removeAbility) {
+            return "[Remove ability from deck]";
+        }
     };
 
     const handleSkip = () => {

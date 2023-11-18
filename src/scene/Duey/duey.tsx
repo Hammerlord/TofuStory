@@ -249,11 +249,11 @@ export const randomEventDuey: Scene = {
             dialog: ["Yikes! Help, someone!"],
             responses: [
                 {
-                    text: "Help Duey.",
+                    text: "Defend Duey from the monsters.",
                     next: [
                         {
                             speaker: shroom,
-                            dialog: ["Hey! Buzz off!"],
+                            dialog: ["Hey, mushroom face! Buzz off!"],
                         },
                         {
                             speaker: shroom,
@@ -275,7 +275,7 @@ export const randomEventDuey: Scene = {
                         {
                             speaker: duey,
                             dialog: [
-                                "Speaking of shrooms... That one shroom was looking at me with these awful, beady eyes. Gave me the chills.",
+                                "Speaking of which... That one shroom was looking at me with these awful, beady eyes. Gave me the chills.",
                                 "Weird, right? It was just a shroom. Maybe it thought I had food in this box. Or maybe I was imagining things.",
                             ],
                         },
@@ -288,7 +288,7 @@ export const randomEventDuey: Scene = {
                             ],
                             responses: [
                                 {
-                                    text: "Remove an ability from your deck.",
+                                    text: "I've got something here...",
                                     removeAbility: true,
                                     next: [
                                         {
@@ -300,7 +300,10 @@ export const randomEventDuey: Scene = {
                                         },
                                         {
                                             speaker: duey,
-                                            dialog: ["Sorry, not trying to be a bother, haha! Alright, who should I give this to?"],
+                                            dialog: [
+                                                "[Duey doesn't seem to understand you.]",
+                                                "Uh, sorry, not trying to be a bother, haha! Alright, who'll this be addressed to?",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Write down 'Maple Administrator'.",
@@ -326,7 +329,7 @@ export const randomEventDuey: Scene = {
                                                         {
                                                             speaker: duey,
                                                             dialog: [
-                                                                "Got it. The {{ class }} instructor it is. I'm sure he'll appreciate hearing from you again!",
+                                                                "Got it. The {{ class }} instructor it is. I'm sure he'll appreciate hearing from you!",
                                                                 "Alright then. I'll catch you around, hopefully! Thanks again!",
                                                             ],
                                                             responses: [
@@ -368,7 +371,7 @@ export const randomEventDuey: Scene = {
                                             speaker: duey,
                                             dialog: [
                                                 "[Duey doesn't seem to have heard you, but he gets the gist of it.]",
-                                                "Well, maybe next time, then! Hope we meet again! Under better circumstances, of course.",
+                                                "Well, maybe next time, then! Hope we meet again. Under better circumstances, of course.",
                                             ],
                                             responses: [
                                                 {
@@ -420,17 +423,17 @@ export const randomEventDuey: Scene = {
                                         {
                                             dialog: [
                                                 "Still, the... intensity of his methods frightens me more than I dare to let on. The incident with the Lupins... no, I'll not repeat it here.",
-                                                "I'm aware he believes in its necessity. I would much like to believe so, too.",
-                                                "Perhaps I've gone on long enough--the night is late here in Henesys, and I've not been sleeping much lately. I hope my fears are just a figment.",
+                                                "I'm aware he believes in its necessity. I would like to believe so, too.",
+                                                "Perhaps I've gone on long enough--the night is late here in Henesys, and I've not been sleeping much lately. I only hope my fears are unfounded.",
                                             ],
                                         },
                                         {
-                                            dialog: ["May this find you well.", "[The letter is unsigned.]"],
+                                            dialog: ["May these words find you well.", "[The letter is unsigned.]"],
                                             items: [unsignedLetter],
                                         },
                                         {
                                             dialog: [
-                                                "(Hmm... There was mention of something strange with the monsters. You can only guess that's related to your own situation. Maybe you'll find more answers on your journey.)",
+                                                "(Hmm... There was mention of something strange going on with the monsters. You can only guess that it's related to your own situation. Maybe you'll find more answers on your journey.)",
                                             ],
                                             responses: [
                                                 {
