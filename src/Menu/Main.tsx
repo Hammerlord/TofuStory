@@ -124,6 +124,7 @@ const Main = () => {
         setLocationNode(route);
         setSceneRegion(null);
         setScene(null);
+        setTown(null);
     };
 
     useEffect(() => {
