@@ -438,7 +438,11 @@ const CombatantView = forwardRef(
                                         Array.from({ length: 3 }).map((_, i) =>
                                             getImageNode({ key: i, className: classes.shouting, style: { animationDelay: `${0.1 * i}s` } })
                                         )}
-                                    <div className={classes.weaponContainer}>
+                                    <div
+                                        className={classNames(classes.weaponContainer, {
+                                            [classes.applyingEffect]: isApplyingEffect,
+                                        })}
+                                    >
                                         <Weapon
                                             image={oldState.weapon}
                                             action={action}
