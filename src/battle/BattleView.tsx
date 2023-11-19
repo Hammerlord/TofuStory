@@ -566,6 +566,7 @@ const BattlefieldContainer = () => {
     if (isPlayerTurn && player?.HP > 0) {
         handleUseItem = (itemIndex: number) => {
             dispatch(useItem({ itemIndex, actorId: player.id }));
+            dispatch(updatePlayer({ items: player.items.filter((item, i) => i !== itemIndex) }));
         };
     }
 
