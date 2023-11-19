@@ -22,13 +22,13 @@ const useStyles = createUseStyles({
     },
     "@keyframes idling": {
         "0%": {
-            transform: "rotate(-5deg)",
+            transform: "rotate(0deg)",
         },
         "60%": {
-            transform: "rotate(10deg)",
+            transform: "rotate(12deg)",
         },
         "100%": {
-            transform: "rotate(-5deg)",
+            transform: "rotate(0deg)",
         },
     },
     stab: {
