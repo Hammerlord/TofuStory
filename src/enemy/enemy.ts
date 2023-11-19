@@ -26,13 +26,13 @@ import {
     OrangeMushroomIdleImage,
     PigIdleImage,
     PigsHeadImage,
+    RedFistOfFuryImage,
     RedSnailImage,
     RedSnailShellImage,
     RedWhipImage,
     RibbonPigIdleImage,
     ShroomImage,
     SlimeIdleImage,
-    SlimeOmokImage,
     SnailImage,
     SnailShellImage,
     SquishyLiquidImage,
@@ -94,7 +94,7 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 15,
+    maxHP: 12,
     image: ShroomImage,
     damage: 2,
     mesos: 5,
@@ -165,7 +165,7 @@ export const redSnail: Minion = {
 
 export const slime: Minion = {
     name: "Slime",
-    maxHP: 25,
+    maxHP: 16,
     armor: 12,
     image: SlimeIdleImage,
     damage: 3,
@@ -182,21 +182,6 @@ export const slime: Minion = {
             conditions: [
                 {
                     comparator: "gt",
-                    armor: 0,
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-        {
-            name: "Squishy Inside",
-            icon: SlimeOmokImage,
-            description: "When all this character's armor has been destroyed:",
-            attackDamageReceived: 2,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            conditions: [
-                {
-                    comparator: "eq",
                     armor: 0,
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
@@ -352,7 +337,7 @@ export const noobA: Minion = {
     image: NoobClubAImage,
     damage: 2,
     mesos: 1,
-    items: [redPotion],
+    items: [{ ...redPotion, healing: 10 }],
     abilities: [
         {
             name: "Club!",
@@ -362,7 +347,7 @@ export const noobA: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 4,
                 },
             ],
         },
@@ -385,11 +370,12 @@ export const noobB: Minion = {
     image: NoobClubBImage,
     damage: 2,
     mesos: 1,
-    items: [redPotion],
+    items: [{ ...redPotion, healing: 10 }],
     abilities: [
         {
             name: "Flurry",
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -462,7 +448,10 @@ export const thiefAssassin: Minion = {
     maxHP: 75,
     image: LeetSinImage,
     damage: 2,
-    items: [redPotion, redPotion],
+    items: [
+        { ...redPotion, healing: 10 },
+        { ...redPotion, healing: 10 },
+    ],
     attack: {
         name: "Attack",
         actions: [
@@ -521,7 +510,7 @@ export const thiefAssassin: Minion = {
 
 export const olaf: Minion = {
     name: "Olaf",
-    maxHP: 60,
+    maxHP: 50,
     isElite: true,
     effects: [elite],
     mesos: 10,
@@ -549,7 +538,9 @@ export const olaf: Minion = {
         },
         {
             name: "Double Punch",
+            image: RedFistOfFuryImage,
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,

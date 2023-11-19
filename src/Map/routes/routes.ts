@@ -68,6 +68,12 @@ export const routeKerningToPerion: Route = {
 
 const toKerning: Route = {
     elites: [snail, blueSnail, shroom],
+    enemies: {
+        easy: [blueSnail, redSnail],
+        normal: [stump, slime],
+        hard: [pig],
+        hardest: [orangeMushroom, octopus],
+    } as MapEnemies,
     nodes: [
         {
             x: 0.19591836734693877,
