@@ -5,7 +5,7 @@ import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { Combatant } from "./types";
-import { Action } from "../ability/types";
+import { ACTION_TYPES, Action } from "../ability/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -36,7 +36,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
     const damageCount = combatant.casting?.ability?.actions.reduce(
         (acc, action: Action) => {
             let timesToAttack = acc.timesToAttack;
-            if (action.damage) {
+            if ([ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
                 ++timesToAttack;
             }
 
@@ -46,7 +46,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                 damage: action.damage || acc.damage,
             };
         },
-        { damage: 0, timesToAttack: 0 }
+        { damage: combatant.damage || 0, timesToAttack: 0 }
     ) || { damage: combatant.damage || 0, timesToAttack: 1 };
 
     if (!combatant?.HP || !damageCount.damage) {
