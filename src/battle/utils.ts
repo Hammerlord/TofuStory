@@ -365,10 +365,6 @@ export const calculateDamage = ({
             return action.secondaryDamage;
         }
 
-        if (isAttack) {
-            return action.damage || actor?.combatant?.damage || 0;
-        }
-
         return action.damage || 0;
     })();
     if (!actor) {

@@ -380,17 +380,17 @@ export const noobB: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 0,
+                    damage: 2,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 0,
+                    damage: 2,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 0,
+                    damage: 2,
                 },
             ],
         },
@@ -545,12 +545,12 @@ export const olaf: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 0,
+                    damage: 1,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 0,
+                    damage: 1,
                 },
             ],
         },
@@ -807,7 +807,6 @@ export const greenMushroom: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: MushroomSporeImage,
                     animation: ANIMATION_TYPES.ONE_WAY,
-                    damage: 1,
                     effects: [
                         {
                             ...poison,

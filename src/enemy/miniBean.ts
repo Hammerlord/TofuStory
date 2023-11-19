@@ -127,7 +127,6 @@ export const moldyCheese: Minion = {
     name: "Moldy Cheese",
     image: GreenCheeseImage,
     maxHP: 10,
-    damage: 0,
     effects: [disgusting],
 };
 
