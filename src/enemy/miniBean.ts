@@ -190,6 +190,12 @@ const throwFood: Ability = {
                     },
                 },
             ],
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            excludePrimaryTarget: true,
+            area: 5,
             induceCombatantAttack: true,
         },
     ],

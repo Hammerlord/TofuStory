@@ -113,32 +113,40 @@ const stalagmite: Minion = {
     ],
 };
 
-const throwRocks: Action = {
-    type: ACTION_TYPES.EFFECT,
-    target: TARGET_TYPES.SELF,
-    excludePrimaryTarget: true,
-    area: 5,
-    induceCombatantAttack: true,
-    effects: [
-        {
-            name: "Earthen Projectile",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackPower: 2,
-            duration: 0,
-            onAttack: {
-                damage: 1,
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                removeEffect: true,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.HP,
-                    value: 0.5,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
+const throwRocks: Action[] = [
+    {
+        type: ACTION_TYPES.EFFECT,
+        target: TARGET_TYPES.SELF,
+        excludePrimaryTarget: true,
+        area: 5,
+        effects: [
+            {
+                name: "Earthen Projectile",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                attackPower: 2,
+                duration: 0,
+                onAttack: {
+                    damage: 1,
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    removeEffect: true,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.HP,
+                        value: 0.5,
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                    },
                 },
             },
-        },
-    ],
-};
+        ],
+    },
+    {
+        type: ACTION_TYPES.EFFECT,
+        target: TARGET_TYPES.SELF,
+        excludePrimaryTarget: true,
+        area: 5,
+        induceCombatantAttack: true,
+    },
+];
 
 export const mutantRibbonPig: Minion = {
     name: "Mutant Ribbon Pig",
@@ -193,15 +201,14 @@ export const mutantRibbonPig: Minion = {
                     animation: ANIMATION_TYPES.STOMP,
                     summon: [{ minion: [stalagmite] }],
                 },
-                throwRocks,
-                throwRocks,
+                ...throwRocks,
             ],
         },
         {
             name: "Seismic Toss",
             resourceCost: 1,
             image: MountainIcon,
-            actions: [throwRocks],
+            actions: throwRocks,
         },
         {
             name: "Stomp",
