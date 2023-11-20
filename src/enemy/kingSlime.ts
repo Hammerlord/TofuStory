@@ -1,14 +1,14 @@
 import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
 import { MountainIcon } from "../images/icons";
-import { controlImmune, hardy } from "./../ability/Effects";
+import { hardy } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Minion,
     MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
+    Minion,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -32,7 +32,18 @@ export const slimeGlobule: Minion = {
     ],
     abilities: [
         {
-            name: "Reconvene",
+            name: "Slide",
+            actions: [
+                {
+                    movement: 1,
+                    description: "{{caster}} has moved.",
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+            ],
+        },
+        {
+            name: "Merge",
             resourceCost: 3,
             actions: [
                 {

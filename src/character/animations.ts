@@ -74,13 +74,26 @@ export const travel = ({
     ];
 
     const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
+    const { x, y } = getCenterCoords(from);
+    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+    const objectCoords = getCenterCoords(elementsToAnimate[0]);
+
+    // If `object` and `from` are both supplied, make sure the object starts at the `from` position
+    // TODO object is potentially an array where all items need to have their origin adjusted to `from`
+    const originOffsetX = freezeAxis === "x" ? 0 : x - objectCoords.x;
+    const originOffsetY = freezeAxis === "y" ? 0 : y - objectCoords.y;
+
+    animationFrames.push({
+        transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px)`,
+        offset: 0,
+    });
+
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
-        const { x, y } = getCenterCoords(from);
         const { x: toX, y: toY } = getCenterCoords(element);
         const x2 = freezeAxis === "x" ? x : toX;
         const y2 = freezeAxis === "y" ? y : toY;
-        const xDiff = x2 - x;
-        const yDiff = y2 - y;
+        const xDiff = x2 - x + originOffsetX;
+        const yDiff = y2 - y + originOffsetY;
         if (sidewinder) {
             const jitterX = getRandomArbitrary(50, 50);
             const jitterY = getRandomArbitrary(2, 3);
@@ -134,7 +147,6 @@ export const travel = ({
 
     animationFrames[0].easing = "ease-out";
     animationFrames[animationFrames.length - 1].easing = "ease-in";
-    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
     elementsToAnimate.forEach((el, i) => {
         el.animate(animationFrames, {

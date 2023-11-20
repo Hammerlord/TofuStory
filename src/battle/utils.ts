@@ -23,6 +23,7 @@ import {
 } from "./../ability/types";
 import { IndexedCombatant, passesConditions } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
+import { getRandomItem } from "../utils";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -532,6 +533,15 @@ export const applyVacuum = ({
             }
         }
     }
+    return newCharacters;
+};
+
+export const applyMovement = ({ characters, index, movement }: { characters: (Combatant | null)[]; index: number; movement: number }) => {
+    const moveIndices = getPossibleMoveIndices({ currentLocationIndex: index, friendly: characters, movement });
+    const moveTo = getRandomItem(moveIndices);
+    const newCharacters = characters.slice();
+    newCharacters[moveTo] = newCharacters[index];
+    newCharacters[index] = null;
     return newCharacters;
 };
 

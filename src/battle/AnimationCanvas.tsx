@@ -175,6 +175,7 @@ const AnimationCanvas = ({
                 currentIndex = enemySide.findIndex((combatant) => combatantId === combatant?.id);
                 side = BATTLEFIELD_SIDES.ENEMY_SIDE;
             }
+
             if (currentIndex === -1) {
                 return;
             }
@@ -186,6 +187,7 @@ const AnimationCanvas = ({
 
             const refs = side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
             travel({
+                object: refs[currentIndex]?.current,
                 from: refs[prevIndex]?.current,
                 to: refs[currentIndex]?.current,
                 playbackTime: DISPLACEMENT_SPEED,

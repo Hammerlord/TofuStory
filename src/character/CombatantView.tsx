@@ -345,32 +345,42 @@ const CombatantView = forwardRef(
             const callback = () => {
                 setStatChanges(statChanges);
                 setOldState(combatant);
+
                 const isKillingBlow = oldState?.HP > 0 && combatant?.HP <= 0 && !isCombatantChanged;
                 if (isKillingBlow && !willPerformActions) {
                     setPlayDeathAnimation(true);
                 }
             };
 
-            const { vacuum } = event?.action || {};
-            if (isCombatantChanged && !vacuum) {
+            const { vacuum, movement } = event?.action || {};
+
+            if (isCombatantChanged) {
                 // Morphs/summons should play immediately (except in conjunction with vacuum; vacuum requires a delay to have the correct animation)
-                callback();
-                return;
+                if (vacuum || movement) {
+                    const timeout = setTimeout(() => {
+                        callback();
+                    }, 1000);
+                    return () => clearTimeout(timeout);
+                } else {
+                    callback();
+                    return;
+                }
             }
 
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 callback();
             }, 500);
-        }, [combatant]);
+            return () => clearTimeout(timeout);
+        }, [combatant, event?.id]);
 
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
-        const { action, actionParent, targetRef } = (event?.actorId === combatant?.id && event) || {};
+        const { action, actionParent, targetRef } = (event?.actorId === oldState?.id && event) || {};
         const { animation, type: actionType } = action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
-        const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
+        const showResourceBar = oldState?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
         const isApplyingEffect =
             ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
             (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);

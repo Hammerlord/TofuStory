@@ -609,7 +609,7 @@ const BattlefieldContainer = () => {
                                         onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i })}
                                         onMouseLeave={() => setHoveredCombatant(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
-                                        key={i}
+                                        key={enemy?.id || i}
                                         event={combatantEvent}
                                         events={events}
                                         isHighlighted={false}
@@ -635,7 +635,7 @@ const BattlefieldContainer = () => {
                                                 onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i })}
                                                 onMouseLeave={() => setHoveredCombatant(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
-                                                key={i}
+                                                key={ally?.id || i}
                                                 event={combatantEvent}
                                                 events={events}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}

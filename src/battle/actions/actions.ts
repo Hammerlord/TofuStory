@@ -23,6 +23,7 @@ import { IndexedCombatant, passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
+    applyMovement,
     applyVacuum,
     calculateActionArea,
     canTargetIfStealthed,
@@ -998,6 +999,23 @@ const checkHandleVacuum = ({
     };
 };
 
+const checkHandleMovement = ({ movement, side, selectedIndex }) => {
+    return (dispatch, getState) => {
+        if (!movement) {
+            return;
+        }
+        dispatch(
+            updateBattle({
+                [side]: applyMovement({
+                    characters: getState().battle[side],
+                    index: selectedIndex,
+                    movement,
+                }),
+            })
+        );
+    };
+};
+
 const pushPlaybackQueue = ({
     action,
     actorId,
@@ -1058,8 +1076,9 @@ const performAction = ({
         }
         const area = calculateActionArea({ action, actor });
 
-        const { vacuum, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
+        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
+        dispatch(checkHandleMovement({ movement, side, selectedIndex }));
         dispatch(checkHandleSummon({ action, actorId, parentSource }));
 
         const extraTargetIndices = shuffle(
