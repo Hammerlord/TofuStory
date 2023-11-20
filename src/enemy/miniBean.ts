@@ -205,6 +205,7 @@ const picoDrop: Ability = {
             icon: ToyHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
+            damage: 3,
         },
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -212,6 +213,7 @@ const picoDrop: Ability = {
             icon: ToyHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
+            damage: 3,
         },
     ],
 };

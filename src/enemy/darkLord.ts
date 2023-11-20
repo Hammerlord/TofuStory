@@ -119,6 +119,7 @@ const shadowClonesEffect: Effect = {
     onReceiveDamage: {
         removeEffect: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        usableWhileStunned: true,
         ability: {
             name: "Shadow Clones",
             resourceCost: 0,

@@ -81,6 +81,7 @@ export const athena: Minion = {
                 animation: ANIMATION_TYPES.ONE_WAY,
                 icon: AvengersArrowImage,
                 playbackTime: 400,
+                damage: 2,
                 animationOptions: {
                     rotate: -45,
                 },
@@ -173,7 +174,7 @@ export const athena: Minion = {
                     animationOptions: {
                         rotate: -45,
                     },
-                    damage: 1,
+                    damage: 2,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -184,7 +185,7 @@ export const athena: Minion = {
                     animationOptions: {
                         rotate: -45,
                     },
-                    damage: 1,
+                    damage: 2,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,

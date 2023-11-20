@@ -151,13 +151,14 @@ export const kingSlimeEnemy: Minion = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
+                    secondaryDamage: 3,
                     area: 2,
                     animation: ANIMATION_TYPES.STOMP,
                     effects: [
                         {
                             name: "Quaking",
-                            description: "Receiving increased damage from Earthquake.",
+                            description: "Receiving +2 damage from Earthquake.",
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
                             icon: MountainIcon,
@@ -168,7 +169,7 @@ export const kingSlimeEnemy: Minion = {
                                     type: SCALING_VALUE_TYPES.FLAT,
                                 },
                             ],
-                            duration: 3,
+                            duration: 6,
                         },
                     ],
                 },

@@ -598,6 +598,7 @@ export const octopus: Minion = {
             lifeOnHit: 3,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
         },
     ],
 };
@@ -752,6 +753,7 @@ export const ligator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                     effects: [
                         {
                             ...wound,
@@ -779,6 +781,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                     effects: [
                         {
                             ...wound,
