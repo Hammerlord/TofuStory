@@ -123,7 +123,7 @@ export const getMorphMap = ({ targets, morph, source }: { targets: CombatantInfo
     const { friendly, friendlySide } = targets[0];
     const summons = [];
     const combatants = friendly.map((combatant, i) => {
-        if (!targetIds.includes(combatant?.id)) {
+        if (!targetIds.includes(combatant?.id) || combatant?.HP <= 0) {
             return combatant;
         }
 
