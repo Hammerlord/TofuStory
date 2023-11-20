@@ -35,15 +35,16 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
     const classes = useStyles();
     const damageCount = combatant.casting?.ability?.actions.reduce(
         (acc, action: Action) => {
+            const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
-            if ([ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
+            if (isAttack) {
                 ++timesToAttack;
             }
 
             return {
                 timesToAttack,
                 // TODO just taking the last damage number in the actions array; but sometimes they will be different
-                damage: action.damage || acc.damage,
+                damage: (isAttack && action.damage) || acc.damage,
             };
         },
         { damage: combatant.damage || 0, timesToAttack: 0 }
@@ -99,7 +100,9 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                     className={classNames({
                         [classes.bonus]: damageFromEffects > 0,
                         [classes.negative]: damageFromEffects < 0,
-                        [classes.isCasting]: combatant.casting,
+                        [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
+                            [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
+                        ),
                     })}
                 />
                 {damageCount.timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${damageCount.timesToAttack}`}</span>}
