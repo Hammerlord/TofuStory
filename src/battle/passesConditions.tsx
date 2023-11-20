@@ -151,10 +151,19 @@ export const passesConditions = ({
             }
 
             if (numAbilitiesUsed !== undefined) {
+                const { amount: required = numAbilitiesUsed, type } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
+                const used = combatant.abilityHistory.filter((ability: Ability) => {
+                    if (!type) {
+                        return true;
+                    }
+
+                    return ability.actions.some((action: Action) => action.type === type);
+                }).length;
+
                 if (
                     !passesValueComparison({
-                        val: combatant.abilityHistory.length,
-                        otherVal: numAbilitiesUsed,
+                        val: used,
+                        otherVal: required,
                         comparator,
                     })
                 ) {

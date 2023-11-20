@@ -24,12 +24,14 @@ import {
     panlid,
     pieceOfIce,
     pigsRibbonItem,
+    redWhip,
     respawnToken,
     risingStar,
     safetyCharm,
     starfallMagicSquare,
     stolenFence,
     sunshinePan,
+    topaz,
     workGloves,
 } from "./../../item/items";
 
@@ -56,6 +58,8 @@ export const ITEMS = [
     aquamarine,
     boneHelm,
     amethyst,
+    topaz,
+    redWhip,
     garnet,
     ironMace,
     fishSpear,

@@ -31,6 +31,7 @@ import {
     PigsRibbonImage,
     RedHeadbandImage,
     RedPotionImage,
+    RedWhipImage,
     RespawnTokenImage,
     RisingStarImage,
     SafetyCharmImage,
@@ -38,6 +39,7 @@ import {
     StarfallMagicSquareImage,
     StolenFenceImage,
     SunshinePanImage,
+    TopazImage,
     WeaponMasteryImage,
     WorkGlovesImage,
 } from "../images";
@@ -150,16 +152,16 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heal for 1 HP per turn. Overhealing causes you to gain armor for the overhealed amount.",
+    description: "Heal for 1 HP every 3 turns. Overhealing causes you to gain armor for the overhealed amount.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Amethyst",
-            description: "Healing for 1 HP per turn. Gaining armor when overhealed.",
+            description: "Healing 1 HP every 3 turns.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
@@ -171,6 +173,53 @@ export const amethyst: Item = {
                     type: MULTIPLIER_TYPES.OVERHEALING,
                     value: 1,
                 },
+            },
+        },
+    ],
+};
+
+export const redWhip: Item = {
+    name: "Red Whip",
+    description: "Draw an extra card every 3 turns.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: RedWhipImage,
+    effects: [
+        {
+            name: "Red Whip",
+            description: "Draw an extra card every 3 turns.",
+            image: RedWhipImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            drawCardsPerTurn: 1,
+        },
+    ],
+};
+
+export const topaz: Item = {
+    name: "Topaz",
+    description: "Gain thorns after every 5 effect abilities you use.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: TopazImage,
+    effects: [
+        {
+            name: "Topaz",
+            description: "Gaining thorns after using 5 effect abilities.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAbility: {
+                effects: [thorns],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numAbilitiesUsed: {
+                            amount: 5,
+                            type: ACTION_TYPES.EFFECT,
+                        },
+                        comparator: "modulo",
+                    },
+                ],
             },
         },
     ],
@@ -879,7 +928,6 @@ export const workGloves: Item = {
 export const redPotion: Item = {
     name: "Red Potion",
     image: RedPotionImage,
-    description: "Recover 15 HP.",
     type: ITEM_TYPES.CONSUMABLE,
     healing: 15,
 };
@@ -894,6 +942,7 @@ export const bluePotion: Item = {
 
 export const unsignedLetter: Item = {
     name: "Unsigned Letter",
+    description: "+5 max HP.",
     type: ITEM_TYPES.EQUIPMENT,
     image: LetterImage,
     effects: [

@@ -269,6 +269,7 @@ export { default as SwampKPQ2Image } from "./SwampKPQ2.png";
 export { default as SwampRegionBGImage } from "./SwampRegionBG.jpg";
 export { default as TeoImage } from "./Teo.png";
 export { default as TofuImage } from "./Tofu.png";
+export { default as TopazImage } from "./Topaz.png";
 export { default as ToyHammerImage } from "./ToyHammer.png";
 export { default as TreasureChestImage } from "./TreasureChest.png";
 export { default as TreeBranchImage } from "./TreeBranch.png";

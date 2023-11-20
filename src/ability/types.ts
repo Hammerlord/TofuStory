@@ -281,7 +281,12 @@ export interface Condition {
     proximity?: number;
     /** If the character is an elite enemy or boss */
     isElite?: boolean;
-    numAbilitiesUsed?: number;
+    numAbilitiesUsed?:
+        | number
+        | {
+              type?: ACTION_TYPES;
+              amount: number;
+          };
     sourceType?: TRIGGER_SOURCE_TYPES;
 }
 
