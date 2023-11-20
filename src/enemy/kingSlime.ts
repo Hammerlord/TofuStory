@@ -1,6 +1,6 @@
 import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
 import { MountainIcon } from "../images/icons";
-import { hardy } from "./../ability/Effects";
+import { hardy, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -21,6 +21,7 @@ export const slimeGlobule: Minion = {
     maxHP: 100,
     resources: 0,
     effects: [
+        stun,
         hardy,
         {
             name: "Vulnerable",
