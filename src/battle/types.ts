@@ -52,15 +52,13 @@ export interface TriggerSource {
     // The amount of, eg. block, healing, overhealing done by the source
     statUpdate?: UpdatedCombatantStats;
     type: TRIGGER_SOURCE_TYPES;
-    // Is this an extra effect or action triggered conditionally from another effect?
-    // TODO there are some exceptions around certain events -- for example, lifeOnKill, onWaveStart are
-    // sufficiently "rare" enough occurrences they are allowed to trigger procs despite technically being procs themselves
-    procDepth: number;
     actorId?: string;
     // The selected target during the action (or the summoned minion)
     targetId?: string;
     // All targets affected by the action
     allTargetIds?: string[];
+    // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
+    triggerHistory: string[];
 }
 
 export interface Wave {

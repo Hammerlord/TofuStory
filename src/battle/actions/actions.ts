@@ -105,7 +105,6 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
-        const procDepth = (triggerSource.procDepth || 0) + 1;
         const updated = getUpdatedStats({
             actorId: killedBy.id,
             targetIds: [killedBy.id],
@@ -116,7 +115,6 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             },
             source: {
                 ...triggerSource,
-                procDepth,
             },
             getCombatantById: (id) => findCombatantData(getState, id),
         });
@@ -132,7 +130,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
                         actorId: killedBy.id,
                         targetId: killedBy.id,
                         statUpdate,
-                        procDepth,
+                        triggerHistory: [],
                     },
                 }))
             )
@@ -152,7 +150,7 @@ const checkHitEffects = ({
     source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        if (source.procDepth > 1 || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
+        if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
             return;
         }
 
@@ -162,7 +160,6 @@ const checkHitEffects = ({
         }
 
         const lifeOnHit = getEnabledEffects({ combatant: actor, index }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
-        const procDepth = (source.procDepth || 0) + 1;
 
         if (lifeOnHit) {
             const updated = getUpdatedStats({
@@ -173,10 +170,7 @@ const checkHitEffects = ({
                     type: ACTION_TYPES.EFFECT,
                     healing: lifeOnHit * affectedTargets.length,
                 },
-                source: {
-                    ...source,
-                    procDepth, // Why does this care about procDepth/whether the source is a proc?
-                },
+                source,
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
 
@@ -185,7 +179,14 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate, procDepth },
+                        source: {
+                            source: action,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            actorId,
+                            targetId: actorId,
+                            statUpdate,
+                            triggerHistory: [],
+                        },
                     }))
                 )
             );
@@ -204,10 +205,7 @@ const checkHitEffects = ({
                     type: ACTION_TYPES.EFFECT,
                     damage: totalThorns,
                 },
-                source: {
-                    ...source,
-                    procDepth,
-                },
+                source,
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
 
@@ -216,7 +214,14 @@ const checkHitEffects = ({
                 triggerStatChangeEvents(
                     updated.map(([statUpdate, action]) => ({
                         statUpdate,
-                        source: { source: action, type: TRIGGER_SOURCE_TYPES.EFFECT, actorId, targetId: actorId, statUpdate, procDepth },
+                        source: {
+                            source: action,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            actorId,
+                            targetId: actorId,
+                            statUpdate,
+                            triggerHistory: [],
+                        },
                     }))
                 )
             );
@@ -396,7 +401,7 @@ const handleDoTs =
                             type: TRIGGER_SOURCE_TYPES.EFFECT,
                             targetId: combatantId,
                             statUpdate,
-                            procDepth: (source?.procDepth || 0) + 1,
+                            triggerHistory: [],
                         },
                     }))
                 )
@@ -472,8 +477,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const procDepth = (source?.procDepth || 0) + 1;
-        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, procDepth };
+        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT };
         const targetIds = getCalculationTargetIds(targetType);
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
@@ -579,15 +583,7 @@ export const checkEventTrigger = ({
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        // Procs may not proc procs unless it is a kill event.
-        const allowedEvents = [
-            EFFECT_EVENT_KEYS.onDeath,
-            EFFECT_EVENT_KEYS.onFriendlyDeath,
-            EFFECT_EVENT_KEYS.onHostileDeath,
-            EFFECT_EVENT_KEYS.onReceiveOverhealing,
-        ];
-
-        if (!combatantId || (source?.procDepth > 1 && !allowedEvents.includes(effectEventKey))) {
+        if (!combatantId) {
             return;
         }
 
@@ -598,16 +594,22 @@ export const checkEventTrigger = ({
         }
 
         combatant.effects.forEach((effect: CombatEffect) => {
-            const { uptime, turnsTriggerFrequency, [effectEventKey]: effectEvent } = effect;
+            const { uptime, turnsTriggerFrequency, [effectEventKey]: effectEvent, id } = effect;
             const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
+            const historyKey = [effectEventKey, id].join("-");
+            const history = source?.triggerHistory || [];
+            const alreadyTriggered = history.includes(historyKey);
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
-            if (effectEvent && notTriggeringSameEffect && isTurnToTrigger) {
+            if (effectEvent && !alreadyTriggered && isTurnToTrigger && notTriggeringSameEffect) {
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent,
                         effect,
                         ownerId: combatant.id,
-                        source,
+                        source: {
+                            ...source,
+                            triggerHistory: [...history, historyKey],
+                        },
                     })
                 );
             }
@@ -801,7 +803,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
 const onSummonTriggers =
     ({ summonedId, summonerId, parentSource }: { summonedId: string; summonerId: string; parentSource: TriggerSource }) =>
     (dispatch, getState) => {
-        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId], procDepth: 0 };
+        const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId] };
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
         const { hostile, friendly } = findCombatantData(getState, summonerId) || {};
         hostile?.forEach((combatant) => {
@@ -1385,7 +1387,7 @@ export const useAbility = ({
             resourceCost: totalResourceCost,
         };
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, procDepth: 0 };
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [] };
 
         dispatch(
             updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
@@ -1447,7 +1449,7 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
                     allTargetIds: [actorId],
                     source: item,
                     type: TRIGGER_SOURCE_TYPES.ITEM,
-                    procDepth: 0,
+                    triggerHistory: [],
                 },
             })
         );
