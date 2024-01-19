@@ -77,7 +77,7 @@ export const getUpdatedStats = ({
         const enabledEffects = getEnabledEffects(target);
         const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
         const damage =
-            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent }) * multiplier +
+            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
             Math.floor(targetCombatant.armor * destroyArmor);
 
         const totalArmor = targetCombatant.armor + calculateArmor({ target, action }) * multiplier;

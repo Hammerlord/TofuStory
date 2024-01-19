@@ -24,7 +24,7 @@ export const getDamageStatistics = ({
         actions.reduce((acc, action: Action) => {
             if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
                 const multiplier = getMultiplier({ actor: { combatant: player, index: undefined } });
-                acc += (player ? calculateDamage({ actor: player, action, actionParent: ability }) : action.damage || 0) * multiplier;
+                acc += player ? calculateDamage({ actor: player, action, actionParent: ability, multiplier }) : action.damage || 0;
             }
             return acc;
         }, 0) + damageBonusFromEffects;

@@ -344,6 +344,7 @@ export const calculateDamage = ({
     selectedIndex,
     action,
     actionParent,
+    multiplier = 1,
 }: {
     actor?: IndexedCombatant;
     target?: IndexedCombatant;
@@ -351,6 +352,7 @@ export const calculateDamage = ({
     selectedIndex?: number;
     action: Action;
     actionParent?: Ability | Item;
+    multiplier?: number;
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
@@ -417,7 +419,7 @@ export const calculateDamage = ({
         return (damage + additionalDamageReceived) * (multiplier || 1);
     };
 
-    const damage = damageFromEffects + baseDamage;
+    const damage = damageFromEffects + baseDamage * multiplier;
     const total = Math.ceil(applyAbilityDamageReceived(damage));
     return Math.max(0, total);
 };
