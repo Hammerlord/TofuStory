@@ -1,6 +1,14 @@
 import uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { BlueUmbrellaImage, FrozenTunaImage, OldGladiusImage, PicoPicoHammerImage, WarMushImage, YellowUmbrellaImage } from "../images";
+import {
+    BlueUmbrellaImage,
+    FrozenTunaImage,
+    OldGladiusImage,
+    PicoPicoHammerImage,
+    WarMushImage,
+    WizMushImage,
+    YellowUmbrellaImage,
+} from "../images";
 import { engravedStone } from "./../item/items";
 import { Combatant } from "./types";
 
@@ -33,5 +41,19 @@ const defaultCharacterProperties = {
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
     ],
 } as Combatant;
+
+export const wizardProperties = {
+    ...defaultCharacterProperties,
+    class: PLAYER_CLASSES.MAGICIAN,
+    image: WizMushImage,
+    HP: 40,
+    maxHP: 40,
+    resourcesPerTurn: 2,
+    maxResources: 10,
+    resources: 1,
+    weapon: null,
+    items: [],
+    weaponSkins: [],
+};
 
 export default defaultCharacterProperties;

@@ -3,12 +3,13 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { AnonymushroomImage, ClassWarriorImage, WarMushImage } from "../images";
+import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, WarMushImage, WizMushImage } from "../images";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
+    [PLAYER_CLASSES.MAGICIAN]: WizMushImage,
 };
 
 const useStyles = createUseStyles({
@@ -131,7 +132,17 @@ const ClassSelection = ({ onSelectClass }) => {
                         </div>
                         <div>WARRIOR</div> <hr />A close-quarters fighter specializing in defenses and focused area attacks
                     </div>
-                    <div className={classes.classCard}>Not yet available</div>
+                    <div
+                        onClick={() => setSelectedClass(PLAYER_CLASSES.MAGICIAN)}
+                        className={classNames(classes.classCard, {
+                            selected: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                        })}
+                    >
+                        <div className={classes.iconContainer}>
+                            <img src={ClassMagicianImage} />
+                        </div>
+                        <div>MAGICIAN</div> <hr />A ranged caster capable of bombarding enemies with magic spells
+                    </div>
                     <div className={classes.classCard}>Not yet available</div>
                     <div className={classes.classCard}>Not yet available</div>
                 </div>

@@ -1,11 +1,12 @@
 import { cloneDeep } from "lodash";
 import { Ability } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import defaultCharacterProperties from "./defaultCharacterProperties";
+import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
 import { getMaxHP } from "../battle/utils";
 import { Item, ITEM_TYPES } from "../item/types";
 import { BATTLE_TYPES } from "../battle/types";
+import { PLAYER_CLASSES } from "../Menu/types";
 
 const INITIAL_STATE = {
     player: null,
@@ -40,12 +41,16 @@ export const playerStateSlice = createSlice({
             };
         },
         onSelectClass: (state, action: PayloadAction<any>) => {
+            const classMap = {
+                [PLAYER_CLASSES.WARRIOR]: defaultCharacterProperties,
+                [PLAYER_CLASSES.MAGICIAN]: wizardProperties,
+            };
             return {
                 ...state,
                 player: {
-                    ...defaultCharacterProperties,
+                    ...classMap[action.payload.selectedClass],
                     class: action.payload.selectedClass,
-                    effects: aggregateItemEffects(defaultCharacterProperties.items),
+                    effects: aggregateItemEffects(classMap[action.payload.selectedClass].items),
                 },
                 deck: action.payload.deck,
             };
