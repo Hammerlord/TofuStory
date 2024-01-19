@@ -152,16 +152,16 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heal for 1 HP every 3 turns. Overhealing causes you to gain armor for the overhealed amount.",
+    description: "Heal for 1 HP every 5 turns. Overhealing causes you to gain armor for the overhealed amount.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AmethystImage,
     effects: [
         {
             name: "Amethyst",
-            description: "Healing 1 HP every 3 turns.",
+            description: "Healing 1 HP every 5 turns.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 3,
+            turnsTriggerFrequency: 5,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
@@ -686,7 +686,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect from an ability, you gain 2 armor.",
+    description: "When you receive a status effect from an ability, you gain 1 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -695,7 +695,7 @@ export const greenBambooHat: Item = {
             class: EFFECT_CLASSES.BUFF,
             onReceiveEffect: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 2,
+                armor: 1,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
