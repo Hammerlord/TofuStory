@@ -1,5 +1,5 @@
 import { MAGICIAN_SECONDARY_JOBS, PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from "../Menu/types";
-import { energyBolt, magicArmor, magicClaw, magicGuard, teleport, tribolt } from "./magician/magicianAbilities";
+import { energyBolt, magicArmor, magicClaw, magicGuard, mpEater, teleport, tribolt } from "./magician/magicianAbilities";
 import {
     darkImpale,
     darkSpear,
@@ -75,7 +75,7 @@ import {
 
 export const JOB_CARD_MAP = {
     [PLAYER_CLASSES.MAGICIAN]: {
-        all: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, tribolt, magicArmor, magicArmor, magicGuard, teleport],
+        all: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, tribolt, magicArmor, magicArmor, magicGuard, teleport, mpEater],
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, tribolt, magicArmor, magicArmor, teleport],
     },
     [MAGICIAN_SECONDARY_JOBS.FIRE_POISON_MAGE]: {

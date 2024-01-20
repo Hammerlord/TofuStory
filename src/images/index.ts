@@ -182,6 +182,7 @@ export { default as MiniBeanImage } from "./MiniBean.gif";
 export { default as MonkeyBananaImage } from "./MonkeyBanana.png";
 export { default as MossyMushroomImage } from "./MossyMushroom.gif";
 export { default as MossySnailImage } from "./MossySnail.gif";
+export { default as MPEaterImage } from "./MPEater.png";
 export { default as MushroomOmokImage } from "./MushroomOmok.png";
 export { default as MushroomSporeImage } from "./MushroomSpore.png";
 export { default as MutantRibbonPigImage } from "./MutantRibbonPig.gif";

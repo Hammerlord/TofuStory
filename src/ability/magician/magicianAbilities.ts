@@ -1,13 +1,16 @@
+import { silence } from "./../Effects";
 import {
     BrickImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
+    MPEaterImage,
     MagicArmorImage,
     MagicClawImage,
     MagicClawProjectileImage,
     MagicGuardImage,
     TeleportImage,
     TriboltImage,
+    WizMushImage,
 } from "../../images";
 import {
     ACTION_TYPES,
@@ -301,4 +304,50 @@ export const tribolt: Ability = {
     description: "Randomly hits the target or adjacent enemies, x3",
     actions: [triboltAction, triboltAction, triboltAction],
     upgrades: [tribolt2],
+};
+
+const mpEater2: Ability = {
+    name: "Mana Eater",
+    level: 2,
+    image: MPEaterImage,
+    resourceCost: 0,
+    depletedOnUse: true,
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: WizMushImage,
+            animation: ANIMATION_TYPES.BEAM,
+            resources: -3,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 4,
+        },
+    ],
+};
+
+export const mpEater: Ability = {
+    name: "Mana Eater",
+    image: MPEaterImage,
+    resourceCost: 0,
+    depletedOnUse: true,
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: WizMushImage,
+            animation: ANIMATION_TYPES.BEAM,
+            resources: -3,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 3,
+        },
+    ],
+    upgrades: [mpEater2],
 };
