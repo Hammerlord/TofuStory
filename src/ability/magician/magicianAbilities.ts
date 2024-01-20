@@ -1,4 +1,4 @@
-import { silence } from "./../Effects";
+import { silence, stun } from "./../Effects";
 import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
@@ -11,6 +11,7 @@ import {
     MagicClawProjectileImage,
     MagicGuardImage,
     TeleportImage,
+    TeleportMasteryImage,
     TriboltImage,
     WizMushImage,
 } from "../../images";
@@ -434,4 +435,38 @@ export const arcaneAim: Ability = {
         },
     ],
     upgrades: [arcaneAim2],
+};
+
+const thunderstruck2: Ability = {
+    name: "Thunderstruck",
+    image: TeleportMasteryImage,
+    level: 2,
+    resourceCost: 1,
+    actions: [
+        {
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: TeleportMasteryImage,
+            effects: [stun],
+        },
+    ],
+};
+
+export const thunderstruck: Ability = {
+    name: "Thunderstruck",
+    image: TeleportMasteryImage,
+    resourceCost: 1,
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: TeleportMasteryImage,
+            effects: [stun],
+        },
+    ],
+    upgrades: [thunderstruck2],
 };

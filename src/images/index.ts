@@ -285,6 +285,7 @@ export { default as SwampKPQImage } from "./SwampKPQ.png";
 export { default as SwampKPQ2Image } from "./SwampKPQ2.png";
 export { default as SwampRegionBGImage } from "./SwampRegionBG.jpg";
 export { default as TeleportImage } from "./Teleport.png";
+export { default as TeleportMasteryImage } from "./TeleportMastery.png";
 export { default as TeoImage } from "./Teo.png";
 export { default as TheBookOfAncientImage } from "./TheBookOfAncient.png";
 export { default as TofuImage } from "./Tofu.png";
