@@ -191,7 +191,7 @@ export const evilEyeShock: Ability = {
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.TARGET,
-                    characterName: "Evil Eye",
+                    name: "Evil Eye",
                     comparator: "eq",
                 },
             ],

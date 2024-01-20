@@ -1,6 +1,8 @@
 import { chill, poison, thorns, wound } from "../ability/Effects";
+import { magicClaw, triEnergyBolt } from "../ability/magician/magicianAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
+    AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
     AquamarineImage,
@@ -951,6 +953,50 @@ export const unsignedLetter: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 5,
+        },
+    ],
+};
+
+export const chargingStone: Item = {
+    name: "Charging Stone",
+    description: "When you use an ability, become Charged, which empowers the next use of certain spells.",
+    flavourText: "A mysterious keepsake you found on your person.",
+    image: AlchemistStoneImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Charging Stone",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        comparator: "not",
+                        hasEffect: "Charged",
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Charged",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: AlchemistStoneImage,
+                        duration: 1,
+                        onAbility: {
+                            conditions: [
+                                {
+                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                    comparator: "eq",
+                                    name: [triEnergyBolt.name, magicClaw.name],
+                                },
+                            ],
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

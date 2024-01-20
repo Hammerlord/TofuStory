@@ -9,7 +9,7 @@ import {
     WizMushImage,
     YellowUmbrellaImage,
 } from "../images";
-import { engravedStone } from "./../item/items";
+import { chargingStone, engravedStone } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */
@@ -52,7 +52,7 @@ export const wizardProperties = {
     maxResources: 10,
     resources: 1,
     weapon: null,
-    items: [],
+    items: [chargingStone],
     weaponSkins: [],
 };
 

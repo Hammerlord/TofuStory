@@ -16,7 +16,7 @@ export const energyBolt: Ability = {
     resourceCost: 0,
     actions: [
         {
-            damage: 3,
+            damage: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
@@ -35,21 +35,39 @@ export const magicClaw: Ability = {
     name: "Magic Claw",
     resourceCost: 3,
     image: MagicClawImage,
-    description: "Attacks twice.",
+    description: "Attacks twice. Charged: +1 damage",
     actions: [
         {
-            damage: 6,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
             icon: MagicClawImage,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 1,
+            },
         },
         {
-            damage: 6,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
             icon: MagicClawImage,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 1,
+            },
         },
     ],
     upgrades: [],
@@ -113,31 +131,58 @@ export const triEnergyBolt: Ability = {
     name: "Tri Energy Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
-    description: "Deal {{damage}} damage to a random enemy in the area, x3",
+    description: "Randomly strikes the target or adjacent enemies, x3. Charged: +1 damage",
     actions: [
         {
-            damage: 3,
+            damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
             icon: EnergyBoltImage,
             targetArea: 1,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 1,
+            },
         },
         {
-            damage: 3,
+            damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
             icon: EnergyBoltImage,
             targetArea: 1,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 1,
+            },
         },
         {
-            damage: 3,
+            damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
             icon: EnergyBoltImage,
             targetArea: 1,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 1,
+            },
         },
     ],
     upgrades: [],

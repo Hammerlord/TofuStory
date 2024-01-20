@@ -988,7 +988,7 @@ export const mutantSnailEnemy: Minion = {
                             {
                                 conditions: [
                                     {
-                                        characterName: "Blue Snail",
+                                        name: "Blue Snail",
                                         comparator: "eq",
                                         calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                                     },
@@ -998,7 +998,7 @@ export const mutantSnailEnemy: Minion = {
                             {
                                 conditions: [
                                     {
-                                        characterName: "Snail",
+                                        name: "Snail",
                                         comparator: "eq",
                                         calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                                     },

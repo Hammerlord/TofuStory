@@ -33,6 +33,7 @@ export enum EFFECT_CLASSES {
 export enum CONDITION_TARGETS {
     TARGET = "target",
     ACTOR = "actor",
+    TRIGGER_SOURCE = "trigger-source", // The proccing ability, effect, etc. to compare to the condition
 }
 
 // Who should receive the proc that was triggered?
@@ -275,8 +276,8 @@ export interface Condition {
     healthPercentage?: number;
     armor?: number;
     /** Whether the name of the target matches the condition depending on comparator */
-    characterName?: string;
-    calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES;
+    name?: string | string[];
+    calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
     /** How far away the target/actor are from each other. Similar to area. 0 = directly across from each other. */
     proximity?: number;
     /** If the character is an elite enemy or boss */

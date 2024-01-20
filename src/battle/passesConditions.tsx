@@ -39,7 +39,7 @@ export const passesConditions = ({
     source,
 }: {
     getCalculationTarget: (
-        calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
+        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
     ) => IndexedCombatant | IndexedCombatant[] | undefined;
     proc: Ability | Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
@@ -55,12 +55,25 @@ export const passesConditions = ({
             armor,
             comparator,
             calculationTarget,
-            characterName,
+            name,
             proximity,
             isElite,
             numAbilitiesUsed,
             sourceType,
         } = condition;
+
+        if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
+            if (name) {
+                const names = Array.isArray(name) ? name : [name];
+                // @ts-ignore
+                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: source?.source?.name, comparator }))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
             return false;
@@ -121,8 +134,9 @@ export const passesConditions = ({
                 }
             }
 
-            if (characterName) {
-                if (!passesValueComparison({ val: characterName, otherVal: combatant.name, comparator })) {
+            if (name) {
+                const names = Array.isArray(name) ? name : [name];
+                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: combatant.name, comparator }))) {
                     return false;
                 }
             }
