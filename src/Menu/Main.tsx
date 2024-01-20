@@ -117,6 +117,7 @@ const Main = () => {
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
     const { player, deck, battlesWon } = character || {};
+    const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
         const route = generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 });
@@ -125,6 +126,7 @@ const Main = () => {
         setSceneRegion(null);
         setScene(null);
         setTown(null);
+        setOpenClassSelection(true);
     };
 
     useEffect(() => {
@@ -303,8 +305,8 @@ const Main = () => {
         handleTransition(callback);
     };
 
-    if (!player) {
-        return <ClassSelection onSelectClass={handleSelectClass} />;
+    if (openClassSelection) {
+        return <ClassSelection onSelectClass={handleSelectClass} onClose={() => setOpenClassSelection(false)} />;
     }
 
     const handleBuyItem = ({ items, mesosSpent, type }: { items: Item[] | Ability[]; mesosSpent: number; type: "item" | "ability" }) => {

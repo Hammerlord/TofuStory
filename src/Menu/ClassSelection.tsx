@@ -6,6 +6,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, WarMushImage, WizMushImage } from "../images";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
+import { useAppSelector } from "../hooks";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -70,9 +71,10 @@ const useStyles = createUseStyles({
     },
 });
 
-const ClassSelection = ({ onSelectClass }) => {
+const ClassSelection = ({ onSelectClass, onClose }) => {
     const [selectedClass, setSelectedClass] = useState(null);
-    const [confirmed, setConfirmed] = useState(false);
+    const { character } = useAppSelector((state) => state);
+    const { player } = character || {};
     const classes = useStyles();
 
     const handleSelectClass = () => {
@@ -81,13 +83,7 @@ const ClassSelection = ({ onSelectClass }) => {
         }
     };
 
-    const handleConfirm = () => {
-        if (selectedClass) {
-            setConfirmed(true);
-        }
-    };
-
-    if (confirmed) {
+    if (player) {
         return (
             <div className={classes.root}>
                 <div className={classes.inner}>
@@ -97,11 +93,11 @@ const ClassSelection = ({ onSelectClass }) => {
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
                                 <div className={classes.abilityContainer} key={i}>
-                                    <AbilityView ability={ability} key={i} player={{ class: selectedClass }} />
+                                    <AbilityView ability={ability} key={i} player={player} />
                                 </div>
                             ))}
                     </div>
-                    <Button color="primary" onClick={handleSelectClass}>
+                    <Button color="primary" onClick={onClose}>
                         Continue
                     </Button>
                 </div>
@@ -146,7 +142,7 @@ const ClassSelection = ({ onSelectClass }) => {
                     <div className={classes.classCard}>Not yet available</div>
                     <div className={classes.classCard}>Not yet available</div>
                 </div>
-                <Button color="primary" disabled={!selectedClass} onClick={handleConfirm}>
+                <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
                     Select!
                 </Button>
             </div>
