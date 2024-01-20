@@ -6,6 +6,8 @@ export { default as AmethystImage } from "./Amethyst.png";
 export { default as AncientFairyImage } from "./AncientFairy.png";
 export { default as AnonymushroomImage } from "./Anonymushroom.png";
 export { default as AquamarineImage } from "./Aquamarine.png";
+export { default as ArcaneAimImage } from "./ArcaneAim.png";
+export { default as ArcaneOverdriveImage } from "./ArcaneOverdrive.png";
 export { default as ArrowImage } from "./Arrow.png";
 export { default as AssassinateImage } from "./Assassinate.gif";
 export { default as AthenaAttackStanceImage } from "./AthenaAttackStance.png";

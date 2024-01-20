@@ -1,5 +1,7 @@
 import { silence } from "./../Effects";
 import {
+    ArcaneAimImage,
+    ArcaneOverdriveImage,
     BrickImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
@@ -350,4 +352,75 @@ export const mpEater: Ability = {
         },
     ],
     upgrades: [mpEater2],
+};
+
+const arcaneAim2: Ability = {
+    name: "Arcane Aim",
+    image: ArcaneAimImage,
+    level: 2,
+    resourceCost: 0,
+    description: "Gain +1 attack power for every attack made this turn.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Arcane Aim",
+                    icon: ArcaneAimImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [
+                            {
+                                name: "Attack Power Increase",
+                                icon: ArcaneOverdriveImage,
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                                attackPower: 1,
+                                duration: 0,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const arcaneAim: Ability = {
+    name: "Arcane Aim",
+    image: ArcaneAimImage,
+    resourceCost: 1,
+    description: "Gain +1 attack power for every attack made this turn.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Arcane Aim",
+                    icon: ArcaneAimImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 1,
+                    onAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [
+                            {
+                                name: "Attack Power Increase",
+                                icon: ArcaneOverdriveImage,
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                                attackPower: 1,
+                                duration: 1,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [arcaneAim2],
 };
