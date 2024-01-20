@@ -1,8 +1,9 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES } from "../ability/types";
+import { ACTION_TYPES, Action, Effect } from "../ability/types";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
+import { Combatant } from "./types";
 
 const WEAPON_DEFAULT_ROTATION = 45; // This is a MapleStory thing where weapon sprites are at 45 degree angles
 
@@ -84,20 +85,54 @@ const useStyles = createUseStyles({
         animationName: "$whirling",
         transition: "1s filter ease-in-out, 1s -webkit-filter ease-in-out",
     },
+    "@keyframes glow": {
+        "0%": {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+        "75%": {
+            WebkitFilter: "brightness(2.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            filter: "brightness(2.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+        },
+        "100%": {
+            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+        },
+    },
+    glow: {
+        animationDuration: "1.5s",
+        animationName: "$glow",
+        transition: "1s filter ease-in-out, 1s -webkit-filter ease-in-out",
+        animationIterationCount: "infinite",
+    },
 });
 
-const Weapon = ({ image, action, wielder, target }) => {
+const Weapon = ({
+    image,
+    action,
+    wielder,
+    wielderRef,
+    target,
+}: {
+    image?: string;
+    action: Action;
+    wielder: Combatant;
+    wielderRef: HTMLElement;
+    target?: HTMLElement;
+}) => {
     const classes = useStyles();
     const { type, area } = action || {};
 
     const rotation = useMemo(() => {
-        if (type !== ACTION_TYPES.ATTACK || !target || !wielder || !action || area) {
+        if (type !== ACTION_TYPES.ATTACK || !target || !wielderRef || !action || area) {
             return;
         }
 
         // Single target rotates the weapon to face the target
-        return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielder })) + WEAPON_DEFAULT_ROTATION;
+        return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
     }, [action, target]);
+
+    const isGlowing = useMemo(() => wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow"), [wielder?.effects]);
 
     if (!image) {
         return null;
@@ -115,7 +150,13 @@ const Weapon = ({ image, action, wielder, target }) => {
                 transform: rotation ? `rotate(${rotation}deg)` : "unset",
             }}
         >
-            <img src={image} />
+            <div
+                className={classNames({
+                    [classes.glow]: isGlowing,
+                })}
+            >
+                <img src={image} />
+            </div>
         </div>
     );
 };

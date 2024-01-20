@@ -137,6 +137,7 @@ export interface Effect {
     icon?: string;
     // The larger, possibly animated effect image to display on top of the combatant portrait
     image?: string;
+    weaponAnimation?: "glow";
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     resourcesPerTurn?: number;

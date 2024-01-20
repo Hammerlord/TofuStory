@@ -457,7 +457,8 @@ const CombatantView = forwardRef(
                                             image={oldState.weapon}
                                             action={action}
                                             target={targetRef}
-                                            wielder={weaponRef?.current as any}
+                                            wielderRef={weaponRef?.current as any}
+                                            wielder={oldState}
                                         />
                                     </div>
                                     {oldState.HP > 0 && <Effects combatant={oldState} healing={statChanges?.healing} />}

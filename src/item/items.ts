@@ -984,6 +984,7 @@ export const chargingStone: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
                         duration: 1,
+                        weaponAnimation: "glow",
                         onAbility: {
                             conditions: [
                                 {
