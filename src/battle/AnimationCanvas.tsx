@@ -24,6 +24,10 @@ const useStyles = createUseStyles({
         minWidth: 40,
         zIndex: 5,
     },
+    projectileInner: {
+        height: "100%",
+        width: "100%",
+    },
     iconProjectile: {
         width: PROJECTILE_WIDTH,
         height: PROJECTILE_HEIGHT,
@@ -232,13 +236,12 @@ const AnimationCanvas = ({
                     })}
                     {...props}
                 >
-                    <div
-                        className={classNames({
+                    <img
+                        src={icon}
+                        className={classNames(classes.projectileInner, {
                             [classes.mirrorX]: animationOptions?.mirrorX,
                         })}
-                    >
-                        <img src={icon} />
-                    </div>
+                    />
                 </div>
             );
         } else if (typeof icon === "function") {
@@ -250,13 +253,11 @@ const AnimationCanvas = ({
                     })}
                     {...props}
                 >
-                    <div
-                        className={classNames({
+                    <Icon
+                        className={classNames(classes.projectileInner, {
                             [classes.mirrorX]: animationOptions?.mirrorX,
                         })}
-                    >
-                        <Icon />
-                    </div>
+                    />
                 </div>
             );
         }
