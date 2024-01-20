@@ -1,5 +1,5 @@
 import { chill, poison, thorns, wound } from "../ability/Effects";
-import { energyBolt, magicClaw, tribolt } from "../ability/magician/magicianAbilities";
+import { energyBolt, ignite, magicArmor, magicClaw, tribolt } from "../ability/magician/magicianAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AlchemistStoneImage,
@@ -994,7 +994,7 @@ export const chargingStone: Item = {
                                 {
                                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                     comparator: "eq",
-                                    name: [tribolt.name, magicClaw.name],
+                                    name: [tribolt.name, magicClaw.name, magicArmor.name, ignite.name],
                                 },
                             ],
                             removeEffect: true,

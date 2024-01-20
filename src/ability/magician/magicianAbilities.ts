@@ -175,14 +175,14 @@ const magicGuard2: Ability = {
             effects: [
                 {
                     name: "Magic Guard",
-                    description: "Gaining +4 armor every turn for 3 turns",
+                    description: "Gaining +5 armor every turn for 3 turns",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: MagicGuardImage,
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 4,
+                        armor: 5,
                     },
                 },
             ],
@@ -201,14 +201,14 @@ export const magicGuard: Ability = {
             effects: [
                 {
                     name: "Magic Guard",
-                    description: "Gaining +3 armor every turn for 3 turns",
+                    description: "Gaining +4 armor every turn for 3 turns",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: MagicGuardImage,
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 3,
+                        armor: 4,
                     },
                 },
             ],
@@ -219,27 +219,45 @@ export const magicGuard: Ability = {
 
 const magicArmor2: Ability = {
     name: "Magic Armor",
-    resourceCost: 2,
+    resourceCost: 1,
     image: MagicArmorImage,
     level: 2,
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 9,
+            armor: 5,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                armor: 4,
+            },
         },
     ],
 };
 
 export const magicArmor: Ability = {
     name: "Magic Armor",
-    resourceCost: 2,
+    resourceCost: 1,
     image: MagicArmorImage,
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 7,
+            armor: 4,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                armor: 3,
+            },
         },
     ],
     upgrades: [magicArmor2],
@@ -278,7 +296,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction = {
-    damage: 2,
+    damage: 3,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -303,21 +321,21 @@ const triboltAction = {
 const tribolt2: Ability = {
     name: "Tribolt",
     image: TriboltImage,
-    resourceCost: 1,
+    resourceCost: 2,
     description: "Randomly hits the target or adjacent enemies, x3",
     level: 2,
     actions: [
         {
             ...triboltAction,
-            damage: 3,
+            damage: 4,
         },
         {
             ...triboltAction,
-            damage: 3,
+            damage: 4,
         },
         {
             ...triboltAction,
-            damage: 3,
+            damage: 4,
         },
     ],
 };
@@ -325,7 +343,7 @@ const tribolt2: Ability = {
 export const tribolt: Ability = {
     name: "Tribolt",
     image: TriboltImage,
-    resourceCost: 1,
+    resourceCost: 2,
     description: "Randomly hits the target or adjacent enemies, x3",
     actions: [triboltAction, triboltAction, triboltAction],
     upgrades: [tribolt2],
@@ -484,9 +502,9 @@ export const thunderstruck: Ability = {
 
 const ignite2: Ability = {
     name: "Ignite",
+    image: IgniteImage,
     level: 2,
-    resourceCost: 2,
-    description: "The target Burns its adjacent allies.",
+    resourceCost: 1,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -502,35 +520,11 @@ const ignite2: Ability = {
             },
             effects: [
                 {
-                    name: "Ignited",
+                    name: "Burn",
                     type: EFFECT_TYPES.BURN,
                     class: EFFECT_CLASSES.DEBUFF,
                     duration: 4,
                     icon: FireIcon,
-                    description: "Burned targets take 3 damage per turn. Spreading Burn to adjacent allies.",
-                    onTurnEnd: {
-                        usableWhileStunned: true,
-                        ability: {
-                            name: "",
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.NONE,
-                                    target: TARGET_TYPES.SELF,
-                                    excludePrimaryTarget: true,
-                                    area: 1,
-                                    effects: [
-                                        {
-                                            name: "Burn",
-                                            type: EFFECT_TYPES.BURN,
-                                            class: EFFECT_CLASSES.DEBUFF,
-                                            duration: 1,
-                                            icon: FireIcon,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    },
                 },
             ],
         },
@@ -540,8 +534,7 @@ const ignite2: Ability = {
 export const ignite: Ability = {
     name: "Ignite",
     image: IgniteImage,
-    resourceCost: 2,
-    description: "The target Burns its adjacent allies.",
+    resourceCost: 1,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -557,35 +550,11 @@ export const ignite: Ability = {
             },
             effects: [
                 {
-                    name: "Ignited",
+                    name: "Burn",
                     type: EFFECT_TYPES.BURN,
                     class: EFFECT_CLASSES.DEBUFF,
                     duration: 3,
                     icon: FireIcon,
-                    description: "Burned targets take 3 damage per turn. Spreading Burn to adjacent allies.",
-                    onTurnEnd: {
-                        usableWhileStunned: true,
-                        ability: {
-                            name: "",
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.NONE,
-                                    target: TARGET_TYPES.SELF,
-                                    excludePrimaryTarget: true,
-                                    area: 1,
-                                    effects: [
-                                        {
-                                            name: "Burn",
-                                            type: EFFECT_TYPES.BURN,
-                                            class: EFFECT_CLASSES.DEBUFF,
-                                            duration: 1,
-                                            icon: FireIcon,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    },
                 },
             ],
         },
