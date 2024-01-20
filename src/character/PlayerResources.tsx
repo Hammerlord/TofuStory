@@ -1,12 +1,13 @@
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import { Combatant } from "./types";
 
-const PlayerResources = ({ player }: { player: Combatant }) => {
+const PlayerResources = ({ player }: { player: any }) => {
     const tooltipContents = (
         <div>
-            {player.resources} / {player.maxResources} <Fury size="sm" /> <br />
-            Gaining a baseline <Fury text={player.resourcesPerTurn} size="sm" /> per turn.
+            {player.resources} / {player.maxResources} <ResourceIcon size="sm" playerClass={player.class} /> <br />
+            Gaining a baseline <ResourceIcon text={player.resourcesPerTurn} size="sm" playerClass={player.class} /> per turn.
             <hr />
             These are your current resources. Abilities often cost resources in order to be used.
         </div>
@@ -14,7 +15,7 @@ const PlayerResources = ({ player }: { player: Combatant }) => {
     return (
         <Tooltip title={tooltipContents}>
             <span>
-                <Fury text={player.resources} size="lg" />
+                <ResourceIcon text={player.resources} size="lg" playerClass={player.class} />
             </span>
         </Tooltip>
     );

@@ -1,13 +1,14 @@
 import { cloneElement } from "react";
+import { PLAYER_CLASSES } from "../../Menu/types";
 import Icon from "../../icon/Icon";
 import { UpMATTImage } from "../../images";
 import { CactusIcon, CloudyIcon, CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
-import { Fury } from "../../resource/ResourcesView";
-import { CONDITION_TARGETS, Effect, EffectEventTrigger, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../types";
+import { CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES, Effect, EffectEventTrigger } from "../types";
+import { ResourceIcon } from "./ResourceIcon";
 import { effectEventKeyLabelMap, multiplierTypeKeyLabelMap } from "./constants";
 import { getAllEffects } from "./utils";
 
-const EffectEventDisplay = (effectEvents) => {
+const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
     const content = Object.entries(effectEvents).map(([key, value]) => {
         if (!effectEventKeyLabelMap[key]) {
             return null;
@@ -54,7 +55,7 @@ const EffectEventDisplay = (effectEvents) => {
         if (resources) {
             components.push(
                 <>
-                    gain <Fury size={"sm"} text={resources} />
+                    gain <ResourceIcon size={"sm"} text={resources} playerClass={playerClass} />
                 </>
             );
         }
@@ -86,7 +87,7 @@ const EffectEventDisplay = (effectEvents) => {
     return <>{content}</>;
 };
 
-const Buffs = ({ ability }) => {
+const Buffs = ({ ability, player }) => {
     const buffs = getAllEffects(ability).filter((effect: Effect) => effect.class === EFFECT_CLASSES.BUFF);
 
     return (
@@ -172,7 +173,8 @@ const Buffs = ({ ability }) => {
                 if (resourcesPerTurn > 0) {
                     effectComponents.push(
                         <>
-                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Fury size={"sm"} text={`+${resourcesPerTurn}`} />{" "}
+                            {effectComponents.length > 0 ? "and gain" : "Gain"}{" "}
+                            <ResourceIcon size={"sm"} text={`+${resourcesPerTurn}`} playerClass={player?.class} />{" "}
                             {turnsTriggerFrequency ? `every ${turnsTriggerFrequency} turns` : "per turn"}
                         </>
                     );
@@ -200,7 +202,7 @@ const Buffs = ({ ability }) => {
 
                 if (effect.type !== EFFECT_TYPES.STEALTH) {
                     // Stealth need not be explained here
-                    effectComponents.push(<EffectEventDisplay {...other} />);
+                    effectComponents.push(<EffectEventDisplay {...other} playerClass={player?.class} />);
                 }
 
                 if (duration === 0) {

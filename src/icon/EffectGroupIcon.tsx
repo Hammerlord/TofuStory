@@ -8,6 +8,7 @@ import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIc
 import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -177,7 +178,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     )}
                     {healthPerResourcesSpent > 0 && (
                         <div>
-                            <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per <Fury /> spent
+                            <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per{" "}
+                            <ResourceIcon playerClass={(owner as any)?.class} /> spent
                         </div>
                     )}
                     {lifeOnHit > 0 && (

@@ -6,7 +6,7 @@ import { getMultiplier } from "../../battle/utils";
 import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
-import { Fury } from "../../resource/ResourcesView";
+import { Fury, Mana } from "../../resource/ResourcesView";
 import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
@@ -18,8 +18,9 @@ import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import Debuffs from "./Debuffs";
 import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
-import ResourceIcon from "./ResourceIcon";
+import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
+import { PLAYER_CLASSES } from "../../Menu/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -145,7 +146,7 @@ interface AbilityViewProps {
     onClick?: (event: any) => void;
     isSelected?: boolean;
     ability: Ability | HandAbility;
-    player?: Combatant;
+    player?: any;
 }
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
@@ -258,14 +259,14 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                                     .map(() => "⋆")
                                     .join("")}
                         </span>{" "}
-                        <ResourceIcon ability={ability} />
+                        <AbilityResourceIcon ability={ability} playerClass={player?.class} />
                     </span>
                     <div className={classes.portraitContainer}>{imageNode}</div>
                     <div className={classes.body}>
                         {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                        <DrawCards ability={ability} />
+                        <DrawCards ability={ability} playerClass={player?.class} />
                         <Debuffs effects={getAllEffects(ability)} />
                         {ricochet && <div>Ricochets to {numTargets} other targets</div>}
                         {!healingCornerIcon && healing > 0 && (
@@ -280,7 +281,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         )}
                         {resourceGain > 0 && (
                             <div>
-                                Gain <Fury text={resourceGain} size={"sm"} />
+                                Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
                             </div>
                         )}
                         {selfDamage > 0 && (
@@ -289,7 +290,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                             </div>
                         )}
                         {ability.reusable && <div>Returns to your hand after use</div>}
-                        <Buffs ability={ability} />
+                        <Buffs ability={ability} player={player} />
                         <CardsToAdd ability={ability} />
                         <BonusView ability={ability} player={player} />
                         <RadiateView ability={ability} />

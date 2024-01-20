@@ -1,7 +1,8 @@
-import { Fury } from "../../resource/ResourcesView";
+import { PLAYER_CLASSES } from "../../Menu/types";
 import { Ability, HandAbility } from "../types";
+import { ResourceIcon } from "./ResourceIcon";
 
-const DrawCards = ({ ability }: { ability: Ability | HandAbility }) => {
+const DrawCards = ({ ability, playerClass }: { ability: Ability | HandAbility; playerClass: PLAYER_CLASSES }) => {
     const drawCards = ability.actions.find((action) => action.drawCards)?.drawCards;
     if (!drawCards) {
         return null;
@@ -17,7 +18,8 @@ const DrawCards = ({ ability }: { ability: Ability | HandAbility }) => {
             Draw {amount} card{amount > 1 ? "s" : ""}.{" "}
             {resourceCost < 0 && (
                 <>
-                    It costs <Fury text={Math.abs(resourceCost)} size={"sm"} /> less until it is used or discarded.
+                    It costs <ResourceIcon text={Math.abs(resourceCost)} size={"sm"} playerClass={playerClass} /> less until it is used or
+                    discarded.
                 </>
             )}
         </span>

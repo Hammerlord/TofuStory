@@ -97,7 +97,7 @@ const ClassSelection = ({ onSelectClass }) => {
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
                                 <div className={classes.abilityContainer} key={i}>
-                                    <AbilityView ability={ability} key={i} />
+                                    <AbilityView ability={ability} key={i} player={{ class: selectedClass }} />
                                 </div>
                             ))}
                     </div>
