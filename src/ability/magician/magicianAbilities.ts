@@ -35,7 +35,7 @@ export const magicClaw: Ability = {
     name: "Magic Claw",
     resourceCost: 3,
     image: MagicClawImage,
-    description: "Attacks twice. Charged: +1 damage",
+    description: "Hits twice",
     actions: [
         {
             damage: 4,
@@ -131,7 +131,7 @@ export const triEnergyBolt: Ability = {
     name: "Tri Energy Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
-    description: "Randomly strikes the target or adjacent enemies, x3. Charged: +1 damage",
+    description: "Randomly hits the target or adjacent enemies, x3",
     actions: [
         {
             damage: 2,
