@@ -118,6 +118,9 @@ const magicClaw2: Ability = {
         },
         {
             ...magicClawAction,
+            animationOptions: {
+                mirrorX: true,
+            },
             damage: 4,
             bonus: {
                 conditions: [
@@ -137,7 +140,15 @@ export const magicClaw: Ability = {
     resourceCost: 2,
     image: MagicClawImage,
     description: "Hits twice",
-    actions: [magicClawAction, magicClawAction],
+    actions: [
+        magicClawAction,
+        {
+            ...magicClawAction,
+            animationOptions: {
+                mirrorX: true,
+            },
+        },
+    ],
     upgrades: [magicClaw2],
 };
 
