@@ -84,7 +84,7 @@ export const travel = ({
     const originOffsetY = freezeAxis === "y" ? 0 : y - objectCoords.y;
 
     animationFrames.push({
-        transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px)`,
+        transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px) rotate(${initialRotation}deg)`,
         offset: 0,
     });
 

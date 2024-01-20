@@ -1,4 +1,13 @@
-import { BrickImage, EnergyBoltImage, MagicArmorImage, MagicClawImage, MagicGuardImage, TeleportImage } from "../../images";
+import {
+    BrickImage,
+    EnergyBoltImage,
+    EnergyBoltProjectileImage,
+    MagicArmorImage,
+    MagicClawImage,
+    MagicClawProjectileImage,
+    MagicGuardImage,
+    TeleportImage,
+} from "../../images";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -19,12 +28,17 @@ export const energyBolt: Ability = {
             damage: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: EnergyBoltImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+            },
         },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            playbackTime: 250,
             resources: 1,
         },
     ],
@@ -41,8 +55,9 @@ export const magicClaw: Ability = {
             damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: MagicClawImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: MagicClawProjectileImage,
+            playbackTime: 400,
             bonus: {
                 conditions: [
                     {
@@ -57,8 +72,12 @@ export const magicClaw: Ability = {
             damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: MagicClawImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: MagicClawProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                mirrorX: true,
+            },
             bonus: {
                 conditions: [
                     {
@@ -137,8 +156,12 @@ export const triEnergyBolt: Ability = {
             damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: EnergyBoltImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+            },
             targetArea: 1,
             bonus: {
                 conditions: [
@@ -154,9 +177,13 @@ export const triEnergyBolt: Ability = {
             damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: EnergyBoltImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
             targetArea: 1,
+            animationOptions: {
+                rotate: -45,
+            },
             bonus: {
                 conditions: [
                     {
@@ -171,9 +198,13 @@ export const triEnergyBolt: Ability = {
             damage: 2,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
-            icon: EnergyBoltImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
             targetArea: 1,
+            animationOptions: {
+                rotate: -45,
+            },
             bonus: {
                 conditions: [
                     {

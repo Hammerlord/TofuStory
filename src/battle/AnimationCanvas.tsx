@@ -51,6 +51,9 @@ const useStyles = createUseStyles({
         animationDuration: ({ playbackTime = 0 }: any) => `${playbackTime / 1000}s`,
         maxWidth: "100px",
     },
+    mirrorX: {
+        transform: "scale(-1, 1)",
+    },
 });
 
 const DISPLACEMENT_SPEED = 500;
@@ -112,7 +115,7 @@ const AnimationCanvas = ({
     }, [actorElement]);
     const classes = useStyles({ playbackTime } as any);
 
-    const { icon, ricochet, animation } = action || {};
+    const { icon, ricochet, animation, animationOptions } = action || {};
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
@@ -223,13 +226,20 @@ const AnimationCanvas = ({
 
         if (typeof icon === "string") {
             return (
-                <img
-                    src={icon}
-                    className={classNames(classes.projectile, {
+                <div
+                    className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
                     })}
                     {...props}
-                />
+                >
+                    <div
+                        className={classNames({
+                            [classes.mirrorX]: animationOptions?.mirrorX,
+                        })}
+                    >
+                        <img src={icon} />
+                    </div>
+                </div>
             );
         } else if (typeof icon === "function") {
             const Icon: Function = icon;
@@ -240,7 +250,13 @@ const AnimationCanvas = ({
                     })}
                     {...props}
                 >
-                    <Icon />
+                    <div
+                        className={classNames({
+                            [classes.mirrorX]: animationOptions?.mirrorX,
+                        })}
+                    >
+                        <Icon />
+                    </div>
                 </div>
             );
         }
