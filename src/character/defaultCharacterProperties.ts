@@ -4,9 +4,11 @@ import {
     BlueUmbrellaImage,
     FrozenTunaImage,
     OldGladiusImage,
+    OldWoodenStaffImage,
     PicoPicoHammerImage,
     WarMushImage,
     WizMushImage,
+    WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
 import { chargingStone, engravedStone } from "./../item/items";
@@ -51,9 +53,14 @@ export const wizardProperties = {
     resourcesPerTurn: 2,
     maxResources: 10,
     resources: 1,
-    weapon: null,
+    weapon: OldWoodenStaffImage,
     items: [chargingStone],
-    weaponSkins: [],
+    weaponSkins: [
+        { name: "Old Wooden Staff", image: OldWoodenStaffImage },
+        { name: "Wooden Staff", image: WoodenStaffImage },
+        { name: "Blue Umbrella", image: BlueUmbrellaImage },
+        { name: "Yellow Umbrella", image: YellowUmbrellaImage },
+    ],
 };
 
 export default defaultCharacterProperties;
