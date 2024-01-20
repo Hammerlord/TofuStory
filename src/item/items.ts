@@ -1,5 +1,5 @@
 import { chill, poison, thorns, wound } from "../ability/Effects";
-import { magicClaw, tribolt } from "../ability/magician/magicianAbilities";
+import { energyBolt, magicClaw, tribolt } from "../ability/magician/magicianAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AlchemistStoneImage,
@@ -16,6 +16,8 @@ import {
     CoffeePotImage,
     CursedDollImage,
     DrakeBloodImage,
+    EnergyBoltImage,
+    EnergyBoltProjectileImage,
     FishSpearImage,
     GarnetImage,
     GoldenHammerImage,
@@ -959,7 +961,7 @@ export const unsignedLetter: Item = {
 
 export const chargingStone: Item = {
     name: "Charging Stone",
-    description: "When you use an ability, become Charged, which empowers the next use of certain spells.",
+    description: "When you use an ability, certain spells become Charged.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -983,6 +985,8 @@ export const chargingStone: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
+                        description:
+                            "Empowering the next cast of a Charged spell. If left unused, unleash an Energy Bolt at the end of your turn.",
                         duration: 1,
                         weaponAnimation: "glow",
                         onAbility: {
@@ -993,6 +997,28 @@ export const chargingStone: Item = {
                                     name: [tribolt.name, magicClaw.name],
                                 },
                             ],
+                            removeEffect: true,
+                        },
+                        onTurnEnd: {
+                            ability: {
+                                name: "Energy Bolt",
+                                image: EnergyBoltImage,
+                                resourceCost: 0,
+                                actions: [
+                                    {
+                                        damage: 2,
+                                        target: TARGET_TYPES.RANDOM_HOSTILE,
+                                        type: ACTION_TYPES.RANGE_ATTACK,
+                                        animation: ANIMATION_TYPES.ONE_WAY,
+                                        icon: EnergyBoltProjectileImage,
+                                        playbackTime: 400,
+                                        animationOptions: {
+                                            rotate: -45,
+                                        },
+                                    },
+                                ],
+                                upgrades: [],
+                            },
                             removeEffect: true,
                         },
                     },

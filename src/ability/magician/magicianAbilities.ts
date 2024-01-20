@@ -48,12 +48,12 @@ export const energyBolt: Ability = {
 
 export const magicClaw: Ability = {
     name: "Magic Claw",
-    resourceCost: 3,
+    resourceCost: 2,
     image: MagicClawImage,
     description: "Hits twice",
     actions: [
         {
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -66,11 +66,11 @@ export const magicClaw: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 1,
+                damage: 2,
             },
         },
         {
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -86,7 +86,7 @@ export const magicClaw: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 1,
+                damage: 2,
             },
         },
     ],
@@ -171,7 +171,7 @@ export const tribolt: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 1,
+                damage: 2,
             },
         },
         {
@@ -192,7 +192,7 @@ export const tribolt: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 1,
+                damage: 2,
             },
         },
         {
@@ -213,7 +213,7 @@ export const tribolt: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 1,
+                damage: 2,
             },
         },
     ],
