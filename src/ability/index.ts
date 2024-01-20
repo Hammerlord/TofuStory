@@ -2,6 +2,7 @@ import { MAGICIAN_SECONDARY_JOBS, PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from 
 import {
     arcaneAim,
     energyBolt,
+    ignite,
     magicArmor,
     magicClaw,
     magicGuard,
@@ -99,6 +100,7 @@ export const JOB_CARD_MAP = {
             mpEater,
             arcaneAim,
             thunderstruck,
+            ignite,
         ],
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, tribolt, magicArmor, magicArmor, teleport],
     },

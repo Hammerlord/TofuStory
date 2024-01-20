@@ -498,6 +498,16 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
         getEnabledEffects({ combatant: actor }).forEach(({ attackAreaIncrease = 0 }) => {
             totalArea += attackAreaIncrease;
         });
+
+        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
+            if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
+                return { combatant: actor };
+            }
+        };
+
+        if (action.bonus?.area && passesConditions({ getCalculationTarget, proc: action.bonus })) {
+            totalArea += action.bonus?.area;
+        }
     }
 
     return totalArea;

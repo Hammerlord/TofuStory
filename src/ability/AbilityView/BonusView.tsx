@@ -28,7 +28,7 @@ const BonusView = ({ ability, player }) => {
 
     const bonusDescriptions = [];
 
-    bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier }, i) => {
+    bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0 }, i) => {
         const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
             if (hasEffectType.length) {
                 if (multiplier) {
@@ -78,6 +78,7 @@ const BonusView = ({ ability, player }) => {
             totalHealing,
             totalArmor,
             conditionText,
+            area,
         };
 
         if (bonusDescriptions.every((desc) => JSON.stringify(desc) !== JSON.stringify(bonusLabel))) {
@@ -87,7 +88,7 @@ const BonusView = ({ ability, player }) => {
 
     return (
         <>
-            {bonusDescriptions.map(({ hasEffect, totalDamage, totalHealing, totalArmor, conditionText }, i) => {
+            {bonusDescriptions.map(({ hasEffect, totalDamage, totalHealing, totalArmor, conditionText, area }, i) => {
                 return (
                     <div key={i}>
                         {hasEffect && `${hasEffect}: `}
@@ -96,6 +97,7 @@ const BonusView = ({ ability, player }) => {
                                 Deal <Icon icon={CrossedSwordsIcon} text={`+${totalDamage}`} size={"sm"} />
                             </>
                         )}{" "}
+                        {area && `+${area} area`}
                         {totalHealing > 0 && <Icon icon={HeartIcon} text={`+${totalHealing}`} size={"sm"} />}{" "}
                         {totalArmor > 0 && <Icon icon={ShieldIcon} text={`+${totalArmor}`} size={"sm"} />}
                         {conditionText}

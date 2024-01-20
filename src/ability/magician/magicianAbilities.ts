@@ -3,6 +3,7 @@ import {
     ArcaneOverdriveImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
+    IgniteImage,
     MPEaterImage,
     MagicArmorImage,
     MagicClawImage,
@@ -13,6 +14,7 @@ import {
     TriboltImage,
     WizMushImage,
 } from "../../images";
+import { FireIcon } from "../../images/icons";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -478,4 +480,115 @@ export const thunderstruck: Ability = {
         },
     ],
     upgrades: [thunderstruck2],
+};
+
+const ignite2: Ability = {
+    name: "Ignite",
+    level: 2,
+    resourceCost: 2,
+    description: "The target Burns its adjacent allies.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                area: 1,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+            effects: [
+                {
+                    name: "Ignited",
+                    type: EFFECT_TYPES.BURN,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    duration: 4,
+                    icon: FireIcon,
+                    description: "Burned targets take 3 damage per turn. Spreading Burn to adjacent allies.",
+                    onTurnEnd: {
+                        usableWhileStunned: true,
+                        ability: {
+                            name: "",
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.NONE,
+                                    target: TARGET_TYPES.SELF,
+                                    excludePrimaryTarget: true,
+                                    area: 1,
+                                    effects: [
+                                        {
+                                            name: "Burn",
+                                            type: EFFECT_TYPES.BURN,
+                                            class: EFFECT_CLASSES.DEBUFF,
+                                            duration: 1,
+                                            icon: FireIcon,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const ignite: Ability = {
+    name: "Ignite",
+    image: IgniteImage,
+    resourceCost: 2,
+    description: "The target Burns its adjacent allies.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                area: 1,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+            effects: [
+                {
+                    name: "Ignited",
+                    type: EFFECT_TYPES.BURN,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    duration: 3,
+                    icon: FireIcon,
+                    description: "Burned targets take 3 damage per turn. Spreading Burn to adjacent allies.",
+                    onTurnEnd: {
+                        usableWhileStunned: true,
+                        ability: {
+                            name: "",
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.NONE,
+                                    target: TARGET_TYPES.SELF,
+                                    excludePrimaryTarget: true,
+                                    area: 1,
+                                    effects: [
+                                        {
+                                            name: "Burn",
+                                            type: EFFECT_TYPES.BURN,
+                                            class: EFFECT_CLASSES.DEBUFF,
+                                            duration: 1,
+                                            icon: FireIcon,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [ignite2],
 };

@@ -30,7 +30,7 @@ const passesValueComparison = ({
 
 export interface IndexedCombatant {
     combatant?: Combatant;
-    index: number;
+    index?: number;
 }
 
 export const passesConditions = ({
