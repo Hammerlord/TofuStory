@@ -7,6 +7,7 @@ import {
     MagicClawProjectileImage,
     MagicGuardImage,
     TeleportImage,
+    TriboltImage,
 } from "../../images";
 import {
     ACTION_TYPES,
@@ -146,9 +147,9 @@ export const teleport: Ability = {
     ],
 };
 
-export const triEnergyBolt: Ability = {
-    name: "Tri Energy Bolt",
-    image: EnergyBoltImage,
+export const tribolt: Ability = {
+    name: "Tribolt",
+    image: TriboltImage,
     resourceCost: 1,
     description: "Randomly hits the target or adjacent enemies, x3",
     actions: [

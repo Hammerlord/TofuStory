@@ -287,6 +287,7 @@ export { default as TopazImage } from "./Topaz.png";
 export { default as ToyHammerImage } from "./ToyHammer.png";
 export { default as TreasureChestImage } from "./TreasureChest.png";
 export { default as TreeBranchImage } from "./TreeBranch.png";
+export { default as TriboltImage } from "./Tribolt.png";
 export { default as TurtleCardImage } from "./TurtleCard.png";
 export { default as UnagiImage } from "./Unagi.png";
 export { default as UpMATTImage } from "./UpMATT.png";
