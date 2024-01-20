@@ -414,12 +414,6 @@ const BattlefieldContainer = () => {
     }, [currentWaveIndex]);
 
     const handleBattlePhase = () => {
-        // Prevent duplicate battle states from triggering consecutively
-        if (battleStateRef?.current === battleState) {
-            return;
-        }
-
-        battleStateRef.current = battleState;
         if (isWinConditionTriggered) {
             setShowWaveClear(true);
             setTimeout(() => {
@@ -433,6 +427,13 @@ const BattlefieldContainer = () => {
                 }
             }, TURN_ANNOUNCEMENT_TIME);
         }
+
+        // Prevent duplicate battle states from triggering consecutively
+        if (battleStateRef?.current === battleState) {
+            return;
+        }
+
+        battleStateRef.current = battleState;
 
         if (battleState === BATTLE_STATES.WAVE_START) {
             setTimeout(() => {
