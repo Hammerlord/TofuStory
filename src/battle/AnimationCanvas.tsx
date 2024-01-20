@@ -120,6 +120,7 @@ const AnimationCanvas = ({
     const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate } = animationOptions || {};
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
@@ -135,7 +136,7 @@ const AnimationCanvas = ({
         setTimeout(() => setIsAnimationPlaying(false), playbackTime - 10);
 
         eventIdRef.current = eventId;
-        const { type, animation, ricochet, icon, animationOptions } = action || {};
+        const { type, animation, ricochet, icon } = action || {};
         let spin = 0;
         if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
             spin = 900;
@@ -145,9 +146,8 @@ const AnimationCanvas = ({
             spin = 720;
         }
 
-        const options = { spin, rotation: animationOptions?.rotate, playbackTime };
+        const options = { spin, rotation: rotate, playbackTime };
         if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
-            const rotateToFaceTarget = animation === ANIMATION_TYPES.ONE_WAY;
             const animateProjectile = (target, projectileRefIndex: number) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
                 const refsTo = refsFrom + 1 * beamProjectileMultiplier;
@@ -225,6 +225,8 @@ const AnimationCanvas = ({
                 visibility: isAnimationPlaying ? "visible" : "hidden",
                 left: actorX - projectileDimensions.width / 2,
                 top: actorY - projectileDimensions.height / 2,
+                width,
+                height,
             },
         } as any;
 
@@ -239,7 +241,7 @@ const AnimationCanvas = ({
                     <img
                         src={icon}
                         className={classNames(classes.projectileInner, {
-                            [classes.mirrorX]: animationOptions?.mirrorX,
+                            [classes.mirrorX]: mirrorX,
                         })}
                     />
                 </div>
@@ -255,7 +257,7 @@ const AnimationCanvas = ({
                 >
                     <Icon
                         className={classNames(classes.projectileInner, {
-                            [classes.mirrorX]: animationOptions?.mirrorX,
+                            [classes.mirrorX]: mirrorX,
                         })}
                     />
                 </div>

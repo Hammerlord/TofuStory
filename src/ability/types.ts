@@ -420,6 +420,9 @@ export interface Action {
     animationOptions?: {
         rotate?: number; // Degrees to rotate a sprite; for example, an arrow sprite might be at 45 degrees and need to be oriented to point at a target
         mirrorX?: boolean;
+        rotateToFaceTarget?: boolean; // Whether a projectile such as an arrow should orient toward the target. True by default.
+        width?: number;
+        height?: number;
     };
 }
 

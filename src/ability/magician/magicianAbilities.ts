@@ -1,8 +1,6 @@
-import { silence, stun } from "./../Effects";
 import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
-    BrickImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     MPEaterImage,
@@ -26,6 +24,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
+import { stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -42,6 +41,7 @@ const energyBolt2: Ability = {
             playbackTime: 400,
             animationOptions: {
                 rotate: -45,
+                rotateToFaceTarget: true,
             },
         },
         {
@@ -67,6 +67,7 @@ export const energyBolt: Ability = {
             playbackTime: 400,
             animationOptions: {
                 rotate: -45,
+                rotateToFaceTarget: true,
             },
         },
         {
@@ -84,6 +85,11 @@ const magicClawAction: Action = {
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
+    animationOptions: {
+        rotateToFaceTarget: false,
+        width: 100,
+        height: 100,
+    },
     icon: MagicClawProjectileImage,
     playbackTime: 400,
     bonus: {
@@ -120,6 +126,7 @@ const magicClaw2: Ability = {
         {
             ...magicClawAction,
             animationOptions: {
+                ...magicClawAction.animationOptions,
                 mirrorX: true,
             },
             damage: 4,
@@ -146,6 +153,7 @@ export const magicClaw: Ability = {
         {
             ...magicClawAction,
             animationOptions: {
+                ...magicClawAction.animationOptions,
                 mirrorX: true,
             },
         },
@@ -276,6 +284,7 @@ const triboltAction = {
     playbackTime: 400,
     animationOptions: {
         rotate: -45,
+        rotateToFaceTarget: true,
     },
     targetArea: 1,
     bonus: {

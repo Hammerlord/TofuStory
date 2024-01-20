@@ -83,11 +83,6 @@ export const travel = ({
     const originOffsetX = freezeAxis === "x" ? 0 : x - objectCoords.x;
     const originOffsetY = freezeAxis === "y" ? 0 : y - objectCoords.y;
 
-    animationFrames.push({
-        transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px) rotate(${initialRotation}deg)`,
-        offset: 0,
-    });
-
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
         const { x: toX, y: toY } = getCenterCoords(element);
         const x2 = freezeAxis === "x" ? x : toX;
@@ -117,6 +112,16 @@ export const travel = ({
         return acc;
     }, []);
     const totalTravelDistance = getTotalTravelDistance({ travelCoordinates, returnToOrigin });
+
+    let rotation = initialRotation;
+    if (rotateToFaceTarget) {
+        rotation += getRotationToFaceTarget({ x, y, x2: travelCoordinates[0]?.x2, y2: travelCoordinates[0]?.y2 });
+    }
+
+    animationFrames.push({
+        transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px) rotate(${rotation}deg)`,
+        offset: 0,
+    });
 
     travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
         let rotation = initialRotation;
