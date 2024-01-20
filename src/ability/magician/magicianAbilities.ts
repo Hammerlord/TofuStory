@@ -175,14 +175,14 @@ const magicGuard2: Ability = {
             effects: [
                 {
                     name: "Magic Guard",
-                    description: "Gaining +5 armor every turn for 3 turns",
+                    description: "Gaining +4 armor every turn for 3 turns",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: MagicGuardImage,
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 5,
+                        armor: 4,
                     },
                 },
             ],
@@ -201,14 +201,14 @@ export const magicGuard: Ability = {
             effects: [
                 {
                     name: "Magic Guard",
-                    description: "Gaining +4 armor every turn for 3 turns",
+                    description: "Gaining +3 armor every turn for 3 turns",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: MagicGuardImage,
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 4,
+                        armor: 3,
                     },
                 },
             ],
@@ -234,7 +234,7 @@ const magicArmor2: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 4,
+                armor: 3,
             },
         },
     ],
@@ -256,7 +256,7 @@ export const magicArmor: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 3,
+                armor: 2,
             },
         },
     ],
@@ -265,7 +265,7 @@ export const magicArmor: Ability = {
 
 const teleport2: Ability = {
     name: "Teleport",
-    resourceCost: 0,
+    resourceCost: 1,
     image: TeleportImage,
     level: 2,
     actions: [
@@ -288,7 +288,7 @@ export const teleport: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             drawCards: {
-                amount: 3,
+                amount: 2,
             },
         },
     ],
@@ -296,7 +296,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction = {
-    damage: 3,
+    damage: 2,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -314,28 +314,28 @@ const triboltAction = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 2,
+        damage: 1,
     },
 };
 
 const tribolt2: Ability = {
     name: "Tribolt",
     image: TriboltImage,
-    resourceCost: 2,
-    description: "Randomly hits the target or adjacent enemies, x3",
+    resourceCost: 1,
+    description: "Randomly hits the target or its neighbors, x3",
     level: 2,
     actions: [
         {
             ...triboltAction,
-            damage: 4,
+            damage: 3,
         },
         {
             ...triboltAction,
-            damage: 4,
+            damage: 3,
         },
         {
             ...triboltAction,
-            damage: 4,
+            damage: 3,
         },
     ],
 };
@@ -343,8 +343,8 @@ const tribolt2: Ability = {
 export const tribolt: Ability = {
     name: "Tribolt",
     image: TriboltImage,
-    resourceCost: 2,
-    description: "Randomly hits the target or adjacent enemies, x3",
+    resourceCost: 1,
+    description: "Randomly hits the target or its neighbors, x3",
     actions: [triboltAction, triboltAction, triboltAction],
     upgrades: [tribolt2],
 };
@@ -405,12 +405,16 @@ const arcaneAim2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 1,
+            },
             effects: [
                 {
                     name: "Arcane Aim",
                     icon: ArcaneAimImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
+                    duration: 1,
                     onAttack: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         effects: [
@@ -420,7 +424,7 @@ const arcaneAim2: Ability = {
                                 type: EFFECT_TYPES.NONE,
                                 class: EFFECT_CLASSES.BUFF,
                                 attackPower: 1,
-                                duration: 0,
+                                duration: 1,
                             },
                         ],
                     },
@@ -433,7 +437,7 @@ const arcaneAim2: Ability = {
 export const arcaneAim: Ability = {
     name: "Arcane Aim",
     image: ArcaneAimImage,
-    resourceCost: 1,
+    resourceCost: 0,
     description: "Gain +1 attack power for every attack made this turn.",
     actions: [
         {
