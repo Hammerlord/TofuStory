@@ -1014,6 +1014,7 @@ export const chargingStone: Item = {
                                         playbackTime: 400,
                                         animationOptions: {
                                             rotate: -45,
+                                            rotateToFaceTarget: true,
                                         },
                                     },
                                 ],
