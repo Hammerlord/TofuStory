@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
@@ -369,6 +369,7 @@ const BattlefieldContainer = () => {
     };
 
     const eventQueueRef = useRef([]);
+    const battleStateRef: MutableRefObject<BATTLE_STATES | undefined> = useRef();
 
     useEffect(() => {
         // Preload character sprites, projectiles, etc. or they may be invisible
@@ -413,6 +414,12 @@ const BattlefieldContainer = () => {
     }, [currentWaveIndex]);
 
     const handleBattlePhase = () => {
+        // Prevent duplicate battle states from triggering consecutively
+        if (battleStateRef?.current === battleState) {
+            return;
+        }
+
+        battleStateRef.current = battleState;
         if (isWinConditionTriggered) {
             setShowWaveClear(true);
             setTimeout(() => {
