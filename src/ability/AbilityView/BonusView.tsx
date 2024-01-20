@@ -97,7 +97,7 @@ const BonusView = ({ ability, player }) => {
                                 Deal <Icon icon={CrossedSwordsIcon} text={`+${totalDamage}`} size={"sm"} />
                             </>
                         )}{" "}
-                        {area && `+${area} area`}
+                        {area > 0 && `+${area} area`}
                         {totalHealing > 0 && <Icon icon={HeartIcon} text={`+${totalHealing}`} size={"sm"} />}{" "}
                         {totalArmor > 0 && <Icon icon={ShieldIcon} text={`+${totalArmor}`} size={"sm"} />}
                         {conditionText}
