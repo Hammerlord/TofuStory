@@ -6,6 +6,7 @@ import {
     OldGladiusImage,
     OldWoodenStaffImage,
     PicoPicoHammerImage,
+    StarCandyPopsicleImage,
     WarMushImage,
     WizMushImage,
     WoodenStaffImage,
@@ -58,6 +59,7 @@ export const wizardProperties = {
     weaponSkins: [
         { name: "Old Wooden Staff", image: OldWoodenStaffImage },
         { name: "Wooden Staff", image: WoodenStaffImage },
+        { name: "Star Candy Popsicle", image: StarCandyPopsicleImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
     ],
