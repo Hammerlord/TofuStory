@@ -102,11 +102,31 @@ const useStyles = createUseStyles({
         animationDirection: "alternate-reverse",
         minHeight: "140px",
     },
+    "@keyframes custom": {
+        "0%": {
+            transform: "scale(1.25, 1.25) translateX(-50%)",
+            opacity: "0.05",
+        },
+        "50%": {
+            transform: "scale(1.25, 1.25) translateX(-50%)",
+            opacity: "0.1",
+        },
+        "100%": {
+            transform: "scale(1.5, 1.5) translateX(-50%)",
+            opacity: "0.3",
+        },
+    },
     customEffect: {
-        position: "absolute",
-        top: -30,
+        animationName: "$custom",
+        animationDuration: "3s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
         left: "50%",
+        width: "100%",
+        height: "100%",
+        position: "absolute",
         transform: "translateX(-50%)",
+        transformOrigin: "bottom left",
     },
 });
 
@@ -163,9 +183,11 @@ const Effects = ({ combatant, healing }) => {
             {effects.map(
                 (effect, i) =>
                     effect.image && (
-                        <div className={classes.customEffect} key={i}>
-                            <img src={effect.image} key={effect.image} />
-                        </div>
+                        <span className={classes.center}>
+                            <span className={classes.customEffect} key={i}>
+                                <img src={effect.image} key={effect.image} />
+                            </span>
+                        </span>
                     )
             )}
         </div>

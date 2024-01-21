@@ -16,6 +16,7 @@ const useStyles = createUseStyles({
         borderRadius: "8px",
         fontSize: "1rem",
         cursor: "pointer",
+        display: "inline-block",
 
         "&.disabled": {
             opacity: 0.5,
@@ -43,8 +44,13 @@ const DevAbilityViewer = ({ onClose }) => {
             <Button variant="contained" onClick={onClose}>
                 Close
             </Button>
-            <div className={classes.class} onClick={() => setSelectedClass(PLAYER_CLASSES.WARRIOR)}>
-                {PLAYER_CLASSES.WARRIOR}
+            <div>
+                <div className={classes.class} onClick={() => setSelectedClass(PLAYER_CLASSES.WARRIOR)}>
+                    {PLAYER_CLASSES.WARRIOR}
+                </div>
+                <div className={classes.class} onClick={() => setSelectedClass(PLAYER_CLASSES.MAGICIAN)}>
+                    {PLAYER_CLASSES.MAGICIAN}
+                </div>
             </div>
             {selectedClass && (
                 <div className={classes.viewer}>

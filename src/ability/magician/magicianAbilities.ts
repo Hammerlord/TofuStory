@@ -1,6 +1,8 @@
 import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
+    ElementalAdaptationEffectImage,
+    ElementalAdaptationImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     IgniteImage,
@@ -26,7 +28,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { stun } from "./../Effects";
+import { stun, chill } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -564,4 +566,70 @@ export const ignite: Ability = {
         },
     ],
     upgrades: [ignite2],
+};
+
+const frostBarrier2: Ability = {
+    name: "Frost Barrier",
+    image: ElementalAdaptationImage,
+    resourceCost: 2,
+    description: "Attackers are Chilled for 3 turns.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 7,
+            effects: [
+                {
+                    name: "Frost Barrier",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: ElementalAdaptationImage,
+                    duration: 3,
+                    onReceiveAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        effects: [
+                            {
+                                ...chill,
+                                duration: 3,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const frostBarrier: Ability = {
+    name: "Frost Barrier",
+    image: ElementalAdaptationImage,
+    resourceCost: 2,
+    description: "Attackers are Chilled for 2 turns.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 5,
+            effects: [
+                {
+                    name: "Frost Barrier",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: ElementalAdaptationImage,
+                    image: ElementalAdaptationEffectImage,
+                    duration: 2,
+                    onReceiveAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        effects: [
+                            {
+                                ...chill,
+                                duration: 3,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [frostBarrier2],
 };
