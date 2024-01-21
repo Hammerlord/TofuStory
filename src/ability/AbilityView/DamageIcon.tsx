@@ -48,11 +48,12 @@ export const getDamageStatistics = ({
         damageBonusFromEffects +
         damageBonusFromConditions;
     const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
-    const baseDamage = Math.floor(totalDamage / (attackActions.length || 1));
+    const damageActions = attackActions.map(({ damage }) => damage).filter((d: number) => d);
+    const baseDamage = damageActions[0] || 0; // First result
     return {
         baseDamage,
         totalDamage,
-        hasMultiplier: attackActions.length > 1 || hasAttackMultiplier,
+        hasMultiplier: damageActions.length > 1 || hasAttackMultiplier,
         damageBonusFromEffects,
         damageBonusFromConditions,
     };
