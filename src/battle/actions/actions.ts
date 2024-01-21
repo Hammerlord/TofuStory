@@ -1148,7 +1148,7 @@ const performAction = ({
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
-        dispatch(checkCardActions(action));
+        dispatch(checkCardActions(action, parentSource));
         dispatch(
             onAction({
                 action,
@@ -1257,11 +1257,17 @@ const checkCastRadiate = ({
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
-const checkCardActions = (action: Action) => {
+const checkCardActions = (action: Action, source) => {
     return (dispatch, getState) => {
         const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
         if (cardsToDraw) {
             dispatch(drawCards(cardsToDraw));
+            const { playerSide, enemySide } = getState().battle;
+            playerSide.concat(enemySide).forEach((combatant) => {
+                if (combatant) {
+                    dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard, source }));
+                }
+            });
         }
 
         if (addCards) {

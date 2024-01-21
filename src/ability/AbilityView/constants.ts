@@ -22,6 +22,7 @@ export const effectEventKeyLabelMap = {
     onEnd: "When this effect ends",
     onWaveStart: "On wave start",
     onWaveClear: "On wave clear",
+    onDrawCard: "When you draw cards",
 };
 
 const { ATTACKS_MADE_IN_TURN, ARMOR, ABILITIES_WITH_NAME, MAX_HP, DEBUFFS, BLEEDS, NUM_AFFECTED_TARGETS, NUM_SOURCE_TARGETS } =

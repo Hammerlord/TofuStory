@@ -9,9 +9,11 @@ import {
     magicClaw,
     magicGuard,
     mpEater,
+    shootingStars,
     teleport,
     thunderstruck,
     tribolt,
+    wishUponAStar,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -101,6 +103,8 @@ export const JOB_CARD_MAP = {
             ignite,
             frostBarrier,
             chainLightning,
+            shootingStars,
+            wishUponAStar,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, tribolt, tribolt, magicArmor, magicArmor, magicArmor, teleport],
     },

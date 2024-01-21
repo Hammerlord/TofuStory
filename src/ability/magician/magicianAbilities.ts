@@ -13,6 +13,9 @@ import {
     MagicClawImage,
     MagicClawProjectileImage,
     MagicGuardImage,
+    ShimmeringStarsImage,
+    StarHairPinImage,
+    StarImage,
     TeleportImage,
     TeleportMasteryImage,
     TriboltImage,
@@ -702,4 +705,83 @@ export const chainLightning: Ability = {
         },
     ],
     upgrades: [chainLightning2],
+};
+
+export const swift: Ability = {
+    name: "Swift",
+    image: StarImage,
+    resourceCost: 0,
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: StarImage,
+            animationOptions: {
+                width: 70,
+                height: 70,
+            },
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+};
+
+export const shootingStars: Ability = {
+    name: "Shooting Stars",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: ShimmeringStarsImage,
+    actions: [
+        {
+            addCards: [swift, swift, swift],
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+};
+
+export const wishUponAStar: Ability = {
+    name: "Wish Upon a Star",
+    resourceCost: 1,
+    image: StarHairPinImage,
+    description: "Whenever you draw a card, shoot a star at a random enemy for 2 damage.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Wish",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: StarHairPinImage,
+                    duration: 3,
+                    description: "Whenever you draw a card, shoot a star at a random enemy for 2 damage.",
+                    onDrawCard: {
+                        ability: {
+                            name: "Falling Star",
+                            image: StarImage,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.RANGE_ATTACK,
+                                    animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+                                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                                    icon: StarImage,
+                                    damage: 2,
+                                    playbackTime: 400,
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
 };

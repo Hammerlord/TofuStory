@@ -112,6 +112,7 @@ export enum EFFECT_EVENT_KEYS {
     onHostileSummon = "onHostileSummon",
     onFriendlySummon = "onFriendlySummon",
     onArmorLoss = "onArmorLoss",
+    onDrawCard = "onDrawCard", // Player drew a card
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -188,6 +189,7 @@ export interface Effect {
     onHostileSummon?: EffectEventTrigger;
     /** Whenever character loses armor -- this includes armor decay */
     onArmorLoss?: EffectEventTrigger;
+    onDrawCard?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */

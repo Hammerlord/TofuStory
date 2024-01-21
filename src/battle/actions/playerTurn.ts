@@ -123,7 +123,7 @@ export const playerEndTurn = () => {
 
 export const startPlayerTurn = () => {
     return (dispatch, getState) => {
-        const { playerSide, round } = getState().battle;
+        const { playerSide, enemySide, round } = getState().battle;
         dispatch(
             updateBattle({
                 round: round + 1,
@@ -145,9 +145,14 @@ export const startPlayerTurn = () => {
 
         dispatch(
             drawCards({
-                amount: Math.min(MAX_HAND_SIZE - battle.hand.length, drawCardsPerTurn - battle.hand.length), // TODO card draw effects
+                amount: Math.min(MAX_HAND_SIZE - battle.hand.length, drawCardsPerTurn - battle.hand.length),
             })
         );
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard }));
+            }
+        });
 
         dispatch(checkTurnResourceGain(getState().battle.playerSide));
 
