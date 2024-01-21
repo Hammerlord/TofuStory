@@ -13,6 +13,7 @@ import {
     HandAbility,
     MORPH_TYPES,
     TARGET_TYPES,
+    AbilityEffects,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -42,7 +43,7 @@ import { TriggerSource } from "./../types";
 import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 
-const { drawCards, updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
+const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 /**
@@ -1254,20 +1255,60 @@ const checkCastRadiate = ({
     };
 };
 
+export const drawCards = ({ effects = {}, amount, source }: { effects?: AbilityEffects; amount: number; source?: TriggerSource }) => {
+    return (dispatch, getState) => {
+        const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        let newDeck = deck.slice();
+        let newHand = hand.slice();
+        let newDiscard = discard.slice();
+        const cardsToDraw = [];
+        let deckCycled = false;
+        if (newDeck.length < amount) {
+            cardsToDraw.push(...newDeck.slice());
+            newDeck = shuffle(discard);
+            newDiscard = [];
+            cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
+            deckCycled = true;
+        } else {
+            cardsToDraw.push(...newDeck.splice(0, amount));
+        }
+
+        const newState = {
+            deck: newDeck,
+            hand: [
+                ...newHand,
+                ...cardsToDraw.map((card) => ({
+                    ...card,
+                    effects: { ...effects },
+                })),
+            ],
+            discard: newDiscard,
+        };
+
+        dispatch(updateBattle(newState));
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard, source }));
+            }
+        });
+        if (deckCycled) {
+            playerSide.concat(enemySide).forEach((combatant) => {
+                if (combatant) {
+                    dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle, source }));
+                }
+            });
+        }
+    };
+};
+
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
-const checkCardActions = (action: Action, source) => {
+const checkCardActions = (action: Action, source: TriggerSource) => {
     return (dispatch, getState) => {
         const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
         if (cardsToDraw) {
-            dispatch(drawCards(cardsToDraw));
-            const { playerSide, enemySide } = getState().battle;
-            playerSide.concat(enemySide).forEach((combatant) => {
-                if (combatant) {
-                    dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard, source }));
-                }
-            });
+            dispatch(drawCards({ ...cardsToDraw, source }));
         }
 
         if (addCards) {

@@ -4,11 +4,11 @@ import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
 import { clearTurnHistory, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
-import { checkEventTrigger, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
+import { checkEventTrigger, drawCards, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
-const { drawCards, updateBattle } = battleStateSlice.actions;
+const { updateBattle } = battleStateSlice.actions;
 
 export const onUsePlayerAbility = ({
     selectedTargetIndex,
@@ -148,11 +148,6 @@ export const startPlayerTurn = () => {
                 amount: Math.min(MAX_HAND_SIZE - battle.hand.length, drawCardsPerTurn - battle.hand.length),
             })
         );
-        playerSide.concat(enemySide).forEach((combatant) => {
-            if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard }));
-            }
-        });
 
         dispatch(checkTurnResourceGain(getState().battle.playerSide));
 

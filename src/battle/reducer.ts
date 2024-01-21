@@ -86,35 +86,6 @@ export const battleStateSlice = createSlice({
         popEventQueue: (state) => {
             state.eventQueue.shift();
         },
-        drawCards: (state, action: PayloadAction<{ effects?: object; amount: number }>) => {
-            const { deck, hand, discard } = state;
-            let newDeck = deck.slice();
-            let newHand = hand.slice();
-            let newDiscard = discard.slice();
-            const { effects = {}, amount } = action.payload;
-            const cardsToDraw = [];
-            if (newDeck.length < amount) {
-                cardsToDraw.push(...newDeck.slice());
-                newDeck = shuffle(discard);
-                newDiscard = [];
-                cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
-            } else {
-                cardsToDraw.push(...newDeck.splice(0, amount));
-            }
-
-            return {
-                ...state,
-                deck: newDeck,
-                hand: [
-                    ...newHand,
-                    ...cardsToDraw.map((card) => ({
-                        ...card,
-                        effects: { ...effects },
-                    })),
-                ],
-                discard: newDiscard,
-            };
-        },
         closeBattle: () => {
             return null;
         },
@@ -133,5 +104,3 @@ export const battleStateSlice = createSlice({
         },
     },
 });
-
-export const { drawCards } = battleStateSlice.actions;

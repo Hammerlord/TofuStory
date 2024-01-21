@@ -733,9 +733,10 @@ export const swift: Ability = {
     ],
 };
 
-export const shootingStars: Ability = {
+const shootingStars2: Ability = {
     name: "Shooting Stars",
     resourceCost: 1,
+    level: 2,
     depletedOnUse: true,
     image: ShimmeringStarsImage,
     actions: [
@@ -747,11 +748,36 @@ export const shootingStars: Ability = {
     ],
 };
 
-export const wishUponAStar: Ability = {
-    name: "Wish Upon a Star",
+export const shootingStars: Ability = {
+    name: "Shooting Stars",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: ShimmeringStarsImage,
+    actions: [
+        {
+            addCards: [swift, swift],
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [shootingStars2],
+};
+
+const fallingStar: Action = {
+    type: ACTION_TYPES.RANGE_ATTACK,
+    animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+    target: TARGET_TYPES.RANDOM_HOSTILE,
+    icon: StarImage,
+    damage: 2,
+    playbackTime: 400,
+};
+
+const wishUponAStar2: Ability = {
+    name: "Wish Upon A Star",
     resourceCost: 1,
     image: StarHairPinImage,
-    description: "Whenever you draw a card, shoot a star at a random enemy for 2 damage.",
+    level: 2,
+    description: "On card draw, cast a star for 3 damage. On deck recycle, cast more stars.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -763,19 +789,70 @@ export const wishUponAStar: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     icon: StarHairPinImage,
                     duration: 3,
-                    description: "Whenever you draw a card, shoot a star at a random enemy for 2 damage.",
+                    description: "Shooting stars on card draw and deck cycle.",
                     onDrawCard: {
                         ability: {
                             name: "Falling Star",
                             image: StarImage,
                             actions: [
                                 {
-                                    type: ACTION_TYPES.RANGE_ATTACK,
-                                    animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
-                                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                                    icon: StarImage,
-                                    damage: 2,
-                                    playbackTime: 400,
+                                    ...fallingStar,
+                                    damage: 3,
+                                },
+                            ],
+                        },
+                    },
+                    onDeckCycle: {
+                        ability: {
+                            name: "Star Shower",
+                            image: StarImage,
+                            actions: [
+                                {
+                                    ...fallingStar,
+                                    area: 1,
+                                    damage: 3,
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const wishUponAStar: Ability = {
+    name: "Wish Upon A Star",
+    resourceCost: 1,
+    image: StarHairPinImage,
+    description: "On card draw, cast a star for 2 damage. On deck recycle, cast more stars.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Wish",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: StarHairPinImage,
+                    duration: 3,
+                    description: "Shooting stars on card draw and deck cycle.",
+                    onDrawCard: {
+                        ability: {
+                            name: "Falling Star",
+                            image: StarImage,
+                            actions: [fallingStar],
+                        },
+                    },
+                    onDeckCycle: {
+                        ability: {
+                            name: "Star Shower",
+                            image: StarImage,
+                            actions: [
+                                {
+                                    ...fallingStar,
+                                    area: 1,
                                 },
                             ],
                         },

@@ -113,6 +113,7 @@ export enum EFFECT_EVENT_KEYS {
     onFriendlySummon = "onFriendlySummon",
     onArmorLoss = "onArmorLoss",
     onDrawCard = "onDrawCard", // Player drew a card
+    onDeckCycle = "onDeckCycle", // Player's deck reset
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -190,6 +191,7 @@ export interface Effect {
     /** Whenever character loses armor -- this includes armor decay */
     onArmorLoss?: EffectEventTrigger;
     onDrawCard?: EffectEventTrigger;
+    onDeckCycle?: EffectEventTrigger;
     canBeSilenced?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
