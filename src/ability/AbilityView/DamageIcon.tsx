@@ -31,12 +31,14 @@ export const getDamageStatistics = ({
             return ability;
         }
     };
-    const damageBonusFromConditions = ability.actions.reduce((acc, cur) => {
-        if (cur.bonus?.damage && passesConditions({ getCalculationTarget, proc: cur.bonus })) {
-            return acc + cur.bonus.damage;
+    const damageBonusFromConditionsArr: number[] = ability.actions.map((action) => {
+        if (action.bonus?.damage && passesConditions({ getCalculationTarget, proc: action.bonus })) {
+            return action.bonus.damage;
         }
-        return acc;
-    }, 0);
+        return 0;
+    });
+
+    const damageBonusFromConditions: number = damageBonusFromConditionsArr.reduce((a: number, c: number) => a + c, 0);
     const totalDamage =
         actions.reduce((acc, action: Action) => {
             if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
@@ -49,7 +51,7 @@ export const getDamageStatistics = ({
         damageBonusFromConditions;
     const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
     const damageActions = attackActions.map(({ damage }) => damage).filter((d: number) => d);
-    const baseDamage = damageActions[0] || 0; // First result
+    const baseDamage = (damageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
     return {
         baseDamage,
         totalDamage,
@@ -79,12 +81,13 @@ const DamageIcon = ({ ability, player }) => {
         return null;
     }
 
-    const isAdditive = actions.find(({ bonus }) => bonus?.damage > 0) || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
+    const hasUnfulfilledBonus = actions.find(({ bonus }) => bonus?.damage > 0) && !damageBonusFromConditions;
+    const isAdditive = hasUnfulfilledBonus || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
 
     return (
         <Icon
             icon={<CrossedSwordsIcon />}
-            text={`${baseDamage}${hasMultiplier ? "x" : ""}${!damageBonusFromConditions && isAdditive ? "+" : ""}`}
+            text={`${baseDamage}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames({
                 [classes.highlightText]: damageBonusFromEffects > 0 || damageBonusFromConditions > 0,
             })}
