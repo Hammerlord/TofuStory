@@ -423,6 +423,7 @@ export interface Action {
         rotateToFaceTarget?: boolean; // Whether a projectile such as an arrow should orient toward the target. True by default.
         width?: number;
         height?: number;
+        opacity?: number; // Should be a decimal with a max value of 1
     };
 }
 

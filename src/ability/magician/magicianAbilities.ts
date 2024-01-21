@@ -6,6 +6,8 @@ import {
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     IgniteImage,
+    LightningOrbImage,
+    LightningOrbProjectileImage,
     MPEaterImage,
     MagicArmorImage,
     MagicClawImage,
@@ -632,4 +634,72 @@ export const frostBarrier: Ability = {
         },
     ],
     upgrades: [frostBarrier2],
+};
+
+const chainLightning2: Ability = {
+    name: "Chain Lightning",
+    image: LightningOrbImage,
+    level: 2,
+    resourceCost: 2,
+    actions: [
+        {
+            damage: 9,
+            secondaryDamage: 6,
+            targetArea: 5,
+            numTargets: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: LightningOrbProjectileImage,
+            animationOptions: {
+                width: 70,
+                height: 70,
+                opacity: 0.8,
+            },
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const chainLightning: Ability = {
+    name: "Chain Lightning",
+    image: LightningOrbImage,
+    resourceCost: 2,
+    actions: [
+        {
+            damage: 7,
+            secondaryDamage: 5,
+            targetArea: 5,
+            numTargets: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: LightningOrbProjectileImage,
+            animationOptions: {
+                width: 70,
+                height: 70,
+                opacity: 0.8,
+            },
+            bonus: {
+                damage: 2,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [chainLightning2],
 };

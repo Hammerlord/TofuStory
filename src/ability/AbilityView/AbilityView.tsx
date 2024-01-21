@@ -268,7 +268,16 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                         <DrawCards ability={ability} playerClass={player?.class} />
                         <Debuffs effects={getAllEffects(ability)} />
-                        {ricochet && <div>Ricochets to {numTargets} other targets</div>}
+                        {ricochet && (
+                            <div>
+                                Bounces to up to {numTargets} other targets{" "}
+                                {secondaryDamage && (
+                                    <>
+                                        for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
+                                    </>
+                                )}
+                            </div>
+                        )}
                         {!healingCornerIcon && healing > 0 && (
                             <div>
                                 Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />

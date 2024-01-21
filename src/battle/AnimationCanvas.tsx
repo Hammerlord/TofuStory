@@ -120,7 +120,7 @@ const AnimationCanvas = ({
     const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate } = animationOptions || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity } = animationOptions || {};
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
@@ -243,6 +243,9 @@ const AnimationCanvas = ({
                         className={classNames(classes.projectileInner, {
                             [classes.mirrorX]: mirrorX,
                         })}
+                        style={{
+                            opacity,
+                        }}
                     />
                 </div>
             );

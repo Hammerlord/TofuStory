@@ -157,6 +157,8 @@ export { default as LeetSinImage } from "./LeetSin.png";
 export { default as LetterImage } from "./Letter.png";
 export { default as LigatorImage } from "./Ligator.gif";
 export { default as LightningChargeImage } from "./LightningCharge.png";
+export { default as LightningOrbImage } from "./LightningOrb.png";
+export { default as LightningOrbProjectileImage } from "./LightningOrbProjectile.png";
 export { default as LithHarborBalconyImage } from "./LithHarborBalcony.png";
 export { default as LithHarborBalconyFullImage } from "./LithHarborBalconyFull.png";
 export { default as LithHarborCityBGImage } from "./LithHarborCityBG.jpg";
