@@ -1,6 +1,7 @@
 import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
+    BlueRushImage,
     ElementalAdaptationEffectImage,
     ElementalAdaptationImage,
     EnergyBoltImage,
@@ -14,6 +15,7 @@ import {
     MagicArmorImage,
     MagicClawImage,
     MagicClawProjectileImage,
+    MagicFangProjectileImage,
     MagicGuardImage,
     ShimmeringStarsImage,
     StarHairPinImage,
@@ -89,6 +91,70 @@ export const energyBolt: Ability = {
         },
     ],
     upgrades: [energyBolt2],
+};
+
+const magicFang2: Ability = {
+    name: "Magic Fang",
+    image: BlueRushImage,
+    level: 2,
+    resourceCost: 1,
+    actions: [
+        {
+            area: 1,
+            damage: 6,
+            secondaryDamage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: MagicFangProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                width: 100,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 2,
+            },
+        },
+    ],
+};
+
+export const magicFang: Ability = {
+    name: "Magic Fang",
+    image: BlueRushImage,
+    resourceCost: 1,
+    actions: [
+        {
+            area: 1,
+            damage: 4,
+            secondaryDamage: 3,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: MagicFangProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                width: 100,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 2,
+            },
+        },
+    ],
+    upgrades: [magicFang2],
 };
 
 const magicClawAction: Action = {
@@ -304,7 +370,7 @@ export const teleport: Ability = {
     upgrades: [teleport2],
 };
 
-const triboltAction = {
+const triboltAction: Action = {
     damage: 2,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
@@ -323,7 +389,21 @@ const triboltAction = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 1,
+        damage: 2,
+    },
+};
+
+const tribolt2Action: Action = {
+    ...triboltAction,
+    damage: 3,
+    bonus: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                hasEffect: "Charged",
+            },
+        ],
+        damage: 3,
     },
 };
 
@@ -333,20 +413,7 @@ const tribolt2: Ability = {
     resourceCost: 1,
     description: "Randomly hits the target or its neighbors, x3",
     level: 2,
-    actions: [
-        {
-            ...triboltAction,
-            damage: 3,
-        },
-        {
-            ...triboltAction,
-            damage: 3,
-        },
-        {
-            ...triboltAction,
-            damage: 3,
-        },
-    ],
+    actions: [tribolt2Action, tribolt2Action, tribolt2Action],
 };
 
 export const tribolt: Ability = {
@@ -606,7 +673,7 @@ const frostBarrier2: Ability = {
 export const frostBarrier: Ability = {
     name: "Frost Barrier",
     image: ElementalAdaptationImage,
-    resourceCost: 2,
+    resourceCost: 1,
     description: "Attackers are Chilled for 2 turns.",
     actions: [
         {
@@ -872,7 +939,7 @@ const fireArrow2: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 12,
+            damage: 14,
             animationOptions: {
                 height: 90,
             },
@@ -908,7 +975,7 @@ export const fireArrow: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 9,
+            damage: 11,
             animationOptions: {
                 height: 90,
             },

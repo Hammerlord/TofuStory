@@ -53,7 +53,7 @@ export const wizardProperties = {
     maxHP: 45,
     resourcesPerTurn: 2,
     maxResources: 10,
-    resources: 1,
+    resources: 0,
     weapon: OldWoodenStaffImage,
     items: [chargingStone],
     weaponSkins: [

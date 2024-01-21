@@ -8,6 +8,7 @@ import {
     ignite,
     magicArmor,
     magicClaw,
+    magicFang,
     magicGuard,
     mpEater,
     shootingStars,
@@ -94,6 +95,7 @@ export const JOB_CARD_MAP = {
         all: [
             energyBolt,
             magicClaw,
+            magicFang,
             tribolt,
             magicArmor,
             magicGuard,
@@ -108,7 +110,7 @@ export const JOB_CARD_MAP = {
             wishUponAStar,
             fireArrow,
         ],
-        starters: [energyBolt, energyBolt, magicClaw, magicClaw, tribolt, tribolt, magicArmor, magicArmor, magicArmor, teleport],
+        starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },
     [MAGICIAN_SECONDARY_JOBS.FIRE_POISON_MAGE]: {
         all: [],
