@@ -487,7 +487,7 @@ export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?
     return newCard;
 };
 
-export const calculateActionArea = ({ action, actor }: { action?: Action; actor: Combatant }): number => {
+export const calculateActionArea = ({ action, actor, target }: { action?: Action; actor: Combatant; target?: Combatant }): number => {
     if (!action) {
         return 0;
     }
@@ -502,6 +502,10 @@ export const calculateActionArea = ({ action, actor }: { action?: Action; actor:
         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
                 return { combatant: actor };
+            }
+
+            if (target && calculationTarget === CONDITION_TARGETS.TARGET) {
+                return { combatant: target };
             }
         };
 

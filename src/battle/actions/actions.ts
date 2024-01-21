@@ -1078,7 +1078,8 @@ const performAction = ({
         if (!actor) {
             return;
         }
-        const area = calculateActionArea({ action, actor });
+        const targetCombatant = getState().battle[side][selectedIndex];
+        const area = calculateActionArea({ action, actor, target: targetCombatant });
 
         const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
