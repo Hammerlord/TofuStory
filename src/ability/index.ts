@@ -11,7 +11,7 @@ import {
     mpEater,
     shootingStars,
     teleport,
-    thunderstruck,
+    thunderclap,
     tribolt,
     wishUponAStar,
 } from "./magician/magicianAbilities";
@@ -99,7 +99,7 @@ export const JOB_CARD_MAP = {
             teleport,
             mpEater,
             arcaneAim,
-            thunderstruck,
+            thunderclap,
             ignite,
             frostBarrier,
             chainLightning,

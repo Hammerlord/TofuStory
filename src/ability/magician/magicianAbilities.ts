@@ -362,6 +362,7 @@ const mpEater2: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
+    description: "Destroy a target's resources",
     actions: [
         {
             damage: 0,
@@ -384,6 +385,7 @@ export const mpEater: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
+    description: "Destroy a target's resources",
     actions: [
         {
             damage: 0,
@@ -477,8 +479,8 @@ export const arcaneAim: Ability = {
     upgrades: [arcaneAim2],
 };
 
-const thunderstruck2: Ability = {
-    name: "Thunderstruck",
+const thunderclap2: Ability = {
+    name: "Thunderclap",
     image: TeleportMasteryImage,
     level: 2,
     resourceCost: 1,
@@ -494,8 +496,8 @@ const thunderstruck2: Ability = {
     ],
 };
 
-export const thunderstruck: Ability = {
-    name: "Thunderstruck",
+export const thunderclap: Ability = {
+    name: "Thunderclap",
     image: TeleportMasteryImage,
     resourceCost: 1,
     actions: [
@@ -508,7 +510,7 @@ export const thunderstruck: Ability = {
             effects: [stun],
         },
     ],
-    upgrades: [thunderstruck2],
+    upgrades: [thunderclap2],
 };
 
 const ignite2: Ability = {
