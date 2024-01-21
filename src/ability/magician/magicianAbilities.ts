@@ -5,6 +5,8 @@ import {
     ElementalAdaptationImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
+    FireArrowImage,
+    FireArrowProjectileImage,
     IgniteImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
@@ -33,7 +35,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { stun, chill } from "./../Effects";
+import { stun, chill, burn } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -533,11 +535,8 @@ const ignite2: Ability = {
             },
             effects: [
                 {
-                    name: "Burn",
-                    type: EFFECT_TYPES.BURN,
-                    class: EFFECT_CLASSES.DEBUFF,
+                    ...burn,
                     duration: 4,
-                    icon: FireIcon,
                 },
             ],
         },
@@ -563,11 +562,8 @@ export const ignite: Ability = {
             },
             effects: [
                 {
-                    name: "Burn",
-                    type: EFFECT_TYPES.BURN,
-                    class: EFFECT_CLASSES.DEBUFF,
+                    ...burn,
                     duration: 3,
-                    icon: FireIcon,
                 },
             ],
         },
@@ -863,4 +859,78 @@ export const wishUponAStar: Ability = {
             ],
         },
     ],
+    upgrades: [wishUponAStar2],
+};
+
+const fireArrow2: Ability = {
+    name: "Fire Arrow",
+    image: FireArrowImage,
+    resourceCost: 2,
+    description: "on the target's neighbors if the target is Burning.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: FireArrowProjectileImage,
+            damage: 12,
+            animationOptions: {
+                height: 90,
+            },
+        },
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                    hasEffectType: [EFFECT_TYPES.BURN],
+                },
+            ],
+            excludePrimaryTarget: true,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+            area: 1,
+        },
+    ],
+};
+
+export const fireArrow: Ability = {
+    name: "Fire Arrow",
+    image: FireArrowImage,
+    resourceCost: 2,
+    description: "on the target's neighbors if the target is Burning.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: FireArrowProjectileImage,
+            damage: 9,
+            animationOptions: {
+                height: 90,
+            },
+        },
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                    hasEffectType: [EFFECT_TYPES.BURN],
+                },
+            ],
+            excludePrimaryTarget: true,
+            effects: [
+                {
+                    ...burn,
+                    duration: 2,
+                },
+            ],
+            area: 1,
+        },
+    ],
+    upgrades: [fireArrow2],
 };
