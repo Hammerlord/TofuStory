@@ -163,7 +163,7 @@ export const magicFang: Ability = {
 };
 
 const magicClawAction: Action = {
-    damage: 3,
+    damage: 4,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -194,7 +194,7 @@ const magicClaw2: Ability = {
     actions: [
         {
             ...magicClawAction,
-            damage: 4,
+            damage: 5,
             bonus: {
                 conditions: [
                     {
@@ -211,7 +211,7 @@ const magicClaw2: Ability = {
                 ...magicClawAction.animationOptions,
                 mirrorX: true,
             },
-            damage: 4,
+            damage: 5,
             bonus: {
                 conditions: [
                     {
@@ -1175,7 +1175,7 @@ const avatarOfTheStars2: Ability = {
                             },
                         ],
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        addCards: [swift],
+                        addCards: [{ ...swift, removeAfterTurn: true }],
                     },
                 },
             ],
