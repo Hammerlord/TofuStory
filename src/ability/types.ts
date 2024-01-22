@@ -200,6 +200,7 @@ export interface Effect {
     /** How many turns it should cool down before triggering again */
     turnsTriggerFrequency?: number;
     skillBonus?: {
+        comparator?: "includes" | "eq"; // Default is exact match (eq). Not case sensitive
         skill: string;
         damage: number;
     }[];

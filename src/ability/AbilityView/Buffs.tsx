@@ -215,9 +215,10 @@ const Buffs = ({ ability, player }) => {
                 if (skillBonus.length > 0) {
                     effectComponents.push(
                         <>
-                            {...skillBonus.map(({ skill, damage = 0 }) => (
+                            {...skillBonus.map(({ skill, damage = 0, comparator }) => (
                                 <div key={skill}>
-                                    {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />}
+                                    {comparator === "includes" ? `Cards with '${skill}' in their name gain` : skill}{" "}
+                                    {damage > 0 && <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />}
                                 </div>
                             ))}
                         </>

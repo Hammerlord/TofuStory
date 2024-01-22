@@ -211,6 +211,7 @@ export { default as OctopusCardImage } from "./OctopusCard.png";
 export { default as OctopusIdleImage } from "./OctopusIdle.gif";
 export { default as OctopusLegImage } from "./OctopusLeg.png";
 export { default as OlafImage } from "./Olaf.png";
+export { default as OldEnergyBoltImage } from "./OldEnergyBolt.gif";
 export { default as OldGladiusImage } from "./OldGladius.png";
 export { default as OldWoodenStaffImage } from "./OldWoodenStaff.png";
 export { default as OmokPigImage } from "./OmokPig.png";

@@ -328,7 +328,11 @@ const getSkillDamage = ({ ability, skillBonus }) => {
         return 0;
     }
 
-    for (const { skill, damage = 0 } of skillBonus) {
+    for (const { skill, damage = 0, comparator } of skillBonus) {
+        if (comparator === "includes" && ability?.name?.toLowerCase().includes(skill.toLowerCase())) {
+            return damage || 0;
+        }
+
         if (skill === ability?.name) {
             return damage || 0;
         }

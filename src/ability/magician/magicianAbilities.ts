@@ -18,6 +18,7 @@ import {
     MagicClawProjectileImage,
     MagicFangProjectileImage,
     MagicGuardImage,
+    OldEnergyBoltImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
     ShimmeringStarsImage,
@@ -46,7 +47,7 @@ import { burn, chill, stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
-    image: EnergyBoltImage,
+    image: OldEnergyBoltImage,
     resourceCost: 0,
     level: 2,
     actions: [
@@ -73,7 +74,7 @@ const energyBolt2: Ability = {
 
 export const energyBolt: Ability = {
     name: "Energy Bolt",
-    image: EnergyBoltImage,
+    image: OldEnergyBoltImage,
     resourceCost: 0,
     actions: [
         {
@@ -1222,4 +1223,88 @@ export const avatarOfTheStars: Ability = {
         },
     ],
     upgrades: [avatarOfTheStars2],
+};
+
+export const empoweredBolt2: Ability = {
+    name: "Empowered Bolt",
+    image: EnergyBoltImage,
+    level: 2,
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 8,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+                width: 100,
+                height: 100,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Empowered Bolt",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: EnergyBoltImage,
+                    skillBonus: [
+                        {
+                            comparator: "includes",
+                            skill: "bolt",
+                            damage: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const empoweredBolt: Ability = {
+    name: "Empowered Bolt",
+    image: EnergyBoltImage,
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+                width: 100,
+                height: 100,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Empowered Bolt",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: EnergyBoltImage,
+                    skillBonus: [
+                        {
+                            comparator: "includes",
+                            skill: "bolt",
+                            damage: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [empoweredBolt2],
 };

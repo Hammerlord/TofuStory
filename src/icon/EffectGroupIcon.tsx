@@ -200,9 +200,10 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                             {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw on turn start
                         </div>
                     )}
-                    {skillBonus.map(({ skill, damage = 0 }) => (
+                    {skillBonus.map(({ skill, damage = 0, comparator }) => (
                         <div key={skill}>
-                            {skill} {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
+                            {comparator === "includes" ? `Cards with '${skill}' in their name gain` : skill}{" "}
+                            {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
                         </div>
                     ))}
                 </div>
