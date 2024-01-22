@@ -1264,22 +1264,58 @@ const checkCastRadiate = ({
     };
 };
 
-export const drawCards = ({ effects = {}, amount, source }: { effects?: AbilityEffects; amount: number; source?: TriggerSource }) => {
+export const drawCards = ({
+    effects = {},
+    filters = [],
+    amount,
+    source,
+}: {
+    effects?: AbilityEffects;
+    filters?: ACTION_TYPES[];
+    amount: number;
+    source?: TriggerSource;
+}) => {
     return (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
-        let newDeck = deck.slice();
+        let newDeck: Ability[] = deck.slice();
         let newHand = hand.slice();
         let newDiscard = discard.slice();
         const cardsToDraw = [];
         let deckCycled = false;
-        if (newDeck.length < amount) {
-            cardsToDraw.push(...newDeck.slice());
-            newDeck = shuffle(discard);
-            newDiscard = [];
-            cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
-            deckCycled = true;
+
+        if (filters.length) {
+            // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
+            // If there are not enough to fulfill the quota, it just whiffs.
+            while (cardsToDraw.length !== amount) {
+                const i = newDeck.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                if (i === -1) {
+                    break;
+                }
+
+                const [card] = newDeck.splice(i, 1);
+                cardsToDraw.push(card);
+            }
+
+            while (cardsToDraw.length !== amount) {
+                const i = newDiscard.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                if (i === -1) {
+                    break;
+                }
+
+                const [card] = newDiscard.splice(i, 1);
+                cardsToDraw.push(card);
+            }
         } else {
-            cardsToDraw.push(...newDeck.splice(0, amount));
+            // Handle normal card draw
+            if (newDeck.length < amount) {
+                cardsToDraw.push(...newDeck.slice());
+                newDeck = shuffle(discard);
+                newDiscard = [];
+                cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
+                deckCycled = true;
+            } else {
+                cardsToDraw.push(...newDeck.splice(0, amount));
+            }
         }
 
         const newState = {

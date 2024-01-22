@@ -14,6 +14,7 @@ import {
     LightningOrbProjectileImage,
     MPEaterImage,
     MagicArmorImage,
+    MagicBoosterImage,
     MagicClawImage,
     MagicClawProjectileImage,
     MagicFangProjectileImage,
@@ -1367,4 +1368,23 @@ export const throwTheBook: Ability = {
         },
     ],
     upgrades: [throwTheBook2],
+};
+
+export const magicBooster: Ability = {
+    name: "Magic Booster",
+    image: MagicBoosterImage,
+    resourceCost: 1,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 2,
+                effects: {
+                    resourceCost: -1,
+                },
+                filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+            },
+        },
+    ],
 };

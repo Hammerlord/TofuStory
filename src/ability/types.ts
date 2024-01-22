@@ -393,6 +393,7 @@ export interface Action {
     drawCards?: {
         amount: number;
         effects?: AbilityEffects;
+        filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
     };
     selectCards?: SelectCards;
     icon?: string; // Used as a projectile

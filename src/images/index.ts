@@ -176,6 +176,7 @@ export { default as LuckSackImage } from "./LuckSack.png";
 export { default as LupinImage } from "./Lupin.gif";
 export { default as LupinCardImage } from "./LupinCard.png";
 export { default as MagicArmorImage } from "./MagicArmor.png";
+export { default as MagicBoosterImage } from "./MagicBooster.png";
 export { default as MagicClawImage } from "./MagicClaw.gif";
 export { default as MagicClawProjectileImage } from "./MagicClawProjectile.png";
 export { default as MagicCrashImage } from "./MagicCrash.png";
