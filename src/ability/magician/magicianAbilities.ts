@@ -23,12 +23,12 @@ import {
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
+    StarfishImage,
     TeleportImage,
     TeleportMasteryImage,
     TriboltImage,
     WizMushImage,
 } from "../../images";
-import { FireIcon } from "../../images/icons";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -41,7 +41,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { stun, chill, burn } from "./../Effects";
+import { burn, chill, stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -804,13 +804,13 @@ export const swift: Ability = {
 
 const shootingStars2: Ability = {
     name: "Shooting Stars",
-    resourceCost: 1,
+    resourceCost: 0,
     level: 2,
     depletedOnUse: true,
     image: ShimmeringStarsImage,
     actions: [
         {
-            addCards: [swift, swift, swift],
+            addCards: [swift, swift],
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -1144,4 +1144,74 @@ export const conjureTreat: Ability = {
         },
     ],
     upgrades: [conjureTreat2],
+};
+
+const avatarOfTheStars2: Ability = {
+    name: "Avatar Of The Stars",
+    level: 2,
+    image: StarfishImage,
+    depletedOnUse: true,
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Avatar Of The Stars",
+                    icon: StarfishImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    lifeOnHit: 1,
+                    duration: 3,
+                    onAbility: {
+                        conditions: [
+                            {
+                                comparator: "gt",
+                                resourceCost: 0,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            },
+                        ],
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        addCards: [swift],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const avatarOfTheStars: Ability = {
+    name: "Avatar Of The Stars",
+    image: StarfishImage,
+    depletedOnUse: true,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Avatar Of The Stars",
+                    icon: StarfishImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    lifeOnHit: 1,
+                    duration: 3,
+                    onAbility: {
+                        conditions: [
+                            {
+                                comparator: "gt",
+                                resourceCost: 0,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            },
+                        ],
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        addCards: [{ ...swift, removeAfterTurn: true }],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [avatarOfTheStars2],
 };

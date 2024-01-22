@@ -67,6 +67,7 @@ export interface EffectEventTrigger {
         amount: number;
         effects?: AbilityEffects;
     };
+    addCards?: Ability[];
     resurrect?: boolean;
     resources?: number;
     damage?: number;
@@ -294,6 +295,8 @@ export interface Condition {
               amount: number;
           };
     sourceType?: TRIGGER_SOURCE_TYPES;
+    /** Only applicable when comparing against an ability */
+    resourceCost?: number;
 }
 
 export enum MULTIPLIER_TYPES {

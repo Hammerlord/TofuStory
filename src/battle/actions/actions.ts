@@ -482,6 +482,8 @@ const onEffectEventTrigger = ({
         const targetIds = getCalculationTargetIds(targetType);
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
+        dispatch(checkCardActions(other as Action, source));
+
         $applyStatChanges: {
             if (!targetIds.length) {
                 break $applyStatChanges;

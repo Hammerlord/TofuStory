@@ -60,13 +60,22 @@ export const passesConditions = ({
             isElite,
             numAbilitiesUsed,
             sourceType,
+            resourceCost,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
+            // @ts-ignore -- We are assuming the type is an ability
+            const { name: sourceName, resourceCost: sourceResourceCost } = source?.source || {};
+
             if (name) {
                 const names = Array.isArray(name) ? name : [name];
-                // @ts-ignore
-                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: source?.source?.name, comparator }))) {
+                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
+                    return false;
+                }
+            }
+
+            if (resourceCost !== undefined) {
+                if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
                     return false;
                 }
             }
