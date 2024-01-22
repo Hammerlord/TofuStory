@@ -7,6 +7,7 @@ import { CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES, Eff
 import { ResourceIcon } from "./ResourceIcon";
 import { effectEventKeyLabelMap, multiplierTypeKeyLabelMap } from "./constants";
 import { getAllEffects } from "./utils";
+import CardsToAdd from "./CardsToAdd";
 
 const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
     const content = Object.entries(effectEvents).map(([key, value]) => {
@@ -21,6 +22,7 @@ const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
             armor,
             healing,
             drawCards,
+            addCards,
             resurrect,
             resources,
             damage,
@@ -65,6 +67,9 @@ const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
                     deal <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />
                 </span>
             );
+        }
+        if (addCards?.length > 0) {
+            components.push(<CardsToAdd ability={{ actions: [{ addCards }] }} isInline={true} />);
         }
 
         if (multiplier) {
@@ -164,8 +169,7 @@ const Buffs = ({ ability, player }) => {
                 if (lifeOnHit > 0) {
                     effectComponents.push(
                         <span>
-                            {effectComponents.length > 0 ? "and gain" : "Gain"} <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} />{" "}
-                            per hit
+                            {effectComponents.length > 0 ? ", " : "Gain"} <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit{" "}
                         </span>
                     );
                 }
@@ -173,7 +177,7 @@ const Buffs = ({ ability, player }) => {
                 if (resourcesPerTurn > 0) {
                     effectComponents.push(
                         <>
-                            {effectComponents.length > 0 ? "and gain" : "Gain"}{" "}
+                            {effectComponents.length > 0 ? ", " : "Gain"}{" "}
                             <ResourceIcon size={"sm"} text={`+${resourcesPerTurn}`} playerClass={player?.class} />{" "}
                             {turnsTriggerFrequency ? `every ${turnsTriggerFrequency} turns` : "per turn"}
                         </>

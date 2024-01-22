@@ -4,6 +4,7 @@ import { Ability } from "../types";
 const useStyles = createUseStyles({
     cardIcon: {
         maxWidth: "24px",
+        verticalAlign: "bottom",
     },
 });
 
@@ -17,7 +18,7 @@ const CardToAddCount = ({ count, card }) => {
     );
 };
 
-const CardsToAdd = ({ ability }) => {
+const CardsToAdd = ({ ability, isInline }: { ability: any; isInline?: boolean }) => {
     const {
         addCards = {},
         addCardsToDeck = {},
@@ -58,38 +59,35 @@ const CardsToAdd = ({ ability }) => {
         return acc;
     }, {});
 
+    const add = isInline ? "add" : "Add";
+
+    const renderCount = (cardsObj, description: string) => {
+        if (Object.keys(cardsObj).length === 0) {
+            return;
+        }
+        const content = (
+            <>
+                {add}{" "}
+                {Object.values(cardsObj).map((val) => {
+                    const { count, card } = val as { count: number; card: Ability };
+                    return <CardToAddCount card={card} count={count} key={card.name} />;
+                })}
+                {description}
+            </>
+        );
+
+        if (isInline) {
+            return content;
+        }
+
+        return <div>{content}</div>;
+    };
+
     return (
         <>
-            {Object.keys(addCards).length > 0 && (
-                <div>
-                    Add{" "}
-                    {Object.values(addCards).map((val) => {
-                        const { count, card } = val as { count: number; card: Ability };
-                        return <CardToAddCount card={card} count={count} key={card.name} />;
-                    })}
-                    to your hand
-                </div>
-            )}
-            {Object.keys(addCardsToDeck).length > 0 && (
-                <div>
-                    Add{" "}
-                    {Object.values(addCardsToDeck).map((val) => {
-                        const { count, card } = val as { count: number; card: Ability };
-                        return <CardToAddCount card={card} count={count} key={card.name} />;
-                    })}
-                    to your deck
-                </div>
-            )}
-            {Object.keys(addCardsToDiscard).length > 0 && (
-                <div>
-                    Add{" "}
-                    {Object.values(addCardsToDiscard).map((val) => {
-                        const { count, card } = val as { count: number; card: Ability };
-                        return <CardToAddCount card={card} count={count} key={card.name} />;
-                    })}
-                    to your discard
-                </div>
-            )}
+            {renderCount(addCards, "to your hand")}
+            {renderCount(addCardsToDeck, "to your deck")}
+            {renderCount(addCardsToDiscard, "to your discard")}
         </>
     );
 };
