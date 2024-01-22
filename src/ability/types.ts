@@ -397,7 +397,7 @@ export interface Action {
     };
     selectCards?: SelectCards;
     icon?: string; // Used as a projectile
-    bonus?: Bonus;
+    bonus?: Bonus | Bonus[];
     multiplier?: Multiplier;
     animation?: ANIMATION_TYPES;
     conditions?: Condition[];

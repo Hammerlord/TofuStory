@@ -10,6 +10,7 @@ import {
     AbilityDamageReceived,
     Action,
     ACTION_TYPES,
+    Bonus,
     CombatEffect,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
@@ -523,8 +524,13 @@ export const calculateActionArea = ({ action, actor, target }: { action?: Action
             }
         };
 
-        if (action.bonus?.area && passesConditions({ getCalculationTarget, proc: action.bonus })) {
-            totalArea += action.bonus?.area;
+        if (action.bonus) {
+            const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
+            bonuses.forEach((bonus) => {
+                if (bonus.area && passesConditions({ getCalculationTarget, proc: bonus })) {
+                    totalArea += bonus.area;
+                }
+            });
         }
     }
 
@@ -654,20 +660,7 @@ export const calculateBonus = ({
         return action;
     }
 
-    const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = action;
-    const { excludePrimaryTarget = false } = bonus;
-    const multiplier = getMultiplier({
-        actor,
-        target,
-        allTargets,
-        multiplier: bonus.multiplier,
-        actionParent,
-        source,
-        deck,
-        hand,
-        discard,
-    });
-
+    const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
     const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): IndexedCombatant => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {
             return target;
@@ -675,20 +668,41 @@ export const calculateBonus = ({
             return actor;
         }
     };
-    const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-    if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
-        const bonusDamage = (bonus.damage || 0) * multiplier;
-        return {
-            ...action,
-            area: area + (bonus.area || 0),
-            damage: damage + bonusDamage,
-            secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
-            healing: healing + (bonus.healing || 0) * multiplier,
-            armor: armor + (bonus.armor || 0) * multiplier,
-            effects: [...effects, ...(bonus.effects || [])],
-        } as Action;
-    }
-    return action;
+
+    return bonuses.reduce(
+        (acc: Action, bonus: Bonus) => {
+            const { excludePrimaryTarget = false, effects: bonusEffects = [] } = bonus;
+            const multiplier = getMultiplier({
+                actor,
+                target,
+                allTargets,
+                multiplier: bonus.multiplier,
+                actionParent,
+                source,
+                deck,
+                hand,
+                discard,
+            });
+
+            const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
+            if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
+                const bonusDamage = (bonus.damage || 0) * multiplier;
+                const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = acc;
+
+                return {
+                    ...acc,
+                    area: area + (bonus.area || 0),
+                    damage: damage + bonusDamage,
+                    secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
+                    healing: healing + (bonus.healing || 0) * multiplier,
+                    armor: armor + (bonus.armor || 0) * multiplier,
+                    effects: [...effects, ...bonusEffects],
+                } as Action;
+            }
+            return acc;
+        },
+        { ...action }
+    );
 };
 
 export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex }): boolean => {
