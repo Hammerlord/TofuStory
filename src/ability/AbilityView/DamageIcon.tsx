@@ -72,6 +72,9 @@ const useStyles = createUseStyles({
     },
 });
 
+/**
+ * The damage icon that displays on the top left of an ability card
+ */
 const DamageIcon = ({ ability, player }) => {
     const { actions } = ability;
     const { baseDamage, totalDamage, hasMultiplier, damageBonusFromEffects, damageBonusFromConditions } = getDamageStatistics({

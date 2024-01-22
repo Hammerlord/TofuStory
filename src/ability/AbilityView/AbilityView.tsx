@@ -21,6 +21,7 @@ import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
 import { PLAYER_CLASSES } from "../../Menu/types";
+import ArmorIcon from "./ArmorIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -212,15 +213,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
 
         if (armor > 0) {
             armorCornerIcon = true;
-            return (
-                <Icon
-                    icon={<ShieldIcon />}
-                    text={armor}
-                    className={classNames({
-                        [classes.highlightText]: hasMultiplier,
-                    })}
-                />
-            );
+            return <ArmorIcon ability={ability} player={player} />;
         }
 
         if (healing > 0) {
