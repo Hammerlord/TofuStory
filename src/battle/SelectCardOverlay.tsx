@@ -103,6 +103,10 @@ const SelectCardOverlay = ({
             setAbilityChoices(shuffled.slice(0, 3).map(createNewOption));
             return;
         }
+
+        if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
+            setAbilityChoices(selectCardsPrompt?.selectCards?.cards?.map((card) => ({ ...card, instanceId: uuid.v4() })) || []);
+        }
     }, []);
 
     const handleSelectClick = () => {
@@ -120,6 +124,7 @@ const SelectCardOverlay = ({
                     <h1>
                         {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
                         {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
+                        {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                         {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                     </h1>
                 </div>
@@ -139,13 +144,16 @@ const SelectCardOverlay = ({
                 <Button variant={"contained"} color="primary" disabled={!selectedAbility} onClick={handleSelectClick}>
                     Select!
                 </Button>
-                {type !== SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && (
+                {/**
+                 * This is currently a trap as you lose the card when you use it
+                 * type !== SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && (
                     <div className={classes.cancel}>
                         <Button variant={"contained"} onClick={onCancel}>
                             Cancel
                         </Button>
                     </div>
-                )}
+                )
+                **/}
             </div>
         </Overlay>
     );

@@ -91,8 +91,8 @@ const requiresExplanation = ({ type }): boolean => {
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
     const cardsToAddMap = {};
     const findCardsToAdd = (ability: Ability) => {
-        ability.actions.forEach(({ addCards = [], addCardsToDiscard = [], addCardsToDeck = [] }) => {
-            [...addCards, ...addCardsToDiscard, ...addCardsToDeck].forEach((card) => {
+        ability.actions.forEach(({ addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {} }) => {
+            [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])].forEach((card) => {
                 const key = card.name + JSON.stringify(card.image);
                 if (!cardsToAddMap[key]) {
                     cardsToAddMap[key] = card; // We only want to display it once

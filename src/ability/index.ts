@@ -2,6 +2,7 @@ import { MAGICIAN_SECONDARY_JOBS, PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from 
 import {
     arcaneAim,
     chainLightning,
+    conjureTreat,
     energyBolt,
     fireArrow,
     frostBarrier,
@@ -109,6 +110,7 @@ export const JOB_CARD_MAP = {
             shootingStars,
             wishUponAStar,
             fireArrow,
+            conjureTreat,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

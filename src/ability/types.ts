@@ -327,6 +327,7 @@ export interface Radiate {
 
 export interface SelectCards {
     type: SELECT_CARD_TYPES;
+    cards?: Ability[];
     filters?: ACTION_TYPES[];
     effects?: AbilityEffects;
 }
@@ -512,5 +513,6 @@ export interface AbilityEffects {
 export enum SELECT_CARD_TYPES {
     COPY_FROM_HAND = "copy",
     DISCOVER_FROM_CLASS = "discover-from-class",
+    PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
 }

@@ -2,6 +2,7 @@ import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
     BlueRushImage,
+    ChocolateCupcakeImage,
     ElementalAdaptationEffectImage,
     ElementalAdaptationImage,
     EnergyBoltImage,
@@ -17,6 +18,8 @@ import {
     MagicClawProjectileImage,
     MagicFangProjectileImage,
     MagicGuardImage,
+    ParfaitCupcakeImage,
+    PieceOfBirthdayCakeImage,
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
@@ -34,6 +37,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
@@ -1000,4 +1004,144 @@ export const fireArrow: Ability = {
         },
     ],
     upgrades: [fireArrow2],
+};
+
+const parfaitCupcake2: Ability = {
+    name: "Parfait Cupcake",
+    resourceCost: 0,
+    image: ParfaitCupcakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 3,
+        },
+    ],
+};
+
+const parfaitCupcake: Ability = {
+    name: "Parfait Cupcake",
+    resourceCost: 0,
+    image: ParfaitCupcakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 2,
+        },
+    ],
+};
+
+const chocolateCupcake2: Ability = {
+    name: "Chocolate Cupcake",
+    resourceCost: 0,
+    image: ChocolateCupcakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            healing: 5,
+            armor: 5,
+        },
+    ],
+};
+
+const chocolateCupcake: Ability = {
+    name: "Chocolate Cupcake",
+    resourceCost: 0,
+    image: ChocolateCupcakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            healing: 3,
+            armor: 3,
+        },
+    ],
+};
+
+const pieceOfCake2: Ability = {
+    name: "Piece Of Cake",
+    resourceCost: 0,
+    image: PieceOfBirthdayCakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Attack Power Increase",
+                    icon: ArcaneOverdriveImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 3,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+const pieceOfCake: Ability = {
+    name: "Piece Of Cake",
+    resourceCost: 0,
+    image: PieceOfBirthdayCakeImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Attack Power Increase",
+                    icon: ArcaneOverdriveImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 2,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+const conjureTreat2: Ability = {
+    name: "Conjure Treat",
+    level: 2,
+    resourceCost: 1,
+    description: "Conjure a treat.",
+    image: ParfaitCupcakeImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.PRESET_CARDS,
+                cards: [parfaitCupcake2, chocolateCupcake2, pieceOfCake2],
+            },
+        },
+    ],
+};
+
+export const conjureTreat: Ability = {
+    name: "Conjure Treat",
+    resourceCost: 1,
+    description: "Conjure a treat.",
+    image: ParfaitCupcakeImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.PRESET_CARDS,
+                cards: [parfaitCupcake, chocolateCupcake, pieceOfCake],
+            },
+        },
+    ],
+    upgrades: [conjureTreat2],
 };
