@@ -560,6 +560,7 @@ const thunderclap2: Ability = {
     resourceCost: 1,
     actions: [
         {
+            damage: 3,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -576,7 +577,8 @@ export const thunderclap: Ability = {
     resourceCost: 1,
     actions: [
         {
-            area: 1,
+            damage: 1,
+            area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
@@ -594,6 +596,7 @@ const ignite2: Ability = {
     resourceCost: 1,
     actions: [
         {
+            damage: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -621,6 +624,7 @@ export const ignite: Ability = {
     resourceCost: 1,
     actions: [
         {
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -646,8 +650,8 @@ export const ignite: Ability = {
 const frostBarrier2: Ability = {
     name: "Frost Barrier",
     image: ElementalAdaptationImage,
-    resourceCost: 2,
-    description: "Attackers are Chilled for 3 turns.",
+    resourceCost: 1,
+    description: "Attackers are Chilled for 2 turns.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -659,7 +663,7 @@ const frostBarrier2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
-                    duration: 3,
+                    duration: 4,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -692,7 +696,7 @@ export const frostBarrier: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
                     image: ElementalAdaptationEffectImage,
-                    duration: 2,
+                    duration: 3,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -944,7 +948,43 @@ const fireArrow2: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 14,
+            damage: 15,
+            animationOptions: {
+                height: 90,
+            },
+        },
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                    hasEffectType: [EFFECT_TYPES.BURN],
+                },
+            ],
+            excludePrimaryTarget: true,
+            effects: [
+                {
+                    ...burn,
+                    duration: 4,
+                },
+            ],
+            area: 1,
+        },
+    ],
+};
+
+export const fireArrow: Ability = {
+    name: "Fire Arrow",
+    image: FireArrowImage,
+    resourceCost: 2,
+    description: "on the target's neighbors if the target is Burning.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: FireArrowProjectileImage,
+            damage: 12,
             animationOptions: {
                 height: 90,
             },
@@ -963,42 +1003,6 @@ const fireArrow2: Ability = {
                 {
                     ...burn,
                     duration: 3,
-                },
-            ],
-            area: 1,
-        },
-    ],
-};
-
-export const fireArrow: Ability = {
-    name: "Fire Arrow",
-    image: FireArrowImage,
-    resourceCost: 2,
-    description: "on the target's neighbors if the target is Burning.",
-    actions: [
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            icon: FireArrowProjectileImage,
-            damage: 11,
-            animationOptions: {
-                height: 90,
-            },
-        },
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.TARGET,
-                    hasEffectType: [EFFECT_TYPES.BURN],
-                },
-            ],
-            excludePrimaryTarget: true,
-            effects: [
-                {
-                    ...burn,
-                    duration: 2,
                 },
             ],
             area: 1,
