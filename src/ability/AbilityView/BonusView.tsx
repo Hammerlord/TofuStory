@@ -14,7 +14,7 @@ const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Elemen
 };
 
 // This is incomplete
-const BonusView = ({ ability, player }) => {
+const BonusView = ({ ability, player, deck, hand, discard }) => {
     const bonuses = ability?.actions.map(({ bonus }) => bonus).filter((val) => val);
     if (!bonuses?.length) {
         return null;
@@ -68,7 +68,7 @@ const BonusView = ({ ability, player }) => {
             }
         });
         const hasEffect = conditions?.find(({ hasEffect }) => hasEffect)?.hasEffect;
-        const bonusMultiplier = getMultiplier({ actor: { combatant: player, index: undefined }, multiplier });
+        const bonusMultiplier = getMultiplier({ actor: { combatant: player, index: undefined }, multiplier, deck, hand, discard });
         const totalDamage = damage * bonusMultiplier;
         const totalHealing = healing * bonusMultiplier;
         const totalArmor = armor * bonusMultiplier;

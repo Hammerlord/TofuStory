@@ -40,6 +40,9 @@ export const getUpdatedStats = ({
     actionParent,
     source,
     getCombatantById: getCalculationTarget,
+    deck,
+    hand,
+    discard,
 }: {
     actorId?: string;
     targetIds: string[];
@@ -48,6 +51,9 @@ export const getUpdatedStats = ({
     actionParent?: Ability | Item;
     source?: TriggerSource;
     getCombatantById: (id: string) => IndexedCombatant;
+    deck: Ability[];
+    hand: Ability[];
+    discard: Ability[];
 }): [UpdatedCombatantStats, Action][] => {
     const actor = getCalculationTarget(actorId);
     const targets = targetIds.map(getCalculationTarget);
@@ -63,6 +69,9 @@ export const getUpdatedStats = ({
             isTargetSelected: targetIndex === selectedIndex,
             actionParent,
             source,
+            deck,
+            hand,
+            discard,
         });
         const {
             effects: actionEffects = [],
@@ -75,7 +84,7 @@ export const getUpdatedStats = ({
         } = action;
 
         const enabledEffects = getEnabledEffects(target);
-        const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source });
+        const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source, deck, hand, discard });
         const damage =
             calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
             Math.floor(targetCombatant.armor * destroyArmor);

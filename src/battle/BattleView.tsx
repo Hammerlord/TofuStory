@@ -679,6 +679,8 @@ const BattlefieldContainer = () => {
                             selectedAbilityId={selectedAbilityId}
                             onAbilityClick={handleAbilityClick}
                             player={player}
+                            deck={deck}
+                            discard={discard}
                         />
                     </div>
                 </div>
@@ -714,6 +716,8 @@ const BattlefieldContainer = () => {
                         hand={hand}
                         onSelect={handleSelectCardFromPrompt}
                         onCancel={handleCancelSelectCard}
+                        deck={deck}
+                        discard={discard}
                     />
                 )}
             </div>

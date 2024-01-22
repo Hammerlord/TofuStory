@@ -323,6 +323,7 @@ export enum MULTIPLIER_TYPES {
     NUM_SOURCE_TARGETS = "numSourceCharactersAffected",
     RESOURCES_SPENT = "resourcesSpent",
     OVERHEALING = "overhealing",
+    ALL_CARDS = "all-cards",
 }
 
 export interface Radiate {

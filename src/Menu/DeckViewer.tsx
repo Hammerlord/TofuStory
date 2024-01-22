@@ -45,7 +45,7 @@ const DeckViewer = ({ deck, onClose }) => {
             </button>
             {deck.map((card, i) => (
                 <div className={classes.abilityContainer} key={i}>
-                    <AbilityView ability={card} />
+                    <AbilityView ability={card} deck={deck} hand={[]} discard={[]} />
                 </div>
             ))}
         </div>

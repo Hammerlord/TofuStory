@@ -201,6 +201,9 @@ export const getMultiplier = ({
     actionParent,
     multiplier,
     source,
+    deck = [],
+    hand = [],
+    discard = [],
 }: {
     actor?: IndexedCombatant;
     target?: IndexedCombatant;
@@ -209,6 +212,9 @@ export const getMultiplier = ({
     actionParent?: Ability | Item;
     multiplier?: Multiplier;
     source?: TriggerSource;
+    deck: Ability[];
+    hand: Ability[];
+    discard: Ability[];
 }): number => {
     const getCalculationTarget = (calculationTarget) => {
         if (calculationTarget === CONDITION_TARGETS.ACTOR) {
@@ -237,6 +243,10 @@ export const getMultiplier = ({
 
     if (multiplier.type === MULTIPLIER_TYPES.OVERHEALING) {
         return (source.statUpdate?.overhealing || 1) * numValue;
+    }
+
+    if (multiplier.type === MULTIPLIER_TYPES.ALL_CARDS) {
+        return deck.length + hand.length + discard.length || 1;
     }
 
     if (!combatant) {
@@ -625,6 +635,9 @@ export const calculateBonus = ({
     isTargetSelected,
     actionParent,
     source,
+    deck,
+    hand,
+    discard,
 }: {
     action: Action; // The action to apply the bonus to
     target: IndexedCombatant;
@@ -633,6 +646,9 @@ export const calculateBonus = ({
     isTargetSelected: boolean;
     actionParent?: Ability | Item;
     source?: TriggerSource;
+    deck: Ability[];
+    hand: Ability[];
+    discard: Ability[];
 }): Action => {
     if (!action.bonus) {
         return action;
@@ -640,7 +656,17 @@ export const calculateBonus = ({
 
     const { bonus, damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0 } = action;
     const { excludePrimaryTarget = false } = bonus;
-    const multiplier = getMultiplier({ actor, target, allTargets, multiplier: bonus.multiplier, actionParent, source });
+    const multiplier = getMultiplier({
+        actor,
+        target,
+        allTargets,
+        multiplier: bonus.multiplier,
+        actionParent,
+        source,
+        deck,
+        hand,
+        discard,
+    });
 
     const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): IndexedCombatant => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {

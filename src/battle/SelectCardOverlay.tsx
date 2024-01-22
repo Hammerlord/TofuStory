@@ -50,12 +50,16 @@ const SelectCardOverlay = ({
     onSelect,
     player,
     onCancel,
+    deck,
+    discard,
 }: {
     selectCardsPrompt: PlayerSelectCardsPrompt;
     hand: HandAbility[];
     onSelect: ({ updatedHand }: { updatedHand: HandAbility[] }) => void;
     player: any;
     onCancel: () => void;
+    deck: Ability[];
+    discard: Ability[];
 }) => {
     const [abilityChoices, setAbilityChoices] = useState([]);
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
@@ -137,7 +141,7 @@ const SelectCardOverlay = ({
                             onClick={() => setSelectedAbilityId(ability.instanceId)}
                             key={ability.instanceId}
                         >
-                            <AbilityView ability={ability} />
+                            <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
                         </div>
                     ))}
                 </div>

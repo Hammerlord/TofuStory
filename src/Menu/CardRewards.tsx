@@ -90,7 +90,7 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
                             onClick={() => setSelectedAbilityIndex(i)}
                             key={i}
                         >
-                            <AbilityView ability={ability} player={player} />
+                            <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} />
                         </div>
                     ))}
                 </div>

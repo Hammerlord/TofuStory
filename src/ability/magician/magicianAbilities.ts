@@ -21,6 +21,8 @@ import {
     OldEnergyBoltImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
+    PurpleFlyingBookIconImage,
+    PurpleFlyingBookImage,
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
@@ -39,6 +41,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    MULTIPLIER_TYPES,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -1307,4 +1310,61 @@ export const empoweredBolt: Ability = {
         },
     ],
     upgrades: [empoweredBolt2],
+};
+
+const throwTheBook2: Ability = {
+    name: "Throw The Book",
+    level: 2,
+    image: PurpleFlyingBookIconImage,
+    resourceCost: 2,
+    description: "Deals damage equal to the amount of cards you own",
+    actions: [
+        {
+            damage: 1,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: PurpleFlyingBookImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                width: 300,
+                height: 100,
+            },
+            multiplier: {
+                type: MULTIPLIER_TYPES.ALL_CARDS,
+                value: 1,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+    upgrades: [],
+};
+
+export const throwTheBook: Ability = {
+    name: "Throw The Book",
+    image: PurpleFlyingBookIconImage,
+    resourceCost: 3,
+    description: "Deals damage equal to the amount of cards you own",
+    actions: [
+        {
+            damage: 1,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: PurpleFlyingBookImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                width: 300,
+                height: 100,
+            },
+            multiplier: {
+                type: MULTIPLIER_TYPES.ALL_CARDS,
+                value: 1,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+    upgrades: [throwTheBook2],
 };

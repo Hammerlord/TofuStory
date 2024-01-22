@@ -88,7 +88,19 @@ const requiresExplanation = ({ type }): boolean => {
     ].includes(type);
 };
 
-const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
+const AbilityTooltip = ({
+    ability,
+    children,
+    deck = [],
+    hand = [],
+    discard = [],
+}: {
+    ability: Ability;
+    children: JSX.Element;
+    deck: Ability[];
+    hand: Ability[];
+    discard: Ability[];
+}) => {
     const cardsToAddMap = {};
     const findCardsToAdd = (ability: Ability) => {
         ability.actions.forEach(({ addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {} }) => {
@@ -135,7 +147,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
             <div className={classes.cards} key={"cards"}>
                 {cardsToAdd.map((ability: Ability, i) => (
                     <div className={"card-container"} key={i}>
-                        <AbilityView ability={ability} />
+                        <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
                     </div>
                 ))}
             </div>

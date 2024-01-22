@@ -148,9 +148,12 @@ interface AbilityViewProps {
     isSelected?: boolean;
     ability: Ability | HandAbility;
     player?: any;
+    deck?: Ability[];
+    hand?: Ability[];
+    discard?: Ability[];
 }
 
-const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: AbilityViewProps, ref) => {
+const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [] }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse, preemptive } = ability;
     const {
@@ -178,7 +181,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
         );
     }
 
-    const { baseDamage } = getDamageStatistics({ ability, player });
+    const { baseDamage } = getDamageStatistics({ ability, player, deck, hand, discard });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
     let hasMultiplier = false;
@@ -194,7 +197,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, action: Action) => {
             const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
-            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: { combatant: player, index: undefined } });
+            const multiplier = getMultiplier({ multiplier: action.multiplier, actor: { combatant: player }, deck, hand, discard });
             if (multiplier > 1) {
                 hasMultiplier = true;
             }
@@ -208,7 +211,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
 
     const cornerIcon = (() => {
         if (baseDamage > 0) {
-            return <DamageIcon ability={ability} player={player} />;
+            return <DamageIcon ability={ability} player={player} deck={deck} hand={hand} discard={discard} />;
         }
 
         if (armor > 0) {
@@ -233,7 +236,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
     })();
 
     return (
-        <AbilityTooltip ability={ability}>
+        <AbilityTooltip ability={ability} deck={deck} hand={hand} discard={discard}>
             <div className={classes.root}>
                 <div
                     onClick={onClick}
@@ -294,7 +297,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player }: Abilit
                         {ability.reusable && <div>Returns to your hand after use</div>}
                         <Buffs ability={ability} player={player} />
                         <CardsToAdd ability={ability} />
-                        <BonusView ability={ability} player={player} />
+                        <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
                         <RadiateView ability={ability} />
                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}

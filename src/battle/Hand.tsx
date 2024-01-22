@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { HandAbility } from "../ability/types";
 
-const Hand = ({ hand, onAbilityClick, selectedAbilityId, className, player, refs }) => {
+const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, className, player, refs }) => {
     const [oldHand, setOldHand] = useState([]);
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
@@ -52,6 +52,9 @@ const Hand = ({ hand, onAbilityClick, selectedAbilityId, className, player, refs
                     ability={ability}
                     player={player}
                     ref={refs[i]}
+                    deck={deck}
+                    hand={hand}
+                    discard={discard}
                 />
             ))}
         </div>

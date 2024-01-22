@@ -107,6 +107,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
         }
 
         const updated = getUpdatedStats({
+            ...getState().battle,
             actorId: killedBy.id,
             targetIds: [killedBy.id],
             selectedIndex: index,
@@ -164,6 +165,7 @@ const checkHitEffects = ({
 
         if (lifeOnHit) {
             const updated = getUpdatedStats({
+                ...getState().battle,
                 actorId: actor.id,
                 targetIds: [actor.id],
                 selectedIndex: index,
@@ -201,6 +203,7 @@ const checkHitEffects = ({
 
         if (totalThorns) {
             const updated = getUpdatedStats({
+                ...getState().battle,
                 targetIds: [actor.id],
                 action: {
                     type: ACTION_TYPES.EFFECT,
@@ -383,6 +386,7 @@ const handleDoTs =
 
         if (damage) {
             const updated = getUpdatedStats({
+                ...getState().battle,
                 targetIds: [combatantId],
                 selectedIndex: index,
                 action: {
@@ -503,6 +507,7 @@ const onEffectEventTrigger = ({
             }, []);
 
             const updated = getUpdatedStats({
+                ...getState().battle,
                 targetIds: affectedTargetIds,
                 actorId: ownerId,
                 action: {
@@ -1115,6 +1120,7 @@ const performAction = ({
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
         const updated = getUpdatedStats({
+            ...getState().battle,
             targetIds,
             selectedIndex,
             action,

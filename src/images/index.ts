@@ -241,6 +241,8 @@ export { default as PuppetreeImage } from "./Puppetree.png";
 export { default as Puppetree2Image } from "./Puppetree2.png";
 export { default as Puppetree3Image } from "./Puppetree3.png";
 export { default as PurpleFairiesImage } from "./PurpleFairies.gif";
+export { default as PurpleFlyingBookImage } from "./PurpleFlyingBook.gif";
+export { default as PurpleFlyingBookIconImage } from "./PurpleFlyingBookIcon.png";
 export { default as RageImage } from "./Rage.png";
 export { default as RagingBlowImage } from "./RagingBlow.png";
 export { default as RedFistOfFuryImage } from "./RedFistOfFury.png";

@@ -9,7 +9,17 @@ import { passesConditions } from "../../battle/passesConditions";
 export const getDamageStatistics = ({
     ability,
     player,
-}): { baseDamage: number; totalDamage: number; hasMultiplier: boolean; damageBonusFromEffects: number; damageBonusFromConditions } => {
+    deck,
+    hand,
+    discard,
+}): {
+    baseDamage: number;
+    totalDamage: number;
+    hasMultiplier: boolean;
+    bonusFromMultiplier: number;
+    damageBonusFromEffects: number;
+    damageBonusFromConditions: number;
+} => {
     const { actions = [] } = ability;
     const attackActions = actions.filter((action) => action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK);
     if (attackActions.length === 0) {
@@ -17,6 +27,7 @@ export const getDamageStatistics = ({
             baseDamage: 0,
             totalDamage: 0,
             hasMultiplier: false,
+            bonusFromMultiplier: 0,
             damageBonusFromEffects: 0,
             damageBonusFromConditions: 0,
         };
@@ -42,16 +53,21 @@ export const getDamageStatistics = ({
     });
 
     const damageBonusFromConditions: number = damageBonusFromConditionsArr.reduce((a: number, c: number) => a + c, 0);
-    const totalDamage =
-        actions.reduce((acc, action: Action) => {
-            if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-                const multiplier = getMultiplier({ actor: { combatant: player, index: undefined } });
-                acc += player ? calculateDamage({ actor: player, action, actionParent: ability, multiplier }) : action.damage || 0;
-            }
-            return acc;
-        }, 0) +
-        damageBonusFromEffects +
-        damageBonusFromConditions;
+    const bonusFromMultiplier = actions.reduce((acc, action: Action) => {
+        if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+            const multiplier = getMultiplier({
+                actor: { combatant: player, index: undefined },
+                multiplier: action.multiplier,
+                deck,
+                hand,
+                discard,
+            });
+
+            acc += player ? calculateDamage({ actor: player, action, actionParent: ability, multiplier }) : action.damage || 0;
+        }
+        return acc;
+    }, 0);
+    const totalDamage = bonusFromMultiplier + damageBonusFromEffects + damageBonusFromConditions;
     const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
     const damageActions = attackActions.map(({ damage }) => damage).filter((d: number) => d);
     const baseDamage = (damageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
@@ -59,6 +75,7 @@ export const getDamageStatistics = ({
         baseDamage,
         totalDamage,
         hasMultiplier: damageActions.length > 1 || hasAttackMultiplier,
+        bonusFromMultiplier,
         damageBonusFromEffects,
         damageBonusFromConditions,
     };
@@ -75,12 +92,16 @@ const useStyles = createUseStyles({
 /**
  * The damage icon that displays on the top left of an ability card
  */
-const DamageIcon = ({ ability, player }) => {
+const DamageIcon = ({ ability, player, deck, hand, discard }) => {
     const { actions } = ability;
-    const { baseDamage, totalDamage, hasMultiplier, damageBonusFromEffects, damageBonusFromConditions } = getDamageStatistics({
-        ability,
-        player,
-    });
+    const { baseDamage, totalDamage, hasMultiplier, bonusFromMultiplier, damageBonusFromEffects, damageBonusFromConditions } =
+        getDamageStatistics({
+            ability,
+            player,
+            deck,
+            hand,
+            discard,
+        });
     const classes = useStyles();
 
     if (!totalDamage) {
