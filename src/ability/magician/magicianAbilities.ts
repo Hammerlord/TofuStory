@@ -23,6 +23,7 @@ import {
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
+    StarfishIdleImage,
     StarfishImage,
     TeleportImage,
     TeleportMasteryImage,
@@ -1198,6 +1199,7 @@ export const avatarOfTheStars: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     lifeOnHit: 1,
                     duration: 3,
+                    portrait: StarfishIdleImage,
                     onAbility: {
                         conditions: [
                             {

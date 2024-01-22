@@ -401,10 +401,11 @@ const CombatantView = forwardRef(
         };
 
         const getImageNode = (props) => {
-            if (typeof oldState?.image === "string") {
-                return <img src={oldState.image} {...props} draggable="false" />;
-            } else if (typeof oldState?.image === "function") {
-                const ImageNode = oldState.image as Function;
+            const portrait = oldState?.effects?.find(({ portrait }) => portrait)?.portrait || oldState?.image;
+            if (typeof portrait === "string") {
+                return <img src={portrait} {...props} draggable="false" />;
+            } else if (typeof portrait === "function") {
+                const ImageNode = portrait as Function;
                 return <ImageNode {...props} />;
             }
         };
