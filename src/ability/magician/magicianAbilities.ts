@@ -1165,6 +1165,7 @@ const avatarOfTheStars2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     lifeOnHit: 1,
                     duration: 3,
+                    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
                     onAbility: {
                         conditions: [
                             {
@@ -1200,6 +1201,7 @@ export const avatarOfTheStars: Ability = {
                     lifeOnHit: 1,
                     duration: 3,
                     portrait: StarfishIdleImage,
+                    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
                     onAbility: {
                         conditions: [
                             {

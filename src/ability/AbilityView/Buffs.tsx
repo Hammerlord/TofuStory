@@ -3,7 +3,7 @@ import { PLAYER_CLASSES } from "../../Menu/types";
 import Icon from "../../icon/Icon";
 import { UpMATTImage } from "../../images";
 import { CactusIcon, CloudyIcon, CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
-import { CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES, Effect, EffectEventTrigger } from "../types";
+import { CONDITION_TARGETS, Condition, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES, Effect, EffectEventTrigger } from "../types";
 import { ResourceIcon } from "./ResourceIcon";
 import { effectEventKeyLabelMap, multiplierTypeKeyLabelMap } from "./constants";
 import { getAllEffects } from "./utils";
@@ -36,7 +36,35 @@ const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
             return null;
         }
 
-        const components = [<>{`${effectEventKeyLabelMap[key]}, `}</>];
+        const components = [
+            <>
+                <br />
+                {effectEventKeyLabelMap[key]}
+            </>,
+        ];
+
+        if (conditions) {
+            const comparatorMap = {
+                gt: "at least",
+                lt: "less than",
+                eq: "",
+            };
+            conditions.forEach((condition: Condition) => {
+                const { resourceCost, comparator } = condition || {};
+                if (resourceCost !== undefined) {
+                    const cost = comparator === "gt" ? resourceCost + 1 : resourceCost; // gt is displayed as "at least <amount>"
+                    components.push(
+                        <>
+                            {" "}
+                            that costs {comparatorMap[comparator] || ""} <ResourceIcon size={"sm"} text={cost} playerClass={playerClass} />
+                        </>
+                    );
+                }
+            });
+        }
+
+        components.push(<>, </>);
+
         if (resurrect) {
             components.push(<>resurrect</>);
         }
@@ -63,9 +91,9 @@ const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
         }
         if (damage) {
             components.push(
-                <span>
+                <>
                     deal <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`+${damage}`} />
-                </span>
+                </>
             );
         }
         if (addCards?.length > 0) {
