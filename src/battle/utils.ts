@@ -323,7 +323,7 @@ export const getEnabledEffects = ({
     });
 };
 
-const getSkillDamage = ({ ability, skillBonus }) => {
+export const getSkillBonusDamage = ({ ability, skillBonus }) => {
     if (!skillBonus) {
         return 0;
     }
@@ -395,7 +395,7 @@ export const calculateDamage = ({
             }
             // Attack power only applies to attacks
             const attackPowerIncrease = isAttack ? attackPower : 0;
-            return acc + getSkillDamage({ ability: actionParent, skillBonus }) + attackPowerIncrease;
+            return acc + getSkillBonusDamage({ ability: actionParent, skillBonus }) + attackPowerIncrease;
         },
         0
     );

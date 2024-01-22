@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { calculateDamage, getEnabledEffects, getMultiplier } from "../../battle/utils";
+import { calculateDamage, getEnabledEffects, getMultiplier, getSkillBonusDamage } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
 import { Action, ACTION_TYPES, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
@@ -21,7 +21,10 @@ export const getDamageStatistics = ({
             damageBonusFromConditions: 0,
         };
     }
-    const damageBonusFromEffects = getEnabledEffects({ combatant: player }).reduce((acc, { attackPower = 0 }) => acc + attackPower, 0) || 0;
+    const damageBonusFromEffects =
+        getEnabledEffects({ combatant: player }).reduce((acc, { attackPower = 0, skillBonus }) => {
+            return acc + attackPower + getSkillBonusDamage({ ability, skillBonus });
+        }, 0) || 0;
     const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
         if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
             return { combatant: player };
