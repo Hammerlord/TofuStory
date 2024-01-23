@@ -135,6 +135,7 @@ export { default as HeavenHammerImage } from "./HeavenHammer.png";
 export { default as HenesysRegionBGImage } from "./HenesysRegionBG.jpg";
 export { default as HenesysTownstreetStageImage } from "./HenesysTownstreetStage.png";
 export { default as HighPaladinImage } from "./HighPaladin.png";
+export { default as HighWisdomImage } from "./HighWisdom.png";
 export { default as HookImage } from "./Hook.png";
 export { default as HornyMushroomImage } from "./HornyMushroom.gif";
 export { default as HornyMushroomCardImage } from "./HornyMushroomCard.png";

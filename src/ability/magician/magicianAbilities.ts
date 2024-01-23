@@ -12,6 +12,7 @@ import {
     EnergyBoltProjectileImage,
     FireArrowImage,
     FireArrowProjectileImage,
+    HighWisdomImage,
     IgniteImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
@@ -52,7 +53,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { burn, chill, stun, freeze } from "./../Effects";
+import { burn, chill, freeze, stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -1635,4 +1636,46 @@ export const slimmingMuffin: Ability = {
         },
     ],
     upgrades: [slimmingMuffin2],
+};
+
+const aurora2: Ability = {
+    name: "Aurora",
+    image: HighWisdomImage,
+    level: 2,
+    resourceCost: 4,
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded",
+    onAbilityUse: {
+        resourceCost: -1,
+    },
+    actions: [
+        {
+            damage: 10,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            icon: HighWisdomImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+        },
+    ],
+};
+
+export const aurora: Ability = {
+    name: "Aurora",
+    image: HighWisdomImage,
+    resourceCost: 4,
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded",
+    onAbilityUse: {
+        resourceCost: -1,
+    },
+    actions: [
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            icon: HighWisdomImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+        },
+    ],
+    upgrades: [aurora2],
 };

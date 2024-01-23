@@ -1,6 +1,7 @@
 import { MAGICIAN_SECONDARY_JOBS, PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from "../Menu/types";
 import {
     arcaneAim,
+    aurora,
     avatarOfTheStars,
     chainLightning,
     coldBeam,
@@ -127,6 +128,7 @@ export const JOB_CARD_MAP = {
             shatter,
             thunderBolt,
             slimmingMuffin,
+            aurora,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },
