@@ -1,8 +1,8 @@
 import { getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { NimbleJewelCImage } from "../../images";
-import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
-import { Condition, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
+import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, HourglassIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
+import { Action, Bonus, Condition, EFFECT_CLASSES, EFFECT_TYPES, Effect } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
     const map = {
@@ -17,7 +17,18 @@ const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Elemen
 
 // This is incomplete
 const BonusView = ({ ability, player, deck, hand, discard }) => {
-    const bonuses = ability?.actions.map(({ bonus }) => bonus).filter((val) => val);
+    const bonuses = ability?.actions?.reduce((acc: Bonus[], action: Action) => {
+        const bonus = action.bonus;
+        if (!bonus) {
+            return acc;
+        }
+        if (Array.isArray(bonus)) {
+            return [...acc, ...bonus];
+        }
+
+        return [...acc, bonus];
+    }, []);
+
     if (!bonuses?.length) {
         return null;
     }
@@ -30,7 +41,7 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
 
     const bonusDescriptions = [];
 
-    bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0 }, i) => {
+    bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0, effects = [] }, i) => {
         const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
             if (hasEffectType.length) {
                 if (multiplier) {
@@ -40,6 +51,7 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
                         </span>
                     );
                 }
+
                 return (
                     <span key={i}>
                         to targets afflicted by {hasEffectType.map(getIconForEffectType)}
@@ -65,6 +77,19 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
                 return (
                     <span key={i}>
                         to <Icon icon={<ShieldIcon />} size={"sm"} /> targets
+                    </span>
+                );
+            }
+
+            if (effects.length) {
+                return (
+                    <span key={i}>
+                        Apply{" "}
+                        {effects.map((e: Effect, i) => (
+                            <span key={e.name}>
+                                <Icon icon={e.icon} size={"sm"} /> <Icon icon={<HourglassIcon />} text={e.duration} size={"sm"} />{" "}
+                            </span>
+                        ))}{" "}
                     </span>
                 );
             }

@@ -3,6 +3,8 @@ import {
     ArcaneOverdriveImage,
     BlueRushImage,
     ChocolateCupcakeImage,
+    ColdBeamImage,
+    ColdBeamProjectileImage,
     ElementalAdaptationEffectImage,
     ElementalAdaptationImage,
     EnergyBoltImage,
@@ -19,6 +21,7 @@ import {
     MagicClawProjectileImage,
     MagicFangProjectileImage,
     MagicGuardImage,
+    NimbleJewelImage,
     OldEnergyBoltImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
@@ -31,6 +34,7 @@ import {
     StarfishImage,
     TeleportImage,
     TeleportMasteryImage,
+    ThunderBoltImage,
     TriboltImage,
     WizMushImage,
 } from "../../images";
@@ -47,7 +51,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { burn, chill, stun } from "./../Effects";
+import { burn, chill, stun, freeze } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -1089,8 +1093,8 @@ const pieceOfCake2: Ability = {
                     icon: ArcaneOverdriveImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 3,
-                    duration: 1,
+                    attackPower: 2,
+                    duration: 2,
                 },
             ],
         },
@@ -1112,8 +1116,8 @@ const pieceOfCake: Ability = {
                     icon: ArcaneOverdriveImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                    duration: 1,
+                    attackPower: 1,
+                    duration: 2,
                 },
             ],
         },
@@ -1387,4 +1391,204 @@ export const magicBooster: Ability = {
             },
         },
     ],
+};
+
+const coldBeam2: Ability = {
+    name: "Cold Beam",
+    image: ColdBeamImage,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: ColdBeamProjectileImage,
+            damage: 7,
+            animationOptions: {
+                height: 100,
+                rotateToFaceTarget: true,
+            },
+            area: 1,
+            effects: [
+                {
+                    ...chill,
+                    duration: 4,
+                },
+            ],
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: "Charged",
+                        },
+                    ],
+                    effects: [
+                        {
+                            ...freeze,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const coldBeam: Ability = {
+    name: "Cold Beam",
+    image: ColdBeamImage,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: ColdBeamProjectileImage,
+            damage: 5,
+            animationOptions: {
+                height: 100,
+                rotateToFaceTarget: true,
+            },
+            area: 1,
+            effects: [
+                {
+                    ...chill,
+                    duration: 3,
+                },
+            ],
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: "Charged",
+                        },
+                    ],
+                    effects: [
+                        {
+                            ...freeze,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [coldBeam2],
+};
+
+const shatter2: Ability = {
+    name: "Shatter",
+    image: NimbleJewelImage,
+    resourceCost: 1,
+    reusable: true,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: NimbleJewelImage,
+            animation: ANIMATION_TYPES.BEAM,
+            damage: 7,
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectType: [EFFECT_TYPES.FREEZE, EFFECT_TYPES.STUN],
+                        },
+                    ],
+                    damage: 9,
+                },
+            ],
+        },
+    ],
+};
+
+export const shatter: Ability = {
+    name: "Shatter",
+    image: NimbleJewelImage,
+    resourceCost: 1,
+    reusable: true,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: NimbleJewelImage,
+            animation: ANIMATION_TYPES.BEAM,
+            damage: 5,
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectType: [EFFECT_TYPES.FREEZE, EFFECT_TYPES.STUN],
+                        },
+                    ],
+                    damage: 7,
+                },
+            ],
+        },
+    ],
+    upgrades: [shatter2],
+};
+
+const thunderBolt2: Ability = {
+    name: "Thunder Bolt",
+    image: ThunderBoltImage,
+    level: 2,
+    resourceCost: 1,
+    description: "Charged: Cast again for 2 damage",
+    actions: [
+        {
+            damage: 5,
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: ThunderBoltImage,
+        },
+        {
+            damage: 2,
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: ThunderBoltImage,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+};
+
+export const thunderBolt: Ability = {
+    name: "Thunder Bolt",
+    image: ThunderBoltImage,
+    resourceCost: 1,
+    description: "Charged: Cast again for 1 damage",
+    actions: [
+        {
+            damage: 4,
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: ThunderBoltImage,
+        },
+        {
+            damage: 1,
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: ThunderBoltImage,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+    upgrades: [thunderBolt2],
 };
