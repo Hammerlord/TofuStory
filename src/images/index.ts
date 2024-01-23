@@ -57,6 +57,7 @@ export { default as CardbackImage } from "./Cardback.png";
 export { default as CaseyImage } from "./Casey.png";
 export { default as ChanceAttackImage } from "./ChanceAttack.png";
 export { default as ChocolateCupcakeImage } from "./ChocolateCupcake.png";
+export { default as ChocolateMuffinImage } from "./ChocolateMuffin.png";
 export { default as ClassMagicianImage } from "./ClassMagician.png";
 export { default as ClassWarriorImage } from "./ClassWarrior.png";
 export { default as ClearImage } from "./Clear.png";

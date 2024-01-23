@@ -3,6 +3,7 @@ import {
     ArcaneOverdriveImage,
     BlueRushImage,
     ChocolateCupcakeImage,
+    ChocolateMuffinImage,
     ColdBeamImage,
     ColdBeamProjectileImage,
     ElementalAdaptationEffectImage,
@@ -1591,4 +1592,47 @@ export const thunderBolt: Ability = {
         },
     ],
     upgrades: [thunderBolt2],
+};
+
+const slimmingMuffin2: Ability = {
+    name: "Conjured Slimming Muffin",
+    image: ChocolateMuffinImage,
+    level: 2,
+    resourceCost: 0,
+    description: "Deplete another card in your hand to use this ability",
+    selectCards: {
+        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+    },
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+                effects: {
+                    resourceCost: -1,
+                },
+            },
+        },
+    ],
+};
+
+export const slimmingMuffin: Ability = {
+    name: "Conjured Slimming Muffin",
+    image: ChocolateMuffinImage,
+    resourceCost: 0,
+    description: "Deplete another card in your hand to use this ability",
+    selectCards: {
+        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+    },
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [slimmingMuffin2],
 };

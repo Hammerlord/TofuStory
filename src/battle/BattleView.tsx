@@ -301,6 +301,11 @@ const BattlefieldContainer = () => {
         }
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
+                if (selectedAbility.selectCards) {
+                    handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
+                    return;
+                }
+
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
                 setSelectedAbilityId(null);
