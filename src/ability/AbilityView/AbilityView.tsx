@@ -295,7 +295,6 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                                 Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
                             </div>
                         )}
-                        {ability.reusable && <div>Returns to your hand after use</div>}
                         <Buffs ability={ability} player={player} />
                         <CardsToAdd ability={ability} />
                         <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
