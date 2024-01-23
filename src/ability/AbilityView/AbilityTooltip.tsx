@@ -141,6 +141,7 @@ const AbilityTooltip = ({
     const cardsToAdd = Object.values(cardsToAddMap);
     const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
     const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
+    const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -182,6 +183,10 @@ const AbilityTooltip = ({
                 key={"deplete"}
             />
         );
+    }
+
+    if (isReusable) {
+        tooltips.push(<AbilityTooltipSection title="Reusable" description={"Ability returns to your hand after use."} key={"reusable"} />);
     }
 
     return (

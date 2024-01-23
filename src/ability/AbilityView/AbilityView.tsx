@@ -262,6 +262,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                         {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
+                        {ability.reusable && <div className={classes.bold}>Reusable</div>}
                         <DrawCards ability={ability} playerClass={player?.class} />
                         <Debuffs effects={getAllEffects(ability)} />
                         {ricochet && (
