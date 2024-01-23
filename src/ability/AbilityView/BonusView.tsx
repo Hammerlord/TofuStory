@@ -1,5 +1,6 @@
 import { getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
+import { NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
 import { Condition, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
@@ -9,6 +10,7 @@ const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Elemen
         [EFFECT_TYPES.STUN]: <Icon icon={DizzyIcon} key={key} size={"sm"} />,
         [EFFECT_TYPES.CHILL]: <Icon icon={SnowflakeIcon} key={key} size={"sm"} />,
         [EFFECT_TYPES.BURN]: <Icon icon={FireIcon} key={key} size={"sm"} />,
+        [EFFECT_TYPES.FREEZE]: <Icon icon={NimbleJewelCImage} key={key} size={"sm"} />,
     };
     return map[effectType];
 };

@@ -8,6 +8,7 @@ import Bleed from "./Bleed";
 import Stealth from "./Stealth";
 import { getEnabledEffects } from "../../battle/utils";
 import { DizzyIcon, SpeechBubbleIcon } from "../../images/icons";
+import { NimbleJewelCImage } from "../../images";
 
 const useStyles = createUseStyles({
     root: {
@@ -128,6 +129,14 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         transformOrigin: "bottom left",
     },
+    freeze: {
+        bottom: "-105px",
+        left: "50%",
+        width: "100%",
+        position: "absolute",
+        transform: "translateX(-50%) translateY(-50%)",
+        opacity: 0.3,
+    },
 });
 
 /**
@@ -149,6 +158,7 @@ const Effects = ({ combatant, healing }) => {
     const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
     const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
     const isImmune = hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
+    const isFrozen = hasStatusEffect(EFFECT_TYPES.FREEZE);
     const bleeds = effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
     const burn = effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.BURN) {
@@ -174,6 +184,8 @@ const Effects = ({ combatant, healing }) => {
             }
             {isSilenced && <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />}
             {isStunned && <Icon icon={<DizzyIcon />} size="xl" className={classes.stun} />}
+            {isFrozen && <img src={NimbleJewelCImage} alt="Frozen" className={classes.freeze} />}
+
             {isImmune && <div className={classes.immune} />}
             {bleeds.length > 0 && (
                 <div className={classes.bleed}>

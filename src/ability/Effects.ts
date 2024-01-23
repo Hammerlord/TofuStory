@@ -1,4 +1,4 @@
-import { BombImage, GemHeartImage, PoisonImage, UpMATTImage, WeaponBoosterImage, WeaponMasteryImage } from "../images";
+import { BombImage, GemHeartImage, NimbleJewelCImage, PoisonImage, UpMATTImage, WeaponBoosterImage, WeaponMasteryImage } from "../images";
 import {
     AngerIcon,
     BloodIcon,
@@ -17,17 +17,17 @@ import {
     VolcanoIcon,
 } from "../images/icons";
 import {
-    Effect,
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    TRIGGER_TARGET_TYPES,
-    TARGET_TYPES,
-    ACTION_TYPES,
-    Minion,
-    ANIMATION_TYPES,
+    Effect,
     MULTIPLIER_TYPES,
-    CONDITION_TARGETS,
+    Minion,
     SCALING_VALUE_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
 } from "./types";
 
 export const thorns: Effect = {
@@ -123,6 +123,14 @@ export const chill: Effect = {
     duration: 5,
     attackPower: -1,
     description: "Chilled targets have their attack power reduced by 1.",
+};
+
+export const freeze: Effect = {
+    name: "Freeze",
+    icon: NimbleJewelCImage,
+    type: EFFECT_TYPES.FREEZE,
+    class: EFFECT_CLASSES.DEBUFF,
+    duration: 1,
 };
 
 export const cleave: Effect = {

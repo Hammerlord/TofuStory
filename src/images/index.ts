@@ -203,6 +203,7 @@ export { default as MutantRibbonPigImage } from "./MutantRibbonPig.gif";
 export { default as MutantSnailImage } from "./MutantSnail.png";
 export { default as NightShadeExplosionImage } from "./NightShadeExplosion.png";
 export { default as NimbleJewelImage } from "./NimbleJewel.png";
+export { default as NimbleJewelCImage } from "./NimbleJewelC.png";
 export { default as NoobClubAImage } from "./NoobClubA.png";
 export { default as NoobClubBImage } from "./NoobClubB.png";
 export { default as NoobWarriorAImage } from "./NoobWarriorA.png";
