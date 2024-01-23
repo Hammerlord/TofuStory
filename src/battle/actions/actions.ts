@@ -1088,7 +1088,7 @@ const performAction = ({
         const targetCombatant = getState().battle[side][selectedIndex];
         const area = calculateActionArea({ action, actor, target: targetCombatant });
 
-        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget } = action;
+        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget, secondaryAction } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
         dispatch(checkHandleSummon({ action, actorId, parentSource }));
@@ -1101,7 +1101,7 @@ const performAction = ({
         ).slice(0, extraTargets);
 
         const isAffected = (combatant: Combatant | null, i: number): boolean => {
-            const inArea = combatant && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+            const inArea = combatant?.HP > 0 && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
             if (excludePrimaryTarget) {
                 return inArea && i !== selectedIndex;
             }
@@ -1119,19 +1119,32 @@ const performAction = ({
         }, []);
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
-        const updated = getUpdatedStats({
+        const updatedStatsProps = {
             ...getState().battle,
-            targetIds,
             selectedIndex,
             action,
+            targetIds,
             actorId,
             actionParent: parent,
             source: parentSource,
             getCombatantById: (id: string) => findCombatantData(getState, id),
-        });
+        };
+
+        const updated = getUpdatedStats(updatedStatsProps);
+
+        dispatch(applyStatChanges(updated.map((update) => update[0])));
+        if (secondaryAction) {
+            const updatedSecondary = getUpdatedStats({
+                ...updatedStatsProps,
+                // Based on secondaryAction.target, but only actor recipient is supported for now
+                recipientIds: [actorId],
+                selectedIndex: undefined,
+                action: secondaryAction,
+            });
+            dispatch(applyStatChanges(updatedSecondary.map((update) => update[0])));
+        }
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
-        dispatch(applyStatChanges(updated.map((update) => update[0])));
         dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index and "extra target indices" are hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);

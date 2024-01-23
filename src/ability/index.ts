@@ -6,7 +6,7 @@ import {
     chainLightning,
     coldBeam,
     conjureTreat,
-    empoweredBolt,
+    greaterBolt,
     energyBolt,
     fireArrow,
     frostBarrier,
@@ -26,6 +26,7 @@ import {
     thunderclap,
     tribolt,
     wishUponAStar,
+    feedback,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -121,7 +122,7 @@ export const JOB_CARD_MAP = {
             fireArrow,
             conjureTreat,
             avatarOfTheStars,
-            empoweredBolt,
+            greaterBolt,
             throwTheBook,
             magicBooster,
             coldBeam,
@@ -129,6 +130,7 @@ export const JOB_CARD_MAP = {
             thunderBolt,
             slimmingMuffin,
             aurora,
+            feedback,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

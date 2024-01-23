@@ -35,6 +35,7 @@ import {
     StarfishIdleImage,
     StarfishImage,
     TeleportImage,
+    TeleportMasteryFireImage,
     TeleportMasteryImage,
     ThunderBoltImage,
     TriboltImage,
@@ -1235,8 +1236,8 @@ export const avatarOfTheStars: Ability = {
     upgrades: [avatarOfTheStars2],
 };
 
-export const empoweredBolt2: Ability = {
-    name: "Empowered Bolt",
+export const greaterBolt2: Ability = {
+    name: "Greater Bolt",
     image: EnergyBoltImage,
     level: 2,
     resourceCost: 1,
@@ -1260,7 +1261,7 @@ export const empoweredBolt2: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Empowered Bolt",
+                    name: "Greater Bolt",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: EnergyBoltImage,
@@ -1277,8 +1278,8 @@ export const empoweredBolt2: Ability = {
     ],
 };
 
-export const empoweredBolt: Ability = {
-    name: "Empowered Bolt",
+export const greaterBolt: Ability = {
+    name: "Greater Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
     actions: [
@@ -1301,7 +1302,7 @@ export const empoweredBolt: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Empowered Bolt",
+                    name: "Greater Bolt",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: EnergyBoltImage,
@@ -1316,7 +1317,7 @@ export const empoweredBolt: Ability = {
             ],
         },
     ],
-    upgrades: [empoweredBolt2],
+    upgrades: [greaterBolt2],
 };
 
 const throwTheBook2: Ability = {
@@ -1678,4 +1679,54 @@ export const aurora: Ability = {
         },
     ],
     upgrades: [aurora2],
+};
+
+const feedback2: Ability = {
+    name: "Feedback",
+    image: TeleportMasteryFireImage,
+    level: 2,
+    resourceCost: 1,
+    description: "Gain 1 Mana per enemy struck.",
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 2,
+            icon: TeleportMasteryFireImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            secondaryAction: {
+                target: "actor",
+                resources: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+};
+
+export const feedback: Ability = {
+    name: "Feedback",
+    image: TeleportMasteryFireImage,
+    resourceCost: 1,
+    description: "Gain 1 Mana per enemy struck.",
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            icon: TeleportMasteryFireImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            secondaryAction: {
+                target: "actor",
+                resources: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+    upgrades: [feedback2],
 };

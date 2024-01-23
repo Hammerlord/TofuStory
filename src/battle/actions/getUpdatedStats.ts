@@ -35,17 +35,19 @@ export interface UpdatedCombatantStats {
 export const getUpdatedStats = ({
     actorId,
     targetIds,
+    recipientIds,
     selectedIndex,
     action: initialAction,
     actionParent,
     source,
-    getCombatantById: getCalculationTarget,
+    getCombatantById,
     deck,
     hand,
     discard,
 }: {
     actorId?: string;
     targetIds: string[];
+    recipientIds: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
     actionParent?: Ability | Item;
@@ -55,11 +57,12 @@ export const getUpdatedStats = ({
     hand: Ability[];
     discard: Ability[];
 }): [UpdatedCombatantStats, Action][] => {
-    const actor = getCalculationTarget(actorId);
-    const targets = targetIds.map(getCalculationTarget);
+    const actor = getCombatantById(actorId);
+    const targets = targetIds.map(getCombatantById);
+    const recipients = recipientIds?.map(getCombatantById);
     //const sourceTargets = (source.allTargetIds || []).map(getCalculationTarget); // TODO used to be used in calculating multipliers
 
-    return targets.map((target: IndexedCombatant) => {
+    return (recipients || targets).map((target: IndexedCombatant) => {
         const { combatant: targetCombatant, index: targetIndex } = target;
         const action = calculateBonus({
             action: initialAction,
@@ -84,7 +87,16 @@ export const getUpdatedStats = ({
         } = action;
 
         const enabledEffects = getEnabledEffects(target);
-        const multiplier = getMultiplier({ multiplier: action.multiplier, target, actor, source, deck, hand, discard });
+        const multiplier = getMultiplier({
+            multiplier: action.multiplier,
+            target,
+            allTargets: targets,
+            actor,
+            source,
+            deck,
+            hand,
+            discard,
+        });
         const damage =
             calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
             Math.floor(targetCombatant.armor * destroyArmor);
@@ -131,7 +143,7 @@ export const getUpdatedStats = ({
                 applierId: actorId,
             }));
 
-        const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources);
+        const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources * multiplier);
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
             if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;
