@@ -1,5 +1,6 @@
 import { chill, poison, thorns, wound } from "../ability/Effects";
 import {
+    chainLightning,
     coldBeam,
     energyBolt,
     ignite,
@@ -1011,6 +1012,7 @@ export const chargingStone: Item = {
                                         magicFang.name,
                                         coldBeam.name,
                                         thunderBolt.name,
+                                        chainLightning.name,
                                     ],
                                 },
                             ],
