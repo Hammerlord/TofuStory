@@ -67,7 +67,7 @@ const useStyles = createUseStyles({
 });
 
 const JobUp = ({ player, onSelectClass }) => {
-    const secondaryJobs = Object.values(CLASS_UP_MAP[player.class]);
+    const secondaryJobs = Object.values(CLASS_UP_MAP[player.class] || {});
     const classes = useStyles();
     const [selectedJob, setSelectedJob] = useState(null);
 
