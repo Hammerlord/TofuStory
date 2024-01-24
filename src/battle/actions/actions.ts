@@ -907,7 +907,7 @@ const checkHandleMorph = ({
             targets,
             morph: action.morph,
             source: parentSource,
-            summoner: findCombatantData(getState, actorId)?.combatant,
+            summoner: findCombatantData(getState, actorId),
         };
 
         if (type === MORPH_TYPES.MAP) {

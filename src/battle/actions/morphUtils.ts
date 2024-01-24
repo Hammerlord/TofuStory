@@ -17,7 +17,7 @@ import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
 
-const getStoredSummonerEffect = (summoner): CombatEffect => {
+const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; index: number }): CombatEffect => {
     return {
         name: "Reveal",
         type: EFFECT_TYPES.NONE,
@@ -33,14 +33,12 @@ const getStoredSummonerEffect = (summoner): CombatEffect => {
                     {
                         type: ACTION_TYPES.EFFECT,
                         target: TARGET_TYPES.SELF,
-                        morph: {
-                            type: MORPH_TYPES.MAP,
-                            minions: [
-                                {
-                                    minion: summoner,
-                                },
-                            ],
-                        },
+                        summon: [
+                            {
+                                minion: [combatant],
+                                positionIndex: index,
+                            },
+                        ],
                     },
                 ],
             },
@@ -52,10 +50,14 @@ const getStoredSummonerEffect = (summoner): CombatEffect => {
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
  * This ignores morph conditions
  */
-export const getMorphMerge = ({ targets, morph, summoner }: { targets: CombatantInfo[]; morph: Morph; summoner: Combatant }) => {
+export const getMorphMerge = ({ targets, morph, summoner }: { targets: CombatantInfo[]; morph: Morph; summoner: CombatantInfo }) => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
-    const { friendly, friendlySide, index } = targets[0];
+    const { friendly, friendlySide, index } = summoner || targets[0] || {};
+    if (!friendly) {
+        return {};
+    }
+
     const combatants = friendly.map((combatant: Combatant | null) => {
         if (targetIds.includes(combatant?.id)) {
             return null;
@@ -63,7 +65,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
         return combatant;
     });
 
-    const possibleSummonIndices = shuffle(getPossibleSummonIndices(friendly));
+    const possibleSummonIndices = shuffle(getPossibleSummonIndices(combatants));
     const summons = [];
     const getSummonPos = (positionIndex?: number): number => {
         if (typeof positionIndex === "number") {
@@ -104,7 +106,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
             };
 
             if (storeSummoner && summoner) {
-                combatants[pos].effects.push(getStoredSummonerEffect(summoner));
+                combatants[pos].effects.push(getStoredSummonerEffect({ combatant: summoner.combatant, index: pos }));
             }
 
             summons.push(combatants[pos]);
@@ -117,13 +119,27 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
 /**
  * Handle MORPH_TYPES.MAP (for each minion, transform it to another minion)
  */
-export const getMorphMap = ({ targets, morph, source }: { targets: CombatantInfo[]; morph: Morph; source: TriggerSource }) => {
+export const getMorphMap = ({
+    targets,
+    morph,
+    source,
+    summoner,
+}: {
+    targets: CombatantInfo[];
+    morph: Morph;
+    source: TriggerSource;
+    summoner: CombatantInfo;
+}) => {
     const { minions } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
-    const { friendly, friendlySide } = targets[0];
+    const { friendly, friendlySide } = summoner || targets[0] || {};
+    if (!friendly) {
+        return {};
+    }
+
     const summons = [];
     const combatants = friendly.map((combatant, i) => {
-        if (!targetIds.includes(combatant?.id) || combatant?.HP <= 0) {
+        if (!targetIds.includes(combatant?.id)) {
             return combatant;
         }
 
