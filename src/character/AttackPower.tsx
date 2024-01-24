@@ -33,6 +33,8 @@ const useStyles = createUseStyles({
 
 const AttackPower = ({ combatant }: { combatant: Combatant }) => {
     const classes = useStyles();
+    const overrideDamage = combatant?.effects?.find(({ override }) => override?.damage)?.override?.damage;
+    const combatantDamage = overrideDamage || combatant.damage || 0;
     const damageCount = combatant.casting?.ability?.actions.reduce(
         (acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
@@ -47,8 +49,8 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                 damage: (isAttack && action.damage) || acc.damage,
             };
         },
-        { damage: combatant.damage || 0, timesToAttack: 0 }
-    ) || { damage: combatant.damage || 0, timesToAttack: 1 };
+        { damage: combatantDamage, timesToAttack: 0 }
+    ) || { damage: combatantDamage, timesToAttack: 1 };
 
     if (!combatant?.HP || !damageCount.damage) {
         return null;
@@ -99,7 +101,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                     text={totalDamage}
                     className={classNames({
                         [classes.bonus]: damageFromEffects > 0,
-                        [classes.negative]: damageFromEffects < 0,
+                        [classes.negative]: damageFromEffects < 0 || overrideDamage < combatant.damage,
                         [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
                             [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
                         ),

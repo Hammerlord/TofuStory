@@ -15,6 +15,7 @@ import { enemyEffectNameMap } from "./../../enemy/effect";
 import { IndexedCombatant } from "./../passesConditions";
 import { TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
+import { getRandomItem } from "../../utils";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
@@ -136,12 +137,23 @@ export const getUpdatedStats = ({
                 return effect as Effect;
             })
             .filter((effect) => !isImmuneTo(effect))
-            .map((effect) => ({
-                ...cloneDeep(effect),
-                uptime: 0,
-                id: uuid.v4(),
-                applierId: actorId,
-            }));
+            .map((effect: Effect) => {
+                let overrideObj;
+                if (effect.override) {
+                    const portrait = effect.override.portrait;
+                    overrideObj = {
+                        ...effect.override,
+                        portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
+                    };
+                }
+                return {
+                    ...cloneDeep(effect),
+                    override: overrideObj,
+                    uptime: 0,
+                    id: uuid.v4(),
+                    applierId: actorId,
+                };
+            });
 
         const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources * multiplier);
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {

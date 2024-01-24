@@ -24,17 +24,20 @@ import {
     MagicClawProjectileImage,
     MagicFangProjectileImage,
     MagicGuardImage,
+    MetalBucketSnowmanImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
     PurpleFlyingBookIconImage,
     PurpleFlyingBookImage,
+    ScarfSnowmanImage,
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
     StarfishIdleImage,
     StarfishImage,
+    StrawHatSnowmanImage,
     TeleportImage,
     TeleportMasteryFireImage,
     TeleportMasteryImage,
@@ -1186,6 +1189,9 @@ const avatarOfTheStars2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     lifeOnHit: 1,
                     duration: 3,
+                    override: {
+                        portrait: StarfishIdleImage,
+                    },
                     description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
                     onAbility: {
                         conditions: [
@@ -1221,7 +1227,9 @@ export const avatarOfTheStars: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     lifeOnHit: 1,
                     duration: 3,
-                    portrait: StarfishIdleImage,
+                    override: {
+                        portrait: StarfishIdleImage,
+                    },
                     description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
                     onAbility: {
                         conditions: [
@@ -1773,4 +1781,40 @@ export const arcaneChanneling: Ability = {
         },
     ],
     upgrades: [arcaneChanneling2],
+};
+
+export const polymorph: Ability = {
+    name: "Polymorph",
+    resourceCost: 2,
+    image: ScarfSnowmanImage,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            bonus: {
+                area: 1,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+            effects: [
+                {
+                    name: "Polymorph",
+                    icon: ScarfSnowmanImage,
+                    description: "Transformed into a Snowman!",
+                    duration: 2,
+                    override: {
+                        portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
+                        damage: 1,
+                    },
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    attackDamageReceived: 1,
+                },
+            ],
+        },
+    ],
 };

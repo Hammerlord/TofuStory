@@ -383,7 +383,16 @@ export const calculateDamage = ({
             return action.secondaryDamage;
         }
 
-        return action.damage || 0;
+        const damage = action.damage || 0;
+        if (damage) {
+            // Check if the damage is overridden by an `override` effect (eg. Polymorph)
+            const overrideDamage = actor?.combatant?.effects?.find((effect) => effect.override?.damage)?.override?.damage;
+            if (overrideDamage) {
+                return overrideDamage;
+            }
+        }
+
+        return damage;
     })();
     if (!actor) {
         return baseDamage;

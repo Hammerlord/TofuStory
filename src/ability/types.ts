@@ -141,8 +141,6 @@ export interface Effect {
     // The larger, possibly animated effect image to display on top of the combatant portrait
     image?: string;
     weaponAnimation?: "glow";
-    // Replace the character portrait when this effect is applied
-    portrait?: string;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     resourcesPerTurn?: number;
@@ -210,6 +208,11 @@ export interface Effect {
     dotDamageIncrease?: number;
     // Ignore stealth
     truesight?: boolean;
+    /** Replace certain properties on the effect owner */
+    override?: {
+        portrait?: string[]; // If an array is provided, a random item will be chosen
+        damage?: number;
+    };
 }
 
 export interface CombatEffect extends Effect {
