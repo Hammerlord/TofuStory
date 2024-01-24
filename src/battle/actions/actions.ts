@@ -14,6 +14,7 @@ import {
     MORPH_TYPES,
     TARGET_TYPES,
     AbilityEffects,
+    AUTO_CAST_ABILITY_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -42,6 +43,7 @@ import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
+import { JOB_CARD_MAP } from "../../ability";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -1065,6 +1067,27 @@ const pushPlaybackQueue = ({
     };
 };
 
+const checkHandleAutoCast = ({ autoCastAbilities, actor }) => {
+    return (dispatch) => {
+        if (!autoCastAbilities || !actor.class) {
+            return;
+        }
+
+        const { type, amount } = autoCastAbilities;
+        if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
+            const cards = JOB_CARD_MAP[actor.class]?.all;
+            for (let i = 0; i < amount; ++i) {
+                const ability = getRandomItem(cards);
+                if (ability) {
+                    // Ability costs 0 unless it is a variable cost ability
+                    const resourceCost = ability.resourceCost !== "x" ? 0 : ability.resourceCost;
+                    dispatch(useAbility({ ability: { ...ability, resourceCost }, actorId: actor.id }));
+                }
+            }
+        }
+    };
+};
+
 const performAction = ({
     action,
     selectedIndex,
@@ -1088,7 +1111,7 @@ const performAction = ({
         const targetCombatant = getState().battle[side][selectedIndex];
         const area = calculateActionArea({ action, actor, target: targetCombatant });
 
-        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget, secondaryAction } = action;
+        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget, secondaryAction, autoCastAbilities } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
         dispatch(checkHandleSummon({ action, actorId, parentSource }));
@@ -1172,6 +1195,7 @@ const performAction = ({
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
         dispatch(checkCardActions(action, parentSource));
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor }));
         dispatch(
             onAction({
                 action,
@@ -1476,8 +1500,8 @@ export const useAbility = ({
     side: initialSide,
     actorId,
 }: {
-    side: BATTLEFIELD_SIDES;
-    selectedIndex: number;
+    side?: BATTLEFIELD_SIDES;
+    selectedIndex?: number;
     ability: Ability | HandAbility;
     actorId: string;
 }) => {

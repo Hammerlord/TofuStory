@@ -27,6 +27,7 @@ import {
     tribolt,
     wishUponAStar,
     feedback,
+    metronome,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -131,6 +132,7 @@ export const JOB_CARD_MAP = {
             slimmingMuffin,
             aurora,
             feedback,
+            metronome,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

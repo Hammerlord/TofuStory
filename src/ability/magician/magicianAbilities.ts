@@ -14,6 +14,7 @@ import {
     FireArrowProjectileImage,
     HighWisdomImage,
     IgniteImage,
+    InfinityImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
     MPEaterImage,
@@ -44,6 +45,7 @@ import {
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    AUTO_CAST_ABILITY_TYPES,
     Ability,
     Action,
     CONDITION_TARGETS,
@@ -1729,4 +1731,21 @@ export const feedback: Ability = {
         },
     ],
     upgrades: [feedback2],
+};
+
+export const metronome: Ability = {
+    name: "Metronome",
+    resourceCost: 2,
+    image: InfinityImage,
+    description: "Cast 2 random spells.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            autoCastAbilities: {
+                type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
+                amount: 2,
+            },
+        },
+    ],
 };

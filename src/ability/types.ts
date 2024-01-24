@@ -444,6 +444,11 @@ export interface Action {
         resources?: number;
         multiplier?: Multiplier;
     };
+    /** Wild magic */
+    autoCastAbilities?: {
+        type: AUTO_CAST_ABILITY_TYPES;
+        amount: number;
+    };
 }
 
 export interface Ability {
@@ -529,4 +534,9 @@ export enum SELECT_CARD_TYPES {
     DISCOVER_FROM_CLASS = "discover-from-class",
     PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
+}
+
+export enum AUTO_CAST_ABILITY_TYPES {
+    FROM_CLASS = "from-class",
+    PRESET_CARDS = "preset-cards",
 }
