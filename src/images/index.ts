@@ -321,6 +321,7 @@ export { default as TeleportMasteryFireImage } from "./TeleportMasteryFire.png";
 export { default as TeoImage } from "./Teo.png";
 export { default as TheBookOfAncientImage } from "./TheBookOfAncient.png";
 export { default as ThunderBoltImage } from "./ThunderBolt.png";
+export { default as ThunderBreakImage } from "./ThunderBreak.png";
 export { default as TofuImage } from "./Tofu.png";
 export { default as TopazImage } from "./Topaz.png";
 export { default as ToyHammerImage } from "./ToyHammer.png";

@@ -39,6 +39,7 @@ import {
     TeleportMasteryFireImage,
     TeleportMasteryImage,
     ThunderBoltImage,
+    ThunderBreakImage,
     TriboltImage,
     WizMushImage,
 } from "../../images";
@@ -1749,6 +1750,7 @@ const arcaneChanneling2: Ability = {
     level: 2,
     resourceCost: 0,
     depletedOnUse: true,
+    image: ThunderBreakImage,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1762,6 +1764,7 @@ export const arcaneChanneling: Ability = {
     name: "Arcane Channeling",
     resourceCost: 0,
     depletedOnUse: true,
+    image: ThunderBreakImage,
     actions: [
         {
             target: TARGET_TYPES.SELF,
