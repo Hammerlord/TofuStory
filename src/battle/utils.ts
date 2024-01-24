@@ -399,17 +399,19 @@ export const calculateDamage = ({
         }
     };
 
-    const damageFromEffects = getEnabledEffects({ ...actor, getCalculationTarget }).reduce(
-        (acc, { attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
-            if (excludeEffectOwner) {
-                return acc;
-            }
-            // Attack power only applies to attacks
-            const attackPowerIncrease = isAttack ? attackPower : 0;
-            return acc + getSkillBonusDamage({ ability: actionParent, skillBonus }) + attackPowerIncrease;
-        },
-        0
-    );
+    let damageFromEffects = 0;
+    if (isAttack) {
+        damageFromEffects = getEnabledEffects({ ...actor, getCalculationTarget }).reduce(
+            (acc, { attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
+                if (excludeEffectOwner) {
+                    return acc;
+                }
+
+                return acc + getSkillBonusDamage({ ability: actionParent, skillBonus }) + attackPower;
+            },
+            0
+        );
+    }
 
     const applyAbilityDamageReceived = (damage): number => {
         const { multiplier, additionalDamageReceived } = getEnabledEffects({ ...target, getCalculationTarget }).reduce(
