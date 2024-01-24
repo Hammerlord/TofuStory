@@ -965,6 +965,7 @@ const fireArrow2: Ability = {
             damage: 15,
             animationOptions: {
                 height: 90,
+                rotateToFaceTarget: true,
             },
         },
         {
@@ -1001,6 +1002,7 @@ export const fireArrow: Ability = {
             damage: 12,
             animationOptions: {
                 height: 90,
+                rotateToFaceTarget: true,
             },
         },
         {
@@ -1243,6 +1245,21 @@ export const greaterBolt2: Ability = {
     image: EnergyBoltImage,
     level: 2,
     resourceCost: 1,
+    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage",
+    effectsWhileOwned: [
+        {
+            name: "Greater Bolt",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            skillBonus: [
+                {
+                    comparator: "includes",
+                    skill: "bolt",
+                    damage: 1,
+                },
+            ],
+        },
+    ],
     actions: [
         {
             damage: 8,
@@ -1258,25 +1275,6 @@ export const greaterBolt2: Ability = {
                 height: 100,
             },
         },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Greater Bolt",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: EnergyBoltImage,
-                    skillBonus: [
-                        {
-                            comparator: "includes",
-                            skill: "bolt",
-                            damage: 1,
-                        },
-                    ],
-                },
-            ],
-        },
     ],
 };
 
@@ -1284,9 +1282,24 @@ export const greaterBolt: Ability = {
     name: "Greater Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
+    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage",
+    effectsWhileOwned: [
+        {
+            name: "Greater Bolt",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            skillBonus: [
+                {
+                    comparator: "includes",
+                    skill: "bolt",
+                    damage: 1,
+                },
+            ],
+        },
+    ],
     actions: [
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1298,25 +1311,6 @@ export const greaterBolt: Ability = {
                 width: 100,
                 height: 100,
             },
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Greater Bolt",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: EnergyBoltImage,
-                    skillBonus: [
-                        {
-                            comparator: "includes",
-                            skill: "bolt",
-                            damage: 1,
-                        },
-                    ],
-                },
-            ],
         },
     ],
     upgrades: [greaterBolt2],
@@ -1748,4 +1742,32 @@ export const metronome: Ability = {
             },
         },
     ],
+};
+
+const arcaneChanneling2: Ability = {
+    name: "Arcane Channeling",
+    level: 2,
+    resourceCost: 0,
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            addCards: [greaterBolt2, greaterBolt2, greaterBolt2, greaterBolt2].map((ability) => ({ ...ability, removeAfterTurn: true })),
+        },
+    ],
+};
+
+export const arcaneChanneling: Ability = {
+    name: "Arcane Channeling",
+    resourceCost: 0,
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            addCards: [greaterBolt, greaterBolt, greaterBolt, greaterBolt].map((ability) => ({ ...ability, removeAfterTurn: true })),
+        },
+    ],
+    upgrades: [arcaneChanneling2],
 };

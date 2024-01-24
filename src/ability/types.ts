@@ -480,6 +480,7 @@ export interface Ability {
     conditions?: Condition[];
     /** Enemies should prefer to use this ability if it is available */
     priority?: boolean;
+    effectsWhileOwned?: Effect[];
 }
 
 /**

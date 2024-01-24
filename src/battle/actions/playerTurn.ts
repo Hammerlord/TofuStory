@@ -4,7 +4,15 @@ import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
 import { clearTurnHistory, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
-import { checkEventTrigger, drawCards, findCombatantData, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
+import {
+    checkEventTrigger,
+    drawCards,
+    findCombatantData,
+    onEndTurnTriggers,
+    recalculateEffectsFromAbilities,
+    tickDownStatusEffects,
+    useAbility,
+} from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -36,6 +44,7 @@ export const onUsePlayerAbility = ({
         // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
         // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
         dispatch(handleDiscard(ability));
+        dispatch(recalculateEffectsFromAbilities());
     };
 };
 

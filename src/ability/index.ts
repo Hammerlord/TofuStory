@@ -28,6 +28,7 @@ import {
     wishUponAStar,
     feedback,
     metronome,
+    arcaneChanneling,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -133,6 +134,7 @@ export const JOB_CARD_MAP = {
             aurora,
             feedback,
             metronome,
+            arcaneChanneling,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

@@ -1,3 +1,4 @@
+import { arcaneChanneling } from "./../../ability/magician/magicianAbilities";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -44,6 +45,7 @@ import { TriggerSource } from "./../types";
 import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
+import { aggregateAbilityEffects } from "../../Menu/utils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -1380,6 +1382,7 @@ export const drawCards = ({
                 }
             });
         }
+        dispatch(recalculateEffectsFromAbilities());
     };
 };
 
@@ -1625,3 +1628,28 @@ const onUseAbility =
             );
         }
     };
+
+/**
+ * Some status effects are stored on the ability object and are gained only when holding/owning the ability.
+ * These effects need to be recalculated as your hand/deck/discard change.
+ * @see greaterBolt for an example
+ */
+export const recalculateEffectsFromAbilities = () => {
+    return (dispatch, getState) => {
+        const { playerSide, deck, hand, discard } = getState().battle;
+        const player = playerSide.find((combatant) => combatant?.isPlayer);
+        if (!player) {
+            return;
+        }
+
+        const effects = player.effects.filter((e) => !e.isEffectFromHoldingAbility);
+        dispatch(
+            updateCombatant({
+                combatantId: player.id,
+                newProperties: {
+                    effects: [...effects, ...aggregateAbilityEffects([...deck, ...hand, ...discard])],
+                },
+            })
+        );
+    };
+};

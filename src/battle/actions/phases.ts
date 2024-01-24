@@ -8,7 +8,7 @@ import { shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_TYPES, Wave } from "../types";
-import { aggregateItemEffects } from "./../../Menu/utils";
+import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
 
@@ -92,11 +92,11 @@ export const startBattle = ({
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
+        deck = deck || character?.deck;
         const player = {
             ...character.player,
-            effects: aggregateItemEffects(character.player.items),
+            effects: aggregateItemEffects(character.player.items).concat(aggregateAbilityEffects(deck)),
         };
-        deck = deck || character?.deck;
         const { presetDeck, enemies } = waves[0];
 
         dispatch(
