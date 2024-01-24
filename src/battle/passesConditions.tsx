@@ -94,7 +94,7 @@ export const passesConditions = ({
         }
 
         const checkPass = (calcTarget: IndexedCombatant) => {
-            const { combatant, index } = calcTarget;
+            const { combatant, index } = calcTarget || {};
             if (!combatant) {
                 return false;
             }

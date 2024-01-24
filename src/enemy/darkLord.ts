@@ -111,7 +111,7 @@ const shadowClonesEffect: Effect = {
     class: EFFECT_CLASSES.NONE,
     conditions: [
         {
-            calculationTarget: CONDITION_TARGETS.ACTOR,
+            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             healthPercentage: 0.7,
             comparator: "lt",
         },
@@ -345,7 +345,7 @@ export const darkLord: Minion = {
             ...shadowClonesEffect,
             conditions: [
                 {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     healthPercentage: 0.3,
                     comparator: "lt",
                 },
