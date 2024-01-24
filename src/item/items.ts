@@ -971,7 +971,7 @@ export const unsignedLetter: Item = {
 
 export const chargingStone: Item = {
     name: "Charging Stone",
-    description: "When you use an ability, certain spells become Charged.",
+    description: "When you use an ability, certain spells become Charged. If left unused at the end of your turn, unleash an Energy Bolt.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -996,7 +996,7 @@ export const chargingStone: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
                         description:
-                            "Empowering the next cast of a Charged spell. If left unused, unleash an Energy Bolt at the end of your turn.",
+                            "Empowering the next cast of a Charged spell. If left unused at the end of your turn, unleash an Energy Bolt.",
                         duration: 1,
                         weaponAnimation: "glow",
                         onAbility: {

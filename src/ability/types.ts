@@ -463,6 +463,8 @@ export interface Ability {
     channelDuration?: number;
     castTime?: number;
     description?: string;
+    /** Escape hatch to depend on description only if the body text generator is unmanageable */
+    overrideBodyText?: boolean;
     /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
     reusable?: boolean;

@@ -1,7 +1,8 @@
 import { getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
-import { NimbleJewelCImage } from "../../images";
+import { AlchemistStoneImage, NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, HourglassIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
+import { polymorph } from "../magician/magicianAbilities";
 import { Action, Bonus, Condition, EFFECT_CLASSES, EFFECT_TYPES, Effect } from "../types";
 
 const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
@@ -42,58 +43,61 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
     const bonusDescriptions = [];
 
     bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0, effects = [] }, i) => {
-        const conditionText = conditions?.map(({ hasEffectType = [], hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
-            if (hasEffectType.length) {
-                if (multiplier) {
+        const conditionText = conditions?.map(
+            ({ hasEffectType = [], hasEffect, hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
+                if (hasEffectType.length) {
+                    if (multiplier) {
+                        return (
+                            <span key={i}>
+                                for each {hasEffectType.map(getIconForEffectType)} on the {multiplier.calculationTarget}
+                            </span>
+                        );
+                    }
+
                     return (
                         <span key={i}>
-                            for each {hasEffectType.map(getIconForEffectType)} on the {multiplier.calculationTarget}
+                            to targets afflicted by {hasEffectType.map(getIconForEffectType)}
+                            {i < conditions.length - 1 ? " or " : ""}
                         </span>
                     );
                 }
 
-                return (
-                    <span key={i}>
-                        to targets afflicted by {hasEffectType.map(getIconForEffectType)}
-                        {i < conditions.length - 1 ? " or " : ""}
-                    </span>
-                );
-            }
-            if (hasEffectClass) {
-                return (
-                    <span key={i}>
-                        to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
-                    </span>
-                );
-            }
-            if (healthPercentage !== undefined) {
-                return (
-                    <span key={i}>
-                        to targets {comparatorMap[comparator]} {healthPercentage * 100}% HP
-                    </span>
-                );
-            }
-            if (armor !== undefined) {
-                return (
-                    <span key={i}>
-                        to <Icon icon={<ShieldIcon />} size={"sm"} /> targets
-                    </span>
-                );
-            }
+                if (hasEffectClass) {
+                    return (
+                        <span key={i}>
+                            to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
+                        </span>
+                    );
+                }
+                if (healthPercentage !== undefined) {
+                    return (
+                        <span key={i}>
+                            to targets {comparatorMap[comparator]} {healthPercentage * 100}% HP
+                        </span>
+                    );
+                }
+                if (armor !== undefined) {
+                    return (
+                        <span key={i}>
+                            to <Icon icon={<ShieldIcon />} size={"sm"} /> targets
+                        </span>
+                    );
+                }
 
-            if (effects.length) {
-                return (
-                    <span key={i}>
-                        Apply{" "}
-                        {effects.map((e: Effect, i) => (
-                            <span key={e.name}>
-                                <Icon icon={e.icon} size={"sm"} /> <Icon icon={<HourglassIcon />} text={e.duration} size={"sm"} />{" "}
-                            </span>
-                        ))}{" "}
-                    </span>
-                );
+                if (effects.length) {
+                    return (
+                        <span key={i}>
+                            Apply{" "}
+                            {effects.map((e: Effect, i) => (
+                                <span key={e.name}>
+                                    <Icon icon={e.icon} size={"sm"} /> <Icon icon={<HourglassIcon />} text={e.duration} size={"sm"} />{" "}
+                                </span>
+                            ))}{" "}
+                        </span>
+                    );
+                }
             }
-        });
+        );
         const hasEffect = conditions?.find(({ hasEffect }) => hasEffect)?.hasEffect;
         const bonusMultiplier = getMultiplier({ actor: { combatant: player, index: undefined }, multiplier, deck, hand, discard });
         const totalDamage = damage * bonusMultiplier;
@@ -118,7 +122,11 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
             {bonusDescriptions.map(({ hasEffect, totalDamage, totalHealing, totalArmor, conditionText, area }, i) => {
                 return (
                     <div key={i}>
-                        {hasEffect && `${hasEffect}: `}
+                        {hasEffect === "Charged" && (
+                            <>
+                                <Icon icon={AlchemistStoneImage} size={"sm"} />:{" "}
+                            </>
+                        )}
                         {totalDamage > 0 && (
                             <>
                                 Deal <Icon icon={CrossedSwordsIcon} text={`+${totalDamage}`} size={"sm"} />

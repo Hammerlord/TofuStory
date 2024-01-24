@@ -960,7 +960,8 @@ const fireArrow2: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    description: "on the target's neighbors if the target is Burning.",
+    description: "If the target is Burning, inflict Burn on its neighbors.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -970,6 +971,15 @@ const fireArrow2: Ability = {
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        hasEffect: "Polymorph",
+                    },
+                ],
+                damage: 5,
             },
         },
         {
@@ -997,7 +1007,8 @@ export const fireArrow: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    description: "on the target's neighbors if the target is Burning.",
+    description: "If the target is Burning, inflict Burn on its neighbors.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1007,6 +1018,15 @@ export const fireArrow: Ability = {
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        hasEffect: "Polymorph",
+                    },
+                ],
+                damage: 5,
             },
         },
         {
@@ -1487,6 +1507,7 @@ const shatter2: Ability = {
     image: NimbleJewelImage,
     resourceCost: 1,
     reusable: true,
+    description: "Polymorph", // Hack
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1499,7 +1520,11 @@ const shatter2: Ability = {
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.FREEZE, EFFECT_TYPES.STUN],
+                            hasEffectType: [EFFECT_TYPES.FREEZE],
+                        },
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffect: "Polymorph",
                         },
                     ],
                     damage: 9,
@@ -1514,6 +1539,7 @@ export const shatter: Ability = {
     image: NimbleJewelImage,
     resourceCost: 1,
     reusable: true,
+    description: "Polymorph", // Hack
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1526,7 +1552,11 @@ export const shatter: Ability = {
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.FREEZE, EFFECT_TYPES.STUN],
+                            hasEffectType: [EFFECT_TYPES.FREEZE],
+                        },
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffect: "Polymorph",
                         },
                     ],
                     damage: 7,
@@ -1787,19 +1817,13 @@ export const polymorph: Ability = {
     name: "Polymorph",
     resourceCost: 2,
     image: ScarfSnowmanImage,
+    description: "Sets the target's base attack to 1 and causes it to take 1+ extra damage.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                area: 1,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-            },
+            area: 1,
             effects: [
                 {
                     name: "Polymorph",

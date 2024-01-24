@@ -155,7 +155,7 @@ interface AbilityViewProps {
 
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [] }: AbilityViewProps, ref) => {
     const classes = useStyles();
-    const { actions = [], name, minion, image, description, removeAfterTurn, depletedOnUse, preemptive } = ability;
+    const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
     const {
         area = 0,
         target: targetType,
@@ -264,7 +264,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                         {ability.reusable && <div className={classes.bold}>Reusable</div>}
                         <DrawCards ability={ability} playerClass={player?.class} />
-                        <Debuffs effects={getAllEffects(ability)} />
+                        {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                         {ricochet && (
                             <div>
                                 Bounces to up to {numTargets} other targets{" "}
@@ -295,9 +295,9 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                                 Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
                             </div>
                         )}
-                        <Buffs ability={ability} player={player} />
+                        {!overrideBodyText && <Buffs ability={ability} player={player} />}
                         <CardsToAdd ability={ability} />
-                        <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
+                        {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
                         <RadiateView ability={ability} />
                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
