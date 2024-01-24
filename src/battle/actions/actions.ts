@@ -897,6 +897,10 @@ const checkHandleMorph = ({
             .map((id: string) => findCombatantData(getState, id))
             .filter((combatantInfo) => combatantInfo.combatant?.HP >= 0);
 
+        if (!targets.length) {
+            return;
+        }
+
         const type = action.morph.type;
         let transformed = {} as any;
         const morphProps = {
