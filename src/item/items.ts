@@ -1,3 +1,4 @@
+import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, wound } from "../ability/Effects";
 import {
     chainLightning,
@@ -969,6 +970,15 @@ export const unsignedLetter: Item = {
     ],
 };
 
+// Bit of grease to check charged abilities to avoid doing it manually anymore
+const chargedAbilityNames = JOB_CARD_MAP.Magician.all
+    .filter((ability) => {
+        if (JSON.stringify(ability.actions).includes('"hasEffect":"Charged"')) {
+            return true;
+        }
+    })
+    .map(({ name }) => name);
+
 export const chargingStone: Item = {
     name: "Charging Stone",
     description: "When you use an ability, certain spells become Charged. If left unused at the end of your turn, unleash an Energy Bolt.",
@@ -1004,16 +1014,7 @@ export const chargingStone: Item = {
                                 {
                                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                     comparator: "eq",
-                                    name: [
-                                        tribolt.name,
-                                        magicClaw.name,
-                                        magicArmor.name,
-                                        ignite.name,
-                                        magicFang.name,
-                                        coldBeam.name,
-                                        thunderBolt.name,
-                                        chainLightning.name,
-                                    ],
+                                    name: chargedAbilityNames,
                                 },
                             ],
                             removeEffect: true,
