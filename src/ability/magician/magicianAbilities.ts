@@ -803,9 +803,10 @@ export const swift: Ability = {
     name: "Swift",
     image: StarImage,
     resourceCost: 0,
+    removeAfterTurn: true,
     actions: [
         {
-            damage: 2,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
@@ -821,6 +822,7 @@ export const swift: Ability = {
             drawCards: {
                 amount: 1,
             },
+            healing: 1,
         },
     ],
 };
@@ -1196,7 +1198,7 @@ const avatarOfTheStars2: Ability = {
     level: 2,
     image: StarfishImage,
     depletedOnUse: true,
-    resourceCost: 1,
+    resourceCost: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1207,8 +1209,7 @@ const avatarOfTheStars2: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    lifeOnHit: 1,
-                    duration: 3,
+                    duration: 2,
                     override: {
                         portrait: StarfishIdleImage,
                     },
@@ -1234,7 +1235,7 @@ export const avatarOfTheStars: Ability = {
     name: "Avatar Of The Stars",
     image: StarfishImage,
     depletedOnUse: true,
-    resourceCost: 2,
+    resourceCost: 3,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1245,8 +1246,7 @@ export const avatarOfTheStars: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    lifeOnHit: 1,
-                    duration: 3,
+                    duration: 2,
                     override: {
                         portrait: StarfishIdleImage,
                     },
