@@ -1,4 +1,8 @@
 import { createUseStyles } from "react-jss";
+import { calculateActionArea } from "../../battle/utils";
+import { Ability } from "../types";
+import { getDamageStatistics } from "./DamageIcon";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     root: {
@@ -6,7 +10,7 @@ const useStyles = createUseStyles({
     },
     area: {
         width: "14px",
-        height: "14px",
+        height: "15px",
         backgroundColor: "rgba(0, 0, 0, 0.25)",
         display: "inline-block",
         fontSize: "0.7rem",
@@ -19,7 +23,7 @@ const useStyles = createUseStyles({
     },
     mainTarget: {
         width: "14px",
-        height: "14px",
+        height: "15px",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         display: "inline-block",
         marginRight: "4px",
@@ -27,19 +31,63 @@ const useStyles = createUseStyles({
         fontSize: "0.7rem",
         verticalAlign: "bottom",
     },
+    highlight: {
+        color: "#42f57b",
+    },
 });
 
-const Area = ({ area, damage, secondaryDamage }) => {
+const Area = ({
+    ability,
+    player,
+    deck = [],
+    hand = [],
+    discard = [],
+}: {
+    ability: Ability;
+    player: any;
+    deck?: Ability[];
+    hand?: Ability[];
+    discard?: Ability[];
+}) => {
+    const { actions = [] } = ability || {};
+    const area = calculateActionArea({ action: actions[0], actor: player }) || actions[0]?.area || 0;
+
     const classes = useStyles();
+
+    if (!area) {
+        return null;
+    }
+
+    const { damageBonusFromConditions, damageBonusFromEffects, secondaryTotalDamage, primaryTotalDamage } = getDamageStatistics({
+        ability,
+        player,
+        deck,
+        hand,
+        discard,
+    });
+
+    const isTextHighlighted = damageBonusFromEffects > 0 || damageBonusFromConditions > 0;
+
     const areaIndicator = Array.from({ length: area }).map((_, i) => (
-        <span className={classes.area} key={i}>
-            {secondaryDamage || damage}
+        <span
+            className={classNames(classes.area, {
+                [classes.highlight]: isTextHighlighted,
+            })}
+            key={i}
+        >
+            {(secondaryTotalDamage > 0 && secondaryTotalDamage) || (primaryTotalDamage > 0 && primaryTotalDamage)}
         </span>
     ));
     return (
         <div className={classes.root}>
             Area: {areaIndicator}
-            <span className={classes.mainTarget}>{damage}</span>
+            <span
+                className={classNames(classes.mainTarget, {
+                    [classes.highlight]: isTextHighlighted,
+                })}
+            >
+                {primaryTotalDamage > 0 && primaryTotalDamage}
+            </span>
             {areaIndicator}
         </div>
     );

@@ -6,6 +6,38 @@ import { CrossedSwordsIcon } from "../../images/icons";
 import { Action, ACTION_TYPES, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../types";
 import { passesConditions } from "../../battle/passesConditions";
 
+const calculateMultiplierFromActions = ({ ability, player, deck, hand, discard }): { damage: number; secondaryDamage: number } => {
+    return ability.actions.reduce(
+        (acc, action: Action) => {
+            if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+                const multiplier = getMultiplier({
+                    actor: { combatant: player, index: undefined },
+                    multiplier: action.multiplier,
+                    deck,
+                    hand,
+                    discard,
+                });
+
+                const damageProps = {
+                    actor: player,
+                    action,
+                    actionParent: ability,
+                    multiplier,
+                };
+                acc.damage += player ? calculateDamage(damageProps) : action.damage || 0;
+                acc.secondaryDamage += player
+                    ? calculateDamage({ ...damageProps, targetIndex: 1, selectedIndex: 2 })
+                    : action.secondaryDamage || 0;
+            }
+            return acc;
+        },
+        {
+            damage: 0,
+            secondaryDamage: 0,
+        }
+    );
+};
+
 export const getDamageStatistics = ({
     ability,
     player,
@@ -14,9 +46,10 @@ export const getDamageStatistics = ({
     discard,
 }): {
     baseDamage: number;
-    totalDamage: number;
+    secondaryDamage: number;
+    primaryTotalDamage: number;
+    secondaryTotalDamage: number;
     hasMultiplier: boolean;
-    bonusFromMultiplier: number;
     damageBonusFromEffects: number;
     damageBonusFromConditions: number;
 } => {
@@ -25,9 +58,10 @@ export const getDamageStatistics = ({
     if (attackActions.length === 0) {
         return {
             baseDamage: 0,
-            totalDamage: 0,
+            secondaryDamage: 0,
+            primaryTotalDamage: 0,
+            secondaryTotalDamage: 0,
             hasMultiplier: false,
-            bonusFromMultiplier: 0,
             damageBonusFromEffects: 0,
             damageBonusFromConditions: 0,
         };
@@ -53,29 +87,29 @@ export const getDamageStatistics = ({
     });
 
     const damageBonusFromConditions: number = damageBonusFromConditionsArr.reduce((a: number, c: number) => a + c, 0);
-    const bonusFromMultiplier = actions.reduce((acc, action: Action) => {
-        if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-            const multiplier = getMultiplier({
-                actor: { combatant: player, index: undefined },
-                multiplier: action.multiplier,
-                deck,
-                hand,
-                discard,
-            });
-
-            acc += player ? calculateDamage({ actor: player, action, actionParent: ability, multiplier }) : action.damage || 0;
-        }
-        return acc;
-    }, 0);
-    const totalDamage = bonusFromMultiplier + damageBonusFromEffects + damageBonusFromConditions;
+    const { damage: primaryWithMultiplier, secondaryDamage: secondaryWithMultiplier } = calculateMultiplierFromActions({
+        ability,
+        player,
+        deck,
+        hand,
+        discard,
+    });
+    const primaryTotalDamage = primaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
     const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
     const damageActions = attackActions.map(({ damage }) => damage).filter((d: number) => d);
     const baseDamage = (damageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
+
+    const secondaryDamageActions = attackActions.map(({ secondaryDamage }) => secondaryDamage).filter((d: number) => d);
+    const secondaryDamage = (secondaryDamageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
+
+    const secondaryTotalDamage = secondaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
+
     return {
         baseDamage,
-        totalDamage,
+        secondaryDamage,
+        primaryTotalDamage,
+        secondaryTotalDamage,
         hasMultiplier: damageActions.length > 1 || hasAttackMultiplier,
-        bonusFromMultiplier,
         damageBonusFromEffects,
         damageBonusFromConditions,
     };
@@ -94,17 +128,22 @@ const useStyles = createUseStyles({
  */
 const DamageIcon = ({ ability, player, deck, hand, discard }) => {
     const { actions } = ability;
-    const { baseDamage, totalDamage, hasMultiplier, bonusFromMultiplier, damageBonusFromEffects, damageBonusFromConditions } =
-        getDamageStatistics({
-            ability,
-            player,
-            deck,
-            hand,
-            discard,
-        });
+    const {
+        baseDamage,
+        primaryTotalDamage: primaryTargetTotalDamage,
+        hasMultiplier,
+        damageBonusFromEffects,
+        damageBonusFromConditions,
+    } = getDamageStatistics({
+        ability,
+        player,
+        deck,
+        hand,
+        discard,
+    });
     const classes = useStyles();
 
-    if (!totalDamage) {
+    if (!primaryTargetTotalDamage) {
         return null;
     }
 

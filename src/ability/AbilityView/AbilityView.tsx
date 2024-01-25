@@ -3,14 +3,13 @@ import Handlebars from "handlebars";
 import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
 import { getMultiplier } from "../../battle/utils";
-import { Combatant } from "../../character/types";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
-import { Fury, Mana } from "../../resource/ResourcesView";
 import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
+import ArmorIcon from "./ArmorIcon";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
@@ -20,8 +19,6 @@ import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
-import { PLAYER_CLASSES } from "../../Menu/types";
-import ArmorIcon from "./ArmorIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -156,17 +153,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [] }: AbilityViewProps, ref) => {
     const classes = useStyles();
     const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
-    const {
-        area = 0,
-        target: targetType,
-        type,
-        damage,
-        secondaryDamage,
-        destroyArmor = 0,
-        ricochet,
-        targetArea,
-        numTargets,
-    } = actions[0] || {};
+    const { target: targetType, type, damage, secondaryDamage, destroyArmor = 0, ricochet, targetArea, numTargets } = actions[0] || {};
     const cardImage = minion?.image || image;
     let imageNode = null;
 
@@ -298,12 +285,12 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                         {!overrideBodyText && <Buffs ability={ability} player={player} />}
                         <CardsToAdd ability={ability} />
                         {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
-                        <RadiateView ability={ability} />
+                        <RadiateView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                         {interpolatedDescription && <div>{interpolatedDescription}</div>}
                     </div>
                     <div className={classes.footer}>
-                        {area > 0 && <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />}
+                        {<Area ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
                         <AbilityTypeView targetType={targetType} type={type} minion={minion} />
                         {minion && (
                             <div className={classes.minionStats}>

@@ -139,7 +139,7 @@ export const isValidTarget = ({
     }
 
     const { target } = actions[0] || {};
-    const area = calculateActionArea({ action: actions[0], actor }) || actions[0].area || 0;
+    const area = calculateActionArea({ action: actions[0], actor }) || actions[0]?.area || 0;
 
     if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
         if (target === TARGET_TYPES.SELF) {

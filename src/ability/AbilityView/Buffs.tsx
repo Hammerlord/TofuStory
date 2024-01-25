@@ -1,13 +1,12 @@
 import { cloneElement } from "react";
-import { PLAYER_CLASSES } from "../../Menu/types";
 import Icon from "../../icon/Icon";
 import { UpMATTImage } from "../../images";
 import { CactusIcon, CloudyIcon, CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
 import { CONDITION_TARGETS, Condition, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES, Effect, EffectEventTrigger } from "../types";
+import CardsToAdd from "./CardsToAdd";
 import { ResourceIcon } from "./ResourceIcon";
 import { effectEventKeyLabelMap, multiplierTypeKeyLabelMap } from "./constants";
 import { getAllEffects } from "./utils";
-import CardsToAdd from "./CardsToAdd";
 
 const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
     const content = Object.entries(effectEvents).map(([key, value]) => {

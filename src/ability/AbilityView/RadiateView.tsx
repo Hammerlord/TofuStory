@@ -26,19 +26,19 @@ const useStyles = createUseStyles({
     },
 });
 
-const RadiateView = ({ ability }) => {
+const RadiateView = ({ ability, player, hand, deck, discard }) => {
     const classes = useStyles();
     const radiate = ability.actions.find(({ radiate }) => radiate)?.radiate;
     if (!radiate) {
         return null;
     }
 
-    const { damage = 0, secondaryDamage = 0, area, effects = [] } = radiate;
+    const { effects = [] } = radiate;
 
     return (
         <div className={classes.root}>
             <span className={classes.auraLabel}>Radiate</span>
-            <Area area={area} damage={damage} secondaryDamage={secondaryDamage} />
+            <Area ability={radiate} player={player} hand={hand} deck={deck} discard={discard} />
             <Debuffs effects={effects} />
         </div>
     );
