@@ -16,6 +16,7 @@ import {
     TARGET_TYPES,
     AbilityEffects,
     AUTO_CAST_ABILITY_TYPES,
+    CONDITION_TARGETS,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -1540,7 +1541,10 @@ export const useAbility = ({
                 getState,
             });
 
-            const getCalculationTarget = (): IndexedCombatant => {
+            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): IndexedCombatant => {
+                if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+                    return findCombatantData(getState, actorId);
+                }
                 return { combatant: getState().battle[side]?.[index], index };
             };
 
