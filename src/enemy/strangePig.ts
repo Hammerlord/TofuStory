@@ -10,7 +10,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { MutantRibbonPigImage, OmokPigImage, StrangePigImage } from "../images";
+import { MutantRibbonPigImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
 import { MountainIcon } from "../images/icons";
 import { championsRibbon, pigHeaded } from "./effect";
 
@@ -224,7 +224,38 @@ export const mutantRibbonPig: Minion = {
     ],
     effects: [
         hardy,
-        championsRibbon,
+        {
+            ...championsRibbon,
+            onTurnEnd: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Retaliation",
+                        description: "Countering on the next attack",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: OmokPigImage,
+                        canBeSilenced: true,
+                        duration: 1,
+                        onReceiveAttack: {
+                            usableWhileStunned: false,
+                            removeEffect: true,
+                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                            ability: {
+                                name: "Retaliate",
+                                actions: [
+                                    {
+                                        type: ACTION_TYPES.ATTACK,
+                                        target: TARGET_TYPES.HOSTILE,
+                                        damage: 5,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
         pigHeaded,
         {
             name: "Roar",

@@ -48,6 +48,7 @@ export const championsRibbon: Effect = {
                             {
                                 type: ACTION_TYPES.ATTACK,
                                 target: TARGET_TYPES.HOSTILE,
+                                damage: 3,
                             },
                         ],
                     },

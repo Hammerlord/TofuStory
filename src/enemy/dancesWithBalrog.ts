@@ -188,6 +188,7 @@ const boarStanceEffect: Effect = {
                             {
                                 type: ACTION_TYPES.ATTACK,
                                 target: TARGET_TYPES.HOSTILE,
+                                damage: 5,
                             },
                         ],
                     },
@@ -220,20 +221,9 @@ export const boarStanceAbility: Ability = {
             removeEffects: [boarStanceEligible.name],
         },
         {
-            damage: 1,
+            damage: 3,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            // effects: [stun]
-            bonus: {
-                damage: 2,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        comparator: "eq",
-                    },
-                ],
-            },
         },
     ],
 };
