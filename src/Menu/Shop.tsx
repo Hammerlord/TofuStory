@@ -54,7 +54,7 @@ const useStyles = createUseStyles({
         verticalAlign: "bottom",
     },
     container: {
-        margin: "64px 0",
+        margin: "40px 0",
         verticalAlign: "top",
     },
     ability: {
@@ -109,6 +109,9 @@ const useStyles = createUseStyles({
     refreshText: {
         color: "rgb(240, 240, 240)",
         marginRight: "16px",
+    },
+    refreshContainer: {
+        height: "40px",
     },
 });
 
@@ -252,20 +255,23 @@ const Shop = ({
                         <img src={MesoBagImage} alt="Meso Bag" className={classes.mesoBag} /> {merchant?.name || "Merchant"}'s Shop
                     </h2>
                 </div>
-                {numRefreshes > 0 && (
-                    <div>
-                        <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
-                        <Button
-                            color={"secondary"}
-                            onClick={() => {
-                                refreshItems();
-                                setNumRefreshes((prev) => prev - 1);
-                            }}
-                        >
-                            Refresh Items
-                        </Button>
-                    </div>
-                )}
+                <div className={classes.refreshContainer}>
+                    {numRefreshes > 0 && (
+                        <>
+                            <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
+                            <Button
+                                color={"secondary"}
+                                onClick={() => {
+                                    refreshItems();
+                                    setNumRefreshes((prev) => prev - 1);
+                                }}
+                            >
+                                Refresh Items
+                            </Button>
+                        </>
+                    )}
+                </div>
+
                 <div className={classes.container}>
                     <div className={classes.abilitiesSection}>
                         {abilities.map(({ item, price }, i) => (
