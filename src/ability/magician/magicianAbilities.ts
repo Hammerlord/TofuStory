@@ -1124,8 +1124,9 @@ const pieceOfCake2: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Attack Power Increase",
-                    icon: ArcaneOverdriveImage,
+                    name: "Cake",
+                    icon: PieceOfBirthdayCakeImage,
+                    disableDisplayIcon: true,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 2,
@@ -1147,8 +1148,9 @@ const pieceOfCake: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Attack Power Increase",
-                    icon: ArcaneOverdriveImage,
+                    name: "Cake",
+                    icon: PieceOfBirthdayCakeImage,
+                    disableDisplayIcon: true,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
