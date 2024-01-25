@@ -29,6 +29,9 @@ const useStyles = createUseStyles({
         bottom: "-18px",
         right: "12px",
     },
+    icon: {
+        verticalAlign: "bottom",
+    },
 });
 
 const AttackPower = ({ combatant }: { combatant: Combatant }) => {
@@ -80,19 +83,39 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
 
     const tooltip = (
         <div>
-            Attack power. Estimates the damage dealt by this character's next attack, if it attacks.
+            {!combatant.isPlayer && "Attack power. Estimates the damage dealt by this character's next attack, if it attacks."}
             {damageEffects.length > 0 && (
                 <>
-                    <hr />
+                    {!combatant.isPlayer && <hr />}
                     <div>Modifiers:</div>
                 </>
             )}
-            {damageEffects.map(({ icon, name: effectName, attackPower: damage }, i) => (
-                <div key={i}>
-                    <Icon icon={icon} /> {effectName} {damage < 0 ? "-" : "+"}
-                    {damage}
-                </div>
-            ))}
+            {Object.entries(
+                damageEffects.reduce((acc, { icon, name, attackPower }) => {
+                    if (!acc[name]) {
+                        acc[name] = {
+                            icon,
+                            attackPower: 0,
+                        };
+                    }
+
+                    acc[name] = {
+                        ...acc[name],
+                        attackPower: acc[name].attackPower + attackPower,
+                    };
+
+                    return acc;
+                }, {})
+            ).map(([name, value]) => {
+                const { icon, attackPower: damage } = value as any;
+
+                return (
+                    <div key={name}>
+                        <Icon icon={icon} className={classes.icon} /> {name} {damage < 0 ? "-" : "+"}
+                        {damage}
+                    </div>
+                );
+            })}
         </div>
     );
 
