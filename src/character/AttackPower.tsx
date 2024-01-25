@@ -125,7 +125,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                 <Icon
                     icon={<CrossedSwordsIcon />}
                     size={"lg"}
-                    text={totalDamage || damageFromEffects}
+                    text={totalDamage || Math.max(0, damageFromEffects)}
                     className={classNames({
                         [classes.bonus]: damageFromEffects > 0,
                         [classes.negative]: damageFromEffects < 0 || overrideDamage < combatant.damage,
