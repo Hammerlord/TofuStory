@@ -25,6 +25,7 @@ import {
     BronzeIncenseBurnerImage,
     CactusImage,
     CoffeePotImage,
+    CouponImage,
     CursedDollImage,
     DrakeBloodImage,
     EnergyBoltImage,
@@ -1067,4 +1068,15 @@ export const snailStompers: Item = {
             ],
         },
     ],
+};
+
+export const clubMembership: Item = {
+    name: "Shopper's Club Membership",
+    image: CouponImage,
+    description: "You can now refresh a merchant shop's inventory once per visit. Merchant item costs are reduced by 20%.",
+    type: ITEM_TYPES.EQUIPMENT,
+    merchant: {
+        discount: 0.2,
+        refreshTimes: 1,
+    },
 };

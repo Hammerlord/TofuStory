@@ -25,4 +25,10 @@ export interface Item {
         healing?: number;
         extraActivities?: number;
     };
+    merchant?: {
+        // Number of times you are allowed to refresh the items per visit
+        refreshTimes?: number;
+        // Percentage discount on prices
+        discount?: number;
+    };
 }

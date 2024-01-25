@@ -69,6 +69,7 @@ export { default as ColdBeamProjectileImage } from "./ColdBeamProjectile.png";
 export { default as ColdEyeCardImage } from "./ColdEyeCard.png";
 export { default as CombatOrdersImage } from "./CombatOrders.png";
 export { default as ComboFuryImage } from "./ComboFury.png";
+export { default as CouponImage } from "./Coupon.png";
 export { default as CoveringFireImage } from "./CoveringFire.png";
 export { default as CrabCardImage } from "./CrabCard.png";
 export { default as CursedDollImage } from "./CursedDoll.png";

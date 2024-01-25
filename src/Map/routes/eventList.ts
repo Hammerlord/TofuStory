@@ -9,6 +9,7 @@ import {
     boneHelm,
     bouquet,
     cactus,
+    clubMembership,
     coffeePot,
     cursedDoll,
     drakeBlood,
@@ -74,4 +75,5 @@ export const ITEMS = [
     cursedDoll,
     workGloves,
     snailStompers,
+    clubMembership,
 ];

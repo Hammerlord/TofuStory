@@ -106,23 +106,11 @@ const useStyles = createUseStyles({
         filter: "saturate(0%)",
         color: "rgba(200, 200, 200, 0.8)",
     },
+    refreshText: {
+        color: "rgb(240, 240, 240)",
+        marginRight: "16px",
+    },
 });
-
-const createShopItems = ({
-    items,
-    numItems,
-    priceMin,
-    priceMax,
-}: {
-    items: any[];
-    numItems: number;
-    priceMin: number;
-    priceMax: number;
-}): { item: any; price: number }[] => {
-    return shuffle(items)
-        .slice(0, numItems)
-        .map((item) => ({ item, price: getRandomInt(priceMin, priceMax) }));
-};
 
 const Shop = ({
     player,
@@ -139,9 +127,31 @@ const Shop = ({
     const [items, setItems] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const [numRefreshes, setNumRefreshes] = useState(0);
+    const [discount, setDiscount] = useState(0);
     const classes = useStyles();
 
-    useEffect(() => {
+    const applyDiscount = (price) => {
+        return Math.max(0, price - Math.floor(discount * price));
+    };
+
+    const createShopItems = ({
+        items,
+        numItems,
+        priceMin,
+        priceMax,
+    }: {
+        items: any[];
+        numItems: number;
+        priceMin: number;
+        priceMax: number;
+    }): { item: any; price: number }[] => {
+        return shuffle(items)
+            .slice(0, numItems)
+            .map((item) => ({ item, price: applyDiscount(getRandomInt(priceMin, priceMax)) }));
+    };
+
+    const refreshItems = () => {
         // Abilities
         const abilitiesForSale: { item: Ability; price: number }[] = [];
         const otherSecondaryJobs = Object.values(SECONDARY_JOBS[player.class]).filter((job) => job !== player.secondaryClass) || [];
@@ -150,7 +160,7 @@ const Shop = ({
             [] as Ability[]
         ) as Ability[];
         if (otherSecondaryJobCards.length) {
-            abilitiesForSale.push({ item: getRandomItem(otherSecondaryJobCards), price: getRandomInt(90, 120) });
+            abilitiesForSale.push({ item: getRandomItem(otherSecondaryJobCards), price: applyDiscount(getRandomInt(100, 130)) });
         }
 
         const firstJobAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
@@ -161,7 +171,7 @@ const Shop = ({
             return ability;
         });
         const potentialAbilities = firstJobAbilities.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
-        abilitiesForSale.push(...createShopItems({ items: potentialAbilities, numItems: 6, priceMin: 50, priceMax: 70 }));
+        abilitiesForSale.push(...createShopItems({ items: potentialAbilities, numItems: 6, priceMin: 60, priceMax: 80 }));
         // Use deck to determine which abilities have a higher chance to roll
         setAbilities(shuffle(abilitiesForSale));
 
@@ -177,18 +187,34 @@ const Shop = ({
             ...createShopItems({
                 items: ITEMS.filter((item: Item) => !alreadyObtained[item.name]),
                 numItems: 3,
-                priceMin: 80,
-                priceMax: 120,
+                priceMin: 90,
+                priceMax: 130,
             }),
             ...createShopItems({
-                items: [incense, incense, goldenHammer, goldenHammer],
+                items: [incense, incense, goldenHammer, goldenHammer, goldenHammer],
                 numItems: 3,
-                priceMin: 40,
-                priceMax: 60,
+                priceMin: 50,
+                priceMax: 70,
             }),
         ];
 
         setItems(itemsForSale);
+    };
+
+    useEffect(() => {
+        refreshItems();
+        // Set refreshes/discount from item effects
+        const { totalRefreshes, totalDiscount } = player.items.reduce(
+            (acc, item: Item) => {
+                const { refreshTimes = 0, discount = 0 } = item?.merchant || {};
+                acc.totalRefreshes += refreshTimes;
+                acc.totalDiscount += discount;
+                return acc;
+            },
+            { totalRefreshes: 0, totalDiscount: 0 }
+        );
+        setNumRefreshes(totalRefreshes);
+        setDiscount(Math.min(1, totalDiscount));
     }, []);
 
     const handleBuyClick = () => {
@@ -226,6 +252,20 @@ const Shop = ({
                         <img src={MesoBagImage} alt="Meso Bag" className={classes.mesoBag} /> {merchant?.name || "Merchant"}'s Shop
                     </h2>
                 </div>
+                {numRefreshes > 0 && (
+                    <div>
+                        <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
+                        <Button
+                            color={"secondary"}
+                            onClick={() => {
+                                refreshItems();
+                                setNumRefreshes((prev) => prev - 1);
+                            }}
+                        >
+                            Refresh Items
+                        </Button>
+                    </div>
+                )}
                 <div className={classes.container}>
                     <div className={classes.abilitiesSection}>
                         {abilities.map(({ item, price }, i) => (
