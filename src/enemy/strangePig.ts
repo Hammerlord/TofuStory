@@ -62,14 +62,12 @@ export const strangePig: Minion = {
                             type: ACTION_TYPES.EFFECT,
                             animation: ANIMATION_TYPES.EXPLODE,
                             target: TARGET_TYPES.SELF,
-                            morph: {
-                                type: MORPH_TYPES.MAP,
-                                minions: [
-                                    {
-                                        minion: "Mutant Ribbon Pig",
-                                    },
-                                ],
-                            },
+                            summon: [
+                                {
+                                    minion: ["Mutant Ribbon Pig"],
+                                    positionIndex: 2,
+                                },
+                            ],
                         },
                     ],
                 },

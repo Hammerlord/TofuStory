@@ -1121,7 +1121,6 @@ const performAction = ({
         const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget, secondaryAction, autoCastAbilities } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
-        dispatch(checkHandleSummon({ action, actorId, parentSource }));
 
         const extraTargetIndices = shuffle(
             getValidTargetIndices(getState().battle[side], {
@@ -1217,6 +1216,7 @@ const performAction = ({
                 combatants,
             })
         );
+        dispatch(checkHandleSummon({ action, actorId, parentSource }));
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
     };
 };
