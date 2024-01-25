@@ -118,6 +118,7 @@ export const safetyCharm: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SafetyCharmImage,
+            disableDisplayIcon: true,
             onWaveClear: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 3,
@@ -139,6 +140,7 @@ export const drakeBlood: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: DrakeBloodImage,
+            disableDisplayIcon: true,
             attackPower: 1,
             onTurnEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -202,7 +204,6 @@ export const redWhip: Item = {
         {
             name: "Red Whip",
             description: "Draw an extra card every 3 turns.",
-            image: RedWhipImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 3,
@@ -578,10 +579,11 @@ export const garnet: Item = {
                 ],
                 effects: [
                     {
-                        name: "Attack Power",
+                        name: "Garnet - Attack Power",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: WeaponMasteryImage,
+                        icon: GarnetImage,
+                        disableDisplayIcon: true,
                         duration: 1,
                         attackPower: 1,
                     },
@@ -778,6 +780,7 @@ export const risingStar: Item = {
                     {
                         name: "Rising Star - Attack Power",
                         icon: RisingStarImage,
+                        disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,
@@ -928,8 +931,9 @@ export const workGloves: Item = {
                 ],
                 effects: [
                     {
-                        name: "Attack Power",
-                        icon: WeaponMasteryImage,
+                        name: "Work Gloves - Attack Power",
+                        icon: WorkGlovesImage,
+                        disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,

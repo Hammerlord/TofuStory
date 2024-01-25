@@ -42,6 +42,7 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     CONDITION_TARGETS,
+    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     SELECT_CARD_TYPES,
@@ -384,7 +385,7 @@ export const spikedArmor: Ability = {
     upgrades: [spikedArmor2],
 };
 
-const drumOfWarAttackPower = {
+const drumOfWarAttackPower: Effect = {
     name: "Drums of War",
     description: "Attack power increased.",
     icon: WeaponMasteryImage,
@@ -392,6 +393,7 @@ const drumOfWarAttackPower = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
     duration: 1,
+    disableDisplayIcon: true,
 };
 
 const drumOfWar: Action = {
