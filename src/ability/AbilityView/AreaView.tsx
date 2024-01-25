@@ -58,7 +58,7 @@ const Area = ({
         return null;
     }
 
-    const { damageBonusFromConditions, damageBonusFromEffects, secondaryTotalDamage, primaryTotalDamage } = getDamageStatistics({
+    const { damageBonusFromConditions, damageBonusFromEffects, baseDamage, secondaryDamage } = getDamageStatistics({
         ability,
         player,
         deck,
@@ -75,7 +75,7 @@ const Area = ({
             })}
             key={i}
         >
-            {(secondaryTotalDamage > 0 && secondaryTotalDamage) || (primaryTotalDamage > 0 && primaryTotalDamage)}
+            {(secondaryDamage > 0 && secondaryDamage) || (baseDamage > 0 && baseDamage)}
         </span>
     ));
     return (
@@ -86,7 +86,7 @@ const Area = ({
                     [classes.highlight]: isTextHighlighted,
                 })}
             >
-                {primaryTotalDamage > 0 && primaryTotalDamage}
+                {baseDamage > 0 && baseDamage}
             </span>
             {areaIndicator}
         </div>

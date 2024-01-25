@@ -96,10 +96,15 @@ export const getDamageStatistics = ({
     });
     const primaryTotalDamage = primaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
     const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
-    const damageActions = attackActions.map(({ damage }) => damage).filter((d: number) => d);
+    const damageActions: number[] = attackActions.filter(({ damage }) => damage).map(({ damage }) => damage);
+    // All actions need to do the same damage to be considered a multiplier
+    const isMultiHit = damageActions.length > 1 && damageActions.every((a) => a === damageActions[0]);
+
     const baseDamage = (damageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
 
-    const secondaryDamageActions = attackActions.map(({ secondaryDamage }) => secondaryDamage).filter((d: number) => d);
+    const secondaryDamageActions = attackActions
+        .filter(({ secondaryDamage }) => secondaryDamage)
+        .map(({ secondaryDamage }) => secondaryDamage);
     const secondaryDamage = (secondaryDamageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
 
     const secondaryTotalDamage = secondaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
@@ -109,7 +114,7 @@ export const getDamageStatistics = ({
         secondaryDamage,
         primaryTotalDamage,
         secondaryTotalDamage,
-        hasMultiplier: damageActions.length > 1 || hasAttackMultiplier,
+        hasMultiplier: hasAttackMultiplier || isMultiHit,
         damageBonusFromEffects,
         damageBonusFromConditions,
     };
@@ -147,7 +152,14 @@ const DamageIcon = ({ ability, player, deck, hand, discard }) => {
         return null;
     }
 
-    const hasUnfulfilledBonus = actions.find(({ bonus }) => bonus?.damage > 0) && !damageBonusFromConditions;
+    const hasBonusDamage = actions.find(({ bonus }) => {
+        if (Array.isArray(bonus)) {
+            return bonus.some((b) => b?.damage > 0);
+        }
+
+        return bonus?.damage > 0;
+    });
+    const hasUnfulfilledBonus = hasBonusDamage && !damageBonusFromConditions;
     const isAdditive = hasUnfulfilledBonus || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
 
     return (
