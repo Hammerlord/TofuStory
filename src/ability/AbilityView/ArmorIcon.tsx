@@ -6,7 +6,7 @@ import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
 import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
 
-export const getStatistics = ({
+export const getArmorStatistics = ({
     ability,
     player,
 }): { base: number; total: number; hasMultiplier: boolean; bonusFromEffects: number; bonusFromConditions } => {
@@ -66,7 +66,7 @@ const useStyles = createUseStyles({
  */
 const ArmorIcon = ({ ability, player }) => {
     const { actions } = ability;
-    const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions } = getStatistics({
+    const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions } = getArmorStatistics({
         ability,
         player,
     });

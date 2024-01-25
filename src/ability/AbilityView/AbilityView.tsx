@@ -9,7 +9,7 @@ import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
-import ArmorIcon from "./ArmorIcon";
+import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
@@ -138,6 +138,9 @@ const useStyles = createUseStyles({
             color: "#42f57b",
         },
     },
+    glow: {
+        boxShadow: "0px 0px 7px 5px rgba(240, 220, 0, 0.9)",
+    },
 });
 
 interface AbilityViewProps {
@@ -168,7 +171,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
         );
     }
 
-    const { baseDamage } = getDamageStatistics({ ability, player, deck, hand, discard });
+    const { baseDamage, damageBonusFromConditions } = getDamageStatistics({ ability, player, deck, hand, discard });
+    const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, player });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
     let hasMultiplier = false;
@@ -222,6 +226,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
         return <div className={classes.iconPlaceholder} />;
     })();
 
+    const hasBonus = damageBonusFromConditions || armorBonusFromConditions;
+
     return (
         <AbilityTooltip ability={ability} deck={deck} hand={hand} discard={discard}>
             <div className={classes.root}>
@@ -230,6 +236,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, player, deck = [
                     className={classNames(classes.inner, {
                         [classes.selectedAbility]: isSelected,
                         [classes.ephemeral]: removeAfterTurn,
+                        [classes.glow]: hasBonus,
                     })}
                     style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                 >
