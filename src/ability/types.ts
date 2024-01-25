@@ -138,6 +138,8 @@ export interface Effect {
     description?: string;
     // The icon to display below the combatant
     icon?: string;
+    // Disable the icon display below the combatant (this was added to clean up some of the clutter with attack power increases)
+    disableDisplayIcon?: boolean;
     // The larger, possibly animated effect image to display on top of the combatant portrait
     image?: string;
     weaponAnimation?: "glow";

@@ -1,6 +1,6 @@
 import { partition } from "ramda";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, EFFECT_CLASSES } from "../../ability/types";
+import { CombatEffect, EFFECT_CLASSES, Effect } from "../../ability/types";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 
 const useStyles = createUseStyles({
@@ -9,6 +9,9 @@ const useStyles = createUseStyles({
     },
 });
 
+/**
+ * Status effect icons to display below the combatant portrait
+ */
 const EffectIconsContainer = ({ combatant, isSilenced }) => {
     const classes = useStyles();
     if (!combatant) {
@@ -17,9 +20,17 @@ const EffectIconsContainer = ({ combatant, isSilenced }) => {
 
     const [buffs, debuffs] = partition((e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF, combatant?.effects || []);
     const getEffectGroups = (effects: CombatEffect[]) => {
-        const map = effects.reduce((acc, effect) => {
-            const key = [effect.name, effect.type].join("-"); // If it has the same name and same type, it's *probably* the same effect
-            return { ...acc, [key]: [...(acc[key] || []), effect] };
+        const map = effects.reduce((acc, effect: Effect) => {
+            const { name, type, disableDisplayIcon } = effect;
+            if (disableDisplayIcon) {
+                return acc;
+            }
+
+            const key = [name, type].join("-"); // If it has the same name and type, it's *probably* the same effect
+            return {
+                ...acc,
+                [key]: [...(acc[key] || []), effect],
+            };
         }, {});
         return Object.values(map);
     };

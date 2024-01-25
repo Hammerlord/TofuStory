@@ -52,7 +52,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
         { damage: combatantDamage, timesToAttack: 0 }
     ) || { damage: combatantDamage, timesToAttack: 1 };
 
-    if (!combatant?.HP || !damageCount.damage) {
+    if (!combatant?.HP) {
         return null;
     }
 
@@ -73,6 +73,10 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
         }
         return total;
     })();
+
+    if (!totalDamage && !damageFromEffects) {
+        return null;
+    }
 
     const tooltip = (
         <div>
@@ -98,7 +102,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                 <Icon
                     icon={<CrossedSwordsIcon />}
                     size={"lg"}
-                    text={totalDamage}
+                    text={totalDamage || damageFromEffects}
                     className={classNames({
                         [classes.bonus]: damageFromEffects > 0,
                         [classes.negative]: damageFromEffects < 0 || overrideDamage < combatant.damage,

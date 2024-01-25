@@ -520,8 +520,9 @@ const arcaneAim2: Ability = {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         effects: [
                             {
-                                name: "Attack Power Increase",
-                                icon: ArcaneOverdriveImage,
+                                name: "Arcane Aiming",
+                                icon: ArcaneAimImage,
+                                disableDisplayIcon: true,
                                 type: EFFECT_TYPES.NONE,
                                 class: EFFECT_CLASSES.BUFF,
                                 attackPower: 1,
@@ -555,8 +556,9 @@ export const arcaneAim: Ability = {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         effects: [
                             {
-                                name: "Attack Power Increase",
-                                icon: ArcaneOverdriveImage,
+                                name: "Arcane Aiming",
+                                icon: ArcaneAimImage,
+                                disableDisplayIcon: true,
                                 type: EFFECT_TYPES.NONE,
                                 class: EFFECT_CLASSES.BUFF,
                                 attackPower: 1,
