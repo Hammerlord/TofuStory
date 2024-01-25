@@ -5,7 +5,7 @@ import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import { MesoBagImage, MesoCoinImage } from "../images";
-import { blackScroll, goldenHammer, incense } from "../item/items";
+import { goldenHammer, incense } from "../item/items";
 import ItemView from "../item/ItemView";
 import { Item, ITEM_TYPES } from "../item/types";
 import { ITEMS } from "../Map/routes/eventList";
@@ -181,7 +181,7 @@ const Shop = ({
                 priceMax: 120,
             }),
             ...createShopItems({
-                items: [incense, incense, goldenHammer, goldenHammer, blackScroll, blackScroll],
+                items: [incense, incense, goldenHammer, goldenHammer],
                 numItems: 3,
                 priceMin: 40,
                 priceMax: 60,

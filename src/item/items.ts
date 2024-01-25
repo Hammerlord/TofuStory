@@ -271,13 +271,6 @@ export const leatherSandals: Item = {
     ],
 };
 
-export const blackScroll: Item = {
-    name: "Black Scroll",
-    description: "Combine 3 scrolls to attain a non-deplete ability of your choice for your class.",
-    image: BlackManualImage,
-    type: ITEM_TYPES.MATERIAL,
-};
-
 export const engravedStone: Item = {
     name: "Engraved Stone",
     description: "When you are attacked, gain 1 resource. This may occur once per turn.",

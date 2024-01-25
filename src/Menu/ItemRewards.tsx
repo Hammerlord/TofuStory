@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
-import { blackScroll, goldenHammer, incense } from "../item/items";
+import { goldenHammer, incense } from "../item/items";
 import ItemView from "../item/ItemView";
 import { Item, ITEM_TYPES } from "../item/types";
 import { ITEMS } from "../Map/routes/eventList";
@@ -76,9 +76,9 @@ const ItemRewards = ({
         }
 
         if (rewardType === BATTLE_TYPES.BOSS) {
-            items.push(...[incense, goldenHammer, blackScroll]);
+            items.push(...[incense, goldenHammer]);
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-            items.push(...[goldenHammer, blackScroll]);
+            items.push(...[goldenHammer]);
         }
 
         onLoot({ items });

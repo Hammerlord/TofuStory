@@ -5,7 +5,6 @@ import { JOB_CARD_MAP } from "../ability";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
-import { blackScroll } from "../item/items";
 import { Item } from "../item/types";
 import CardGrid from "../Menu/CardGrid";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
@@ -138,17 +137,7 @@ const Camp = ({
     };
 
     const handleLearnAbility = () => {
-        let scrollCount = 0;
-        const newItems = player.items.filter((item) => {
-            if (scrollCount >= 3) {
-                return true;
-            }
-            return item.name !== blackScroll.name;
-        });
         updateDeck([...deck, selectedAbilityToLearn]);
-        updatePlayer({
-            items: newItems,
-        });
         setIsLearningAbility(false);
         setNumActivitiesRemaining((prev) => prev - 1);
     };
@@ -166,7 +155,6 @@ const Camp = ({
             <div className={classes.root}>
                 <div className={classes.inner}>
                     <h3>Select an ability to learn</h3>
-                    <div>This consumes your Black Scrolls.</div>
                     <div className={classes.abilitySection}>
                         <CardGrid
                             cards={potentialAbilities}
@@ -231,12 +219,6 @@ const Camp = ({
                             <div className={classes.activityName}>MEDITATE</div>
                             Remove one of your abilities.
                         </div>
-                        {player.items.filter((item) => item.name === blackScroll.name).length >= 3 && (
-                            <div className={classes.activity} onClick={() => setIsLearningAbility(true)}>
-                                <div className={classes.activityName}>Learn</div>
-                                Combine three {blackScroll.name}s to attain a non-deplete ability.
-                            </div>
-                        )}
                         <div
                             className={classNames(classes.activity, {
                                 disabled: !canUpgradeAbility,

@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { blackScroll, goldenHammer, incense, leatherSandals } from "../item/items";
+import { goldenHammer, incense, leatherSandals } from "../item/items";
 import { ITEMS } from "../Map/routes/eventList";
 
 const useStyles = createUseStyles({
@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const ITEM_MASTERLIST = [goldenHammer, blackScroll, incense, leatherSandals, ...ITEMS];
+export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();
