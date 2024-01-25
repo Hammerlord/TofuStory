@@ -20,8 +20,8 @@ const DrawCards = ({ ability, playerClass }: { ability: Ability | HandAbility; p
             Draw {amount} {attackCards && "offense"} card{amount > 1 ? "s" : ""}.{" "}
             {resourceCost < 0 && (
                 <>
-                    It costs <ResourceIcon text={Math.abs(resourceCost)} size={"sm"} playerClass={playerClass} /> less until it is used or
-                    discarded.
+                    It costs <ResourceIcon text={Math.abs(resourceCost)} size={"sm"} playerClass={playerClass} /> less until it leaves your
+                    hand.
                 </>
             )}
         </span>

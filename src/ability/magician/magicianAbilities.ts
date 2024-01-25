@@ -60,7 +60,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { burn, chill, freeze, stun } from "./../Effects";
+import { burn, chill, freeze, stun, silence } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -467,7 +467,7 @@ const mpEater2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 4,
+            resources: 6,
         },
     ],
 };
@@ -490,7 +490,7 @@ export const mpEater: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 3,
+            resources: 5,
         },
     ],
     upgrades: [mpEater2],
@@ -502,6 +502,7 @@ const arcaneAim2: Ability = {
     level: 2,
     resourceCost: 0,
     description: "Gain +1 attack power for every attack made this turn.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -515,7 +516,7 @@ const arcaneAim2: Ability = {
                     icon: ArcaneAimImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 1,
+                    duration: 0,
                     onAttack: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         effects: [
@@ -541,6 +542,7 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     description: "Gain +1 attack power for every attack made this turn.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -551,7 +553,7 @@ export const arcaneAim: Ability = {
                     icon: ArcaneAimImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 1,
+                    duration: 0,
                     onAttack: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         effects: [
@@ -616,18 +618,9 @@ const ignite2: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 4,
+            area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                area: 1,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-            },
             effects: [
                 {
                     ...burn,
@@ -644,18 +637,9 @@ export const ignite: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 3,
+            area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            bonus: {
-                area: 1,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-            },
             effects: [
                 {
                     ...burn,
@@ -676,14 +660,14 @@ const frostBarrier2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 7,
+            armor: 6,
             effects: [
                 {
                     name: "Frost Barrier",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
-                    duration: 4,
+                    duration: 3,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -708,7 +692,7 @@ export const frostBarrier: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 5,
+            armor: 4,
             effects: [
                 {
                     name: "Frost Barrier",
@@ -964,45 +948,34 @@ const fireArrow2: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    description: "If the target is Burning, inflict Burn on its neighbors.",
-    overrideBodyText: true,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 15,
+            damage: 13,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
             },
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        hasEffect: "Polymorph",
-                    },
-                ],
-                damage: 5,
-            },
-        },
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.TARGET,
-                    hasEffectType: [EFFECT_TYPES.BURN],
-                },
-            ],
-            excludePrimaryTarget: true,
             effects: [
                 {
                     ...burn,
-                    duration: 4,
+                    duration: 2,
                 },
             ],
-            area: 1,
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectType: [EFFECT_TYPES.BURN],
+                        },
+                    ],
+                    damage: 7,
+                },
+            ],
         },
     ],
 };
@@ -1011,45 +984,33 @@ export const fireArrow: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    description: "If the target is Burning, inflict Burn on its neighbors.",
-    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 12,
+            damage: 11,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
             },
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        hasEffect: "Polymorph",
-                    },
-                ],
-                damage: 5,
-            },
-        },
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.TARGET,
-                    hasEffectType: [EFFECT_TYPES.BURN],
-                },
-            ],
-            excludePrimaryTarget: true,
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    duration: 2,
                 },
             ],
-            area: 1,
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectType: [EFFECT_TYPES.BURN],
+                        },
+                    ],
+                    damage: 5,
+                },
+            ],
         },
     ],
     upgrades: [fireArrow2],
@@ -1278,7 +1239,7 @@ export const greaterBolt2: Ability = {
     image: EnergyBoltImage,
     level: 2,
     resourceCost: 1,
-    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage",
+    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1290,12 +1251,17 @@ export const greaterBolt2: Ability = {
                     skill: "bolt",
                     damage: 1,
                 },
+                {
+                    comparator: "includes",
+                    skill: "greater bolt",
+                    damage: 1,
+                },
             ],
         },
     ],
     actions: [
         {
-            damage: 8,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1315,7 +1281,7 @@ export const greaterBolt: Ability = {
     name: "Greater Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
-    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage",
+    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1327,12 +1293,17 @@ export const greaterBolt: Ability = {
                     skill: "bolt",
                     damage: 1,
                 },
+                {
+                    comparator: "includes",
+                    skill: "greater bolt",
+                    damage: 1,
+                },
             ],
         },
     ],
     actions: [
         {
-            damage: 6,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1434,7 +1405,7 @@ const coldBeam2: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 7,
+            damage: 8,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1474,7 +1445,7 @@ export const coldBeam: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 5,
+            damage: 6,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1518,7 +1489,7 @@ const shatter2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.BEAM,
-            damage: 7,
+            damage: 9,
             bonus: [
                 {
                     conditions: [
@@ -1550,7 +1521,7 @@ export const shatter: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.BEAM,
-            damage: 5,
+            damage: 7,
             bonus: [
                 {
                     conditions: [
@@ -1640,7 +1611,7 @@ const slimmingMuffin2: Ability = {
     image: ChocolateMuffinImage,
     level: 2,
     resourceCost: 0,
-    description: "Deplete another card in your hand to use this ability",
+    description: "Deplete a card in your hand to use this.",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },
@@ -1648,10 +1619,11 @@ const slimmingMuffin2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            healing: 5,
             drawCards: {
                 amount: 1,
                 effects: {
-                    resourceCost: -1,
+                    resourceCost: -2,
                 },
             },
         },
@@ -1662,7 +1634,7 @@ export const slimmingMuffin: Ability = {
     name: "Conjured Slimming Muffin",
     image: ChocolateMuffinImage,
     resourceCost: 0,
-    description: "Deplete another card in your hand to use this ability",
+    description: "Deplete a card in your hand to use this.",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },
@@ -1670,8 +1642,12 @@ export const slimmingMuffin: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            healing: 3,
             drawCards: {
                 amount: 1,
+                effects: {
+                    resourceCost: -1,
+                },
             },
         },
     ],
@@ -1682,17 +1658,17 @@ const aurora2: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
     level: 2,
-    resourceCost: 4,
-    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded",
+    resourceCost: 5,
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora leaves your hand.",
     onAbilityUse: {
         resourceCost: -1,
     },
     actions: [
         {
-            damage: 10,
+            damage: 9,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 1,
+            area: 2,
             icon: HighWisdomImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
         },
@@ -1702,8 +1678,8 @@ const aurora2: Ability = {
 export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
-    resourceCost: 4,
-    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded",
+    resourceCost: 5,
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora leaves your hand.",
     onAbilityUse: {
         resourceCost: -1,
     },
@@ -1712,7 +1688,7 @@ export const aurora: Ability = {
             damage: 7,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 1,
+            area: 2,
             icon: HighWisdomImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
         },
@@ -1725,7 +1701,7 @@ const feedback2: Ability = {
     image: TeleportMasteryFireImage,
     level: 2,
     resourceCost: 1,
-    description: "Gain 1 Mana per enemy struck.",
+    description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
     actions: [
         {
             damage: 0,
@@ -1737,6 +1713,7 @@ const feedback2: Ability = {
             secondaryAction: {
                 target: "actor",
                 resources: 1,
+                flatDamage: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
                 },
@@ -1749,7 +1726,7 @@ export const feedback: Ability = {
     name: "Feedback",
     image: TeleportMasteryFireImage,
     resourceCost: 1,
-    description: "Gain 1 Mana per enemy struck.",
+    description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
     actions: [
         {
             damage: 0,
@@ -1761,6 +1738,7 @@ export const feedback: Ability = {
             secondaryAction: {
                 target: "actor",
                 resources: 1,
+                flatDamage: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
                 },
@@ -1797,7 +1775,7 @@ const arcaneChanneling2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            addCards: [greaterBolt2, greaterBolt2, greaterBolt2, greaterBolt2].map((ability) => ({ ...ability, removeAfterTurn: true })),
+            addCards: [greaterBolt2, greaterBolt2, greaterBolt2].map((ability) => ({ ...ability, removeAfterTurn: true })),
         },
     ],
 };
@@ -1811,7 +1789,7 @@ export const arcaneChanneling: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            addCards: [greaterBolt, greaterBolt, greaterBolt, greaterBolt].map((ability) => ({ ...ability, removeAfterTurn: true })),
+            addCards: [greaterBolt, greaterBolt, greaterBolt].map((ability) => ({ ...ability, removeAfterTurn: true })),
         },
     ],
     upgrades: [arcaneChanneling2],
@@ -1821,8 +1799,7 @@ export const polymorph: Ability = {
     name: "Polymorph",
     resourceCost: 2,
     image: ScarfSnowmanImage,
-    description: "Sets the target's base attack to 1 and causes it to take 1+ extra damage.",
-    overrideBodyText: true,
+    description: "Sets targets' base attack to 1.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1840,8 +1817,8 @@ export const polymorph: Ability = {
                     },
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    attackDamageReceived: 1,
                 },
+                { ...silence },
             ],
         },
     ],

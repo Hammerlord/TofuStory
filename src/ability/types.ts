@@ -372,6 +372,7 @@ export interface Morph {
 export interface Action {
     damage?: number;
     secondaryDamage?: number;
+    flatDamage?: number; // Deal damage that is not affected by any modifiers
     type: ACTION_TYPES;
     healing?: number;
     armor?: number;
@@ -448,6 +449,7 @@ export interface Action {
         target: "actor";
         resources?: number;
         multiplier?: Multiplier;
+        flatDamage?: number;
     };
     /** Wild magic */
     autoCastAbilities?: {

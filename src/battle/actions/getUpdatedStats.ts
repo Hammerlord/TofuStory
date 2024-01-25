@@ -85,6 +85,7 @@ export const getUpdatedStats = ({
             mesos = 0,
             removeDebuffs,
             removeEffects = [],
+            flatDamage = 0,
         } = action;
 
         const enabledEffects = getEnabledEffects(target);
@@ -100,7 +101,8 @@ export const getUpdatedStats = ({
         });
         const damage =
             calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
-            Math.floor(targetCombatant.armor * destroyArmor);
+            Math.floor(targetCombatant.armor * destroyArmor) +
+            flatDamage * multiplier;
 
         const totalArmor = targetCombatant.armor + calculateArmor({ target, action }) * multiplier;
         const updatedTargetArmor = Math.max(0, totalArmor - damage);

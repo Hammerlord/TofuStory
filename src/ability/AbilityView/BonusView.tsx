@@ -41,8 +41,10 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
     };
 
     const bonusDescriptions = [];
+    const bonusCache = {}; // Sometimes bonuses can be a duplicate of another bonus. We don't want to display duplicate descriptions on the card.
 
-    bonuses.forEach(({ damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0, effects = [] }, i) => {
+    bonuses.forEach((bonus: Bonus, i) => {
+        const { damage = 0, healing = 0, armor = 0, conditions = [], multiplier, area = 0, effects = [] } = bonus;
         const conditionText = conditions?.map(
             ({ hasEffectType = [], hasEffect, hasEffectClass, healthPercentage, armor, comparator }: Condition) => {
                 if (hasEffectType.length) {
@@ -112,8 +114,10 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
             area,
         };
 
-        if (bonusDescriptions.every((desc) => JSON.stringify(desc) !== JSON.stringify(bonusLabel))) {
+        const stringifiedBonus = JSON.stringify(bonus);
+        if (!bonusCache[stringifiedBonus]) {
             bonusDescriptions.push(bonusLabel);
+            bonusCache[stringifiedBonus] = true;
         }
     });
 
