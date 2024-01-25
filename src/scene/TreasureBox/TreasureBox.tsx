@@ -237,7 +237,7 @@ const TreasureBox = ({
                         <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
                     </div>
                 )}
-                <Button color={isChestOpened ? "primary" : "secondary"} onClick={onExit}>
+                <Button color={isChestOpened ? "primary" : "warning"} onClick={onExit}>
                     {isChestOpened ? "Continue Journey" : "Abandon"}
                 </Button>
             </div>

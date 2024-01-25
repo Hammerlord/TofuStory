@@ -17,9 +17,12 @@ const useStyles = createUseStyles({
                 transition: "transform 0.2s",
             },
             "&.primary": {
-                background: "linear-gradient(360deg, rgba(119,153,0,1) 0%, #adcb08 100%) !important",
+                background: "linear-gradient(360deg, #587100 0%, #adcb08 100%) !important",
             },
             "&.secondary": {
+                background: "linear-gradient(360deg, #0d7ed1 0%, #02c7f4 100%) !important;",
+            },
+            "&.warning": {
                 background: "linear-gradient(360deg, #d1830d 0%, #f4b902 100%) !important;",
             },
             "&.base": {
@@ -42,8 +45,9 @@ const Button = ({ color, variant, disabled, ...other }: any) => {
             className={classNames(classes.button, {
                 primary: color === "primary",
                 secondary: color === "secondary",
+                warning: color === "warning",
                 disabled: disabled,
-                base: !disabled && !["primary", "secondary"].includes(color),
+                base: !disabled && !["primary", "secondary", "warning"].includes(color),
             })}
             color={color}
             variant={variant || "contained"}
