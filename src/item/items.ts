@@ -51,6 +51,7 @@ import {
     RisingStarImage,
     SafetyCharmImage,
     SapOfNependeathImage,
+    SnowshoesImage,
     StarfallMagicSquareImage,
     StolenFenceImage,
     SunshinePanImage,
@@ -1049,6 +1050,28 @@ export const chargingStone: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const snailStompers: Item = {
+    name: "Snail Stompers",
+    image: SnowshoesImage,
+    description: "Deal +1 damage to enemies with 10 HP or less.",
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Snail Stompers",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    HP: 11,
+                    comparator: "lt",
+                },
+            ],
         },
     ],
 };

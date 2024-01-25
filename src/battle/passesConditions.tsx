@@ -61,6 +61,7 @@ export const passesConditions = ({
             numAbilitiesUsed,
             sourceType,
             resourceCost,
+            HP,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -166,6 +167,18 @@ export const passesConditions = ({
                     !passesValueComparison({
                         val: combatant.resources / combatant.maxResources,
                         otherVal: resourcePercentage,
+                        comparator,
+                    })
+                ) {
+                    return false;
+                }
+            }
+
+            if (HP !== undefined) {
+                if (
+                    !passesValueComparison({
+                        val: combatant.HP,
+                        otherVal: HP,
                         comparator,
                     })
                 ) {

@@ -286,6 +286,8 @@ export interface Condition {
     numEffects?: number;
     /** This should be a decimal value up to 1 */
     resourcePercentage?: number;
+    /** Flat HP value */
+    HP?: number;
     /** This should be a decimal value up to 1 */
     healthPercentage?: number;
     armor?: number;

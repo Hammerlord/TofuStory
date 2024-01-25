@@ -290,6 +290,7 @@ export { default as SlimeIdleImage } from "./SlimeIdle.gif";
 export { default as SlimeOmokImage } from "./SlimeOmok.png";
 export { default as SnailImage } from "./Snail.png";
 export { default as SnailShellImage } from "./SnailShell.gif";
+export { default as SnowshoesImage } from "./Snowshoes.png";
 export { default as SoaringHawkImage } from "./SoaringHawk.gif";
 export { default as SpearSweepImage } from "./SpearSweep.png";
 export { default as SpikeBallImage } from "./SpikeBall.png";

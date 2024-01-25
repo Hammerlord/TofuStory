@@ -28,6 +28,7 @@ import {
     respawnToken,
     risingStar,
     safetyCharm,
+    snailStompers,
     starfallMagicSquare,
     stolenFence,
     sunshinePan,
@@ -72,4 +73,5 @@ export const ITEMS = [
     starfallMagicSquare,
     cursedDoll,
     workGloves,
+    snailStompers,
 ];
