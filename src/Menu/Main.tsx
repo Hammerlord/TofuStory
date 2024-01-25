@@ -134,7 +134,9 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
-        const isJobUpTime = battlesWon.bossEncounter === 3 && !isActivityOpen && !player.secondaryClass;
+        // TODO this is only applicable for warrior right now
+        const isWarrior = player?.class === PLAYER_CLASSES.WARRIOR;
+        const isJobUpTime = battlesWon.bossEncounter === 3 && !isActivityOpen && !player.secondaryClass && isWarrior;
         if (isJobUpTime) {
             setIsSelectingSecondaryJob(true);
         }
