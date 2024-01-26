@@ -170,6 +170,7 @@ const TreasureBox = ({
     };
 
     useEffect(() => {
+        let mesosToSet = 0;
         if (initItems?.length > 0) {
             setItems(initItems);
         } else {
@@ -181,15 +182,19 @@ const TreasureBox = ({
             }, {});
 
             const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
-            setItems([equipment]);
+            if (equipment) {
+                setItems([equipment]);
+            } else {
+                mesosToSet += getRandomInt(100, 150);
+            }
         }
         if (Array.isArray(initMesos)) {
-            setMesos(getRandomInt(initMesos[0], initMesos[1]));
-        } else if (initMesos) {
-            setMesos(initMesos);
-        } else {
-            setMesos(30);
+            mesosToSet += getRandomInt(initMesos[0], initMesos[1]);
+        } else if (typeof initMesos === "number") {
+            mesosToSet += initMesos;
         }
+
+        setMesos(mesosToSet);
     }, []);
 
     return (
