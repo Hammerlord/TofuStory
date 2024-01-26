@@ -6,12 +6,14 @@ import {
     ChocolateMuffinImage,
     ColdBeamImage,
     ColdBeamProjectileImage,
+    DoTPunisherImage,
     ElementalAdaptationEffectImage,
     ElementalAdaptationImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     FireArrowImage,
     FireArrowProjectileImage,
+    FireMarbleImage,
     HighWisdomImage,
     IgniteImage,
     InfinityImage,
@@ -624,7 +626,7 @@ const ignite2: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 4,
+                    duration: 3,
                 },
             ],
         },
@@ -1822,4 +1824,89 @@ export const polymorph: Ability = {
             ],
         },
     ],
+};
+
+const goutOfFlame2: Ability = {
+    name: "Gout Of Flame",
+    resourceCost: 1,
+    image: DoTPunisherImage,
+    level: 2,
+    description: "When you draw this card, Burn a random enemy.",
+    onDraw: {
+        ability: {
+            name: "Flame",
+            image: DoTPunisherImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: FireMarbleImage,
+                    effects: [
+                        {
+                            ...burn,
+                            duration: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: FireMarbleImage,
+            damage: 3,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const goutOfFlame: Ability = {
+    name: "Gout Of Flame",
+    resourceCost: 1,
+    image: DoTPunisherImage,
+    description: "When you draw this card, Burn a random enemy.",
+    onDraw: {
+        ability: {
+            name: "Flame",
+            image: DoTPunisherImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: FireMarbleImage,
+                    effects: [
+                        {
+                            ...burn,
+                            duration: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: FireMarbleImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+    upgrades: [goutOfFlame2],
 };

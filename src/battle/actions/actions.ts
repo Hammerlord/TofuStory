@@ -1375,6 +1375,12 @@ export const drawCards = ({
         };
 
         dispatch(updateBattle(newState));
+        cardsToDraw.forEach((card: Ability) => {
+            if (card.onDraw?.ability) {
+                const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+                dispatch(useAbility({ ability: card.onDraw?.ability, actorId: player?.id }));
+            }
+        });
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
                 dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard, source }));

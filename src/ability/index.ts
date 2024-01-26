@@ -30,6 +30,7 @@ import {
     metronome,
     arcaneChanneling,
     polymorph,
+    goutOfFlame,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -137,6 +138,7 @@ export const JOB_CARD_MAP = {
             metronome,
             arcaneChanneling,
             polymorph,
+            goutOfFlame,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

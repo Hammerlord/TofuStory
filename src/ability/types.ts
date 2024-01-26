@@ -492,6 +492,9 @@ export interface Ability {
     /** Enemies should prefer to use this ability if it is available */
     priority?: boolean;
     effectsWhileOwned?: Effect[];
+    onDraw?: {
+        ability: Ability;
+    };
 }
 
 /**

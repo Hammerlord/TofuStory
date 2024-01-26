@@ -83,6 +83,7 @@ export { default as DarkSightImage } from "./DarkSight.gif";
 export { default as DarkSpearImage } from "./DarkSpear.png";
 export { default as DarkThirstImage } from "./DarkThirst.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
+export { default as DoTPunisherImage } from "./DoTPunisher.png";
 export { default as DoubleTimeImage } from "./DoubleTime.png";
 export { default as DrakeBloodImage } from "./DrakeBlood.png";
 export { default as DrakeCardImage } from "./DrakeCard.png";
