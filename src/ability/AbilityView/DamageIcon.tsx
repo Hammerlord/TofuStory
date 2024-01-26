@@ -58,7 +58,7 @@ export const getDamageStatistics = ({
     if (attackActions.length === 0) {
         return {
             baseDamage: 0,
-            secondaryDamage: 0,
+            secondaryDamage: undefined,
             primaryTotalDamage: 0,
             secondaryTotalDamage: 0,
             hasMultiplier: false,
@@ -100,14 +100,15 @@ export const getDamageStatistics = ({
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = damageActions.length > 1 && damageActions.every((a) => a === damageActions[0]);
 
-    const baseDamage = (damageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
+    const extraDamageInitialHit = damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
+    const baseDamage = (damageActions[0] || 0) + extraDamageInitialHit;
 
     const secondaryDamageActions = attackActions
         .filter(({ secondaryDamage }) => secondaryDamage)
         .map(({ secondaryDamage }) => secondaryDamage);
-    const secondaryDamage = (secondaryDamageActions[0] || 0) + damageBonusFromEffects + (damageBonusFromConditionsArr[0] || 0);
+    const secondaryDamage = secondaryDamageActions[0] && secondaryDamageActions[0] + extraDamageInitialHit;
 
-    const secondaryTotalDamage = secondaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
+    const secondaryTotalDamage = secondaryDamage && secondaryWithMultiplier + damageBonusFromEffects + damageBonusFromConditions;
 
     return {
         baseDamage,
