@@ -740,6 +740,7 @@ const chainLightning2: Ability = {
                 width: 70,
                 height: 70,
                 opacity: 0.8,
+                flash: true,
             },
             bonus: {
                 damage: 3,
@@ -773,6 +774,7 @@ export const chainLightning: Ability = {
                 width: 70,
                 height: 70,
                 opacity: 0.8,
+                flash: true,
             },
             bonus: {
                 damage: 2,
@@ -1559,8 +1561,8 @@ const thunderBolt2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: ThunderBoltProjectileImage,
             animationOptions: {
-                height: 300,
-                width: 70,
+                height: 250,
+                width: 60,
                 flash: true,
             },
         },
@@ -1571,8 +1573,8 @@ const thunderBolt2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: ThunderBoltProjectileImage,
             animationOptions: {
-                height: 300,
-                width: 70,
+                height: 175,
+                width: 40,
                 flash: true,
             },
             conditions: [
@@ -1598,8 +1600,8 @@ export const thunderBolt: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: ThunderBoltProjectileImage,
             animationOptions: {
-                height: 300,
-                width: 70,
+                height: 250,
+                width: 60,
                 flash: true,
             },
         },
@@ -1610,8 +1612,8 @@ export const thunderBolt: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: ThunderBoltProjectileImage,
             animationOptions: {
-                height: 300,
-                width: 70,
+                height: 175,
+                width: 40,
                 flash: true,
             },
             conditions: [

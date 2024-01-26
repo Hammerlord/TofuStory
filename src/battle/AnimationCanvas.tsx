@@ -60,12 +60,12 @@ const useStyles = createUseStyles({
     },
     "@keyframes flash": {
         from: {
-            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+            WebkitFilter: "brightness(1.25) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
             filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
         },
         to: {
-            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
-            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+            WebkitFilter: "brightness(2.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+            filter: "brightness(2.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
         },
     },
     flash: {
