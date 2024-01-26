@@ -1,14 +1,12 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
-import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, Action, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
-import { shuffle } from "../utils";
+import { Ability, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { PlayerSelectCardsPrompt } from "./reducer";
+import getCardSelection from "./selectCardUtils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -64,56 +62,22 @@ const SelectCardOverlay = ({
     const [abilityChoices, setAbilityChoices] = useState([]);
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const classes = useStyles();
-    const { effects = {}, type, filters } = selectCardsPrompt.selectCards;
-    const { removeAfterTurn, ...other } = effects;
+    const { type } = selectCardsPrompt.selectCards;
     const selectedAbility = abilityChoices.find(({ instanceId }) => instanceId === selectedAbilityId);
 
-    const createNewOption = (ability: Ability | HandAbility): HandAbility => {
-        return {
-            ...ability,
-            instanceId: uuid.v4(),
-            removeAfterTurn,
-            effects: other,
-        };
-    };
-
     useEffect(() => {
-        // Set selectable cards per selectCards type
-
-        const applyFilters = (cards: HandAbility[]) => {
-            // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
-            if (selectCardsPrompt.abilityQueued?.selectedAbilityId) {
-                cards = cards.filter(({ instanceId }) => instanceId !== selectCardsPrompt.abilityQueued.selectedAbilityId);
-            }
-            if (filters?.length) {
-                return cards.filter(({ actions }) => actions.some((action: Action) => filters.includes(action.type)));
-            }
-            return cards;
-        };
-        if (type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
-            setAbilityChoices(applyFilters(hand).map(createNewOption));
-            return;
-        }
-        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            setAbilityChoices(applyFilters(hand));
-            return;
-        }
-
-        if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
-            const firstJobCards = JOB_CARD_MAP[player.class].all;
-            const secondJobCards = JOB_CARD_MAP[player.secondaryClass]?.all || [];
-            const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
-            const shuffled = shuffle(potentialAbilities);
-            setAbilityChoices(shuffled.slice(0, 3).map(createNewOption));
-            return;
-        }
-
-        if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
-            setAbilityChoices(selectCardsPrompt?.selectCards?.cards?.map((card) => ({ ...card, instanceId: uuid.v4() })) || []);
-        }
+        setAbilityChoices(
+            getCardSelection({
+                hand,
+                selectCards: selectCardsPrompt.selectCards,
+                selectedAbilityId: selectCardsPrompt?.abilityQueued?.selectedAbilityId,
+                player,
+            })
+        );
     }, []);
 
     const handleSelectClick = () => {
+        // Bug: No onDeplete event being triggered here
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             onSelect({ updatedHand: hand.filter((ability: HandAbility) => ability.instanceId !== selectedAbilityId) });
         } else {

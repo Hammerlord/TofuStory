@@ -17,6 +17,7 @@ import {
     AbilityEffects,
     AUTO_CAST_ABILITY_TYPES,
     CONDITION_TARGETS,
+    SELECT_CARD_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -47,6 +48,7 @@ import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
+import getCardSelection from "../selectCardUtils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -1074,23 +1076,63 @@ const pushPlaybackQueue = ({
     };
 };
 
-const checkHandleAutoCast = ({ autoCastAbilities, actor }) => {
-    return (dispatch) => {
+const checkHandleAutoCast = ({ autoCastAbilities, actor, parentAbility }) => {
+    return (dispatch, getState) => {
         if (!autoCastAbilities || !actor.class) {
             return;
         }
 
         const { type, amount } = autoCastAbilities;
+        let cards = [];
         if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
-            const cards = JOB_CARD_MAP[actor.class]?.all;
-            for (let i = 0; i < amount; ++i) {
-                const ability = getRandomItem(cards);
-                if (ability) {
-                    // Ability costs 0 unless it is a variable cost ability
-                    const resourceCost = ability.resourceCost !== "x" ? 0 : ability.resourceCost;
-                    dispatch(useAbility({ ability: { ...ability, resourceCost }, actorId: actor.id }));
+            cards = JOB_CARD_MAP[actor.class]?.all || [];
+        }
+
+        if (!cards.length) {
+            return;
+        }
+
+        for (let i = 0; i < amount; ++i) {
+            const abilityToCast: Ability = getRandomItem(cards);
+            const { resourceCost: abilityCost, selectCards } = abilityToCast;
+
+            // selectCards on ability is currently always deplete as a prerequisite to using the ability. So deplete an ability here.
+            if (selectCards) {
+                const { type } = selectCards;
+
+                const { hand, playerSide } = getState().battle;
+                const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
+                const card = getRandomItem(
+                    getCardSelection({
+                        hand,
+                        selectCards: selectCards,
+                        selectedAbilityId: parentAbility?.instanceId,
+                        player,
+                    })
+                );
+
+                if (card) {
+                    if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+                        dispatch(updateBattle({ hand: hand.filter((ability: HandAbility) => ability.instanceId !== card?.instanceId) }));
+                        if (abilityToCast.depletedOnUse) {
+                            dispatch(
+                                checkEventTrigger({
+                                    combatantId: actor.id,
+                                    effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
+                                    source: { source: abilityToCast, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                                })
+                            );
+                        }
+                    } else {
+                        dispatch(updateBattle({ hand: [...hand, card] }));
+                    }
                 }
             }
+
+            // Auto-casted ability costs 0 unless it is a variable cost ability
+            const resourceCost = abilityCost !== "x" ? 0 : abilityCost;
+            dispatch(useAbility({ ability: { ...abilityToCast, resourceCost }, actorId: actor.id, isAutoCast: true }));
         }
     };
 };
@@ -1102,6 +1144,7 @@ const performAction = ({
     actorId,
     parent,
     parentSource,
+    isAutoCast,
 }: {
     action: Action;
     selectedIndex: number;
@@ -1109,6 +1152,7 @@ const performAction = ({
     actorId: string;
     parent?: Ability | Item;
     parentSource: TriggerSource;
+    isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { combatant: actor } = findCombatantData(getState, actorId) || {};
@@ -1200,8 +1244,8 @@ const performAction = ({
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
-        dispatch(checkCardActions(action, parentSource));
-        dispatch(checkHandleAutoCast({ autoCastAbilities, actor }));
+        dispatch(checkCardActions(action, parentSource, isAutoCast));
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor, parentAbility: parent }));
         dispatch(
             onAction({
                 action,
@@ -1400,7 +1444,7 @@ export const drawCards = ({
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
-const checkCardActions = (action: Action, source: TriggerSource) => {
+const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: boolean) => {
     return (dispatch, getState) => {
         const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
         if (cardsToDraw) {
@@ -1461,6 +1505,31 @@ const checkCardActions = (action: Action, source: TriggerSource) => {
         }
 
         if (selectCards) {
+            if (isAutoCast) {
+                const { type } = selectCards;
+
+                const { hand, playerSide } = getState().battle;
+                const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
+                const card = getRandomItem(
+                    getCardSelection({
+                        hand,
+                        selectCards: selectCards,
+                        selectedAbilityId: null,
+                        player,
+                    })
+                );
+
+                if (card) {
+                    if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+                        // TODO no op for now. There are no actions which deplete from hand.
+                    } else {
+                        dispatch(updateBattle({ hand: [...hand, card] }));
+                    }
+                }
+                return;
+            }
+
             dispatch(
                 promptPlayerSelectCards({
                     selectCards,
@@ -1513,11 +1582,13 @@ export const useAbility = ({
     selectedIndex,
     side: initialSide,
     actorId,
+    isAutoCast,
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
     ability: Ability | HandAbility;
     actorId: string;
+    isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
@@ -1555,7 +1626,7 @@ export const useAbility = ({
             };
 
             if (passesConditions({ getCalculationTarget, proc: action, source })) {
-                dispatch(performAction({ action, selectedIndex: index, side, actorId, parent: ability, parentSource: source }));
+                dispatch(performAction({ action, selectedIndex: index, side, actorId, parent: ability, parentSource: source, isAutoCast }));
             }
         };
 
