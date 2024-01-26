@@ -58,6 +58,22 @@ const useStyles = createUseStyles({
     mirrorX: {
         transform: "scale(-1, 1)",
     },
+    "@keyframes flash": {
+        from: {
+            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+        },
+        to: {
+            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+        },
+    },
+    flash: {
+        animation: "$flash",
+        transitionTimingFunction: "ease-in-out",
+        animationIterationCount: "infinite",
+        animationDuration: 200,
+    },
 });
 
 const DISPLACEMENT_SPEED = 500;
@@ -235,6 +251,7 @@ const AnimationCanvas = ({
                 <div
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
+                        [classes.flash]: animationOptions.flash,
                     })}
                     {...props}
                 >
@@ -255,6 +272,7 @@ const AnimationCanvas = ({
                 <div
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
+                        [classes.flash]: animationOptions.flash,
                     })}
                     {...props}
                 >

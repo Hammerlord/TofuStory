@@ -44,6 +44,7 @@ import {
     TeleportMasteryFireImage,
     TeleportMasteryImage,
     ThunderBoltImage,
+    ThunderBoltProjectileImage,
     ThunderBreakImage,
     TriboltImage,
     WizMushImage,
@@ -1556,16 +1557,24 @@ const thunderBolt2: Ability = {
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: ThunderBoltImage,
+            icon: ThunderBoltProjectileImage,
+            animationOptions: {
+                height: 300,
+                width: 70,
+                flash: true,
+            },
         },
         {
             damage: 2,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: ThunderBoltImage,
+            icon: ThunderBoltProjectileImage,
+            animationOptions: {
+                height: 300,
+                width: 70,
+                flash: true,
+            },
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -1587,16 +1596,24 @@ export const thunderBolt: Ability = {
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: ThunderBoltImage,
+            icon: ThunderBoltProjectileImage,
+            animationOptions: {
+                height: 300,
+                width: 70,
+                flash: true,
+            },
         },
         {
             damage: 1,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: ThunderBoltImage,
+            icon: ThunderBoltProjectileImage,
+            animationOptions: {
+                height: 300,
+                width: 70,
+                flash: true,
+            },
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,

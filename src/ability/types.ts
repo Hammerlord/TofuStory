@@ -445,6 +445,7 @@ export interface Action {
         width?: number;
         height?: number;
         opacity?: number; // Should be a decimal with a max value of 1
+        flash?: boolean;
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
