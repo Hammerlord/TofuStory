@@ -238,7 +238,7 @@ const Camp = ({
                     </div>
                     <p>Activities remaining: {numActivitiesRemaining}</p>
                     <div className={classes.exitSection}>
-                        <Button color={numActivitiesRemaining === 0 ? "primary" : "secondary"} onClick={onExit}>
+                        <Button color={numActivitiesRemaining === 0 ? "primary" : "warning"} onClick={onExit}>
                             Exit
                         </Button>
                     </div>

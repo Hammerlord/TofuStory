@@ -63,7 +63,12 @@ const CardRemovalGrid = ({
                         onClickAbility={(_, i: number) => setSelectedAbilityIndexToRemove(i)}
                     />
                 </div>
-                <Button variant={"contained"} color={"warning"} onClick={handleRemoveAbility}>
+                <Button
+                    variant={"contained"}
+                    color={"warning"}
+                    onClick={handleRemoveAbility}
+                    disabled={!cards[selectedAbilityIndexToRemove]}
+                >
                     Remove Selection
                 </Button>{" "}
                 {onCancel && (

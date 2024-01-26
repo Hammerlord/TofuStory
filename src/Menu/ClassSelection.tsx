@@ -97,7 +97,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                                 </div>
                             ))}
                     </div>
-                    <Button color="primary" onClick={onClose}>
+                    <Button color="secondary" onClick={onClose}>
                         Continue
                     </Button>
                 </div>

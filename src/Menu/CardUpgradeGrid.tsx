@@ -106,24 +106,26 @@ const CardUpgradeGrid = ({
                 </div>
                 <div>
                     {onConfirm && (
-                        <Button
-                            variant={"contained"}
-                            color={"primary"}
-                            onClick={() => {
-                                if (!cards[selectedAbilityIndex]) {
-                                    return;
-                                }
+                        <>
+                            <Button
+                                variant={"contained"}
+                                color={"primary"}
+                                onClick={() => {
+                                    if (!cards[selectedAbilityIndex]) {
+                                        return;
+                                    }
 
-                                const updatedCards = [
-                                    ...cards.filter((_, i) => i !== selectedAbilityIndex),
-                                    cards[selectedAbilityIndex].upgrades[0],
-                                ];
-                                onConfirm(updatedCards);
-                            }}
-                            disabled={!cards[selectedAbilityIndex]}
-                        >
-                            Select!
-                        </Button>
+                                    const updatedCards = [
+                                        ...cards.filter((_, i) => i !== selectedAbilityIndex),
+                                        cards[selectedAbilityIndex].upgrades[0],
+                                    ];
+                                    onConfirm(updatedCards);
+                                }}
+                                disabled={!cards[selectedAbilityIndex]}
+                            >
+                                Select!
+                            </Button>{" "}
+                        </>
                     )}
                     {onCancel && (
                         <Button variant={"contained"} onClick={onCancel as any}>

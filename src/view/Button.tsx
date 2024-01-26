@@ -24,6 +24,7 @@ const useStyles = createUseStyles({
             },
             "&.warning": {
                 background: "linear-gradient(360deg, #d1830d 0%, #f4b902 100%) !important;",
+                color: "rgba(255, 255, 255, 1) !important",
             },
             "&.base": {
                 background: "rgba(120, 120, 120) !important",
