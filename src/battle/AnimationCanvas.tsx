@@ -136,7 +136,7 @@ const AnimationCanvas = ({
     const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity } = animationOptions || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash } = animationOptions || {};
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
@@ -251,7 +251,7 @@ const AnimationCanvas = ({
                 <div
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
-                        [classes.flash]: animationOptions.flash,
+                        [classes.flash]: flash,
                     })}
                     {...props}
                 >
@@ -272,7 +272,7 @@ const AnimationCanvas = ({
                 <div
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
-                        [classes.flash]: animationOptions.flash,
+                        [classes.flash]: flash,
                     })}
                     {...props}
                 >
