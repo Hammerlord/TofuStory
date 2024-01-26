@@ -18,7 +18,7 @@ const useStyles = createUseStyles({
     slideIn: {
         animation: "$slideIn",
         transitionTimingFunction: "ease-in",
-        animationDuration: 500,
+        animationDuration: 350,
         animationIterationCount: 1,
     },
     "@keyframes slideOut": {
@@ -34,7 +34,7 @@ const useStyles = createUseStyles({
     slideOut: {
         animation: "$slideOut",
         transitionTimingFunction: "ease-out",
-        animationDuration: 500,
+        animationDuration: 350,
         animationIterationCount: 1,
     },
 });
@@ -49,7 +49,7 @@ const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, classNam
         const timeout = setTimeout(() => {
             setOldHand(hand);
             setIsPlayingAnimation(false);
-        }, 490);
+        }, 340);
 
         return () => {
             clearTimeout(timeout);
