@@ -12,6 +12,8 @@ const useStyles = createUseStyles({
             fontSize: "0.9rem",
             letterSpacing: "0.05rem",
             textShadow: "0 0 2px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9)",
+            color: "rgba(255, 255, 255, 0.9) !important",
+
             "&:active": {
                 transform: "translateX(1px) translateY(1px)",
                 transition: "transform 0.2s",
@@ -28,7 +30,6 @@ const useStyles = createUseStyles({
             },
             "&.base": {
                 background: "rgba(120, 120, 120) !important",
-                color: "rgba(255, 255, 255, 0.9) !important",
             },
             "&.disabled": {
                 color: "rgba(255, 255, 255) !important",
@@ -50,7 +51,6 @@ const Button = ({ color, variant, disabled, ...other }: any) => {
                 disabled: disabled,
                 base: !disabled && !["primary", "secondary", "warning"].includes(color),
             })}
-            color={color}
             variant={variant || "contained"}
             disabled={disabled}
             disableRipple={true}

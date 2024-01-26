@@ -157,9 +157,6 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(
     ({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [], className }: AbilityViewProps, ref) => {
         const classes = useStyles();
-        if (className) {
-            console.log(classNames(classes.root, className));
-        }
         const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
         const { target: targetType, type, damage, secondaryDamage, destroyArmor = 0, ricochet, targetArea, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
