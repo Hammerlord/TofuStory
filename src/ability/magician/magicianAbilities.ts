@@ -1707,7 +1707,7 @@ const feedback2: Ability = {
     actions: [
         {
             damage: 0,
-            type: ACTION_TYPES.RANGE_ATTACK,
+            type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             area: 2,
             icon: TeleportMasteryFireImage,
@@ -1732,7 +1732,7 @@ export const feedback: Ability = {
     actions: [
         {
             damage: 0,
-            type: ACTION_TYPES.RANGE_ATTACK,
+            type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             icon: TeleportMasteryFireImage,
