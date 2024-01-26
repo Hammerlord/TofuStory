@@ -82,6 +82,7 @@ export { default as DarkMarbleImage } from "./DarkMarble.png";
 export { default as DarkSightImage } from "./DarkSight.gif";
 export { default as DarkSpearImage } from "./DarkSpear.png";
 export { default as DarkThirstImage } from "./DarkThirst.png";
+export { default as DiamondImage } from "./Diamond.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";
 export { default as DoubleTimeImage } from "./DoubleTime.png";

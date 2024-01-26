@@ -27,6 +27,7 @@ import {
     CoffeePotImage,
     CouponImage,
     CursedDollImage,
+    DiamondImage,
     DrakeBloodImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
@@ -1079,4 +1080,19 @@ export const clubMembership: Item = {
         discount: 0.2,
         refreshTimes: 1,
     },
+};
+
+export const diamond: Item = {
+    name: "Diamond",
+    image: DiamondImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "+10 max HP.",
+    effects: [
+        {
+            name: "Diamond",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 10,
+        },
+    ],
 };
