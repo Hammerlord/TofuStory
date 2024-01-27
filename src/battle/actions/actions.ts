@@ -23,7 +23,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
-import { getRandomItem, shuffle } from "../../utils";
+import { getRandomItem, getRandomItems, shuffle } from "../../utils";
 import { IndexedCombatant, passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
@@ -1516,25 +1516,31 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
 
         if (selectCards) {
             if (isAutoCast) {
-                const { type } = selectCards;
+                const { type, maxAmount = 1 } = selectCards;
 
-                const { hand, playerSide } = getState().battle;
+                const { hand, deck, playerSide } = getState().battle;
                 const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
-                const card = getRandomItem(
+                const cards = getRandomItems(
                     getCardSelection({
                         hand,
                         selectCards: selectCards,
                         selectedAbilityId: null,
                         player,
-                    })
+                    }),
+                    maxAmount
                 );
 
-                if (card) {
+                if (cards.length) {
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                         // TODO no op for now. There are no actions which deplete from hand.
+                    } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+                        const chosenCardIds = cards.map(({ instanceId } = {}) => instanceId);
+                        const updatedHand = hand.filter((ability) => !chosenCardIds.includes(ability.instanceId));
+                        const updatedDeck = [...cards, ...deck];
+                        dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
                     } else {
-                        dispatch(updateBattle({ hand: [...hand, card] }));
+                        dispatch(updateBattle({ hand: [...hand, ...cards] }));
                     }
                 }
                 return;

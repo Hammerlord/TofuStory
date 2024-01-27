@@ -15,7 +15,7 @@ const getCardSelection = ({
     selectedAbilityId?: string;
     hand: HandAbility[];
     player: any;
-}) => {
+}): (Ability | HandAbility)[] => {
     const { effects = {}, type, filters } = selectCards || {};
     const { removeAfterTurn, ...other } = effects;
 
