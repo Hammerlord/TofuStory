@@ -1854,7 +1854,7 @@ const goutOfFlame2: Ability = {
     description: "When you draw this card, Burn a random enemy.",
     onDraw: {
         ability: {
-            name: "Flame",
+            name: "Flame Gout",
             image: DoTPunisherImage,
             actions: [
                 {
@@ -1896,7 +1896,7 @@ export const goutOfFlame: Ability = {
     description: "When you draw this card, Burn a random enemy.",
     onDraw: {
         ability: {
-            name: "Flame",
+            name: "Flame Gout",
             image: DoTPunisherImage,
             actions: [
                 {
