@@ -85,6 +85,8 @@ export interface EffectEventTrigger {
     removeEffects?: string[];
     area?: number;
     excludePrimaryTarget?: boolean;
+    /** Wild magic */
+    autoCastAbilities?: AutoCastAbility;
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -310,6 +312,7 @@ export interface Condition {
     sourceType?: TRIGGER_SOURCE_TYPES;
     /** Only applicable when comparing against an ability */
     resourceCost?: number;
+    isOffense?: boolean;
 }
 
 export enum MULTIPLIER_TYPES {
@@ -459,10 +462,7 @@ export interface Action {
         flatDamage?: number;
     };
     /** Wild magic */
-    autoCastAbilities?: {
-        type: AUTO_CAST_ABILITY_TYPES;
-        amount: number;
-    };
+    autoCastAbilities?: AutoCastAbility;
 }
 
 export interface Ability {
@@ -560,4 +560,10 @@ export enum SELECT_CARD_TYPES {
 export enum AUTO_CAST_ABILITY_TYPES {
     FROM_CLASS = "from-class",
     PRESET_CARDS = "preset-cards",
+}
+
+export interface AutoCastAbility {
+    type: AUTO_CAST_ABILITY_TYPES;
+    amount: number;
+    presetCards?: Ability[];
 }

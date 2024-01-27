@@ -1,4 +1,4 @@
-import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import { TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
@@ -67,11 +67,12 @@ export const passesConditions = ({
             sourceType,
             resourceCost,
             HP,
+            isOffense,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
             // @ts-ignore -- We are assuming the type is an ability
-            const { name: sourceName, resourceCost: sourceResourceCost } = source?.source || {};
+            const { name: sourceName, resourceCost: sourceResourceCost, actions = [] }: Ability = source?.source || {};
 
             if (name) {
                 const names = Array.isArray(name) ? name : [name];
@@ -84,6 +85,13 @@ export const passesConditions = ({
                 if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
                     return false;
                 }
+            }
+
+            if (isOffense !== undefined) {
+                const isOffensiveAbility = actions.some(
+                    ({ target }) => target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE
+                );
+                return isOffense === isOffensiveAbility;
             }
 
             return true;

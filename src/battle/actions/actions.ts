@@ -18,6 +18,7 @@ import {
     AUTO_CAST_ABILITY_TYPES,
     CONDITION_TARGETS,
     SELECT_CARD_TYPES,
+    AutoCastAbility,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -49,6 +50,7 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import getCardSelection from "../selectCardUtils";
+import { PLAYER_CLASSES } from "../../Menu/types";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -445,6 +447,7 @@ const onEffectEventTrigger = ({
             conditions,
             randomOptions = {},
             usableWhileStunned,
+            autoCastAbilities,
             ...other
         } = effectEvent;
 
@@ -494,6 +497,10 @@ const onEffectEventTrigger = ({
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
         dispatch(checkCardActions(other as Action, source));
+        const owner = findCombatantData(getState, ownerId);
+        if (owner?.combatant?.isPlayer) {
+            dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any }));
+        }
 
         $applyStatChanges: {
             if (!targetIds.length) {
@@ -1076,23 +1083,33 @@ const pushPlaybackQueue = ({
     };
 };
 
-const checkHandleAutoCast = ({ autoCastAbilities, actor, parentAbility }) => {
+const checkHandleAutoCast = ({
+    autoCastAbilities,
+    actor,
+    parentAbility,
+}: {
+    autoCastAbilities: AutoCastAbility;
+    actor: any; // This is expected to be the player
+    parentAbility?: HandAbility;
+}) => {
     return (dispatch, getState) => {
         if (!autoCastAbilities || !actor.class) {
             return;
         }
 
-        const { type, amount } = autoCastAbilities;
+        const { type, amount, presetCards = [] } = autoCastAbilities;
         let cards = [];
         if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
             cards = JOB_CARD_MAP[actor.class]?.all || [];
+        } else if (type === AUTO_CAST_ABILITY_TYPES.PRESET_CARDS) {
+            cards = presetCards;
         }
 
         if (!cards.length) {
             return;
         }
 
-        for (let i = 1; i < amount; ++i) {
+        Array.from({ length: amount }).forEach(() => {
             const abilityToCast: Ability = getRandomItem(cards);
             const { resourceCost: abilityCost, selectCards } = abilityToCast;
 
@@ -1133,7 +1150,7 @@ const checkHandleAutoCast = ({ autoCastAbilities, actor, parentAbility }) => {
             // Auto-casted ability costs 0 unless it is a variable cost ability
             const resourceCost = abilityCost !== "x" ? 0 : abilityCost;
             dispatch(useAbility({ ability: { ...abilityToCast, resourceCost }, actorId: actor.id, isAutoCast: true }));
-        }
+        });
     };
 };
 
@@ -1150,7 +1167,7 @@ const performAction = ({
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
-    parent?: Ability | Item;
+    parent?: Ability | Item | HandAbility;
     parentSource: TriggerSource;
     isAutoCast?: boolean;
 }) => {
@@ -1245,7 +1262,7 @@ const performAction = ({
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
         dispatch(checkCardActions(action, parentSource, isAutoCast));
-        dispatch(checkHandleAutoCast({ autoCastAbilities, actor, parentAbility: parent }));
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor, parentAbility: parent as any }));
         dispatch(
             onAction({
                 action,

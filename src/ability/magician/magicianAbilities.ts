@@ -40,6 +40,7 @@ import {
     ShimmeringStarsImage,
     StarHairPinImage,
     StarImage,
+    StarfallMagicSquareImage,
     StarfishIdleImage,
     StarfishImage,
     StrawHatSnowmanImage,
@@ -1826,7 +1827,7 @@ export const polymorph: Ability = {
     description: "Sets targets' base attack to 1.",
     actions: [
         {
-            type: ACTION_TYPES.RANGE_ATTACK,
+            type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             effects: [
@@ -2066,4 +2067,67 @@ export const copySpell: Ability = {
         },
     ],
     upgrades: [copySpell2],
+};
+
+const vm: Ability = {
+    name: "Volatile Magic",
+    image: StarfallMagicSquareImage,
+    resourceCost: 2,
+    depletedOnUse: true,
+    description: "When you use an offense ability that costs 2+ Mana, cast a 1-2 cost offense ability for free.",
+    overrideBodyText: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Volatile Magic",
+                    icon: StarfallMagicSquareImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onAbility: {
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                comparator: "gt",
+                                resourceCost: 1,
+                                isOffense: true,
+                            },
+                        ],
+                        autoCastAbilities: {
+                            type: AUTO_CAST_ABILITY_TYPES.PRESET_CARDS,
+                            presetCards: [
+                                magicClaw,
+                                magicFang,
+                                ignite,
+                                tribolt,
+                                greaterBolt,
+                                goutOfFlame,
+                                thunderBolt,
+                                thunderclap,
+                                chainLightning,
+                                fireArrow,
+                                coldBeam,
+                                greatestBolt,
+                                polymorph,
+                            ],
+                            amount: 1,
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+const volatileMagic2: Ability = {
+    ...vm,
+    resourceCost: 1,
+    preemptive: true,
+};
+
+export const volatileMagic: Ability = {
+    ...vm,
+    upgrades: [volatileMagic2],
 };

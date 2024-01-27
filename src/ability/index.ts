@@ -34,6 +34,7 @@ import {
     temporalBag,
     greatestBolt,
     copySpell,
+    volatileMagic,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -145,6 +146,7 @@ export const JOB_CARD_MAP = {
             temporalBag,
             greatestBolt,
             copySpell,
+            volatileMagic,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },
