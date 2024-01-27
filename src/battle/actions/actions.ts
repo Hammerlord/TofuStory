@@ -1092,7 +1092,7 @@ const checkHandleAutoCast = ({ autoCastAbilities, actor, parentAbility }) => {
             return;
         }
 
-        for (let i = 0; i < amount; ++i) {
+        for (let i = 1; i < amount; ++i) {
             const abilityToCast: Ability = getRandomItem(cards);
             const { resourceCost: abilityCost, selectCards } = abilityToCast;
 
