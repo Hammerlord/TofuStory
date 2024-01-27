@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Ability, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -257,10 +257,17 @@ const BattlefieldContainer = () => {
         dispatch(onUsePlayerAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
     };
 
-    const handleSelectCardFromPrompt = ({ updatedHand }: { updatedHand: HandAbility[] }) => {
+    const handleSelectCardFromPrompt = ({
+        updatedHand,
+        updatedDeck,
+    }: {
+        updatedHand: HandAbility[];
+        updatedDeck?: (Ability | HandAbility)[];
+    }) => {
         dispatch(
             updateBattle({
                 hand: updatedHand,
+                deck: updatedDeck || deck,
             })
         );
         handleCancelSelectCard();

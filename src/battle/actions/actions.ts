@@ -1410,10 +1410,20 @@ export const drawCards = ({
             deck: newDeck,
             hand: [
                 ...newHand,
-                ...cardsToDraw.map((card) => ({
-                    ...card,
-                    effects: { ...effects },
-                })),
+                ...cardsToDraw.map((card) => {
+                    const existingEffects = card.effects || {};
+
+                    const incomingEffects = effects || {};
+                    return {
+                        ...card,
+                        effects: {
+                            ...existingEffects,
+                            ...effects,
+                            damage: (existingEffects.damage || 0) + (incomingEffects.damage || 0),
+                            resourceCost: (existingEffects.resourceCost || 0) + (incomingEffects.resourceCost || 0),
+                        },
+                    };
+                }),
             ],
             discard: newDiscard,
         };

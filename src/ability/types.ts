@@ -344,6 +344,7 @@ export interface SelectCards {
     cards?: Ability[];
     filters?: ACTION_TYPES[];
     effects?: AbilityEffects;
+    maxAmount?: number;
 }
 
 export enum MORPH_MINION_MODIFIERS {
@@ -550,6 +551,7 @@ export enum SELECT_CARD_TYPES {
     DISCOVER_FROM_CLASS = "discover-from-class",
     PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
+    HAND_TO_TOP_DECK = "hand-to-top-deck",
 }
 
 export enum AUTO_CAST_ABILITY_TYPES {

@@ -31,6 +31,7 @@ import {
     arcaneChanneling,
     polymorph,
     goutOfFlame,
+    temporalBag,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -139,6 +140,7 @@ export const JOB_CARD_MAP = {
             arcaneChanneling,
             polymorph,
             goutOfFlame,
+            temporalBag,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

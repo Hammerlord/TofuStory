@@ -158,7 +158,7 @@ export const blast: Ability = {
     name: "Blast",
     resourceCost: 3,
     image: BlastImage,
-    description: "Reduce cost by 1 for every ability used this turn, until Blast leaves your hand.",
+    description: "Reduce cost by 1 for every ability used this turn, until Blast is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
     },
@@ -186,7 +186,7 @@ export const judgment: Ability = {
     resourceCost: 3,
     image: HighPaladinImage,
     description:
-        "Deals 1 damage multiplied by armor \n Reduce cost by 1 for every ability used this turn, until Judgment leaves your hand.",
+        "Deals 1 damage multiplied by armor \n Reduce cost by 1 for every ability used this turn, until Judgment is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
     },

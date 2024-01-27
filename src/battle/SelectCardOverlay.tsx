@@ -53,17 +53,17 @@ const SelectCardOverlay = ({
 }: {
     selectCardsPrompt: PlayerSelectCardsPrompt;
     hand: HandAbility[];
-    onSelect: ({ updatedHand }: { updatedHand: HandAbility[] }) => void;
+    onSelect: ({ updatedHand, updatedDeck }: { updatedHand: HandAbility[]; updatedDeck?: (Ability | HandAbility)[] }) => void;
     player: any;
     onCancel: () => void;
     deck: Ability[];
     discard: Ability[];
 }) => {
     const [abilityChoices, setAbilityChoices] = useState([]);
-    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
+    const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
     const classes = useStyles();
-    const { type } = selectCardsPrompt.selectCards;
-    const selectedAbility = abilityChoices.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const { type, maxAmount = 1 } = selectCardsPrompt.selectCards;
+    const selectedAbilities = abilityChoices.filter(({ instanceId }) => selectedAbilityIds.includes(instanceId));
 
     useEffect(() => {
         setAbilityChoices(
@@ -79,10 +79,28 @@ const SelectCardOverlay = ({
     const handleSelectClick = () => {
         // Bug: No onDeplete event being triggered here
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            onSelect({ updatedHand: hand.filter((ability: HandAbility) => ability.instanceId !== selectedAbilityId) });
-        } else {
-            onSelect({ updatedHand: [...hand, selectedAbility] });
+            onSelect({ updatedHand: hand.filter((ability: HandAbility) => !selectedAbilityIds.includes(ability.instanceId)) });
+            return;
         }
+
+        if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            const updatedHand = [];
+            const updatedDeck = [...deck];
+            hand.forEach((ability: HandAbility) => {
+                if (selectedAbilityIds.includes(ability.instanceId)) {
+                    updatedDeck.unshift(ability);
+                } else {
+                    updatedHand.push(ability);
+                }
+            });
+            onSelect({
+                updatedHand,
+                updatedDeck,
+            });
+            return;
+        }
+
+        onSelect({ updatedHand: [...hand, ...selectedAbilities] });
     };
 
     return (
@@ -94,22 +112,37 @@ const SelectCardOverlay = ({
                         {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
                         {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                         {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
+                        {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
+                            `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
                     </h1>
                 </div>
                 <div className={classes.abilityContainer}>
                     {abilityChoices.map((ability: HandAbility) => (
                         <div
                             className={classNames(classes.ability, {
-                                selected: ability.instanceId === selectedAbilityId,
+                                selected: selectedAbilityIds.includes(ability.instanceId),
                             })}
-                            onClick={() => setSelectedAbilityId(ability.instanceId)}
+                            onClick={() => {
+                                if (maxAmount === 1) {
+                                    setSelectedAbilityIds([ability.instanceId]);
+                                    return;
+                                }
+                                if (selectedAbilityIds.includes(ability.instanceId)) {
+                                    // Deselect if selected
+                                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
+                                    return;
+                                }
+                                if (selectedAbilityIds.length < maxAmount) {
+                                    setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
+                                }
+                            }}
                             key={ability.instanceId}
                         >
                             <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} color="primary" disabled={!selectedAbility} onClick={handleSelectClick}>
+                <Button variant={"contained"} color="primary" disabled={!selectedAbilities} onClick={handleSelectClick}>
                     Select!
                 </Button>
                 {/**

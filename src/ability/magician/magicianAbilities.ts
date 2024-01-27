@@ -9,6 +9,7 @@ import {
     DoTPunisherImage,
     ElementalAdaptationEffectImage,
     ElementalAdaptationImage,
+    EmptySackImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     FireArrowImage,
@@ -1680,7 +1681,7 @@ const aurora2: Ability = {
     image: HighWisdomImage,
     level: 2,
     resourceCost: 5,
-    description: "Reduce cost by 1 for every ability used this turn, until Aurora leaves your hand.",
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
     },
@@ -1700,7 +1701,7 @@ export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
     resourceCost: 5,
-    description: "Reduce cost by 1 for every ability used this turn, until Aurora leaves your hand.",
+    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
     },
@@ -1928,4 +1929,39 @@ export const goutOfFlame: Ability = {
         },
     ],
     upgrades: [goutOfFlame2],
+};
+
+const temporalBag2: Ability = {
+    name: "Temporal Bag",
+    resourceCost: 1,
+    image: EmptySackImage,
+    description: "Place up to 3 cards from your hand on top of your deck.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+                maxAmount: 3,
+            },
+        },
+    ],
+};
+
+export const temporalBag: Ability = {
+    name: "Temporal Bag",
+    resourceCost: 1,
+    image: EmptySackImage,
+    description: "Place up to 2 cards from your hand on top of your deck.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+                maxAmount: 2,
+            },
+        },
+    ],
+    upgrades: [temporalBag2],
 };

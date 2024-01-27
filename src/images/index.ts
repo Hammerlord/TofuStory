@@ -93,6 +93,7 @@ export { default as ElementalAdaptationImage } from "./ElementalAdaptation.png";
 export { default as ElementalAdaptationEffectImage } from "./ElementalAdaptationEffect.png";
 export { default as ElementalForceImage } from "./ElementalForce.png";
 export { default as ElliniaBGImage } from "./ElliniaBG.jpg";
+export { default as EmptySackImage } from "./EmptySack.png";
 export { default as EndureImage } from "./Endure.png";
 export { default as EnergyBoltImage } from "./EnergyBolt.png";
 export { default as EnergyBoltProjectileImage } from "./EnergyBoltProjectile.png";

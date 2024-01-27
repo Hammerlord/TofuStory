@@ -56,6 +56,11 @@ const getCardSelection = ({
     if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
         return selectCards?.cards?.map((card) => ({ ...card, instanceId: uuid.v4() })) || [];
     }
+
+    if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+        return applyFilters(hand);
+    }
+    return [];
 };
 
 export default getCardSelection;
