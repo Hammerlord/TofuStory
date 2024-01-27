@@ -2,6 +2,7 @@ import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
     BlueRushImage,
+    CakeTemptationImage,
     ChocolateCupcakeImage,
     ChocolateMuffinImage,
     ColdBeamImage,
@@ -2029,4 +2030,40 @@ export const greatestBolt: Ability = {
         },
     ],
     upgrades: [greatestBolt2],
+};
+
+const copySpell2: Ability = {
+    name: "Copy Spell",
+    image: CakeTemptationImage,
+    level: 2,
+    resourceCost: 0,
+    description: "Create a copy of a card in your hand.",
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+            },
+        },
+    ],
+};
+
+export const copySpell: Ability = {
+    name: "Copy Spell",
+    image: CakeTemptationImage,
+    resourceCost: 1,
+    description: "Create a copy of a card in your hand.",
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+            },
+        },
+    ],
+    upgrades: [copySpell2],
 };
