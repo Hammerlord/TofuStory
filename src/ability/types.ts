@@ -411,6 +411,9 @@ export interface Action {
         filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
     };
     selectCards?: SelectCards;
+    retrieveDepletedCards?: {
+        amount: number;
+    };
     icon?: string; // Used as a projectile
     bonus?: Bonus | Bonus[];
     multiplier?: Multiplier;

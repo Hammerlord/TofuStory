@@ -50,7 +50,6 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import getCardSelection from "../selectCardUtils";
-import { PLAYER_CLASSES } from "../../Menu/types";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -1473,7 +1472,15 @@ export const drawCards = ({
  */
 const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: boolean) => {
     return (dispatch, getState) => {
-        const { drawCards: cardsToDraw, addCards, addCardsToDeck, addCardsToDiscard, currentHandEffects, selectCards } = action;
+        const {
+            drawCards: cardsToDraw,
+            addCards,
+            addCardsToDeck,
+            addCardsToDiscard,
+            currentHandEffects,
+            selectCards,
+            retrieveDepletedCards,
+        } = action;
         if (cardsToDraw) {
             dispatch(drawCards({ ...cardsToDraw, source }));
         }
@@ -1518,6 +1525,25 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
                             instanceId: uuid.v4(),
                         })),
                     ],
+                })
+            );
+        }
+
+        if (retrieveDepletedCards?.amount) {
+            const depleted = shuffle([...getState().battle.depleted]);
+            const hand = [...getState().battle.hand];
+            Array.from({ length: retrieveDepletedCards?.amount }).forEach(() => {
+                const retrieved = depleted.pop();
+
+                if (retrieved) {
+                    hand.push(retrieved);
+                }
+            });
+
+            dispatch(
+                updateBattle({
+                    hand,
+                    depleted,
                 })
             );
         }

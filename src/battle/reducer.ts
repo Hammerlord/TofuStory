@@ -12,6 +12,7 @@ export interface BattleState {
     deck: HandAbility[];
     discard: HandAbility[];
     hand: HandAbility[];
+    depleted: HandAbility[];
     isPlayerTurn: boolean | null;
     eventQueue: Event[];
     playerActionQueue: object[];

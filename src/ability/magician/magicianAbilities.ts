@@ -19,6 +19,7 @@ import {
     HighWisdomImage,
     IgniteImage,
     InfinityImage,
+    InkSackImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
     MPEaterImage,
@@ -2123,6 +2124,7 @@ const vm: Ability = {
 
 const volatileMagic2: Ability = {
     ...vm,
+    level: 2,
     resourceCost: 1,
     preemptive: true,
 };
@@ -2130,4 +2132,40 @@ const volatileMagic2: Ability = {
 export const volatileMagic: Ability = {
     ...vm,
     upgrades: [volatileMagic2],
+};
+
+const bagFromBeyond2: Ability = {
+    name: "Bag From Beyond",
+    image: InkSackImage,
+    resourceCost: 0,
+    depletedOnUse: true,
+    level: 2,
+    description: "Retrieve a random Depleted card and place it in your hand.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            retrieveDepletedCards: {
+                amount: 1,
+            },
+        },
+    ],
+};
+
+export const bagFromBeyond: Ability = {
+    name: "Bag From Beyond",
+    image: InkSackImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    description: "Retrieve a random Depleted card and place it in your hand.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            retrieveDepletedCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [bagFromBeyond2],
 };

@@ -67,15 +67,18 @@ const handleDiscard = (ability: HandAbility) => {
     return (dispatch, getState) => {
         const { removeAfterTurn, reusable, depletedOnUse, minion } = ability;
 
-        const { hand, discard } = getState().battle;
+        const { hand, discard, depleted } = getState().battle;
         const newDiscard = discard.slice();
         const newHand = hand.slice();
+        const newDepleted = depleted.slice();
         if (reusable) {
             newHand.push({
                 ...ability,
                 effects: undefined,
             });
-        } else if (!minion && !removeAfterTurn && !depletedOnUse) {
+        } else if (depletedOnUse) {
+            newDepleted.push(ability);
+        } else if (!minion && !removeAfterTurn) {
             // Minions go into a special bucket rather than immediately to discard; see useAbility
             newDiscard.push(...prepareForDiscard([ability]));
         }
@@ -89,6 +92,7 @@ const handleDiscard = (ability: HandAbility) => {
                     return card;
                 }),
                 discard: newDiscard,
+                depleted: newDepleted,
             })
         );
     };

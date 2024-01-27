@@ -115,6 +115,7 @@ export const startBattle = ({
                     })),
                 discard: [],
                 hand: [],
+                depleted: [],
                 isPlayerTurn: true,
                 eventQueue: [],
                 playerActionQueue: [],
