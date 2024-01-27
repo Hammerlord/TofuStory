@@ -3,14 +3,14 @@ import { Combatant } from "../character/types";
 import { TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 
-const passesValueComparison = ({
+export const passesValueComparison = ({
     val,
     otherVal,
     comparator,
 }: {
     val: any;
     otherVal: any;
-    comparator: "eq" | "lt" | "gt" | "not" | "modulo";
+    comparator: "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
 }): boolean => {
     switch (comparator) {
         case "eq":
@@ -23,6 +23,11 @@ const passesValueComparison = ({
             return val !== otherVal;
         case "modulo":
             return val !== 0 && val % otherVal === 0;
+        case "includes": {
+            if (typeof val === "string" && typeof otherVal === "string") {
+                return val.toLowerCase().includes(otherVal.toLowerCase());
+            }
+        }
         default:
             return false;
     }

@@ -32,6 +32,7 @@ import {
     polymorph,
     goutOfFlame,
     temporalBag,
+    greatestBolt,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -141,6 +142,7 @@ export const JOB_CARD_MAP = {
             polymorph,
             goutOfFlame,
             temporalBag,
+            greatestBolt,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

@@ -79,9 +79,17 @@ export const getDamageStatistics = ({
             return ability;
         }
     };
+
     const damageBonusFromConditionsArr: number[] = ability.actions.map((action) => {
         if (action.bonus?.damage && passesConditions({ getCalculationTarget, proc: action.bonus })) {
-            return action.bonus.damage;
+            const multiplier = getMultiplier({
+                actor: { combatant: player, index: undefined },
+                multiplier: action.bonus.multiplier,
+                deck,
+                hand,
+                discard,
+            });
+            return action.bonus.damage * multiplier;
         }
         return 0;
     });

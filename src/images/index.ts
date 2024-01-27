@@ -252,6 +252,8 @@ export { default as PunctureImage } from "./Puncture.png";
 export { default as PuppetreeImage } from "./Puppetree.png";
 export { default as Puppetree2Image } from "./Puppetree2.png";
 export { default as Puppetree3Image } from "./Puppetree3.png";
+export { default as PurpleEnergyBoltImage } from "./PurpleEnergyBolt.png";
+export { default as PurpleEnergyBoltProjectileImage } from "./PurpleEnergyBoltProjectile.png";
 export { default as PurpleFairiesImage } from "./PurpleFairies.gif";
 export { default as PurpleFlyingBookImage } from "./PurpleFlyingBook.gif";
 export { default as PurpleFlyingBookIconImage } from "./PurpleFlyingBookIcon.png";

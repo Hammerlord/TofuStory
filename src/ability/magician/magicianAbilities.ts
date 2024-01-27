@@ -32,6 +32,7 @@ import {
     OldEnergyBoltImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
+    PurpleEnergyBoltImage,
     PurpleFlyingBookIconImage,
     PurpleFlyingBookImage,
     ScarfSnowmanImage,
@@ -1964,4 +1965,68 @@ export const temporalBag: Ability = {
         },
     ],
     upgrades: [temporalBag2],
+};
+
+const greatestBolt2: Ability = {
+    name: "Greatest Bolt",
+    resourceCost: 2,
+    image: PurpleEnergyBoltImage,
+    level: 2,
+    description: "+3 damage for every 'bolt' card you own.",
+    overrideBodyText: true,
+    actions: [
+        {
+            damage: 12,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+                width: 150,
+                height: 150,
+            },
+            bonus: {
+                damage: 3,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ALL_CARDS,
+                    filters: [{ property: "name", comparator: "includes", value: "bolt" }],
+                },
+            },
+        },
+    ],
+};
+
+export const greatestBolt: Ability = {
+    name: "Greatest Bolt",
+    resourceCost: 2,
+    image: PurpleEnergyBoltImage,
+    description: "+2 damage for every 'bolt' card you own.",
+    overrideBodyText: true,
+    actions: [
+        {
+            damage: 10,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+                width: 150,
+                height: 150,
+            },
+            bonus: {
+                damage: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ALL_CARDS,
+                    filters: [{ property: "name", comparator: "includes", value: "bolt" }],
+                },
+            },
+        },
+    ],
+    upgrades: [greatestBolt2],
 };

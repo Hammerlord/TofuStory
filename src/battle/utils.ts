@@ -22,7 +22,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { IndexedCombatant, passesConditions } from "./passesConditions";
+import { IndexedCombatant, passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
 import { getRandomItem } from "../utils";
 
@@ -232,52 +232,64 @@ export const getMultiplier = ({
         return 1;
     }
 
-    const numValue = typeof multiplier.value === "number" ? multiplier.value : 1;
+    const { value, type, filters } = multiplier;
 
-    if (multiplier.type === MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS) {
+    const numValue = typeof value === "number" ? value : 1;
+
+    if (type === MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS) {
         return allTargets.length * numValue || 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.NUM_SOURCE_TARGETS) {
+    if (type === MULTIPLIER_TYPES.NUM_SOURCE_TARGETS) {
         return sourceTargets.length * numValue || 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.OVERHEALING) {
+    if (type === MULTIPLIER_TYPES.OVERHEALING) {
         return (source.statUpdate?.overhealing || 1) * numValue;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.ALL_CARDS) {
-        return deck.length + hand.length + discard.length || 1;
+    if (type === MULTIPLIER_TYPES.ALL_CARDS) {
+        const allCards = [...deck, ...hand, ...discard];
+
+        if (!filters) {
+            return allCards.length;
+        }
+
+        return allCards.filter((card) => {
+            return filters.some(({ property, value, comparator }) =>
+                passesValueComparison({ val: card[property], otherVal: value, comparator })
+            );
+        }).length;
     }
 
     if (!combatant) {
         return 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
+    if (type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
         return combatant.turnHistory.filter(({ type }) => type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK).length + 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.ARMOR) {
+    if (type === MULTIPLIER_TYPES.ARMOR) {
         return combatant.armor || 1;
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.MAX_HP) {
+    if (type === MULTIPLIER_TYPES.MAX_HP) {
         return Math.ceil(getMaxHP(combatant) * numValue);
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.HP) {
+    if (type === MULTIPLIER_TYPES.HP) {
         return Math.ceil(combatant.HP * numValue);
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.DEBUFFS) {
+    if (type === MULTIPLIER_TYPES.DEBUFFS) {
         return (
             getEnabledEffects({ combatant, getCalculationTarget }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF)
                 .length || 1
         );
     }
 
-    if (multiplier.type === MULTIPLIER_TYPES.BLEEDS) {
+    if (type === MULTIPLIER_TYPES.BLEEDS) {
         return (
             getEnabledEffects({ combatant, getCalculationTarget }).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED)
                 .length || 1
@@ -285,7 +297,7 @@ export const getMultiplier = ({
     }
 
     // @ts-ignore -- We are checking the existence of resourceCost here either way
-    if (multiplier.type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
+    if (type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
         // @ts-ignore
         return actionParent.resourceCost;
     }
