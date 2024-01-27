@@ -16,6 +16,7 @@ import {
     FireArrowImage,
     FireArrowProjectileImage,
     FireMarbleImage,
+    FlameHazeImage,
     HighWisdomImage,
     IgniteImage,
     InfinityImage,
@@ -2070,6 +2071,52 @@ export const copySpell: Ability = {
     upgrades: [copySpell2],
 };
 
+const moltenLaser2: Ability = {
+    name: "Molten Laser",
+    image: FlameHazeImage,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.BEAM,
+            icon: FireMarbleImage,
+            damage: 7,
+            destroyArmor: 1,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const moltenLaser: Ability = {
+    name: "Molten Laser",
+    image: FlameHazeImage,
+    depletedOnUse: true,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.BEAM,
+            icon: FireMarbleImage,
+            damage: 7,
+            destroyArmor: 1,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+    upgrades: [moltenLaser2],
+};
+
 const vm: Ability = {
     name: "Volatile Magic",
     image: StarfallMagicSquareImage,
@@ -2112,6 +2159,7 @@ const vm: Ability = {
                                 coldBeam,
                                 greatestBolt,
                                 polymorph,
+                                moltenLaser,
                             ],
                             amount: 1,
                         },
