@@ -12,7 +12,7 @@ import {
     WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
-import { chargingStone, engravedStone } from "./../item/items";
+import { chargingStone, engravedStone, redHeadband } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */
@@ -34,7 +34,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: OldGladiusImage,
     effects: [],
-    items: [engravedStone],
+    items: [engravedStone, redHeadband],
     drawCardsPerTurn: 3,
     weaponSkins: [
         { name: "Old Gladius", image: OldGladiusImage },
@@ -55,7 +55,7 @@ export const wizardProperties = {
     maxResources: 10,
     resources: 0,
     weapon: OldWoodenStaffImage,
-    items: [chargingStone],
+    items: [chargingStone, redHeadband],
     weaponSkins: [
         { name: "Old Wooden Staff", image: OldWoodenStaffImage },
         { name: "Wooden Staff", image: WoodenStaffImage },
