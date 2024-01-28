@@ -163,7 +163,7 @@ const Shop = ({
             [] as Ability[]
         ) as Ability[];
         if (otherSecondaryJobCards.length) {
-            abilitiesForSale.push({ item: getRandomItem(otherSecondaryJobCards), price: applyDiscount(getRandomInt(100, 130)) });
+            abilitiesForSale.push({ item: getRandomItem(otherSecondaryJobCards), price: applyDiscount(getRandomInt(150, 170)) });
         }
 
         const firstJobAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
@@ -174,7 +174,7 @@ const Shop = ({
             return ability;
         });
         const potentialAbilities = firstJobAbilities.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
-        abilitiesForSale.push(...createShopItems({ items: potentialAbilities, numItems: 6, priceMin: 60, priceMax: 80 }));
+        abilitiesForSale.push(...createShopItems({ items: potentialAbilities, numItems: 6, priceMin: 100, priceMax: 125 }));
         // Use deck to determine which abilities have a higher chance to roll
         setAbilities(shuffle(abilitiesForSale));
 
@@ -190,14 +190,14 @@ const Shop = ({
             ...createShopItems({
                 items: ITEMS.filter((item: Item) => !alreadyObtained[item.name]),
                 numItems: 3,
-                priceMin: 90,
-                priceMax: 130,
+                priceMin: 150,
+                priceMax: 200,
             }),
             ...createShopItems({
                 items: [incense, incense, goldenHammer, goldenHammer, goldenHammer],
                 numItems: 3,
-                priceMin: 50,
-                priceMax: 70,
+                priceMin: 80,
+                priceMax: 100,
             }),
         ];
 
