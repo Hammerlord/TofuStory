@@ -3,8 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Ability, HandAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
-import { shuffle } from "../utils";
-import { BATTLEFIELD_SIDES, BATTLE_TYPES, Event, Wave } from "./types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, Wave } from "./types";
+
+// Text banner notification to display some info during battle
+interface Notification {
+    severity?: "warning";
+    text: string | JSX.Element;
+    id: string; // UUID
+}
 
 export interface BattleState {
     enemySide: (Combatant | null)[];
@@ -32,6 +38,7 @@ export interface BattleState {
     itemRewards?: Item[];
     cardRewards?: Ability[];
     disableCardRewards: boolean;
+    notification?: Notification;
 }
 
 export interface PlayerSelectCardsPrompt {
@@ -101,6 +108,12 @@ export const battleStateSlice = createSlice({
             return {
                 ...state,
                 state: action.payload,
+            };
+        },
+        setNotification: (state, action: PayloadAction<Notification>) => {
+            return {
+                ...state,
+                notification: action.payload,
             };
         },
     },

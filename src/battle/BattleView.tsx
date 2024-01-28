@@ -161,7 +161,8 @@ const useStyles = createUseStyles({
 const TURN_ANNOUNCEMENT_TIME = 2000; // MS
 const BATTLEFIELD_SIZE = 5;
 
-const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt } = battleStateSlice.actions;
+const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt, setNotification } =
+    battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 const BattlefieldContainer = () => {
@@ -179,6 +180,7 @@ const BattlefieldContainer = () => {
         waves,
         selectCardsPrompt,
         state: battleState,
+        notification,
         backgroundImage,
     }: BattleState = useAppSelector((state) => state.battle);
     const originalDeck = useAppSelector((state) => state.character?.deck || []);
@@ -192,7 +194,6 @@ const BattlefieldContainer = () => {
         []
     );
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
-    const [notification, setNotification] = useState(null) as [BattleNotification, Function];
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
@@ -227,11 +228,13 @@ const BattlefieldContainer = () => {
         playerSide.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
 
     const warn = (text: string) => {
-        setNotification({
-            severity: "warning",
-            text,
-            id: uuid.v4(),
-        });
+        dispatch(
+            setNotification({
+                severity: "warning",
+                text,
+                id: uuid.v4(),
+            })
+        );
     };
 
     const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
@@ -370,10 +373,12 @@ const BattlefieldContainer = () => {
         delay?: number;
     }) => {
         setTimeout(() => {
-            setNotification({
-                text: Array.isArray(description) ? description[i] : description,
-                id: uuid.v4(),
-            });
+            dispatch(
+                setNotification({
+                    text: Array.isArray(description) ? description[i] : description,
+                    id: uuid.v4(),
+                })
+            );
             if (Array.isArray(description) && description[i + 1]) {
                 showWaveDescription({ description, i: i + 1, delay: 7500 });
             }
