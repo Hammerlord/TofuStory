@@ -7,6 +7,7 @@ import { Item } from "../item/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
+import { teleport } from "../ability/magician/magicianAbilities";
 
 const useStyles = createUseStyles({
     inner: {
@@ -44,6 +45,8 @@ const useStyles = createUseStyles({
 
 const BASE_NUM_CHOICES = 3;
 
+const level2StarterExceptions = [teleport]; // Too strong to offer as an upgraded version in the wild
+
 const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = [] }) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
@@ -52,7 +55,11 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
         // For starter abilities, only their level 2 versions are to be part of the prize pool
         const { starters, all } = JOB_CARD_MAP[player.class];
         const level2Starters = starters.reduce((acc, card) => {
-            if (card.upgrades?.length && acc.every(({ name }) => name !== card.name)) {
+            if (
+                card.upgrades?.length &&
+                acc.every(({ name }) => name !== card.name) &&
+                level2StarterExceptions.every(({ name }) => name !== card.name)
+            ) {
                 acc.push(...card.upgrades);
             }
 
@@ -61,6 +68,7 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
 
         const potentialAbilities = [
             ...level2Starters,
+            ...level2StarterExceptions,
             ...all.filter((card) => starters.every(({ name }) => name !== card.name)),
             ...(JOB_CARD_MAP[player.secondaryClass]?.all || []),
         ];
