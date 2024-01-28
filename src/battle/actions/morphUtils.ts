@@ -35,7 +35,12 @@ const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; i
                         target: TARGET_TYPES.SELF,
                         summon: [
                             {
-                                minion: [combatant],
+                                minion: [
+                                    {
+                                        ...combatant,
+                                        effects: [],
+                                    },
+                                ],
                                 positionIndex: index,
                             },
                         ],
