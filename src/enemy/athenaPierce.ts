@@ -18,13 +18,13 @@ import { TornadoIcon } from "../images/icons";
 export const guardWolf: Minion = {
     name: "Wolf",
     isBoss: true,
-    maxHP: 100,
+    maxHP: 125,
     damage: 1,
     image: WolfImage,
     abilities: [
         {
             name: "Howl",
-            description: "Grants 7 armor to allies.",
+            description: "Grants 10 armor to allies.",
             resourceCost: 3,
             actions: [
                 {
@@ -32,7 +32,7 @@ export const guardWolf: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
                     area: 2,
-                    armor: 7,
+                    armor: 10,
                 },
             ],
         },
@@ -66,7 +66,7 @@ export const guardWolf: Minion = {
 export const athena: Minion = {
     name: "Athena Pierce",
     isBoss: true,
-    maxHP: 150,
+    maxHP: 200,
     damage: 2,
     image: AthenaAttackStanceImage,
     resources: 0,
@@ -263,7 +263,7 @@ export const athena: Minion = {
 export const guardHawk: Minion = {
     name: "Hawk",
     isBoss: true,
-    maxHP: 75,
+    maxHP: 100,
     damage: 1,
     image: SoaringHawkImage,
     abilities: [
@@ -278,6 +278,10 @@ export const guardHawk: Minion = {
                     damage: 1,
                     area: 4,
                     icon: TornadoIcon,
+                    animationOptions: {
+                        width: 75,
+                        height: 100,
+                    },
                     effects: [
                         {
                             ...wound,
