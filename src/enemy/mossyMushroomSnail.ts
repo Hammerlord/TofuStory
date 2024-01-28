@@ -13,7 +13,7 @@ import { GreenFairiesImage, MossyMushroomImage, MossySnailImage, MushroomOmokIma
 
 export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
-    maxHP: 150,
+    maxHP: 200,
     damage: 2,
     isBoss: true,
     image: MossyMushroomImage,
@@ -75,7 +75,7 @@ export const mossyMushroom: Minion = {
 
 export const mossySnail: Minion = {
     name: "Mossy Snail",
-    maxHP: 50,
+    maxHP: 100,
     armor: 100,
     damage: 1,
     image: MossySnailImage,

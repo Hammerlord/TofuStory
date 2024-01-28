@@ -270,7 +270,7 @@ const balrogStanceEffect: Effect = {
 export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
-    maxHP: 250,
+    maxHP: 300,
     damage: 3,
     abilities: [
         {
@@ -293,7 +293,7 @@ export const dancesWithBalrog: Minion = {
             description: "Hits twice",
             actions: [
                 {
-                    damage: 4,
+                    damage: 3,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                 },
@@ -349,7 +349,7 @@ export const dancesWithBalrog: Minion = {
             resourceCost: 3,
             castTime: 1,
             image: GiganticSledgeImage,
-            description: "Destroy 50% armor and deal 7 damage",
+            description: "Destroy 100% armor and deal 7 damage",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -367,7 +367,7 @@ export const dancesWithBalrog: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 7,
-                    destroyArmor: 0.5,
+                    destroyArmor: 1,
                 },
             ],
         },
@@ -414,7 +414,7 @@ export const dancesWithBalrog: Minion = {
                     icon: MossySnailImage,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [snailStanceRedEffect, snailStanceBlueEffect],
-                    armor: 40,
+                    armor: 50,
                     removeEffects: [snailStanceEligible.name],
                 },
             ],

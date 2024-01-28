@@ -154,14 +154,14 @@ export const fairySwarm: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    attackDamageReceived: -5,
+    attackDamageReceived: -10,
     duration: 2,
     icon: ShiningFairyImage,
     image: GreenFairiesImage,
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         usableWhileStunned: true,
-        healing: 3,
+        healing: 5,
     },
     onEnd: {
         usableWhileStunned: true,

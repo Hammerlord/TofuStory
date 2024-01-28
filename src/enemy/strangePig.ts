@@ -151,7 +151,7 @@ export const mutantRibbonPig: Minion = {
     image: MutantRibbonPigImage,
     isBoss: true,
     damage: 5,
-    maxHP: 200,
+    maxHP: 250,
     abilities: [
         {
             name: "Reckless Charge",
