@@ -68,7 +68,7 @@ export const snail: Minion = {
     abilities: [loaf],
     image: SnailImage,
     damage: 1,
-    mesos: 3,
+    mesos: 2,
 };
 
 export const blueSnail: Minion = {
@@ -78,7 +78,7 @@ export const blueSnail: Minion = {
     image: BlueSnailImage,
     abilities: [loaf],
     damage: 1,
-    mesos: 4,
+    mesos: 3,
     effects: [
         {
             name: "Tough Shell",
@@ -97,7 +97,7 @@ export const shroom: Minion = {
     maxHP: 12,
     image: ShroomImage,
     damage: 2,
-    mesos: 5,
+    mesos: 4,
     abilities: [
         {
             name: "Poison Spore",
@@ -169,7 +169,7 @@ export const slime: Minion = {
     armor: 12,
     image: SlimeIdleImage,
     damage: 3,
-    mesos: 15,
+    mesos: 10,
     effects: [
         {
             name: "Thick Slime",
@@ -194,7 +194,7 @@ export const pig: Minion = {
     name: "Pig",
     maxHP: 40,
     image: PigIdleImage,
-    mesos: 15,
+    mesos: 10,
     damage: 2,
     abilities: [
         {
@@ -244,7 +244,7 @@ export const ribbonPig: Minion = {
     name: "Ribbon Pig",
     image: RibbonPigIdleImage,
     damage: 3,
-    mesos: 25,
+    mesos: 15,
     abilities: [
         {
             name: "Headlong Rush",
@@ -294,7 +294,7 @@ export const orangeMushroom: Minion = {
     maxHP: 55,
     image: OrangeMushroomIdleImage,
     damage: 3,
-    mesos: 25,
+    mesos: 15,
     effects: [hardy],
     abilities: [
         {
@@ -336,7 +336,7 @@ export const noobA: Minion = {
     maxHP: 40,
     image: NoobClubAImage,
     damage: 2,
-    mesos: 1,
+    mesos: 10,
     items: [{ ...redPotion, healing: 10 }],
     abilities: [
         {
@@ -369,7 +369,7 @@ export const noobB: Minion = {
     maxHP: 40,
     image: NoobClubBImage,
     damage: 2,
-    mesos: 1,
+    mesos: 10,
     items: [{ ...redPotion, healing: 10 }],
     abilities: [
         {
@@ -448,6 +448,7 @@ export const thiefAssassin: Minion = {
     maxHP: 75,
     image: LeetSinImage,
     damage: 2,
+    mesos: 15,
     items: [
         { ...redPotion, healing: 10 },
         { ...redPotion, healing: 10 },

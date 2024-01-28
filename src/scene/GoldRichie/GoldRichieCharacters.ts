@@ -81,6 +81,7 @@ export const goldRichie2: Minion = {
     maxHP: 15,
     armor: 15,
     damage: 0,
+    mesos: 100,
     abilities: [
         {
             name: "Curl Up in Fetal Position",
