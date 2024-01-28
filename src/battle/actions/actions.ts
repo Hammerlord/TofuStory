@@ -1496,15 +1496,22 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
         }
 
         if (addCards) {
+            let newHand = [
+                ...getState().battle.hand,
+                ...addCards.map((card: Ability) => ({
+                    ...card,
+                    instanceId: uuid.v4(),
+                })),
+            ];
+
+            if (newHand.length > MAX_HAND_SIZE) {
+                newHand = newHand.slice(0, MAX_HAND_SIZE);
+                dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+            }
+
             dispatch(
                 updateBattle({
-                    hand: [
-                        ...getState().battle.hand,
-                        ...addCards.map((card: Ability) => ({
-                            ...card,
-                            instanceId: uuid.v4(),
-                        })),
-                    ],
+                    hand: newHand,
                 })
             );
         }
