@@ -124,6 +124,7 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
 
     useEffect(() => {
         const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
+        console.log(answer);
         if (isIncompleteAnswer) {
             return;
         }
@@ -222,7 +223,7 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={WessImage} className={classNames(classes.wess)} />
+                        <img src={WessImage} className={classNames(classes.wess)} onClick={() => onComplete()} />
                     </Tooltip>
                     {answer.map((memberName: string | null, i: number) => (
                         <div key={i} className={classNames(classes.basket, classes[`basket${i + 1}`])} onClick={() => handleClickSlot(i)}>

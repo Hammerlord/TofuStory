@@ -292,7 +292,7 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={WessImage} className={classNames(classes.wess)} />
+                        <img src={WessImage} className={classNames(classes.wess)} onClick={() => onComplete()} />
                     </Tooltip>
                 </div>
             </div>
