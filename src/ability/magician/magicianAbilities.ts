@@ -2210,6 +2210,7 @@ const vm: Ability = {
                                 greatestBolt,
                                 polymorph,
                                 moltenLaser,
+                                combust,
                             ],
                             amount: 1,
                         },
