@@ -609,7 +609,7 @@ const BattlefieldContainer = () => {
             <div className={classes.root} onClick={handleBattlefieldClick}>
                 {notification && (
                     <div className={classes.notificationContainer}>
-                        <Notification severity={notification.severity} onClick={() => setNotification(null)} id={notification.id}>
+                        <Notification severity={notification.severity} onClick={() => dispatch(setNotification(null))} id={notification.id}>
                             {notification.text}
                         </Notification>
                     </div>
