@@ -477,7 +477,7 @@ const mpEater2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 6,
+            resources: 4,
         },
     ],
 };
@@ -500,7 +500,7 @@ export const mpEater: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 5,
+            resources: 3,
         },
     ],
     upgrades: [mpEater2],
