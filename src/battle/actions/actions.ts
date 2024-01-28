@@ -50,8 +50,9 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import getCardSelection from "../selectCardUtils";
+import { MAX_HAND_SIZE } from "../constants";
 
-const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards } = battleStateSlice.actions;
+const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
 
 /**
@@ -1422,25 +1423,34 @@ export const drawCards = ({
             }
         }
 
+        let handTooFull = false;
+        for (const card of cardsToDraw) {
+            if (newHand.length >= MAX_HAND_SIZE) {
+                newDiscard.push(card);
+                handTooFull = true;
+                continue;
+            }
+
+            const existingEffects = card.effects || {};
+            const incomingEffects = effects || {};
+            newHand.push({
+                ...card,
+                effects: {
+                    ...existingEffects,
+                    ...effects,
+                    damage: (existingEffects.damage || 0) + (incomingEffects.damage || 0),
+                    resourceCost: (existingEffects.resourceCost || 0) + (incomingEffects.resourceCost || 0),
+                },
+            });
+        }
+
+        if (handTooFull) {
+            dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+        }
+
         const newState = {
             deck: newDeck,
-            hand: [
-                ...newHand,
-                ...cardsToDraw.map((card) => {
-                    const existingEffects = card.effects || {};
-
-                    const incomingEffects = effects || {};
-                    return {
-                        ...card,
-                        effects: {
-                            ...existingEffects,
-                            ...effects,
-                            damage: (existingEffects.damage || 0) + (incomingEffects.damage || 0),
-                            resourceCost: (existingEffects.resourceCost || 0) + (incomingEffects.resourceCost || 0),
-                        },
-                    };
-                }),
-            ],
+            hand: newHand,
             discard: newDiscard,
         };
 
