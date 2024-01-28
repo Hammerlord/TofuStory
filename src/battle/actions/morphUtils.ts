@@ -2,6 +2,7 @@ import uuid from "uuid";
 import {
     ACTION_TYPES,
     CombatEffect,
+    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Morph,
@@ -38,7 +39,7 @@ const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; i
                                 minion: [
                                     {
                                         ...combatant,
-                                        effects: [],
+                                        effects: combatant.effects.filter((effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF),
                                     },
                                 ],
                                 positionIndex: index,
