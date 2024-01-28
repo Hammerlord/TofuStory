@@ -262,6 +262,32 @@ export const getMultiplier = ({
         }).length;
     }
 
+    if (type === MULTIPLIER_TYPES.EFFECT_DURATIONS) {
+        if (!combatant) {
+            return 0;
+        }
+
+        return combatant.effects.reduce((acc, effect) => {
+            if (
+                filters &&
+                !filters.some(({ property, value, comparator }) =>
+                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
+                )
+            ) {
+                return acc;
+            }
+
+            let calcDuration = effect.duration;
+            // 0 duration effects count as 1 duration because the effect is technically still hanging around
+            if (calcDuration === 0) {
+                calcDuration = 1;
+            } else if (!calcDuration || calcDuration === -1) {
+                calcDuration = Infinity; // Hmmmm infinite duration = infinite damage?
+            }
+            return acc + calcDuration;
+        }, 0);
+    }
+
     if (!combatant) {
         return 1;
     }

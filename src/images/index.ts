@@ -233,6 +233,7 @@ export { default as OrangeMushroomImage } from "./OrangeMushroom.png";
 export { default as OrangeMushroomIdleImage } from "./OrangeMushroomIdle.gif";
 export { default as PanicImage } from "./Panic.png";
 export { default as PanlidImage } from "./Panlid.png";
+export { default as ParalyzeImage } from "./Paralyze.png";
 export { default as ParashockGuardImage } from "./ParashockGuard.png";
 export { default as ParfaitCupcakeImage } from "./ParfaitCupcake.png";
 export { default as PerionCampImage } from "./PerionCamp.png";

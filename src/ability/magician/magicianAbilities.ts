@@ -33,6 +33,7 @@ import {
     MetalBucketSnowmanImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
+    ParalyzeImage,
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
     PurpleEnergyBoltImage,
@@ -2115,6 +2116,55 @@ export const moltenLaser: Ability = {
         },
     ],
     upgrades: [moltenLaser2],
+};
+
+const combust2: Ability = {
+    name: "Combust",
+    image: ParalyzeImage,
+    resourceCost: 2,
+    description: "Deals damage equal to the cumulative damage of all Burns on the target.",
+    actions: [
+        {
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.BEAM,
+            icon: FireArrowProjectileImage,
+            bonus: {
+                damage: 3,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                    type: MULTIPLIER_TYPES.EFFECT_DURATIONS,
+                    filters: [{ property: "name", value: "Burn", comparator: "eq" }],
+                },
+            },
+        },
+    ],
+};
+
+export const combust: Ability = {
+    name: "Combust",
+    image: ParalyzeImage,
+    resourceCost: 2,
+    description: "Deals damage equal to the cumulative damage of all Burns on the target.",
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.BEAM,
+            icon: FireArrowProjectileImage,
+            bonus: {
+                damage: 3,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                    type: MULTIPLIER_TYPES.EFFECT_DURATIONS,
+                    filters: [{ property: "name", value: "Burn", comparator: "eq" }],
+                },
+            },
+        },
+    ],
+    upgrades: [combust2],
 };
 
 const vm: Ability = {

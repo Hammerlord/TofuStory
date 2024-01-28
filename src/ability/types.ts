@@ -249,9 +249,9 @@ export interface Multiplier {
     // Eg. if the type is maxHP, pass a percentage (number in range 0 <= 1) of the maxHP to scale from
     // Eg. if the type is ABILITIES_WITH_NAME, give the name value here
     value?: string | number;
-    // Currently only available for ALL_CARDS. Providing a filter can narrow down the number of cards
-    // Eg. { property: "name", comparator: "includes", value: "bolt" }
-    filters?: { property: string; comparator: "includes"; value: any }[];
+    // Currently only available for ALL_CARDS and EFFECT_DURATIONS.
+    // Eg. Providing a filter can narrow down the number of cards { property: "name", comparator: "includes", value: "bolt" }
+    filters?: { property: string; comparator: "includes" | "eq"; value: any }[];
 }
 
 export interface Bonus {
@@ -337,6 +337,7 @@ export enum MULTIPLIER_TYPES {
     RESOURCES_SPENT = "resourcesSpent",
     OVERHEALING = "overhealing",
     ALL_CARDS = "all-cards",
+    EFFECT_DURATIONS = "effect-durations",
 }
 
 export interface Radiate {
