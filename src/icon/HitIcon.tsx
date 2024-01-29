@@ -1,6 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
+import { useEffect, useState } from "react";
 
 const useStyles = createUseStyles({
     "@keyframes fadeOut": {
@@ -39,9 +40,20 @@ const useStyles = createUseStyles({
 });
 
 const HitIcon = ({ statChanges }) => {
+    const [oldStatChanges, setOldStatChanges] = useState({});
     const classes = useStyles();
 
-    if (!statChanges.damage) {
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setOldStatChanges(statChanges);
+        }, 2000);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [statChanges]);
+
+    if (!statChanges.damage || oldStatChanges === statChanges) {
         return null;
     }
     return <Icon icon={<BoomIcon />} className={classes.root} text={statChanges.damage} />;
