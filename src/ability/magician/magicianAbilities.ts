@@ -1175,7 +1175,8 @@ const avatarOfTheStars2: Ability = {
     level: 2,
     image: StarfishImage,
     depletedOnUse: true,
-    resourceCost: 2,
+    resourceCost: 1,
+    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1186,12 +1187,12 @@ const avatarOfTheStars2: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 2,
+                    duration: 3,
                     override: {
                         portrait: StarfishIdleImage,
                     },
                     description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
-                    onAbility: {
+                    onOffensiveAbility: {
                         conditions: [
                             {
                                 comparator: "gt",
@@ -1212,7 +1213,8 @@ export const avatarOfTheStars: Ability = {
     name: "Avatar Of The Stars",
     image: StarfishImage,
     depletedOnUse: true,
-    resourceCost: 3,
+    resourceCost: 2,
+    description: "When you use an offense ability that costs 1 or more mana, add Swift to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1223,12 +1225,12 @@ export const avatarOfTheStars: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 2,
+                    duration: 3,
                     override: {
                         portrait: StarfishIdleImage,
                     },
-                    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
-                    onAbility: {
+                    description: "When you use an offense ability that costs 1 or more mana, add Swift to your hand.",
+                    onOffensiveAbility: {
                         conditions: [
                             {
                                 comparator: "gt",

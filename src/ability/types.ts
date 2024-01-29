@@ -91,6 +91,7 @@ export interface EffectEventTrigger {
 
 export enum EFFECT_EVENT_KEYS {
     onAbility = "onAbility",
+    onOffensiveAbility = "onOffensiveAbility",
     onDepleteAbility = "onDepleteAbility",
     onAttack = "onAttack",
     onDeath = "onDeath",
@@ -166,6 +167,7 @@ export interface Effect {
     unique?: boolean;
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
+    onOffensiveAbility?: EffectEventTrigger;
     onDepleteAbility?: EffectEventTrigger;
     onAttack?: EffectEventTrigger;
     onDeath?: EffectEventTrigger;

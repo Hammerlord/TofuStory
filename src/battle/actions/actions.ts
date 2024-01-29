@@ -51,6 +51,7 @@ import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import getCardSelection from "../selectCardUtils";
 import { MAX_HAND_SIZE } from "../constants";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice.actions;
@@ -1778,6 +1779,16 @@ const onUseAbility =
                 source: source,
             })
         );
+
+        if (isOffensiveAbility(ability)) {
+            dispatch(
+                checkEventTrigger({
+                    combatantId: actor.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onOffensiveAbility,
+                    source: source,
+                })
+            );
+        }
 
         if (ability.depletedOnUse) {
             dispatch(

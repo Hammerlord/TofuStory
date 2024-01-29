@@ -1,3 +1,4 @@
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
 import { TriggerSource } from "./types";
@@ -72,7 +73,7 @@ export const passesConditions = ({
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
             // @ts-ignore -- We are assuming the type is an ability
-            const { name: sourceName, resourceCost: sourceResourceCost, actions = [] }: Ability = source?.source || {};
+            const { name: sourceName, resourceCost: sourceResourceCost }: Ability = source?.source || {};
 
             if (name) {
                 const names = Array.isArray(name) ? name : [name];
@@ -88,10 +89,7 @@ export const passesConditions = ({
             }
 
             if (isOffense !== undefined) {
-                const isOffensiveAbility = actions.some(
-                    ({ target }) => target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE
-                );
-                return isOffense === isOffensiveAbility;
+                return isOffense === isOffensiveAbility(source?.source as Ability);
             }
 
             return true;

@@ -31,6 +31,7 @@ import {
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { ITEM_TYPES, Item } from "../../item/types";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
@@ -119,8 +120,7 @@ const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: Combatant
     }
 
     // For now we only make one selection, and assume that all abilities that contain at least one offensive action must select a hostile target
-    const offensiveAction = actions.find(({ target }) => target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE);
-    if (offensiveAction) {
+    if (isOffensiveAbility(ability)) {
         return {
             side: hostileSide,
             index: getRandomItem(

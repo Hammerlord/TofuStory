@@ -30,3 +30,9 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
         return BLUE;
     }
 };
+
+export const isOffensiveAbility = (ability: Ability): boolean => {
+    return (
+        ability?.actions.some((action) => action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) || false
+    );
+};
