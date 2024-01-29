@@ -1,9 +1,53 @@
+import { useEffect, useState } from "react";
+import { createUseStyles } from "react-jss";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
-import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
-import { Combatant } from "./types";
+
+const useStyles = createUseStyles({
+    "@keyframes animation": {
+        "0%": {
+            transform: "translateY(-25px)",
+            opacity: 0.75,
+        },
+        "50%": {
+            transform: "translateY(-50px)",
+            opacity: 0.75,
+        },
+        "100%": {
+            transform: "translateY(-50px)",
+            opacity: 0,
+        },
+    },
+    resourceGainText: {
+        position: "absolute",
+        animationName: "$animation",
+        animationDuration: "1s",
+        zIndex: "3",
+        color: "white",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+        fontSize: "24px",
+        fontWeight: "bold",
+        left: 4,
+        bottom: 0,
+    },
+});
 
 const PlayerResources = ({ player }: { player: any }) => {
+    const [oldResources, setOldResources] = useState(player.resources);
+    const classes = useStyles();
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setOldResources(player.resources);
+        }, 1000);
+
+        return () => {
+            clearTimeout(timeout);
+            setOldResources(player.resources);
+        };
+    }, [player.resources]);
     const tooltipContents = (
         <div>
             {player.resources} / {player.maxResources} <ResourceIcon size="sm" playerClass={player.class} /> <br />
@@ -14,9 +58,10 @@ const PlayerResources = ({ player }: { player: any }) => {
     );
     return (
         <Tooltip title={tooltipContents}>
-            <span>
+            <div>
                 <ResourceIcon text={player.resources} size="lg" playerClass={player.class} />
-            </span>
+                {player.resources > oldResources && <span className={classes.resourceGainText}>+{player.resources - oldResources}</span>}
+            </div>
         </Tooltip>
     );
 };
