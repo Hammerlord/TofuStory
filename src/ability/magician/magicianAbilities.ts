@@ -11,6 +11,8 @@ import {
     ElementalAdaptationEffectImage,
     ElementalAdaptationFPImage,
     ElementalAdaptationImage,
+    EliteFirebrandImage,
+    EliteFirebrandMoveImage,
     EmptySackImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
@@ -2170,6 +2172,88 @@ export const combust: Ability = {
     upgrades: [combust2],
 };
 
+const leechingFlame2: Ability = {
+    name: "Leeching Flame",
+    resourceCost: 1,
+    level: 2,
+    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+    image: EliteFirebrandImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            icon: EliteFirebrandMoveImage,
+            effects: [
+                {
+                    ...burn,
+                    duration: 5,
+                },
+                {
+                    name: "Leeching Flame",
+                    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+                    icon: EliteFirebrandImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    duration: 5,
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
+                        resources: 1,
+                        healing: 1,
+                        conditions: [
+                            {
+                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                hasEffectType: [EFFECT_TYPES.BURN],
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const leechingFlame: Ability = {
+    name: "Leeching Flame",
+    resourceCost: 1,
+    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+    image: EliteFirebrandImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            icon: EliteFirebrandMoveImage,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+                {
+                    name: "Leeching Flame",
+                    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+                    icon: EliteFirebrandImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    duration: 5,
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
+                        resources: 1,
+                        healing: 1,
+                        conditions: [
+                            {
+                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                hasEffectType: [EFFECT_TYPES.BURN],
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [leechingFlame2],
+};
+
 const vm: Ability = {
     name: "Volatile Magic",
     image: StarfallMagicSquareImage,
@@ -2214,6 +2298,7 @@ const vm: Ability = {
                                 polymorph,
                                 moltenLaser,
                                 combust,
+                                leechingFlame,
                             ],
                             amount: 1,
                         },
