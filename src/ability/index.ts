@@ -2,6 +2,7 @@ import { MAGICIAN_SECONDARY_JOBS, PLAYER_CLASSES, WARRIOR_SECONDARY_JOBS } from 
 import {
     arcaneAim,
     arcaneChanneling,
+    arcaneWard,
     aurora,
     avatarOfTheStars,
     bagFromBeyond,
@@ -153,6 +154,7 @@ export const JOB_CARD_MAP = {
             bagFromBeyond,
             moltenLaser,
             combust,
+            arcaneWard,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },

@@ -91,6 +91,7 @@ export { default as DrakeCardImage } from "./DrakeCard.png";
 export { default as DueyImage } from "./Duey.png";
 export { default as ElementalAdaptationImage } from "./ElementalAdaptation.png";
 export { default as ElementalAdaptationEffectImage } from "./ElementalAdaptationEffect.png";
+export { default as ElementalAdaptationFPImage } from "./ElementalAdaptationFP.png";
 export { default as ElementalForceImage } from "./ElementalForce.png";
 export { default as ElliniaBGImage } from "./ElliniaBG.jpg";
 export { default as EmptySackImage } from "./EmptySack.png";

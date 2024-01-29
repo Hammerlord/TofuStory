@@ -9,6 +9,7 @@ import {
     ColdBeamProjectileImage,
     DoTPunisherImage,
     ElementalAdaptationEffectImage,
+    ElementalAdaptationFPImage,
     ElementalAdaptationImage,
     EmptySackImage,
     EnergyBoltImage,
@@ -2269,4 +2270,53 @@ export const bagFromBeyond: Ability = {
         },
     ],
     upgrades: [bagFromBeyond2],
+};
+
+export const arcaneWard2: Ability = {
+    name: "Arcane Ward",
+    image: ElementalAdaptationFPImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            armor: 17,
+            effects: [
+                {
+                    name: "Arcane Ward",
+                    icon: ElementalAdaptationFPImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const arcaneWard: Ability = {
+    name: "Arcane Ward",
+    image: ElementalAdaptationFPImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            armor: 12,
+            effects: [
+                {
+                    name: "Arcane Ward",
+                    icon: ElementalAdaptationFPImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+    upgrades: [arcaneWard2],
 };
