@@ -1035,7 +1035,7 @@ const parfaitCupcake2: Ability = {
     name: "Parfait Cupcake",
     resourceCost: 0,
     image: ParfaitCupcakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1049,7 +1049,7 @@ const parfaitCupcake: Ability = {
     name: "Parfait Cupcake",
     resourceCost: 0,
     image: ParfaitCupcakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1063,7 +1063,7 @@ const chocolateCupcake2: Ability = {
     name: "Chocolate Cupcake",
     resourceCost: 0,
     image: ChocolateCupcakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1078,7 +1078,7 @@ const chocolateCupcake: Ability = {
     name: "Chocolate Cupcake",
     resourceCost: 0,
     image: ChocolateCupcakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1093,7 +1093,7 @@ const pieceOfCake2: Ability = {
     name: "Piece Of Cake",
     resourceCost: 0,
     image: PieceOfBirthdayCakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1117,7 +1117,7 @@ const pieceOfCake: Ability = {
     name: "Piece Of Cake",
     resourceCost: 0,
     image: PieceOfBirthdayCakeImage,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
