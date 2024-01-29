@@ -170,6 +170,7 @@ const BattlefieldContainer = () => {
     const {
         deck,
         discard,
+        depleted,
         hand,
         isPlayerTurn,
         enemySide,
@@ -647,7 +648,7 @@ const BattlefieldContainer = () => {
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
-                                <Deck deck={deck} discard={discard} />
+                                <Deck deck={deck} discard={discard} depleted={depleted} />
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>

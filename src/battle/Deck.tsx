@@ -25,6 +25,21 @@ const useStyles = createUseStyles({
         zIndex: 3,
         textAlign: "center",
         width: "100%",
+        background: "#999999",
+        color: "white",
+        padding: "4px 0",
+        borderRadius: "4px",
+    },
+    depleted: {
+        position: "absolute",
+        bottom: "-72px",
+        zIndex: 3,
+        textAlign: "center",
+        width: "100%",
+        background: "rgba(0, 0, 0, 0.7)",
+        color: "rgba(255, 255, 255, 0.8)",
+        padding: "4px 0",
+        borderRadius: "4px",
     },
     deckContainer: {
         height: "100px",
@@ -54,7 +69,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Deck = ({ deck, discard }) => {
+const Deck = ({ deck = [], discard = [], depleted = [] }) => {
     const classes = useStyles();
 
     const getCardColor = (i: number): string => {
@@ -108,6 +123,8 @@ const Deck = ({ deck, discard }) => {
 
     const deckCount = useMemo(() => compose(getTooltip, getAbilityMap)(deck), [deck]);
     const discardCount = useMemo(() => compose(getTooltip, getAbilityMap)(discard), [discard]);
+    const depletedCount = useMemo(() => compose(getTooltip, getAbilityMap)(depleted), [depleted]);
+
     const deckTooltip = (
         <div>
             <div className={classes.tooltipTitle}>Deck</div>
@@ -117,8 +134,15 @@ const Deck = ({ deck, discard }) => {
 
     const discardTooltip = (
         <div>
-            <div className={classes.tooltipTitle}>On cooldown</div>
+            <div className={classes.tooltipTitle}>Discard</div>
             {discardCount}
+        </div>
+    );
+
+    const depleteTooltip = (
+        <div>
+            <div className={classes.tooltipTitle}>Depleted</div>
+            {depletedCount}
         </div>
     );
 
@@ -143,9 +167,17 @@ const Deck = ({ deck, discard }) => {
                 </div>
             </Tooltip>
 
-            <Tooltip title={discardTooltip} placement={"right"}>
-                <div className={classes.onCooldown}>Cooldown: {discard.length}</div>
-            </Tooltip>
+            {discard.length > 0 && (
+                <Tooltip title={discardTooltip} placement={"right"}>
+                    <div className={classes.onCooldown}>Discard: {discard.length}</div>
+                </Tooltip>
+            )}
+
+            {depleted.length > 0 && (
+                <Tooltip title={depleteTooltip} placement={"right"}>
+                    <div className={classes.depleted}>Depleted: {depleted.length}</div>
+                </Tooltip>
+            )}
         </div>
     );
 };
