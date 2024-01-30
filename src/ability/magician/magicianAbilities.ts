@@ -28,6 +28,7 @@ import {
     LightningOrbProjectileImage,
     MPEaterImage,
     MagicArmorImage,
+    MagicArmorOldImage,
     MagicBoosterImage,
     MagicClawImage,
     MagicClawProjectileImage,
@@ -82,7 +83,7 @@ const energyBolt2: Ability = {
     level: 2,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -137,7 +138,7 @@ const magicFang2: Ability = {
     actions: [
         {
             area: 1,
-            damage: 6,
+            damage: 5,
             secondaryDamage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -155,7 +156,7 @@ const magicFang2: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 2,
+                damage: 3,
             },
         },
     ],
@@ -168,7 +169,7 @@ export const magicFang: Ability = {
     actions: [
         {
             area: 1,
-            damage: 4,
+            damage: 3,
             secondaryDamage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -225,7 +226,7 @@ const magicClaw2: Ability = {
     actions: [
         {
             ...magicClawAction,
-            damage: 5,
+            damage: 6,
             bonus: {
                 conditions: [
                     {
@@ -242,7 +243,7 @@ const magicClaw2: Ability = {
                 ...magicClawAction.animationOptions,
                 mirrorX: true,
             },
-            damage: 5,
+            damage: 6,
             bonus: {
                 conditions: [
                     {
@@ -331,13 +332,62 @@ export const magicGuard: Ability = {
 const magicArmor2: Ability = {
     name: "Magic Armor",
     resourceCost: 1,
-    image: MagicArmorImage,
+    image: MagicArmorOldImage,
     level: 2,
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            armor: 7,
+        },
+    ],
+};
+
+export const magicArmor: Ability = {
+    name: "Magic Armor",
+    resourceCost: 1,
+    image: MagicArmorOldImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
             armor: 5,
+        },
+    ],
+    upgrades: [magicArmor2],
+};
+
+const barrier2: Ability = {
+    name: "Barrier",
+    resourceCost: 1,
+    image: MagicArmorImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 9,
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                armor: 4,
+            },
+        },
+    ],
+};
+
+export const barrier: Ability = {
+    name: "Barrier",
+    resourceCost: 1,
+    image: MagicArmorImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 7,
             bonus: {
                 conditions: [
                     {
@@ -349,29 +399,7 @@ const magicArmor2: Ability = {
             },
         },
     ],
-};
-
-export const magicArmor: Ability = {
-    name: "Magic Armor",
-    resourceCost: 1,
-    image: MagicArmorImage,
-    actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            armor: 4,
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-                armor: 2,
-            },
-        },
-    ],
-    upgrades: [magicArmor2],
+    upgrades: [barrier2],
 };
 
 const teleport2: Ability = {
@@ -407,7 +435,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction: Action = {
-    damage: 2,
+    damage: 3,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -612,7 +640,6 @@ export const thunderclap: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 1,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -673,7 +700,7 @@ const frostBarrier2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 6,
+            armor: 8,
             effects: [
                 {
                     name: "Frost Barrier",
@@ -705,7 +732,7 @@ export const frostBarrier: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 4,
+            armor: 5,
             effects: [
                 {
                     name: "Frost Barrier",
@@ -737,8 +764,8 @@ const chainLightning2: Ability = {
     resourceCost: 2,
     actions: [
         {
-            damage: 9,
-            secondaryDamage: 6,
+            damage: 10,
+            secondaryDamage: 7,
             targetArea: 5,
             numTargets: 5,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -771,7 +798,7 @@ export const chainLightning: Ability = {
     resourceCost: 2,
     actions: [
         {
-            damage: 7,
+            damage: 8,
             secondaryDamage: 5,
             targetArea: 5,
             numTargets: 5,
@@ -969,7 +996,7 @@ const fireArrow2: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 13,
+            damage: 15,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -988,7 +1015,7 @@ const fireArrow2: Ability = {
                             hasEffectType: [EFFECT_TYPES.BURN],
                         },
                     ],
-                    damage: 7,
+                    damage: 6,
                 },
             ],
         },
@@ -1004,7 +1031,7 @@ export const fireArrow: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 11,
+            damage: 12,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -1023,7 +1050,7 @@ export const fireArrow: Ability = {
                             hasEffectType: [EFFECT_TYPES.BURN],
                         },
                     ],
-                    damage: 5,
+                    damage: 4,
                 },
             ],
         },
@@ -1278,7 +1305,7 @@ export const greaterBolt2: Ability = {
     ],
     actions: [
         {
-            damage: 7,
+            damage: 8,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1394,6 +1421,25 @@ export const throwTheBook: Ability = {
     upgrades: [throwTheBook2],
 };
 
+const magicBooster2: Ability = {
+    name: "Magic Booster",
+    image: MagicBoosterImage,
+    resourceCost: 0,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 2,
+                effects: {
+                    resourceCost: -1,
+                },
+                filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+            },
+        },
+    ],
+};
+
 export const magicBooster: Ability = {
     name: "Magic Booster",
     image: MagicBoosterImage,
@@ -1411,6 +1457,7 @@ export const magicBooster: Ability = {
             },
         },
     ],
+    upgrades: [magicBooster2],
 };
 
 const coldBeam2: Ability = {
@@ -1422,7 +1469,7 @@ const coldBeam2: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 8,
+            damage: 9,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1462,7 +1509,7 @@ export const coldBeam: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 6,
+            damage: 7,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1564,10 +1611,10 @@ const thunderBolt2: Ability = {
     image: ThunderBoltImage,
     level: 2,
     resourceCost: 1,
-    description: "Charged: Cast again for 2 damage",
+    description: "Charged: Cast again for 3 damage",
     actions: [
         {
-            damage: 5,
+            damage: 6,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1579,7 +1626,7 @@ const thunderBolt2: Ability = {
             },
         },
         {
-            damage: 2,
+            damage: 3,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1603,7 +1650,7 @@ export const thunderBolt: Ability = {
     name: "Thunder Bolt",
     image: ThunderBoltImage,
     resourceCost: 1,
-    description: "Charged: Cast again for 1 damage",
+    description: "Charged: Cast again for 2 damage",
     actions: [
         {
             damage: 4,
@@ -1618,7 +1665,7 @@ export const thunderBolt: Ability = {
             },
         },
         {
-            damage: 1,
+            damage: 2,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1654,9 +1701,9 @@ const slimmingMuffin2: Ability = {
             type: ACTION_TYPES.EFFECT,
             healing: 5,
             drawCards: {
-                amount: 1,
+                amount: 2,
                 effects: {
-                    resourceCost: -2,
+                    resourceCost: -1,
                 },
             },
         },
@@ -1698,7 +1745,7 @@ const aurora2: Ability = {
     },
     actions: [
         {
-            damage: 9,
+            damage: 10,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 2,
@@ -1718,7 +1765,7 @@ export const aurora: Ability = {
     },
     actions: [
         {
-            damage: 7,
+            damage: 8,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 2,
@@ -1944,7 +1991,7 @@ export const goutOfFlame: Ability = {
 
 const temporalBag2: Ability = {
     name: "Temporal Bag",
-    resourceCost: 1,
+    resourceCost: 0,
     image: EmptySackImage,
     description: "Place up to 3 cards from your hand on top of your deck.",
     actions: [
@@ -1961,7 +2008,7 @@ const temporalBag2: Ability = {
 
 export const temporalBag: Ability = {
     name: "Temporal Bag",
-    resourceCost: 1,
+    resourceCost: 0,
     image: EmptySackImage,
     description: "Place up to 2 cards from your hand on top of your deck.",
     actions: [
@@ -2366,7 +2413,7 @@ export const arcaneWard2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            armor: 17,
+            armor: 20,
             effects: [
                 {
                     name: "Arcane Ward",
@@ -2390,7 +2437,7 @@ export const arcaneWard: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            armor: 12,
+            armor: 15,
             effects: [
                 {
                     name: "Arcane Ward",
