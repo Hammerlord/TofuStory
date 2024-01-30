@@ -19,6 +19,7 @@ export { default as HourglassIcon } from "./Hourglass.svg";
 export { default as HouseIcon } from "./House.svg";
 export { default as JapaneseOgreIcon } from "./JapaneseOgre.svg";
 export { default as JapaneseOgreAlternateIcon } from "./JapaneseOgreAlternate.svg";
+export { default as LinkIcon } from "./Link.svg";
 export { default as LockIcon } from "./Lock.svg";
 export { default as MedalIcon } from "./Medal.svg";
 export { default as MilitaryMedalIcon } from "./MilitaryMedal.svg";

@@ -666,7 +666,9 @@ export const getInducedAttack = (actor: Combatant): Action => {
 };
 
 export const isUnableToAct = (combatant: Combatant): boolean => {
-    return combatant?.effects.some((effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
+    return combatant?.effects.some(
+        (effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type) || effect.preventTurnAction
+    );
 };
 
 export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movement = 0 }): number[] => {

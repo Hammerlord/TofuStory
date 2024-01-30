@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { ElliniaBGImage } from "../images";
 import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
+import { grendelScene } from "../scene/Ellinia/grendelScene";
 
 const useStyles = createUseStyles({
     root: {
@@ -87,6 +88,10 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop }) => {
                                     <MoneyBagIcon />
                                 </div>
                             </div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(grendelScene)}>
+                            Grendel - Test
+                            <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node)} onClick={onExit}>
                             Exit to World Map

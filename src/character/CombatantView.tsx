@@ -235,6 +235,11 @@ const useStyles = createUseStyles({
     dead: {
         opacity: 0,
     },
+    stasis: {
+        WebkitFilter: "brightness(0.25)",
+        filter: "brightness(0.25)",
+        opacity: 1,
+    },
     weaponContainer: {
         position: "absolute",
         top: -50,
@@ -330,10 +335,12 @@ const CombatantView = forwardRef(
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
         const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles();
+        const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
         useEffect(() => {
             const isCombatantChanged = oldState?.id !== combatant?.id;
-            if (combatant?.HP > 0 || isCombatantChanged) {
+            const isDead = combatant?.HP <= 0 && !isLifeLinked;
+            if (!isDead || isCombatantChanged) {
                 setPlayDeathAnimation(false);
             }
 
@@ -346,7 +353,7 @@ const CombatantView = forwardRef(
                 setStatChanges(statChanges);
                 setOldState(combatant);
 
-                const isKillingBlow = oldState?.HP > 0 && combatant?.HP <= 0 && !isCombatantChanged;
+                const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
                 if (isKillingBlow && !willPerformActions) {
                     setPlayDeathAnimation(true);
                 }
@@ -394,6 +401,7 @@ const CombatantView = forwardRef(
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
+                [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
             }),
             style: {
                 animationDuration: `${(event?.playbackTime || 1000) / 1000}s`,
@@ -462,7 +470,7 @@ const CombatantView = forwardRef(
                                             wielder={oldState}
                                         />
                                     </div>
-                                    {oldState.HP > 0 && <Effects combatant={oldState} healing={statChanges?.healing} />}
+                                    {(oldState.HP > 0 || isLifeLinked) && <Effects combatant={oldState} healing={statChanges?.healing} />}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
@@ -486,7 +494,7 @@ const CombatantView = forwardRef(
                             </>
                         )}
                     </div>
-                    {oldState?.HP > 0 && (
+                    {(oldState?.HP > 0 || isLifeLinked) && (
                         <div className={classes.effectsContainer}>
                             <EffectIconsContainer isSilenced={isSilenced} combatant={oldState} />
                         </div>

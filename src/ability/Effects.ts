@@ -254,7 +254,7 @@ export const shielding: Effect = {
     },
 };
 
-const volcano: Minion = {
+export const volcano: Minion = {
     name: "Volcano",
     maxHP: 6,
     image: VolcanoIcon,

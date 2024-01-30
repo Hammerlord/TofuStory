@@ -510,7 +510,8 @@ const onEffectEventTrigger = ({
 
             const isAffected = (combatant: Combatant, j: number): boolean => {
                 const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
-                return combatant?.HP > 0 && targetIds.includes(combatant?.id) && !isExcludingPrimaryTarget;
+                const isAlive = combatant?.HP > 0 || combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+                return isAlive && targetIds.includes(combatant?.id) && !isExcludingPrimaryTarget;
             };
 
             const affectedTargetIds = targets.reduce((acc, character: Combatant | null, i: number) => {
@@ -1180,7 +1181,15 @@ const performAction = ({
         const targetCombatant = getState().battle[side][selectedIndex];
         const area = calculateActionArea({ action, actor, target: targetCombatant });
 
-        const { vacuum, movement, numTargets: extraTargets = 0, excludePrimaryTarget, secondaryAction, autoCastAbilities } = action;
+        const {
+            vacuum,
+            movement,
+            numTargets: extraTargets = 0,
+            excludePrimaryTarget,
+            secondaryAction,
+            autoCastAbilities,
+            retreat,
+        } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
 
@@ -1280,6 +1289,20 @@ const performAction = ({
         );
         dispatch(checkHandleSummon({ action, actorId, parentSource }));
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
+        if (retreat) {
+            const { friendly, friendlySide } = findCombatantData(getState, actorId);
+            dispatch(
+                updateBattle({
+                    [friendlySide]: friendly.map((combatant) => {
+                        if (combatant?.id === actorId) {
+                            return null;
+                        }
+
+                        return combatant;
+                    }),
+                })
+            );
+        }
     };
 };
 

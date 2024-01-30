@@ -22,6 +22,7 @@ export enum EFFECT_TYPES {
     SILENCE = "silence",
     IMMUNITY = "immunity", // including effects
     ATTACK_IMMUNITY = "attackImmunity",
+    LIFE_LINK = "lifeLink",
 }
 
 export enum EFFECT_CLASSES {
@@ -200,6 +201,8 @@ export interface Effect {
     onDrawCard?: EffectEventTrigger;
     onDeckCycle?: EffectEventTrigger;
     canBeSilenced?: boolean;
+    /** Character does not choose and play an ability during its turn */
+    preventTurnAction?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
     turnsTriggerFrequency?: number;
@@ -459,6 +462,7 @@ export interface Action {
         height?: number;
         opacity?: number; // Should be a decimal with a max value of 1
         flash?: boolean;
+        fadeOut?: boolean;
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
@@ -469,6 +473,7 @@ export interface Action {
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
+    retreat?: boolean;
 }
 
 export interface Ability {

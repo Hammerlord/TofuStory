@@ -74,6 +74,18 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         animationDuration: 200,
     },
+    "@keyframes fadeOut": {
+        "0%": {
+            opacity: 1,
+        },
+        "100%": {
+            opacity: 0,
+        },
+    },
+    fadeOut: {
+        animationName: "$fadeOut",
+        animationDuration: `1s`,
+    },
 });
 
 const DISPLACEMENT_SPEED = 500;
@@ -136,7 +148,7 @@ const AnimationCanvas = ({
     const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash } = animationOptions || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut } = animationOptions || {};
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
@@ -252,6 +264,7 @@ const AnimationCanvas = ({
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
                         [classes.flash]: flash,
+                        [classes.fadeOut]: fadeOut,
                     })}
                     {...props}
                 >
@@ -273,6 +286,7 @@ const AnimationCanvas = ({
                     className={classNames(classes.iconProjectile, {
                         [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
                         [classes.flash]: flash,
+                        [classes.fadeOut]: fadeOut,
                     })}
                     {...props}
                 >
