@@ -10,11 +10,9 @@ import {
     LeetSinImage,
     LigatorImage,
     LupinImage,
-    ManoImage,
     MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
-    MutantSnailImage,
     NoobClubAImage,
     NoobClubBImage,
     NoobWarriorAImage,
@@ -29,7 +27,6 @@ import {
     RedFistOfFuryImage,
     RedSnailImage,
     RedSnailShellImage,
-    RedWhipImage,
     RibbonPigIdleImage,
     ShroomImage,
     SlimeIdleImage,
@@ -51,7 +48,6 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    MORPH_TYPES,
     MULTIPLIER_TYPES,
     Minion,
     SCALING_VALUE_TYPES,
@@ -868,259 +864,6 @@ export const elliniaHornyMushroom: Minion = {
     damage: 3,
     effects: [thorns],
     mesos: 10,
-};
-
-export const mutantSnailEnemy: Minion = {
-    name: "Mutant Snail",
-    image: MutantSnailImage,
-    isBoss: true,
-    maxHP: 75,
-    armor: 75,
-    damage: 3,
-    mesos: 100,
-    effects: [
-        {
-            name: "Tough Shell",
-            icon: BlueSnailShellImage,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "Prevents armor decay.",
-        },
-        {
-            ...hardy,
-            name: "Tyrant Shell",
-            icon: SnailShellImage,
-            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
-            canBeSilenced: false,
-        },
-    ],
-    abilities: [
-        {
-            name: "Call Snail",
-            image: SnailImage,
-            actions: [
-                {
-                    // HACK: this is just for animation playback
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [snail, blueSnail] }, { minion: [snail, blueSnail] }],
-                },
-            ],
-        },
-        {
-            name: "Whip",
-            resourceCost: 1,
-            image: RedWhipImage,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    area: 2,
-                    excludePrimaryTarget: true,
-                    damage: 3,
-                    icon: RedWhipImage,
-                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    effects: [
-                        {
-                            name: "Whipped",
-                            description: "Whipped into a frenzy!",
-                            icon: WeaponMasteryImage,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            name: "Frenzied Tantrum",
-            description: "{{ caster }} will tantrum, dealing 3 hits per move.",
-            resourceCost: 3,
-            channelDuration: 2,
-            castTime: 1,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    effects: [
-                        {
-                            name: "Frenzy",
-                            description: "Entering a frenzy!",
-                            icon: WeaponMasteryImage,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                            duration: 2,
-                        },
-                    ],
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-            ],
-        },
-        {
-            name: "Mutate",
-            resourceCost: 3,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    excludePrimaryTarget: true,
-                    area: 2,
-                    morph: {
-                        type: MORPH_TYPES.MAP,
-                        minions: [
-                            {
-                                conditions: [
-                                    {
-                                        name: "Blue Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: redSnail,
-                            },
-                            {
-                                conditions: [
-                                    {
-                                        name: "Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: blueSnail,
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    ],
-};
-
-export const manoEnemy: Minion = {
-    name: "Mano",
-    image: ManoImage,
-    isBoss: true,
-    maxHP: 50,
-    armor: 100,
-    damage: 3,
-    mesos: 100,
-    abilities: [
-        {
-            name: "Call Snail",
-            image: SnailImage,
-            actions: [
-                {
-                    // HACK: this is just for animation playback
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [snail, blueSnail] }, { minion: [snail, blueSnail] }],
-                },
-            ],
-        },
-        {
-            name: "Call Snail",
-            image: RedSnailImage,
-            minion: redSnail,
-            actions: [
-                {
-                    // HACK: this is just for animation playback
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                },
-            ],
-        },
-        {
-            name: "Withdraw",
-            channelDuration: 2,
-            resourceCost: 3,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    armor: 10,
-                    effects: [
-                        {
-                            ...thorns,
-                            duration: 1,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            name: "Rollout",
-            castTime: 1,
-            channelDuration: 3,
-            resourceCost: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.YOYO,
-                    playbackTime: 600,
-                    damage: 7,
-                },
-            ],
-        },
-    ],
-    effects: [
-        {
-            ...hardy,
-            name: "Senior Shell",
-            icon: SnailShellImage,
-            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
-            canBeSilenced: false,
-        },
-        {
-            name: "Tough Shell",
-            icon: BlueSnailShellImage,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "Prevents armor decay.",
-        },
-        {
-            name: "Weighted Shell",
-            icon: RedSnailShellImage,
-            canBeSilenced: false,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "While this character has armor, its damage is increased.",
-            attackPower: 1,
-            skillBonus: [
-                {
-                    skill: "Rollout",
-                    damage: 3,
-                },
-            ],
-            conditions: [
-                {
-                    comparator: "gt",
-                    armor: 0,
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-    ],
 };
 
 export const curseEye: Minion = {

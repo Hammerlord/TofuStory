@@ -4,8 +4,6 @@ import {
     blueSnail,
     fireBoar,
     lupin,
-    manoEnemy,
-    mutantSnailEnemy,
     octopus,
     orangeMushroom,
     pig,
@@ -23,6 +21,7 @@ import { REGIONS } from "../regions";
 import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
+import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
 
 export const routeKerningToPerion: Route = {
     enemies: {
@@ -124,7 +123,7 @@ const toKerningForest: Route = {
             type: NODE_TYPES.BOSS,
             encounter: [
                 {
-                    enemies: [null, snail, mutantSnailEnemy, snail, null],
+                    enemies: [null, minionSnail, mutantSnailEnemy, minionSnail, null],
                     winCondition: {
                         defeatBoss: true,
                     },
@@ -294,7 +293,7 @@ export const toHenesysForest: Route = {
             type: NODE_TYPES.BOSS,
             encounter: [
                 {
-                    enemies: [null, snail, manoEnemy, snail, null],
+                    enemies: [null, minionSnail, manoEnemy, minionSnail, null],
                     winCondition: {
                         defeatBoss: true,
                     },
