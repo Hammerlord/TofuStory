@@ -193,6 +193,10 @@ export const grendelVolcano: Minion = {
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             },
+            onDeath: {
+                usableWhileStunned: true,
+                removeEffect: true,
+            },
         },
     ],
 };
@@ -200,6 +204,7 @@ export const grendelVolcano: Minion = {
 const volcanicBurst: Ability = {
     name: "Raise Volcano",
     image: VolcanoIcon,
+    resourceCost: 3,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
