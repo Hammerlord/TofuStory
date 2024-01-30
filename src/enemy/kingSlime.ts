@@ -1,6 +1,6 @@
 import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
-import { MountainIcon } from "../images/icons";
-import { hardy, stun } from "./../ability/Effects";
+import { CrossedSwordsIcon, MountainIcon } from "../images/icons";
+import { hardy, raging, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -74,8 +74,8 @@ export const kingSlimeEnemy: Minion = {
     image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
-    damage: 5,
-    armor: 20,
+    damage: 3,
+    armor: 25,
     effects: [
         {
             ...hardy,
@@ -142,6 +142,7 @@ export const kingSlimeEnemy: Minion = {
                 },
             },
         },
+        raging,
     ],
     abilities: [
         {
@@ -156,23 +157,6 @@ export const kingSlimeEnemy: Minion = {
                     secondaryDamage: 3,
                     area: 2,
                     animation: ANIMATION_TYPES.STOMP,
-                    effects: [
-                        {
-                            name: "Quaking",
-                            description: "Receiving +2 damage from Earthquake.",
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            icon: MountainIcon,
-                            abilityDamageReceived: [
-                                {
-                                    abilityName: "Earthquake",
-                                    damage: 2,
-                                    type: SCALING_VALUE_TYPES.FLAT,
-                                },
-                            ],
-                            duration: 6,
-                        },
-                    ],
                 },
             ],
         },
