@@ -588,14 +588,6 @@ const BattlefieldContainer = () => {
 
     const targetLineColor = getAbilityColor(hand[abilityIndex]);
 
-    let handleUseItem;
-    if (isPlayerTurn && player?.HP > 0) {
-        handleUseItem = (itemIndex: number) => {
-            dispatch(useItem({ itemIndex, actorId: player.id }));
-            dispatch(updatePlayer({ items: player.items.filter((item, i) => i !== itemIndex) }));
-        };
-    }
-
     const { targetSide, selectedIndex } = (events[0] as Event) || {};
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
@@ -702,27 +694,6 @@ const BattlefieldContainer = () => {
                         />
                     </div>
                 </div>
-                <Header
-                    player={player}
-                    deck={originalDeck}
-                    onUseItem={handleUseItem}
-                    onSelectWeaponSkin={(weaponSkin: string) => {
-                        dispatch(
-                            updateCombatant({
-                                combatantId: player.id,
-                                newProperties: {
-                                    weapon: weaponSkin,
-                                },
-                            })
-                        );
-
-                        dispatch(
-                            updatePlayer({
-                                weapon: weaponSkin,
-                            })
-                        );
-                    }}
-                />
                 {showWaveClear && (
                     <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
                 )}

@@ -31,6 +31,7 @@ import { NPCTracker, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 import { BATTLE_TYPES } from "../battle/types";
 import ItemRewards from "./ItemRewards";
+import { updateCombatant } from "../battle/actions/actions";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -262,20 +263,32 @@ const Main = () => {
         dispatch(onSelectClass({ selectedClass, deck }));
     };
 
-    const handleUseItem = (itemIndex: number) => {
-        const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
-        if (upgradeCard) {
-            setUpgradingAbility(() => () => dispatch(useConsumable(itemIndex)));
-            return;
+    let handleUseItem;
+    if (battle) {
+        if (battle.isPlayerTurn) {
+            handleUseItem = (itemIndex: number) => {
+                const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
+                if (!upgradeCard && !removeCard) {
+                    dispatch(useConsumable(itemIndex));
+                }
+            };
         }
+    } else {
+        handleUseItem = (itemIndex: number) => {
+            const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
+            if (upgradeCard) {
+                setUpgradingAbility(() => () => dispatch(useConsumable(itemIndex)));
+                return;
+            }
 
-        if (removeCard) {
-            setRemovingAbility(() => () => dispatch(useConsumable(itemIndex)));
-            return;
-        }
+            if (removeCard) {
+                setRemovingAbility(() => () => dispatch(useConsumable(itemIndex)));
+                return;
+            }
 
-        dispatch(useConsumable(itemIndex));
-    };
+            dispatch(useConsumable(itemIndex));
+        };
+    }
 
     const handleJobUp = ({ job, jobUpAbilities }) => {
         dispatch(
@@ -368,7 +381,20 @@ const Main = () => {
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
-    const handleSelectWeaponSkin = (weaponSkin: string) => dispatch(updatePlayer({ weapon: weaponSkin }));
+    const handleSelectWeaponSkin = (weaponSkin: string) => {
+        if (battle) {
+            dispatch(
+                updateCombatant({
+                    combatantId: player.id,
+                    newProperties: {
+                        weapon: weaponSkin,
+                    },
+                })
+            );
+        }
+
+        dispatch(updatePlayer({ weapon: weaponSkin }));
+    };
 
     const isActivityOpen =
         battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility;
@@ -471,8 +497,7 @@ const Main = () => {
                     )}
                 </div>
             )}
-            {/** BattleView has its own header */}
-            {!battle && <Header player={player} deck={deck} onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
+            {<Header player={player} deck={deck} onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
 
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && (
