@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
-import { MesoBagImage, MesoCoinImage } from "../images";
+import { HotdogSupremeImage, MesoBagImage, MesoCoinImage, TofuImage } from "../images";
 import { goldenHammer, incense } from "../item/items";
 import ItemView from "../item/ItemView";
 import { Item, ITEM_TYPES } from "../item/types";
@@ -122,14 +122,25 @@ const Shop = ({
     onExit,
 }: {
     player: any;
-    onBuyItem: ({ items, mesosSpent, type }: { items: Item[] | Ability[]; mesosSpent: number; type: "item" | "ability" }) => void;
+    onBuyItem: ({
+        items,
+        mesosSpent,
+        type,
+    }: {
+        items: Item[] | Ability[];
+        mesosSpent: number;
+        type: "item" | "ability";
+        statChanges?: { maxHP?: number; HP?: number };
+    }) => void;
     merchant?: { name: string };
     onExit: () => void;
 }) => {
     const [abilities, setAbilities] = useState([]);
     const [items, setItems] = useState([]);
+    const [food, setFood] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const [selectedFoodIndex, setSelectedFoodIndex] = useState(null);
     const [numRefreshes, setNumRefreshes] = useState(0);
     const [discount, setDiscount] = useState(0);
     const classes = useStyles();
@@ -202,6 +213,29 @@ const Shop = ({
         ];
 
         setItems(itemsForSale);
+
+        const food = [
+            {
+                name: "Tofu",
+                image: TofuImage,
+                price: applyDiscount(25),
+                description: "Permanently increase max HP by 2.",
+                statChanges: {
+                    maxHP: 2,
+                },
+            },
+            {
+                name: "Hotdog Supreme",
+                image: HotdogSupremeImage,
+                price: applyDiscount(50),
+                description: "Restore 15 HP.",
+                statChanges: {
+                    HP: 15,
+                },
+            },
+        ];
+
+        setFood(food);
     };
 
     useEffect(() => {
@@ -230,7 +264,10 @@ const Shop = ({
                 setAbilities(updatedAbilities);
                 setSelectedAbilityIndex(null);
             }
-        } else if (items[selectedItemIndex]) {
+            return;
+        }
+
+        if (items[selectedItemIndex]) {
             const { price, item } = items[selectedItemIndex];
             if (player.mesos >= price) {
                 onBuyItem({ items: [item], mesosSpent: price, type: "item" });
@@ -239,6 +276,16 @@ const Shop = ({
                 setItems(updatedItems);
                 setSelectedItemIndex(null);
             }
+            return;
+        }
+
+        if (food[selectedFoodIndex]) {
+            const { price, statChanges } = food[selectedFoodIndex];
+            if (player.mesos >= price) {
+                onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                setSelectedFoodIndex(null);
+            }
+            return;
         }
     };
 
@@ -281,9 +328,9 @@ const Shop = ({
                                         selected: i === selectedAbilityIndex,
                                     })}
                                     onClick={() => {
-                                        const { price } = abilities[i];
                                         if (player.mesos >= price) {
                                             setSelectedAbilityIndex(i);
+                                            setSelectedFoodIndex(null);
                                             setSelectedItemIndex(null);
                                         }
                                     }}
@@ -318,9 +365,9 @@ const Shop = ({
                                         selected: i === selectedItemIndex,
                                     })}
                                     onClick={() => {
-                                        const { price } = items[i];
                                         if (player.mesos >= price) {
                                             setSelectedAbilityIndex(null);
+                                            setSelectedFoodIndex(null);
                                             setSelectedItemIndex(i);
                                         }
                                     }}
@@ -341,6 +388,43 @@ const Shop = ({
                                     <div>
                                         <Button color={"primary"} onClick={handleBuyClick}>
                                             Buy
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                    <div>
+                        {food.map(({ price, ...other }, i) => (
+                            <div className={classes.itemContainer} key={i}>
+                                <div
+                                    className={classNames(classes.item, {
+                                        selected: i === selectedFoodIndex,
+                                    })}
+                                    onClick={() => {
+                                        if (player.mesos >= price) {
+                                            setSelectedAbilityIndex(null);
+                                            setSelectedItemIndex(null);
+                                            setSelectedFoodIndex(i);
+                                        }
+                                    }}
+                                >
+                                    <ItemView item={other} />
+                                </div>
+                                <div className={classes.priceContainer}>
+                                    <div
+                                        className={classNames(classes.priceContainerInner, {
+                                            [classes.cannotAfford]: player.mesos < price,
+                                        })}
+                                    >
+                                        <img src={MesoCoinImage} alt={"Mesos"} />
+                                        <span className={classes.priceLabel}>{price}</span>
+                                    </div>
+                                </div>
+                                {i === selectedFoodIndex && (
+                                    <div>
+                                        <Button color={"primary"} onClick={handleBuyClick}>
+                                            Buy & Eat
                                         </Button>
                                     </div>
                                 )}

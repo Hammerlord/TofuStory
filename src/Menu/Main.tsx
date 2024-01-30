@@ -32,6 +32,8 @@ import { aggregateItemEffects } from "./utils";
 import { BATTLE_TYPES } from "../battle/types";
 import ItemRewards from "./ItemRewards";
 import { updateCombatant } from "../battle/actions/actions";
+import { clamp } from "ramda";
+import { getMaxHP } from "../battle/utils";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -324,10 +326,25 @@ const Main = () => {
         return <ClassSelection onSelectClass={handleSelectClass} onClose={() => setOpenClassSelection(false)} />;
     }
 
-    const handleBuyItem = ({ items, mesosSpent, type }: { items: Item[] | Ability[]; mesosSpent: number; type: "item" | "ability" }) => {
+    const handleBuyItem = ({
+        items,
+        mesosSpent,
+        type,
+        statChanges = {},
+    }: {
+        items: Item[] | Ability[];
+        mesosSpent: number;
+        type: "item" | "ability";
+        statChanges?: { maxHP?: number; HP?: number };
+    }) => {
+        const { maxHP = 0, HP = 0 } = statChanges;
+        const effectiveMaxHP = getMaxHP(player) + maxHP;
+        const newHP = clamp(0, effectiveMaxHP, player.HP + HP);
         dispatch(
             updatePlayer({
                 mesos: Math.max(0, player.mesos - mesosSpent),
+                HP: newHP,
+                maxHP: player.maxHP + maxHP,
             })
         );
 
