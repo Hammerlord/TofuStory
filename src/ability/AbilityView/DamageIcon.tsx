@@ -74,7 +74,10 @@ export const getDamageStatistics = ({
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
     const hasUnfulfilledBonus = withBonus[0].damage === attackActions[0].damage && attackActions.some(({ bonus }) => bonus);
-    const isAdditive = withAttackPower.some(({ secondaryDamage }) => secondaryDamage > 0) || hasUnfulfilledBonus;
+    const hasAdditiveDamage = withAttackPower.some(({ secondaryDamage, damage }) => {
+        return secondaryDamage > 0 || (damage && damage !== withAttackPower[0].damage);
+    });
+    const isAdditive = hasAdditiveDamage || hasUnfulfilledBonus;
 
     return {
         baseDamage: withAttackPower[0].damage,

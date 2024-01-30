@@ -77,7 +77,7 @@ const ArmorIcon = ({ ability, player }) => {
     }
 
     const hasUnfulfilledBonus = actions.find(({ bonus }) => bonus?.armor > 0) && !bonusFromConditions;
-    const isAdditive = hasUnfulfilledBonus || actions.some(({ secondaryDamage }) => secondaryDamage > 0);
+    const isAdditive = hasUnfulfilledBonus;
 
     return (
         <Icon

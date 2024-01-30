@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
-import { Ability, Action, HandAbility, TARGET_TYPES } from "../types";
+import { Ability, Action, CONDITION_TARGETS, HandAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
@@ -19,6 +19,8 @@ import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
+import { passesConditions } from "../../battle/passesConditions";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -158,7 +160,7 @@ const AbilityView = forwardRef(
     ({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [], className }: AbilityViewProps, ref) => {
         const classes = useStyles();
         const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
-        const { target: targetType, type, damage, secondaryDamage, destroyArmor = 0, ricochet, targetArea, numTargets } = actions[0] || {};
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
         let imageNode = null;
 
@@ -180,6 +182,15 @@ const AbilityView = forwardRef(
             hand,
             discard,
         });
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
+        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
+            if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+                return { combatant: player };
+            }
+        };
+        const hasConditionFulfilled = actions.some(
+            (action) => action.conditions && passesConditions({ getCalculationTarget, proc: action, source })
+        );
         const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, player });
         const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
@@ -234,7 +245,7 @@ const AbilityView = forwardRef(
             return <div className={classes.iconPlaceholder} />;
         })();
 
-        const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions;
+        const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions || hasConditionFulfilled;
 
         return (
             <AbilityTooltip ability={ability} deck={deck} hand={hand} discard={discard}>
