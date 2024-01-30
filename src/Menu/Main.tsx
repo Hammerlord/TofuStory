@@ -369,7 +369,7 @@ const Main = () => {
             <Town
                 player={player}
                 deck={deck}
-                updateDeck={updateDeck}
+                updateDeck={handleUpdateDeck}
                 updatePlayer={updatePlayer}
                 onExit={() => setTown(null)}
                 onClickScene={setScene}
