@@ -810,7 +810,7 @@ export const greenMushroom: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 2,
+                            duration: 1,
                         },
                     ],
                 },
