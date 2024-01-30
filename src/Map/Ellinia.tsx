@@ -1,14 +1,13 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { PerionRegionBGImage } from "../images";
+import { ElliniaBGImage } from "../images";
 import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
-import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 
 const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: `url(${PerionRegionBGImage})`,
+        background: `url(${ElliniaBGImage})`,
         color: "white",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -69,22 +68,18 @@ const useStyles = createUseStyles({
 
 const store = {
     merchant: {
-        name: "River and Harry",
+        name: "Flora and Serabi",
     },
 };
 
-const Perion = ({ player, onExit, onClickScene, onClickShop }) => {
+const Ellinia = ({ player, onExit, onClickScene, onClickShop }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
                 <div className={classes.inner}>
-                    <h2>Perion</h2>
+                    <h2>Ellinia</h2>
                     <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(dancesWithBalrogScene)}>
-                            Dances With Balrog - Test
-                            <div className={classes.event}>?</div>
-                        </div>
                         <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
                             Shop
                             <div className={classes.event}>
@@ -109,4 +104,4 @@ const Perion = ({ player, onExit, onClickScene, onClickShop }) => {
     );
 };
 
-export default Perion;
+export default Ellinia;

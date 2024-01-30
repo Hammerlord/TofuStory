@@ -7,6 +7,7 @@ import Henesys from "./Henesys";
 import KerningCity from "./KerningCity";
 import LithHarbor from "./LithHarbor";
 import Perion from "./Perion";
+import Ellinia from "./Ellinia";
 import { REGIONS } from "./regions";
 
 export enum NODE_TYPES {
@@ -80,6 +81,7 @@ export const TOWN_MAP = {
     [TOWNS.LITH_HARBOR]: LithHarbor,
     [TOWNS.HENESYS]: Henesys,
     [TOWNS.PERION]: Perion,
+    [TOWNS.ELLINIA]: Ellinia,
 };
 
 export const BG_MAP = {
