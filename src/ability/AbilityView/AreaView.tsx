@@ -58,7 +58,7 @@ const Area = ({
         return null;
     }
 
-    const { damageBonusFromConditions, damageBonusFromEffects, baseDamage, secondaryDamage } = getDamageStatistics({
+    const { baseDamage, secondaryDamage, hasBonus } = getDamageStatistics({
         ability,
         player,
         deck,
@@ -66,12 +66,10 @@ const Area = ({
         discard,
     });
 
-    const isTextHighlighted = damageBonusFromEffects > 0 || damageBonusFromConditions > 0;
-
     const areaIndicator = Array.from({ length: area }).map((_, i) => (
         <span
             className={classNames(classes.area, {
-                [classes.highlight]: isTextHighlighted,
+                [classes.highlight]: hasBonus,
             })}
             key={i}
         >
@@ -83,7 +81,7 @@ const Area = ({
             Area: {areaIndicator}
             <span
                 className={classNames(classes.mainTarget, {
-                    [classes.highlight]: isTextHighlighted,
+                    [classes.highlight]: hasBonus,
                 })}
             >
                 {baseDamage > 0 && baseDamage}

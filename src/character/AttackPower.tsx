@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { getEnabledEffects } from "../battle/utils";
+import { ACTION_TYPES, Action, Effect } from "../ability/types";
+import { calculateAttackPowerDamage, getEnabledEffects } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { Combatant } from "./types";
-import { ACTION_TYPES, Action } from "../ability/types";
+import { ATTACK_POWER_COEFF } from "../battle/constants";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -38,7 +39,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
     const classes = useStyles();
     const overrideDamage = combatant?.effects?.find(({ override }) => override?.damage)?.override?.damage;
     const combatantDamage = overrideDamage || combatant.damage || 0;
-    const damageCount = combatant.casting?.ability?.actions.reduce(
+    const { damage, timesToAttack } = combatant.casting?.ability?.actions.reduce(
         (acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
@@ -59,39 +60,37 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
         return null;
     }
 
-    const damageEffects = getEnabledEffects({ combatant }).filter(({ attackPower: damage = 0 }) => {
-        return damage !== 0;
+    const attackPowerEffects: Effect[] = getEnabledEffects({ combatant }).filter(({ attackPower = 0, excludeEffectOwner }) => {
+        return !excludeEffectOwner && attackPower !== 0;
     });
-    const damageFromEffects = damageEffects.reduce((acc: number, { attackPower: damage }) => {
-        return acc + damage;
+    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower }) => {
+        return acc + attackPower;
     }, 0);
 
     const totalDamage = (() => {
-        if (!damageCount.damage) {
-            return null;
-        }
-        const total = damageFromEffects + damageCount.damage;
+        const total = calculateAttackPowerDamage({ totalAttackPower, damage });
         if (total < 0) {
             return 0;
         }
         return total;
     })();
 
-    if (!totalDamage && !damageFromEffects) {
+    if (!totalDamage) {
         return null;
     }
 
     const tooltip = (
         <div>
-            {!combatant.isPlayer && "Attack power. Estimates the damage dealt by this character's next attack, if it attacks."}
-            {damageEffects.length > 0 && (
+            {!combatant.isPlayer && "Estimates the damage dealt by this character's next attack, if it attacks."}
+            {combatant.isPlayer && `Attack power. Each stack increases damage by ${ATTACK_POWER_COEFF}% (minimum +1 damage).`}
+            {attackPowerEffects.length > 0 && (
                 <>
-                    {!combatant.isPlayer && <hr />}
+                    <hr />
                     <div>Modifiers:</div>
                 </>
             )}
             {Object.entries(
-                damageEffects.reduce((acc, { icon, name, attackPower }) => {
+                attackPowerEffects.reduce((acc, { icon, name, attackPower }) => {
                     if (!acc[name]) {
                         acc[name] = {
                             icon,
@@ -125,16 +124,16 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
                 <Icon
                     icon={<CrossedSwordsIcon />}
                     size={"lg"}
-                    text={totalDamage || Math.max(0, damageFromEffects)}
+                    text={totalDamage || Math.max(0, totalAttackPower)}
                     className={classNames({
-                        [classes.bonus]: damageFromEffects > 0,
-                        [classes.negative]: damageFromEffects < 0 || overrideDamage < combatant.damage,
+                        [classes.bonus]: totalAttackPower > 0,
+                        [classes.negative]: totalAttackPower < 0 || overrideDamage < combatant.damage,
                         [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
                             [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
                         ),
                     })}
                 />
-                {damageCount.timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${damageCount.timesToAttack}`}</span>}
+                {timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${timesToAttack}`}</span>}
             </span>
         </Tooltip>
     );

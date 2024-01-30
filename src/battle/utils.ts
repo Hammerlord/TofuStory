@@ -13,6 +13,7 @@ import {
     Bonus,
     CombatEffect,
     CONDITION_TARGETS,
+    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     HandAbility,
@@ -25,6 +26,7 @@ import {
 import { IndexedCombatant, passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
 import { getRandomItem } from "../utils";
+import { ATTACK_POWER_COEFF } from "./constants";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -389,6 +391,13 @@ export const getSkillBonusDamage = ({ ability, skillBonus }) => {
     return totalDamage;
 };
 
+export const calculateAttackPowerDamage = ({ damage, totalAttackPower }: { damage: number; totalAttackPower: number }): number => {
+    if (!totalAttackPower) {
+        return damage;
+    }
+    return damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower;
+};
+
 export const calculateDamage = ({
     actor,
     target,
@@ -445,21 +454,20 @@ export const calculateDamage = ({
         }
     };
 
-    let damageFromEffects = 0;
+    let totalAttackPower = 0;
+    let totalSkillBonus = 0;
     if (isAttack) {
-        damageFromEffects = getEnabledEffects({ ...actor, getCalculationTarget }).reduce(
-            (acc, { attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
-                if (excludeEffectOwner) {
-                    return acc;
-                }
+        getEnabledEffects({ ...actor, getCalculationTarget }).forEach(({ attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
+            if (excludeEffectOwner) {
+                return;
+            }
 
-                return acc + getSkillBonusDamage({ ability: actionParent, skillBonus }) + attackPower;
-            },
-            0
-        );
+            totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus });
+            totalAttackPower += attackPower;
+        });
     }
 
-    const applyAbilityDamageReceived = (damage): number => {
+    const applyAbilityDamageReceived = (damage: number): number => {
         const { multiplier, additionalDamageReceived } = getEnabledEffects({ ...target, getCalculationTarget }).reduce(
             (acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
                 acc.additionalDamageReceived += isAttack ? attackDamageReceived : 0;
@@ -482,8 +490,10 @@ export const calculateDamage = ({
         return (damage + additionalDamageReceived) * (multiplier || 1);
     };
 
-    const damage = damageFromEffects + baseDamage * multiplier;
-    const total = Math.ceil(applyAbilityDamageReceived(damage));
+    const damage = baseDamage * multiplier + totalSkillBonus;
+    const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
+    const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
+    const total = Math.ceil(withAttackPower);
     return Math.max(0, total);
 };
 
@@ -694,7 +704,7 @@ export const calculateBonus = ({
     discard,
 }: {
     action: Action; // The action to apply the bonus to
-    target: IndexedCombatant;
+    target?: IndexedCombatant;
     allTargets: IndexedCombatant[];
     actor: IndexedCombatant;
     isTargetSelected: boolean;

@@ -173,7 +173,13 @@ const AbilityView = forwardRef(
             );
         }
 
-        const { baseDamage, damageBonusFromConditions } = getDamageStatistics({ ability, player, deck, hand, discard });
+        const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
+            ability,
+            player,
+            deck,
+            hand,
+            discard,
+        });
         const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, player });
         const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
@@ -228,7 +234,7 @@ const AbilityView = forwardRef(
             return <div className={classes.iconPlaceholder} />;
         })();
 
-        const hasBonus = damageBonusFromConditions || armorBonusFromConditions;
+        const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions;
 
         return (
             <AbilityTooltip ability={ability} deck={deck} hand={hand} discard={discard}>
