@@ -245,9 +245,29 @@ const checkHitEffects = ({
 
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
+        const { friendly, hostile, combatant, friendlySide } = findCombatantData(getState, combatantId) || {};
+
+        // Remove all effects that have durations on them
+        dispatch(
+            updateBattle({
+                [friendlySide]: friendly.map((combatant) => {
+                    if (combatant?.id === combatantId) {
+                        return {
+                            ...combatant,
+                            effects: combatant.effects.filter((e) => {
+                                const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
+                                return !hasDuration;
+                            }),
+                        };
+                    }
+
+                    return combatant;
+                }),
+            })
+        );
+
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
-        const { friendly, hostile, combatant } = findCombatantData(getState, combatantId) || {};
         if (!combatant) {
             return;
         }
