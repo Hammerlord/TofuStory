@@ -561,7 +561,7 @@ export const garnet: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Garnet",
+            name: "Garnet Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onResourcesGained: {
@@ -575,7 +575,7 @@ export const garnet: Item = {
                 ],
                 effects: [
                     {
-                        name: "Garnet - Attack Power",
+                        name: "Garnet",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: GarnetImage,
@@ -759,7 +759,7 @@ export const risingStar: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Rising Star",
+            name: "Rising Star Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onAbility: {
@@ -774,7 +774,7 @@ export const risingStar: Item = {
                 ],
                 effects: [
                     {
-                        name: "Rising Star - Attack Power",
+                        name: "Rising Star",
                         icon: RisingStarImage,
                         disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
@@ -913,7 +913,7 @@ export const workGloves: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Work Gloves",
+            name: "Work Gloves Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onAbility: {
@@ -927,7 +927,7 @@ export const workGloves: Item = {
                 ],
                 effects: [
                     {
-                        name: "Work Gloves - Attack Power",
+                        name: "Work Gloves",
                         icon: WorkGlovesImage,
                         disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,

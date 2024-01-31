@@ -113,7 +113,7 @@ const Deck = ({ deck = [], discard = [], depleted = [] }) => {
 
                     return (
                         <li key={abilityName} className={classes.abilityItem}>
-                            {imageNode} {abilityName} x{count}
+                            {imageNode} {abilityName} {count > 1 && `x${count}`}
                         </li>
                     );
                 })}
