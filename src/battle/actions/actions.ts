@@ -50,7 +50,7 @@ import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { JOB_CARD_MAP } from "../../ability";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import getCardSelection from "../selectCardUtils";
-import { MAX_HAND_SIZE } from "../constants";
+import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice.actions;
@@ -1063,9 +1063,6 @@ const pushPlaybackQueue = ({
     side: BATTLEFIELD_SIDES;
 }) => {
     return (dispatch, getState) => {
-        const MULTI_ACTION_PLAYBACK_SPEED = 600;
-        const NORMAL_ACTION_PLAYBACK_SPEED = 800;
-
         dispatch(
             pushEventQueue({
                 ...getState().battle,
@@ -1078,8 +1075,8 @@ const pushPlaybackQueue = ({
                 targetSide: side,
                 actionParent,
                 playbackTime:
-                    // @ts-ignore
-                    action.playbackTime || (actionParent?.actions?.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
+                    action.playbackTime ||
+                    ((actionParent as Ability)?.actions?.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
             } as Event)
         );
     };
