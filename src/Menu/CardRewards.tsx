@@ -45,7 +45,7 @@ const useStyles = createUseStyles({
 
 const BASE_NUM_CHOICES = 3;
 
-const level2StarterExceptions = [teleport]; // Too strong to offer as an upgraded version in the wild
+const level2StarterExceptions = []; // Too strong to offer as an upgraded version in the wild
 
 const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = [] }) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
