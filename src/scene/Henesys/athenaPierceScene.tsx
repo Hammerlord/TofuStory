@@ -1,3 +1,4 @@
+import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { athena, guardHawk, guardWolf } from "../../enemy/athenaPierce";
 import { AthenaAttackStanceImage } from "../../images";
@@ -16,6 +17,7 @@ const athenaPierceFight = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
+    backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
 export const athenaPierceScene: Scene = {

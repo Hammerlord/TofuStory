@@ -1,3 +1,4 @@
+import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { darkLord } from "../../enemy/darkLord";
 import { thiefAssassin } from "../../enemy/enemy";
@@ -31,6 +32,7 @@ const darkLordFight = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
+    backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
 export const toilet: ScriptNode[] = [

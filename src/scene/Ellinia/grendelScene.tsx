@@ -1,3 +1,4 @@
+import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { grendel, introGrendel } from "../../enemy/grendel";
 import { Scene } from "../types";
@@ -13,6 +14,7 @@ const grendelFight = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
+    backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
 export const grendelScene: Scene = {
