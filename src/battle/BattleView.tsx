@@ -432,7 +432,7 @@ const BattlefieldContainer = () => {
     }, [currentWaveIndex]);
 
     const handleBattlePhase = () => {
-        if (isWinConditionTriggered) {
+        if (isWinConditionTriggered && !showWaveClear) {
             setShowWaveClear(true);
             setTimeout(() => {
                 setShowWaveClear(false);
@@ -444,6 +444,11 @@ const BattlefieldContainer = () => {
                     dispatch(updateBattleState(BATTLE_STATES.VICTORY));
                 }
             }, TURN_ANNOUNCEMENT_TIME);
+        } else if (battleState === BATTLE_STATES.TURN_ENDING) {
+            setTimeout(() => {
+                dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
+                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
+            }, 1000);
         }
 
         // Prevent duplicate battle states from triggering consecutively
@@ -484,11 +489,7 @@ const BattlefieldContainer = () => {
                 dispatch(endEnemyTurn());
             }
 
-            setTimeout(() => {
-                dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
-                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, 1000);
-
+            dispatch(updateBattleState(BATTLE_STATES.TURN_ENDING));
             return;
         }
     };

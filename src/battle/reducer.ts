@@ -58,6 +58,7 @@ export enum BATTLE_STATES {
     TURN_START = "turn-start",
     TURN_IN_PROGRESS = "turn-in-progress",
     TURN_END = "turn-end",
+    TURN_ENDING = "turn-ending",
     WAVE_END = "wave-end",
     VICTORY = "victory",
     DEFEAT = "defeat",
