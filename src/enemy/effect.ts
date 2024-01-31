@@ -313,7 +313,7 @@ export const lifeLink: Effect = {
                 icon: RespawnTokenImage,
                 canBeSilenced: false,
                 description: "When this effect ends, the character will revive with half HP.",
-                duration: 2,
+                duration: 3,
                 onEnd: {
                     usableWhileStunned: true,
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

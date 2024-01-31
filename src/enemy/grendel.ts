@@ -274,7 +274,7 @@ const stormBarrier: Ability = {
 
 const grendelMagicClaw: Ability = {
     name: "Magic Claw",
-    resourceCost: 2,
+    resourceCost: 0,
     image: MagicClawImage,
     description: "Hits twice",
     level: 2,
