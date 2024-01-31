@@ -338,7 +338,7 @@ const magicArmor2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 7,
+            armor: 8,
         },
     ],
 };
@@ -459,7 +459,7 @@ const triboltAction: Action = {
 
 const tribolt2Action: Action = {
     ...triboltAction,
-    damage: 3,
+    damage: 4,
     bonus: {
         conditions: [
             {
@@ -1215,7 +1215,7 @@ const avatarOfTheStars2: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 3,
+                    duration: 2,
                     override: {
                         portrait: StarfishIdleImage,
                     },
@@ -1253,7 +1253,7 @@ export const avatarOfTheStars: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 3,
+                    duration: 2,
                     override: {
                         portrait: StarfishIdleImage,
                     },
@@ -2027,11 +2027,11 @@ const greatestBolt2: Ability = {
     resourceCost: 2,
     image: PurpleEnergyBoltImage,
     level: 2,
-    description: "+3 damage for every 'bolt' card you own.",
+    description: "+2 damage for every 'bolt' card you own.",
     overrideBodyText: true,
     actions: [
         {
-            damage: 12,
+            damage: 13,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
