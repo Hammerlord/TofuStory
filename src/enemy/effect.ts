@@ -1,5 +1,4 @@
-import { stealth } from "./../ability/Effects";
-import { controlImmune, hardy } from "../ability/Effects";
+import { hardy, poison } from "../ability/Effects";
 import {
     ACTION_TYPES,
     CONDITION_TARGETS,
@@ -21,12 +20,12 @@ import {
     PurpleFairiesImage,
     RedSnailShellImage,
     RespawnTokenImage,
+    SapOfNependeathImage,
     ShiningFairyImage,
     SnailShellImage,
     StolenFenceImage,
     StumpyBatImage,
     TreeBranchImage,
-    WeaponMasteryImage,
 } from "../images";
 import { CloudyIcon, LinkIcon, SmilingImpIcon } from "../images/icons";
 import { Effect } from "./../ability/types";
@@ -380,6 +379,18 @@ export const clandestine: Effect = {
                 duration: 3,
             },
         ],
+    },
+};
+
+export const poisonous = {
+    name: "Poisonous",
+    description: "This character's attacks apply poison for 1 turn.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: SapOfNependeathImage,
+    onAttack: {
+        targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+        effects: [{ ...poison, duration: 1 }],
     },
 };
 
