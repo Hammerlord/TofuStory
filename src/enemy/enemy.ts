@@ -4,6 +4,8 @@ import {
     BlueSnailImage,
     BlueSnailShellImage,
     CurseEyeImage,
+    DarkStoneGolemImage,
+    DarkStoneGolemRubbleImage,
     FireBoarImage,
     GreenMushroomImage,
     HornyMushroomImage,
@@ -33,6 +35,7 @@ import {
     SnailImage,
     SnailShellImage,
     SquishyLiquidImage,
+    StoneGolemRubbleImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
@@ -1045,4 +1048,36 @@ export const lupin: Minion = {
             ],
         },
     ],
+};
+
+export const darkStoneGolem: Minion = {
+    name: "Dark Stone Golem",
+    maxHP: 150,
+    image: DarkStoneGolemImage,
+    attack: {
+        name: "Inert",
+        image: ZzzIcon,
+        actions: [
+            {
+                type: ACTION_TYPES.NONE,
+                animation: ANIMATION_TYPES.SNOOZE,
+            },
+        ],
+    },
+    abilities: [
+        {
+            name: "Crushing Blow",
+            resourceCost: 3,
+            castTime: 1,
+            image: DarkStoneGolemRubbleImage,
+            actions: [
+                {
+                    damage: 20,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+            ],
+        },
+    ],
+    effects: [hardy],
 };

@@ -81,6 +81,8 @@ export { default as DarkLordImage } from "./DarkLord.gif";
 export { default as DarkMarbleImage } from "./DarkMarble.png";
 export { default as DarkSightImage } from "./DarkSight.gif";
 export { default as DarkSpearImage } from "./DarkSpear.png";
+export { default as DarkStoneGolemImage } from "./DarkStoneGolem.gif";
+export { default as DarkStoneGolemRubbleImage } from "./DarkStoneGolemRubble.png";
 export { default as DarkThirstImage } from "./DarkThirst.png";
 export { default as DiamondImage } from "./Diamond.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
