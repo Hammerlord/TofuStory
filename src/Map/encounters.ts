@@ -40,7 +40,28 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
         [null, enemy, enemy, enemy, null],
         [enemy, null, enemy, null, enemy],
         [enemy, null, enemy, enemy, null],
-        [enemy, null, null, enemy, enemy],
+        [null, enemy, enemy, null, enemy],
+    ]);
+};
+
+const generateEliteDuo = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+    const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, clandestine, poisonous]);
+    const ability = getRandomItem([tantrum]);
+    const baseEnemy = getRandomItem([...possibleEnemies.normal, ...possibleEnemies.hard]);
+    const enemy = {
+        ...baseEnemy,
+        isElite: true,
+        maxHP: Math.floor(baseEnemy.maxHP * 1.35 + 40),
+        abilities: [...(baseEnemy.abilities || []), ability],
+        effects: [eliteSquad, affix],
+    };
+
+    return getRandomItem([
+        [null, enemy, enemy, null, null],
+        [null, null, enemy, enemy, null],
+        [null, enemy, null, enemy, null],
+        [null, enemy, null, enemy, null],
+        [enemy, null, null, null, enemy],
     ]);
 };
 
@@ -100,13 +121,15 @@ const getWaveDifficulties = (numWaves: number): ENEMY_DIFFICULTY[] => {
 
 export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.ELITE_ENCOUNTER, possibleEnemies: MapEnemies): Wave[] => {
     if (encounterType === NODE_TYPES.ELITE_ENCOUNTER) {
-        const eliteType = getRandomItem([1, 2, 3]);
+        const eliteType = getRandomItem([1, 2, 3, 4]);
         if (eliteType === 1) {
             return [{ enemies: generateElite(possibleEnemies) }];
         } else if (eliteType === 2) {
             return [{ enemies: generateEliteTriad(possibleEnemies) }];
-        } else {
+        } else if (eliteType === 3) {
             return [{ enemies: generateEliteSquad(possibleEnemies) }];
+        } else {
+            return [{ enemies: generateEliteDuo(possibleEnemies) }];
         }
     }
 
