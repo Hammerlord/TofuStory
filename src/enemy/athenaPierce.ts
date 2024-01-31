@@ -1,4 +1,4 @@
-import { hardy, wound } from "../ability/Effects";
+import { avenger, hardy, wound } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
     AthenaAttackStanceImage,
@@ -60,6 +60,7 @@ export const guardWolf: Minion = {
                 },
             },
         },
+        avenger,
     ],
 };
 
@@ -214,12 +215,14 @@ export const athena: Minion = {
     ],
     effects: [
         hardy,
+        avenger,
         {
             name: "Companion Bond",
             duration: Infinity,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: CallOfTheWildImage,
+            disableDisplayIcon: true,
             description: "Retaliating if an animal companion falls in combat.",
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
@@ -227,22 +230,6 @@ export const athena: Minion = {
                     name: "Revenge",
                     image: AvengersArrowImage,
                     actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
-                            icon: CallOfTheWildImage,
-                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                            area: 2,
-                            effects: [
-                                {
-                                    name: "Vengeful",
-                                    type: EFFECT_TYPES.RAGE,
-                                    class: EFFECT_CLASSES.BUFF,
-                                    icon: WeaponMasteryImage,
-                                    attackPower: 1,
-                                },
-                            ],
-                        },
                         {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.HOSTILE,
@@ -293,7 +280,8 @@ export const guardHawk: Minion = {
         },
     ],
     effects: [
-        {
+        avenger,
+        /*{
             name: "Sharp Eyes",
             description: "This character can see through stealth.",
             icon: SharpEyesImage,
@@ -301,6 +289,6 @@ export const guardHawk: Minion = {
             class: EFFECT_CLASSES.BUFF,
             truesight: true,
             canBeSilenced: true,
-        },
+        },*/
     ],
 };

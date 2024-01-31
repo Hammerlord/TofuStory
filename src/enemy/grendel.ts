@@ -26,7 +26,7 @@ import {
     WeaponBoosterImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
-import { burn, raging } from "./../ability/Effects";
+import { burn, hardy, raging } from "./../ability/Effects";
 import { tribolt } from "./../ability/magician/magicianAbilities";
 import { lifeLink } from "./effect";
 
@@ -447,6 +447,7 @@ export const grendel: Minion = {
 
     abilities: [grendelMagicClaw, { ...tribolt, resourceCost: 0 }, volcanicBurst, stormBarrier, iceAge],
     effects: [
+        hardy,
         {
             name: "",
             type: EFFECT_TYPES.NONE,

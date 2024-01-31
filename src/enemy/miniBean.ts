@@ -36,6 +36,7 @@ const yum: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: RoastedTurkeyImage,
+    disableDisplayIcon: true,
     attackPower: 1,
     duration: 5,
 };
@@ -45,6 +46,7 @@ const yuck: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: YuckImage,
+    disableDisplayIcon: true,
     attackPower: -1,
     attackDamageReceived: 1,
     duration: 3,

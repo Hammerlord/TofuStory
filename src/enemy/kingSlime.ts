@@ -85,6 +85,7 @@ export const kingSlimeEnemy: Minion = {
             attackDamageReceived: -3,
             canBeSilenced: false,
             icon: SquishyLiquidImage,
+            disableDisplayIcon: false,
         },
         {
             name: "Bubbly",
@@ -142,7 +143,10 @@ export const kingSlimeEnemy: Minion = {
                 },
             },
         },
-        raging,
+        {
+            ...raging,
+            disableDisplayIcon: true,
+        },
     ],
     abilities: [
         {
