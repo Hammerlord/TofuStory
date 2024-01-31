@@ -1,5 +1,3 @@
-import { burn, raging } from "./../ability/Effects";
-import { energyBolt, tribolt } from "./../ability/magician/magicianAbilities";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -7,7 +5,6 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Effect,
     Minion,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -25,40 +22,13 @@ import {
     NimbleJewelCImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
-    RespawnTokenImage,
     TeleportImage,
     WeaponBoosterImage,
 } from "../images";
-import { LinkIcon, SnowflakeIcon, VolcanoIcon } from "../images/icons";
-
-const lifeLink: Effect = {
-    name: "Life Link",
-    canBeSilenced: false,
-    type: EFFECT_TYPES.LIFE_LINK,
-    class: EFFECT_CLASSES.BUFF,
-    description: "When slain, this character becomes inert, but will eventually revive if its Linked allies still live.",
-    icon: LinkIcon,
-    onDeath: {
-        usableWhileStunned: true,
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [
-            {
-                name: "Reviving...",
-                type: EFFECT_TYPES.LIFE_LINK,
-                class: EFFECT_CLASSES.BUFF,
-                icon: RespawnTokenImage,
-                canBeSilenced: false,
-                description: "When this effect ends, the character will revive with 50 HP.",
-                duration: 3,
-                onEnd: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    healing: 50,
-                    resurrect: true,
-                },
-            },
-        ],
-    },
-};
+import { VolcanoIcon } from "../images/icons";
+import { burn, raging } from "./../ability/Effects";
+import { tribolt } from "./../ability/magician/magicianAbilities";
+import { lifeLink } from "./effect";
 
 export const grendelIfrit: Minion = {
     name: "Ifrit",

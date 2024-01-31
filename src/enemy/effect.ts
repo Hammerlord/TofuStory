@@ -1,5 +1,13 @@
 import { controlImmune, hardy } from "../ability/Effects";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import {
     AncientFairyImage,
     BatsEffectImage,
@@ -11,6 +19,7 @@ import {
     PigsRibbonImage,
     PurpleFairiesImage,
     RedSnailShellImage,
+    RespawnTokenImage,
     ShiningFairyImage,
     SnailShellImage,
     StolenFenceImage,
@@ -18,6 +27,7 @@ import {
     TreeBranchImage,
     WeaponMasteryImage,
 } from "../images";
+import { LinkIcon } from "../images/icons";
 import { Effect } from "./../ability/types";
 
 export const championsRibbon: Effect = {
@@ -283,6 +293,41 @@ export const weightedShell: Effect = {
             calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         },
     ],
+};
+
+export const lifeLink: Effect = {
+    name: "Life Link",
+    canBeSilenced: false,
+    type: EFFECT_TYPES.LIFE_LINK,
+    class: EFFECT_CLASSES.BUFF,
+    description: "When slain, this character will eventually revive if Life Linked allies still live.",
+    icon: LinkIcon,
+    onDeath: {
+        usableWhileStunned: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                name: "Reviving...",
+                type: EFFECT_TYPES.LIFE_LINK,
+                class: EFFECT_CLASSES.BUFF,
+                icon: RespawnTokenImage,
+                canBeSilenced: false,
+                description: "When this effect ends, the character will revive with half HP.",
+                duration: 2,
+                onEnd: {
+                    usableWhileStunned: true,
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    healing: 1,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.MAX_HP,
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        value: 0.5,
+                    },
+                    resurrect: true,
+                },
+            },
+        ],
+    },
 };
 
 export const enemyEffectNameMap = {

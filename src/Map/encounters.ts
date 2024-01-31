@@ -7,9 +7,10 @@ import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem, shuffle } from "./../utils";
 import { enemyLayouts } from "./routes/layouts";
 import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";
+import { lifeLink } from "../enemy/effect";
 
 const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink]);
     const baseEnemy = getRandomItem(possibleEnemies.easy);
 
     const enemy = {
@@ -24,7 +25,7 @@ const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
 };
 
 const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem([...possibleEnemies.easy, ...possibleEnemies.normal]);
     const enemy = {
