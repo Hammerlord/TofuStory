@@ -1,3 +1,4 @@
+import { stealth } from "./../ability/Effects";
 import { controlImmune, hardy } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -27,7 +28,7 @@ import {
     TreeBranchImage,
     WeaponMasteryImage,
 } from "../images";
-import { LinkIcon } from "../images/icons";
+import { CloudyIcon, LinkIcon, SmilingImpIcon } from "../images/icons";
 import { Effect } from "./../ability/types";
 
 export const championsRibbon: Effect = {
@@ -325,6 +326,58 @@ export const lifeLink: Effect = {
                     },
                     resurrect: true,
                 },
+            },
+        ],
+    },
+};
+
+export const clandestine: Effect = {
+    name: "Clandestine",
+    description: "This character periodically stealths.",
+    canBeSilenced: true,
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: SmilingImpIcon,
+    turnsTriggerFrequency: 4,
+    onWaveStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                type: EFFECT_TYPES.STEALTH,
+                class: EFFECT_CLASSES.BUFF,
+                name: "Stealth",
+                icon: CloudyIcon,
+                canBeSilenced: true,
+                description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+                onReceiveAttack: {
+                    removeEffect: true,
+                },
+                duration: 2,
+            },
+        ],
+    },
+    onTurnStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditions: [
+            {
+                hasEffectType: [EFFECT_TYPES.STEALTH],
+                comparator: "not",
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            },
+        ],
+        effects: [
+            {
+                type: EFFECT_TYPES.STEALTH,
+                class: EFFECT_CLASSES.BUFF,
+                name: "Stealth",
+                icon: CloudyIcon,
+                canBeSilenced: true,
+                description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+                onReceiveAttack: {
+                    removeEffect: true,
+                },
+                duration: 3,
             },
         ],
     },

@@ -30,6 +30,7 @@ export { default as MusicIcon } from "./Music.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
 export { default as QuestionMarkIcon } from "./QuestionMark.svg";
 export { default as ShieldIcon } from "./Shield.svg";
+export { default as SmilingImpIcon } from "./SmilingImp.svg";
 export { default as SnowflakeIcon } from "./Snowflake.svg";
 export { default as SparklesIcon } from "./Sparkles.svg";
 export { default as SpeechBubbleIcon } from "./SpeechBubble.svg";
