@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { ElliniaBGImage } from "../images";
 import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
 import { grendelScene } from "../scene/Ellinia/grendelScene";
+import { arwenScene } from "../scene/Ellinia/arwenScene";
 
 const useStyles = createUseStyles({
     root: {
@@ -88,6 +89,10 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop }) => {
                                     <MoneyBagIcon />
                                 </div>
                             </div>
+                        </div>
+                        <div className={classNames(classes.node)} onClick={() => onClickScene(arwenScene)}>
+                            Fairies WIP
+                            <div className={classes.event}>?</div>
                         </div>
                         <div className={classNames(classes.node)} onClick={() => onClickScene(grendelScene)}>
                             Grendel - Test

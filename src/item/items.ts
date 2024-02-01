@@ -1,24 +1,13 @@
 import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, wound } from "../ability/Effects";
-import {
-    chainLightning,
-    coldBeam,
-    energyBolt,
-    ignite,
-    magicArmor,
-    magicClaw,
-    magicFang,
-    thunderBolt,
-    tribolt,
-} from "../ability/magician/magicianAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
     AquamarineImage,
+    ArwensGlassShoeImage,
     BallerCaneImage,
-    BlackManualImage,
     BluePotionImage,
     BoneHelmImage,
     BouquetImage,
@@ -1093,6 +1082,21 @@ export const diamond: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 10,
+        },
+    ],
+};
+
+export const glassShoe: Item = {
+    name: "Glass Shoe",
+    image: ArwensGlassShoeImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "+5 max HP.",
+    effects: [
+        {
+            name: "Glass Shoe",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 5,
         },
     ],
 };

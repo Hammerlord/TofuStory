@@ -1,17 +1,22 @@
 import {
     AxeStumpImage,
     BananaPeelImage,
+    BlackManualImage,
     BlueSnailImage,
     BlueSnailShellImage,
+    BombImage,
     CurseEyeImage,
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
     FireBoarImage,
     GreenMushroomImage,
     HornyMushroomImage,
+    InkSackImage,
+    KumbiImage,
     LeetSinImage,
     LigatorImage,
     LupinImage,
+    MaladyImage,
     MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
@@ -35,12 +40,12 @@ import {
     SnailImage,
     SnailShellImage,
     SquishyLiquidImage,
-    StoneGolemRubbleImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
     WildBoarImage,
     WoodenClubImage,
+    ZombieLupinJumpImage,
 } from "../images";
 import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MuscleIcon, ZzzIcon } from "../images/icons";
 import { redPotion } from "../item/items";
@@ -59,7 +64,7 @@ import {
 } from "./../ability/types";
 import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood } from "./effect";
+import { championsRibbon, hardwood, poisonous } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1044,6 +1049,160 @@ export const lupin: Minion = {
                     damage: 3,
                     animation: ANIMATION_TYPES.CAST,
                     addCardsToDeck: [bananaPeelCard],
+                },
+            ],
+        },
+    ],
+};
+
+export const zombieLupin: Minion = {
+    name: "Zombie Lupin",
+    maxHP: 100,
+    image: ZombieLupinJumpImage,
+    damage: 3,
+    abilities: [
+        {
+            name: "Throw Banana",
+            image: MonkeyBananaImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MonkeyBananaImage,
+                    damage: 3,
+                    animation: ANIMATION_TYPES.CAST,
+                    addCardsToDeck: [bananaPeelCard],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            ...poisonous,
+        },
+    ],
+};
+
+export const malady: Minion = {
+    name: "Malady",
+    maxHP: 150,
+    damage: 3,
+    image: MaladyImage,
+    attack: {
+        name: "Dark Bolt",
+        image: KumbiImage,
+        resourceCost: 0,
+        actions: [
+            {
+                damage: 3,
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.RANGE_ATTACK,
+                animation: ANIMATION_TYPES.BEAM,
+                icon: KumbiImage,
+                playbackTime: 400,
+            },
+        ],
+    },
+    abilities: [
+        {
+            name: "Fly",
+            image: MaladyImage,
+            dialog: "Ohohoho!",
+            resourceCost: 3,
+            actions: [
+                {
+                    movement: 3,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                    effects: [
+                        {
+                            ...stealth,
+                            duration: 3,
+                            onAttack: undefined,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Throw Concoction",
+            image: InkSackImage,
+            resourceCost: 3,
+            dialog: "Have a taste of my medicine!",
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.EFFECT,
+                    effects: [
+                        { ...poison, duration: 1 },
+                        { ...burn, duration: 1 },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Wild Bombing",
+            image: BombImage,
+            dialog: "Ehee hee hee!",
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    movement: 2,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.BEAM,
+                    icon: KumbiImage,
+                    playbackTime: 400,
+                },
+                {
+                    movement: 2,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.BEAM,
+                    icon: KumbiImage,
+                    playbackTime: 400,
+                },
+                {
+                    movement: 2,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.BEAM,
+                    icon: KumbiImage,
+                    playbackTime: 400,
+                },
+            ],
+        },
+    ],
+    effects: [
+        hardy,
+        {
+            name: "Dark Knowledge",
+            description: "While this character has Stealth, its attack power is increased.",
+            icon: BlackManualImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 2,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    hasEffectType: [EFFECT_TYPES.STEALTH],
                 },
             ],
         },

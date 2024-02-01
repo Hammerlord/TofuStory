@@ -2,6 +2,7 @@ import { shellThrow } from "./../../ability/neutralAbilities";
 import {
     axeStump,
     blueSnail,
+    darkStoneGolem,
     fireBoar,
     lupin,
     octopus,
@@ -207,7 +208,7 @@ export const routeHenesysEllinia: Route = {
         easy: [stump, redSnail],
         normal: [elliniaGreenMushroom, elliniaHornyMushroom],
         hard: [axeStump, orangeMushroom],
-        hardest: [curseEye, lupin],
+        hardest: [curseEye, lupin, darkStoneGolem],
     } as MapEnemies,
     nodes: [
         { x: 0.5162946428571429, y: 0.814892576037545, region: REGIONS.HENESYS },
