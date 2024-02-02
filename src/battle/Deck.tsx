@@ -69,7 +69,17 @@ const useStyles = createUseStyles({
     },
 });
 
-const Deck = ({ deck = [], discard = [], depleted = [] }) => {
+const Deck = ({
+    deck = [],
+    discard = [],
+    depleted = [],
+    viewDeckInOrder,
+}: {
+    deck: Ability[];
+    discard: Ability[];
+    depleted: Ability[];
+    viewDeckInOrder: boolean;
+}) => {
     const classes = useStyles();
 
     const getCardColor = (i: number): string => {
@@ -80,15 +90,19 @@ const Deck = ({ deck = [], discard = [], depleted = [] }) => {
         return isLast ? DECK_COLOR : DECK_SHADOW;
     };
 
+    const getAbilityLevel = (ability) => {
+        return Array.from({ length: ability.level })
+            .map(() => "⋆")
+            .join("");
+    };
+
     const getAbilityMap = (items: Ability[]): { [abilityName: string]: { count: number; ability: Ability } } => {
         return items
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
             .reduce((acc, ability) => {
                 const abilityLevel = ability.level || 1;
-                const levelDisplay = Array.from({ length: ability.level })
-                    .map(() => "⋆")
-                    .join("");
+                const levelDisplay = getAbilityLevel(ability);
                 const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
                 acc[name] = {
                     ability,
@@ -98,18 +112,24 @@ const Deck = ({ deck = [], discard = [], depleted = [] }) => {
             }, {});
     };
 
-    const getTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: Ability } }) => {
+    const getImage = (ability: Ability) => {
+        const image = ability.image;
+        let imageNode;
+        if (typeof image === "string") {
+            imageNode = <img src={image} className={classes.abilityIcon} />;
+        } else if (typeof image === "function") {
+            const ImageNode = image as Function;
+            imageNode = <ImageNode className={classes.abilityIcon} />;
+        }
+
+        return imageNode;
+    };
+
+    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: Ability } }) => {
         return (
             <ul className={classes.abilityList}>
-                {Object.entries(abilityMap).map(([abilityName, { ability, count }], i) => {
-                    const image = ability.image;
-                    let imageNode;
-                    if (typeof image === "string") {
-                        imageNode = <img src={image} className={classes.abilityIcon} />;
-                    } else if (typeof image === "function") {
-                        const ImageNode = image as Function;
-                        imageNode = <ImageNode className={classes.abilityIcon} />;
-                    }
+                {Object.entries(abilityMap).map(([abilityName, { ability, count }]) => {
+                    const imageNode = getImage(ability);
 
                     return (
                         <li key={abilityName} className={classes.abilityItem}>
@@ -121,9 +141,30 @@ const Deck = ({ deck = [], discard = [], depleted = [] }) => {
         );
     };
 
-    const deckCount = useMemo(() => compose(getTooltip, getAbilityMap)(deck), [deck]);
-    const discardCount = useMemo(() => compose(getTooltip, getAbilityMap)(discard), [discard]);
-    const depletedCount = useMemo(() => compose(getTooltip, getAbilityMap)(depleted), [depleted]);
+    const getInOrderTooltip = (abilities: Ability[]) => {
+        return (
+            <ul className={classes.abilityList}>
+                {abilities.map((ability) => {
+                    const imageNode = getImage(ability);
+                    return (
+                        <li key={ability.name} className={classes.abilityItem}>
+                            {imageNode} {ability.name} {getAbilityLevel(ability)}
+                        </li>
+                    );
+                })}
+            </ul>
+        );
+    };
+
+    const deckCount = useMemo(() => {
+        if (viewDeckInOrder) {
+            return getInOrderTooltip(deck);
+        }
+
+        return compose(getAbilityMapTooltip, getAbilityMap)(deck);
+    }, [deck, viewDeckInOrder]);
+    const discardCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(discard), [discard]);
+    const depletedCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(depleted), [depleted]);
 
     const deckTooltip = (
         <div>

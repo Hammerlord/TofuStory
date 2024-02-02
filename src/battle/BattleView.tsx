@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { Ability, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Ability, Effect, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -163,7 +163,6 @@ const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt, setNotification } =
     battleStateSlice.actions;
-const { updatePlayer } = playerStateSlice.actions;
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
@@ -184,7 +183,6 @@ const BattlefieldContainer = () => {
         notification,
         backgroundImage,
     }: BattleState = useAppSelector((state) => state.battle);
-    const originalDeck = useAppSelector((state) => state.character?.deck || []);
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
     const allyRefs: React.RefObject<HTMLElement>[] = useMemo(
         () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
@@ -641,7 +639,12 @@ const BattlefieldContainer = () => {
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
-                                <Deck deck={deck} discard={discard} depleted={depleted} />
+                                <Deck
+                                    deck={deck}
+                                    discard={discard}
+                                    depleted={depleted}
+                                    viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
+                                />
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>

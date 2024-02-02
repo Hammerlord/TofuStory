@@ -44,6 +44,7 @@ import {
     SafetyCharmImage,
     SapOfNependeathImage,
     SnowshoesImage,
+    SpectrumGogglesImage,
     StarfallMagicSquareImage,
     StolenFenceImage,
     SunshinePanImage,
@@ -1131,6 +1132,22 @@ export const estherShield: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 5,
             },
+        },
+    ],
+};
+
+export const spectrumGoggles: Item = {
+    name: "Spectrum Goggles",
+    image: SpectrumGogglesImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "+5 max HP. Your deck now displays in order when viewed.",
+    effects: [
+        {
+            name: "Esther Shield",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 5,
+            viewDeckInOrder: true,
         },
     ],
 };

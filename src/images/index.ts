@@ -329,6 +329,7 @@ export { default as SnowshoesImage } from "./Snowshoes.png";
 export { default as SoaringHawkImage } from "./SoaringHawk.gif";
 export { default as SparklingCrystalImage } from "./SparklingCrystal.png";
 export { default as SpearSweepImage } from "./SpearSweep.png";
+export { default as SpectrumGogglesImage } from "./SpectrumGoggles.png";
 export { default as SpikeBallImage } from "./SpikeBall.png";
 export { default as SpikedMaceImage } from "./SpikedMace.png";
 export { default as SquishyLiquidImage } from "./SquishyLiquid.png";

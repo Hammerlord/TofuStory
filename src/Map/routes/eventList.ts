@@ -32,6 +32,7 @@ import {
     risingStar,
     safetyCharm,
     snailStompers,
+    spectrumGoggles,
     starfallMagicSquare,
     stolenFence,
     sunshinePan,
@@ -82,4 +83,5 @@ export const ITEMS = [
     diamond,
     tortieShell,
     estherShield,
+    spectrumGoggles,
 ];

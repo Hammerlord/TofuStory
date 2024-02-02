@@ -222,6 +222,7 @@ export interface Effect {
         portrait?: string[]; // If an array is provided, a random item will be chosen
         damage?: number;
     };
+    viewDeckInOrder?: boolean;
 }
 
 export interface CombatEffect extends Effect {
