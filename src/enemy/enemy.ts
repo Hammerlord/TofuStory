@@ -1089,6 +1089,7 @@ export const malady: Minion = {
     maxHP: 150,
     damage: 3,
     image: MaladyImage,
+    isElite: true,
     attack: {
         name: "Dark Bolt",
         image: KumbiImage,

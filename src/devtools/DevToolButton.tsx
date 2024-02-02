@@ -19,6 +19,7 @@ import DevItemViewer from "./DevItemViewer";
 import Shop from "../Menu/Shop";
 import Tombstones from "../scene/Ellinia/Tombstones";
 import DimPath from "../scene/Ellinia/DimPath";
+import FollowFairies from "../scene/Ellinia/FollowFairies";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -66,6 +67,7 @@ const QUEST_MAP = {
     "Kitten Barrels Quest": KittenBarrelsQuest,
     Tombstones: Tombstones,
     DimPath: DimPath,
+    FollowFairies: FollowFairies,
 };
 
 const TREASURE_PUZZLE_MAP = {

@@ -6,6 +6,7 @@ import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage
 import { glassShoe } from "../../item/items";
 import { Scene, ScriptNode } from "../types";
 import DimPath from "./DimPath";
+import FollowFairies from "./FollowFairies";
 import Tombstones from "./Tombstones";
 
 const arwen = {
@@ -274,7 +275,8 @@ const maladyDialog: ScriptNode[] = [
                                     {
                                         speaker: malady,
                                         dialog: [
-                                            "Now, the pawn will pay for opposing us. We, Malady, consign this seeker to wander these forests forevermore.",
+                                            "Now shall the pawn pay for opposing us. We, Malady, consign this seeker to wander these forests forevermore.",
+                                            "Abracadabra, kapish and kapoosh!",
                                         ],
                                     },
                                     {
@@ -372,37 +374,61 @@ const maladyDialog: ScriptNode[] = [
                                                                         dialog: ["We, Malady, are not afraid."],
                                                                     },
                                                                     {
-                                                                        background: ElliniaBGImage,
-                                                                        dialog: ["[You find yourself where you began in the forest.]"],
-                                                                    },
-                                                                    {
-                                                                        speaker: malady,
                                                                         dialog: [
-                                                                            "Ohohoho! Well done. Not so idiotic of a pawn, we see.",
-                                                                            "But we, Malady, will not be stopped.",
+                                                                            "[The tiny fairy-creatures you saw from the gravesite are now fluttering around you. They seem to be trying to get your attention. Maybe they can help you get out of here.]",
                                                                         ],
                                                                         responses: [
                                                                             {
-                                                                                text: "Confront Malady.",
-                                                                                encounter: maladysFight,
+                                                                                text: "Follow the fairies.",
+                                                                                next: [
+                                                                                    {
+                                                                                        puzzle: FollowFairies,
+                                                                                        dialog: [],
+                                                                                    },
+                                                                                    {
+                                                                                        background: ElliniaBGImage,
+                                                                                        dialog: [
+                                                                                            "[You find yourself where you began in the forest.]",
+                                                                                        ],
+                                                                                    },
+                                                                                    {
+                                                                                        speaker: malady,
+                                                                                        dialog: [
+                                                                                            "Ohohoho! Well done. It seems the pawn was even able to befriend the lost echoes of fae folk--perhaps the seeker was once one favored by the forest.",
+                                                                                            "But time severs most ties, and so it is with us and our kin.",
+                                                                                        ],
+                                                                                    },
+                                                                                    {
+                                                                                        speaker: malady,
+                                                                                        dialog: [
+                                                                                            "But we, Malady, have decided what we are long ago. Twisted, betrayed, shunned. Our will shall not be stopped.",
+                                                                                        ],
+                                                                                        responses: [
+                                                                                            {
+                                                                                                text: "Confront Malady.",
+                                                                                                encounter: maladysFight,
+                                                                                            },
+                                                                                        ],
+                                                                                    },
+                                                                                    {
+                                                                                        speaker: malady,
+                                                                                        dialog: [
+                                                                                            "The curse will continue on, even if Malady do not.",
+                                                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
+                                                                                            "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
+                                                                                        ],
+                                                                                    },
+                                                                                    {
+                                                                                        dialog: [
+                                                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
+                                                                                            "Perhaps it's time to return to Ellinia.]",
+                                                                                        ],
+                                                                                    },
+                                                                                    ...endingDialog,
+                                                                                ],
                                                                             },
                                                                         ],
                                                                     },
-                                                                    {
-                                                                        speaker: malady,
-                                                                        dialog: [
-                                                                            "The curse will continue on, even if Malady do not.",
-                                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
-                                                                            "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
-                                                                        ],
-                                                                    },
-                                                                    {
-                                                                        dialog: [
-                                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
-                                                                            "Perhaps it's time to return to Ellinia.]",
-                                                                        ],
-                                                                    },
-                                                                    ...endingDialog,
                                                                 ],
                                                             },
                                                         ],
