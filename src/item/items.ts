@@ -37,6 +37,7 @@ import {
     PieceOfIceImage,
     PigsRibbonImage,
     RedHeadbandImage,
+    RedHeartedEarringsImage,
     RedPotionImage,
     RedWhipImage,
     RespawnTokenImage,
@@ -1143,11 +1144,29 @@ export const spectrumGoggles: Item = {
     description: "+5 max HP. Your deck now displays in order when viewed.",
     effects: [
         {
-            name: "Esther Shield",
+            name: "Spectrum Goggles",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 5,
             viewDeckInOrder: true,
+        },
+    ],
+};
+
+export const redHeartedEarrings: Item = {
+    name: "Red-Hearted Earrings",
+    image: RedHeartedEarringsImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When you deplete a card, you heal 1 HP.",
+    effects: [
+        {
+            name: "Red-Hearted Earrings",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDepleteAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                healing: 1,
+            },
         },
     ],
 };

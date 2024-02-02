@@ -27,6 +27,7 @@ import {
     panlid,
     pieceOfIce,
     pigsRibbonItem,
+    redHeartedEarrings,
     redWhip,
     respawnToken,
     risingStar,
@@ -84,4 +85,5 @@ export const ITEMS = [
     tortieShell,
     estherShield,
     spectrumGoggles,
+    redHeartedEarrings,
 ];

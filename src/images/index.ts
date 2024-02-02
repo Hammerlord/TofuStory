@@ -287,6 +287,7 @@ export { default as RageImage } from "./Rage.png";
 export { default as RagingBlowImage } from "./RagingBlow.png";
 export { default as RedFistOfFuryImage } from "./RedFistOfFury.png";
 export { default as RedHeadbandImage } from "./RedHeadband.png";
+export { default as RedHeartedEarringsImage } from "./RedHeartedEarrings.png";
 export { default as RedPotionImage } from "./RedPotion.png";
 export { default as RedSnailImage } from "./RedSnail.png";
 export { default as RedSnailShellImage } from "./RedSnailShell.gif";
