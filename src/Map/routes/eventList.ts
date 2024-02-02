@@ -35,6 +35,7 @@ import {
     stolenFence,
     sunshinePan,
     topaz,
+    tortieShell,
     workGloves,
 } from "./../../item/items";
 
@@ -78,4 +79,5 @@ export const ITEMS = [
     snailStompers,
     clubMembership,
     diamond,
+    tortieShell,
 ];

@@ -364,6 +364,7 @@ export { default as ThunderBoltProjectileImage } from "./ThunderBoltProjectile.p
 export { default as ThunderBreakImage } from "./ThunderBreak.png";
 export { default as TofuImage } from "./Tofu.png";
 export { default as TopazImage } from "./Topaz.png";
+export { default as TortieShellImage } from "./TortieShell.png";
 export { default as ToyHammerImage } from "./ToyHammer.png";
 export { default as TreasureChestImage } from "./TreasureChest.png";
 export { default as TreeBranchImage } from "./TreeBranch.png";

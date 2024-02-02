@@ -47,6 +47,7 @@ import {
     StolenFenceImage,
     SunshinePanImage,
     TopazImage,
+    TortieShellImage,
     WeaponMasteryImage,
     WorkGlovesImage,
 } from "../images";
@@ -1097,6 +1098,31 @@ export const glassShoe: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 5,
+        },
+    ],
+};
+
+export const tortieShell: Item = {
+    name: "Tortie Shell",
+    image: TortieShellImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When you end your turn without armor, gain 3 armor.",
+    effects: [
+        {
+            name: "Tortie Shell",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnEnd: {
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        armor: 0,
+                        comparator: "eq",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 3,
+            },
         },
     ],
 };
