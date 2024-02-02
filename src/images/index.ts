@@ -2,6 +2,8 @@ export { default as AdvancedChargeImage } from "./AdvancedCharge.png";
 export { default as AdvancedWeaponMasteryImage } from "./AdvancedWeaponMastery.png";
 export { default as AlchemistStoneImage } from "./AlchemistStone.png";
 export { default as AlligatorTubeImage } from "./AlligatorTube.png";
+export { default as AltForestBGImage } from "./AltForestBG.png";
+export { default as AltForestBG2Image } from "./AltForestBG2.png";
 export { default as AmethystImage } from "./Amethyst.png";
 export { default as AncientFairyImage } from "./AncientFairy.png";
 export { default as AnonymushroomImage } from "./Anonymushroom.png";

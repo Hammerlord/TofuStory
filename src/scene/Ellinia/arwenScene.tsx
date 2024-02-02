@@ -2,9 +2,10 @@ import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET
 import { lifeLink } from "../../enemy/effect";
 import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteer } from "../../enemy/faust";
-import { ArwenTheFairyImage, RowenTheFairyImage } from "../../images";
+import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
 import { glassShoe } from "../../item/items";
 import { Scene } from "../types";
+import Tombstones from "./Tombstones";
 
 const arwen = {
     name: "Arwen the Fairy",
@@ -147,6 +148,7 @@ const glassShoeDialog = [
 
 const endingDialog = [
     {
+        background: ElliniaBGImage,
         speaker: arwen,
         dialog: ["Ah, an adventuring one has returned!"],
     },
@@ -259,7 +261,7 @@ const maladyDialog = [
                                         speaker: malady,
                                         dialog: [
                                             "We, Malady, were warped long ago. Yes, monsters we are; monsters Malady shall be.",
-                                            "We did not create the curse that plagues the forest heart. But the curse will create us instruments to exact misery on those fools. A fitting use for a terrible thing.",
+                                            "We did not create the curse that plagues the forest heart. But the curse creates us instruments to exact misery on those fools. A fitting use for a terrible thing.",
                                         ],
                                     },
                                     {
@@ -274,6 +276,7 @@ const maladyDialog = [
                                         dialog: ["Now! We, Malady, consign this seeker to wander these forests forevermore."],
                                     },
                                     {
+                                        background: AltForestBG2Image,
                                         dialog: [
                                             "[The world shifts. Suddenly, you find yourself surrounded by unfamiliar trees and foliage, Malady nowhere in sight.]",
                                         ],
@@ -282,99 +285,114 @@ const maladyDialog = [
                                         speaker: malady,
                                         dialog: [
                                             "[Malady's voices continue to echo around the trees.]",
-                                            "Ohoho! Malady are monstrous, but we are not merciless. There is a way out to be found. If the pawn is not so idiotic, then escape is possible.",
+                                            "Ohoho! Malady are monstrous, but we are not merciless. There is a way out to be found. If the pawn is not idiotic, then escape is possible.",
                                         ],
                                     },
                                     {
                                         dialog: [
-                                            "[Is there a reason they haven't confronted you directly? They also don't seem upset that you killed their creation.]",
-                                            "Puzzle here - WIP",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "[Malady's voices continue to echo around the trees.]",
-                                            "Oh, how long has it been since we met one who could hear us! When the curse spread 500 years ago, it twisted our forms and our voices.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "Centuries ago, a young, arrogant wizard conducted an experiment using one of the great veins of magic in the forest as his power source. A festering wound opened, though its most devastating effects would not be felt for decades, when most humans had forgotten.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "But Malady have not forgotten what his ambitions wrought.",
-                                            "Nor have we forgotten when wise and beloved Erylen confronted our pupil for his misdeeds, and was slain for it.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "And the young fools follow. Blind, blind.",
-                                            "Do they know what he does in that library of his?",
-                                        ],
-                                    },
-                                    {
-                                        dialog: ["[You find yourself in another unfamiliar section of the forest.]", "Puzzle here. WIP."],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "The one called Grendel is an ancient among humans. But we, Malady, were already old before the curse.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "For all that he believes his age lends him wisdom, he does not know that the magic he craves is not to be tampered with. It is corrosive, and what is corroded cannot be restored.",
-                                            "Desperate to unravel its secrets, he extends his life over and over. A fool on a fool's errand.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "Those who joined him are afraid of what he might do if they stand in his way. Nothing more.",
-                                        ],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: ["We, Malady, are not afraid."],
-                                    },
-                                    {
-                                        dialog: ["[You find yourself where you began in the forest.]"],
-                                    },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "Ohohoho! Well done. Not so idiotic of a pawn, we see.",
-                                            "But we, Malady, will not allow you to stop us.",
+                                            "[Is there a reason they haven't confronted you directly? They also don't seem upset that you killed their creation.",
+                                            "You venture forward to a clearing that seems to have had no visitors in a long time. A small group of ancient grave markers stand in neat rows before you. It appears to be a gravesite.]",
                                         ],
                                         responses: [
                                             {
-                                                text: "Confront Malady.",
-                                                encounter: maladysFight,
+                                                text: "Inspect the tombstones.",
+                                                next: [
+                                                    {
+                                                        puzzle: Tombstones,
+                                                        dialog: [],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "[Malady's voices continue to echo around the trees.]",
+                                                            "Oh, how long has it been since we met one who could hear us! When the curse spread 500 years ago, it twisted our forms and our voices, especially those of us closest to the source.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "Centuries ago, a young, arrogant wizard conducted an experiment using one of the great veins of magic in the forest as his power font. A festering wound opened, though its most devastating effects would not be felt for decades, when most humans had forgotten.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "But Malady have not forgotten what his ambitions wrought, when we sacrificed so much to prevent catastrophe.",
+                                                            "Not least of all, wise and beloved Erylen confronted our pupil for his misdeeds, and was slain for it.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "Those days are lost. And still the young fools follow. Blind, blind.",
+                                                            "Do they know what he does in that library of his?",
+                                                        ],
+                                                    },
+                                                    {
+                                                        background: AltForestBGImage,
+                                                        dialog: [
+                                                            "[You find yourself in another unfamiliar section of the forest.]",
+                                                            "Puzzle here, WIP.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "The one called Grendel is an ancient among humans. But we, Malady, were already old before the curse.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "For all that he believes his age lends him wisdom, he does not know that the magic he craves is not to be tampered with. It is corrosive, and what is corroded cannot be restored.",
+                                                            "Desperate to unravel its secrets, he extends his life over and over. A fool on a fool's errand.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "Those who joined him are afraid of what he might do if they stand in his way. Nothing more.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: ["We, Malady, are not afraid."],
+                                                    },
+                                                    {
+                                                        dialog: ["[You find yourself where you began in the forest.]"],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "Ohohoho! Well done. Not so idiotic of a pawn, we see.",
+                                                            "But we, Malady, will not be stopped.",
+                                                        ],
+                                                        responses: [
+                                                            {
+                                                                text: "Confront Malady.",
+                                                                encounter: maladysFight,
+                                                            },
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "The curse will continue on, even if Malady do not.",
+                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
+                                                            "A fitting, miserable end for what began torturous centuries ago. Eheeheeheehee!",
+                                                        ],
+                                                    },
+                                                    {
+                                                        dialog: [
+                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
+                                                            "Perhaps it's time to return to Ellinia.]",
+                                                        ],
+                                                    },
+                                                    ...endingDialog,
+                                                ],
                                             },
                                         ],
                                     },
-                                    {
-                                        speaker: malady,
-                                        dialog: [
-                                            "The curse will continue on, even if Malady do not.",
-                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
-                                            "A fitting, miserable end for what began torturous centuries ago. Eheeheeheehee!",
-                                        ],
-                                    },
-                                    {
-                                        dialog: [
-                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
-                                            "It is time to return to Ellinia.]",
-                                        ],
-                                    },
-                                    ...endingDialog,
                                 ],
                             },
                         ],
@@ -461,6 +479,7 @@ export const arwenScene: Scene = {
     characters: [],
     script: [
         {
+            background: ElliniaBGImage,
             dialog: [
                 "[This forest village is home to the sagacious magicians. Maybe the old wizard who oversees it will have some insight about your situation...]",
             ],

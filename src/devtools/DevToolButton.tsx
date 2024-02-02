@@ -17,6 +17,7 @@ import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 import Button from "../view/Button";
 import DevItemViewer from "./DevItemViewer";
 import Shop from "../Menu/Shop";
+import Tombstones from "../scene/Ellinia/Tombstones";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -62,6 +63,7 @@ const useStyles = createUseStyles({
 const QUEST_MAP = {
     "Rope Quest": RopeQuest,
     "Kitten Barrels Quest": KittenBarrelsQuest,
+    Tombstones: Tombstones,
 };
 
 const TREASURE_PUZZLE_MAP = {

@@ -76,6 +76,7 @@ interface IconInterface {
     className?: string;
     style?: any;
     children?: JSX.Element;
+    [x: string]: any;
 }
 
 const Icon = ({ text, icon, background, size = "md", className, style, children, ...other }: IconInterface) => {
