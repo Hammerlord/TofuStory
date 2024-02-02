@@ -547,34 +547,23 @@ export const incense: Item = {
 export const garnet: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "When you cap resources, gain +1 attack power for the rest of the turn.",
+    description: "When your resources are at least 80% full, gain +3 attack power.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
-            name: "Garnet Effect",
+            name: "Garnet",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onResourcesGained: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        resourcePercentage: 1,
-                        comparator: "eq",
-                    },
-                ],
-                effects: [
-                    {
-                        name: "Garnet",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: GarnetImage,
-                        disableDisplayIcon: true,
-                        duration: 1,
-                        attackPower: 1,
-                    },
-                ],
-            },
+            icon: GarnetImage,
+            disableDisplayIcon: true,
+            attackPower: 3,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    resourcePercentage: 0.7,
+                    comparator: "gt",
+                },
+            ],
         },
     ],
 };
