@@ -18,6 +18,7 @@ import Button from "../view/Button";
 import DevItemViewer from "./DevItemViewer";
 import Shop from "../Menu/Shop";
 import Tombstones from "../scene/Ellinia/Tombstones";
+import DimPath from "../scene/Ellinia/DimPath";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -64,6 +65,7 @@ const QUEST_MAP = {
     "Rope Quest": RopeQuest,
     "Kitten Barrels Quest": KittenBarrelsQuest,
     Tombstones: Tombstones,
+    DimPath: DimPath,
 };
 
 const TREASURE_PUZZLE_MAP = {

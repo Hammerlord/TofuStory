@@ -114,6 +114,7 @@ const Tombstones = ({ player, onComplete }) => {
     return (
         <div>
             <h2>Forlorn Gravesite</h2>
+            <p>Pay respects to fallen heroes.</p>
             {graves.map((grave, i) => (
                 <>
                     {i === 3 && <br />}
