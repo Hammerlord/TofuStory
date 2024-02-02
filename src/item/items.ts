@@ -20,6 +20,7 @@ import {
     DrakeBloodImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
+    EstherShieldImage,
     FishSpearImage,
     GarnetImage,
     GoldenHammerImage,
@@ -1111,6 +1112,24 @@ export const tortieShell: Item = {
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 3,
+            },
+        },
+    ],
+};
+
+export const estherShield: Item = {
+    name: "Esther Shield",
+    image: EstherShieldImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When your deck cycles, gain 5 armor.",
+    effects: [
+        {
+            name: "Esther Shield",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDeckCycle: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 5,
             },
         },
     ],

@@ -15,6 +15,7 @@ import {
     diamond,
     drakeBlood,
     engravedStone,
+    estherShield,
     fishSpear,
     garnet,
     greenBambooHat,
@@ -80,4 +81,5 @@ export const ITEMS = [
     clubMembership,
     diamond,
     tortieShell,
+    estherShield,
 ];
