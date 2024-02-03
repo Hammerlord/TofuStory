@@ -38,6 +38,7 @@ import {
     snailStompers,
     spectrumGoggles,
     starfallMagicSquare,
+    steely,
     stolenFence,
     sunshinePan,
     topaz,
@@ -92,4 +93,5 @@ export const ITEMS = [
     fairyWing,
     ancientTreeSap,
     blueSaunaRobe,
+    steely,
 ];

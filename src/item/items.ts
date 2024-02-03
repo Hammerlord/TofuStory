@@ -50,6 +50,7 @@ import {
     SnowshoesImage,
     SpectrumGogglesImage,
     StarfallMagicSquareImage,
+    SteelyImage,
     StolenFenceImage,
     SunshinePanImage,
     TopazImage,
@@ -1241,6 +1242,45 @@ export const blueSaunaRobe: Item = {
                         armorReceived: 1,
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const steely: Item = {
+    name: "Steely",
+    image: SteelyImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When your deck cycles, fling a knife that deals 1 damage and applys Bleed to all targets.",
+    effects: [
+        {
+            name: "Steely",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDeckCycle: {
+                ability: {
+                    name: "Steely",
+                    image: SteelyImage,
+                    actions: [
+                        {
+                            area: 5,
+                            damage: 1,
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
+                            icon: SteelyImage,
+                            animationOptions: {
+                                rotate: -45,
+                                rotateToFaceTarget: true,
+                            },
+                            effects: [
+                                {
+                                    ...wound,
+                                    duration: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
             },
         },
     ],

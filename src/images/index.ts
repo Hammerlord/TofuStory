@@ -344,6 +344,7 @@ export { default as StarfallMagicSquareImage } from "./StarfallMagicSquare.png";
 export { default as StarfishImage } from "./Starfish.png";
 export { default as StarfishIdleImage } from "./StarfishIdle.gif";
 export { default as StarHairPinImage } from "./StarHairPin.png";
+export { default as SteelyImage } from "./Steely.png";
 export { default as StefaImage } from "./Stefa.png";
 export { default as StefaRopeImage } from "./StefaRope.png";
 export { default as StolenFenceImage } from "./StolenFence.png";
