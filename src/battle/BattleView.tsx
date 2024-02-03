@@ -10,7 +10,7 @@ import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
 import { findCombatantData, updateCombatant, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
-import { onWaveClear, onWaveStart } from "./actions/phases";
+import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
@@ -460,12 +460,19 @@ const BattlefieldContainer = () => {
 
         battleStateRef.current = battleState;
 
+        if (battleState === BATTLE_STATES.BATTLE_START) {
+            setTimeout(() => {
+                dispatch(onBattleStart());
+                dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
+            }, 1000);
+            return;
+        }
+
         if (battleState === BATTLE_STATES.WAVE_START) {
             setTimeout(() => {
                 dispatch(onWaveStart());
                 dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, 1000);
-
+            }, 500);
             return;
         }
 
@@ -484,6 +491,7 @@ const BattlefieldContainer = () => {
             }, TURN_ANNOUNCEMENT_TIME);
             return;
         }
+
         if (battleState === BATTLE_STATES.TURN_END) {
             if (isPlayerTurn) {
                 dispatch(playerEndTurn());

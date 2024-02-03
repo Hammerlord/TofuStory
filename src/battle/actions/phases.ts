@@ -17,9 +17,13 @@ const { updatePlayer } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
+        const { playerSide, mesosAccumulated, isTutorial } = getState().battle;
+        playerSide.forEach((combatant: Combatant | null) => {
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
+        });
+
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
-        const { playerSide, mesosAccumulated, isTutorial } = getState().battle;
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
             return acc + mesosGained;
@@ -126,7 +130,7 @@ export const startBattle = ({
                 selectCards: null,
                 mesosAccumulated: 0,
                 isTutorial,
-                state: BATTLE_STATES.WAVE_START,
+                state: BATTLE_STATES.BATTLE_START,
                 backgroundImage,
                 backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
                 type,
@@ -135,6 +139,15 @@ export const startBattle = ({
                 disableCardRewards,
             })
         );
+    };
+};
+
+export const onBattleStart = () => {
+    return (dispatch, getState) => {
+        const { playerSide, enemySide } = getState().battle;
+        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
+        });
     };
 };
 

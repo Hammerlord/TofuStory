@@ -1,3 +1,4 @@
+import { onBattleEnd } from "./../battle/actions/phases";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item } from "../item/types";
 
@@ -123,6 +124,8 @@ export enum EFFECT_EVENT_KEYS {
     onArmorLoss = "onArmorLoss",
     onDrawCard = "onDrawCard", // Player drew a card
     onDeckCycle = "onDeckCycle", // Player's deck reset
+    onBattleStart = "onBattleStart",
+    onBattleEnd = "onBattleEnd",
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -205,6 +208,8 @@ export interface Effect {
     onArmorLoss?: EffectEventTrigger;
     onDrawCard?: EffectEventTrigger;
     onDeckCycle?: EffectEventTrigger;
+    onBattleStart?: EffectEventTrigger;
+    onBattleEnd?: EffectEventTrigger;
     canBeSilenced?: boolean;
     /** Character does not choose and play an ability during its turn */
     preventTurnAction?: boolean;

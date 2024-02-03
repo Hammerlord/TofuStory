@@ -54,6 +54,7 @@ export interface PlayerSelectCardsPrompt {
  * These signal the phase of a battle and what events to subsequently trigger (after completing animation playback of the current set of actions)
  */
 export enum BATTLE_STATES {
+    BATTLE_START = "battle-start",
     WAVE_START = "wave-start",
     TURN_START = "turn-start",
     TURN_IN_PROGRESS = "turn-in-progress",
