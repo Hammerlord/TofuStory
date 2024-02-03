@@ -1269,10 +1269,11 @@ export const steely: Item = {
                             area: 5,
                             damage: 1,
                             type: ACTION_TYPES.RANGE_ATTACK,
-                            target: TARGET_TYPES.HOSTILE,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
+                            playbackTime: 500,
                             animationOptions: {
-                                rotate: -45,
+                                rotate: 135,
                                 rotateToFaceTarget: true,
                             },
                             effects: [
