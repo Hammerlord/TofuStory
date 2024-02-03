@@ -459,15 +459,21 @@ export const calculateDamage = ({
 
     let totalAttackPower = 0;
     let totalSkillBonus = 0;
+    let minimumDamage = 0;
     if (isAttack) {
-        getEnabledEffects({ ...actor, getCalculationTarget }).forEach(({ attackPower = 0, skillBonus = [], excludeEffectOwner }) => {
-            if (excludeEffectOwner) {
-                return;
-            }
+        getEnabledEffects({ ...actor, getCalculationTarget }).forEach(
+            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage }) => {
+                if (excludeEffectOwner) {
+                    return;
+                }
 
-            totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus });
-            totalAttackPower += attackPower;
-        });
+                totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus });
+                totalAttackPower += attackPower;
+                if (minimumAttackDamage > minimumDamage) {
+                    minimumDamage = minimumAttackDamage;
+                }
+            }
+        );
     }
 
     const applyAbilityDamageReceived = (damage: number): number => {
@@ -497,7 +503,7 @@ export const calculateDamage = ({
     const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
     const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
     const total = Math.ceil(withAttackPower);
-    return Math.max(0, total);
+    return Math.max(minimumDamage, total);
 };
 
 export const calculateArmor = ({ target, action }: { target?: IndexedCombatant; action: Action }): number => {

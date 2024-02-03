@@ -1,3 +1,4 @@
+export { default as AdamantiumPlateImage } from "./AdamantiumPlate.png";
 export { default as AdvancedChargeImage } from "./AdvancedCharge.png";
 export { default as AdvancedWeaponMasteryImage } from "./AdvancedWeaponMastery.png";
 export { default as AlchemistStoneImage } from "./AlchemistStone.png";

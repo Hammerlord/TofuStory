@@ -2,6 +2,7 @@ import { dueyScenario } from "../../scene/Duey/duey";
 import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
 import { noob } from "../../scene/Noob";
 import {
+    adamantiumPlate,
     alligatorTube,
     amethyst,
     ancientTreeSap,
@@ -10,6 +11,7 @@ import {
     blueSaunaRobe,
     boneHelm,
     bouquet,
+    brick,
     cactus,
     clubMembership,
     coffeePot,
@@ -100,4 +102,6 @@ export const ITEMS = [
     tauromacisHorn,
     taurospearHorn,
     starEarrings,
+    brick,
+    adamantiumPlate,
 ];

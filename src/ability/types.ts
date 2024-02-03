@@ -225,6 +225,7 @@ export interface Effect {
         damage?: number;
     };
     viewDeckInOrder?: boolean;
+    minimumAttackDamage?: number;
 }
 
 export interface CombatEffect extends Effect {

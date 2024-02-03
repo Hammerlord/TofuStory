@@ -2,6 +2,7 @@ import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, wound } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
+    AdamantiumPlateImage,
     AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
@@ -13,6 +14,7 @@ import {
     BlueSaunaRobeImage,
     BoneHelmImage,
     BouquetImage,
+    BrickImage,
     BronzeIncenseBurnerImage,
     CactusImage,
     CoffeePotImage,
@@ -1360,6 +1362,43 @@ export const starEarrings: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const brick: Item = {
+    name: "Brick",
+    image: BrickImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When your attack would deal less than 5 damage to an enemy, it deals 5 damage.",
+    effects: [
+        {
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            name: "Brick",
+            minimumAttackDamage: 5,
+        },
+    ],
+};
+
+export const adamantiumPlate: Item = {
+    name: "Adamantium Plate",
+    description: "Receive 1 less damage when attacked by enemies *not* directly in front of you.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: AdamantiumPlateImage,
+    effects: [
+        {
+            name: "Adamantium Plate",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: -1,
+            conditions: [
+                {
+                    comparator: "not",
+                    proximity: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                },
+            ],
         },
     ],
 };
