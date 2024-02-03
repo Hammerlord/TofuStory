@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { useAppDispatch } from "../hooks";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { PlayerSelectCardsPrompt } from "./reducer";
+import { drawCards } from "./actions/actions";
+import { prepareForDiscard } from "./actions/playerTurn";
+import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
 
 const useStyles = createUseStyles({
@@ -21,7 +24,7 @@ const useStyles = createUseStyles({
         display: "inline-block",
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
-        padding: "8px 96px",
+        padding: "8px 200px",
         color: "white",
         marginBottom: "24px",
     },
@@ -42,6 +45,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const { updateBattle } = battleStateSlice?.actions || {};
+
 const SelectCardOverlay = ({
     selectCardsPrompt,
     hand,
@@ -53,7 +58,7 @@ const SelectCardOverlay = ({
 }: {
     selectCardsPrompt: PlayerSelectCardsPrompt;
     hand: HandAbility[];
-    onSelect: ({ updatedHand, updatedDeck }: { updatedHand: HandAbility[]; updatedDeck?: (Ability | HandAbility)[] }) => void;
+    onSelect: () => void;
     player: any;
     onCancel: () => void;
     deck: Ability[];
@@ -62,15 +67,18 @@ const SelectCardOverlay = ({
     const [abilityChoices, setAbilityChoices] = useState([]);
     const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
     const classes = useStyles();
-    const { type, maxAmount = 1 } = selectCardsPrompt.selectCards;
+    const { selectCards, abilityQueued } = selectCardsPrompt || {};
+    const { type, maxAmount: configuredMax } = selectCards;
+    const maxAmount = configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
     const selectedAbilities = abilityChoices.filter(({ instanceId }) => selectedAbilityIds.includes(instanceId));
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         setAbilityChoices(
             getCardSelection({
                 hand,
-                selectCards: selectCardsPrompt.selectCards,
-                selectedAbilityId: selectCardsPrompt?.abilityQueued?.selectedAbilityId,
+                selectCards,
+                selectedAbilityId: abilityQueued?.selectedAbilityId,
                 player,
             })
         );
@@ -79,11 +87,12 @@ const SelectCardOverlay = ({
     const handleSelectClick = () => {
         // Bug: No onDeplete event being triggered here
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            onSelect({ updatedHand: hand.filter((ability: HandAbility) => !selectedAbilityIds.includes(ability.instanceId)) });
-            return;
-        }
-
-        if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            dispatch(
+                updateBattle({
+                    hand: hand.filter((ability: HandAbility) => !selectedAbilityIds.includes(ability.instanceId)),
+                })
+            );
+        } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
             const updatedHand = [];
             const updatedDeck = [...deck];
             hand.forEach((ability: HandAbility) => {
@@ -93,28 +102,54 @@ const SelectCardOverlay = ({
                     updatedHand.push(ability);
                 }
             });
-            onSelect({
-                updatedHand,
-                updatedDeck,
+
+            dispatch(
+                updateBattle({
+                    hand: updatedHand,
+                    deck: updatedDeck,
+                })
+            );
+        } else if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
+            const updatedHand = [];
+            const updatedDiscard = [...discard];
+            hand.forEach((ability: HandAbility) => {
+                if (selectedAbilityIds.includes(ability.instanceId)) {
+                    updatedDiscard.unshift(...prepareForDiscard([ability]));
+                } else {
+                    updatedHand.push(ability);
+                }
             });
-            return;
+            dispatch(
+                updateBattle({
+                    hand: updatedHand,
+                    discard: updatedDiscard,
+                })
+            );
+            dispatch(drawCards({ amount: selectedAbilityIds.length }));
+        } else {
+            dispatch(
+                updateBattle({
+                    hand: [...hand, ...selectedAbilities],
+                })
+            );
         }
 
-        onSelect({ updatedHand: [...hand, ...selectedAbilities] });
+        onSelect();
     };
 
     return (
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h1>
+                    <h2>
                         {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
                         {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
                         {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                         {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                         {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
                             `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
-                    </h1>
+                        {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Select cards from your hand to discard and redraw"}
+                    </h2>
                 </div>
                 <div className={classes.abilityContainer}>
                     {abilityChoices.map((ability: HandAbility) => (
@@ -142,8 +177,13 @@ const SelectCardOverlay = ({
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} color="primary" disabled={!selectedAbilities} onClick={handleSelectClick}>
-                    Select!
+                <Button
+                    variant={"contained"}
+                    color="primary"
+                    disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities}
+                    onClick={handleSelectClick}
+                >
+                    Done
                 </Button>
                 {/**
                  * This is currently a trap as you lose the card when you use it

@@ -581,6 +581,7 @@ export enum SELECT_CARD_TYPES {
     PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
     HAND_TO_TOP_DECK = "hand-to-top-deck",
+    DISCARD_TO_DRAW = "discard-to-draw",
 }
 
 export enum AUTO_CAST_ABILITY_TYPES {

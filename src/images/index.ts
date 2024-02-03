@@ -15,6 +15,7 @@ export { default as ArcaneOverdriveImage } from "./ArcaneOverdrive.png";
 export { default as ArrowImage } from "./Arrow.png";
 export { default as ArwensGlassShoeImage } from "./ArwensGlassShoe.png";
 export { default as ArwenTheFairyImage } from "./ArwenTheFairy.png";
+export { default as ASetOfMemoryCardsImage } from "./ASetOfMemoryCards.png";
 export { default as AssassinateImage } from "./Assassinate.gif";
 export { default as AthenaAttackStanceImage } from "./AthenaAttackStance.png";
 export { default as AvengerImage } from "./Avenger.png";

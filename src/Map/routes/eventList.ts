@@ -16,6 +16,7 @@ import {
     clubMembership,
     coffeePot,
     cursedDoll,
+    deckOfCards,
     diamond,
     drakeBlood,
     engravedStone,
@@ -108,4 +109,5 @@ export const ITEMS = [
     adamantiumPlate,
     wildKargoEye,
     pigIllustrated,
+    deckOfCards,
 ];

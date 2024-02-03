@@ -127,7 +127,7 @@ export const playerEndTurn = () => {
             dispatch(
                 updateBattle({
                     isPlayerTurn: false,
-                    discard: [...discard, ...prepareForDiscard(hand)],
+                    discard: [...prepareForDiscard(hand), ...discard],
                     hand: [],
                 })
             );
@@ -185,7 +185,7 @@ export const startPlayerTurn = () => {
     };
 };
 
-const prepareForDiscard = (cards: HandAbility[]): HandAbility[] => {
+export const prepareForDiscard = (cards: HandAbility[]): HandAbility[] => {
     return cards
         .filter((ability) => !ability.removeAfterTurn)
         .map((hand) => ({

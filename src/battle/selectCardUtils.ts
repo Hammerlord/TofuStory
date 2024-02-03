@@ -60,6 +60,10 @@ const getCardSelection = ({
     if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
         return applyFilters(hand);
     }
+
+    if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
+        return applyFilters(hand);
+    }
     return [];
 };
 

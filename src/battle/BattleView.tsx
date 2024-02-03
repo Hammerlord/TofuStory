@@ -263,19 +263,7 @@ const BattlefieldContainer = () => {
         dispatch(onUsePlayerAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
     };
 
-    const handleSelectCardFromPrompt = ({
-        updatedHand,
-        updatedDeck,
-    }: {
-        updatedHand: HandAbility[];
-        updatedDeck?: (Ability | HandAbility)[];
-    }) => {
-        dispatch(
-            updateBattle({
-                hand: updatedHand,
-                deck: updatedDeck || deck,
-            })
-        );
+    const handleSelectCardFromPrompt = () => {
         handleCancelSelectCard();
         if (selectCardsPrompt.abilityQueued) {
             dispatch(onUsePlayerAbility(selectCardsPrompt.abilityQueued));

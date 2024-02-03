@@ -9,6 +9,7 @@ import {
     AncientTreeSapImage,
     AquamarineImage,
     ArwensGlassShoeImage,
+    ASetOfMemoryCardsImage,
     BallerCaneImage,
     BluePotionImage,
     BlueSaunaRobeImage,
@@ -73,6 +74,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     MULTIPLIER_TYPES,
+    SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
@@ -1448,6 +1450,48 @@ export const pigIllustrated: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 chance: 0.5,
                 resources: 1,
+            },
+        },
+    ],
+};
+
+export const deckOfCards: Item = {
+    name: "Deck of Playing Cards",
+    description: "On your first turn in battle, you may choose cards to discard, then draw that many.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: ASetOfMemoryCardsImage,
+    effects: [
+        {
+            name: "Deck of Playing Cards",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onBattleStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Mulligan",
+                        icon: ASetOfMemoryCardsImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        onTurnStart: {
+                            ability: {
+                                name: "Mulligan",
+                                image: ASetOfMemoryCardsImage,
+                                resourceCost: 0,
+                                actions: [
+                                    {
+                                        type: ACTION_TYPES.EFFECT,
+                                        target: TARGET_TYPES.SELF,
+                                        selectCards: {
+                                            type: SELECT_CARD_TYPES.DISCARD_TO_DRAW,
+                                        },
+                                    },
+                                ],
+                            },
+                            removeEffect: true,
+                        },
+                    },
+                ],
             },
         },
     ],
