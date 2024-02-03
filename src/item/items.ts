@@ -61,6 +61,7 @@ import {
     TopazImage,
     TortieShellImage,
     WeaponMasteryImage,
+    WildKargoEyeImage,
     WorkGlovesImage,
 } from "../images";
 import {
@@ -715,7 +716,7 @@ export const greenBambooHat: Item = {
 export const koreanFan: Item = {
     name: "Korean Fan",
     image: KoreanFanImage,
-    description: "Every 3 turns, hurl a fan that inflicts a wound. The effect lasts 1 turn.",
+    description: "Every 3 turns, hurl a fan that inflicts Bleed. The effect lasts 1 turn.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -1397,6 +1398,28 @@ export const adamantiumPlate: Item = {
                     comparator: "not",
                     proximity: 0,
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                },
+            ],
+        },
+    ],
+};
+
+export const wildKargoEye: Item = {
+    name: "Wild Kargo Eye",
+    description: "Gain 1 attack power against unarmored targets.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: WildKargoEyeImage,
+    effects: [
+        {
+            name: "Wild Kargo Eye",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    comparator: "eq",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             ],
         },

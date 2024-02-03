@@ -392,6 +392,7 @@ export { default as WeaponMasteryImage } from "./WeaponMastery.png";
 export { default as WessImage } from "./Wess.png";
 export { default as WhiteRockImage } from "./WhiteRock.png";
 export { default as WildBoarImage } from "./WildBoar.png";
+export { default as WildKargoEyeImage } from "./WildKargoEye.png";
 export { default as WizMushImage } from "./WizMush.gif";
 export { default as WolfImage } from "./Wolf.gif";
 export { default as WoodenClubImage } from "./WoodenClub.png";

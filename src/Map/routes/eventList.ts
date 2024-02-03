@@ -48,6 +48,7 @@ import {
     taurospearHorn,
     topaz,
     tortieShell,
+    wildKargoEye,
     workGloves,
 } from "./../../item/items";
 
@@ -104,4 +105,5 @@ export const ITEMS = [
     starEarrings,
     brick,
     adamantiumPlate,
+    wildKargoEye,
 ];
