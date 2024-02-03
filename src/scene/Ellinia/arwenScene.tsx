@@ -92,6 +92,9 @@ const faustFight = {
     waves: [
         {
             enemies: [ghostlyPuppeteerL, null, faust, null, ghostlyPuppeteerR],
+            winCondition: {
+                defeatBoss: true,
+            },
         },
     ],
 };
