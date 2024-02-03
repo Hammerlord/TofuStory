@@ -40,6 +40,7 @@ import {
     LuckSackImage,
     PanlidImage,
     PieceOfIceImage,
+    PigIllustratedImage,
     PigsRibbonImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
@@ -1422,6 +1423,32 @@ export const wildKargoEye: Item = {
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             ],
+        },
+    ],
+};
+
+export const pigIllustrated: Item = {
+    name: "Pig Illustrated",
+    description: "When you use an offense ability that costs 2 or more, it has a 50% chance to refund 1 resource.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: PigIllustratedImage,
+    effects: [
+        {
+            name: "Pig Illustrated",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onOffensiveAbility: {
+                conditions: [
+                    {
+                        comparator: "gt",
+                        resourceCost: 1,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                chance: 0.5,
+                resources: 1,
+            },
         },
     ],
 };

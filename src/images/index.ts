@@ -272,6 +272,7 @@ export { default as PiercingDriveImage } from "./PiercingDrive.png";
 export { default as PigImage } from "./Pig.png";
 export { default as PigCardImage } from "./PigCard.png";
 export { default as PigIdleImage } from "./PigIdle.gif";
+export { default as PigIllustratedImage } from "./PigIllustrated.png";
 export { default as PigsHeadImage } from "./PigsHead.png";
 export { default as PigsRibbonImage } from "./PigsRibbon.png";
 export { default as PoisonImage } from "./Poison.png";

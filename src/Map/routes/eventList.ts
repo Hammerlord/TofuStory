@@ -31,6 +31,7 @@ import {
     nependeathSap,
     panlid,
     pieceOfIce,
+    pigIllustrated,
     pigsRibbonItem,
     redHeartedEarrings,
     redWhip,
@@ -106,4 +107,5 @@ export const ITEMS = [
     brick,
     adamantiumPlate,
     wildKargoEye,
+    pigIllustrated,
 ];

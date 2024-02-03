@@ -469,6 +469,7 @@ const onEffectEventTrigger = ({
             randomOptions = {},
             usableWhileStunned,
             autoCastAbilities,
+            chance = 1,
             ...other
         } = effectEvent;
 
@@ -493,6 +494,8 @@ const onEffectEventTrigger = ({
             passesConditions({ getCalculationTarget, proc: effect, source }) &&
             passesConditions({ getCalculationTarget, proc: effectEvent, source });
 
+        const chanceCheckPass = Math.random() < chance;
+
         const checkRemoveEffect = () => {
             if (removeEffect) {
                 const { combatant } = findCombatantData(getState, ownerId) || {};
@@ -501,7 +504,7 @@ const onEffectEventTrigger = ({
             }
         };
 
-        if (conditionsPassed) {
+        if (conditionsPassed && chanceCheckPass) {
             checkRemoveEffect();
         } else {
             return;

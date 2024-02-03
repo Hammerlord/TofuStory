@@ -88,6 +88,7 @@ export interface EffectEventTrigger {
     excludePrimaryTarget?: boolean;
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
+    chance?: number; // A percentage of occurrence, up to 1
 }
 
 export enum EFFECT_EVENT_KEYS {
