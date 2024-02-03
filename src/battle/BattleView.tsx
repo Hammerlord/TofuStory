@@ -2,32 +2,30 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { Ability, Effect, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Effect, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
-import Header from "../Menu/Header";
-import { findCombatantData, updateCombatant, useItem } from "./actions/actions";
-import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
-import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
-import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
-import { MAX_HAND_SIZE } from "./constants";
 import Deck from "./Deck";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import AbilityNotification from "./Notification/AbilityNotification";
 import Notification from "./Notification/Notification";
 import TurnAnnouncement from "./Notification/TurnNotification";
-import { BattleState, battleStateSlice, BATTLE_STATES, PlayerSelectCardsPrompt } from "./reducer";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
-import { BATTLEFIELD_SIDES, BattleNotification, Event } from "./types";
-import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isStealthed, isValidTarget, isWithinAbilityArea } from "./utils";
 import WaveInfo from "./WaveInfo";
-import { playerStateSlice } from "../character/playerReducer";
+import { findCombatantData } from "./actions/actions";
+import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
+import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
+import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
+import { MAX_HAND_SIZE } from "./constants";
+import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
+import { BATTLEFIELD_SIDES, Event } from "./types";
+import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -210,7 +208,7 @@ const BattlefieldContainer = () => {
         return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
     })();
 
-    const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered;
+    const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actorId: string | undefined = (selectedMinion || player)?.id;
@@ -241,6 +239,15 @@ const BattlefieldContainer = () => {
     };
 
     const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
+        if (selectCardsPrompt) {
+            warn(`Finish selecting cards in the overlay prompt first.`);
+            return;
+        }
+
+        if (disableActions) {
+            return;
+        }
+
         setSelectedAllyIndex(null);
         const ability = hand.find((card: HandAbility) => card.instanceId === id);
         if (!canUseAbility(player, ability)) {
@@ -296,10 +303,16 @@ const BattlefieldContainer = () => {
         );
     };
 
-    const handleAllyClick = (e: React.ChangeEvent, index) => {
+    const handleAllyClick = (e: React.ChangeEvent, index: number) => {
+        if (selectCardsPrompt) {
+            warn(`Finish selecting cards in the overlay prompt first.`);
+            return;
+        }
+
         if (disableActions) {
             return;
         }
+
         if (selectedAbility) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
                 if (selectedAbility.selectCards) {

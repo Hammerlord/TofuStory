@@ -14,7 +14,7 @@ import getCardSelection from "./selectCardUtils";
 const useStyles = createUseStyles({
     inner: {
         position: "absolute",
-        top: "50%",
+        top: "45%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
         textAlign: "center",
@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
         marginBottom: "24px",
     },
     abilityContainer: {
-        margin: "64px 0",
+        margin: "80px 0",
         verticalAlign: "top",
     },
     ability: {
@@ -42,6 +42,13 @@ const useStyles = createUseStyles({
     },
     cancel: {
         marginTop: "2rem",
+    },
+    toggleOverlayButton: {
+        position: "fixed",
+        top: "13%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 1000,
     },
 });
 
@@ -72,6 +79,7 @@ const SelectCardOverlay = ({
     const maxAmount = configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
     const selectedAbilities = abilityChoices.filter(({ instanceId }) => selectedAbilityIds.includes(instanceId));
     const dispatch = useAppDispatch();
+    const [hide, setHide] = useState(false);
 
     useEffect(() => {
         setAbilityChoices(
@@ -138,54 +146,56 @@ const SelectCardOverlay = ({
     };
 
     return (
-        <Overlay>
-            <div className={classes.inner}>
-                <div className={classes.titleContainer}>
-                    <h2>
-                        {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
-                        {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
-                        {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
-                        {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
-                        {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
-                            `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
-                        {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Select cards from your hand to discard and redraw"}
-                    </h2>
-                </div>
-                <div className={classes.abilityContainer}>
-                    {abilityChoices.map((ability: HandAbility) => (
-                        <div
-                            className={classNames(classes.ability, {
-                                selected: selectedAbilityIds.includes(ability.instanceId),
-                            })}
-                            onClick={() => {
-                                if (maxAmount === 1) {
-                                    setSelectedAbilityIds([ability.instanceId]);
-                                    return;
-                                }
-                                if (selectedAbilityIds.includes(ability.instanceId)) {
-                                    // Deselect if selected
-                                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
-                                    return;
-                                }
-                                if (selectedAbilityIds.length < maxAmount) {
-                                    setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
-                                }
-                            }}
-                            key={ability.instanceId}
-                        >
-                            <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
+        <>
+            {!hide && (
+                <Overlay>
+                    <div className={classes.inner}>
+                        <div className={classes.titleContainer}>
+                            <h2>
+                                {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
+                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
+                                {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
+                                {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
+                                {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
+                                    `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
+                                {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Select cards from your hand to discard and redraw"}
+                            </h2>
                         </div>
-                    ))}
-                </div>
-                <Button
-                    variant={"contained"}
-                    color="primary"
-                    disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities}
-                    onClick={handleSelectClick}
-                >
-                    Done
-                </Button>
-                {/**
+                        <div className={classes.abilityContainer}>
+                            {abilityChoices.map((ability: HandAbility) => (
+                                <div
+                                    className={classNames(classes.ability, {
+                                        selected: selectedAbilityIds.includes(ability.instanceId),
+                                    })}
+                                    onClick={() => {
+                                        if (maxAmount === 1) {
+                                            setSelectedAbilityIds([ability.instanceId]);
+                                            return;
+                                        }
+                                        if (selectedAbilityIds.includes(ability.instanceId)) {
+                                            // Deselect if selected
+                                            setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
+                                            return;
+                                        }
+                                        if (selectedAbilityIds.length < maxAmount) {
+                                            setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
+                                        }
+                                    }}
+                                    key={ability.instanceId}
+                                >
+                                    <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
+                                </div>
+                            ))}
+                        </div>
+                        <Button
+                            variant={"contained"}
+                            color="primary"
+                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities}
+                            onClick={handleSelectClick}
+                        >
+                            Done
+                        </Button>
+                        {/**
                  * This is currently a trap as you lose the card when you use it
                  * type !== SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && (
                     <div className={classes.cancel}>
@@ -195,8 +205,15 @@ const SelectCardOverlay = ({
                     </div>
                 )
                 **/}
+                    </div>
+                </Overlay>
+            )}
+            <div className={classes.toggleOverlayButton}>
+                <Button color="secondary" onClick={() => setHide((prev) => !prev)}>
+                    {hide ? "Show" : "Hide"} Overlay
+                </Button>
             </div>
-        </Overlay>
+        </>
     );
 };
 

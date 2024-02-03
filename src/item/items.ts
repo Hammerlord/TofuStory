@@ -1475,7 +1475,7 @@ export const deckOfCards: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         onTurnStart: {
                             ability: {
-                                name: "Mulligan",
+                                name: "Deck of Playing Cards",
                                 image: ASetOfMemoryCardsImage,
                                 resourceCost: 0,
                                 actions: [
