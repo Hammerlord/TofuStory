@@ -4,8 +4,10 @@ import { noob } from "../../scene/Noob";
 import {
     alligatorTube,
     amethyst,
+    ancientTreeSap,
     aquamarine,
     ballerCane,
+    blueSaunaRobe,
     boneHelm,
     bouquet,
     cactus,
@@ -16,6 +18,7 @@ import {
     drakeBlood,
     engravedStone,
     estherShield,
+    fairyWing,
     fishSpear,
     garnet,
     greenBambooHat,
@@ -86,4 +89,7 @@ export const ITEMS = [
     estherShield,
     spectrumGoggles,
     redHeartedEarrings,
+    fairyWing,
+    ancientTreeSap,
+    blueSaunaRobe,
 ];

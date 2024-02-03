@@ -5,10 +5,12 @@ import {
     AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
+    AncientTreeSapImage,
     AquamarineImage,
     ArwensGlassShoeImage,
     BallerCaneImage,
     BluePotionImage,
+    BlueSaunaRobeImage,
     BoneHelmImage,
     BouquetImage,
     BronzeIncenseBurnerImage,
@@ -21,6 +23,7 @@ import {
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     EstherShieldImage,
+    FairyWingImage,
     FishSpearImage,
     GarnetImage,
     GoldenHammerImage,
@@ -1157,7 +1160,7 @@ export const redHeartedEarrings: Item = {
     name: "Red-Hearted Earrings",
     image: RedHeartedEarringsImage,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "When you deplete a card, you heal 1 HP.",
+    description: "When you deplete a card, heal 1 HP.",
     effects: [
         {
             name: "Red-Hearted Earrings",
@@ -1166,6 +1169,78 @@ export const redHeartedEarrings: Item = {
             onDepleteAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
+            },
+        },
+    ],
+};
+
+export const fairyWing: Item = {
+    name: "Fairy Wing",
+    image: FairyWingImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "On wave start, you are immune to Bleed, Burn, and Poison for 4 turns.",
+    effects: [
+        {
+            name: "Fairy Wing Item",
+            description: "Immune to Bleed, Burn, and Poison.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Fairy Wing",
+                        icon: FairyWingImage,
+                        duration: 5,
+                        immunities: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.POISON],
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const ancientTreeSap: Item = {
+    name: "Ancient Tree Sap",
+    image: AncientTreeSapImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "Gain 1 extra resource every 3 turns.",
+    effects: [
+        {
+            name: "Ancient Tree Sap",
+            description: "Gain 1 extra resource every 3 turns.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            resourcesPerTurn: 1,
+        },
+    ],
+};
+
+export const blueSaunaRobe: Item = {
+    name: "Blue Sauna Robe",
+    image: BlueSaunaRobeImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "Every 5 turns, gain 1 blocking power.",
+    effects: [
+        {
+            name: "Blue Sauna Robe Item",
+            description: "Every 5 turns, gain 1 blocking power.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 5,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Blue Sauna Robe",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        armorReceived: 1,
+                    },
+                ],
             },
         },
     ],
