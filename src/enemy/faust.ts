@@ -89,13 +89,13 @@ export const faust: Minion = {
         {
             name: "Puppet Link",
             icon: CursedDollImage,
-            description: "Receiving damage when Ghostly Puppeteers are struck by an attack or killed.",
+            description: "Takes damage 3 when Ghostly Puppeteers are struck by an attack. Takes massive damage if both Puppeteers die.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             canBeSilenced: false,
             onFriendlyReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 5,
+                damage: 3,
             },
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -117,7 +117,6 @@ export const faust: Minion = {
         },
         {
             name: "Unnatural Regeneration",
-            description: "Healing 5 HP per turn.",
             icon: ZombieMushroomTicketImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
