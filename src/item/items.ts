@@ -53,6 +53,8 @@ import {
     SteelyImage,
     StolenFenceImage,
     SunshinePanImage,
+    TauromacisHornImage,
+    TaurospearHornImage,
     TopazImage,
     TortieShellImage,
     WeaponMasteryImage,
@@ -1282,6 +1284,42 @@ export const steely: Item = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const taurospearHorn: Item = {
+    name: "Taurospear Horn",
+    image: TaurospearHornImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When an enemy dies, gain 1 resource and draw a card.",
+    effects: [
+        {
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            name: "Taurospear Horn",
+            onHostileDeath: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                resources: 1,
+                drawCards: {
+                    amount: 1,
+                },
+            },
+        },
+    ],
+};
+
+export const tauromacisHorn: Item = {
+    name: "Tauromacis Horn",
+    image: TauromacisHornImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "+2 HP on kill.",
+    effects: [
+        {
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            name: "Tauromacis Horn",
+            lifeOnKill: 2,
         },
     ],
 };

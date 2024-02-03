@@ -41,6 +41,8 @@ import {
     steely,
     stolenFence,
     sunshinePan,
+    tauromacisHorn,
+    taurospearHorn,
     topaz,
     tortieShell,
     workGloves,
@@ -94,4 +96,6 @@ export const ITEMS = [
     ancientTreeSap,
     blueSaunaRobe,
     steely,
+    tauromacisHorn,
+    taurospearHorn,
 ];
