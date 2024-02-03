@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { goldenHammer, incense, leatherSandals } from "../item/items";
+import { glassShoe, goldenHammer, incense, leatherSandals } from "../item/items";
 import { ITEMS } from "../Map/routes/eventList";
 
 const useStyles = createUseStyles({
@@ -26,12 +26,13 @@ const useStyles = createUseStyles({
     },
 });
 
-export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, ...ITEMS];
+export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, glassShoe, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
+            <p>{ITEM_MASTERLIST.length} Items</p>
             {ITEM_MASTERLIST.map((item) => (
                 <div key={item.name} className={classes.item}>
                     <img src={item.image} className={classes.itemImage} />

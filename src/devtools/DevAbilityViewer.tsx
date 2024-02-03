@@ -57,7 +57,9 @@ const DevAbilityViewer = ({ onClose }) => {
                     <p>Neutral Cards</p>
                     <Grid cards={[shellThrow]} />
                     <hr />
-                    <p>{selectedClass}</p>
+                    <p>
+                        {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
+                    </p>
                     <Grid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
                         <div key={secondaryClass}>
