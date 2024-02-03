@@ -1,7 +1,7 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
 import { lifeLink } from "../../enemy/effect";
 import { lupin, malady, zombieLupin } from "../../enemy/enemy";
-import { faust, ghostlyPuppeteer } from "../../enemy/faust";
+import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
 import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
 import { glassShoe } from "../../item/items";
 import { Scene, ScriptNode } from "../types";
@@ -91,7 +91,7 @@ const faustFight = {
     characters: [],
     waves: [
         {
-            enemies: [ghostlyPuppeteer, null, faust, null, ghostlyPuppeteer],
+            enemies: [ghostlyPuppeteerL, null, faust, null, ghostlyPuppeteerR],
         },
     ],
 };

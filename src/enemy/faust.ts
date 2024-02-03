@@ -1,6 +1,16 @@
-import { CursedDollImage, FaustImage, MonkeyBananaImage, PoisonImage, WorkGlovesImage } from "../images";
+import { lifeLink } from "./effect";
+import {
+    CursedDollImage,
+    FaustImage,
+    HomecomingVictoryGlovesImage,
+    HomecomingVictoryGlovesRImage,
+    MonkeyBananaImage,
+    PoisonImage,
+    WorkGlovesImage,
+    ZombieMushroomTicketImage,
+} from "../images";
 import { CloudyIcon, SmilingImpIcon } from "../images/icons";
-import { hardy, poison } from "./../ability/Effects";
+import { hardy, poison, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -78,6 +88,7 @@ export const faust: Minion = {
             description: "Receiving damage whenever a Ghostly Puppeteer is struck by an attack or killed.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
+            canBeSilenced: false,
             onFriendlyReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 damage: 5,
@@ -87,13 +98,31 @@ export const faust: Minion = {
                 damage: 50,
             },
         },
+        {
+            name: "Unnatural Regeneration",
+            description: "Healing 5 HP per turn.",
+            icon: ZombieMushroomTicketImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
+            onTurnStart: {
+                healing: 5,
+            },
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    comparator: "not",
+                    hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                },
+            ],
+        },
     ],
 };
 
-export const ghostlyPuppeteer: Minion = {
+export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
-    image: WorkGlovesImage,
-    maxHP: 200,
+    image: HomecomingVictoryGlovesImage,
+    maxHP: 150,
     effects: [
         {
             name: "Ghostly",
@@ -146,5 +175,14 @@ export const ghostlyPuppeteer: Minion = {
                 ],
             },
         },
+        {
+            ...lifeLink,
+            disableDisplayIcon: true,
+        },
     ],
+};
+
+export const ghostlyPuppeteerR: Minion = {
+    ...ghostlyPuppeteerL,
+    image: HomecomingVictoryGlovesRImage,
 };
