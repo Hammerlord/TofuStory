@@ -119,6 +119,9 @@ export const getUpdatedStats = ({
 
         const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
+            if (effect.bypassImmunity) {
+                return false;
+            }
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;
             }

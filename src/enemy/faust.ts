@@ -110,6 +110,7 @@ export const faust: Minion = {
                 effects: [
                     {
                         ...stun,
+                        bypassImmunity: true,
                         duration: 3,
                     },
                 ],

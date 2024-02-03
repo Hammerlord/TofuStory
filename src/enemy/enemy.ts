@@ -217,6 +217,7 @@ export const pig: Minion = {
                     effects: [
                         {
                             ...stun,
+                            bypassImmunity: true,
                             name: "Dazed",
                             duration: 2,
                         },

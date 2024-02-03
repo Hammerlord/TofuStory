@@ -229,6 +229,7 @@ export interface Effect {
     };
     viewDeckInOrder?: boolean;
     minimumAttackDamage?: number;
+    bypassImmunity?: boolean;
 }
 
 export interface CombatEffect extends Effect {
