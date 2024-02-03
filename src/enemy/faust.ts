@@ -89,7 +89,7 @@ export const faust: Minion = {
         {
             name: "Puppet Link",
             icon: CursedDollImage,
-            description: "Takes damage 3 when Ghostly Puppeteers are struck by an attack. Takes massive damage if both Puppeteers die.",
+            description: "Takes 3 damage whenever a Ghostly Puppeteer is struck by an attack. Takes massive damage if both Puppeteers die.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             canBeSilenced: false,
@@ -125,13 +125,6 @@ export const faust: Minion = {
             onTurnStart: {
                 healing: 5,
             },
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    comparator: "not",
-                    hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                },
-            ],
         },
     ],
 };
