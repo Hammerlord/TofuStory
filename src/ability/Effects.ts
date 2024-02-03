@@ -58,11 +58,17 @@ export const hardy: Effect = {
     disableDisplayIcon: true,
     onReceiveEffect: {
         usableWhileStunned: true,
+        conditionOperator: "and",
         conditions: [
             {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                 hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
                 comparator: "eq",
+            },
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                hasEffect: controlImmune.name,
+                comparator: "not",
             },
         ],
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

@@ -728,8 +728,14 @@ export const triggerStatChangeEvents =
                 rawResources = 0,
                 removedEffects = [],
             } = statUpdate;
-            const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS) => {
-                dispatch(checkEventTrigger({ combatantId, effectEventKey, source: { ...source, statUpdate } }));
+            const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?) => {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId,
+                        effectEventKey,
+                        source: { ...source, ...sourcePayload, statUpdate },
+                    })
+                );
             };
 
             if (resources < 0) {
@@ -760,13 +766,12 @@ export const triggerStatChangeEvents =
             }
 
             effects.forEach((e: CombatEffect) => {
-                // TODO probably include effects in the event trigger payload?
-                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect, { source: e, type: TRIGGER_SOURCE_TYPES.EFFECT });
                 dispatch(
                     checkEventTrigger({
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
-                        source: { ...source, statUpdate },
+                        source: { ...source, statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT },
                     })
                 );
             });

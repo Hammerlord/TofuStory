@@ -52,6 +52,7 @@ export enum TRIGGER_TARGET_TYPES {
 
 export interface EffectEventTrigger {
     removeEffect?: boolean; // Remove this effect from its owner after completion of the event
+    conditionOperator?: "and" | "or"; // OR by default
     conditions?: Condition[]; // OR if multiple conditions are present
     parentEffect?: {
         // Update the parent effect's stats

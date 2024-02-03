@@ -1,7 +1,17 @@
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    Ability,
+    Action,
+    Bonus,
+    CombatEffect,
+    Condition,
+    CONDITION_TARGETS,
+    Effect,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import { Combatant } from "../character/types";
-import { CombatantInfo, TriggerSource } from "./types";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 
 export const passesValueComparison = ({
@@ -66,27 +76,45 @@ export const passesConditions = ({
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            // @ts-ignore -- We are assuming the type is an ability
-            const { name: sourceName, resourceCost: sourceResourceCost }: Ability = source?.source || {};
+            const { type, source: sourcePayload = {} } = source;
+            if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
+                const { name: sourceName, resourceCost: sourceResourceCost }: Ability = sourcePayload as Ability;
 
-            if (name) {
-                const names = Array.isArray(name) ? name : [name];
-                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
-                    return false;
+                if (name) {
+                    const names = Array.isArray(name) ? name : [name];
+                    if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
+                        return false;
+                    }
                 }
-            }
 
-            if (resourceCost !== undefined) {
-                if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
-                    return false;
+                if (resourceCost !== undefined) {
+                    if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
+                        return false;
+                    }
                 }
+
+                if (isOffense !== undefined) {
+                    return isOffense === isOffensiveAbility(source?.source as Ability);
+                }
+
+                return true;
             }
 
-            if (isOffense !== undefined) {
-                return isOffense === isOffensiveAbility(source?.source as Ability);
-            }
+            if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
+                const { type: effectType }: Effect = sourcePayload as Effect;
 
-            return true;
+                if (hasEffectType !== undefined) {
+                    if (comparator === "not") {
+                        if (hasEffectType.includes(effectType)) {
+                            return false;
+                        }
+                    } else if (!hasEffectType.includes(effectType)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
 
         const calcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(calculationTarget);
@@ -244,6 +272,7 @@ export const passesConditions = ({
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
     };
-    const { conditions = [] } = proc;
-    return !conditions.length || conditions.some(passesCondition);
+    // @ts-ignore -- conditionOperator is 'or' by default and we have a fallback here
+    const { conditions = [], conditionOperator = "or" } = proc;
+    return !conditions.length || (conditionOperator === "or" ? conditions.some(passesCondition) : conditions.every(passesCondition));
 };
