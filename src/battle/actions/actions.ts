@@ -745,9 +745,16 @@ export const triggerStatChangeEvents =
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
             }
 
-            effects.forEach((e) => {
+            effects.forEach((e: CombatEffect) => {
                 // TODO probably include effects in the event trigger payload?
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveEffect);
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: e.applierId,
+                        effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
+                        source: { ...source, statUpdate },
+                    })
+                );
             });
 
             removedEffects.forEach((e: CombatEffect) => {

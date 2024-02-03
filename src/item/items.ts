@@ -49,6 +49,7 @@ import {
     SapOfNependeathImage,
     SnowshoesImage,
     SpectrumGogglesImage,
+    StarEarringsImage,
     StarfallMagicSquareImage,
     SteelyImage,
     StolenFenceImage,
@@ -1320,6 +1321,44 @@ export const tauromacisHorn: Item = {
             class: EFFECT_CLASSES.BUFF,
             name: "Tauromacis Horn",
             lifeOnKill: 2,
+        },
+    ],
+};
+
+export const starEarrings: Item = {
+    name: "Star Earrings",
+    image: StarEarringsImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "Once per turn, when you Stun, Freeze or Silence an enemy, draw a card.",
+    effects: [
+        {
+            name: "Star Earrings Item",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Star Earrings",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        onApplyEffect: {
+                            conditions: [
+                                {
+                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET, // This should be comparing the effect
+                                    hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                                    comparator: "eq",
+                                },
+                            ],
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            drawCards: {
+                                amount: 1,
+                            },
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

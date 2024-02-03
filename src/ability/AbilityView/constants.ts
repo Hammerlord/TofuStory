@@ -15,6 +15,7 @@ export const effectEventKeyLabelMap = {
     onReceiveHealing: "When healed",
     onReceiveArmor: "When you gain armor",
     onReceiveEffect: "When you receive an effect",
+    onApplyEffect: "When you apply an effect",
     onEffectRemoved: "When this effect is removed", // TODO probably not an actual event
     onResourcesSpent: "After spending resources",
     onTurnStart: "When your turn starts",

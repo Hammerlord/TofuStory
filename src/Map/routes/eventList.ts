@@ -37,6 +37,7 @@ import {
     safetyCharm,
     snailStompers,
     spectrumGoggles,
+    starEarrings,
     starfallMagicSquare,
     steely,
     stolenFence,
@@ -98,4 +99,5 @@ export const ITEMS = [
     steely,
     tauromacisHorn,
     taurospearHorn,
+    starEarrings,
 ];

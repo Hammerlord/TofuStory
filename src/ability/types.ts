@@ -104,6 +104,7 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveHealing = "onReceiveHealing",
     onReceiveArmor = "onReceiveArmor",
     onReceiveEffect = "onReceiveEffect",
+    onApplyEffect = "onApplyEffect",
     onEffectRemoved = "onEffectRemoved",
     onResourcesSpent = "onResourcesSpent",
     onResourcesGained = "onResourcesGained",
@@ -180,6 +181,7 @@ export interface Effect {
     onReceiveHealing?: EffectEventTrigger;
     onReceiveArmor?: EffectEventTrigger;
     onReceiveEffect?: EffectEventTrigger;
+    onApplyEffect?: EffectEventTrigger;
     onResourcesSpent?: EffectEventTrigger;
     onResourcesGained?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
