@@ -5,12 +5,16 @@ import { CloudIcon } from "../../images/icons";
 const useStyles = createUseStyles({
     "@keyframes stealthCloud": {
         from: {
-            opacity: 0.5,
+            opacity: 0.8,
             transform: "translateY(-8px)",
+            WebkitFilter: "brightness(0.75)",
+            filter: "brightness(0.75)",
         },
         to: {
-            opacity: 0.1,
+            opacity: 0.2,
             transform: "translateY(0px)",
+            WebkitFilter: "brightness(0.75)",
+            filter: "brightness(0.75)",
         },
     },
     root: {
@@ -21,7 +25,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         width: "100%",
         height: "100%",
-        top: "15%",
+        bottom: "50%",
     },
 });
 
