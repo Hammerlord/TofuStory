@@ -381,7 +381,7 @@ export const alligatorTube: Item = {
 
 export const cactus: Item = {
     name: "Cactus",
-    description: "You reflect 1 damage to attackers.",
+    description: "Gain 1 thorns. Thorns deals 1 damage to attackers.",
     type: ITEM_TYPES.EQUIPMENT,
     image: CactusImage,
     effects: [
@@ -507,7 +507,7 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "Receive +1 armor from armor sources.",
+    description: "+1 armor power.",
     type: ITEM_TYPES.EQUIPMENT,
     image: AquamarineImage,
     effects: [
@@ -684,7 +684,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect from an ability, you gain 1 armor.",
+    description: "When you receive a status effect from an ability, gain 1 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -740,7 +740,7 @@ export const koreanFan: Item = {
 export const risingStar: Item = {
     name: "Rising Star",
     image: RisingStarImage,
-    description: "When you use 7 abilities, gain 1 attack power. This effect may occur once per battle.",
+    description: "When you use 7 abilities, gain 1 attack power. Occurs once per battle.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -775,7 +775,7 @@ export const risingStar: Item = {
 export const bouquet: Item = {
     name: "Bouquet",
     image: BouquetImage,
-    description: "You receive +1 healing from healing sources in battle.",
+    description: "+1 healing from healing sources in battle.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -826,7 +826,7 @@ export const starfallMagicSquare: Item = {
 export const cursedDoll: Item = {
     name: "Cursed Doll",
     image: CursedDollImage,
-    description: "On wave start, apply a curse on a random enemy. That enemy receives 1 damage for each different target you attack.",
+    description: "On wave start, a random enemy becomes cursed, taking 1 damage for each other target you attack.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -894,7 +894,7 @@ export const redHeadband: Item = {
 export const workGloves: Item = {
     name: "Work Gloves",
     image: WorkGlovesImage,
-    description: "For every 10 abilities you use, gain 1 attack power.",
+    description: "Every 10 abilities you use, gain 1 attack power.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -1059,7 +1059,7 @@ export const snailStompers: Item = {
 export const clubMembership: Item = {
     name: "Shopper's Club Membership",
     image: CouponImage,
-    description: "You can now refresh a merchant shop's inventory once per visit. Merchant item costs are reduced by 20%.",
+    description: "You can now refresh a shop once per visit. 20% discount on shop items.",
     type: ITEM_TYPES.EQUIPMENT,
     merchant: {
         discount: 0.2,
@@ -1144,7 +1144,7 @@ export const spectrumGoggles: Item = {
     name: "Spectrum Goggles",
     image: SpectrumGogglesImage,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "+5 max HP. Your deck now displays in order when viewed.",
+    description: "+5 max HP. When viewing your deck in battle, the cards display in order.",
     effects: [
         {
             name: "Spectrum Goggles",
@@ -1223,11 +1223,11 @@ export const blueSaunaRobe: Item = {
     name: "Blue Sauna Robe",
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "Every 5 turns, gain 1 blocking power.",
+    description: "Every 5 turns, gain 1 armor power.",
     effects: [
         {
             name: "Blue Sauna Robe Item",
-            description: "Every 5 turns, gain 1 blocking power.",
+            description: "Every 5 turns, gain 1 armor power.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 5,
