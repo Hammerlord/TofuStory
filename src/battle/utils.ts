@@ -252,16 +252,19 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.ALL_CARDS) {
         const allCards = [...deck, ...hand, ...discard];
+        const multValue = typeof value === "number" ? value + 1 : 1;
 
         if (!filters) {
-            return allCards.length;
+            return Math.floor(allCards.length * multValue);
         }
 
-        return allCards.filter((card) => {
+        const filtered = allCards.filter((card) => {
             return filters.some(({ property, value, comparator }) =>
                 passesValueComparison({ val: card[property], otherVal: value, comparator })
             );
         }).length;
+
+        return Math.floor(filtered * multValue);
     }
 
     if (type === MULTIPLIER_TYPES.EFFECT_DURATIONS) {
