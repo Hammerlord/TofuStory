@@ -1,19 +1,20 @@
 import { Combatant } from "../../character/types";
+import { CombatantInfo } from "../types";
 import { getEnabledEffects } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
-export const checkHalveArmor = (side: (Combatant | null)[]) => (dispatch) => {
+export const checkHalveArmor = (side: (CombatantInfo | null)[]) => (dispatch) => {
     const statChanges = side
-        .map((combatant) => {
-            if (!combatant) {
+        .map((combatantInfo: CombatantInfo) => {
+            if (!combatantInfo) {
                 return;
             }
 
-            const armor = getHalveArmorAmount(combatant);
+            const armor = getHalveArmorAmount(combatantInfo);
             if (armor === 0) {
                 return;
             }
-            return { combatantId: combatant?.id, armor };
+            return { combatantId: combatantInfo?.combatant?.id, armor };
         })
         .filter((v) => v);
 
@@ -21,10 +22,15 @@ export const checkHalveArmor = (side: (Combatant | null)[]) => (dispatch) => {
     dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate }))));
 };
 
-const getHalveArmorAmount = (target: Combatant): number => {
-    if (getEnabledEffects({ combatant: target }).some((effect) => effect.preventArmorDecay)) {
+const getHalveArmorAmount = (target: CombatantInfo): number => {
+    if (getEnabledEffects({ combatantInfo: target }).some((effect) => effect.preventArmorDecay)) {
         return 0;
     }
 
-    return -Math.ceil(target.armor / 2);
+    const armor = target?.combatant?.armor;
+    if (!armor) {
+        return 0;
+    }
+
+    return -Math.ceil(armor / 2);
 };

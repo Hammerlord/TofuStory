@@ -7,6 +7,7 @@ import { getEnabledEffects, getMaxHP } from "../battle/utils";
 import { Combatant } from "./types";
 import { passesConditions } from "../battle/passesConditions";
 import { TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatantInfo } from "../battle/types";
 
 const useStyles = createUseStyles({
     icon: {
@@ -16,18 +17,22 @@ const useStyles = createUseStyles({
     },
 });
 
-const Health = ({ combatant }: { combatant: Combatant }) => {
-    const HP = combatant.HP;
+const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
+    const { combatant } = combatantInfo || {};
+    if (!combatant) {
+        return null;
+    }
+
+    const HP = combatant?.HP;
     const maxHP = getMaxHP(combatant);
     const toOneDecimal = (num) => Math.round(num * 10) / 10;
     const classes = useStyles();
-    const effects = getEnabledEffects({ combatant });
+    const effects = getEnabledEffects({ combatantInfo });
     const damageModifiers = effects.filter((effect) => {
         return (
             effect.attackDamageReceived &&
             passesConditions({
-                getCalculationTarget: (targetType) =>
-                    targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? { combatant, index: undefined } : undefined,
+                getCalculationTarget: (targetType) => (targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? combatantInfo : undefined),
                 proc: effect,
             })
         );

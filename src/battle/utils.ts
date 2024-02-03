@@ -1,4 +1,4 @@
-import { TriggerSource } from "./types";
+import { CombatantInfo, TriggerSource } from "./types";
 /**
  * @file Helpers for various battle functions
  */
@@ -23,10 +23,11 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { IndexedCombatant, passesConditions, passesValueComparison } from "./passesConditions";
+import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES } from "./types";
 import { getRandomItem } from "../utils";
 import { ATTACK_POWER_COEFF } from "./constants";
+import { findCombatantData } from "./actions/actions";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -94,8 +95,8 @@ export const clearTurnHistory = (character: Combatant): Combatant => {
     };
 };
 
-export const hasEffectType = (target: Combatant, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
-    return getEnabledEffects({ combatant: target }).some(({ type }) =>
+export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
+    return getEnabledEffects({ combatantInfo: target }).some(({ type }) =>
         Array.isArray(effectType) ? effectType.includes(type) : type === effectType
     );
 };
@@ -119,29 +120,29 @@ export const canUseAbility = (character, ability: HandAbility | undefined): bool
 export const isValidTarget = ({
     ability,
     side,
-    playerSide,
-    enemySide,
+    getState,
     index,
-    actor,
+    actorId,
     actorIndex,
 }: {
     ability: Ability;
     side: BATTLEFIELD_SIDES;
-    playerSide: (Combatant | null)[];
-    enemySide: (Combatant | null)[];
+    getState;
     index: number;
-    actor: Combatant;
+    actorId: string;
     actorIndex: number;
 }): boolean => {
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
+    const actorData = findCombatantData(getState, actorId);
+    const { friendly: playerSide, hostile: enemySide } = actorData || {};
 
     if (minion) {
         return side === BATTLEFIELD_SIDES.PLAYER_SIDE && (!playerSide[index] || playerSide[index].HP === 0);
     }
 
     const { target } = actions[0] || {};
-    const area = calculateActionArea({ action: actions[0], actor }) || actions[0]?.area || 0;
+    const area = calculateActionArea({ action: actions[0], actor: actorData }) || actions[0]?.area || 0;
 
     if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
         if (target === TARGET_TYPES.SELF) {
@@ -149,11 +150,11 @@ export const isValidTarget = ({
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
-            const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): IndexedCombatant => {
+            const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
                 if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
-                    return { combatant: actor, index: actorIndex };
+                    return actorData;
                 } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                    return { combatant: playerSide[index], index };
+                    return findCombatantData(getState, playerSide[index]?.id);
                 }
             };
             const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
@@ -169,11 +170,11 @@ export const isValidTarget = ({
         if (isStealthed(targetedEnemy)) {
             return false;
         }
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): IndexedCombatant => {
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
             if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
-                return { combatant: actor, index: actorIndex };
+                return actorData;
             } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                return { combatant: targetedEnemy, index };
+                return findCombatantData(getState, targetedEnemy?.id);
             }
         };
         const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
@@ -208,10 +209,10 @@ export const getMultiplier = ({
     hand = [],
     discard = [],
 }: {
-    actor?: IndexedCombatant;
-    target?: IndexedCombatant;
-    allTargets?: IndexedCombatant[];
-    sourceTargets?: IndexedCombatant[];
+    actor?: CombatantInfo;
+    target?: CombatantInfo;
+    allTargets?: CombatantInfo[];
+    sourceTargets?: CombatantInfo[];
     actionParent?: Ability | Item;
     multiplier?: Multiplier;
     source?: TriggerSource;
@@ -228,7 +229,8 @@ export const getMultiplier = ({
             return target;
         }
     };
-    const { combatant } = getCalculationTarget(multiplier?.calculationTarget) || {};
+    const combatantInfo = getCalculationTarget(multiplier?.calculationTarget);
+    const { combatant } = combatantInfo || {};
 
     if (!multiplier) {
         return 1;
@@ -315,14 +317,15 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.DEBUFFS) {
         return (
-            getEnabledEffects({ combatant, getCalculationTarget }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF)
-                .length || 1
+            getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
+                (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF
+            ).length || 1
         );
     }
 
     if (type === MULTIPLIER_TYPES.BLEEDS) {
         return (
-            getEnabledEffects({ combatant, getCalculationTarget }).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED)
+            getEnabledEffects({ combatantInfo, getCalculationTarget }).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED)
                 .length || 1
         );
     }
@@ -340,24 +343,23 @@ export const getMultiplier = ({
  * Given a character, return its effects that have not been canceled due to silence or failing conditions.
  */
 export const getEnabledEffects = ({
-    combatant,
-    index,
+    combatantInfo,
     getCalculationTarget,
 }: {
-    combatant?: Combatant;
-    index?: number; // Combatant slot index. May not be provided if the case doesn't need to know where combatant is located
+    combatantInfo?: CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
-    ) => IndexedCombatant | IndexedCombatant[];
+    ) => CombatantInfo | CombatantInfo[];
 }): CombatEffect[] => {
+    const { combatant } = combatantInfo || {};
     if (!combatant?.effects) {
         return [];
     }
 
     const silenced = isSilenced(combatant);
     const getCalculationTargetFn = (calcTarget) => {
-        if (calcTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-            return { combatant, index };
+        if (!calcTarget || calcTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
+            return combatantInfo;
         }
 
         // getCalculationTarget allows finding combatants beyond the effect owner, and should be provided for scenarios where a check against an external party needs to be made,
@@ -410,8 +412,8 @@ export const calculateDamage = ({
     actionParent,
     multiplier = 1,
 }: {
-    actor?: IndexedCombatant;
-    target?: IndexedCombatant;
+    actor?: CombatantInfo;
+    target?: CombatantInfo;
     targetIndex?: number;
     selectedIndex?: number;
     action: Action;
@@ -420,10 +422,7 @@ export const calculateDamage = ({
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
-    if (
-        hasEffectType(target?.combatant, EFFECT_TYPES.IMMUNITY) ||
-        (isAttack && hasEffectType(target?.combatant, EFFECT_TYPES.ATTACK_IMMUNITY))
-    ) {
+    if (hasEffectType(target, EFFECT_TYPES.IMMUNITY) || (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY))) {
         return 0;
     }
 
@@ -447,7 +446,7 @@ export const calculateDamage = ({
         return baseDamage;
     }
 
-    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): IndexedCombatant => {
+    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
         if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
             return actor;
         }
@@ -506,20 +505,22 @@ export const calculateDamage = ({
     return Math.max(minimumDamage, total);
 };
 
-export const calculateArmor = ({ target, action }: { target?: IndexedCombatant; action: Action }): number => {
+export const calculateArmor = ({ target, action }: { target?: CombatantInfo; action: Action }): number => {
     if (!action.armor) {
         return 0;
     }
-    const targetArmorReceived = getEnabledEffects(target).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
+    const targetArmorReceived =
+        getEnabledEffects({ combatantInfo: target }).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
     const armor = targetArmorReceived + action.armor;
     return Math.max(0, armor);
 };
 
-export const calculateHealing = ({ target, action }: { target?: IndexedCombatant; action: Action }): number => {
+export const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: Action }): number => {
     if (!action.healing) {
         return 0;
     }
-    const healingReceived = getEnabledEffects(target).reduce((acc: number, { healingReceived = 0 }) => acc + healingReceived, 0) || 0;
+    const healingReceived =
+        getEnabledEffects({ combatantInfo: target }).reduce((acc: number, { healingReceived = 0 }) => acc + healingReceived, 0) || 0;
     const healing = healingReceived + action.healing;
     return Math.max(0, healing);
 };
@@ -569,7 +570,15 @@ export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?
     return newCard;
 };
 
-export const calculateActionArea = ({ action, actor, target }: { action?: Action; actor: Combatant; target?: Combatant }): number => {
+export const calculateActionArea = ({
+    action,
+    actor,
+    target,
+}: {
+    action?: Action;
+    actor: CombatantInfo;
+    target?: CombatantInfo;
+}): number => {
     if (!action) {
         return 0;
     }
@@ -577,17 +586,17 @@ export const calculateActionArea = ({ action, actor, target }: { action?: Action
     const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
     let totalArea = area;
     if (isAttack) {
-        getEnabledEffects({ combatant: actor }).forEach(({ attackAreaIncrease = 0 }) => {
+        getEnabledEffects({ combatantInfo: actor }).forEach(({ attackAreaIncrease = 0 }) => {
             totalArea += attackAreaIncrease;
         });
 
         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-                return { combatant: actor };
+                return actor;
             }
 
             if (target && calculationTarget === CONDITION_TARGETS.TARGET) {
-                return { combatant: target };
+                return target;
             }
         };
 
@@ -715,9 +724,9 @@ export const calculateBonus = ({
     discard,
 }: {
     action: Action; // The action to apply the bonus to
-    target?: IndexedCombatant;
-    allTargets: IndexedCombatant[];
-    actor: IndexedCombatant;
+    target?: CombatantInfo;
+    allTargets: CombatantInfo[];
+    actor?: CombatantInfo;
     isTargetSelected: boolean;
     actionParent?: Ability | Item;
     source?: TriggerSource;
@@ -730,7 +739,7 @@ export const calculateBonus = ({
     }
 
     const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
-    const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): IndexedCombatant => {
+    const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): CombatantInfo => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {
             return target;
         } else if (conditionTarget === CONDITION_TARGETS.ACTOR) {

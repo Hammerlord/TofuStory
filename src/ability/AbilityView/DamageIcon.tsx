@@ -4,10 +4,12 @@ import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/uti
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
 import { ACTION_TYPES, Action } from "../types";
+import { useAppSelector } from "../../hooks";
+import { findCombatantData } from "../../battle/actions/actions";
 
 export const getDamageStatistics = ({
     ability,
-    player,
+    playerInfo,
     deck,
     hand,
     discard,
@@ -36,7 +38,7 @@ export const getDamageStatistics = ({
     const withBonus = attackActions.map((action) => {
         return calculateBonus({
             action,
-            actor: { combatant: player },
+            actor: playerInfo,
             allTargets: [],
             isTargetSelected: false,
             actionParent: ability,
@@ -48,7 +50,7 @@ export const getDamageStatistics = ({
 
     const withAttackPower = withBonus.map((action: Action) => {
         const multiplier = getMultiplier({
-            actor: { combatant: player },
+            actor: playerInfo,
             multiplier: action.multiplier,
             deck,
             hand,
@@ -56,17 +58,17 @@ export const getDamageStatistics = ({
         });
 
         const damageProps = {
-            actor: { combatant: player },
+            actor: playerInfo,
             action,
             actionParent: ability,
             multiplier,
         };
         let secondaryDamage = action.secondaryDamage || 0;
-        if (player && secondaryDamage) {
+        if (playerInfo?.combatant && secondaryDamage) {
             secondaryDamage = calculateDamage({ ...damageProps, targetIndex: 1, selectedIndex: 2 });
         }
         return {
-            damage: player ? calculateDamage(damageProps) : action.damage || 0,
+            damage: playerInfo?.combatant ? calculateDamage(damageProps) : action.damage || 0,
             secondaryDamage,
         };
     });
@@ -101,9 +103,11 @@ const useStyles = createUseStyles({
  * The damage icon that displays on the top left of an ability card
  */
 const DamageIcon = ({ ability, player, deck, hand, discard }) => {
+    const state = useAppSelector((state) => state);
+
     const { baseDamage, hasMultiplier, isAdditive, hasBonus } = getDamageStatistics({
         ability,
-        player,
+        playerInfo: findCombatantData(() => state, player?.id),
         deck,
         hand,
         discard,

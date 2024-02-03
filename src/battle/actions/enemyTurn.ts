@@ -1,7 +1,8 @@
-import { passesConditions } from "./../passesConditions";
-import { compose, partition } from "ramda";
+import { partition } from "ramda";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import { Ability, Action, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
+import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import {
@@ -17,6 +18,7 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
+import { passesConditions } from "./../passesConditions";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import {
@@ -30,8 +32,6 @@ import {
 } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { ITEM_TYPES, Item } from "../../item/types";
-import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
@@ -43,25 +43,17 @@ const { updateBattle, updateBattleState } = battleStateSlice.actions;
  * 4) If the ability applies a buff that the actor already has, don't use it.
  * 5) If the ability only heals, do not use it at full health.
  */
-const canUseAbility = ({
-    actor,
-    ability,
-    hostile,
-    friendly,
-}: {
-    actor: Combatant;
-    ability: Ability;
-    hostile: (Combatant | null)[];
-    friendly: (Combatant | null)[];
-}): boolean => {
+const canUseAbility = ({ actorInfo, ability }: { actorInfo: CombatantInfo; ability: Ability }): boolean => {
     const resourceCost = ability.resourceCost || 0;
+    const { combatant: actor, friendly } = actorInfo;
+    // @ts-ignore -- There are no enemy abilities which cost 'x'
     if ((actor.resources || 0) < resourceCost) {
         return false;
     }
 
     const getCalculationTarget = (type: CONDITION_TARGETS) => {
         if (!type || type === CONDITION_TARGETS.ACTOR) {
-            return { combatant: actor, index: friendly.findIndex((c) => c?.id === actor.id) };
+            return actorInfo;
         }
     };
 
@@ -201,10 +193,11 @@ const CHANCE_TO_SUMMON_MULTIPLIER = 0.15;
  * Given an enemy or minion, pick an ability from its pool of abilities. (Not meant to be used for the player character who has cards etc.)
  * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
  */
-const pickAbility = ({ actor, hostile, friendly }: { actor: Combatant; hostile: Combatant[]; friendly: Combatant[] }): Ability => {
+const pickAbility = ({ actorInfo }: { actorInfo: CombatantInfo }): Ability => {
+    const { combatant: actor, friendly } = actorInfo;
     let [specialAbilities, regularAbilities] = partition(
         (a) => a.resourceCost > 0,
-        actor.abilities.filter((a) => canUseAbility({ actor, ability: a, hostile, friendly }))
+        actor.abilities.filter((a) => canUseAbility({ actorInfo, ability: a }))
     );
 
     const validPriorityAbilities = specialAbilities.concat(regularAbilities).filter((ability: Ability) => {
@@ -299,8 +292,7 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
 
-        const { combatant: actor, friendly, hostile } = actorData;
-        const ability = pickAbility({ actor, friendly, hostile }); // Needs to be upfront resource cost?
+        const ability = pickAbility({ actorInfo: actorData }); // Needs to be upfront resource cost?
         if (!ability) {
             return;
         }
@@ -318,6 +310,8 @@ const enemyUseAbility = (combatantId: string) => {
             selectedIndex: index,
             selectedSide: side,
         };
+
+        const { combatant: actor } = actorData;
 
         const resourceCost = (ability.resourceCost === "x" ? actor.resources : ability.resourceCost) || 0;
         dispatch(
@@ -358,11 +352,17 @@ export const startEnemyTurn = () => {
             })
         );
 
+        const getEnemySideInfo = () => {
+            return getState().battle.enemySide.map((combatant) => {
+                return findCombatantData(getState, combatant?.id);
+            });
+        };
+
         if (round > 0) {
-            dispatch(checkHalveArmor(getState().battle.enemySide));
+            dispatch(checkHalveArmor(getEnemySideInfo()));
         }
 
-        dispatch(checkTurnResourceGain(getState().battle.enemySide));
+        dispatch(checkTurnResourceGain(getEnemySideInfo()));
 
         enemySide.forEach((combatant: Combatant | null) => {
             if (!combatant) {

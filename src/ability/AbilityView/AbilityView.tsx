@@ -21,6 +21,8 @@ import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
 import { passesConditions } from "../../battle/passesConditions";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { useAppSelector } from "../../hooks";
+import { findCombatantData } from "../../battle/actions/actions";
 
 const useStyles = createUseStyles({
     root: {
@@ -159,6 +161,7 @@ interface AbilityViewProps {
 const AbilityView = forwardRef(
     ({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [], className }: AbilityViewProps, ref) => {
         const classes = useStyles();
+        const state = useAppSelector((state) => state);
         const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
@@ -175,9 +178,11 @@ const AbilityView = forwardRef(
             );
         }
 
+        const playerInfo = findCombatantData(() => state, player?.id);
+
         const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
             ability,
-            player,
+            playerInfo,
             deck,
             hand,
             discard,
@@ -185,13 +190,13 @@ const AbilityView = forwardRef(
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                return { combatant: player };
+                return playerInfo;
             }
         };
         const hasConditionFulfilled = actions.some(
             (action) => action.conditions && passesConditions({ getCalculationTarget, proc: action, source })
         );
-        const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, player });
+        const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, playerInfo });
         const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
         let hasMultiplier = false;
@@ -207,7 +212,13 @@ const AbilityView = forwardRef(
             .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
             .reduce((acc: any, action: Action) => {
                 const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
-                const multiplier = getMultiplier({ multiplier: action.multiplier, actor: { combatant: player }, deck, hand, discard });
+                const multiplier = getMultiplier({
+                    multiplier: action.multiplier,
+                    actor: playerInfo,
+                    deck,
+                    hand,
+                    discard,
+                });
                 if (multiplier > 1) {
                     hasMultiplier = true;
                 }
@@ -226,7 +237,7 @@ const AbilityView = forwardRef(
 
             if (armor > 0) {
                 armorCornerIcon = true;
-                return <ArmorIcon ability={ability} player={player} />;
+                return <ArmorIcon ability={ability} playerInfo={playerInfo} />;
             }
 
             if (healing > 0) {
@@ -311,12 +322,12 @@ const AbilityView = forwardRef(
                             {!overrideBodyText && <Buffs ability={ability} player={player} />}
                             <CardsToAdd ability={ability} />
                             {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
-                            <RadiateView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
+                            <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
                             {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                             {interpolatedDescription && <div>{interpolatedDescription}</div>}
                         </div>
                         <div className={classes.footer}>
-                            {<Area ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
+                            {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
                             <AbilityTypeView targetType={targetType} type={type} minion={minion} />
                             {minion && (
                                 <div className={classes.minionStats}>

@@ -1,7 +1,7 @@
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { Ability, Action, Bonus, CombatEffect, Condition, CONDITION_TARGETS, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { Combatant } from "../character/types";
-import { TriggerSource } from "./types";
+import { CombatantInfo, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 
 export const passesValueComparison = ({
@@ -34,19 +34,12 @@ export const passesValueComparison = ({
     }
 };
 
-export interface IndexedCombatant {
-    combatant?: Combatant;
-    index?: number;
-}
-
 export const passesConditions = ({
     getCalculationTarget, // If targets are an array, check that at least one satisfies conditions (OR).
     proc,
     source,
 }: {
-    getCalculationTarget: (
-        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-    ) => IndexedCombatant | IndexedCombatant[] | undefined;
+    getCalculationTarget: (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => CombatantInfo | CombatantInfo[] | undefined;
     proc: Ability | Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
@@ -69,6 +62,7 @@ export const passesConditions = ({
             resourceCost,
             HP,
             isOffense,
+            numFriendly,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -95,17 +89,17 @@ export const passesConditions = ({
             return true;
         }
 
-        const calcTargets: IndexedCombatant | IndexedCombatant[] = getCalculationTarget(calculationTarget);
+        const calcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(calculationTarget);
         if (!calcTargets) {
             return false;
         }
 
-        let effectOwner = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER);
+        let effectOwner: CombatantInfo | CombatantInfo[] = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER);
         if (Array.isArray(effectOwner)) {
             effectOwner = effectOwner[0];
         }
 
-        const checkPass = (calcTarget: IndexedCombatant) => {
+        const checkPass = (calcTarget: CombatantInfo) => {
             const { combatant, index } = calcTarget || {};
             if (!combatant) {
                 return false;
@@ -163,7 +157,7 @@ export const passesConditions = ({
             }
 
             if (proximity !== undefined) {
-                const effectOwnerIndex = (effectOwner as IndexedCombatant)?.index;
+                const effectOwnerIndex = (effectOwner as CombatantInfo)?.index;
                 if (effectOwnerIndex === undefined || index === undefined) {
                     return false;
                 }
@@ -229,6 +223,9 @@ export const passesConditions = ({
 
             if (isElite !== undefined && Boolean(combatant.isBoss || combatant.isElite) !== isElite) {
                 return false;
+            }
+
+            if (numFriendly !== undefined) {
             }
 
             return true;

@@ -7,6 +7,7 @@ import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { Combatant } from "./types";
 import { ATTACK_POWER_COEFF } from "../battle/constants";
+import { CombatantInfo } from "../battle/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -35,11 +36,17 @@ const useStyles = createUseStyles({
     },
 });
 
-const AttackPower = ({ combatant }: { combatant: Combatant }) => {
+const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
+    const { combatant } = combatantInfo || {};
+
+    if (!combatant?.HP) {
+        return null;
+    }
+
     const overrideDamage = combatant?.effects?.find(({ override }) => override?.damage)?.override?.damage;
-    const combatantDamage = overrideDamage || combatant.damage || 0;
-    const { damage, timesToAttack } = combatant.casting?.ability?.actions.reduce(
+    const combatantDamage = overrideDamage || combatant?.damage || 0;
+    const { damage, timesToAttack } = combatant?.casting?.ability?.actions.reduce(
         (acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
@@ -56,11 +63,7 @@ const AttackPower = ({ combatant }: { combatant: Combatant }) => {
         { damage: combatantDamage, timesToAttack: 0 }
     ) || { damage: combatantDamage, timesToAttack: 1 };
 
-    if (!combatant?.HP) {
-        return null;
-    }
-
-    const attackPowerEffects: Effect[] = getEnabledEffects({ combatant }).filter(({ attackPower = 0, excludeEffectOwner }) => {
+    const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
         return !excludeEffectOwner && attackPower !== 0;
     });
     const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower }) => {

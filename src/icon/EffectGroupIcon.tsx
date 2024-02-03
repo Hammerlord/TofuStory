@@ -9,6 +9,8 @@ import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
+import { useAppSelector } from "../hooks";
+import { findCombatantData } from "../battle/actions/actions";
 
 const useStyles = createUseStyles({
     root: {
@@ -84,6 +86,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     }
 
     const classes = useStyles();
+    const state = useAppSelector((state) => state);
 
     const {
         name,
@@ -113,8 +116,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
 
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-            // index: undefined - Technically the index can be provided here even if it's not expected to do much
-            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? { combatant: owner, index: undefined } : undefined,
+            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => state, owner?.id) : undefined,
         proc: effects[0],
     });
 

@@ -323,6 +323,8 @@ export interface Condition {
     /** Only applicable when comparing against an ability */
     resourceCost?: number;
     isOffense?: boolean;
+    /** Number of units on the board friendly to the calculationTarget, including itself */
+    numFriendly?: number;
 }
 
 export enum MULTIPLIER_TYPES {

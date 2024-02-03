@@ -12,8 +12,7 @@ import {
     hasEffectType,
 } from "../utils";
 import { enemyEffectNameMap } from "./../../enemy/effect";
-import { IndexedCombatant } from "./../passesConditions";
-import { TriggerSource } from "./../types";
+import { CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getRandomItem } from "../../utils";
 
@@ -53,7 +52,7 @@ export const getUpdatedStats = ({
     action: Action;
     actionParent?: Ability | Item;
     source?: TriggerSource;
-    getCombatantById: (id: string) => IndexedCombatant;
+    getCombatantById: (id: string) => CombatantInfo;
     deck: Ability[];
     hand: Ability[];
     discard: Ability[];
@@ -63,7 +62,7 @@ export const getUpdatedStats = ({
     const recipients = recipientIds?.map(getCombatantById);
     //const sourceTargets = (source.allTargetIds || []).map(getCalculationTarget); // TODO used to be used in calculating multipliers
 
-    return (recipients || targets).map((target: IndexedCombatant) => {
+    return (recipients || targets).map((target: CombatantInfo) => {
         const { combatant: targetCombatant, index: targetIndex } = target;
         const action = calculateBonus({
             action: initialAction,
@@ -88,7 +87,7 @@ export const getUpdatedStats = ({
             flatDamage = 0,
         } = action;
 
-        const enabledEffects = getEnabledEffects(target);
+        const enabledEffects = getEnabledEffects({ combatantInfo: target });
         const multiplier = getMultiplier({
             multiplier: action.multiplier,
             target,
@@ -118,7 +117,7 @@ export const getUpdatedStats = ({
         const healing = Math.min(maxHP - targetCombatant.HP, rawHealing);
         const overhealing = rawHealing - healing;
 
-        const targetIsImmune = hasEffectType(targetCombatant, EFFECT_TYPES.IMMUNITY);
+        const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;

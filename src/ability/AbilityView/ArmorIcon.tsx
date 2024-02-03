@@ -4,11 +4,12 @@ import { passesConditions } from "../../battle/passesConditions";
 import { getEnabledEffects } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
-import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
+import { Ability, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
+import { CombatantInfo } from "../../battle/types";
 
 export const getArmorStatistics = ({
     ability,
-    player,
+    playerInfo,
 }): { base: number; total: number; hasMultiplier: boolean; bonusFromEffects: number; bonusFromConditions } => {
     const { actions = [] } = ability;
     const armorActions = actions.filter((action) => action.armor > 0).map(({ armor }) => armor);
@@ -22,12 +23,12 @@ export const getArmorStatistics = ({
         };
     }
     const bonusFromEffects =
-        getEnabledEffects({ combatant: player }).reduce((acc, { armorReceived = 0 }) => {
+        getEnabledEffects({ combatantInfo: playerInfo }).reduce((acc, { armorReceived = 0 }) => {
             return acc + armorReceived;
         }, 0) || 0;
     const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
         if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-            return { combatant: player };
+            return playerInfo;
         }
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -64,11 +65,11 @@ const useStyles = createUseStyles({
 /**
  * The armor icon that displays on the top left of an ability card
  */
-const ArmorIcon = ({ ability, player }) => {
+const ArmorIcon = ({ ability, playerInfo }: { ability: Ability; playerInfo: CombatantInfo }) => {
     const { actions } = ability;
     const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions } = getArmorStatistics({
         ability,
-        player,
+        playerInfo,
     });
     const classes = useStyles();
 
@@ -76,7 +77,11 @@ const ArmorIcon = ({ ability, player }) => {
         return null;
     }
 
-    const hasUnfulfilledBonus = actions.find(({ bonus }) => bonus?.armor > 0) && !bonusFromConditions;
+    const hasUnfulfilledBonus =
+        actions.find(({ bonus = [] }) => {
+            const bonuses = Array.isArray(bonus) ? bonus : [bonus];
+            return bonuses.some((b) => b.armor > 0);
+        }) && !bonusFromConditions;
     const isAdditive = hasUnfulfilledBonus;
 
     return (

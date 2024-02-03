@@ -6,6 +6,7 @@ import {
     HomecomingVictoryGlovesRImage,
     MonkeyBananaImage,
     PoisonImage,
+    RespawnTokenImage,
     WorkGlovesImage,
     ZombieMushroomTicketImage,
 } from "../images";
@@ -14,8 +15,10 @@ import { hardy, poison, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    MULTIPLIER_TYPES,
     Minion,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -85,7 +88,7 @@ export const faust: Minion = {
         {
             name: "Puppet Link",
             icon: CursedDollImage,
-            description: "Receiving damage whenever a Ghostly Puppeteer is struck by an attack or killed.",
+            description: "Receiving damage when Ghostly Puppeteers are struck by an attack or killed.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             canBeSilenced: false,
@@ -95,7 +98,14 @@ export const faust: Minion = {
             },
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 50,
+                damage: 100,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        comparator: "eq",
+                        numFriendly: 0,
+                    },
+                ],
             },
         },
         {
@@ -116,13 +126,24 @@ export const faust: Minion = {
                 },
             ],
         },
+        {
+            ...stun,
+            duration: undefined,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    comparator: "eq",
+                    numFriendly: 1, // It is the only one alive
+                },
+            ],
+        },
     ],
 };
 
 export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
-    maxHP: 150,
+    maxHP: 100,
     effects: [
         {
             name: "Ghostly",
@@ -177,7 +198,50 @@ export const ghostlyPuppeteerL: Minion = {
         },
         {
             ...lifeLink,
-            disableDisplayIcon: true,
+            canBeSilenced: false,
+            type: EFFECT_TYPES.LIFE_LINK,
+            class: EFFECT_CLASSES.BUFF,
+            onDeath: {
+                usableWhileStunned: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        comparator: "eq",
+                        numFriendly: 1, // This is assuming Faust is the only one alive
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Reviving...",
+                        type: EFFECT_TYPES.LIFE_LINK,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: RespawnTokenImage,
+                        canBeSilenced: false,
+                        description: "When this effect ends, Ghostly Puppeteers will revive.",
+                        duration: 3,
+                        onEnd: {
+                            usableWhileStunned: true,
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            healing: 1,
+                            area: 5,
+                            multiplier: {
+                                type: MULTIPLIER_TYPES.MAX_HP,
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                value: 1,
+                            },
+                            resurrect: true,
+                            conditions: [
+                                {
+                                    name: "Ghostly Puppeteer",
+                                    comparator: "eq",
+                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

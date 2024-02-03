@@ -142,14 +142,14 @@ const useStyles = createUseStyles({
 /**
  * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
  */
-const Effects = ({ combatant, healing }) => {
+const Effects = ({ combatantInfo, healing }) => {
     const classes = useStyles();
 
-    if (!combatant) {
+    if (!combatantInfo?.combatant) {
         return null;
     }
 
-    const effects = getEnabledEffects({ combatant });
+    const effects = getEnabledEffects({ combatantInfo });
     const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
         return effects.some((effect) => effect.type === type);
     };
@@ -166,7 +166,7 @@ const Effects = ({ combatant, healing }) => {
         }
         return acc;
     }, 0);
-    const chill = combatant.effects.reduce((acc: number, effect: Effect) => {
+    const chill = combatantInfo?.combatant?.effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.CHILL) {
             return acc + effect.duration;
         }

@@ -25,7 +25,7 @@ import { Combatant } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
-import { IndexedCombatant, passesConditions } from "../passesConditions";
+import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
@@ -53,8 +53,8 @@ import getCardSelection from "../selectCardUtils";
 import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
-const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice.actions;
-const { updatePlayer } = playerStateSlice.actions;
+const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
+const { updatePlayer } = playerStateSlice?.actions || {};
 
 /**
  * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
@@ -62,8 +62,13 @@ const { updatePlayer } = playerStateSlice.actions;
  * @param combatantId - Combatant UUID
  * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
  */
-export const findCombatantData = (getState, combatantId: string): CombatantInfo | undefined => {
-    const { playerSide, enemySide } = getState().battle;
+export const findCombatantData = (getState: Function, combatantId: string): CombatantInfo | undefined => {
+    const battle = getState()?.battle;
+    if (!battle || !combatantId) {
+        return;
+    }
+
+    const { playerSide, enemySide } = battle;
     const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
     if (enemyIndex > -1) {
         return {
@@ -108,7 +113,7 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
-        const lifeOnKill = getEnabledEffects({ combatant: killedBy, index }).reduce(
+        const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce(
             (acc, { lifeOnHit: lifeOnKill = 0 }) => acc + lifeOnKill,
             0
         );
@@ -166,12 +171,13 @@ const checkHitEffects = ({
             return;
         }
 
-        const { combatant: actor, index } = findCombatantData(getState, actorId) || {};
+        const actorInfo = findCombatantData(getState, actorId);
+        const { combatant: actor, index } = actorInfo || {};
         if (!actor || actor?.HP <= 0) {
             return;
         }
 
-        const lifeOnHit = getEnabledEffects({ combatant: actor, index }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+        const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
 
         if (lifeOnHit) {
             const updated = getUpdatedStats({
@@ -207,7 +213,7 @@ const checkHitEffects = ({
 
         const totalThorns = affectedTargets.reduce((acc, id: string) => {
             const combatantData = findCombatantData(getState, id);
-            getEnabledEffects(combatantData).forEach(({ thorns = 0 }) => (acc += thorns));
+            getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0 }) => (acc += thorns));
             return acc;
         }, 0);
 
@@ -395,7 +401,8 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
 const handleDoTs =
     ({ combatantId, dotType, source }: { combatantId: string; dotType: EFFECT_TYPES; source?: TriggerSource }) =>
     (dispatch, getState) => {
-        const { combatant, index } = findCombatantData(getState, combatantId) || {};
+        const combatantInfo = findCombatantData(getState, combatantId);
+        const { combatant, index } = combatantInfo || {};
         if (!combatant?.HP) {
             return;
         }
@@ -406,7 +413,7 @@ const handleDoTs =
             [EFFECT_TYPES.BURN]: 3,
         };
 
-        const activeEffects = getEnabledEffects({ combatant });
+        const activeEffects = getEnabledEffects({ combatantInfo });
         const damage = activeEffects.reduce((acc, effect) => {
             if (effect.type === dotType) {
                 return acc + (dotDamageMap[effect.type] || 0);
@@ -584,17 +591,19 @@ const onEffectEventTrigger = ({
                 getState,
             });
 
-            const getCalculationTarget = (): IndexedCombatant => {
-                return { combatant: getState().battle[side]?.[index], index };
+            const target = getState().battle[side]?.[index];
+
+            const getCalculationTarget = (): CombatantInfo => {
+                return findCombatantData(getState, target?.id);
             };
 
-            const target = getState().battle[side]?.[index];
             const actor = findCombatantData(getState, ownerId)?.combatant;
             if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && !canTargetIfStealthed(actor, target)) {
                 return;
             }
 
             // Should this be part of autoSelectActionTarget to make it a bit smarter?
+
             if (passesConditions({ getCalculationTarget, proc: action, source })) {
                 abilityUsed = true;
 
@@ -949,6 +958,7 @@ const checkHandleMorph = ({
             targets,
             morph: action.morph,
             source: parentSource,
+            getState,
             summoner: findCombatantData(getState, actorId),
         };
 
@@ -1201,12 +1211,12 @@ const performAction = ({
     isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
-        const { combatant: actor } = findCombatantData(getState, actorId) || {};
-        if (!actor) {
+        const actorData: CombatantInfo | undefined = findCombatantData(getState, actorId);
+        if (!actorData) {
             return;
         }
         const targetCombatant = getState().battle[side][selectedIndex];
-        const area = calculateActionArea({ action, actor, target: targetCombatant });
+        const area = calculateActionArea({ action, actor: actorData, target: targetCombatant });
 
         const {
             vacuum,
@@ -1299,7 +1309,7 @@ const performAction = ({
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
         dispatch(checkCardActions(action, parentSource, isAutoCast));
-        dispatch(checkHandleAutoCast({ autoCastAbilities, actor, parentAbility: parent as any }));
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));
         dispatch(
             onAction({
                 action,
@@ -1745,11 +1755,12 @@ export const useAbility = ({
                 getState,
             });
 
-            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): IndexedCombatant => {
+            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): CombatantInfo => {
                 if (calculationTarget === CONDITION_TARGETS.ACTOR) {
                     return findCombatantData(getState, actorId);
                 }
-                return { combatant: getState().battle[side]?.[index], index };
+
+                return findCombatantData(getState, getState().battle[side]?.[index]?.id);
             };
 
             if (passesConditions({ getCalculationTarget, proc: action, source })) {

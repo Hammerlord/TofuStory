@@ -152,7 +152,7 @@ export const startPlayerTurn = () => {
 
         const { battle } = getState();
         const player: Combatant = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const drawCardsPerTurn = getEnabledEffects({ combatant: player }).reduce(
+        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState, player?.id) }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
             player.drawCardsPerTurn
         );
@@ -163,7 +163,8 @@ export const startPlayerTurn = () => {
             })
         );
 
-        dispatch(checkTurnResourceGain(getState().battle.playerSide));
+        const playerSideInfo = getState().battle.playerSide.map((combatant) => findCombatantData(getState, combatant?.id));
+        dispatch(checkTurnResourceGain(playerSideInfo));
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant) {

@@ -8,7 +8,7 @@ import { Combatant } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import Header from "../Menu/Header";
-import { updateCombatant, useItem } from "./actions/actions";
+import { findCombatantData, updateCombatant, useItem } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -166,6 +166,7 @@ const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards,
 
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
+    const state = useAppSelector((state) => state);
     const {
         deck,
         discard,
@@ -182,7 +183,7 @@ const BattlefieldContainer = () => {
         state: battleState,
         notification,
         backgroundImage,
-    }: BattleState = useAppSelector((state) => state.battle);
+    }: BattleState = state.battle;
     const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
     const allyRefs: React.RefObject<HTMLElement>[] = useMemo(
         () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
@@ -212,14 +213,17 @@ const BattlefieldContainer = () => {
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
-    const actor = selectedMinion || player;
-    const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actor?.id);
+    const actorId: string | undefined = (selectedMinion || player)?.id;
+    const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0) {
             return false;
         }
-        const damageFromEffects = getEnabledEffects({ combatant: ally }).reduce((acc: number, { attackPower = 0 }) => acc + attackPower, 0);
+        const damageFromEffects = getEnabledEffects({ combatantInfo: findCombatantData(() => state, ally.id) }).reduce(
+            (acc: number, { attackPower = 0 }) => acc + attackPower,
+            0
+        );
         const totalDamage = (ally.damage || 0) + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
@@ -529,8 +533,8 @@ const BattlefieldContainer = () => {
 
         return (
             selectedAbility &&
-            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, enemySide, playerSide, actor, actorIndex }) &&
-            isWithinAbilityArea({ ability: selectedAbility, actor, selectedIndex: hoveredIndex, targetIndex: i })
+            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, getState: () => state, actorId, actorIndex }) &&
+            isWithinAbilityArea({ ability: selectedAbility, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
         );
     };
 
@@ -544,9 +548,8 @@ const BattlefieldContainer = () => {
                 ability: selectedAbility,
                 side: combatantSide,
                 index: combatantIndex,
-                playerSide,
-                enemySide,
-                actor,
+                getState: () => state,
+                actorId,
                 actorIndex,
             })
         ) {
@@ -556,9 +559,8 @@ const BattlefieldContainer = () => {
                     ability: selectedAbility,
                     side: hoveredCombatant.side,
                     index: hoveredCombatant.index,
-                    playerSide,
-                    enemySide,
-                    actor,
+                    getState: () => state,
+                    actorId,
                     actorIndex,
                 })
             ) {
@@ -567,7 +569,7 @@ const BattlefieldContainer = () => {
 
             return isWithinAbilityArea({
                 ability: selectedAbility,
-                actor,
+                actor: actorId,
                 selectedIndex: hoveredCombatant?.index,
                 targetIndex: combatantIndex,
             });

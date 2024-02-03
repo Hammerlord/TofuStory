@@ -1,4 +1,6 @@
+import { findCombatantData } from "../../battle/actions/actions";
 import { getMultiplier } from "../../battle/utils";
+import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { AlchemistStoneImage, NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, HourglassIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
@@ -18,6 +20,7 @@ const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Elemen
 
 // This is incomplete
 const BonusView = ({ ability, player, deck, hand, discard }) => {
+    const state = useAppSelector((state) => state);
     const bonuses = ability?.actions?.reduce((acc: Bonus[], action: Action) => {
         const bonus = action.bonus;
         if (!bonus) {
@@ -101,7 +104,7 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
             }
         );
         const hasEffect = conditions?.find(({ hasEffect }) => hasEffect)?.hasEffect;
-        const bonusMultiplier = getMultiplier({ actor: { combatant: player, index: undefined }, multiplier, deck, hand, discard });
+        const bonusMultiplier = getMultiplier({ actor: findCombatantData(() => state, player?.id), multiplier, deck, hand, discard });
         const totalDamage = damage * bonusMultiplier;
         const totalHealing = healing * bonusMultiplier;
         const totalArmor = armor * bonusMultiplier;

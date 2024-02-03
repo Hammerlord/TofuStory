@@ -17,6 +17,7 @@ import { shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
+import { findCombatantData } from "./actions";
 
 const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; index: number }): CombatEffect => {
     return {
@@ -129,10 +130,12 @@ export const getMorphMap = ({
     targets,
     morph,
     source,
+    getState,
     summoner,
 }: {
     targets: CombatantInfo[];
     morph: Morph;
+    getState: Function;
     source: TriggerSource;
     summoner: CombatantInfo;
 }) => {
@@ -150,7 +153,7 @@ export const getMorphMap = ({
         }
 
         const minion = minions.find((minionConfig) => {
-            const getCalculationTarget = () => ({ combatant, index: i }); // Current combatant will always be the target
+            const getCalculationTarget = () => findCombatantData(getState, combatant?.id); // Current combatant will always be the target
             return passesConditions({ getCalculationTarget, proc: minionConfig, source });
         })?.minion;
 

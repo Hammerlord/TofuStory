@@ -20,6 +20,8 @@ import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 import { Combatant } from "./types";
 import Weapon from "./Weapon";
+import { useAppSelector } from "../hooks";
+import { findCombatantData } from "../battle/actions/actions";
 
 const useStyles = createUseStyles({
     root: {
@@ -329,6 +331,7 @@ const CombatantView = forwardRef(
         },
         ref
     ) => {
+        const state = useAppSelector((state) => state);
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
@@ -336,6 +339,7 @@ const CombatantView = forwardRef(
         const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles();
         const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+        const combatantInfo = findCombatantData(() => state, oldState?.id);
 
         useEffect(() => {
             const isCombatantChanged = oldState?.id !== combatant?.id;
@@ -470,7 +474,9 @@ const CombatantView = forwardRef(
                                             wielder={oldState}
                                         />
                                     </div>
-                                    {(oldState.HP > 0 || isLifeLinked) && <Effects combatant={oldState} healing={statChanges?.healing} />}
+                                    {(oldState.HP > 0 || isLifeLinked) && (
+                                        <Effects combatantInfo={combatantInfo} healing={statChanges?.healing} />
+                                    )}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
@@ -481,11 +487,11 @@ const CombatantView = forwardRef(
                             <>
                                 <div className={classes.leftContainer}>
                                     <Armor amount={oldState.armor} />
-                                    <Health combatant={oldState} />
+                                    <Health combatantInfo={combatantInfo} />
                                 </div>
 
                                 <div className={classes.rightContainer}>
-                                    <AttackPower combatant={oldState} />
+                                    <AttackPower combatantInfo={combatantInfo} />
                                     {combatant?.isPlayer && <PlayerResources player={combatant} />}
                                 </div>
                                 {animation === ANIMATION_TYPES.SNOOZE && (
