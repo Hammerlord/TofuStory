@@ -200,7 +200,7 @@ export const amethyst: Item = {
 
 export const redWhip: Item = {
     name: "Red Whip",
-    description: "Draw an extra card every 3 turns.",
+    description: "Every 3 turns, draw an extra card.",
     type: ITEM_TYPES.EQUIPMENT,
     image: RedWhipImage,
     effects: [
@@ -217,7 +217,7 @@ export const redWhip: Item = {
 
 export const topaz: Item = {
     name: "Topaz",
-    description: "Gain thorns after every 5 effect abilities you use.",
+    description: "Every 5 effect abilities you use, gain Thorns.",
     type: ITEM_TYPES.EQUIPMENT,
     image: TopazImage,
     effects: [
@@ -557,7 +557,7 @@ export const incense: Item = {
 export const garnet: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "When your resources are at least 80% full, gain +3 attack power.",
+    description: "+3 attack power while your resources are at least 80% full.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -1041,7 +1041,7 @@ export const chargingStone: Item = {
 export const snailStompers: Item = {
     name: "Snail Stompers",
     image: SnowshoesImage,
-    description: "Gain 3 attack power against enemies with 10 or less HP.",
+    description: "+3 attack power against enemies with 10 or less HP.",
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
         {
@@ -1210,11 +1210,11 @@ export const ancientTreeSap: Item = {
     name: "Ancient Tree Sap",
     image: AncientTreeSapImage,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "Gain 1 extra resource every 3 turns.",
+    description: "Every 3 turns, gain 1 extra resource.",
     effects: [
         {
             name: "Ancient Tree Sap",
-            description: "Gain 1 extra resource every 3 turns.",
+            description: "Gaining 1 extra resource every 3 turns.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 3,
@@ -1254,7 +1254,7 @@ export const steely: Item = {
     name: "Steely",
     image: SteelyImage,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "When your deck cycles, fling a knife that deals 1 damage and applys Bleed to all targets.",
+    description: "When your deck cycles, fling knives that deal 1 damage and apply Bleed to all targets.",
     effects: [
         {
             name: "Steely",
