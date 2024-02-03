@@ -279,8 +279,8 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         }
 
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
-            const { HP, id } = combatant || {};
-            if (HP > 0 && id !== combatantId) {
+            const { id } = combatant || {};
+            if (id !== combatantId) {
                 dispatch(checkEventTrigger({ combatantId: id, effectEventKey, source: triggerSource }));
             }
         };
@@ -475,6 +475,7 @@ const onEffectEventTrigger = ({
             conditions,
             randomOptions = {},
             usableWhileStunned,
+            usableWhileDead,
             autoCastAbilities,
             chance = 1,
             ...other
@@ -645,8 +646,7 @@ export const checkEventTrigger = ({
         }
 
         const { combatant } = findCombatantData(getState, combatantId) || {};
-        // Dead characters generally cannot trigger effects except in case of killing blows
-        if (!combatant || (effectEventKey !== EFFECT_EVENT_KEYS.onDeath && combatant.HP <= 0)) {
+        if (!combatant) {
             return;
         }
 
@@ -657,7 +657,9 @@ export const checkEventTrigger = ({
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
-            if (effectEvent && !alreadyTriggered && isTurnToTrigger && notTriggeringSameEffect) {
+            // Dead characters generally cannot trigger effects except in case of killing blows
+            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP >= 0 || effectEvent?.usableWhileDead;
+            if (effectEvent && !alreadyTriggered && isTurnToTrigger && notTriggeringSameEffect && usable) {
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent,
@@ -1226,6 +1228,7 @@ const performAction = ({
             secondaryAction,
             autoCastAbilities,
             retreat,
+            resurrect,
         } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
@@ -1238,7 +1241,8 @@ const performAction = ({
         ).slice(0, extraTargets);
 
         const isAffected = (combatant: Combatant | null, i: number): boolean => {
-            const inArea = combatant?.HP > 0 && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+            const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect);
+            const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
             if (excludePrimaryTarget) {
                 return inArea && i !== selectedIndex;
             }

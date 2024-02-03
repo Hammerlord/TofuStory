@@ -18,6 +18,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    EffectEventTrigger,
     MULTIPLIER_TYPES,
     Minion,
     TARGET_TYPES,
@@ -103,7 +104,13 @@ export const faust: Minion = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         comparator: "eq",
-                        numFriendly: 0,
+                        numFriendly: 1, // This is assuming Faust is the only one alive
+                    },
+                ],
+                effects: [
+                    {
+                        ...stun,
+                        duration: 3,
                     },
                 ],
             },
@@ -126,16 +133,49 @@ export const faust: Minion = {
                 },
             ],
         },
+    ],
+};
+
+const puppeteerRevive: EffectEventTrigger = {
+    usableWhileStunned: true,
+    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+    conditions: [
         {
-            ...stun,
-            duration: undefined,
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    comparator: "eq",
-                    numFriendly: 1, // It is the only one alive
+            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            comparator: "eq",
+            numFriendly: 1, // This is assuming Faust is the only one alive
+        },
+    ],
+    effects: [
+        {
+            name: "Reviving...",
+            type: EFFECT_TYPES.LIFE_LINK,
+            class: EFFECT_CLASSES.BUFF,
+            icon: RespawnTokenImage,
+            canBeSilenced: false,
+            description: "When this effect ends, Ghostly Puppeteers will revive.",
+            duration: 3,
+            onEnd: {
+                usableWhileStunned: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                ability: {
+                    name: "Revive",
+                    image: RespawnTokenImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.FRIENDLY,
+                            healing: 1,
+                            multiplier: {
+                                type: MULTIPLIER_TYPES.MAX_HP,
+                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                value: 1,
+                            },
+                            resurrect: true,
+                        },
+                    ],
                 },
-            ],
+            },
         },
     ],
 };
@@ -198,49 +238,16 @@ export const ghostlyPuppeteerL: Minion = {
         },
         {
             ...lifeLink,
+            disableDisplayIcon: true,
             canBeSilenced: false,
             type: EFFECT_TYPES.LIFE_LINK,
             class: EFFECT_CLASSES.BUFF,
             onDeath: {
-                usableWhileStunned: true,
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        comparator: "eq",
-                        numFriendly: 1, // This is assuming Faust is the only one alive
-                    },
-                ],
-                effects: [
-                    {
-                        name: "Reviving...",
-                        type: EFFECT_TYPES.LIFE_LINK,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: RespawnTokenImage,
-                        canBeSilenced: false,
-                        description: "When this effect ends, Ghostly Puppeteers will revive.",
-                        duration: 3,
-                        onEnd: {
-                            usableWhileStunned: true,
-                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                            healing: 1,
-                            area: 5,
-                            multiplier: {
-                                type: MULTIPLIER_TYPES.MAX_HP,
-                                calculationTarget: CONDITION_TARGETS.ACTOR,
-                                value: 1,
-                            },
-                            resurrect: true,
-                            conditions: [
-                                {
-                                    name: "Ghostly Puppeteer",
-                                    comparator: "eq",
-                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                },
-                            ],
-                        },
-                    },
-                ],
+                ...puppeteerRevive,
+            },
+            onFriendlyDeath: {
+                ...puppeteerRevive,
+                usableWhileDead: true,
             },
         },
     ],

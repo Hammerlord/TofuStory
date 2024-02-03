@@ -78,6 +78,7 @@ export interface EffectEventTrigger {
     };
 
     usableWhileStunned?: boolean;
+    usableWhileDead?: boolean;
     // If you are providing an ability to be applied to a target, you probably don't want to do any of the other properties.
     // (Ability actions already have their own targeting and effects and whatnot)
     // If a string is supplied, it is a reference

@@ -100,7 +100,7 @@ export const passesConditions = ({
         }
 
         const checkPass = (calcTarget: CombatantInfo) => {
-            const { combatant, index } = calcTarget || {};
+            const { combatant, index, friendly } = calcTarget || {};
             if (!combatant) {
                 return false;
             }
@@ -226,6 +226,17 @@ export const passesConditions = ({
             }
 
             if (numFriendly !== undefined) {
+                const calculatedNumFriendly = friendly.filter((combatant) => combatant?.HP > 0).length;
+
+                if (
+                    !passesValueComparison({
+                        val: calculatedNumFriendly,
+                        otherVal: numFriendly,
+                        comparator,
+                    })
+                ) {
+                    return false;
+                }
             }
 
             return true;
