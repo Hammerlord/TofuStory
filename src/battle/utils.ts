@@ -346,7 +346,7 @@ export const getEnabledEffects = ({
     combatantInfo,
     getCalculationTarget,
 }: {
-    combatantInfo?: CombatantInfo;
+    combatantInfo: CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[];
@@ -460,7 +460,7 @@ export const calculateDamage = ({
     let totalSkillBonus = 0;
     let minimumDamage = 0;
     if (isAttack) {
-        getEnabledEffects({ ...actor, getCalculationTarget }).forEach(
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget }).forEach(
             ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage }) => {
                 if (excludeEffectOwner) {
                     return;
@@ -476,7 +476,7 @@ export const calculateDamage = ({
     }
 
     const applyAbilityDamageReceived = (damage: number): number => {
-        const { multiplier, additionalDamageReceived } = getEnabledEffects({ ...target, getCalculationTarget }).reduce(
+        const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget }).reduce(
             (acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
                 acc.additionalDamageReceived += isAttack ? attackDamageReceived : 0;
 
