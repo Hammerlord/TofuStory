@@ -151,8 +151,6 @@ const FollowFairies = ({ onComplete }) => {
         }
     };
 
-    console.log(order);
-
     return (
         <div>
             <h2>Follow the Fairies</h2>

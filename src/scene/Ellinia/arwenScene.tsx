@@ -111,6 +111,10 @@ const faustFight = {
 
 const glassShoeDialog = [
     {
+        loseItems: [glassShoe.name],
+        dialog: ["[You return the glass shoe to Arwen.]"],
+    },
+    {
         speaker: arwen,
         dialog: [
             "Arwen is most grateful! The glass shoe one has returned is very precious to Arwen.",

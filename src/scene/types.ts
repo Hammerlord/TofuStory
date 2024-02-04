@@ -54,6 +54,7 @@ export interface ScriptNode {
         numChoices: number;
     };
     region?: REGIONS;
+    loseItems?: string[];
 }
 
 export interface NPC {

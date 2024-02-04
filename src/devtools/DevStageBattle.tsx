@@ -11,7 +11,7 @@ import { StarfallMagicSquareImage } from "../images";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../enemy/faust";
 import { JOB_CARD_MAP } from "../ability";
 
-const { updatePlayer, updateDeck } = playerStateSlice.actions;
+const { updatePlayer, updateDeck } = playerStateSlice?.actions || {};
 const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];
 const other = [ghostlyPuppeteerL, null, faust, null, ghostlyPuppeteerR];
 

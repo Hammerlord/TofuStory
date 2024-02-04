@@ -2,15 +2,15 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import Camp from "../Map/Camp";
+import { REGIONS } from "../Map/regions";
+import CardRemovalGrid from "../Menu/CardRemovalGrid";
+import { PLAYER_CLASSES } from "../Menu/types";
 import { Ability, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
-import Camp from "../Map/Camp";
-import { REGIONS } from "../Map/regions";
-import { PLAYER_CLASSES } from "../Menu/types";
 import Button from "../view/Button";
 import { Scene, ScriptNode, ScriptResponse } from "./types";
-import CardRemovalGrid from "../Menu/CardRemovalGrid";
 
 const useStyles = createUseStyles({
     root: {
@@ -205,7 +205,7 @@ const ScenePlayer = ({
     const [showCamp, setShowCamp] = useState(false);
     const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const { speaker, dialog = [], items, responses, puzzle, itemChoices } = script[dialogIndex] || {};
+    const { speaker, dialog = [], items, responses, puzzle, itemChoices, loseItems = [] } = script[dialogIndex] || ({} as any);
 
     useEffect(() => {
         if (!script[dialogIndex]) {
@@ -229,6 +229,13 @@ const ScenePlayer = ({
         } else {
             setPuzzle(() => puzzle);
             background && setBackground(background);
+        }
+
+        if (loseItems.length) {
+            console.log(loseItems);
+            updatePlayer({
+                items: player.items.filter((item) => !loseItems.includes(item.name)),
+            });
         }
     }, [dialogIndex]);
 
