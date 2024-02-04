@@ -9,6 +9,7 @@ const gachaponMachine: Minion = {
     name: "Gachapon Machine",
     image: GachaponImage,
     maxHP: 3,
+    abilities: [],
 };
 
 const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves: Wave[] } = {

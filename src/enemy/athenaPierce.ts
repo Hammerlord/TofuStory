@@ -14,14 +14,15 @@ import {
     WolfImage,
 } from "../images";
 import { TornadoIcon } from "../images/icons";
+import { attack } from "./abilities";
 
 export const guardWolf: Minion = {
     name: "Wolf",
     isBoss: true,
     maxHP: 125,
-    damage: 1,
     image: WolfImage,
     abilities: [
+        attack,
         {
             name: "Howl",
             description: "Grants 10 armor to allies.",
@@ -68,28 +69,27 @@ export const athena: Minion = {
     name: "Athena Pierce",
     isBoss: true,
     maxHP: 200,
-    damage: 2,
     image: AthenaAttackStanceImage,
     resources: 0,
-    attack: {
-        name: "Shoot",
-        image: AvengersArrowImage,
-        resourceCost: 0,
-        actions: [
-            {
-                type: ACTION_TYPES.RANGE_ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                animation: ANIMATION_TYPES.ONE_WAY,
-                icon: AvengersArrowImage,
-                playbackTime: 400,
-                damage: 2,
-                animationOptions: {
-                    rotate: -45,
-                },
-            },
-        ],
-    },
     abilities: [
+        {
+            name: "Shoot",
+            image: AvengersArrowImage,
+            resourceCost: 0,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: AvengersArrowImage,
+                    playbackTime: 400,
+                    damage: 2,
+                    animationOptions: {
+                        rotate: -45,
+                    },
+                },
+            ],
+        },
         {
             name: "Covering Fire",
             image: CoveringFireImage,
@@ -251,9 +251,9 @@ export const guardHawk: Minion = {
     name: "Hawk",
     isBoss: true,
     maxHP: 100,
-    damage: 1,
     image: SoaringHawkImage,
     abilities: [
+        attack,
         {
             name: "Cyclone",
             description: "Blasts targets with a cyclone that deals 1 damage and applies a Wound for 2 turns.",

@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 /**
  * @file Objects related to the Mini Bean fight
  */
@@ -230,10 +231,19 @@ export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: MiniBeanImage,
     maxHP: 250,
-    damage: 3,
     resources: 0,
     isBoss: true,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
         suckIn,
         picoDrop,
         throwFood,

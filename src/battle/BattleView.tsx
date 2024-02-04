@@ -210,7 +210,7 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = selectedMinion?.attack || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const selectedAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actorId: string | undefined = (selectedMinion || player)?.id;
     const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
 

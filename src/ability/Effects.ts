@@ -265,6 +265,7 @@ export const volcano: Minion = {
     name: "Volcano",
     maxHP: 6,
     image: VolcanoIcon,
+    abilities: [],
     effects: [
         {
             type: EFFECT_TYPES.NONE,

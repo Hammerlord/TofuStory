@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { agedShell, toughShell, weightedShell } from "./effect";
 import {
     ACTION_TYPES,
@@ -14,10 +15,19 @@ import { GreenFairiesImage, MossyMushroomImage, MossySnailImage, MushroomOmokIma
 export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
     maxHP: 200,
-    damage: 2,
     isBoss: true,
     image: MossyMushroomImage,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         {
             name: "Whomp",
             image: MushroomOmokImage,
@@ -77,10 +87,10 @@ export const mossySnail: Minion = {
     name: "Mossy Snail",
     maxHP: 100,
     armor: 100,
-    damage: 1,
     image: MossySnailImage,
     isBoss: true,
     abilities: [
+        attack,
         {
             name: "Rollout",
             castTime: 1,

@@ -414,7 +414,7 @@ export const warBanner2: Ability = {
         name: "War Banner",
         image: FlagImage,
         maxHP: 5,
-        damage: 0,
+        abilities: [],
         effects: [
             {
                 ...stealth,
@@ -473,7 +473,7 @@ export const warBanner: Ability = {
         name: "War Banner",
         image: FlagImage,
         maxHP: 5,
-        damage: 0,
+        abilities: [],
         effects: [
             {
                 ...stealth,

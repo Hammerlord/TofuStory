@@ -257,6 +257,15 @@ const AbilityView = forwardRef(
         })();
 
         const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions || hasConditionFulfilled;
+        let attackDamage = 0;
+        for (const ability of minion?.abilities || []) {
+            for (const action of ability.actions) {
+                if (action.damage) {
+                    attackDamage = action.damage;
+                    break;
+                }
+            }
+        }
 
         return (
             <AbilityTooltip ability={ability} deck={deck} hand={hand} discard={discard}>
@@ -332,7 +341,7 @@ const AbilityView = forwardRef(
                             {minion && (
                                 <div className={classes.minionStats}>
                                     <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
-                                    <Icon icon={<CrossedSwordsIcon />} text={minion.damage} className={classes.minionDamage} />
+                                    <Icon icon={<CrossedSwordsIcon />} text={attackDamage} className={classes.minionDamage} />
                                 </div>
                             )}
                         </div>

@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { Action, ANIMATION_TYPES, MORPH_TYPES } from "./../ability/types";
 import { hardy, stun } from "../ability/Effects";
 import {
@@ -18,10 +19,19 @@ export const strangePig: Minion = {
     name: "Strange Pig",
     image: StrangePigImage,
     isBoss: true,
-    damage: 2,
     HP: 30,
     maxHP: 50,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         {
             name: "Headlong Rush",
             image: OmokPigImage,
@@ -80,6 +90,7 @@ const stalagmite: Minion = {
     name: "Stalagmite",
     maxHP: 15,
     image: MountainIcon,
+    abilities: [],
     effects: [
         {
             name: "Heavy",
@@ -150,9 +161,18 @@ export const mutantRibbonPig: Minion = {
     name: "Mutant Ribbon Pig",
     image: MutantRibbonPigImage,
     isBoss: true,
-    damage: 5,
     maxHP: 250,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
         {
             name: "Reckless Charge",
             image: OmokPigImage,

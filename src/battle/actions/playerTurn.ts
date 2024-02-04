@@ -3,7 +3,7 @@ import { Combatant } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
-import { clearTurnHistory, getBasicAttack, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
+import { clearTurnHistory, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
 import {
     checkEventTrigger,
     drawCards,
@@ -105,7 +105,7 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
             useAbility({
                 selectedIndex,
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
-                ability: getBasicAttack(findCombatantData(getState, actorId)?.combatant),
+                ability: findCombatantData(getState, actorId)?.combatant?.abilities[0],
                 actorId,
             })
         );

@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
 import { CrossedSwordsIcon, MountainIcon } from "../images/icons";
 import { hardy, raging, stun } from "./../ability/Effects";
@@ -74,7 +75,6 @@ export const kingSlimeEnemy: Minion = {
     image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
-    damage: 3,
     armor: 25,
     effects: [
         {
@@ -150,6 +150,16 @@ export const kingSlimeEnemy: Minion = {
     ],
     abilities: [
         {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
             name: "Earthquake",
             resourceCost: 3,
             image: MountainIcon,
@@ -157,7 +167,7 @@ export const kingSlimeEnemy: Minion = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                     secondaryDamage: 3,
                     area: 2,
                     animation: ANIMATION_TYPES.STOMP,

@@ -1,6 +1,19 @@
 import { HasteImage } from "../images";
-import { ZzzIcon } from "../images/icons";
+import { CrossedSwordsIcon, ZzzIcon } from "../images/icons";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+
+export const attack: Ability = {
+    name: "Attack",
+    image: CrossedSwordsIcon,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 1,
+        },
+    ],
+};
+
 export const loaf: Ability = {
     name: "Loaf",
     image: ZzzIcon,

@@ -33,8 +33,8 @@ export const evilEye: Ability = {
     minion: {
         name: "Evil Eye",
         image: EvilEyeMinionImage,
-        damage: 0,
         maxHP: 1,
+        abilities: [],
         effects: [
             stealth,
             {

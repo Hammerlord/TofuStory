@@ -657,26 +657,22 @@ export const applyMovement = ({ characters, index, movement }: { characters: (Co
     return newCharacters;
 };
 
-export const getBasicAttack = (actor: Combatant): Ability => {
-    if (actor.attack) {
-        return actor.attack;
-    }
-    return {
-        name: "Attack",
-        image: CrossedSwordsIcon,
-        actions: [
-            {
-                damage: actor.damage || 0,
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-            },
-        ],
-    };
-};
-
 export const getInducedAttack = (actor: Combatant): Action => {
+    let basicAttackDamage = 0;
+
+    for (const ability of actor.abilities) {
+        if (!ability.resourceCost) {
+            for (const action of ability.actions) {
+                if (action.damage) {
+                    basicAttackDamage = action.damage;
+                    break;
+                }
+            }
+        }
+    }
+
     return {
-        damage: actor.damage || 0,
+        damage: basicAttackDamage,
         target: TARGET_TYPES.HOSTILE,
         type: ACTION_TYPES.ATTACK,
         playbackTime: 400,

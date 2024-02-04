@@ -1,3 +1,4 @@
+import { attack } from "../../enemy/abilities";
 import {
     BrandishImage,
     BurningSoulBladeImage,
@@ -263,7 +264,18 @@ export const burningSoulBlade: Ability = {
         name: "Burning Soul Blade",
         image: BurningSoulBladeMinionImage,
         maxHP: 1,
-        damage: 2,
+        abilities: [
+            {
+                ...attack,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 2,
+                    },
+                ],
+            },
+        ],
         effects: [
             {
                 name: "Burning Soul Blade",

@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { snail, blueSnail, redSnail } from "./enemy";
 import {
     BlueSnailShellImage,
@@ -118,7 +119,6 @@ export const mutantSnailEnemy: Minion = {
     isBoss: true,
     maxHP: 75,
     armor: 75,
-    damage: 3,
     mesos: 100,
     effects: [
         {
@@ -139,6 +139,16 @@ export const mutantSnailEnemy: Minion = {
         },
     ],
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
         {
             name: "Call Snail",
             image: SnailImage,
@@ -262,9 +272,18 @@ export const manoEnemy: Minion = {
     isBoss: true,
     maxHP: 50,
     armor: 100,
-    damage: 3,
     mesos: 100,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
         {
             name: "Call Snail",
             image: SnailImage,

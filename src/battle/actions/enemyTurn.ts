@@ -7,7 +7,6 @@ import { getRandomInt, getRandomItem, shuffle } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
-    getBasicAttack,
     getHealableIndices,
     getMaxHP,
     getPossibleMoveIndices,
@@ -217,10 +216,6 @@ const pickAbility = ({ actorInfo }: { actorInfo: CombatantInfo }): Ability => {
             validMaxResourceAbilities = validMaxResourceAbilities.filter(({ name }) => name !== lastMaxSpecialAbilityUsed?.name);
         }
         return getRandomItem(validMaxResourceAbilities.length ? validMaxResourceAbilities : specialAbilities);
-    }
-
-    if (actor.damage > 0) {
-        regularAbilities.push(getBasicAttack(actor));
     }
 
     if (Math.random() <= CHANCE_TO_SKIP_REPEAT_ABILITY) {

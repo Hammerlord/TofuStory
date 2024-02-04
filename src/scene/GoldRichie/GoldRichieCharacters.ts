@@ -58,7 +58,6 @@ export const goldRichie: Minion = {
     name: "Gold Richie",
     image: GoldRichieImage,
     maxHP: 15,
-    damage: 0,
     mesos: 100,
     abilities: [
         {
@@ -80,7 +79,6 @@ export const goldRichie2: Minion = {
     image: GoldRichieImage,
     maxHP: 15,
     armor: 15,
-    damage: 0,
     mesos: 100,
     abilities: [
         {

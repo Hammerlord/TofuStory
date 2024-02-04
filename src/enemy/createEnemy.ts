@@ -1,11 +1,8 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Ability, Effect } from "../ability/types";
-import { getBasicAttack } from "../battle/utils";
-import { Combatant } from "../character/types";
 import { aggregateItemEffects } from "../Menu/utils";
-import { getRandomItem, shuffle } from "./../utils";
-import { bigBeefy, smalltofu, thefaketofu, theraretofu, theRegalTofu } from "./tofu";
+import { Ability, Effect } from "../ability/types";
+import { Combatant } from "../character/types";
 
 export const createCombatant = (combatant): Combatant => {
     if (!combatant) {
@@ -35,35 +32,7 @@ export const createCombatant = (combatant): Combatant => {
             })) || [],
         turnHistory: [],
         abilityHistory: [],
-        attack: getBasicAttack(combatant),
     };
-};
-
-export const createEnemies = (): Combatant[] => {
-    // Test function
-    const numEnemies = getRandomItem([2, 3, 3, 4, 4, 5]);
-    const enemies = [];
-    for (let i = 0; i < numEnemies; ++i) {
-        const enemy = getRandomItem([
-            smalltofu,
-            smalltofu,
-            smalltofu,
-            thefaketofu,
-            thefaketofu,
-            theRegalTofu,
-            theRegalTofu,
-            bigBeefy,
-            theraretofu,
-        ]);
-
-        enemies.push(createCombatant(enemy));
-    }
-
-    for (let i = numEnemies; i < 5; ++i) {
-        enemies.push(null);
-    }
-
-    return shuffle(enemies);
 };
 
 export default createCombatant;

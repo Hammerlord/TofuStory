@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { burn, hardy } from "./../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "./../battle/types";
 import { stun } from "../ability/Effects";
@@ -19,6 +20,7 @@ import {
     BlueSnailShellImage,
     BoarIconImage,
     BrandishImage,
+    BrickImage,
     DancesWithBalrogImage,
     FireMarbleImage,
     GiganticSledgeImage,
@@ -271,8 +273,18 @@ export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
     maxHP: 300,
-    damage: 3,
     abilities: [
+        {
+            name: "Bash",
+            image: BrickImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
         {
             name: "Slash Blast",
             resourceCost: 1,

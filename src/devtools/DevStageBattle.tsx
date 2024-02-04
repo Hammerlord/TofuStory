@@ -22,7 +22,7 @@ export const deathLaser: Ability = {
     resourceCost: 0,
     actions: [
         {
-            damage: 100,
+            damage: 1000,
             area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,

@@ -31,22 +31,21 @@ export const faust: Minion = {
     maxHP: 350,
     image: FaustImage,
     isBoss: true,
-    damage: 5,
-    attack: {
-        name: "Throw Banana",
-        image: MonkeyBananaImage,
-        actions: [
-            {
-                type: ACTION_TYPES.RANGE_ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                icon: MonkeyBananaImage,
-                damage: 5,
-                animation: ANIMATION_TYPES.CAST,
-                addCardsToDeck: [bananaPeelCard],
-            },
-        ],
-    },
     abilities: [
+        {
+            name: "Throw Banana",
+            image: MonkeyBananaImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: MonkeyBananaImage,
+                    damage: 5,
+                    animation: ANIMATION_TYPES.CAST,
+                    addCardsToDeck: [bananaPeelCard],
+                },
+            ],
+        },
         {
             name: "Infected Bite",
             image: PoisonImage,
@@ -177,6 +176,7 @@ export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
     maxHP: 100,
+    abilities: [],
     effects: [
         {
             name: "Ghostly",

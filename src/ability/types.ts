@@ -253,11 +253,8 @@ export interface Minion {
     HP?: number;
     armor?: number;
     abilities?: Ability[];
-    damage?: number;
     effects?: Effect[];
     resources?: number;
-    /** Enemy basic attack. If not provided, one will be generated. */
-    attack?: Ability;
     isBoss?: boolean;
     isElite?: boolean;
     mesos?: number;

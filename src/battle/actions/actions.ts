@@ -1022,29 +1022,15 @@ const checkInduceAttack = ({
                 return;
             }
 
-            if (combatant.attack) {
-                combatant.attack.actions.forEach((action) => {
-                    dispatch(
-                        performAction({
-                            action: { ...action, playbackTime: 400 },
-                            selectedIndex,
-                            side: hostileSide,
-                            actorId: id,
-                            parentSource,
-                        })
-                    );
-                });
-            } else {
-                dispatch(
-                    performAction({
-                        action: getInducedAttack(combatant),
-                        selectedIndex,
-                        side: hostileSide,
-                        actorId: id,
-                        parentSource,
-                    })
-                );
-            }
+            dispatch(
+                performAction({
+                    action: getInducedAttack(combatant),
+                    selectedIndex,
+                    side: hostileSide,
+                    actorId: id,
+                    parentSource,
+                })
+            );
         });
     };
 };

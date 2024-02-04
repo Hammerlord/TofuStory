@@ -28,21 +28,22 @@ const shadowClone: Minion = {
     name: "Shadow Clone",
     maxHP: 1,
     armor: 29,
-    damage: 1,
     image: DarkLordImage,
-    attack: {
-        name: "Throw Star",
-        image: SubiImage,
-        actions: [
-            {
-                type: ACTION_TYPES.RANGE_ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                damage: 1,
-                icon: SubiImage,
-            },
-        ],
-    },
+    abilities: [
+        {
+            name: "Throw Star",
+            image: SubiImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 1,
+                    icon: SubiImage,
+                },
+            ],
+        },
+    ],
     effects: [
         {
             name: "Shadow Clone",
@@ -59,21 +60,22 @@ const realShadow: Minion = {
     name: "Shadow Clone",
     maxHP: 1,
     armor: 29,
-    damage: 1,
     image: DarkLordImage,
-    attack: {
-        name: "Throw Star",
-        image: KumbiImage,
-        actions: [
-            {
-                type: ACTION_TYPES.RANGE_ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                damage: 1,
-                icon: KumbiImage,
-            },
-        ],
-    },
+    abilities: [
+        {
+            name: "Throw Star",
+            image: KumbiImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 1,
+                    icon: KumbiImage,
+                },
+            ],
+        },
+    ],
     effects: [
         {
             name: "Real Clone",
@@ -158,22 +160,21 @@ export const darkLord: Minion = {
     name: "Dark Lord",
     isBoss: true,
     maxHP: 200,
-    damage: 3,
     image: DarkLordImage,
-    attack: {
-        name: "Throw Star",
-        image: KumbiImage,
-        actions: [
-            {
-                type: ACTION_TYPES.RANGE_ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                damage: 3,
-                icon: KumbiImage,
-            },
-        ],
-    },
     abilities: [
+        {
+            name: "Throw Star",
+            image: KumbiImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 3,
+                    icon: KumbiImage,
+                },
+            ],
+        },
         {
             name: "Lucky Seven",
             image: KumbiImage,

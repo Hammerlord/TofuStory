@@ -33,7 +33,6 @@ export const duey: Minion = {
     name: "Duey",
     image: DueyImage,
     maxHP: 15,
-    damage: 0,
     mesos: 0,
     abilities: [
         {

@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import { BarrelImage, BatsEffectImage, BombImage, StumpyBatImage, StumpyImage, WeaponMasteryImage } from "../images";
 import { MountainIcon } from "../images/icons";
 import { burn, hardy } from "./../ability/Effects";
@@ -16,6 +17,7 @@ const explosiveBarrel: Minion = {
     name: "Explosive Barrel",
     maxHP: 12,
     image: BarrelImage,
+    abilities: [],
     effects: [
         {
             name: "Explosive",
@@ -48,9 +50,18 @@ export const stumpy: Minion = {
     name: "Stumpy",
     image: StumpyImage,
     isBoss: true,
-    damage: 2,
     maxHP: 250,
     abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         {
             name: "Bats!",
             image: StumpyBatImage,

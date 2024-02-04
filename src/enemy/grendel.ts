@@ -84,19 +84,20 @@ export const grendelElquines: Minion = {
     image: ElquinesImage,
     HP: 100,
     maxHP: 100,
-    damage: 2,
-    attack: {
-        name: "Ice Bolt",
-        image: NimbleJewelImage,
-        actions: [
-            {
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.RANGE_ATTACK,
-                icon: NimbleJewelImage,
-                damage: 3,
-            },
-        ],
-    },
+    abilities: [
+        {
+            name: "Ice Bolt",
+            image: NimbleJewelImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: NimbleJewelImage,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
     effects: [lifeLink, raging],
 };
 
@@ -122,6 +123,7 @@ export const grendelVolcano: Minion = {
     name: "Volcano",
     maxHP: 30,
     image: VolcanoIcon,
+    abilities: [],
     effects: [
         {
             type: EFFECT_TYPES.NONE,
@@ -332,25 +334,27 @@ export const introGrendel: Minion = {
     maxHP: 350,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
-    attack: {
-        name: "Energy Bolt",
-        image: OldEnergyBoltImage,
-        resourceCost: 0,
-        actions: [
-            {
-                damage: 3,
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.RANGE_ATTACK,
-                animation: ANIMATION_TYPES.ONE_WAY,
-                icon: EnergyBoltProjectileImage,
-                playbackTime: 400,
-                animationOptions: {
-                    rotate: -45,
-                    rotateToFaceTarget: true,
+    abilities: [
+        {
+            name: "Energy Bolt",
+            image: OldEnergyBoltImage,
+            resourceCost: 0,
+            actions: [
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: EnergyBoltProjectileImage,
+                    playbackTime: 400,
+                    animationOptions: {
+                        rotate: -45,
+                        rotateToFaceTarget: true,
+                    },
                 },
-            },
-        ],
-    },
+            ],
+        },
+    ],
     effects: [
         {
             name: "Immunity",
@@ -425,27 +429,32 @@ export const grendel: Minion = {
     maxHP: 350,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
-    attack: {
-        name: "Energy Bolt",
-        image: OldEnergyBoltImage,
-        resourceCost: 0,
-        actions: [
-            {
-                damage: 3,
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.RANGE_ATTACK,
-                animation: ANIMATION_TYPES.ONE_WAY,
-                icon: EnergyBoltProjectileImage,
-                playbackTime: 400,
-                animationOptions: {
-                    rotate: -45,
-                    rotateToFaceTarget: true,
+    abilities: [
+        {
+            name: "Energy Bolt",
+            image: OldEnergyBoltImage,
+            resourceCost: 0,
+            actions: [
+                {
+                    damage: 3,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: EnergyBoltProjectileImage,
+                    playbackTime: 400,
+                    animationOptions: {
+                        rotate: -45,
+                        rotateToFaceTarget: true,
+                    },
                 },
-            },
-        ],
-    },
-
-    abilities: [grendelMagicClaw, { ...tribolt, resourceCost: 0 }, volcanicBurst, stormBarrier, iceAge],
+            ],
+        },
+        grendelMagicClaw,
+        { ...tribolt, resourceCost: 0 },
+        volcanicBurst,
+        stormBarrier,
+        iceAge,
+    ],
     effects: [
         hardy,
         {

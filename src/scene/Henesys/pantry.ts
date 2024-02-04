@@ -37,7 +37,6 @@ const mayaEnemy: Minion = {
     name: "Maya",
     image: MayaImage,
     maxHP: 20,
-    damage: 0,
     abilities: [
         {
             name: "Cower",

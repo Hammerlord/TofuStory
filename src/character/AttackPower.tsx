@@ -40,13 +40,28 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
-    if (!combatant?.HP) {
+    const { abilities = [], HP, effects = [], casting } = combatant || {};
+
+    if (!HP) {
         return null;
     }
 
-    const overrideDamage = combatant?.effects?.find(({ override }) => override?.damage)?.override?.damage;
-    const combatantDamage = overrideDamage || combatant?.damage || 0;
-    const { damage, timesToAttack } = combatant?.casting?.ability?.actions.reduce(
+    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
+    let basicAttackDamage = 0;
+
+    for (const ability of abilities) {
+        if (!ability.resourceCost) {
+            for (const action of ability.actions) {
+                if (action.damage) {
+                    basicAttackDamage = action.damage;
+                    break;
+                }
+            }
+        }
+    }
+
+    const combatantDamage = overrideDamage || basicAttackDamage;
+    const { damage, timesToAttack } = casting?.ability?.actions.reduce(
         (acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
