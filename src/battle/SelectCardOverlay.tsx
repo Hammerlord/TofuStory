@@ -10,6 +10,7 @@ import { drawCards } from "./actions/actions";
 import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
+import { XIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     inner: {
@@ -36,8 +37,12 @@ const useStyles = createUseStyles({
         display: "inline-block",
         margin: "0 24px",
         verticalAlign: "bottom",
+        position: "relative",
         "&.selected": {
             boxShadow: "0 0 8px 4px #45ff61",
+        },
+        "&.selectedForRemoval": {
+            boxShadow: "0 0 8px 4px #ff3a3a",
         },
     },
     cancel: {
@@ -49,6 +54,17 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 1000,
+    },
+    x: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translateX(-50%) translateY(-50%)",
+        width: 125,
+        zIndex: 10,
+        webkitFilter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
+        filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
+        opacity: 0.75,
     },
 });
 
@@ -145,6 +161,13 @@ const SelectCardOverlay = ({
         onSelect();
     };
 
+    const isSelectedForRemoval = (instanceId: string): boolean => {
+        return (
+            [SELECT_CARD_TYPES.DEPLETE_FROM_HAND, SELECT_CARD_TYPES.DISCARD_TO_DRAW, SELECT_CARD_TYPES.HAND_TO_TOP_DECK].includes(type) &&
+            selectedAbilityIds.includes(instanceId)
+        );
+    };
+
     return (
         <>
             {!hide && (
@@ -166,6 +189,7 @@ const SelectCardOverlay = ({
                                 <div
                                     className={classNames(classes.ability, {
                                         selected: selectedAbilityIds.includes(ability.instanceId),
+                                        selectedForRemoval: isSelectedForRemoval(ability.instanceId),
                                     })}
                                     onClick={() => {
                                         if (maxAmount === 1) {
@@ -184,6 +208,11 @@ const SelectCardOverlay = ({
                                     key={ability.instanceId}
                                 >
                                     <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
+                                    {isSelectedForRemoval(ability.instanceId) && (
+                                        <div className={classes.x}>
+                                            <XIcon />
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
