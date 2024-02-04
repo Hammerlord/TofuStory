@@ -14,7 +14,7 @@ const musicMap = {
     ],
     [REGIONS.KERNING]: [
         "https://maplestory.io/api/GMS/40B/music/Bgm01/BadGuys",
-        "https://maplestory.io/api/GMS/236/music/Bgm21/LoversIntheAfternoon",
+        "https://dl.vgmdownloads.com/soundtracks/maplestory-music/uwemoqzyah/82.%20In%20Nautilus.mp3",
         "https://maplestory.io/api/GMS/236/music/Bgm21/KerningSquare",
     ],
     [REGIONS.KERNING_SEWERS]: ["https://maplestory.io/api/GMS/93T/music/Bgm02/JungleBook"],
