@@ -232,7 +232,6 @@ const ScenePlayer = ({
         }
 
         if (loseItems.length) {
-            console.log(loseItems);
             updatePlayer({
                 items: player.items.filter((item) => !loseItems.includes(item.name)),
             });

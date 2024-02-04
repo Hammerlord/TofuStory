@@ -67,7 +67,7 @@ export const lostNobleEcho: Minion = {
     damage: 3,
     weapon: HuntersBowImage,
     weaponImageOptions: {
-        top: "50%",
+        top: "58%",
         left: "30%",
         transform: `scale(2, 2) rotate(270deg)`,
     },
