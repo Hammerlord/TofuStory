@@ -1,4 +1,5 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
+import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
 import { lifeLink } from "../../enemy/effect";
 import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
@@ -69,6 +70,15 @@ const zombieLupinsFight = {
     waves: [
         {
             enemies: [null, eventZombieLupin, eventZombieLupin, eventZombieLupin, null],
+        },
+    ],
+};
+
+const echoesFight = {
+    characters: [],
+    waves: [
+        {
+            enemies: [lostEcho, lostGuardEcho, lostNobleEcho, lostGuardEcho, lostEcho],
         },
     ],
 };
@@ -315,15 +325,12 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         background: AltForestBG2Image,
-                                                        speaker: malady,
-                                                        dialog: [
-                                                            "[Malady's voices echo around the trees.]",
-                                                            "Oh, how long has it been since we met one who could hear us! When the curse spread 500 years ago, it twisted our forms and our voices, especially those of us closest to the source.",
-                                                        ],
+                                                        dialog: ["[The light restored, you can now continue forward.]"],
                                                     },
                                                     {
                                                         speaker: malady,
                                                         dialog: [
+                                                            "[Malady's voices echo around the trees.]",
                                                             "Centuries ago, a young, arrogant wizard conducted an experiment using one of the great veins of magic in the forest as his power font. A festering wound opened, though its most devastating effects would not be felt for decades, when most humans had forgotten.",
                                                         ],
                                                     },
@@ -337,9 +344,45 @@ const maladyDialog: ScriptNode[] = [
                                                     {
                                                         speaker: malady,
                                                         dialog: [
-                                                            "Those days are lost. And still the young fools follow. Blind, blind.",
+                                                            "Those days are lost. And still the treacherous fools follow. Blind, blind.",
                                                             "Do they know what he does in that library of his?",
                                                         ],
+                                                    },
+                                                    {
+                                                        dialog: [
+                                                            "[You sense yourself being surrounded by strange presences. You can feel their forlorn stares even as they say nothing to you.]",
+                                                        ],
+                                                    },
+                                                    {
+                                                        dialog: [
+                                                            "[They seem to be echoes, or something thereabouts--they definitely don't seem alive. The echoes manifest into dark, fluttering shapes, like large moths.",
+                                                            "They meander closer and closer as if drawn to a flame.",
+                                                            "...",
+                                                            "Abruptly, the echoes turn hostile, and poise to attack you.",
+                                                        ],
+                                                        responses: [
+                                                            {
+                                                                text: "Confront them.",
+                                                                encounter: echoesFight,
+                                                            },
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "[Malady's voices echo around the trees.]",
+                                                            "Oh, how long has it been since we met one who could hear us! When the curse spread 500 years ago, it twisted our forms and our voices, especially those of us closest to the source.",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: [
+                                                            "One of many sacrifices. And what was our reward, but to be spurned, hated?",
+                                                        ],
+                                                    },
+                                                    {
+                                                        speaker: malady,
+                                                        dialog: ["Is the seeker the same as they are?"],
                                                     },
                                                     {
                                                         dialog: [

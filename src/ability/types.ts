@@ -246,6 +246,9 @@ export interface CombatEffect extends Effect {
 export interface Minion {
     name: string;
     image: string;
+    imageOptions?: {
+        filter: string;
+    };
     maxHP: number;
     HP?: number;
     armor?: number;
@@ -259,6 +262,12 @@ export interface Minion {
     isElite?: boolean;
     mesos?: number;
     items?: Item[];
+    weapon?: string;
+    weaponImageOptions?: {
+        top?: string;
+        left?: string;
+        transform?: string;
+    };
 }
 
 export interface Multiplier {

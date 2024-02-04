@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
     root: {
         transformOrigin: "150% 150%",
         "& img": {
-            transform: `scale(4, 4) rotate(90deg)`,
+            transform: (options: any) => options?.transform || "scale(4, 4) rotate(90deg)",
             imageRendering: "pixelated",
         },
     },
@@ -109,18 +109,20 @@ const useStyles = createUseStyles({
 
 const Weapon = ({
     image,
+    options,
     action,
     wielder,
     wielderRef,
     target,
 }: {
     image?: string;
+    options?: { transform?: string };
     action: Action;
     wielder: Combatant;
     wielderRef: HTMLElement;
     target?: HTMLElement;
 }) => {
-    const classes = useStyles();
+    const classes = useStyles(options as any);
     const { type, area } = action || {};
 
     const rotation = useMemo(() => {

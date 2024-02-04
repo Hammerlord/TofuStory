@@ -242,10 +242,13 @@ const useStyles = createUseStyles({
         filter: "brightness(0.25)",
         opacity: 1,
     },
-    weaponContainer: {
-        position: "absolute",
-        top: -50,
-        left: 25,
+    weaponContainer: (combatant: Combatant) => {
+        const { left, top } = combatant?.weaponImageOptions || {};
+        return {
+            position: "absolute",
+            top: top || -50,
+            left: left || 25,
+        };
     },
     poisoned: {
         filter: "sepia(0.9) hue-rotate(-300deg) saturate(2)",
@@ -337,7 +340,7 @@ const CombatantView = forwardRef(
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
         const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
-        const classes = useStyles();
+        const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
         const combatantInfo = findCombatantData(() => state, oldState?.id);
 
@@ -414,11 +417,13 @@ const CombatantView = forwardRef(
 
         const getImageNode = (props) => {
             const portrait = oldState?.effects?.find(({ override }) => override?.portrait)?.override?.portrait || oldState?.image;
+            const { filter } = oldState?.imageOptions || {};
+
             if (typeof portrait === "string") {
-                return <img src={portrait} {...props} draggable="false" />;
+                return <img src={portrait} {...props} style={{ filter, ...props?.style }} draggable="false" />;
             } else if (typeof portrait === "function") {
                 const ImageNode = portrait as Function;
-                return <ImageNode {...props} />;
+                return <ImageNode {...props} style={{ filter, ...props?.style }} />;
             }
         };
 
@@ -468,6 +473,7 @@ const CombatantView = forwardRef(
                                     >
                                         <Weapon
                                             image={oldState.weapon}
+                                            options={oldState.weaponImageOptions}
                                             action={action}
                                             target={targetRef}
                                             wielderRef={weaponRef?.current as any}
