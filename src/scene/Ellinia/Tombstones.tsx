@@ -116,7 +116,7 @@ const Tombstones = ({ player, onComplete }) => {
             <h2>Forlorn Gravesite</h2>
             <p>Pay respects to fallen heroes.</p>
             {graves.map((grave, i) => (
-                <>
+                <span key={grave.name}>
                     {i === 3 && <br />}
                     <Tooltip title={getTitle(grave)} key={grave.name}>
                         <div
@@ -136,7 +136,7 @@ const Tombstones = ({ player, onComplete }) => {
                             )}
                         </div>
                     </Tooltip>
-                </>
+                </span>
             ))}
         </div>
     );

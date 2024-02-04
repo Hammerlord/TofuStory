@@ -74,7 +74,7 @@ const DimPath = ({ player, onComplete }) => {
             <h2>A Dark Path</h2>
             <p>Restore the light.</p>
             {rows.map((row, i) => (
-                <div>
+                <div key={i}>
                     {row.map((col, j) => (
                         <div
                             key={`${i}-${j}`}
