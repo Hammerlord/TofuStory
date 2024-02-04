@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
             fontWeight: 600,
             fontSize: "0.9rem",
             letterSpacing: "0.05rem",
-            textShadow: "0 0 2px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9)",
+            textShadow: "0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1)",
             color: "rgba(255, 255, 255, 0.9) !important",
 
             "&:active": {
