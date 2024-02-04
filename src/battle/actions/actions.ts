@@ -658,7 +658,7 @@ export const checkEventTrigger = ({
             const alreadyTriggered = history.includes(historyKey);
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
             // Dead characters generally cannot trigger effects except in case of killing blows
-            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP >= 0 || effectEvent?.usableWhileDead;
+            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
             if (effectEvent && !alreadyTriggered && isTurnToTrigger && notTriggeringSameEffect && usable) {
                 dispatch(
                     onEffectEventTrigger({
