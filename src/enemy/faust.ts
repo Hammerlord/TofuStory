@@ -186,7 +186,6 @@ export const ghostlyPuppeteerL: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SmilingImpIcon,
-            turnsTriggerFrequency: 1,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
@@ -206,13 +205,6 @@ export const ghostlyPuppeteerL: Minion = {
             },
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        hasEffectType: [EFFECT_TYPES.STEALTH],
-                        comparator: "not",
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    },
-                ],
                 effects: [
                     {
                         type: EFFECT_TYPES.STEALTH,
@@ -224,7 +216,7 @@ export const ghostlyPuppeteerL: Minion = {
                         onReceiveAttack: {
                             removeEffect: true,
                         },
-                        duration: 1,
+                        duration: 2, // Ticks down immediately when applied
                     },
                 ],
             },
