@@ -181,7 +181,7 @@ const SelectCardOverlay = ({
                                 {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
                                     `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
-                                {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Select cards from your hand to discard and redraw"}
+                                {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Keep or replace cards in your hand"}
                             </h2>
                         </div>
                         <div className={classes.abilityContainer}>
@@ -222,18 +222,16 @@ const SelectCardOverlay = ({
                             disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities}
                             onClick={handleSelectClick}
                         >
-                            Done
+                            Confirm
                         </Button>
-                        {/**
-                 * This is currently a trap as you lose the card when you use it
-                 * type !== SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && (
-                    <div className={classes.cancel}>
-                        <Button variant={"contained"} onClick={onCancel}>
-                            Cancel
-                        </Button>
-                    </div>
-                )
-                **/}
+                        {/** You can only safely back out of Deplete from hand. This is currently a trap for other select types as you lose the card otherwise. */}
+                        {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && (
+                            <div className={classes.cancel}>
+                                <Button variant={"contained"} onClick={onCancel}>
+                                    Cancel
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </Overlay>
             )}
