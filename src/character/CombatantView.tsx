@@ -466,20 +466,22 @@ const CombatantView = forwardRef(
                                         Array.from({ length: 3 }).map((_, i) =>
                                             getImageNode({ key: i, className: classes.shouting, style: { animationDelay: `${0.1 * i}s` } })
                                         )}
-                                    <div
-                                        className={classNames(classes.weaponContainer, {
-                                            [classes.applyingEffect]: isApplyingEffect,
-                                        })}
-                                    >
-                                        <Weapon
-                                            image={oldState.weapon}
-                                            options={oldState.weaponImageOptions}
-                                            action={action}
-                                            target={targetRef}
-                                            wielderRef={weaponRef?.current as any}
-                                            wielder={oldState}
-                                        />
-                                    </div>
+                                    {oldState.HP > 0 && (
+                                        <div
+                                            className={classNames(classes.weaponContainer, {
+                                                [classes.applyingEffect]: isApplyingEffect,
+                                            })}
+                                        >
+                                            <Weapon
+                                                image={oldState.weapon}
+                                                options={oldState.weaponImageOptions}
+                                                action={action}
+                                                target={targetRef}
+                                                wielderRef={weaponRef?.current as any}
+                                                wielder={oldState}
+                                            />
+                                        </div>
+                                    )}
                                     {(oldState.HP > 0 || isLifeLinked) && (
                                         <Effects combatantInfo={combatantInfo} healing={statChanges?.healing} />
                                     )}
