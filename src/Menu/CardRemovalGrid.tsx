@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { JOB_CARD_MAP } from "../ability";
 import { Ability } from "../ability/types";
 import Button from "../view/Button";
-import CardGrid from "./CardGrid";
+import classNames from "classnames";
+import AbilityView from "../ability/AbilityView/AbilityView";
+import { XIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     root: {
@@ -25,6 +26,27 @@ const useStyles = createUseStyles({
         width: "80vw",
         height: "70vh",
         overflow: "auto",
+    },
+    ability: {
+        margin: "16px",
+        marginTop: "32px",
+        display: "inline-block",
+        verticalAlign: "top",
+        position: "relative",
+        "&.selectedForRemoval": {
+            boxShadow: "0 0 8px 4px #ff3a3a",
+        },
+    },
+    x: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translateX(-50%) translateY(-50%)",
+        width: 125,
+        zIndex: 10,
+        webkitFilter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
+        filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
+        opacity: 0.75,
     },
 });
 
@@ -56,12 +78,22 @@ const CardRemovalGrid = ({
                 <h3>Select an ability to remove</h3>
                 <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
                 <div className={classes.abilitySection}>
-                    <CardGrid
-                        cards={cards}
-                        selectedAbilityIndex={selectedAbilityIndexToRemove}
-                        highlightColour={"#45ff61"}
-                        onClickAbility={(_, i: number) => setSelectedAbilityIndexToRemove(i)}
-                    />
+                    {cards.map((card, i) => (
+                        <div
+                            className={classNames(classes.ability, {
+                                selectedForRemoval: i === selectedAbilityIndexToRemove,
+                            })}
+                            key={i}
+                            onClick={() => setSelectedAbilityIndexToRemove(i)}
+                        >
+                            <AbilityView ability={card} />
+                            {i === selectedAbilityIndexToRemove && (
+                                <div className={classes.x}>
+                                    <XIcon />
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
                 <Button
                     variant={"contained"}
