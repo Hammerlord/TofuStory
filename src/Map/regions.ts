@@ -6,4 +6,5 @@ export enum REGIONS {
     PERION = "Perion",
     ELLINIA = "Ellinia",
     SLEEPYWOOD = "Sleepywood",
+    HIDDEN_FOREST = "Hidden Forest",
 }

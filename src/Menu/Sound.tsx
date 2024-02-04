@@ -28,6 +28,10 @@ const musicMap = {
         "https://maplestory.io/api/GMS/236/music/Bgm02/MissingYou",
         "https://maplestory.io/api/GMS/236/music/Bgm02/WhenTheMorningComes",
     ],
+    [REGIONS.HIDDEN_FOREST]: [
+        "https://dl.vgmdownloads.com/soundtracks/maplestory-music/uptjdyhuxm/81.%20Elin%20Forest.mp3",
+        "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ynanilbuga/57.%20Timeless%20B.mp3",
+    ],
     [REGIONS.PERION]: [
         "https://maplestory.io/api/GMS/236/music/Bgm01/HighlandStar",
         "https://maplestory.io/api/GMS/236/music/Bgm12/AcientRemain",

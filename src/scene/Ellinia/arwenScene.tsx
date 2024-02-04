@@ -1,3 +1,4 @@
+import { REGIONS } from "../../Map/regions";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
 import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
 import { lifeLink } from "../../enemy/effect";
@@ -298,6 +299,7 @@ const maladyDialog: ScriptNode[] = [
                                     },
                                     {
                                         background: AltForestBGImage,
+                                        region: REGIONS.HIDDEN_FOREST,
                                         dialog: [
                                             "[The world shifts. Suddenly, you find yourself surrounded by unfamiliar trees and foliage, Malady nowhere in sight. A pall of shadow hangs all around you.]",
                                         ],

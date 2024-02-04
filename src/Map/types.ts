@@ -1,6 +1,13 @@
 import { Ability, Minion } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
-import { ElliniaBGImage, HenesysRegionBGImage, KerningCityBGImage, LithRegionBGImage, PerionRegionBGImage } from "../images";
+import {
+    AltForestBGImage,
+    ElliniaBGImage,
+    HenesysRegionBGImage,
+    KerningCityBGImage,
+    LithRegionBGImage,
+    PerionRegionBGImage,
+} from "../images";
 import { Item } from "../item/types";
 import { NPC } from "./../scene/types";
 import Henesys from "./Henesys";
@@ -90,4 +97,5 @@ export const BG_MAP = {
     [REGIONS.LITH_HARBOR]: LithRegionBGImage,
     [REGIONS.PERION]: PerionRegionBGImage,
     [REGIONS.ELLINIA]: ElliniaBGImage,
+    [REGIONS.HIDDEN_FOREST]: AltForestBGImage,
 };
