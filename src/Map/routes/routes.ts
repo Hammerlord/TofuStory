@@ -310,6 +310,13 @@ export const routeHenesysEllinia: Route = {
         [stump, blueSnail, stump, blueSnail, stump],
         [null, elliniaGreenMushroom, elliniaHornyMushroom, elliniaGreenMushroom, null],
     ],
+    elites: {
+        minions: [redSnail, elliniaGreenMushroom, stump],
+        single: [lupin, curseEye],
+        duo: [axeStump, orangeMushroom, slime, elliniaHornyMushroom],
+        trio: [elliniaGreenMushroom, pig],
+        squad: [stump, elliniaGreenMushroom],
+    },
     nodes: [
         { x: 0.5162946428571429, y: 0.814892576037545, region: REGIONS.HENESYS },
         { x: 0.546875, y: 0.7790196702466737, region: REGIONS.HENESYS },

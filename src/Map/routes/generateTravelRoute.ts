@@ -34,8 +34,9 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
             } else {
                 if (numEliteEncounters) {
                     types.push(NODE_TYPES.ELITE_ENCOUNTER);
+                } else {
+                    types.push(NODE_TYPES.ENCOUNTER);
                 }
-                types.push(NODE_TYPES.ENCOUNTER);
             }
 
             return getRandomItem(types);
