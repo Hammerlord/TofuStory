@@ -11,6 +11,7 @@ import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Button from "../view/Button";
 import { Scene, ScriptNode, ScriptResponse } from "./types";
+import TreasureBox from "./TreasureBox/TreasureBox";
 
 const useStyles = createUseStyles({
     root: {
@@ -203,9 +204,10 @@ const ScenePlayer = ({
     const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const [showCamp, setShowCamp] = useState(false);
+    const [showTreasure, setShowTreasure] = useState(false);
     const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const { speaker, dialog = [], items, responses, puzzle, itemChoices, loseItems = [] } = script[dialogIndex] || ({} as any);
+    const { speaker, dialog = [], items, responses, puzzle, itemChoices, loseItems = [], treasureBox } = script[dialogIndex] || ({} as any);
 
     useEffect(() => {
         if (!script[dialogIndex]) {
@@ -235,6 +237,10 @@ const ScenePlayer = ({
             updatePlayer({
                 items: player.items.filter((item) => !loseItems.includes(item.name)),
             });
+        }
+
+        if (treasureBox) {
+            setShowTreasure(true);
         }
     }, [dialogIndex]);
 
@@ -366,6 +372,13 @@ const ScenePlayer = ({
         updateDeck(updatedDeck);
     };
 
+    const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
+        updatePlayer({
+            mesos: Math.max(0, player.mesos + mesos),
+            items: [...player.items, ...items],
+        });
+    };
+
     const canSkip = !responses && !items && !itemChoices;
 
     return (
@@ -444,6 +457,16 @@ const ScenePlayer = ({
             )}
             {itemChoices && <ItemSelection {...itemChoices} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />}
             {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
+            {showTreasure && (
+                <TreasureBox
+                    onExit={() => {
+                        setShowTreasure(false);
+                        setDialogIndex((prev) => prev + 1);
+                    }}
+                    onLoot={handleObtainLoot}
+                    currentItems={player.items}
+                />
+            )}
         </div>
     );
 };

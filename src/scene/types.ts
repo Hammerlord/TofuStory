@@ -44,6 +44,7 @@ export interface ScriptNode {
     scene?: ({ player }: { player: Combatant }) => JSX.Element;
     background?: string;
     puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: (success?: boolean) => void }) => JSX.Element;
+    treasureBox?: boolean;
     dialog: string[];
     responses?: ScriptResponse[];
     items?: Item[];
