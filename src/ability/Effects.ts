@@ -129,7 +129,7 @@ export const chill: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 5,
     attackPower: -1,
-    description: "Chilled targets have their attack power reduced by 1.",
+    description: "Reduces attack power by 1.",
 };
 
 export const freeze: Effect = {

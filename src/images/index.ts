@@ -294,6 +294,7 @@ export { default as PurpleEnergyBoltProjectileImage } from "./PurpleEnergyBoltPr
 export { default as PurpleFairiesImage } from "./PurpleFairies.gif";
 export { default as PurpleFlyingBookImage } from "./PurpleFlyingBook.gif";
 export { default as PurpleFlyingBookIconImage } from "./PurpleFlyingBookIcon.png";
+export { default as PurpleInfinityImage } from "./PurpleInfinity.png";
 export { default as RageImage } from "./Rage.png";
 export { default as RagingBlowImage } from "./RagingBlow.png";
 export { default as RedFistOfFuryImage } from "./RedFistOfFury.png";

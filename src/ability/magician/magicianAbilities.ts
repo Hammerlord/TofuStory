@@ -45,6 +45,7 @@ import {
     PurpleEnergyBoltProjectileImage,
     PurpleFlyingBookIconImage,
     PurpleFlyingBookImage,
+    PurpleInfinityImage,
     ScarfSnowmanImage,
     ShimmeringStarsImage,
     StarHairPinImage,
@@ -1838,6 +1839,8 @@ export const metronome: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: InfinityImage,
             autoCastAbilities: {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 2,
@@ -2548,4 +2551,24 @@ export const icyDraft: Ability = {
         },
     ],
     upgrades: [icyDraft2],
+};
+
+export const hyperMetronome: Ability = {
+    name: "Hyper Metronome",
+    image: PurpleInfinityImage,
+    resourceCost: 2,
+    description: "Cast 3 random spells.",
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: PurpleInfinityImage,
+            autoCastAbilities: {
+                type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
+                amount: 3,
+            },
+        },
+    ],
 };
