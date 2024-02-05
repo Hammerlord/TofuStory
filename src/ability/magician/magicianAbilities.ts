@@ -42,6 +42,7 @@ import {
     ParfaitCupcakeImage,
     PieceOfBirthdayCakeImage,
     PurpleEnergyBoltImage,
+    PurpleEnergyBoltProjectileImage,
     PurpleFlyingBookIconImage,
     PurpleFlyingBookImage,
     ScarfSnowmanImage,
@@ -2037,7 +2038,7 @@ const greatestBolt2: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
-            icon: EnergyBoltProjectileImage,
+            icon: PurpleEnergyBoltProjectileImage,
             playbackTime: 400,
             animationOptions: {
                 rotate: -45,
@@ -2068,7 +2069,7 @@ export const greatestBolt: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
-            icon: EnergyBoltProjectileImage,
+            icon: PurpleEnergyBoltProjectileImage,
             playbackTime: 400,
             animationOptions: {
                 rotate: -45,
