@@ -99,7 +99,7 @@ export const stun: Effect = {
     type: EFFECT_TYPES.STUN,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
-    description: "Afflicted targets are unable to act during their turn.",
+    description: "Stunned targets are unable to act during their turn.",
     icon: DizzyIcon,
 };
 
@@ -137,6 +137,7 @@ export const freeze: Effect = {
     icon: NimbleJewelCImage,
     type: EFFECT_TYPES.FREEZE,
     class: EFFECT_CLASSES.DEBUFF,
+    description: "Frozen targets are unable to act during their turn.",
     duration: 1,
 };
 

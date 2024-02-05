@@ -1,4 +1,5 @@
 import Icon from "../../icon/Icon";
+import { NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HourglassIcon, SnowflakeIcon, SpeechBubbleIcon } from "../../images/icons";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
@@ -14,6 +15,8 @@ export const getDebuffIcon = (type: EFFECT_TYPES): JSX.Element => {
             return <FireIcon />;
         case EFFECT_TYPES.SILENCE:
             return <SpeechBubbleIcon />;
+        case EFFECT_TYPES.FREEZE:
+            return NimbleJewelCImage;
     }
 };
 

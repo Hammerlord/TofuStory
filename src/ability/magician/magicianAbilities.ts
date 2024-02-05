@@ -21,6 +21,7 @@ import {
     FireMarbleImage,
     FlameHazeImage,
     HighWisdomImage,
+    IcicleImage,
     IgniteImage,
     InfinityImage,
     InkSackImage,
@@ -60,6 +61,7 @@ import {
     TriboltImage,
     WizMushImage,
 } from "../../images";
+import { SnowflakeIcon } from "../../images/icons";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -2449,4 +2451,100 @@ export const arcaneWard: Ability = {
         },
     ],
     upgrades: [arcaneWard2],
+};
+
+const icyDraft2: Ability = {
+    name: "Icy Draft",
+    image: IcicleImage,
+    level: 2,
+    resourceCost: 1,
+    description: "When you draw this card, Chill a random enemy.",
+    onDraw: {
+        ability: {
+            name: "Chilling Draft",
+            image: SnowflakeIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: SnowflakeIcon,
+                    effects: [
+                        {
+                            ...chill,
+                            duration: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            playbackTime: 500,
+            icon: IcicleImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+            },
+            damage: 10,
+            effects: [
+                {
+                    ...freeze,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const icyDraft: Ability = {
+    name: "Icy Draft",
+    image: IcicleImage,
+    resourceCost: 1,
+    description: "When you draw this card, Chill a random enemy.",
+    onDraw: {
+        ability: {
+            name: "Chilling Draft",
+            image: SnowflakeIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: SnowflakeIcon,
+                    effects: [
+                        {
+                            ...chill,
+                            duration: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            playbackTime: 500,
+            icon: IcicleImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+            },
+            damage: 7,
+            effects: [
+                {
+                    ...freeze,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+    upgrades: [icyDraft2],
 };
