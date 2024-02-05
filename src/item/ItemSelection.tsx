@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { shuffle } from "../utils";
 import Overlay from "../view/Overlay";
-import { Item } from "./types";
+import { ITEM_TYPES, Item } from "./types";
 import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "./ItemView";
 
@@ -40,23 +40,46 @@ const useStyles = createUseStyles({
     },
 });
 
-const getInitItems = (itemOption: Item[], numChoices: number) => {
-    const items = Array.isArray(itemOption) ? itemOption : ITEMS;
-    return shuffle(items).slice(0, numChoices);
-};
-
 const ItemSelection = ({
-    items,
+    items = [],
     numChoices,
+    player,
     onSelectClick,
     onClose,
 }: {
     items?: Item[];
     numChoices: number;
+    player: any;
     onSelectClick: (item: Item) => void;
     onClose: () => void;
 }) => {
-    const [choices] = useState(getInitItems(items, numChoices));
+    /**
+     * If an event offers preset item choices, the items which have already been obtained from the preset are swapped
+     * for an unobtained item
+     */
+    const getInitItems = () => {
+        const itemSelection = [];
+        const alreadyObtained = player.items.reduce((acc, item: Item) => {
+            if (item.type === ITEM_TYPES.EQUIPMENT) {
+                acc[item.name] = true;
+            }
+            return acc;
+        }, {});
+
+        const unobtainedItems = shuffle(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+
+        items.forEach((item: Item) => {
+            if (alreadyObtained[item.name]) {
+                itemSelection.push(unobtainedItems.shift());
+            } else {
+                itemSelection.push(item);
+            }
+        });
+
+        return shuffle(itemSelection).slice(0, numChoices);
+    };
+
+    const [choices] = useState(getInitItems());
     const [selectedIndex, setSelectedIndex] = useState(null);
     const classes = useStyles();
 

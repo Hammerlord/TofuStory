@@ -6,6 +6,7 @@ import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
 import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
 import { glassShoe } from "../../item/items";
+import TreasureBox from "../TreasureBox/TreasureBox";
 import { Scene, ScriptNode } from "../types";
 import DimPath from "./DimPath";
 import FollowFairies from "./FollowFairies";
@@ -440,9 +441,13 @@ const maladyDialog: ScriptNode[] = [
                                                                                     {
                                                                                         background: ElliniaBGImage,
                                                                                         dialog: [
-                                                                                            "[You find yourself where you began in the forest.]",
+                                                                                            "[You find yourself where you began in the forest, along with a treasure chest.]",
                                                                                         ],
                                                                                     },
+                                                                                    {
+                                                                                        treasureBox: true,
+                                                                                        dialog: [""],
+                                                                                    } as ScriptNode, // Why does it say treasureBox doesn't exist as a property on this interface?
                                                                                     {
                                                                                         speaker: malady,
                                                                                         dialog: [

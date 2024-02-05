@@ -10,8 +10,8 @@ import { Ability, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Button from "../view/Button";
-import { Scene, ScriptNode, ScriptResponse } from "./types";
 import TreasureBox from "./TreasureBox/TreasureBox";
+import { Scene, ScriptNode, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -455,7 +455,9 @@ const ScenePlayer = ({
             {showCamp && (
                 <Camp deck={deck} player={player} updateDeck={updateDeck} updatePlayer={updatePlayer} onExit={() => setShowCamp(false)} />
             )}
-            {itemChoices && <ItemSelection {...itemChoices} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />}
+            {itemChoices && (
+                <ItemSelection {...itemChoices} player={player} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />
+            )}
             {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
             {showTreasure && (
                 <TreasureBox

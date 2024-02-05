@@ -49,7 +49,7 @@ export interface ScriptNode {
     responses?: ScriptResponse[];
     items?: Item[];
     itemChoices?: {
-        // The pool of items that can be shown as options. If not provided, it will select unobtained items
+        // The pool of items that can be shown as options. If the items are already obtained, they will be replaced by unobtained items.
         items?: Item[];
         // How many different options the player can pick from
         numChoices: number;
