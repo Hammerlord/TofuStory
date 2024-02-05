@@ -45,18 +45,12 @@ export interface RouteNode {
     region: REGIONS;
 }
 
-export interface MapEnemies {
-    easy: Minion[];
-    normal: Minion[];
-    hard: Minion[];
-    hardest: Minion[];
-}
-
-export enum ENEMY_DIFFICULTY {
-    EASY = "easy",
-    NORMAL = "normal",
-    HARD = "hard",
-    HARDEST = "hardest",
+export interface EliteMap {
+    minions: Minion[];
+    single: Minion[];
+    duo: Minion[];
+    trio: Minion[];
+    squad: Minion[];
 }
 
 export interface Route {
@@ -65,13 +59,17 @@ export interface Route {
         x: number;
         y: number;
     };
-    enemies?: MapEnemies;
+    /** If not provided, it will attempt to fallback on enemies from the preceding route */
+    enemies?: (Minion | null)[][];
+    /** Pool of preset enemies when generating a fight with multiple waves, expected to be easier than the single-wave `enemies` bucket. */
+    multiWaveEnemies?: (Minion | null)[][];
     events?: NPC[];
     treasure?: {
         mesos?: { min: number; max: number };
         items?: Item[];
     }[];
-    elites?: Minion[];
+    /** If not provided, the route will not have elites */
+    elites?: EliteMap;
     next?: Route[];
 }
 

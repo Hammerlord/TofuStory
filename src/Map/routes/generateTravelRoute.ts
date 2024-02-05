@@ -6,7 +6,7 @@ import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
 import SortingPuzzle from "../../scene/TreasureBox/SortingPuzzle";
 import { NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
-import { generateWaves } from "./../encounters";
+import { generateElites, generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
 import { events } from "./eventList";
 
@@ -14,7 +14,7 @@ import { events } from "./eventList";
  * Given a route's raw data, generate a route tree traversable by the player.
  */
 const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: Route; notoreity: number; numRoutesComplete: number }) => {
-    const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0) => {
+    const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
         let numEvents = Math.floor(baseRoute.nodes.length / 4);
@@ -49,12 +49,13 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
             };
 
             const type = transformedNode.type;
-            if (type === NODE_TYPES.ENCOUNTER || type === NODE_TYPES.ELITE_ENCOUNTER) {
-                transformedNode.encounter = generateWaves(type, baseRoute.enemies || route.enemies);
-                if (type === NODE_TYPES.ELITE_ENCOUNTER) {
-                    --numEliteEncounters;
-                }
+            if (type === NODE_TYPES.ENCOUNTER) {
+                transformedNode.encounter = generateWaves(baseRoute, prevRoute);
                 ++numEncountersSinceRestPoint;
+            } else if (type === NODE_TYPES.ELITE_ENCOUNTER) {
+                --numEliteEncounters;
+                ++numEncountersSinceRestPoint;
+                transformedNode.encounter = generateElites(baseRoute);
             } else if (type === NODE_TYPES.TREASURE) {
                 transformedNode.treasure = {
                     puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
@@ -91,7 +92,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 ...baseNode,
                 id: uuid.v4(),
                 type: NODE_TYPES.ENCOUNTER,
-                encounter: generateWaves(NODE_TYPES.ENCOUNTER, baseRoute.enemies || route.enemies),
+                encounter: generateWaves(baseRoute, prevRoute),
             };
         };
 
@@ -110,7 +111,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
         });
 
         if (baseRoute.next) {
-            currentNode.next = baseRoute.next.map((route) => generateBranch(route, numEncountersSinceRestPoint));
+            currentNode.next = baseRoute.next.map((route) => generateBranch(route, numEncountersSinceRestPoint, baseRoute));
         }
 
         return initialNode;

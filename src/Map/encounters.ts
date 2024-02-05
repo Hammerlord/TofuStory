@@ -5,13 +5,12 @@ import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, tho
 import { tantrum } from "./../enemy/abilities";
 import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem, shuffle } from "./../utils";
-import { enemyLayouts } from "./routes/layouts";
-import { ENEMY_DIFFICULTY, MapEnemies, NODE_TYPES } from "./types";
+import { EliteMap, NODE_TYPES, Route } from "./types";
 import { clandestine, lifeLink, poisonous } from "../enemy/effect";
 
-const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
-    const baseEnemy = getRandomItem(possibleEnemies.easy);
+    const baseEnemy = getRandomItem(eliteMap.squad);
 
     const enemy = {
         ...baseEnemy,
@@ -24,10 +23,10 @@ const generateEliteSquad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     return [enemy, enemy, enemy, enemy, enemy];
 };
 
-const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
     const ability = getRandomItem([tantrum]);
-    const baseEnemy = getRandomItem([...possibleEnemies.easy, ...possibleEnemies.normal]);
+    const baseEnemy = getRandomItem(eliteMap.trio);
     const enemy = {
         ...baseEnemy,
         isElite: true,
@@ -44,10 +43,10 @@ const generateEliteTriad = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     ]);
 };
 
-const generateEliteDuo = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, clandestine, poisonous]);
     const ability = getRandomItem([tantrum]);
-    const baseEnemy = getRandomItem([...possibleEnemies.normal, ...possibleEnemies.hard]);
+    const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
     const enemy = {
         ...baseEnemy,
         isElite: true,
@@ -65,13 +64,14 @@ const generateEliteDuo = (possibleEnemies: MapEnemies): (Minion | null)[] => {
     ]);
 };
 
-const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
+const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
+    const minion = getRandomItem(eliteMap.minions);
     const swarming: Effect = {
         type: EFFECT_TYPES.NONE,
         class: EFFECT_CLASSES.BUFF,
         canBeSilenced: true,
         name: "Swarming",
-        icon: possibleEnemies.easy[0].image,
+        icon: minion.image,
         description: "Periodically summoning minions.",
         turnsTriggerFrequency: 3,
         onTurnStart: {
@@ -83,10 +83,10 @@ const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
                         type: ACTION_TYPES.EFFECT,
                         summon: [
                             {
-                                minion: possibleEnemies.easy,
+                                minion: eliteMap.minions,
                             },
                             {
-                                minion: possibleEnemies.easy,
+                                minion: eliteMap.minions,
                             },
                         ],
                     },
@@ -95,7 +95,7 @@ const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
         },
     };
     const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming, clandestine, poisonous]);
-    const baseEnemy = getRandomItem(concat(possibleEnemies.hard, possibleEnemies.hardest));
+    const baseEnemy = getRandomItem(eliteMap.single);
     const enemy = {
         ...baseEnemy,
         isElite: true,
@@ -104,49 +104,45 @@ const generateElite = (possibleEnemies: MapEnemies): (Minion | null)[] => {
         effects: [elite, affix],
     };
 
-    return [null, getRandomItem(possibleEnemies.easy), enemy, getRandomItem(possibleEnemies.easy), null];
+    return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
 };
 
-const getWaveDifficulties = (numWaves: number): ENEMY_DIFFICULTY[] => {
-    if (numWaves === 1) {
-        return [ENEMY_DIFFICULTY.HARD, ENEMY_DIFFICULTY.HARDEST];
-    }
-    if (numWaves === 2) {
-        return [
-            getRandomItem([ENEMY_DIFFICULTY.EASY, ENEMY_DIFFICULTY.NORMAL]),
-            getRandomItem([ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.NORMAL, ENEMY_DIFFICULTY.HARD]),
-        ];
+export const generateElites = (route: Route) => {
+    const eliteType = getRandomItem([1, 2, 3, 4]);
+    if (eliteType === 1) {
+        return [{ enemies: generateElite(route.elites) }];
+    } else if (eliteType === 2) {
+        return [{ enemies: generateEliteTriad(route.elites) }];
+    } else if (eliteType === 3) {
+        return [{ enemies: generateEliteSquad(route.elites) }];
+    } else {
+        return [{ enemies: generateEliteDuo(route.elites) }];
     }
 };
 
-export const generateWaves = (encounterType: NODE_TYPES.ENCOUNTER | NODE_TYPES.ELITE_ENCOUNTER, possibleEnemies: MapEnemies): Wave[] => {
-    if (encounterType === NODE_TYPES.ELITE_ENCOUNTER) {
-        const eliteType = getRandomItem([1, 2, 3, 4]);
-        if (eliteType === 1) {
-            return [{ enemies: generateElite(possibleEnemies) }];
-        } else if (eliteType === 2) {
-            return [{ enemies: generateEliteTriad(possibleEnemies) }];
-        } else if (eliteType === 3) {
-            return [{ enemies: generateEliteSquad(possibleEnemies) }];
-        } else {
-            return [{ enemies: generateEliteDuo(possibleEnemies) }];
-        }
-    }
-
+export const generateWaves = (route: Route, fallbackRoute?: Route): Wave[] => {
     const numWaves = getRandomItem([1, 2]);
-    const waveDifficulties = getWaveDifficulties(numWaves);
 
-    const generateEnemies = (i: number) => {
-        const difficulty = waveDifficulties[i];
-        const layout = getRandomItem(enemyLayouts[difficulty]);
-        return layout.map((enemyDifficulty: ENEMY_DIFFICULTY) => {
-            if (!enemyDifficulty) {
-                return null;
+    const waves = [];
+    let enemyPool = numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
+    enemyPool = shuffle(enemyPool || []);
+
+    for (let i = 0; i < numWaves; ++i) {
+        let retries = 3;
+        const generateEnemies = () => {
+            const candidates = enemyPool.shift();
+            const numSameEnemies = waves.length && candidates.map((c, j) => c && c?.name === waves[i - 1][j]?.name).filter((v) => v).length;
+            const isTooSimilarToPrev = numSameEnemies >= 3;
+            if (isTooSimilarToPrev && retries) {
+                enemyPool.push(candidates);
+                generateEnemies();
+                --retries;
+            } else {
+                waves.push({ enemies: candidates });
             }
+        };
+        generateEnemies();
+    }
 
-            return getRandomItem(possibleEnemies[enemyDifficulty]);
-        });
-    };
-
-    return Array.from({ length: numWaves }).map((_, i) => ({ enemies: generateEnemies(i).map(createCombatant) }));
+    return waves;
 };

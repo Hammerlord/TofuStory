@@ -4,6 +4,7 @@ import {
     blueSnail,
     darkStoneGolem,
     fireBoar,
+    greenMushroom,
     lupin,
     octopus,
     orangeMushroom,
@@ -19,18 +20,44 @@ import {
 import { strangePig } from "../../enemy/strangePig";
 import { stumpy } from "../../enemy/stumpy";
 import { REGIONS } from "../regions";
-import { MapEnemies, NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
+import { NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
 
 export const routeKerningToPerion: Route = {
-    enemies: {
-        easy: [stump, redSnail],
-        normal: [octopus, wildBoar],
-        hard: [axeStump, orangeMushroom],
-        hardest: [fireBoar],
-    } as MapEnemies,
+    elites: {
+        minions: [shroom, redSnail, stump],
+        single: [fireBoar],
+        duo: [wildBoar, axeStump],
+        trio: [orangeMushroom, octopus],
+        squad: [redSnail, stump],
+    },
+    enemies: [
+        [stump, stump, axeStump, stump, stump],
+        [null, orangeMushroom, stump, orangeMushroom, null],
+        [null, stump, fireBoar, stump, null],
+        [snail, redSnail, octopus, redSnail, snail],
+        [null, wildBoar, null, wildBoar, null],
+        [octopus, null, stump, null, octopus],
+        [null, octopus, redSnail, octopus, null],
+        [stump, redSnail, stump, redSnail, stump],
+        [stump, stump, wildBoar, stump, stump],
+        [null, axeStump, null, axeStump, null],
+    ],
+    multiWaveEnemies: [
+        [null, stump, stump, stump, null],
+        [null, redSnail, stump, redSnail, null],
+        [null, snail, wildBoar, snail, null],
+        [null, null, fireBoar, null, null],
+        [null, blueSnail, axeStump, blueSnail, null],
+        [null, stump, null, axeStump, null],
+        [null, stump, null, wildBoar, null],
+        [null, orangeMushroom, null, orangeMushroom, null],
+        [null, stump, octopus, stump, null],
+        [null, octopus, null, octopus, null],
+        [snail, stump, snail, stump, snail],
+    ],
     nodes: [
         { x: 0.18101545253863136, y: 0.3502607225066942, region: REGIONS.KERNING },
         { x: 0.21444339325134026, y: 0.32964451811635537, region: REGIONS.KERNING },
@@ -67,13 +94,13 @@ export const routeKerningToPerion: Route = {
 };
 
 const toKerning: Route = {
-    elites: [snail, blueSnail, shroom],
-    enemies: {
-        easy: [blueSnail, redSnail],
-        normal: [stump, slime],
-        hard: [pig],
-        hardest: [orangeMushroom, octopus],
-    } as MapEnemies,
+    elites: {
+        minions: [snail, blueSnail],
+        single: [orangeMushroom, octopus],
+        duo: [stump, slime],
+        trio: [redSnail, shroom],
+        squad: [snail, blueSnail],
+    },
     nodes: [
         {
             x: 0.19591836734693877,
@@ -107,6 +134,30 @@ const toKerning: Route = {
 };
 
 const toKerningForest: Route = {
+    enemies: [
+        [snail, null, octopus, null, snail],
+        [snail, null, orangeMushroom, null, snail],
+        [null, snail, octopus, snail, null],
+        [null, snail, orangeMushroom, snail, null],
+        [null, slime, null, slime, null],
+        [null, stump, blueSnail, stump, null],
+        [null, pig, null, pig, null],
+        [null, pig, null, slime, null],
+        [snail, redSnail, blueSnail, redSnail, snail],
+        [null, redSnail, redSnail, redSnail, null],
+        [snail, shroom, blueSnail, shroom, snail],
+    ],
+    multiWaveEnemies: [
+        [null, null, orangeMushroom, null, null],
+        [null, null, octopus, null, null],
+        [null, snail, pig, snail, null],
+        [null, blueSnail, slime, blueSnail, null],
+        [snail, null, slime, null, snail],
+        [snail, blueSnail, redSnail, blueSnail, snail],
+        [null, slime, null, redSnail, null],
+        [null, shroom, redSnail, shroom, null],
+        [null, stump, null, stump, null],
+    ],
     nodes: [
         {
             x: 0.24807256235827665,
@@ -138,12 +189,42 @@ const toKerningForest: Route = {
 };
 
 export const routeElliniaPerion = {
-    enemies: {
-        easy: [stump, orangeMushroom],
-        normal: [elliniaGreenMushroom, elliniaHornyMushroom, axeStump],
-        hard: [fireBoar],
-        hardest: [curseEye, lupin],
-    } as MapEnemies,
+    elites: {
+        minions: [elliniaGreenMushroom, stump],
+        single: [lupin, curseEye, fireBoar],
+        duo: [axeStump, wildBoar],
+        trio: [elliniaHornyMushroom, orangeMushroom],
+        squad: [stump, elliniaGreenMushroom],
+    },
+    enemies: [
+        [stump, stump, axeStump, stump, stump],
+        [stump, orangeMushroom, stump, orangeMushroom, stump],
+        [orangeMushroom, null, elliniaGreenMushroom, null, orangeMushroom],
+        [elliniaGreenMushroom, null, elliniaHornyMushroom, null, elliniaGreenMushroom],
+        [elliniaGreenMushroom, stump, orangeMushroom, stump, elliniaGreenMushroom],
+        [elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom],
+        [null, elliniaHornyMushroom, stump, elliniaHornyMushroom, null],
+        [null, elliniaHornyMushroom, orangeMushroom, elliniaHornyMushroom, null],
+        [null, elliniaHornyMushroom, greenMushroom, elliniaHornyMushroom, null],
+        [null, stump, fireBoar, stump, null],
+        [null, lupin, null, lupin, null],
+        [null, stump, curseEye, stump, null],
+        [null, axeStump, stump, axeStump, null],
+        [null, fireBoar, null, fireBoar, null],
+    ],
+    multiWaveEnemies: [
+        [null, null, fireBoar, null, null],
+        [null, null, curseEye, null, null],
+        [null, blueSnail, lupin, blueSnail, null],
+        [null, stump, axeStump, stump, null],
+        [elliniaGreenMushroom, null, elliniaGreenMushroom, null, elliniaGreenMushroom],
+        [null, stump, orangeMushroom, stump, null],
+        [null, elliniaHornyMushroom, null, elliniaHornyMushroom, null],
+        [null, stump, stump, stump, null],
+        [null, stump, elliniaGreenMushroom, stump, null],
+        [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
+        [null, axeStump, null, axeStump, null],
+    ],
     nodes: [
         {
             x: 0.6398963730569949,
@@ -204,12 +285,31 @@ export const routeElliniaPerion = {
 };
 
 export const routeHenesysEllinia: Route = {
-    enemies: {
-        easy: [stump, redSnail],
-        normal: [elliniaGreenMushroom, elliniaHornyMushroom],
-        hard: [axeStump, orangeMushroom],
-        hardest: [curseEye, lupin, darkStoneGolem],
-    } as MapEnemies,
+    enemies: [
+        [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
+        [null, null, darkStoneGolem, null, null],
+        [null, null, curseEye, null, null],
+        [null, axeStump, stump, axeStump, null],
+        [null, lupin, null, lupin, null],
+        [elliniaGreenMushroom, elliniaHornyMushroom, redSnail, elliniaHornyMushroom, elliniaGreenMushroom],
+        [null, elliniaHornyMushroom, elliniaGreenMushroom, elliniaHornyMushroom, null],
+        [null, elliniaHornyMushroom, stump, elliniaHornyMushroom, null],
+        [stump, pig, stump, pig, stump],
+        [blueSnail, slime, pig, slime, blueSnail],
+        [elliniaGreenMushroom, elliniaGreenMushroom, slime, elliniaGreenMushroom, elliniaGreenMushroom],
+        [stump, redSnail, stump, redSnail, stump],
+    ],
+    multiWaveEnemies: [
+        [null, elliniaHornyMushroom, null, elliniaHornyMushroom, null],
+        [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
+        [null, stump, stump, stump, null],
+        [null, null, lupin, null, null],
+        [null, axeStump, null, stump, null],
+        [null, pig, redSnail, pig, null],
+        [null, slime, null, slime, null],
+        [stump, blueSnail, stump, blueSnail, stump],
+        [null, elliniaGreenMushroom, elliniaHornyMushroom, elliniaGreenMushroom, null],
+    ],
     nodes: [
         { x: 0.5162946428571429, y: 0.814892576037545, region: REGIONS.HENESYS },
         { x: 0.546875, y: 0.7790196702466737, region: REGIONS.HENESYS },
@@ -243,7 +343,13 @@ export const routeHenesysEllinia: Route = {
 };
 
 export const toHenesys: Route = {
-    elites: [snail, blueSnail, shroom],
+    elites: {
+        minions: [snail, blueSnail],
+        single: [orangeMushroom, ribbonPig],
+        duo: [pig, slime],
+        trio: [redSnail, shroom],
+        squad: [snail, blueSnail],
+    },
     nodes: [
         {
             x: 0.38765432098765434,
@@ -267,6 +373,29 @@ export const toHenesys: Route = {
 };
 
 export const toHenesysForest: Route = {
+    enemies: [
+        [snail, null, ribbonPig, null, snail],
+        [snail, null, orangeMushroom, null, snail],
+        [null, snail, ribbonPig, snail, null],
+        [null, snail, orangeMushroom, snail, null],
+        [null, slime, null, slime, null],
+        [null, pig, blueSnail, pig, null],
+        [null, pig, null, pig, null],
+        [null, pig, null, slime, null],
+        [snail, redSnail, blueSnail, redSnail, snail],
+        [null, redSnail, redSnail, redSnail, null],
+        [snail, shroom, blueSnail, shroom, snail],
+    ],
+    multiWaveEnemies: [
+        [null, null, orangeMushroom, null, null],
+        [null, null, ribbonPig, null, null],
+        [null, snail, pig, snail, null],
+        [null, blueSnail, slime, blueSnail, null],
+        [snail, null, slime, null, snail],
+        [snail, blueSnail, redSnail, blueSnail, snail],
+        [null, slime, null, redSnail, null],
+        [null, shroom, redSnail, shroom, null],
+    ],
     nodes: [
         {
             x: 0.30483592400690845,
@@ -312,12 +441,33 @@ export const routeLith: Route = {
         x: 0.15716753022452504,
         y: 0.7956483387239047,
     },
-    enemies: {
-        easy: [snail, blueSnail],
-        normal: [shroom, redSnail],
-        hard: [pig, slime],
-        hardest: [orangeMushroom, ribbonPig],
-    } as MapEnemies,
+    enemies: [
+        [snail, blueSnail, snail, blueSnail, snail],
+        [snail, blueSnail, redSnail, blueSnail, snail],
+        [snail, snail, redSnail, snail, snail],
+        [null, blueSnail, pig, snail, null],
+        [blueSnail, snail, shroom, snail, blueSnail],
+        [shroom, null, redSnail, null, blueSnail],
+        [null, blueSnail, slime, blueSnail, null],
+        [null, snail, slime, snail, null],
+        [null, redSnail, shroom, redSnail, null],
+        [null, shroom, redSnail, shroom, null],
+        [null, pig, null, redSnail, null],
+        [null, null, orangeMushroom, null, null],
+    ],
+    multiWaveEnemies: [
+        [snail, snail, null, snail, snail],
+        [snail, null, snail, null, snail],
+        [null, blueSnail, snail, blueSnail, null],
+        [snail, null, shroom, null, snail],
+        [null, blueSnail, shroom, blueSnail, null],
+        [null, shroom, null, shroom, null],
+        [null, shroom, null, redSnail, null],
+        [null, blueSnail, redSnail, blueSnail, null],
+        [null, redSnail, null, redSnail, null],
+        [null, null, pig, null, null],
+        [null, null, slime, null, null],
+    ],
     nodes: [
         {
             x: 0.16,
@@ -353,12 +503,6 @@ export const toLith: Route = {
         x: 0.15873015873015872,
         y: 0.730697961704756,
     },
-    enemies: {
-        easy: [snail, blueSnail],
-        normal: [shroom, redSnail],
-        hard: [pig, slime],
-        hardest: [orangeMushroom, ribbonPig],
-    } as MapEnemies,
     nodes: [
         {
             x: 0.15716753022452504,

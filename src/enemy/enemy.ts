@@ -295,7 +295,7 @@ export const ribbonPig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -632,7 +632,7 @@ export const olaf: Minion = {
 export const octopus: Minion = {
     name: "Octopus",
     image: OctopusIdleImage,
-    maxHP: 40,
+    maxHP: 50,
     mesos: 10,
     abilities: [
         {
@@ -641,7 +641,7 @@ export const octopus: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
@@ -685,7 +685,7 @@ export const octopus: Minion = {
 export const wildBoar: Minion = {
     name: "Wild Boar",
     image: WildBoarImage,
-    maxHP: 50,
+    maxHP: 70,
     mesos: 10,
     abilities: [
         {
@@ -772,7 +772,7 @@ export const axeStump: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -787,7 +787,7 @@ export const axeStump: Minion = {
                     effects: [
                         {
                             ...thorns,
-                            duration: 2,
+                            duration: 3,
                         },
                     ],
                 },
@@ -800,7 +800,7 @@ export const axeStump: Minion = {
 export const fireBoar: Minion = {
     name: "Fire Boar",
     image: FireBoarImage,
-    maxHP: 80,
+    maxHP: 90,
     mesos: 25,
     abilities: [
         {
@@ -809,7 +809,7 @@ export const fireBoar: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 3,
                 },
             ],
         },
@@ -981,7 +981,7 @@ export const hornyMushroom: Minion = {
 export const elliniaGreenMushroom: Minion = {
     name: "Green Mushroom",
     image: GreenMushroomImage,
-    maxHP: 40,
+    maxHP: 45,
     mesos: 10,
     abilities: [
         {
@@ -1008,7 +1008,7 @@ export const elliniaGreenMushroom: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 2,
+                            duration: 1,
                         },
                     ],
                 },
@@ -1020,7 +1020,7 @@ export const elliniaGreenMushroom: Minion = {
 export const elliniaHornyMushroom: Minion = {
     name: "Horny Mushroom",
     image: HornyMushroomImage,
-    maxHP: 45,
+    maxHP: 50,
     abilities: [
         {
             name: "Attack",
@@ -1040,7 +1040,7 @@ export const elliniaHornyMushroom: Minion = {
 
 export const curseEye: Minion = {
     name: "Curse Eye",
-    maxHP: 80,
+    maxHP: 100,
     image: CurseEyeImage,
     abilities: [
         {
@@ -1050,7 +1050,7 @@ export const curseEye: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                     bonus: {
                         damage: 1,
                         conditions: [
@@ -1406,7 +1406,7 @@ export const malady: Minion = {
 
 export const darkStoneGolem: Minion = {
     name: "Dark Stone Golem",
-    maxHP: 150,
+    maxHP: 100,
     image: DarkStoneGolemImage,
     abilities: [
         {
@@ -1416,7 +1416,7 @@ export const darkStoneGolem: Minion = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 15,
+                    armor: 5,
                 },
             ],
         },
@@ -1427,7 +1427,7 @@ export const darkStoneGolem: Minion = {
             image: DarkStoneGolemRubbleImage,
             actions: [
                 {
-                    damage: 20,
+                    damage: 10,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
