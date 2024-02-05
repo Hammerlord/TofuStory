@@ -1741,14 +1741,27 @@ export const useAbility = ({
         );
         dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
+        const { target: initialTarget } = actions[0];
+        let prevSelection;
+
         const handleAction = (action: Action) => {
-            const { index, side } = autoSelectActionTarget({
-                initialSelectedIndex: selectedIndex,
-                initialSelectedSide: initialSide,
-                action,
-                actorId,
-                getState,
-            });
+            let selection;
+            // If it is a multi-hit ability, the attacks should go to the same target
+            if (action.target === initialTarget && prevSelection) {
+                selection = prevSelection;
+            } else {
+                selection = autoSelectActionTarget({
+                    initialSelectedIndex: selectedIndex,
+                    initialSelectedSide: initialSide,
+                    action,
+                    actorId,
+                    getState,
+                });
+
+                prevSelection = selection;
+            }
+
+            const { side, index } = selection;
 
             const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): CombatantInfo => {
                 if (calculationTarget === CONDITION_TARGETS.ACTOR) {
