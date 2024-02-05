@@ -1,12 +1,10 @@
-import { concat } from "ramda";
 import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
+import { clandestine, lifeLink, poisonous } from "../enemy/effect";
 import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
-import { createCombatant } from "./../enemy/createEnemy";
 import { getRandomItem, shuffle } from "./../utils";
-import { EliteMap, NODE_TYPES, Route } from "./types";
-import { clandestine, lifeLink, poisonous } from "../enemy/effect";
+import { EliteMap, Route } from "./types";
 
 const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
@@ -27,12 +25,17 @@ const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(eliteMap.trio);
+
+    const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.25 + 30));
+
     const enemy = {
         ...baseEnemy,
         isElite: true,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.25 + 30),
-        abilities: [...(baseEnemy.abilities || []), ability],
-        effects: [eliteSquad, affix],
+        maxHP: applyMultiplier(maxHP),
+        armor: applyMultiplier(armor),
+        abilities: [...abilities, ability],
+        effects: [...effects, eliteSquad, affix],
     };
 
     return getRandomItem([
@@ -47,12 +50,17 @@ const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, clandestine, poisonous]);
     const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
+
+    const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.35 + 40));
+
     const enemy = {
         ...baseEnemy,
         isElite: true,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.35 + 40),
-        abilities: [...(baseEnemy.abilities || []), ability],
-        effects: [eliteSquad, affix],
+        maxHP: applyMultiplier(maxHP),
+        armor: applyMultiplier(armor),
+        abilities: [...abilities, ability],
+        effects: [...effects, eliteSquad, affix],
     };
 
     return getRandomItem([
@@ -96,12 +104,16 @@ const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
     };
     const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming, clandestine, poisonous]);
     const baseEnemy = getRandomItem(eliteMap.single);
+    const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.5 + 50));
+
     const enemy = {
         ...baseEnemy,
         isElite: true,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.5 + 50),
-        abilities: [...(baseEnemy.abilities || []), tantrum],
-        effects: [elite, affix],
+        maxHP: applyMultiplier(maxHP),
+        armor: applyMultiplier(armor),
+        abilities: [...abilities, tantrum],
+        effects: [...effects, elite, affix],
     };
 
     return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
