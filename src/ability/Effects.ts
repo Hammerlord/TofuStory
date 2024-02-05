@@ -338,7 +338,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 2 turns.",
+    description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 1 turn.",
     onDeath: {
         usableWhileStunned: true,
         ability: {
@@ -347,6 +347,7 @@ export const explosive: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.EXPLODE,
                     area: 3,
                     damage: 1,
                     bonus: {
@@ -354,26 +355,22 @@ export const explosive: Effect = {
                         multiplier: {
                             type: MULTIPLIER_TYPES.MAX_HP,
                             calculationTarget: CONDITION_TARGETS.ACTOR,
-                            value: 0.1,
+                            value: 0.05,
                         },
                     },
 
                     effects: [
                         {
                             name: "Explosive - Burn",
-                            description: "Burning and taking 50% increased damage from Explode.",
+                            description: "Burning and taking 30% increased damage from Explode.",
                             icon: FireIcon,
                             type: EFFECT_TYPES.BURN,
                             class: EFFECT_CLASSES.DEBUFF,
-                            duration: 2,
-                            onTurnEnd: {
-                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                damage: 3,
-                            },
+                            duration: 1,
                             abilityDamageReceived: [
                                 {
                                     abilityName: "Explode",
-                                    damage: 1.5,
+                                    damage: 1.3,
                                     type: SCALING_VALUE_TYPES.PERCENTAGE,
                                 },
                             ],
