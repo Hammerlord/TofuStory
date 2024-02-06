@@ -64,7 +64,7 @@ export const grendelIfrit: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     damage: 3,
                     animationOptions: {
-                        flash: true,
+                        flash: 200,
                     },
                     effects: [
                         {

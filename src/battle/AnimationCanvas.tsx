@@ -72,7 +72,7 @@ const useStyles = createUseStyles({
         animation: "$flash",
         transitionTimingFunction: "ease-in-out",
         animationIterationCount: "infinite",
-        animationDuration: 200,
+        animationDuration: ({ flash = 200 }: any) => flash,
     },
     "@keyframes fadeOut": {
         "0%": {
@@ -145,10 +145,10 @@ const AnimationCanvas = ({
 
         return getCenterCoords(actorElement);
     }, [actorElement]);
-    const classes = useStyles({ playbackTime } as any);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
     const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut } = animationOptions || {};
+    const classes = useStyles({ playbackTime, flash } as any);
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;

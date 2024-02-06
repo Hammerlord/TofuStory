@@ -21,6 +21,7 @@ import {
     FireArrowProjectileImage,
     FireMarbleImage,
     FlameHazeImage,
+    GlisteningStarImage,
     HighWisdomImage,
     IcicleImage,
     IgniteImage,
@@ -784,7 +785,7 @@ const chainLightning2: Ability = {
                 width: 70,
                 height: 70,
                 opacity: 0.8,
-                flash: true,
+                flash: 200,
             },
             bonus: {
                 damage: 3,
@@ -818,7 +819,7 @@ export const chainLightning: Ability = {
                 width: 70,
                 height: 70,
                 opacity: 0.8,
-                flash: true,
+                flash: 200,
             },
             bonus: {
                 damage: 2,
@@ -1627,7 +1628,7 @@ const thunderBolt2: Ability = {
             animationOptions: {
                 height: 250,
                 width: 60,
-                flash: true,
+                flash: 200,
             },
         },
         {
@@ -1639,7 +1640,7 @@ const thunderBolt2: Ability = {
             animationOptions: {
                 height: 175,
                 width: 40,
-                flash: true,
+                flash: 200,
             },
             conditions: [
                 {
@@ -1666,7 +1667,7 @@ export const thunderBolt: Ability = {
             animationOptions: {
                 height: 250,
                 width: 60,
-                flash: true,
+                flash: 200,
             },
         },
         {
@@ -1678,7 +1679,7 @@ export const thunderBolt: Ability = {
             animationOptions: {
                 height: 175,
                 width: 40,
-                flash: true,
+                flash: 200,
             },
             conditions: [
                 {
@@ -2656,4 +2657,68 @@ export const snowball: Ability = {
             addCardsToDiscard: [snowBoulder],
         },
     ],
+};
+
+const divineStar2: Ability = {
+    name: "Divine Star",
+    resourceCost: 2,
+    image: GlisteningStarImage,
+    description: "Restore 1 HP for every target struck",
+    actions: [
+        {
+            damage: 7,
+            secondaryDamage: 5,
+            targetArea: 3,
+            numTargets: 4,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
+            animation: ANIMATION_TYPES.YOYO,
+            icon: GlisteningStarImage,
+            animationOptions: {
+                width: 75,
+                height: 75,
+                flash: 500,
+            },
+            secondaryAction: {
+                target: "actor",
+                healing: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+};
+
+export const divineStar: Ability = {
+    name: "Divine Star",
+    resourceCost: 2,
+    image: GlisteningStarImage,
+    description: "Restore 1 HP for every target struck",
+    actions: [
+        {
+            damage: 5,
+            targetArea: 3,
+            numTargets: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            ricochet: true,
+            animation: ANIMATION_TYPES.YOYO,
+            icon: GlisteningStarImage,
+            animationOptions: {
+                width: 75,
+                height: 75,
+                flash: 500,
+            },
+            secondaryAction: {
+                target: "actor",
+                healing: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+    upgrades: [divineStar2],
 };

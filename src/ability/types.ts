@@ -482,13 +482,14 @@ export interface Action {
         width?: number;
         height?: number;
         opacity?: number; // Should be a decimal with a max value of 1
-        flash?: boolean;
+        flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
         fadeOut?: boolean;
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
         target: "actor";
         resources?: number;
+        healing?: number;
         multiplier?: Multiplier;
         flatDamage?: number;
     };
