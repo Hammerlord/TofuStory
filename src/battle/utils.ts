@@ -680,8 +680,10 @@ export const getInducedAttack = (actor: Combatant): Action => {
 };
 
 export const isUnableToAct = (combatant: Combatant): boolean => {
-    return combatant?.effects.some(
-        (effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type) || effect.preventTurnAction
+    return (
+        combatant?.effects.some(
+            (effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type) || effect.preventTurnAction
+        ) || !combatant.abilities?.length
     );
 };
 
