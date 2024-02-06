@@ -12,7 +12,7 @@ import {
     SpearSweepImage,
 } from "../../images";
 import { HeartIcon } from "../../images/icons";
-import { attackPower, silence, stealth, stun, wound } from "../Effects";
+import { attackPower, silence, stealth, stun, bleed } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -74,7 +74,7 @@ export const darkImpale: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],
@@ -103,7 +103,7 @@ export const darkThirst: Ability = {
                     duration: 2,
                 },
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],

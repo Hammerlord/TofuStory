@@ -12,7 +12,7 @@ import {
     RisingRageImage,
     WorldReaverImage,
 } from "../../images";
-import { immunity, wound } from "../Effects";
+import { immunity, bleed } from "../Effects";
 import { Ability, Action, ACTION_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 import { TRIGGER_TARGET_TYPES } from "./../types";
 
@@ -55,7 +55,7 @@ export const puncture: Ability = {
             target: TARGET_TYPES.HOSTILE,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],

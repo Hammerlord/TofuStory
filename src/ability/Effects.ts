@@ -103,14 +103,14 @@ export const stun: Effect = {
     icon: DizzyIcon,
 };
 
-export const wound: Effect = {
-    name: "Wound",
+export const bleed: Effect = {
+    name: "Bleed",
     type: EFFECT_TYPES.BLEED,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     attackDamageReceived: 1,
     icon: BloodIcon,
-    description: "Wounded targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
+    description: "Bleeding targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
 };
 
 export const burn: Effect = {

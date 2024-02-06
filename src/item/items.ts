@@ -1,6 +1,6 @@
 import { burn } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
-import { chill, poison, thorns, wound } from "../ability/Effects";
+import { chill, poison, thorns, bleed } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -740,7 +740,7 @@ export const koreanFan: Item = {
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: KoreanFanImage,
                             playbackTime: 600,
-                            effects: [{ ...wound, duration: 1 }],
+                            effects: [{ ...bleed, duration: 1 }],
                         },
                     ],
                 },
@@ -1286,7 +1286,7 @@ export const steely: Item = {
                             },
                             effects: [
                                 {
-                                    ...wound,
+                                    ...bleed,
                                     duration: 1,
                                 },
                             ],

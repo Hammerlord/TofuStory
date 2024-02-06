@@ -49,7 +49,7 @@ import {
 } from "../images";
 import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MountainIcon, MuscleIcon, ZzzIcon } from "../images/icons";
 import { redPotion } from "../item/items";
-import { burn, elite, hardy, poison, raging, stealth, stun, thorns, wound } from "./../ability/Effects";
+import { burn, elite, hardy, poison, raging, stealth, stun, thorns, bleed } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -882,7 +882,7 @@ export const ligator: Minion = {
                     damage: 2,
                     effects: [
                         {
-                            ...wound,
+                            ...bleed,
                             duration: 1,
                         },
                     ],
@@ -919,7 +919,7 @@ export const eliteLigator: Minion = {
                     damage: 2,
                     effects: [
                         {
-                            ...wound,
+                            ...bleed,
                             duration: 1,
                         },
                     ],

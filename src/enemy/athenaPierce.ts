@@ -1,4 +1,4 @@
-import { avenger, hardy, wound } from "../ability/Effects";
+import { avenger, hardy, bleed } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
     AthenaAttackStanceImage,
@@ -256,7 +256,7 @@ export const guardHawk: Minion = {
         attack,
         {
             name: "Cyclone",
-            description: "Blasts targets with a cyclone that deals 1 damage and applies a Wound for 2 turns.",
+            description: "Blasts targets with a cyclone that deals 1 damage and applies a Bleed for 2 turns.",
             resourceCost: 3,
             actions: [
                 {
@@ -271,7 +271,7 @@ export const guardHawk: Minion = {
                     },
                     effects: [
                         {
-                            ...wound,
+                            ...bleed,
                             duration: 2,
                         },
                     ],

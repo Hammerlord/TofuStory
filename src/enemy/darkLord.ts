@@ -1,4 +1,4 @@
-import { hardy, poison, stealth, wound } from "../ability/Effects";
+import { hardy, poison, stealth, bleed } from "../ability/Effects";
 import {
     AvengerImage,
     KumbiImage,
@@ -300,7 +300,7 @@ export const darkLord: Minion = {
                     },
                     effects: [
                         {
-                            ...wound,
+                            ...bleed,
                         },
                     ],
                 },

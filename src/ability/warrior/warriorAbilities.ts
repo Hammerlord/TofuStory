@@ -35,7 +35,7 @@ import {
     CombatOrdersImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
-import { silence, stealth, stun, thorns, wound } from "../Effects";
+import { silence, stealth, stun, thorns, bleed } from "../Effects";
 import {
     Ability,
     Action,
@@ -1211,15 +1211,15 @@ export const rendingStrike2: Ability = {
             damage: 5,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],
@@ -1238,11 +1238,11 @@ export const rendingStrike: Ability = {
             damage: 3,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],
@@ -1264,7 +1264,7 @@ export const whirlwind2: Ability = {
             damage: 5,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 4,
                 },
             ],
@@ -1284,7 +1284,7 @@ export const whirlwind: Ability = {
             damage: 3,
             effects: [
                 {
-                    ...wound,
+                    ...bleed,
                     duration: 3,
                 },
             ],
