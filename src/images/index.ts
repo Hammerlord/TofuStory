@@ -216,6 +216,7 @@ export { default as LithHarborSharkFullImage } from "./LithHarborSharkFull.png";
 export { default as LithRegionBGImage } from "./LithRegionBG.png";
 export { default as LordOfDarknessImage } from "./LordOfDarkness.png";
 export { default as LuckSackImage } from "./LuckSack.png";
+export { default as LunarPiecesImage } from "./LunarPieces.png";
 export { default as LupinImage } from "./Lupin.gif";
 export { default as LupinCardImage } from "./LupinCard.png";
 export { default as MagicArmorImage } from "./MagicArmor.png";

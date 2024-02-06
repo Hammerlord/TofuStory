@@ -29,6 +29,7 @@ import {
     InkSackImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
+    LunarPiecesImage,
     MPEaterImage,
     MagicArmorImage,
     MagicArmorOldImage,
@@ -2721,4 +2722,38 @@ export const divineStar: Ability = {
         },
     ],
     upgrades: [divineStar2],
+};
+
+export const moonlight2: Ability = {
+    name: "Moonlight",
+    resourceCost: 1,
+    level: 2,
+    image: LunarPiecesImage,
+    actions: [
+        {
+            healing: 5,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+};
+
+export const moonlight: Ability = {
+    name: "Moonlight",
+    resourceCost: 1,
+    image: LunarPiecesImage,
+    actions: [
+        {
+            healing: 3,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [moonlight2],
 };
