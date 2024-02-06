@@ -1,6 +1,7 @@
 import {
     ArcaneAimImage,
     ArcaneOverdriveImage,
+    BigSnowballImage,
     BlueRushImage,
     CakeTemptationImage,
     ChocolateCupcakeImage,
@@ -40,6 +41,7 @@ import {
     OldEnergyBoltImage,
     ParalyzeImage,
     ParfaitCupcakeImage,
+    PepeRollingASnowballImage,
     PieceOfBirthdayCakeImage,
     PurpleEnergyBoltImage,
     PurpleEnergyBoltProjectileImage,
@@ -48,6 +50,7 @@ import {
     PurpleInfinityImage,
     ScarfSnowmanImage,
     ShimmeringStarsImage,
+    SnowballImage,
     StarHairPinImage,
     StarImage,
     StarfallMagicSquareImage,
@@ -2569,6 +2572,88 @@ export const hyperMetronome: Ability = {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 3,
             },
+        },
+    ],
+};
+
+const avalanche: Ability = {
+    name: "Avalanche",
+    image: PepeRollingASnowballImage,
+    resourceCost: 2,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            animationOptions: {
+                width: 125,
+                height: 125,
+            },
+            icon: BigSnowballImage,
+            damage: 13,
+            area: 2,
+            effects: [
+                {
+                    ...freeze,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+const snowBoulder: Ability = {
+    name: "Snow Boulder",
+    image: BigSnowballImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            animationOptions: {
+                width: 75,
+                height: 75,
+            },
+            icon: BigSnowballImage,
+            damage: 7,
+            area: 1,
+            effects: [
+                {
+                    ...chill,
+                    duration: 2,
+                },
+            ],
+            addCardsToDiscard: [avalanche],
+        },
+    ],
+};
+
+export const snowball: Ability = {
+    name: "Snowball",
+    image: SnowballImage,
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            playbackTime: 500,
+            icon: SnowballImage,
+            animationOptions: {
+                width: 40,
+                height: 40,
+            },
+            damage: 5,
+            effects: [
+                {
+                    ...chill,
+                    duration: 1,
+                },
+            ],
+            addCardsToDiscard: [snowBoulder],
         },
     ],
 };
