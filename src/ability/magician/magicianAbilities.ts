@@ -65,6 +65,7 @@ import {
     ThunderBoltImage,
     ThunderBoltProjectileImage,
     ThunderBreakImage,
+    ThunderSparkImage,
     TriboltImage,
     WizMushImage,
 } from "../../images";
@@ -2756,4 +2757,108 @@ export const moonlight: Ability = {
         },
     ],
     upgrades: [moonlight2],
+};
+
+const zap2: Ability = {
+    name: "Zap",
+    resourceCost: 1,
+    image: ThunderSparkImage,
+    level: 2,
+    onDraw: {
+        ability: {
+            name: "Spark",
+            image: ThunderSparkImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    playbackTime: 500,
+                    icon: ThunderSparkImage,
+                    animationOptions: {
+                        rotateToFaceTarget: true,
+                        rotate: 135,
+                        flash: 500,
+                    },
+                    effects: [stun],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            playbackTime: 500,
+            icon: ThunderSparkImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+                flash: 200,
+            },
+            damage: 7,
+            bonus: {
+                damage: 5,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const zap: Ability = {
+    name: "Zap",
+    resourceCost: 1,
+    image: ThunderSparkImage,
+    onDraw: {
+        ability: {
+            name: "Spark",
+            image: ThunderSparkImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    playbackTime: 500,
+                    icon: ThunderSparkImage,
+                    animationOptions: {
+                        rotateToFaceTarget: true,
+                        rotate: 135,
+                        flash: 500,
+                    },
+                    effects: [stun],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            playbackTime: 500,
+            icon: ThunderSparkImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+                flash: 200,
+            },
+            damage: 5,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [zap2],
 };

@@ -46,6 +46,7 @@ import {
     tribolt,
     volatileMagic,
     wishUponAStar,
+    zap,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -169,6 +170,7 @@ export const JOB_CARD_MAP = {
             snowball,
             divineStar,
             moonlight,
+            zap,
         ],
         starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
     },
