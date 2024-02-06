@@ -392,6 +392,19 @@ export const eliteSquad: Effect = {
     icon: MedalIcon,
     disableDisplayIcon: false,
     description:
+        "A member of an elite squad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
+};
+
+export const eliteTrio: Effect = {
+    ...hardy,
+    name: "Elite Squadmember",
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    icon: MedalIcon,
+    disableDisplayIcon: false,
+    description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
 

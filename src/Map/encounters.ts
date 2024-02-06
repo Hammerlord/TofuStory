@@ -22,7 +22,12 @@ const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
         effects: [...effects, eliteSquad, affix],
     };
 
-    return [enemy, enemy, enemy, enemy, enemy];
+    const alternateResource = {
+        ...enemy,
+        resources: 2,
+    };
+
+    return [enemy, alternateResource, enemy, alternateResource, enemy];
 };
 
 const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
@@ -42,11 +47,16 @@ const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
         effects: [...effects, eliteSquad, affix],
     };
 
+    const alternateResource = {
+        ...enemy,
+        resources: 2,
+    };
+
     return getRandomItem([
-        [null, enemy, enemy, enemy, null],
-        [enemy, null, enemy, null, enemy],
-        [enemy, null, enemy, enemy, null],
-        [null, enemy, enemy, null, enemy],
+        [null, enemy, alternateResource, enemy, null],
+        [enemy, null, alternateResource, null, enemy],
+        [enemy, null, alternateResource, enemy, null],
+        [null, enemy, alternateResource, null, enemy],
     ]);
 };
 
@@ -67,12 +77,18 @@ const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
         effects: [...effects, eliteSquad, affix],
     };
 
+    const alternateResource = {
+        ...enemy,
+        resources: 2,
+    };
+
     return getRandomItem([
-        [null, enemy, enemy, null, null],
-        [null, null, enemy, enemy, null],
-        [null, enemy, null, enemy, null],
-        [null, enemy, null, enemy, null],
-        [enemy, null, null, null, enemy],
+        [null, enemy, alternateResource, null, null],
+        [null, null, alternateResource, enemy, null],
+        [null, alternateResource, null, enemy, null],
+        [null, enemy, null, alternateResource, null],
+        [alternateResource, null, null, null, enemy],
+        [enemy, null, null, null, alternateResource],
     ]);
 };
 

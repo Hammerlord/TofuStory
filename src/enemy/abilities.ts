@@ -55,7 +55,7 @@ export const tantrum: Ability = {
     name: "Tantrum",
     description: "{{ caster }} will tantrum, dealing 2 hits per move.",
     resourceCost: 3,
-    channelDuration: 3,
+    channelDuration: 2,
     castTime: 1,
     actions: [
         {
