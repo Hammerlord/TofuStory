@@ -155,6 +155,10 @@ const useStyles = createUseStyles({
         right: 0,
         top: -40,
     },
+    treasureBoxContainer: {
+        position: "absolute",
+        top: 0,
+    },
 });
 
 const classesInterpolation = {
@@ -460,14 +464,16 @@ const ScenePlayer = ({
             )}
             {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
             {showTreasure && (
-                <TreasureBox
-                    onExit={() => {
-                        setShowTreasure(false);
-                        setDialogIndex((prev) => prev + 1);
-                    }}
-                    onLoot={handleObtainLoot}
-                    currentItems={player.items}
-                />
+                <div className={classes.treasureBoxContainer}>
+                    <TreasureBox
+                        onExit={() => {
+                            setShowTreasure(false);
+                            setDialogIndex((prev) => prev + 1);
+                        }}
+                        onLoot={handleObtainLoot}
+                        currentItems={player.items}
+                    />
+                </div>
             )}
         </div>
     );
