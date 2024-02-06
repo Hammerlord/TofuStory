@@ -167,7 +167,7 @@ export const isValidTarget = ({
         }
     } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         const targetedEnemy = enemySide[index];
-        if (isStealthed(targetedEnemy)) {
+        if (isStealthed(targetedEnemy) && !area) {
             return false;
         }
         const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
