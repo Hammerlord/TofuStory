@@ -135,6 +135,7 @@ export { default as FishSpearImage } from "./FishSpear.png";
 export { default as FlagImage } from "./Flag.png";
 export { default as FlameChargeImage } from "./FlameCharge.png";
 export { default as FlameHazeImage } from "./FlameHaze.png";
+export { default as FlamingFeatherImage } from "./FlamingFeather.png";
 export { default as FlanImage } from "./Flan.png";
 export { default as FlashJumpImage } from "./FlashJump.gif";
 export { default as ForkedTurkeyImage } from "./ForkedTurkey.png";

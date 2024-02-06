@@ -23,6 +23,7 @@ import {
     estherShield,
     fairyWing,
     fishSpear,
+    flamingFeather,
     garnet,
     greenBambooHat,
     guideBook,
@@ -110,4 +111,5 @@ export const ITEMS = [
     wildKargoEye,
     pigIllustrated,
     deckOfCards,
+    flamingFeather,
 ];

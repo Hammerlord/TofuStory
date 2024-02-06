@@ -295,6 +295,12 @@ export const getMultiplier = ({
         }, 0);
     }
 
+    // @ts-ignore -- We are checking the existence of resourceCost here either way
+    if (type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
+        // @ts-ignore
+        return actionParent.resourceCost;
+    }
+
     if (!combatant) {
         return 1;
     }
@@ -328,12 +334,6 @@ export const getMultiplier = ({
             getEnabledEffects({ combatantInfo, getCalculationTarget }).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED)
                 .length || 1
         );
-    }
-
-    // @ts-ignore -- We are checking the existence of resourceCost here either way
-    if (type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
-        // @ts-ignore
-        return actionParent.resourceCost;
     }
 
     return 1;

@@ -35,6 +35,7 @@ import {
     canTargetIfStealthed,
     getEnabledEffects,
     getInducedAttack,
+    getMultiplier,
     getPossibleSummonIndices,
     getValidTargetIndices,
     isSilenced,
@@ -502,7 +503,17 @@ const onEffectEventTrigger = ({
             passesConditions({ getCalculationTarget, proc: effect, source }) &&
             passesConditions({ getCalculationTarget, proc: effectEvent, source });
 
-        const chanceCheckPass = Math.random() < chance;
+        const caster = findCombatantData(getState, ownerId);
+        const chanceMultiplier = getMultiplier({
+            actor: caster,
+            target: caster,
+            allTargets: [caster],
+            source,
+            multiplier: effectEvent.multiplier,
+            actionParent: source?.source,
+            ...getState().battle,
+        });
+        const chanceCheckPass = Math.random() < chance * chanceMultiplier;
 
         const checkRemoveEffect = () => {
             if (removeEffect) {

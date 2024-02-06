@@ -1,3 +1,4 @@
+import { burn } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, wound } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -28,6 +29,7 @@ import {
     EstherShieldImage,
     FairyWingImage,
     FishSpearImage,
+    FlamingFeatherImage,
     GarnetImage,
     GoldenHammerImage,
     GreenBambooHatImage,
@@ -1492,6 +1494,59 @@ export const deckOfCards: Item = {
                         },
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const flamingFeather: Item = {
+    name: "Flaming Feather",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: FlamingFeatherImage,
+    description: "When you use an offense card, you have a 33% chance for each resource to Burn an enemy.",
+    effects: [
+        {
+            name: "Flaming Feather",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onOffensiveAbility: {
+                conditions: [
+                    {
+                        comparator: "gt",
+                        resourceCost: 1,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                chance: 0.334,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+                },
+                ability: {
+                    name: "Fire Feather",
+                    image: FlamingFeatherImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            animation: ANIMATION_TYPES.ONE_WAY,
+                            icon: FlamingFeatherImage,
+                            animationOptions: {
+                                rotate: 135,
+                                rotateToFaceTarget: true,
+                                flash: 600,
+                            },
+                            playbackTime: 750,
+                            effects: [
+                                {
+                                    ...burn,
+                                    duration: 3,
+                                },
+                            ],
+                        },
+                    ],
+                },
             },
         },
     ],
