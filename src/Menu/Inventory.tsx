@@ -14,10 +14,12 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         justifyContent: "center",
         height: "100%",
+        boxSizing: "border-box",
     },
     item: {
         border: "1px solid transparent",
         height: "50px",
+        padding: 4,
     },
     selectedItem: {
         border: "1px solid rgba(255, 255, 255, 0.8)",
