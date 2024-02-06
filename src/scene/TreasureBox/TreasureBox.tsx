@@ -137,6 +137,9 @@ const useStyles = createUseStyles({
         height: "32px",
         margin: "auto",
     },
+    buttonContainer: {
+        minHeight: "38px",
+    },
 });
 
 const TreasureBox = ({
@@ -237,14 +240,22 @@ const TreasureBox = ({
                         </div>
                     )}
                 </div>
-                {Puzzle && (
-                    <div className={classes.puzzleContainer}>
-                        <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
-                    </div>
-                )}
-                <Button color={isChestOpened ? "primary" : "warning"} onClick={onExit}>
-                    {isChestOpened ? "Continue Journey" : "Abandon"}
-                </Button>
+                <div className={classes.puzzleContainer}>
+                    {Puzzle && <Puzzle onComplete={() => setCompleted(true)} completed={completed} />}
+                </div>
+
+                <div className={classes.buttonContainer}>
+                    {!completed && (
+                        <Button color={"warning"} onClick={onExit}>
+                            {"Abandon"}
+                        </Button>
+                    )}
+                    {isChestOpened && (
+                        <Button color={"primary"} onClick={onExit}>
+                            {"Continue Journey"}
+                        </Button>
+                    )}
+                </div>
             </div>
         </div>
     );
