@@ -45,6 +45,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const ITEM_CLASS_NAME = "inventory-item";
+
 const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (itemIndex: number) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
@@ -62,9 +64,13 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
 
     const classes = useStyles();
 
-    const handleClose = () => {
-        setMenuAnchor(null);
-        setSelectedItemIndex(null);
+    const handleClose = (e) => {
+        // Only close the item tooltip if we didn't click an item.
+        // This is to allow the user to consecutively look through item descriptions more easily.
+        if (!e.target?.classList?.contains(ITEM_CLASS_NAME)) {
+            setMenuAnchor(null);
+            setSelectedItemIndex(null);
+        }
     };
 
     const selectedItem = inventory[selectedItemIndex];
@@ -78,7 +84,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                         src={item.image}
                         alt={item.name}
                         onClick={(e) => handleItemClick(e, i)}
-                        className={classNames(classes.item, {
+                        className={classNames(ITEM_CLASS_NAME, classes.item, {
                             [classes.selectedItem]: i === selectedItemIndex,
                         })}
                     />
