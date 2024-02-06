@@ -2763,6 +2763,7 @@ const zap2: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
+    description: "When you draw this card, Stun a random enemy.",
     level: 2,
     onDraw: {
         ability: {
@@ -2815,6 +2816,7 @@ export const zap: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
+    description: "When you draw this card, Stun a random enemy.",
     onDraw: {
         ability: {
             name: "Spark",
