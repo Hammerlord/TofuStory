@@ -1,7 +1,7 @@
 import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
 import { clandestine, lifeLink, poisonous } from "../enemy/effect";
-import { avenger, elite, eliteSquad, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
+import { avenger, elite, eliteSquad, eliteTrio, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { tantrum } from "./../enemy/abilities";
 import { getRandomItem, shuffle } from "./../utils";
 import { EliteMap, Route } from "./types";
@@ -44,7 +44,7 @@ const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities, ability],
-        effects: [...effects, eliteSquad, affix],
+        effects: [...effects, eliteTrio, affix],
     };
 
     const alternateResource = {
