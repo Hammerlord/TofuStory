@@ -9,13 +9,17 @@ import { EliteMap, Route } from "./types";
 const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
     const baseEnemy = getRandomItem(eliteMap.squad);
+    const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 20));
 
     const enemy = {
         ...baseEnemy,
         isElite: true,
-        maxHP: Math.floor(baseEnemy.maxHP * 1.2 + 20),
-        abilities: [...(baseEnemy.abilities || [])],
-        effects: [eliteSquad, affix],
+        maxHP: applyMultiplier(maxHP),
+        armor: applyMultiplier(armor),
+        abilities: [...abilities],
+        effects: [...effects, eliteSquad, affix],
     };
 
     return [enemy, enemy, enemy, enemy, enemy];

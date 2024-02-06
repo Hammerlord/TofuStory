@@ -389,7 +389,6 @@ export const eliteSquad: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    attackPower: 1,
     icon: MedalIcon,
     disableDisplayIcon: false,
     description:
