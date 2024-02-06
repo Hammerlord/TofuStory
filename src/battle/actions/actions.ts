@@ -1758,7 +1758,7 @@ export const useAbility = ({
         const handleAction = (action: Action) => {
             let selection;
             // If it is a multi-hit ability, the attacks should go to the same target
-            if (action.target === initialTarget && prevSelection) {
+            if (action.target === TARGET_TYPES.HOSTILE && action.target === initialTarget && prevSelection) {
                 selection = prevSelection;
             } else {
                 selection = autoSelectActionTarget({
