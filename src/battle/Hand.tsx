@@ -41,25 +41,21 @@ const useStyles = createUseStyles({
 
 const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, className, player, refs }) => {
     const [oldHand, setOldHand] = useState([]);
-    const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
-        setIsPlayingAnimation(true);
         const timeout = setTimeout(() => {
             setOldHand(hand);
-            setIsPlayingAnimation(false);
         }, 340);
 
         return () => {
             clearTimeout(timeout);
             setOldHand(hand);
-            setIsPlayingAnimation(false);
         };
     }, [hand]);
 
     const handleAbilityClick = (event, id: string) => {
-        if (!isPlayingAnimation) {
+        if (hand.some((card: HandAbility) => card.instanceId === id)) {
             onAbilityClick(event, id);
         }
     };
