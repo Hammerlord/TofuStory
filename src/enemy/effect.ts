@@ -348,7 +348,7 @@ export const clandestine: Effect = {
                 name: "Stealth",
                 icon: CloudyIcon,
                 canBeSilenced: true,
-                description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+                description: "Untargetable by single-target attacks. Effect ends if this character is hit by area damage.",
                 onReceiveAttack: {
                     removeEffect: true,
                 },
