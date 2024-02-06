@@ -164,7 +164,7 @@ export const fairySwarm: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    attackDamageReceived: -10,
+    attackDamageReceived: -15,
     duration: 2,
     icon: ShiningFairyImage,
     image: GreenFairiesImage,
@@ -208,8 +208,8 @@ export const fairySwarm: Effect = {
 
 const frenziedFairies: Effect = {
     name: "Fairy Frenzy",
-    description: "Receiving 3 damage on turn end.",
-    armorReceived: -1,
+    description: "Vulnerable. Receiving 3 damage on turn end.",
+    attackDamageReceived: 1,
     duration: 1,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,

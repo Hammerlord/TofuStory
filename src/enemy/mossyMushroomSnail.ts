@@ -1,15 +1,6 @@
 import { attack } from "./abilities";
 import { agedShell, toughShell, weightedShell } from "./effect";
-import {
-    ACTION_TYPES,
-    ANIMATION_TYPES,
-    Effect,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    Minion,
-    SCALING_VALUE_TYPES,
-    TARGET_TYPES,
-} from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { GreenFairiesImage, MossyMushroomImage, MossySnailImage, MushroomOmokImage } from "../images";
 
 export const mossyMushroom: Minion = {
@@ -17,6 +8,7 @@ export const mossyMushroom: Minion = {
     maxHP: 200,
     isBoss: true,
     image: MossyMushroomImage,
+    resources: 2,
     abilities: [
         {
             ...attack,
@@ -24,7 +16,7 @@ export const mossyMushroom: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -32,30 +24,14 @@ export const mossyMushroom: Minion = {
             name: "Whomp",
             image: MushroomOmokImage,
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                     area: 1,
                     secondaryDamage: 3,
-                    effects: [
-                        {
-                            name: "Flattened",
-                            description: "Receiving increased damage from Whomp.",
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            icon: MushroomOmokImage,
-                            duration: 6,
-                            abilityDamageReceived: [
-                                {
-                                    abilityName: "Whomp",
-                                    damage: 2,
-                                    type: SCALING_VALUE_TYPES.FLAT,
-                                },
-                            ],
-                        },
-                    ],
                 },
             ],
         },
@@ -90,7 +66,16 @@ export const mossySnail: Minion = {
     image: MossySnailImage,
     isBoss: true,
     abilities: [
-        attack,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         {
             name: "Rollout",
             castTime: 1,
