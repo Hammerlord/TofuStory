@@ -1432,11 +1432,13 @@ export const throwTheBook: Ability = {
 const magicBooster2: Ability = {
     name: "Magic Booster",
     image: MagicBoosterImage,
-    resourceCost: 0,
+    resourceCost: 1,
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: MagicBoosterImage,
             drawCards: {
                 amount: 2,
                 effects: {
@@ -1456,11 +1458,10 @@ export const magicBooster: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: MagicBoosterImage,
             drawCards: {
                 amount: 2,
-                effects: {
-                    resourceCost: -1,
-                },
                 filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
             },
         },
