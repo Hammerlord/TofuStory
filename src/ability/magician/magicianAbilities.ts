@@ -717,7 +717,7 @@ const frostBarrier2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
-                    duration: 3,
+                    duration: 2,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -750,7 +750,7 @@ export const frostBarrier: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
                     image: ElementalAdaptationEffectImage,
-                    duration: 3,
+                    duration: 2,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -2037,7 +2037,7 @@ export const temporalBag: Ability = {
 
 const greatestBolt2: Ability = {
     name: "Greatest Bolt",
-    resourceCost: 2,
+    resourceCost: 3,
     image: PurpleEnergyBoltImage,
     level: 2,
     description: "+2 damage for every 'bolt' card you own.",
@@ -2069,7 +2069,7 @@ const greatestBolt2: Ability = {
 
 export const greatestBolt: Ability = {
     name: "Greatest Bolt",
-    resourceCost: 2,
+    resourceCost: 3,
     image: PurpleEnergyBoltImage,
     description: "+2 damage for every 'bolt' card you own.",
     overrideBodyText: true,
@@ -2630,7 +2630,7 @@ const snowBoulder: Ability = {
                     duration: 2,
                 },
             ],
-            addCardsToDiscard: [avalanche],
+            addCardsToDeck: [avalanche],
         },
     ],
 };
@@ -2657,7 +2657,7 @@ export const snowball: Ability = {
                     duration: 1,
                 },
             ],
-            addCardsToDiscard: [snowBoulder],
+            addCardsToDeck: [snowBoulder],
         },
     ],
 };
