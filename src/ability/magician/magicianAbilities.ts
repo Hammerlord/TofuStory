@@ -518,7 +518,7 @@ const mpEater2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 4,
+            resources: 3,
         },
     ],
 };
@@ -528,7 +528,7 @@ export const mpEater: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
-    description: "Destroy a target's resources",
+    description: "Destroy up to 2 resources on the target",
     actions: [
         {
             damage: 0,
@@ -536,12 +536,12 @@ export const mpEater: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: WizMushImage,
             animation: ANIMATION_TYPES.BEAM,
-            resources: -3,
+            resources: -2,
         },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 3,
+            resources: 2,
         },
     ],
     upgrades: [mpEater2],
