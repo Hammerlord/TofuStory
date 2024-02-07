@@ -5,6 +5,12 @@ export enum ITEM_TYPES {
     EQUIPMENT = "equipment",
 }
 
+export enum RARITIES {
+    COMMON = "Common",
+    UNCOMMON = "Uncommon",
+    RARE = "Rare",
+}
+
 export interface Item {
     name: string;
     description?: string;
@@ -20,6 +26,7 @@ export interface Item {
     upgradeCard?: boolean;
     removeCard?: boolean;
     abilityChoices?: 1;
+    rarity?: RARITIES;
     camp?: {
         abilityChoices?: number;
         healing?: number;
