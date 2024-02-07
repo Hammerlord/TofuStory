@@ -35,7 +35,8 @@ const useStyles = createUseStyles({
         borderRadius: 8,
 
         "&.selected": {
-            boxShadow: "0 0 8px 4px #45ff61",
+            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+            WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
     },
 });

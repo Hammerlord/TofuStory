@@ -34,7 +34,8 @@ const useStyles = createUseStyles({
         cursor: "pointer",
     },
     selected: {
-        boxShadow: "0 0 8px 4px #45ff61",
+        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
     },
     jobTitle: {
         borderBottom: "1px solid rgba(255, 255, 255, 0.9)",

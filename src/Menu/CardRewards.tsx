@@ -34,7 +34,8 @@ const useStyles = createUseStyles({
         margin: "0 24px",
         verticalAlign: "bottom",
         "&.selected": {
-            boxShadow: "0 0 8px 4px #45ff61",
+            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+            WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
     },
     selectContainer: {

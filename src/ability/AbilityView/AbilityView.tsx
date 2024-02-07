@@ -143,7 +143,8 @@ const useStyles = createUseStyles({
         },
     },
     glow: {
-        boxShadow: "0px 0px 7px 5px rgba(240, 220, 0, 0.9)",
+        filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
+        WebkitFilter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
     },
 });
 
