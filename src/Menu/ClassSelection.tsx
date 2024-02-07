@@ -43,6 +43,7 @@ const useStyles = createUseStyles({
     classContainer: {
         display: "flex",
         margin: "32px 0",
+        justifyContent: "space-evenly",
     },
     classCard: {
         width: "175px",
@@ -114,7 +115,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                     <div className={classes.portraitContainer}>
                         <img src={portraits[selectedClass] || AnonymushroomImage} className={classes.portrait} />
                     </div>
-                    <p>After some time of fumbling around, you realize that you are in fact a mushroom.</p>
+                    <p>After some time spent fumbling around, you realize that you are, in fact, a mushroom.</p>
                     <p>You don't remember much, but you do remember you were a...</p>
                 </div>
                 <div className={classes.classContainer}>
@@ -140,8 +141,6 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                         </div>
                         <div>MAGICIAN</div> <hr />A ranged caster capable of bombarding enemies with magic spells
                     </div>
-                    <div className={classes.classCard}>Not yet available</div>
-                    <div className={classes.classCard}>Not yet available</div>
                 </div>
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
                     Select!

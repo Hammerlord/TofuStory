@@ -37,7 +37,7 @@ const useStyles = createUseStyles({
     player: {
         position: "absolute",
         left: "280px",
-        top: "112px",
+        bottom: "227px",
         WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
