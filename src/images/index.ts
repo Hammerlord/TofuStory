@@ -251,6 +251,8 @@ export { default as MushroomOmokImage } from "./MushroomOmok.png";
 export { default as MushroomSporeImage } from "./MushroomSpore.png";
 export { default as MutantRibbonPigImage } from "./MutantRibbonPig.gif";
 export { default as MutantSnailImage } from "./MutantSnail.png";
+export { default as NewspaperImage } from "./Newspaper.png";
+export { default as NewYearRiceSoupImage } from "./NewYearRiceSoup.png";
 export { default as NightShadeExplosionImage } from "./NightShadeExplosion.png";
 export { default as NimbleJewelImage } from "./NimbleJewel.png";
 export { default as NimbleJewelCImage } from "./NimbleJewelC.png";

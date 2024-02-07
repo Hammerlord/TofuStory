@@ -51,6 +51,7 @@ import {
     sunshinePan,
     tauromacisHorn,
     taurospearHorn,
+    tofuSpecial,
     topaz,
     tortieShell,
     wildKargoEye,
@@ -116,4 +117,5 @@ export const ITEMS = [
     flamingFeather,
     diamondOre,
     plunger,
+    tofuSpecial,
 ];

@@ -42,6 +42,7 @@ import {
     LeatherSandalsImage,
     LetterImage,
     LuckSackImage,
+    NewspaperImage,
     PanlidImage,
     PieceOfIceImage,
     PigIllustratedImage,
@@ -1634,4 +1635,15 @@ export const plunger: Item = {
             },
         },
     ],
+};
+
+export const tofuSpecial: Item = {
+    name: "Tofu Special",
+    description: "The first Tofu OR Tofu Soup you purchase at a merchant shop is free.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: NewspaperImage,
+    merchant: {
+        freeFood: true,
+    },
 };

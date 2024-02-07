@@ -37,5 +37,6 @@ export interface Item {
         refreshTimes?: number;
         // Percentage discount on prices
         discount?: number;
+        freeFood?: boolean;
     };
 }
