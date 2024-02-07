@@ -6,6 +6,7 @@ const useStyles = createUseStyles({
         position: "relative",
         display: "inline-block",
         borderRadius: "32px",
+        verticalAlign: "bottom",
         "&.sm": {
             width: "20px",
             height: "20px",

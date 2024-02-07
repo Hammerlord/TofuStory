@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { Wave } from "./types";
+import { JapaneseOgreIcon } from "../images/icons";
+import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {
@@ -13,6 +15,9 @@ const useStyles = createUseStyles({
     currentWave: {
         fontWeight: "600",
         fontSize: "1.3rem",
+    },
+    boss: {
+        color: "rgb(255, 175, 150)",
     },
 });
 
@@ -28,7 +33,11 @@ const WaveInfo = ({ waves, currentWaveIndex, cleared }: { waves: Wave[]; current
 
     let messageNode;
     if (defeatBoss) {
-        messageNode = <div>Defeat the boss</div>;
+        messageNode = (
+            <div>
+                Defeat the <Icon icon={JapaneseOgreIcon} size="sm" /> <span className={classes.boss}>boss</span>
+            </div>
+        );
     } else {
         messageNode = <div>Defeat all enemies</div>;
     }
