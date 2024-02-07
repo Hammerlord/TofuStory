@@ -29,6 +29,7 @@ export { default as BananaPeelImage } from "./BananaPeel.png";
 export { default as BarrelImage } from "./Barrel.png";
 export { default as BarrelsSceneImage } from "./BarrelsScene.png";
 export { default as BatsEffectImage } from "./BatsEffect.gif";
+export { default as BattleShieldImage } from "./BattleShield.png";
 export { default as BigBeefyImage } from "./BigBeefy.png";
 export { default as BigSnowballImage } from "./BigSnowball.png";
 export { default as BlackManualImage } from "./BlackManual.png";

@@ -8,6 +8,7 @@ import {
     ancientTreeSap,
     aquamarine,
     ballerCane,
+    battleShield,
     blueSaunaRobe,
     boneHelm,
     bouquet,
@@ -118,4 +119,5 @@ export const ITEMS = [
     diamondOre,
     plunger,
     tofuSpecial,
+    battleShield,
 ];

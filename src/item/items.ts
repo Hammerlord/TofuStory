@@ -12,6 +12,7 @@ import {
     ArwensGlassShoeImage,
     ASetOfMemoryCardsImage,
     BallerCaneImage,
+    BattleShieldImage,
     BluePotionImage,
     BlueSaunaRobeImage,
     BoneHelmImage,
@@ -95,18 +96,37 @@ export const halfEatenHotdog: Item = {
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "Reduce damage received by 1 when your health is less than half.",
+    description: "On wave start, gain 5 armor.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     image: StolenFenceImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Stolen Fence",
-            description: "Reducing damage taken by 1.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: StolenFenceImage,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 5,
+            },
+        },
+    ],
+};
+
+export const battleShield: Item = {
+    name: "Battle Shield",
+    description: "Reduce damage received by 1 when your health is less than half.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: BattleShieldImage,
+    effects: [
+        {
+            name: "Battle Shield",
+            description: "Reducing damage taken by 1.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: BattleShieldImage,
             attackDamageReceived: -1,
             onlyVisibleWhenProcced: true,
             conditions: [
@@ -126,7 +146,6 @@ export const safetyCharm: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SafetyCharmImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Safety Charm",
@@ -149,7 +168,6 @@ export const drakeBlood: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: DrakeBloodImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Drake Blood",
@@ -173,7 +191,6 @@ export const luckSack: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: LuckSackImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Luck Sack",
@@ -343,7 +360,7 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "On wave start, gain 10 armor and prevent armor decay for 1 turn.",
+    description: "On wave start, gain 10 armor and prevent armor decay for 2 turns.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
@@ -363,7 +380,7 @@ export const panlid: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         type: EFFECT_TYPES.NONE,
                         preventArmorDecay: true,
-                        duration: 1,
+                        duration: 2,
                     },
                 ],
             },
