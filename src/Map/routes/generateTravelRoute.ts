@@ -13,7 +13,15 @@ import { events } from "./eventList";
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
  */
-const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: Route; notoreity: number; numRoutesComplete: number }) => {
+const generateTravelRoute = ({
+    startingRoute,
+    notoreity,
+    numRoutesComplete,
+}: {
+    startingRoute: Route;
+    notoreity: number;
+    numRoutesComplete: number;
+}) => {
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
@@ -58,9 +66,11 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
                 ++numEncountersSinceRestPoint;
                 transformedNode.encounter = generateElites(baseRoute);
             } else if (type === NODE_TYPES.TREASURE) {
+                const isCursedTreasure = baseRoute?.cursedTreasureChance && Math.random() <= baseRoute?.cursedTreasureChance;
                 transformedNode.treasure = {
-                    puzzle: getRandomItem([ComboPuzzle, ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
+                    puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
                     mesos: [20, 40],
+                    curse: isCursedTreasure ? "damage" : undefined,
                 };
                 --numTreasures;
             } else if (type === NODE_TYPES.EVENT) {
@@ -118,7 +128,7 @@ const generateTravelRoute = ({ route, notoreity, numRoutesComplete }: { route: R
         return initialNode;
     };
 
-    return generateBranch(route);
+    return generateBranch(startingRoute);
 };
 
 export default generateTravelRoute;

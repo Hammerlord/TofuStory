@@ -91,6 +91,7 @@ export const routeKerningToPerion: Route = {
             region: REGIONS.PERION,
         },
     ] as RouteNode[],
+    cursedTreasureChance: 0.25,
 };
 
 const toKerning: Route = {
@@ -282,6 +283,7 @@ export const routeElliniaPerion = {
             region: REGIONS.PERION,
         },
     ],
+    cursedTreasureChance: 0.5,
 };
 
 export const routeHenesysEllinia: Route = {
@@ -347,6 +349,7 @@ export const routeHenesysEllinia: Route = {
         },
     ],
     next: [routeElliniaPerion],
+    cursedTreasureChance: 0.25,
 };
 
 export const toHenesys: Route = {

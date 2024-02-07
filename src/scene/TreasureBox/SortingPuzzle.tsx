@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BlueSnailImage, OrangeMushroomImage, PigImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
 import { shuffle } from "../../utils";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -32,7 +33,7 @@ const optionsOrder = allOptions.reduce((acc, imagePath: string, i) => {
     return acc;
 }, {});
 
-const SortingPuzzle = ({ onComplete, completed }) => {
+const SortingPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const [tiles, setTiles] = useState(shuffle(allOptions).slice(0, 5));
 
     const [answer] = useState(
@@ -71,6 +72,8 @@ const SortingPuzzle = ({ onComplete, completed }) => {
         if (isWinCondition) {
             onComplete();
         }
+
+        onInteraction && onInteraction();
     };
 
     return (

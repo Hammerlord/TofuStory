@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BlueSnailImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -38,7 +39,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
+const ComboPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const classes = useStyles();
     const column = [SnailImage, BlueSnailImage, ShroomImage, SlimeImage, RedSnailImage];
     const [currentCombo, setCurrentCombo] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)));
@@ -92,6 +93,8 @@ const ComboPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
             // If the answer is not what we recently selected, it gets reset
             setCurrentAnswer([]);
         }
+
+        onInteraction && onInteraction();
     };
 
     return (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { MesoCoinImage, MesoImage } from "../../images";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -21,7 +22,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const OnOffPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
+const OnOffPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const [answer, setAnswer] = useState(Array.from({ length: 6 }).map(() => Math.random() < 0.5));
 
     const onClickTile = (index: number) => {
@@ -39,20 +40,19 @@ const OnOffPuzzle = ({ onComplete, completed }: { onComplete: Function; complete
         if (newAnswer.every((a) => a)) {
             onComplete();
         }
+        onInteraction && onInteraction();
     };
 
     const classes = useStyles();
 
     return (
-        <>
+        <div>
             {answer.map((a: boolean, i: number) => (
-                <div key={i}>
-                    <div className={classes.iconContainer} onClick={() => onClickTile(i)}>
-                        <img src={a ? MesoCoinImage : MesoImage} className={classes.icon} key={a ? MesoCoinImage : MesoImage} />
-                    </div>
+                <div className={classes.iconContainer} onClick={() => onClickTile(i)} key={i}>
+                    <img src={a ? MesoCoinImage : MesoImage} className={classes.icon} key={a ? MesoCoinImage : MesoImage} />
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

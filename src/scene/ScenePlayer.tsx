@@ -475,6 +475,7 @@ const ScenePlayer = ({
                         }}
                         onLoot={handleObtainLoot}
                         currentItems={player.items}
+                        player={player}
                     />
                 </div>
             )}

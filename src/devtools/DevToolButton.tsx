@@ -1,7 +1,7 @@
 import { ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import defaultCharacterProperties from "../character/defaultCharacterProperties";
+import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
 import Map from "../Map/Map";
 import CardGame from "../scene/CardGame";
 import KittenBarrelsQuest from "../scene/Kerning/kpq/KittenBarrelsQuest";
@@ -193,6 +193,8 @@ const DevToolButton = () => {
                     initItems={[]}
                     initMesos={[123, 123]}
                     Puzzle={TREASURE_PUZZLE_MAP[treasurePuzzleName]}
+                    player={wizardProperties}
+                    curse={"damage"}
                 />
             )}
             {isItemViewerOpen && (

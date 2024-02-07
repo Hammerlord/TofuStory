@@ -2,21 +2,19 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { MesoImage, TreasureChestImage } from "../../images";
-import { LockIcon } from "../../images/icons";
+import { LockIcon, WarningIcon } from "../../images/icons";
 import { Item, ITEM_TYPES } from "../../item/types";
 import { ITEMS } from "../../Map/routes/eventList";
 import { getRandomInt, getRandomItem } from "../../utils";
 import BannerNotice from "../../view/BannerNotice";
 import Button from "../../view/Button";
+import { PuzzleProps } from "./types";
+import { useAppDispatch } from "../../hooks";
+import { playerStateSlice } from "../../character/playerReducer";
+import Icon from "../../icon/Icon";
+import Overlay from "../../view/Overlay";
 
 const useStyles = createUseStyles({
-    root: {
-        textAlign: "center",
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        background: "rgba(25, 25, 25, 0.8)",
-    },
     inner: {
         position: "absolute",
         top: "50%",
@@ -25,7 +23,7 @@ const useStyles = createUseStyles({
         textAlign: "center",
     },
     puzzleContainer: {
-        display: "flex",
+        display: "inline-block",
         padding: "1rem 2rem",
         border: "2px solid rgba(214, 214, 128, 0.8)",
         background: "rgba(165, 155, 129, 0.5)",
@@ -73,6 +71,16 @@ const useStyles = createUseStyles({
             opacity: "0%",
         },
     },
+    "@keyframes cursed": {
+        "0%": {
+            WebkitFilter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
+            filter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
+        },
+        "100%": {
+            WebkitFilter: "brightness(0.25) drop-shadow(0 0 10px purple) drop-shadow(0 0 5px purple)",
+            filter: "brightness(0.25) drop-shadow(0 0 10px purple) drop-shadow(0 0 5px purple)",
+        },
+    },
     treasureContainer: {
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 30%, rgba(0,212,255,0) 100%)",
@@ -116,6 +124,13 @@ const useStyles = createUseStyles({
             cursor: "unset",
             animationFillMode: "forwards",
         },
+        "&.cursed": {
+            animationDuration: "2s",
+            animationName: "$cursed",
+            transitionTimingFunction: "ease-in-out",
+            animationIterationCount: "infinite",
+            animationDirection: "alternate-reverse",
+        },
     },
     lockContainer: {
         backgroundColor: "rgba(0, 0, 0, 0.7)",
@@ -140,7 +155,20 @@ const useStyles = createUseStyles({
     buttonContainer: {
         minHeight: "38px",
     },
+    warning: {
+        color: "rgb(255, 225, 200)",
+        background: "rgba(10, 10, 10, 0.9)",
+        padding: "8px",
+        borderRadius: "4px",
+    },
+    warningText: {},
 });
+
+export enum TREASURE_BOX_CURSES {
+    damage = "damage",
+}
+
+const { updatePlayer } = playerStateSlice?.actions || {};
 
 const TreasureBox = ({
     onExit,
@@ -150,6 +178,8 @@ const TreasureBox = ({
     onLoot,
     currentItems = [],
     Puzzle,
+    player,
+    curse,
 }: {
     onExit: any;
     initItems?: Item[];
@@ -157,13 +187,16 @@ const TreasureBox = ({
     title?: string;
     currentItems?: Item[]; // Items already held by the player
     onLoot: ({ mesos, items }: { mesos: number; items: Item[] }) => void;
-    Puzzle?: ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => JSX.Element;
+    Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => JSX.Element;
+    player: any;
+    curse?: "damage";
 }) => {
     const classes = useStyles();
     const [completed, setCompleted] = useState(!Puzzle);
     const [isChestOpened, setIsChestOpened] = useState(false);
     const [items, setItems] = useState([]);
     const [mesos, setMesos] = useState(0);
+    const dispatch = useAppDispatch();
 
     const handleClickChest = () => {
         if (completed) {
@@ -200,10 +233,24 @@ const TreasureBox = ({
         setMesos(mesosToSet);
     }, []);
 
+    const handlePuzzleInteraction = () => {
+        if (curse) {
+            if (player.HP > 1) {
+                dispatch(
+                    updatePlayer({
+                        HP: player.HP - 1,
+                    })
+                );
+            }
+        }
+    };
+
     return (
-        <div className={classes.root}>
+        <Overlay>
             <div className={classes.bannerContainer}>
-                <BannerNotice>{title}</BannerNotice>
+                <BannerNotice>
+                    {curse && "Cursed"} {title}
+                </BannerNotice>
             </div>
             <div className={classes.inner}>
                 <div className={classes.chestContainer}>
@@ -212,6 +259,7 @@ const TreasureBox = ({
                         className={classNames(classes.treasureChest, {
                             open: completed,
                             fadeout: isChestOpened,
+                            cursed: !completed && !isChestOpened && curse,
                         })}
                         onClick={handleClickChest}
                     />
@@ -241,9 +289,19 @@ const TreasureBox = ({
                     )}
                 </div>
                 {Puzzle && (
-                    <div className={classes.puzzleContainer}>
-                        <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
-                    </div>
+                    <>
+                        {curse && (
+                            <p className={classes.warning}>
+                                <Icon icon={WarningIcon} size="sm" />
+                                {"  "}
+                                <span className={classes.warningText}>Every time you change the lock, you'll lose 1 HP.</span>
+                            </p>
+                        )}
+
+                        <div className={classes.puzzleContainer}>
+                            <Puzzle onComplete={() => setCompleted(true)} completed={completed} onInteraction={handlePuzzleInteraction} />
+                        </div>
+                    </>
                 )}
 
                 <div className={classes.buttonContainer}>
@@ -259,7 +317,7 @@ const TreasureBox = ({
                     )}
                 </div>
             </div>
-        </div>
+        </Overlay>
     );
 };
 

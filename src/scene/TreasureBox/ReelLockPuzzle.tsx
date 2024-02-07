@@ -2,8 +2,13 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BlueSnailImage, OrangeMushroomImage, PigImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
 import { getRandomInt, shuffle } from "../../utils";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
+    root: {
+        display: "flex",
+        margin: "auto",
+    },
     iconContainer: {
         display: "inline-block",
         background: "rgba(25, 25, 25, 0.3)",
@@ -43,7 +48,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const ReelLockPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
+const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const [columns] = useState(
         (() => {
             const column = shuffle([SnailImage, BlueSnailImage, ShroomImage, RedSnailImage, SlimeImage, OrangeMushroomImage, PigImage]);
@@ -82,12 +87,13 @@ const ReelLockPuzzle = ({ onComplete, completed }: { onComplete: Function; compl
         newAnswer[colIndex] = (((newAnswer[colIndex] + direction) % column.length) + column.length) % column.length;
         setAnswer(newAnswer);
         checkCorrectAnswer(newAnswer);
+        onInteraction && onInteraction();
     };
 
     const classes = useStyles();
 
     return (
-        <>
+        <div className={classes.root}>
             {answer.map((i, j) => (
                 <div key={j} className={classes.column}>
                     <button className={classes.arrow} onClick={() => onClickTurnReel(j, -1)}>
@@ -101,7 +107,7 @@ const ReelLockPuzzle = ({ onComplete, completed }: { onComplete: Function; compl
                     </button>
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

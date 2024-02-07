@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BlueSnailImage, RedSnailImage, SnailImage } from "../../images";
 import { getRandomInt, getRandomItem } from "../../utils";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
     iconContainer: {
@@ -30,7 +31,7 @@ const tilesChangePossibilities = [
     [3, 2, 1, 2, 3],
 ];
 
-const RowPuzzle = ({ onComplete, completed }: { onComplete: Function; completed: boolean }) => {
+const RowPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const classes = useStyles();
     // Eg. if you click on a index with value '3', it changes 3 tiles
     const [tilesChange] = useState(getRandomItem(tilesChangePossibilities));
@@ -71,6 +72,8 @@ const RowPuzzle = ({ onComplete, completed }: { onComplete: Function; completed:
         if (newAnswer.every((tile: number) => tile === newAnswer[0])) {
             onComplete();
         }
+
+        onInteraction && onInteraction();
     };
 
     return (

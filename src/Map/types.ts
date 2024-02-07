@@ -39,6 +39,7 @@ export interface RouteNode {
         puzzle: Function;
         mesos?: number[]; // [min, max]
         items?: Item[]; // If not provided, it will grant a piece of equipment not already owned by the player
+        curse?: "damage";
     };
     cardRewards?: Ability[]; // If this is a battle, these abilities will be included in the card rewards screen upon victory
     town?: TOWNS;
@@ -54,6 +55,8 @@ export interface EliteMap {
 }
 
 export interface Route {
+    /** Value up to 1. 1 = 100%. If not provided, the chance is 0. */
+    cursedTreasureChance?: number;
     nodes: RouteNode[];
     initialPlayerPosition?: {
         x: number;

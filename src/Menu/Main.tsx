@@ -123,7 +123,7 @@ const Main = () => {
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
-        const route = generateTravelRoute({ route: toLith, notoreity: 0, numRoutesComplete: 0 });
+        const route = generateTravelRoute({ startingRoute: toLith, notoreity: 0, numRoutesComplete: 0 });
         setRoute(route);
         setLocationNode(route);
         setSceneRegion(null);
@@ -479,6 +479,8 @@ const Main = () => {
                             Puzzle={treasure.puzzle}
                             initItems={treasure.items}
                             initMesos={treasure.mesos}
+                            curse={treasure.curse}
+                            player={player}
                         />
                     )}
                     {battle && <BattlefieldContainer />}
