@@ -718,6 +718,7 @@ const frostBarrier2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
                     duration: 2,
+                    maxStacks: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -751,6 +752,7 @@ export const frostBarrier: Ability = {
                     icon: ElementalAdaptationImage,
                     image: ElementalAdaptationEffectImage,
                     duration: 2,
+                    maxStacks: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -1225,7 +1227,8 @@ const avatarOfTheStars2: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 2,
+                    maxStacks: 1,
+                    duration: 3,
                     override: {
                         portrait: StarfishIdleImage,
                     },
@@ -1263,7 +1266,8 @@ export const avatarOfTheStars: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 2,
+                    maxStacks: 1,
+                    duration: 3,
                     override: {
                         portrait: StarfishIdleImage,
                     },

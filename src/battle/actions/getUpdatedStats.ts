@@ -26,7 +26,7 @@ export interface UpdatedCombatantStats {
     resources?: number;
     rawResources?: number;
     overcappedResources?: number;
-    effects?: Effect[];
+    effects?: CombatEffect[];
     isDeathBlow?: boolean;
     mesos?: number;
     removedEffects?: CombatEffect[];
@@ -130,7 +130,7 @@ export const getUpdatedStats = ({
             );
         };
 
-        const effects: Effect[] = actionEffects
+        const effects: CombatEffect[] = actionEffects
             .map((effect: String | Effect) => {
                 if (typeof effect === "string") {
                     return {

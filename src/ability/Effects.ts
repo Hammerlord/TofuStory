@@ -129,7 +129,8 @@ export const chill: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 5,
     attackPower: -1,
-    description: "Reduces attack power by 1.",
+    maxStacks: 3,
+    description: "Reduces attack power by 1. Max 3 stacks.",
 };
 
 export const freeze: Effect = {

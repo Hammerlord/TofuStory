@@ -154,6 +154,8 @@ export interface Effect {
     // The larger, possibly animated effect image to display on top of the combatant portrait
     image?: string;
     weaponAnimation?: "glow";
+    /** When reapplied at the stack maximum, the stack with the lowest duration will pandemic, instead of adding another stack */
+    maxStacks?: number;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     resourcesPerTurn?: number;
@@ -171,8 +173,6 @@ export interface Effect {
     thorns?: number;
     lifeOnKill?: number;
     abilityDamageReceived?: AbilityDamageReceived[];
-    /** Only a single instance of this effect type can be on the character */
-    unique?: boolean;
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
     onOffensiveAbility?: EffectEventTrigger;

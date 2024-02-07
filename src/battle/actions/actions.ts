@@ -687,6 +687,58 @@ export const checkEventTrigger = ({
     };
 };
 
+/**
+ * When an effect reaches max stacks, the existing effect with the shortest duration gets its duration extended by the duration of the incoming effect.
+ */
+const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects: CombatEffect[]): CombatEffect[] => {
+    const updatedEffects = existingEffects.slice();
+
+    incomingEffects.forEach((incomingEffect: CombatEffect) => {
+        if (!incomingEffect.maxStacks) {
+            updatedEffects.push(incomingEffect);
+            return;
+        }
+
+        const idCountMap = {};
+        updatedEffects.forEach((effect: CombatEffect) => {
+            if (!effect.maxStacks) {
+                return;
+            }
+
+            if (!idCountMap[effect.name]) {
+                idCountMap[effect.name] = {
+                    count: 1,
+                    lowestDuration: effect,
+                };
+
+                return;
+            }
+            ++idCountMap[effect.name].count;
+            if (effect.duration < idCountMap[effect.name].duration) {
+                idCountMap[effect.name].lowestDuration = effect;
+            }
+        });
+
+        if (!idCountMap[incomingEffect.name] || idCountMap[incomingEffect.name].count < incomingEffect.maxStacks) {
+            updatedEffects.push(incomingEffect);
+            return;
+        }
+
+        updatedEffects.forEach((effect: CombatEffect, i) => {
+            const { lowestDuration } = idCountMap[effect.name] || {};
+            if (lowestDuration?.id === effect.id) {
+                // This is the effect to extend the duration
+                updatedEffects[i] = {
+                    ...updatedEffects[i],
+                    duration: updatedEffects[i].duration + incomingEffect.duration,
+                };
+            }
+        });
+    });
+
+    return updatedEffects;
+};
+
 export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach(
@@ -713,7 +765,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
                             HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
                             armor: oldCombatant.armor + armor,
                             resources: oldCombatant.resources + resources,
-                            effects: [...combatantEffects, ...effects],
+                            effects: calculateEffectChanges(effects, combatantEffects),
                             mesos: oldCombatant.mesos + mesos,
                         };
                     }),
