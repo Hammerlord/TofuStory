@@ -156,10 +156,12 @@ interface AbilityViewProps {
     hand?: Ability[];
     discard?: Ability[];
     className?: string;
+    // Eg. when viewing cards during card reward, the cards should not glow
+    disableGlow?: boolean;
 }
 
 const AbilityView = forwardRef(
-    ({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [], className }: AbilityViewProps, ref) => {
+    ({ onClick, isSelected, ability, player, deck = [], hand = [], discard = [], className, disableGlow }: AbilityViewProps, ref) => {
         const classes = useStyles();
         const state = useAppSelector((state) => state);
         const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
@@ -275,7 +277,7 @@ const AbilityView = forwardRef(
                         className={classNames(classes.inner, {
                             [classes.selectedAbility]: isSelected,
                             [classes.ephemeral]: removeAfterTurn,
-                            [classes.glow]: hasBonus,
+                            [classes.glow]: !disableGlow && state.battle && hasBonus,
                         })}
                         style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                     >

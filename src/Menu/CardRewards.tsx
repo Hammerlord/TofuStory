@@ -7,7 +7,6 @@ import { Item } from "../item/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { teleport } from "../ability/magician/magicianAbilities";
 
 const useStyles = createUseStyles({
     inner: {
@@ -39,7 +38,7 @@ const useStyles = createUseStyles({
         },
     },
     selectContainer: {
-        marginBottom: 40,
+        marginBottom: 64,
     },
 });
 
@@ -98,7 +97,7 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
                             onClick={() => setSelectedAbilityIndex(i)}
                             key={i}
                         >
-                            <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} />
+                            <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} disableGlow={true} />
                         </div>
                     ))}
                 </div>
