@@ -391,7 +391,6 @@ export const eliteSquad: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: MedalIcon,
-    disableDisplayIcon: false,
     description:
         "A member of an elite squad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
@@ -404,7 +403,6 @@ export const eliteTrio: Effect = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
     icon: MedalIcon,
-    disableDisplayIcon: false,
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
@@ -417,7 +415,6 @@ export const elite: Effect = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 2,
     icon: MilitaryMedalIcon,
-    disableDisplayIcon: false,
     description:
         "An elite champion, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
 };
