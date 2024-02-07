@@ -47,6 +47,3 @@ export const RED = "rgb(221, 46, 68)";
 export const BLUE = "rgb(23, 111, 189)";
 export const GREEN = "rgb(50, 168, 82)";
 export const GREY = "rgb(100, 100, 100)";
-export const RARITY_COMMON = "rgb(230, 230, 230)";
-export const RARITY_UNCOMMON = "#309eff";
-export const RARITY_RARE = "#ffda72";

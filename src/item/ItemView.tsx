@@ -1,7 +1,7 @@
+import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Item, RARITIES } from "./types";
-import { BLUE, RARITY_COMMON, RARITY_RARE, RARITY_UNCOMMON } from "../ability/AbilityView/constants";
-import classNames from "classnames";
+import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 
 const SIZE = "7px";
 
@@ -48,21 +48,21 @@ const useStyles = createUseStyles({
         },
     },
     uncommon: {
-        borderBottomColor: RARITY_UNCOMMON,
+        borderBottomColor: COLOR_RARITY_UNCOMMON,
         "&:after": {
-            borderTopColor: RARITY_UNCOMMON,
+            borderTopColor: COLOR_RARITY_UNCOMMON,
         },
     },
     common: {
-        borderBottomColor: RARITY_COMMON,
+        borderBottomColor: COLOR_RARITY_COMMON,
         "&:after": {
-            borderTopColor: RARITY_COMMON,
+            borderTopColor: COLOR_RARITY_COMMON,
         },
     },
     rare: {
-        borderBottomColor: RARITY_RARE,
+        borderBottomColor: COLOR_RARITY_RARE,
         "&:after": {
-            borderTopColor: RARITY_RARE,
+            borderTopColor: COLOR_RARITY_RARE,
         },
     },
     rarityContainer: {

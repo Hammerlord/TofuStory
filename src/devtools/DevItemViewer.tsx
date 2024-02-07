@@ -1,10 +1,8 @@
 import { createUseStyles } from "react-jss";
-import { glassShoe, goldenHammer, incense, leatherSandals, redHeadband } from "../item/items";
 import { ITEMS } from "../Map/routes/eventList";
-import { RARITIES } from "../item/types";
-import classNames from "classnames";
-import { BLUE, GREY, RARITY_COMMON, RARITY_RARE } from "../ability/AbilityView/constants";
 import ItemView from "../item/ItemView";
+import { glassShoe, goldenHammer, incense, leatherSandals, redHeadband } from "../item/items";
+import { RARITIES } from "../item/types";
 
 const SIZE = "7px";
 const useStyles = createUseStyles({
