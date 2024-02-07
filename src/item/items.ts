@@ -372,17 +372,15 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "+3 max HP. When you summon a minion, its attack power is increased by 1.",
+    description: "When you summon a minion, its attack power is increased by 1.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
             name: "Alligator Tube",
-            description: "Increasing maximum HP by 5.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 3,
         },
         {
             name: "Alligator Tube",
@@ -698,7 +696,7 @@ export const pigsRibbonItem: Item = {
 export const ballerCane: Item = {
     name: "Baller Cane",
     image: BallerCaneImage,
-    description: "+3 max HP. Whenever you use an ability, gain 1 meso.",
+    description: "Whenever you use an ability, gain 1 meso.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -707,7 +705,6 @@ export const ballerCane: Item = {
             description: "Gaining 1 meso for every ability used.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 3,
             onAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 mesos: 1,
