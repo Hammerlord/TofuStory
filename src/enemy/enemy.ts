@@ -197,7 +197,7 @@ export const slime: Minion = {
             name: "Thick Slime",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -2,
+            attackDamageReceived: -1,
             icon: SquishyLiquidImage,
             description: "Prevents armor decay. While this character has armor:",
             preventArmorDecay: true,

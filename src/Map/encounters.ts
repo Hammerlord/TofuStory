@@ -74,7 +74,7 @@ const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities, ability],
-        effects: [...effects, eliteSquad, affix],
+        effects: [...effects, eliteTrio, affix],
     };
 
     const alternateResource = {

@@ -88,7 +88,6 @@ export const hardwood: Effect = {
     description:
         "When attacked, character receives -1 damage from additional attacks for the turn. Effect is disabled if the character is burning.",
     icon: FirewoodImage,
-    attackDamageReceived: -1,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
