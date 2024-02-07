@@ -1,10 +1,47 @@
-import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
 import { clandestine, lifeLink, poisonous } from "../enemy/effect";
 import { avenger, elite, eliteSquad, eliteTrio, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
-import { tantrum } from "./../enemy/abilities";
+import { attack, tantrum } from "./../enemy/abilities";
 import { getRandomItem, shuffle } from "./../utils";
 import { EliteMap, Route } from "./types";
+
+const findAttackDamage = (minion: Minion): number => {
+    let attackDamage = 0;
+    let backupAttackDamage = 0;
+    for (const ability of minion?.abilities || []) {
+        for (const action of ability.actions) {
+            if (ability.name === attack.name) {
+                attackDamage = action.damage;
+                break;
+            }
+            if (action.damage) {
+                backupAttackDamage = action.damage;
+            }
+        }
+    }
+    return attackDamage || backupAttackDamage;
+};
+
+const generateTantrumAttack = (baseEnemy: Minion): Ability => {
+    const attackDamage = findAttackDamage(baseEnemy);
+
+    return {
+        ...tantrum,
+        actions: [
+            {
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
+                damage: Math.ceil(attackDamage * 1.25),
+            },
+            {
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
+                damage: Math.ceil(attackDamage * 1.25),
+            },
+        ],
+    };
+};
 
 const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
@@ -32,8 +69,8 @@ const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
 
 const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
-    const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(eliteMap.trio);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.25 + 30));
@@ -62,8 +99,8 @@ const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
 
 const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, clandestine, poisonous]);
-    const ability = getRandomItem([tantrum]);
     const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.35 + 40));
@@ -125,6 +162,7 @@ const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
     const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming, clandestine, poisonous]);
     const baseEnemy = getRandomItem(eliteMap.single);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.5 + 50));
 
     const enemy = {
@@ -132,7 +170,7 @@ const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
         isElite: true,
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
-        abilities: [...abilities, tantrum],
+        abilities: [...abilities, ability],
         effects: [...effects, elite, affix],
     };
 
