@@ -46,6 +46,7 @@ import {
     PieceOfIceImage,
     PigIllustratedImage,
     PigsRibbonImage,
+    PlungerImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
     RedPotionImage,
@@ -631,7 +632,7 @@ export const fishSpear: Item = {
     image: FishSpearImage,
     description: "Gain +1 attack power against common enemies.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     effects: [
         {
             name: "Fish Spear",
@@ -776,7 +777,7 @@ export const koreanFan: Item = {
 export const risingStar: Item = {
     name: "Rising Star",
     image: RisingStarImage,
-    description: "After using 7 abilities, gain 1 attack power. (Once per battle.)",
+    description: "Once per battle, after attacking 7 times, gain 1 attack power.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -790,7 +791,10 @@ export const risingStar: Item = {
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: 7,
+                        numAbilitiesUsed: {
+                            type: ACTION_TYPES.ATTACK,
+                            amount: 7,
+                        },
                         comparator: "modulo",
                     },
                 ],
@@ -865,7 +869,7 @@ export const starfallMagicSquare: Item = {
 export const cursedDoll: Item = {
     name: "Cursed Doll",
     image: CursedDollImage,
-    description: "On wave start, a random enemy becomes cursed, taking 1 damage for each other target you attack.",
+    description: "On wave start, randomly curse an enemy to take damage when you attack other targets.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -1169,7 +1173,7 @@ export const estherShield: Item = {
     image: EstherShieldImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When your deck cycles, gain 5 armor.",
+    description: "When your deck cycles, gain 7 armor.",
     effects: [
         {
             name: "Esther Shield",
@@ -1177,7 +1181,7 @@ export const estherShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 5,
+                armor: 7,
             },
         },
     ],
@@ -1416,7 +1420,7 @@ export const brick: Item = {
     image: BrickImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When your attack would deal less than 5 damage to an enemy, it deals 5 damage.",
+    description: "When your attack would deal less than 5 damage, it deals 5 damage.",
     effects: [
         {
             type: EFFECT_TYPES.NONE,
@@ -1609,6 +1613,28 @@ export const diamondOre: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 7,
+        },
+    ],
+};
+
+export const plunger: Item = {
+    name: "Plunger",
+    description: "When your deck cycles, gain 1 resource and draw a card.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: PlungerImage,
+    effects: [
+        {
+            name: "Plunger",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDeckCycle: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                resources: 1,
+                drawCards: {
+                    amount: 1,
+                },
+            },
         },
     ],
 };

@@ -287,6 +287,7 @@ export { default as PigIdleImage } from "./PigIdle.gif";
 export { default as PigIllustratedImage } from "./PigIllustrated.png";
 export { default as PigsHeadImage } from "./PigsHead.png";
 export { default as PigsRibbonImage } from "./PigsRibbon.png";
+export { default as PlungerImage } from "./Plunger.png";
 export { default as PoisonImage } from "./Poison.png";
 export { default as PoisonBreathImage } from "./PoisonBreath.png";
 export { default as PowerStanceImage } from "./PowerStance.png";

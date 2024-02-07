@@ -36,6 +36,7 @@ import {
     pieceOfIce,
     pigIllustrated,
     pigsRibbonItem,
+    plunger,
     redHeartedEarrings,
     redWhip,
     respawnToken,
@@ -114,4 +115,5 @@ export const ITEMS = [
     deckOfCards,
     flamingFeather,
     diamondOre,
+    plunger,
 ];
