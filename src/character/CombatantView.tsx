@@ -1,9 +1,11 @@
 import classNames from "classnames";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_TYPES } from "../ability/types";
+import { findCombatantData } from "../battle/actions/actions";
 import { Event } from "../battle/types";
 import { getCharacterStatChanges } from "../battle/utils";
+import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
 import CastingIndicator from "../icon/CastingIndicator";
 import HitIcon from "../icon/HitIcon";
@@ -12,16 +14,15 @@ import { ClickIndicatorImage } from "../images";
 import { ZzzIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import AttackPower from "./AttackPower";
-import EffectIconsContainer from "./effects/EffectIcons";
-import Effects from "./effects/Effects";
+import CombatantTooltip from "./CombatantTooltip";
 import Health from "./HealthView";
 import PlayerResources from "./PlayerResources";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
-import { Combatant } from "./types";
 import Weapon from "./Weapon";
-import { useAppSelector } from "../hooks";
-import { findCombatantData } from "../battle/actions/actions";
+import EffectIconsContainer from "./effects/EffectIcons";
+import Effects from "./effects/Effects";
+import { Combatant } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -339,6 +340,7 @@ const CombatantView = forwardRef(
         const [oldState, setOldState] = useState(combatant);
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
+
         const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
@@ -429,7 +431,6 @@ const CombatantView = forwardRef(
 
         const imageNode = getImageNode(imageProps);
         const dialog = (actionParent as unknown as Ability)?.dialog || "";
-
         return (
             <div
                 className={classNames(classes.root, {
@@ -449,7 +450,6 @@ const CombatantView = forwardRef(
                     {oldState?.HP > 0 && (
                         <div className={classes.header}>
                             {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
-                            <span>{oldState.name}</span>
                             {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
                         </div>
                     )}
@@ -493,6 +493,7 @@ const CombatantView = forwardRef(
                         </div>
                         {oldState?.HP > 0 && (
                             <>
+                                <CombatantTooltip combatant={combatant} />
                                 <div className={classes.leftContainer}>
                                     <Armor amount={oldState.armor} />
                                     <Health combatantInfo={combatantInfo} />
