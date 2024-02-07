@@ -95,6 +95,7 @@ export { default as DarkStoneGolemImage } from "./DarkStoneGolem.gif";
 export { default as DarkStoneGolemRubbleImage } from "./DarkStoneGolemRubble.png";
 export { default as DarkThirstImage } from "./DarkThirst.png";
 export { default as DiamondImage } from "./Diamond.png";
+export { default as DiamondOreImage } from "./DiamondOre.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";
 export { default as DoubleTimeImage } from "./DoubleTime.png";

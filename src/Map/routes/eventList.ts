@@ -18,6 +18,7 @@ import {
     cursedDoll,
     deckOfCards,
     diamond,
+    diamondOre,
     drakeBlood,
     engravedStone,
     estherShield,
@@ -112,4 +113,5 @@ export const ITEMS = [
     pigIllustrated,
     deckOfCards,
     flamingFeather,
+    diamondOre,
 ];

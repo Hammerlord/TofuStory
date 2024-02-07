@@ -23,6 +23,7 @@ import {
     CouponImage,
     CursedDollImage,
     DiamondImage,
+    DiamondOreImage,
     DrakeBloodImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
@@ -324,7 +325,7 @@ export const engravedStone: Item = {
 
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "+5 max HP. Ability acquisition screens now offer another card to choose from.",
+    description: "Ability acquisition screens now offer another card to choose from.",
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -334,7 +335,6 @@ export const guideBook: Item = {
             name: "Guide Book",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
         },
     ],
 };
@@ -371,7 +371,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "+5 max HP. When you summon a minion, its attack power is increased by 1.",
+    description: "+3 max HP. When you summon a minion, its attack power is increased by 1.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -381,7 +381,7 @@ export const alligatorTube: Item = {
             description: "Increasing maximum HP by 5.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
+            maxHP: 3,
         },
         {
             name: "Alligator Tube",
@@ -534,7 +534,7 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "+1 armor power.",
+    description: "+1 armor from armor sources.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: AquamarineImage,
@@ -697,7 +697,7 @@ export const pigsRibbonItem: Item = {
 export const ballerCane: Item = {
     name: "Baller Cane",
     image: BallerCaneImage,
-    description: "+5 max HP. Whenever you use an ability, gain 1 meso.",
+    description: "+3 max HP. Whenever you use an ability, gain 1 meso.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -706,7 +706,7 @@ export const ballerCane: Item = {
             description: "Gaining 1 meso for every ability used.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
+            maxHP: 3,
             onAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 mesos: 1,
@@ -744,7 +744,7 @@ export const greenBambooHat: Item = {
 export const koreanFan: Item = {
     name: "Korean Fan",
     image: KoreanFanImage,
-    description: "Every 3 turns, hurl a fan that inflicts Bleed. The effect lasts 1 turn.",
+    description: "Every 3 turns, hurl a fan that inflicts a 1-turn Bleed.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -776,7 +776,7 @@ export const koreanFan: Item = {
 export const risingStar: Item = {
     name: "Rising Star",
     image: RisingStarImage,
-    description: "When you use 7 abilities, gain 1 attack power. Occurs once per battle.",
+    description: "After using 7 abilities, gain 1 attack power. (Once per battle.)",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -867,7 +867,7 @@ export const cursedDoll: Item = {
     image: CursedDollImage,
     description: "On wave start, a random enemy becomes cursed, taking 1 damage for each other target you attack.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.UNCOMMON,
     effects: [
         {
             name: "Cursed Doll Holder",
@@ -1134,15 +1134,8 @@ export const glassShoe: Item = {
     image: ArwensGlassShoeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "+5 max HP.",
-    effects: [
-        {
-            name: "Glass Shoe",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
-        },
-    ],
+    description: "It's pretty.",
+    effects: [],
 };
 
 export const tortieShell: Item = {
@@ -1195,13 +1188,12 @@ export const spectrumGoggles: Item = {
     image: SpectrumGogglesImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "+5 max HP. When viewing your deck in battle, the cards display in order.",
+    description: "When viewing your deck in battle, the cards display in order.",
     effects: [
         {
             name: "Spectrum Goggles",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            maxHP: 5,
             viewDeckInOrder: true,
         },
     ],
@@ -1278,11 +1270,11 @@ export const blueSaunaRobe: Item = {
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "Every 5 turns, gain 1 armor power.",
+    description: "Every 5 turns, gain 1 armor from armor sources.",
     effects: [
         {
             name: "Blue Sauna Robe Item",
-            description: "Every 5 turns, gain 1 armor power.",
+            description: "Every 5 turns, gain 1 armor from armor sources.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 5,
@@ -1306,7 +1298,7 @@ export const steely: Item = {
     image: SteelyImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "When your deck cycles, fling knives that deal 1 damage and apply Bleed to all targets.",
+    description: "When your deck cycles, fling knives that deal 3 damage and apply Bleed to all targets.",
     effects: [
         {
             name: "Steely",
@@ -1319,7 +1311,7 @@ export const steely: Item = {
                     actions: [
                         {
                             area: 5,
-                            damage: 1,
+                            damage: 3,
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
@@ -1331,7 +1323,7 @@ export const steely: Item = {
                             effects: [
                                 {
                                     ...bleed,
-                                    duration: 1,
+                                    duration: 3,
                                 },
                             ],
                         },
@@ -1368,7 +1360,7 @@ export const tauromacisHorn: Item = {
     name: "Tauromacis Horn",
     image: TauromacisHornImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description: "+2 HP on kill.",
     effects: [
         {
@@ -1601,6 +1593,22 @@ export const flamingFeather: Item = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const diamondOre: Item = {
+    name: "Diamond Ore",
+    description: "+7 max HP.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: DiamondOreImage,
+    effects: [
+        {
+            name: "Diamond Ore",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 7,
         },
     ],
 };

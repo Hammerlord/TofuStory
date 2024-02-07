@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { glassShoe, goldenHammer, incense, leatherSandals } from "../item/items";
+import { glassShoe, goldenHammer, incense, leatherSandals, redHeadband } from "../item/items";
 import { ITEMS } from "../Map/routes/eventList";
 import { RARITIES } from "../item/types";
 import classNames from "classnames";
@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, glassShoe, ...ITEMS];
+export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, glassShoe, redHeadband, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();
