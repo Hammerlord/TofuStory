@@ -164,10 +164,12 @@ const useStyles = createUseStyles({
 
 const classesInterpolation = {
     [PLAYER_CLASSES.WARRIOR]: "warrior",
+    [PLAYER_CLASSES.MAGICIAN]: "magician",
 };
 
 const classesPluralInterpolation = {
     [PLAYER_CLASSES.WARRIOR]: "warriors",
+    [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
 const ScenePlayer = ({
