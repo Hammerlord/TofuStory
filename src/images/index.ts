@@ -382,6 +382,7 @@ export { default as SunshinePanImage } from "./SunshinePan.png";
 export { default as SwampKPQImage } from "./SwampKPQ.png";
 export { default as SwampKPQ2Image } from "./SwampKPQ2.png";
 export { default as SwampRegionBGImage } from "./SwampRegionBG.jpg";
+export { default as SwordImage } from "./Sword.png";
 export { default as TauromacisHornImage } from "./TauromacisHorn.png";
 export { default as TaurospearHornImage } from "./TaurospearHorn.png";
 export { default as TeleportImage } from "./Teleport.png";

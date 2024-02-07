@@ -50,6 +50,7 @@ import {
     steely,
     stolenFence,
     sunshinePan,
+    sword,
     tauromacisHorn,
     taurospearHorn,
     tofuSpecial,
@@ -120,4 +121,5 @@ export const ITEMS = [
     plunger,
     tofuSpecial,
     battleShield,
+    sword,
 ];

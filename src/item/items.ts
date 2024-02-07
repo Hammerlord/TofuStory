@@ -64,6 +64,7 @@ import {
     SteelyImage,
     StolenFenceImage,
     SunshinePanImage,
+    SwordImage,
     TauromacisHornImage,
     TaurospearHornImage,
     TopazImage,
@@ -1663,4 +1664,33 @@ export const tofuSpecial: Item = {
     merchant: {
         freeFood: true,
     },
+};
+
+export const sword: Item = {
+    name: "Sword",
+    description: "On wave start, gain +1 attack power for one turn.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: SwordImage,
+    effects: [
+        {
+            name: "Sword Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Sword",
+                        icon: WeaponMasteryImage,
+                        disableDisplayIcon: true,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        attackPower: 1,
+                        duration: 2,
+                    },
+                ],
+            },
+        },
+    ],
 };
