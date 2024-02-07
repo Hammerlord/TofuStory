@@ -1895,6 +1895,7 @@ export const polymorph: Ability = {
     resourceCost: 2,
     image: ScarfSnowmanImage,
     description: "Sets targets' base attack to 1.",
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1910,10 +1911,10 @@ export const polymorph: Ability = {
                         portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
                         damage: 1,
                     },
-                    type: EFFECT_TYPES.NONE,
+                    type: EFFECT_TYPES.SILENCE,
                     class: EFFECT_CLASSES.DEBUFF,
+                    bypassImmunity: true,
                 },
-                { ...silence },
             ],
         },
     ],
