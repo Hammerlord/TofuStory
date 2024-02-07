@@ -78,7 +78,7 @@ const ItemRewards = ({
         }
 
         if (rewardType === BATTLE_TYPES.BOSS) {
-            items.push(...[incense, goldenHammer]);
+            items.push(...[goldenHammer, goldenHammer]);
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
             items.push(...[goldenHammer]);
         }
