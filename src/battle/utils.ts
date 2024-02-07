@@ -260,11 +260,21 @@ export const getMultiplier = ({
             return Math.floor(allCards.length * multValue);
         }
 
-        const filtered = allCards.filter((card) => {
+        let filtered = allCards.filter((card) => {
             return filters.some(({ property, value, comparator }) =>
                 passesValueComparison({ val: card[property], otherVal: value, comparator })
             );
         }).length;
+
+        const ownCardPassesCondition = filters.some(({ property, value, comparator }) =>
+            passesValueComparison({ val: actionParent?.[property], otherVal: value, comparator })
+        );
+
+        // For example, Greatest Bolt should not buff itself.
+        // TODO probably want to do this via instance IDs instead
+        if (ownCardPassesCondition && filtered > 0) {
+            filtered -= 1;
+        }
 
         return Math.floor(filtered * multValue);
     }

@@ -2041,10 +2041,10 @@ export const temporalBag: Ability = {
 
 const greatestBolt2: Ability = {
     name: "Greatest Bolt",
-    resourceCost: 3,
+    resourceCost: 2,
     image: PurpleEnergyBoltImage,
     level: 2,
-    description: "+2 damage for every 'bolt' card you own.",
+    description: "+2 damage for every other 'bolt' card you own.",
     overrideBodyText: true,
     actions: [
         {
@@ -2073,9 +2073,9 @@ const greatestBolt2: Ability = {
 
 export const greatestBolt: Ability = {
     name: "Greatest Bolt",
-    resourceCost: 3,
+    resourceCost: 2,
     image: PurpleEnergyBoltImage,
-    description: "+2 damage for every 'bolt' card you own.",
+    description: "+2 damage for every other 'bolt' card you own.",
     overrideBodyText: true,
     actions: [
         {
