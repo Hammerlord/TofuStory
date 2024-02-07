@@ -8,6 +8,7 @@ import { WorldMapIcon } from "../images/icons";
 import tutorial from "../Menu/tutorial";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
+import { PLAYER_CLASSES } from "../Menu/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -135,8 +136,17 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                     {promptTutorial && (
                         <div className={classes.tutorialContainer}>
                             <h3>Play the tutorial?</h3>
-                            <p>The tutorial is an optional introduction to the basics of combat.</p>
-                            <Button color="primary" onClick={handleTutorialConfirmation}>
+                            {player?.class === PLAYER_CLASSES.WARRIOR && (
+                                <p>The tutorial is an optional introduction to the basics of combat.</p>
+                            )}
+                            {player?.class !== PLAYER_CLASSES.WARRIOR && (
+                                <p>(DEV NOTE: Tutorial is unavailable for your current class, but I'll be back!)</p>
+                            )}
+                            <Button
+                                color="primary"
+                                onClick={handleTutorialConfirmation}
+                                disabled={player?.class !== PLAYER_CLASSES.WARRIOR}
+                            >
                                 Yes
                             </Button>{" "}
                             <Button color="secondary" onClick={handleTutorialCancel}>
