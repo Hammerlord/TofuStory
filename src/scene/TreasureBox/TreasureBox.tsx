@@ -240,9 +240,11 @@ const TreasureBox = ({
                         </div>
                     )}
                 </div>
-                <div className={classes.puzzleContainer}>
-                    {Puzzle && <Puzzle onComplete={() => setCompleted(true)} completed={completed} />}
-                </div>
+                {Puzzle && (
+                    <div className={classes.puzzleContainer}>
+                        <Puzzle onComplete={() => setCompleted(true)} completed={completed} />
+                    </div>
+                )}
 
                 <div className={classes.buttonContainer}>
                     {!completed && (

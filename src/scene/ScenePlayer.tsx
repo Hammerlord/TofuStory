@@ -157,7 +157,8 @@ const useStyles = createUseStyles({
     },
     treasureBoxContainer: {
         position: "absolute",
-        top: 0,
+        top: "50%",
+        left: "50%",
     },
 });
 
@@ -390,7 +391,7 @@ const ScenePlayer = ({
             <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
             <div className={classes.backgroundOverlay} />
             <div className={classes.inner}>
-                {!Puzzle && !showCamp && !isRemovingAbility && (
+                {!Puzzle && !showCamp && !isRemovingAbility && !showTreasure && (
                     <>
                         <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
