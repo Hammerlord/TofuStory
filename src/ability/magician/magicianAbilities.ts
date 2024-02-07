@@ -1295,7 +1295,7 @@ export const greaterBolt2: Ability = {
     image: EnergyBoltImage,
     level: 2,
     resourceCost: 1,
-    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage. Greater Bolt benefits twice.",
+    description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1337,7 +1337,7 @@ export const greaterBolt: Ability = {
     name: "Greater Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
-    description: "While you own this card, abilities with 'bolt' in their name gain +1 damage. Greater Bolt benefits twice.",
+    description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1924,7 +1924,7 @@ const goutOfFlame2: Ability = {
     resourceCost: 1,
     image: DoTPunisherImage,
     level: 2,
-    description: "When you draw this card, Burn a random enemy.",
+    description: "When drawn, Burn a random enemy.",
     onDraw: {
         ability: {
             name: "Flame Gout",
@@ -1966,7 +1966,7 @@ export const goutOfFlame: Ability = {
     name: "Gout Of Flame",
     resourceCost: 1,
     image: DoTPunisherImage,
-    description: "When you draw this card, Burn a random enemy.",
+    description: "When drawn, Burn a random enemy.",
     onDraw: {
         ability: {
             name: "Flame Gout",
@@ -2473,7 +2473,7 @@ const icyDraft2: Ability = {
     image: IcicleImage,
     level: 2,
     resourceCost: 1,
-    description: "When you draw this card, Chill a random enemy.",
+    description: "When drawn, Chill a random enemy.",
     onDraw: {
         ability: {
             name: "Chilling Draft",
@@ -2520,7 +2520,7 @@ export const icyDraft: Ability = {
     name: "Icy Draft",
     image: IcicleImage,
     resourceCost: 1,
-    description: "When you draw this card, Chill a random enemy.",
+    description: "When drawn, Chill a random enemy.",
     onDraw: {
         ability: {
             name: "Chilling Draft",
@@ -2670,7 +2670,7 @@ const divineStar2: Ability = {
     name: "Divine Star",
     resourceCost: 2,
     image: GlisteningStarImage,
-    description: "Restore 1 HP for every target struck",
+    description: "Heal 1 HP for every strike.",
     actions: [
         {
             damage: 7,
@@ -2702,7 +2702,7 @@ export const divineStar: Ability = {
     name: "Divine Star",
     resourceCost: 2,
     image: GlisteningStarImage,
-    description: "Restore 1 HP for every target struck",
+    description: "Heal 1 HP for every strike.",
     actions: [
         {
             damage: 5,
@@ -2768,7 +2768,7 @@ const zap2: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
-    description: "When you draw this card, Stun a random enemy.",
+    description: "When drawn, Stun a random enemy.",
     level: 2,
     onDraw: {
         ability: {
@@ -2821,7 +2821,7 @@ export const zap: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
-    description: "When you draw this card, Stun a random enemy.",
+    description: "When drawn, Stun a random enemy.",
     onDraw: {
         ability: {
             name: "Spark",
