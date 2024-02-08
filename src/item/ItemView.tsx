@@ -9,7 +9,7 @@ const useStyles = createUseStyles({
     item: {
         display: "inline-block",
         borderRadius: "8px",
-        padding: 24,
+        padding: 16,
         verticalAlign: "bottom",
         background: "#4f4f4f",
         width: "200px",
