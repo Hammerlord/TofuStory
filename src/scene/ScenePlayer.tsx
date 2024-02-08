@@ -474,7 +474,6 @@ const ScenePlayer = ({
                             setDialogIndex((prev) => prev + 1);
                         }}
                         onLoot={handleObtainLoot}
-                        currentItems={player.items}
                         player={player}
                     />
                 </div>

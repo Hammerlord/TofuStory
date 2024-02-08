@@ -189,13 +189,15 @@ export enum TREASURE_BOX_CURSES {
 
 const { updatePlayer } = playerStateSlice?.actions || {};
 
+const CURSE_RARE_BONUS = 0.4;
+const CURSE_UNCOMMON_BONUS = 0.2;
+
 const TreasureBox = ({
     onExit,
     initItems = [],
     initMesos,
     title = "Treasure Box",
     onLoot,
-    currentItems = [],
     Puzzle,
     player,
     curse,
@@ -204,7 +206,6 @@ const TreasureBox = ({
     initItems?: Item[];
     initMesos?: number | number[]; // [min, max]
     title?: string;
-    currentItems?: Item[]; // Items already held by the player
     onLoot: ({ mesos, items }: { mesos: number; items: Item[] }) => void;
     Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => JSX.Element;
     player: any;
@@ -225,18 +226,12 @@ const TreasureBox = ({
     };
 
     useEffect(() => {
-        let mesosToSet = 0;
+        let mesosToSet = curse ? getRandomInt(50, 100) : 0;
         if (initItems?.length > 0) {
             setItems(initItems);
         } else {
-            const alreadyObtained = currentItems.reduce((acc, item: Item) => {
-                if (item.type === ITEM_TYPES.EQUIPMENT) {
-                    acc[item.name] = true;
-                }
-                return acc;
-            }, {});
-
-            const equipment = getRandomItem(rollItemPool(player));
+            const bonus = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
+            const equipment = getRandomItem(rollItemPool(player, bonus));
             if (equipment) {
                 setItems([equipment]);
             } else {

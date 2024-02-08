@@ -476,7 +476,6 @@ const Main = () => {
                         <TreasureBox
                             onExit={() => setTreasure(null)}
                             onLoot={handleObtainLoot}
-                            currentItems={player.items}
                             Puzzle={treasure.puzzle}
                             initItems={treasure.items}
                             initMesos={treasure.mesos}
