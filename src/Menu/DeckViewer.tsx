@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const DeckViewer = ({ deck, onClose }) => {
+const DeckViewer = ({ deck, onClose, player }) => {
     const classes = useStyles();
     deck = deck.slice().sort((a, b) => {
         return a.resourceCost || 0 - (b.resourceCost || 0);
@@ -45,7 +45,7 @@ const DeckViewer = ({ deck, onClose }) => {
             </button>
             {deck.map((card, i) => (
                 <div className={classes.abilityContainer} key={i}>
-                    <AbilityView ability={card} deck={deck} hand={[]} discard={[]} />
+                    <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} />
                 </div>
             ))}
         </div>

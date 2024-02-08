@@ -90,7 +90,7 @@ const Header = ({
                         {player.mesos}
                     </div>
                 </div>
-                {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
+                {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
                 <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                 <Inventory inventory={player.items} onUseItem={onUseItem} />
             </div>
