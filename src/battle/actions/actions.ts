@@ -1420,7 +1420,7 @@ const autoSelectActionTarget = ({
     numTargets?: number;
 }) => {
     const { friendly, hostile, friendlySide, hostileSide } = findCombatantData(getState, actorId);
-    const { targetArea: area = 0, target } = action;
+    const { targetArea: area = 0, target, targetName } = action;
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
@@ -1446,6 +1446,14 @@ const autoSelectActionTarget = ({
             index: friendly.findIndex((ally) => ally?.id === actorId),
             side: friendlySide,
         };
+    } else if (target === TARGET_TYPES.FRIENDLY_CHARACTER) {
+        const index = friendly.findIndex((ally) => ally?.name === targetName);
+        if (index > -1) {
+            return {
+                index,
+                side: friendlySide,
+            };
+        }
     }
 
     return { index: initialSelectedIndex, side: initialSelectedSide };

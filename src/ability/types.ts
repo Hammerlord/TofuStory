@@ -8,6 +8,7 @@ export enum TARGET_TYPES {
     FRIENDLY = "friendly",
     RANDOM_HOSTILE = "random-hostile",
     RANDOM_FRIENDLY = "random-friendly",
+    FRIENDLY_CHARACTER = "friendly-character",
 }
 
 export enum EFFECT_TYPES {
@@ -413,6 +414,9 @@ export interface Action {
     healing?: number;
     armor?: number;
     target?: TARGET_TYPES;
+    // If TARGET_TYPES is FRIENDLY_CHARACTER, provide the character's name.
+    // Meant for enemies selecting a specific ally to support.
+    targetName?: string;
     area?: number;
     /** Only applicable to target type RANDOM or ricochet. If not supplied, all targets on one side are eligible. */
     targetArea?: number;

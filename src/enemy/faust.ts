@@ -115,16 +115,6 @@ export const faust: Minion = {
                 ],
             },
         },
-        {
-            name: "Unnatural Regeneration",
-            icon: ZombieMushroomTicketImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            canBeSilenced: true,
-            onTurnStart: {
-                healing: 5,
-            },
-        },
     ],
 };
 
@@ -176,7 +166,21 @@ export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
     maxHP: 100,
-    abilities: [],
+    abilities: [
+        {
+            name: "Ghostly Mending",
+            resourceCost: 0,
+            image: HomecomingVictoryGlovesImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.FRIENDLY_CHARACTER,
+                    targetName: faust.name,
+                    healing: 5,
+                },
+            ],
+        },
+    ],
     effects: [
         {
             name: "Ghostly",
@@ -186,6 +190,7 @@ export const ghostlyPuppeteerL: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SmilingImpIcon,
+            turnsTriggerFrequency: 2,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [

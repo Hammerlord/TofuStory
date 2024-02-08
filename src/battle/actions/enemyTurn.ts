@@ -72,8 +72,9 @@ const canUseAbility = ({ actorInfo, ability }: { actorInfo: CombatantInfo; abili
         return false;
     }
 
+    // TODO this does not check who is being targeted to receive the healing; they could be full health
     if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
-        return actor.HP < getMaxHP(actor); // ? It's not just the actor who needs a healing
+        return friendly.some((combatant) => combatant && combatant.HP < getMaxHP(combatant));
     }
 
     const movementAction = ability.actions.find((action) => action.movement);
