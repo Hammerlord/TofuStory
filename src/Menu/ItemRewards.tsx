@@ -8,6 +8,7 @@ import { ITEMS } from "../Map/routes/eventList";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
+import { rollItemPool } from "../item/utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -42,13 +43,19 @@ const useStyles = createUseStyles({
     },
 });
 
+const BOSS_RARE_RATE = 0.3;
+const ELITE_RARE_RATE = 0.2;
+const ELITE_UNCOMMON_RATE = 0.25;
+
 const ItemRewards = ({
+    player,
     playerCurrentItems,
     onLoot,
     onClose,
     rewardType,
     overrideItems,
 }: {
+    player: any;
     playerCurrentItems: Item[];
     onLoot: ({ items }: { items: Item[] }) => void;
     onClose: () => void;
@@ -66,22 +73,17 @@ const ItemRewards = ({
             return acc;
         }, {});
 
-        const items = [];
-
-        if (overrideItems?.length > 0) {
-            items.push(...overrideItems);
-        } else {
-            const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+        const items = (overrideItems || []).filter((item: Item) => !alreadyObtained[item.name]);
+        if (!items.length) {
+            const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
+            const itemPool = rollItemPool(player, { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE });
+            const equipment = getRandomItem(itemPool);
             if (equipment) {
                 items.push(equipment);
             }
         }
 
-        if (rewardType === BATTLE_TYPES.BOSS) {
-            items.push(...[goldenHammer, goldenHammer]);
-        } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-            items.push(...[goldenHammer]);
-        }
+        items.push(...[goldenHammer]);
 
         onLoot({ items });
         setRewards(items);

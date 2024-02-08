@@ -15,7 +15,7 @@ import Icon from "../../icon/Icon";
 import Overlay from "../../view/Overlay";
 import { COMMON_ITEM_CHANCE, RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
 import ItemView from "../../item/ItemView";
-import { rollRarity } from "../../item/utils";
+import { rollItemPool, rollRarity } from "../../item/utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -236,24 +236,7 @@ const TreasureBox = ({
                 return acc;
             }, {});
 
-            const selectedRarity = rollRarity(player);
-            let itemPool = ITEMS.filter((item: Item) => !alreadyObtained[item.name]);
-            let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
-            if (!filteredByRarity.length) {
-                const changeRarity = {
-                    [RARITIES.COMMON]: RARITIES.UNCOMMON,
-                    [RARITIES.UNCOMMON]: RARITIES.RARE,
-                    [RARITIES.RARE]: RARITIES.UNCOMMON, // If there are no rare items, try giving an uncommon item
-                }[selectedRarity];
-
-                if (changeRarity) {
-                    filteredByRarity = itemPool.filter((item) => item.rarity === changeRarity);
-                }
-            }
-
-            itemPool = filteredByRarity;
-
-            const equipment = getRandomItem(itemPool);
+            const equipment = getRandomItem(rollItemPool(player));
             if (equipment) {
                 setItems([equipment]);
             } else {

@@ -468,6 +468,7 @@ const Main = () => {
                             onLoot={handleObtainLoot}
                             onClose={handleCloseItemRewards}
                             rewardType={battle.type}
+                            player={player}
                         />
                     )}
 
