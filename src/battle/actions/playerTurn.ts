@@ -146,8 +146,10 @@ export const startPlayerTurn = () => {
             })
         );
 
+        const getPlayerSideInfo = () => getState().battle.playerSide.map((combatant) => findCombatantData(getState, combatant?.id));
+
         if (round > 0) {
-            dispatch(checkHalveArmor(getState().battle.playerSide));
+            dispatch(checkHalveArmor(getPlayerSideInfo()));
         }
 
         const { battle } = getState();
@@ -163,8 +165,7 @@ export const startPlayerTurn = () => {
             })
         );
 
-        const playerSideInfo = getState().battle.playerSide.map((combatant) => findCombatantData(getState, combatant?.id));
-        dispatch(checkTurnResourceGain(playerSideInfo));
+        dispatch(checkTurnResourceGain(getPlayerSideInfo()));
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
