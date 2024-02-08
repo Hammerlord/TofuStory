@@ -2,6 +2,7 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    Action,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -23,6 +24,7 @@ import {
     NimbleJewelImage,
     OldEnergyBoltImage,
     TeleportImage,
+    TriboltImage,
     WeaponBoosterImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
@@ -108,12 +110,14 @@ const iceAge: Ability = {
     image: NimbleJewelCImage,
     actions: [
         {
-            damage: 20,
+            damage: 25,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             icon: NimbleJewelCImage,
             animationOptions: {
                 rotateToFaceTarget: true,
+                width: 208,
+                height: 216,
             },
         },
     ],
@@ -348,7 +352,7 @@ export const introGrendel: Minion = {
                     icon: EnergyBoltProjectileImage,
                     playbackTime: 400,
                     animationOptions: {
-                        rotate: -45,
+                        rotate: 135,
                         rotateToFaceTarget: true,
                     },
                 },
@@ -424,6 +428,27 @@ export const introGrendel: Minion = {
     ],
 };
 
+const triboltAction: Action = {
+    damage: 3,
+    target: TARGET_TYPES.RANDOM_HOSTILE,
+    type: ACTION_TYPES.RANGE_ATTACK,
+    animation: ANIMATION_TYPES.ONE_WAY,
+    icon: EnergyBoltProjectileImage,
+    playbackTime: 400,
+    animationOptions: {
+        rotate: 135,
+        rotateToFaceTarget: true,
+    },
+    targetArea: 1,
+};
+
+const grendelTribolt = {
+    name: "Tribolt",
+    image: TriboltImage,
+    description: "Randomly hits the target or its neighbors, x3",
+    actions: [triboltAction, triboltAction, triboltAction],
+};
+
 export const grendel: Minion = {
     HP: 350,
     maxHP: 350,
@@ -436,21 +461,21 @@ export const grendel: Minion = {
             resourceCost: 0,
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: EnergyBoltProjectileImage,
                     playbackTime: 400,
                     animationOptions: {
-                        rotate: -45,
+                        rotate: 135,
                         rotateToFaceTarget: true,
                     },
                 },
             ],
         },
         grendelMagicClaw,
-        { ...tribolt, resourceCost: 0 },
+        grendelTribolt,
         volcanicBurst,
         stormBarrier,
         iceAge,
