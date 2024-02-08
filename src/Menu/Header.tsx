@@ -78,24 +78,22 @@ const Header = ({
     const player = playerCombatant || playerCharacter;
 
     return (
-        <>
-            <div className={classes.headerBar}>
-                <img src={player.image} className={classes.playerPortrait} />{" "}
-                <div className={classes.stats}>
-                    {player.HP} / {getMaxHP(player)} HP{" "}
-                    <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
-                        {deck.length} abilities
-                    </Button>
-                    <div className={classes.mesos}>
-                        <img src={MesoCoinImage} className={classes.mesoImage} />
-                        {player.mesos}
-                    </div>
+        <div className={classes.headerBar}>
+            <img src={player.image} className={classes.playerPortrait} />{" "}
+            <div className={classes.stats}>
+                {player.HP} / {getMaxHP(player)} HP{" "}
+                <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
+                    {deck.length} abilities
+                </Button>
+                <div className={classes.mesos}>
+                    <img src={MesoCoinImage} className={classes.mesoImage} />
+                    {player.mesos}
                 </div>
-                {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
-                <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
-                <Inventory inventory={player.items} onUseItem={onUseItem} />
             </div>
-        </>
+            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
+            <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
+            <Inventory inventory={player.items} onUseItem={onUseItem} />
+        </div>
     );
 };
 

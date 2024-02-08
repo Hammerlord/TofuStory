@@ -2,8 +2,9 @@ import { ClickAwayListener, Popper } from "@material-ui/core";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Item, ITEM_TYPES } from "../item/types";
+import { Item, ITEM_TYPES, RARITIES } from "../item/types";
 import Button from "../view/Button";
+import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -45,6 +46,26 @@ const useStyles = createUseStyles({
     useButtonContainer: {
         marginTop: "8px",
     },
+    diamond: {
+        width: "8px",
+        height: "8px",
+        transform: "rotate(45deg)",
+        display: "inline-block",
+        margin: "4px",
+        verticalAlign: "bottom",
+    },
+    uncommon: {
+        background: COLOR_RARITY_UNCOMMON,
+    },
+    common: {
+        background: COLOR_RARITY_COMMON,
+    },
+    rare: {
+        background: COLOR_RARITY_RARE,
+    },
+    rarity: {
+        marginBottom: "8px",
+    },
 });
 
 const ITEM_CLASS_NAME = "inventory-item";
@@ -54,8 +75,13 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
     const handleItemClick = (e, itemIndex: number) => {
-        setSelectedItemIndex(itemIndex);
-        setMenuAnchor(e.currentTarget);
+        if (itemIndex === selectedItemIndex) {
+            setSelectedItemIndex(null);
+            setMenuAnchor(null);
+        } else {
+            setSelectedItemIndex(itemIndex);
+            setMenuAnchor(e.currentTarget);
+        }
     };
 
     const handleItemUse = () => {
@@ -97,6 +123,16 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.itemName}>{selectedItem.name}</div>
+                            <div className={classes.rarity}>
+                                <span
+                                    className={classNames(classes.diamond, {
+                                        [classes.common]: selectedItem.rarity === RARITIES.COMMON,
+                                        [classes.uncommon]: selectedItem.rarity === RARITIES.UNCOMMON,
+                                        [classes.rare]: selectedItem.rarity === RARITIES.RARE,
+                                    })}
+                                />{" "}
+                                {selectedItem.rarity}
+                            </div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
                             {selectedItem.description}
                             <div className={classes.useButtonContainer}>
