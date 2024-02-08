@@ -112,7 +112,7 @@ export const stomp: Ability = {
 
 export const enemyHaste: Ability = {
     name: "Haste",
-    resourceCost: 1,
+    resourceCost: 0,
     image: HasteImage,
     actions: [
         {

@@ -537,7 +537,7 @@ export const thiefAssassin: Minion = {
         },
         {
             name: "Dark Sight",
-            resourceCost: 2,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -553,7 +553,7 @@ export const thiefAssassin: Minion = {
         },
         {
             name: "Lucky Seven",
-            resourceCost: 2,
+            resourceCost: 3,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
