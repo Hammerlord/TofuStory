@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { MesoImage, TreasureChestImage } from "../../images";
 import { LockIcon, WarningIcon } from "../../images/icons";
-import { Item, ITEM_TYPES } from "../../item/types";
+import { Item, ITEM_TYPES, RARITIES } from "../../item/types";
 import { ITEMS } from "../../Map/routes/eventList";
 import { getRandomInt, getRandomItem } from "../../utils";
 import BannerNotice from "../../view/BannerNotice";
@@ -13,6 +13,7 @@ import { useAppDispatch } from "../../hooks";
 import { playerStateSlice } from "../../character/playerReducer";
 import Icon from "../../icon/Icon";
 import Overlay from "../../view/Overlay";
+import { COMMON_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
 
 const useStyles = createUseStyles({
     inner: {
@@ -217,13 +218,43 @@ const TreasureBox = ({
                 return acc;
             }, {});
 
-            const equipment = getRandomItem(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
+            const selectedRarity = (() => {
+                const roll = Math.random();
+
+                if (roll <= COMMON_ITEM_CHANCE) {
+                    return RARITIES.COMMON;
+                }
+
+                if (roll > COMMON_ITEM_CHANCE && roll <= UNCOMMON_ITEM_CHANCE + COMMON_ITEM_CHANCE) {
+                    return RARITIES.UNCOMMON;
+                }
+
+                return RARITIES.RARE;
+            })();
+
+            let itemPool = ITEMS.filter((item: Item) => !alreadyObtained[item.name]);
+            let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
+            if (!filteredByRarity.length) {
+                const upRarity = {
+                    [RARITIES.COMMON]: RARITIES.UNCOMMON,
+                    [RARITIES.UNCOMMON]: RARITIES.RARE,
+                }[selectedRarity];
+
+                if (upRarity) {
+                    filteredByRarity = itemPool.filter((item) => item.rarity === upRarity);
+                }
+            }
+
+            itemPool = filteredByRarity;
+
+            const equipment = getRandomItem(itemPool);
             if (equipment) {
                 setItems([equipment]);
             } else {
                 mesosToSet += getRandomInt(100, 150);
             }
         }
+
         if (Array.isArray(initMesos)) {
             mesosToSet += getRandomInt(initMesos[0], initMesos[1]);
         } else if (typeof initMesos === "number") {
