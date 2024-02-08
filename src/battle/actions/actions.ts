@@ -254,7 +254,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     return (dispatch, getState) => {
         const { friendly, hostile, combatant, friendlySide } = findCombatantData(getState, combatantId) || {};
 
-        // Remove all effects that have durations on them
+        // Remove all effects that have durations on them, reset resources and casting
         dispatch(
             updateBattle({
                 [friendlySide]: friendly.map((combatant) => {
@@ -265,6 +265,8 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                                 const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
                                 return !hasDuration;
                             }),
+                            casting: null,
+                            resources: 0,
                         };
                     }
 
