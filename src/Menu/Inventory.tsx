@@ -126,12 +126,12 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                             <div className={classes.rarity}>
                                 <span
                                     className={classNames(classes.diamond, {
-                                        [classes.common]: selectedItem.rarity === RARITIES.COMMON,
+                                        [classes.common]: selectedItem.rarity === RARITIES.COMMON || !selectedItem.rarity,
                                         [classes.uncommon]: selectedItem.rarity === RARITIES.UNCOMMON,
                                         [classes.rare]: selectedItem.rarity === RARITIES.RARE,
                                     })}
                                 />{" "}
-                                {selectedItem.rarity}
+                                {selectedItem.rarity || RARITIES.COMMON}
                             </div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
                             {selectedItem.description}

@@ -195,7 +195,7 @@ const Shop = ({
         const itemsRolledForSale = Array.from({ length: 4 }).map(() => getRandomItem(rollItemPool(player)));
         const rareItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.RARE);
         const uncommonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.UNCOMMON);
-        const commonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.COMMON);
+        const commonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.COMMON || !item.rarity);
 
         const itemsForSale = [
             ...createShopItems({
