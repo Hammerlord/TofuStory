@@ -29,41 +29,20 @@ const useStyles = createUseStyles({
         margin: "8px 0",
     },
     diamond: {
-        width: 0,
-        height: 0,
-        border: `${SIZE} solid transparent`,
-        position: "relative",
-        top: `-${SIZE}`,
+        width: "8px",
+        height: "8px",
+        transform: "rotate(45deg)",
         display: "inline-block",
-        margin: "6px",
-        verticalAlign: "bottom",
-        "&:after": {
-            content: '""',
-            position: "absolute",
-            left: `-${SIZE}`,
-            top: SIZE,
-            width: 0,
-            height: 0,
-            border: `${SIZE} solid transparent`,
-        },
+        margin: "8px",
     },
     uncommon: {
-        borderBottomColor: COLOR_RARITY_UNCOMMON,
-        "&:after": {
-            borderTopColor: COLOR_RARITY_UNCOMMON,
-        },
+        background: COLOR_RARITY_UNCOMMON,
     },
     common: {
-        borderBottomColor: COLOR_RARITY_COMMON,
-        "&:after": {
-            borderTopColor: COLOR_RARITY_COMMON,
-        },
+        background: COLOR_RARITY_COMMON,
     },
     rare: {
-        borderBottomColor: COLOR_RARITY_RARE,
-        "&:after": {
-            borderTopColor: COLOR_RARITY_RARE,
-        },
+        background: COLOR_RARITY_RARE,
     },
     rarityContainer: {
         display: "flex",

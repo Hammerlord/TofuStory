@@ -4,7 +4,6 @@ import ItemView from "../item/ItemView";
 import { glassShoe, goldenHammer, incense, leatherSandals, redHeadband } from "../item/items";
 import { RARITIES } from "../item/types";
 
-const SIZE = "7px";
 const useStyles = createUseStyles({
     root: {
         marginTop: 64,

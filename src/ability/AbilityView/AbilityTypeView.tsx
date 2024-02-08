@@ -3,7 +3,6 @@ import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Minion, TARGET_TYPES } from "../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 
-const SIZE = "5px";
 const useStyles = createUseStyles({
     root: {
         textAlign: "center",
@@ -14,47 +13,23 @@ const useStyles = createUseStyles({
         lineHeight: "24px",
     },
     diamond: {
-        width: 0,
-        height: 0,
-        border: `${SIZE} solid transparent`,
-        position: "relative",
-        top: `-${SIZE}`,
+        width: "7px",
+        height: "7px",
+        transform: "rotate(45deg)",
         display: "inline-block",
-        margin: "6px",
-        verticalAlign: "bottom",
-        "&:after": {
-            content: '""',
-            position: "absolute",
-            left: `-${SIZE}`,
-            top: SIZE,
-            width: 0,
-            height: 0,
-            border: `${SIZE} solid transparent`,
-        },
+        margin: "0 6px",
     },
     offensive: {
-        borderBottomColor: RED,
-        "&:after": {
-            borderTopColor: RED,
-        },
+        background: RED,
     },
     support: {
-        borderBottomColor: BLUE,
-        "&:after": {
-            borderTopColor: BLUE,
-        },
+        background: BLUE,
     },
     minion: {
-        borderBottomColor: GREEN,
-        "&:after": {
-            borderTopColor: GREEN,
-        },
+        background: GREEN,
     },
     hindrance: {
-        borderBottomColor: GREY,
-        "&:after": {
-            borderTopColor: GREY,
-        },
+        background: GREY,
     },
 });
 
