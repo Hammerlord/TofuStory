@@ -38,6 +38,7 @@ import {
     pigIllustrated,
     pigsRibbonItem,
     plunger,
+    rabbitFoot,
     redHeartedEarrings,
     redWhip,
     respawnToken,
@@ -122,4 +123,5 @@ export const ITEMS = [
     tofuSpecial,
     battleShield,
     sword,
+    rabbitFoot,
 ];

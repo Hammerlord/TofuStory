@@ -13,8 +13,9 @@ import { useAppDispatch } from "../../hooks";
 import { playerStateSlice } from "../../character/playerReducer";
 import Icon from "../../icon/Icon";
 import Overlay from "../../view/Overlay";
-import { COMMON_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
+import { COMMON_ITEM_CHANCE, RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
 import ItemView from "../../item/ItemView";
+import { rollRarity } from "../../item/utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -235,30 +236,18 @@ const TreasureBox = ({
                 return acc;
             }, {});
 
-            const selectedRarity = (() => {
-                const roll = Math.random();
-
-                if (roll <= COMMON_ITEM_CHANCE) {
-                    return RARITIES.COMMON;
-                }
-
-                if (roll > COMMON_ITEM_CHANCE && roll <= UNCOMMON_ITEM_CHANCE + COMMON_ITEM_CHANCE) {
-                    return RARITIES.UNCOMMON;
-                }
-
-                return RARITIES.RARE;
-            })();
-
+            const selectedRarity = rollRarity(player);
             let itemPool = ITEMS.filter((item: Item) => !alreadyObtained[item.name]);
             let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
             if (!filteredByRarity.length) {
-                const upRarity = {
+                const changeRarity = {
                     [RARITIES.COMMON]: RARITIES.UNCOMMON,
                     [RARITIES.UNCOMMON]: RARITIES.RARE,
+                    [RARITIES.RARE]: RARITIES.UNCOMMON, // If there are no rare items, try giving an uncommon item
                 }[selectedRarity];
 
-                if (upRarity) {
-                    filteredByRarity = itemPool.filter((item) => item.rarity === upRarity);
+                if (changeRarity) {
+                    filteredByRarity = itemPool.filter((item) => item.rarity === changeRarity);
                 }
             }
 

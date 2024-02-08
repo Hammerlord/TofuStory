@@ -49,6 +49,7 @@ import {
     PigIllustratedImage,
     PigsRibbonImage,
     PlungerImage,
+    RabbitFootImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
     RedPotionImage,
@@ -1693,4 +1694,16 @@ export const sword: Item = {
             },
         },
     ],
+};
+
+export const rabbitFoot: Item = {
+    name: "Rabbit Foot",
+    description: "Improves your luck at finding higher rarity equipment.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: RabbitFootImage,
+    equipment: {
+        rareRateIncrease: 0.075,
+        uncommonRateIncrease: 0.15,
+    },
 };

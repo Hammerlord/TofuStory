@@ -39,4 +39,9 @@ export interface Item {
         discount?: number;
         freeFood?: boolean;
     };
+    equipment?: {
+        // These take share out of the common drop rate
+        uncommonRateIncrease?: number;
+        rareRateIncrease?: number;
+    };
 }
