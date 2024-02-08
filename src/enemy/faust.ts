@@ -88,7 +88,7 @@ export const faust: Minion = {
         {
             name: "Puppet Link",
             icon: CursedDollImage,
-            description: "Takes 3 damage whenever a Ghostly Puppeteer is struck by an attack. Takes massive damage if both Puppeteers die.",
+            description: "Takes 3 damage whenever a Ghostly Puppeteer is struck by an attack. Becomes vulnerable if both Puppeteers die.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             canBeSilenced: false,
@@ -98,7 +98,7 @@ export const faust: Minion = {
             },
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 100,
+                damage: 50,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -111,6 +111,7 @@ export const faust: Minion = {
                         ...stun,
                         bypassImmunity: true,
                         duration: 3,
+                        attackDamageReceived: 3,
                     },
                 ],
             },
@@ -165,7 +166,7 @@ const puppeteerRevive: EffectEventTrigger = {
 export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
-    maxHP: 100,
+    maxHP: 75,
     abilities: [
         {
             name: "Ghostly Mending",
