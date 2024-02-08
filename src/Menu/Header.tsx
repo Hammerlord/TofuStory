@@ -8,6 +8,7 @@ import { MesoCoinImage } from "../images";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
+import { useAppSelector } from "../hooks";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -63,18 +64,18 @@ const useStyles = createUseStyles({
 });
 
 const Header = ({
-    player,
-    deck,
     onUseItem,
     onSelectWeaponSkin,
 }: {
-    player: Combatant;
-    deck: Ability[];
     onUseItem?: (itemIndex: number) => void;
     onSelectWeaponSkin: (weaponSkin: string) => void;
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
+    const { character, battle } = useAppSelector((state) => state);
+    const { player: playerCharacter, deck } = character || {};
+    const playerCombatant = battle?.playerSide.find((combatant) => combatant?.isPlayer);
+    const player = playerCombatant || playerCharacter;
 
     return (
         <>

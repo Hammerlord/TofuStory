@@ -3,8 +3,6 @@ import { createUseStyles } from "react-jss";
 import { Item, RARITIES } from "./types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 
-const SIZE = "7px";
-
 const useStyles = createUseStyles({
     item: {
         display: "inline-block",

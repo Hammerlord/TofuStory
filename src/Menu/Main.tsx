@@ -516,7 +516,7 @@ const Main = () => {
                     )}
                 </div>
             )}
-            {<Header player={player} deck={deck} onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
+            {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
 
             {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && (
