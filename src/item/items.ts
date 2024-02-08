@@ -13,6 +13,7 @@ import {
     ASetOfMemoryCardsImage,
     BallerCaneImage,
     BattleShieldImage,
+    BlueJeanShortsImage,
     BluePotionImage,
     BlueSaunaRobeImage,
     BoneHelmImage,
@@ -1706,4 +1707,33 @@ export const rabbitFoot: Item = {
         rareRateIncrease: 0.075,
         uncommonRateIncrease: 0.15,
     },
+};
+
+export const blueJeanShorts: Item = {
+    name: "Blue Jean Shorts",
+    description: "When you play 10 support abilities, gain 1 resource.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: BlueJeanShortsImage,
+    effects: [
+        {
+            name: "Blue Jean Shorts",
+            description: "When you play 10 support abilities, gain 1 resource.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                resources: 1,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numAbilitiesUsed: {
+                            amount: 10,
+                            type: ACTION_TYPES.EFFECT,
+                        },
+                        comparator: "modulo",
+                    },
+                ],
+            },
+        },
+    ],
 };

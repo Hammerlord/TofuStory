@@ -9,6 +9,7 @@ import {
     aquamarine,
     ballerCane,
     battleShield,
+    blueJeanShorts,
     blueSaunaRobe,
     boneHelm,
     bouquet,
@@ -124,4 +125,5 @@ export const ITEMS = [
     battleShield,
     sword,
     rabbitFoot,
+    blueJeanShorts,
 ];
