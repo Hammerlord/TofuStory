@@ -4,11 +4,11 @@ import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
-import { HotdogSupremeImage, MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
-import { goldenHammer, incense } from "../item/items";
+import { MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
 import ItemView from "../item/ItemView";
-import { Item, ITEM_TYPES } from "../item/types";
-import { ITEMS } from "../Map/routes/eventList";
+import { goldenHammer, incense } from "../item/items";
+import { Item, RARITIES } from "../item/types";
+import { rollItemPool } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { SECONDARY_JOBS } from "./types";
@@ -158,12 +158,12 @@ const Shop = ({
         priceMax,
     }: {
         items: any[];
-        numItems: number;
+        numItems?: number;
         priceMin: number;
         priceMax: number;
     }): { item: any; price: number }[] => {
         return shuffle(items)
-            .slice(0, numItems)
+            .slice(0, numItems || items.length)
             .map((item) => ({ item, price: applyDiscount(getRandomInt(priceMin, priceMax)) }));
     };
 
@@ -192,23 +192,30 @@ const Shop = ({
         setAbilities(shuffle(abilitiesForSale));
 
         // Items
-        const alreadyObtained = player.items.reduce((acc, item: Item) => {
-            if (item.type === ITEM_TYPES.EQUIPMENT) {
-                acc[item.name] = true;
-            }
-            return acc;
-        }, {});
+        const itemsRolledForSale = Array.from({ length: 4 }).map(() => getRandomItem(rollItemPool(player)));
+        const rareItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.RARE);
+        const uncommonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.UNCOMMON);
+        const commonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.COMMON);
 
         const itemsForSale = [
             ...createShopItems({
-                items: ITEMS.filter((item: Item) => !alreadyObtained[item.name]),
-                numItems: 3,
-                priceMin: 150,
-                priceMax: 200,
+                items: commonItems,
+                priceMin: 70,
+                priceMax: 100,
+            }),
+            ...createShopItems({
+                items: uncommonItems,
+                priceMin: 120,
+                priceMax: 150,
+            }),
+            ...createShopItems({
+                items: rareItems,
+                priceMin: 180,
+                priceMax: 210,
             }),
             ...createShopItems({
                 items: [incense, incense, goldenHammer, goldenHammer, goldenHammer],
-                numItems: 3,
+                numItems: 2,
                 priceMin: 80,
                 priceMax: 100,
             }),
