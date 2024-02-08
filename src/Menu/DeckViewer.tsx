@@ -1,9 +1,10 @@
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { ClickAwayListener } from "@material-ui/core";
 
 const useStyles = createUseStyles({
     root: {
-        background: "rgba(75, 75, 75, 0.95)",
+        background: "rgba(10, 10, 10, 0.85)",
         width: "calc(80vw)",
         height: "calc(80vh)",
         position: "absolute",
@@ -30,6 +31,8 @@ const useStyles = createUseStyles({
         borderBottom: "1px solid rgba(255, 255, 255, 0.6)",
         paddingBottom: "16px",
         fontSize: "1.1rem",
+        fontFamily: "barlow",
+        cursor: "pointer",
     },
 });
 
@@ -39,16 +42,18 @@ const DeckViewer = ({ deck, onClose, player }) => {
         return a.resourceCost || 0 - (b.resourceCost || 0);
     });
     return (
-        <div className={classes.root}>
-            <button className={classes.closeBar} onClick={onClose}>
-                Close
-            </button>
-            {deck.map((card, i) => (
-                <div className={classes.abilityContainer} key={i}>
-                    <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} />
-                </div>
-            ))}
-        </div>
+        <ClickAwayListener onClickAway={onClose}>
+            <div className={classes.root}>
+                <button className={classes.closeBar} onClick={onClose}>
+                    Close
+                </button>
+                {deck.map((card, i) => (
+                    <div className={classes.abilityContainer} key={i}>
+                        <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} />
+                    </div>
+                ))}
+            </div>
+        </ClickAwayListener>
     );
 };
 
