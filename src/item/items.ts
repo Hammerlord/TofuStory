@@ -118,14 +118,14 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "Reduce damage received by 1 when your health is less than half.",
+    description: "Block 1 damage from attacks when your health is less than half.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
     effects: [
         {
             name: "Battle Shield",
-            description: "Reducing damage taken by 1.",
+            description: "Reducing damage taken from attacks by 1.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: BattleShieldImage,
@@ -144,14 +144,14 @@ export const battleShield: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Restore 3 HP on wave clear.",
+    description: "Heal 3 HP on wave clear.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SafetyCharmImage,
     effects: [
         {
             name: "Safety Charm",
-            description: "Restoring 3 HP on wave clear.",
+            description: "Healing 3 HP on wave clear.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SafetyCharmImage,
@@ -206,7 +206,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heal for 1 HP every 5 turns. Overhealing causes you to gain armor for the overhealed amount.",
+    description: "Heal 1 HP every 5 turns. Overhealing turns into armor for the overhealed amount.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AmethystImage,
@@ -317,7 +317,7 @@ export const engravedStone: Item = {
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     effects: [
         {
             name: "Engraved Stone",
@@ -346,7 +346,7 @@ export const engravedStone: Item = {
 
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "Ability acquisition screens now offer another card to choose from.",
+    description: "Card reward selections now offer another card to choose from.",
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -392,7 +392,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "When you summon a minion, its attack power is increased by 1.",
+    description: "When you summon a minion, it gains 1 attack power.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -470,7 +470,7 @@ export const nependeathSap: Item = {
 
 export const coffeePot: Item = {
     name: "Coffee Pot",
-    description: "You can now perform an extra activity while camping.",
+    description: "You can perform an extra activity while camping.",
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: CoffeePotImage,
@@ -650,7 +650,7 @@ export const fishSpear: Item = {
     image: FishSpearImage,
     description: "Gain +1 attack power against common enemies.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     effects: [
         {
             name: "Fish Spear",
@@ -670,7 +670,7 @@ export const fishSpear: Item = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, you counter for 1 base damage when attacked.",
+    description: "Once per turn, counter for 1 base damage when attacked.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -849,7 +849,7 @@ export const bouquet: Item = {
 export const starfallMagicSquare: Item = {
     name: "Starfall Magic Square",
     image: StarfallMagicSquareImage,
-    description: "When you use a Deplete ability, you Radiate 2 damage to enemies.",
+    description: "When you Deplete a card, you Radiate 2 damage to enemies.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -1272,7 +1272,7 @@ export const ancientTreeSap: Item = {
     name: "Ancient Tree Sap",
     image: AncientTreeSapImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.UNCOMMON,
     description: "Every 3 turns, gain 1 extra resource.",
     effects: [
         {
