@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { MesoImage, TreasureChestImage } from "../../images";
+import { MesoCoinImage, MesoImage, TreasureChestImage } from "../../images";
 import { LockIcon, WarningIcon } from "../../images/icons";
 import { Item, ITEM_TYPES, RARITIES } from "../../item/types";
 import { ITEMS } from "../../Map/routes/eventList";
@@ -14,6 +14,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import Icon from "../../icon/Icon";
 import Overlay from "../../view/Overlay";
 import { COMMON_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
+import ItemView from "../../item/ItemView";
 
 const useStyles = createUseStyles({
     inner: {
@@ -34,7 +35,7 @@ const useStyles = createUseStyles({
     bannerContainer: {
         position: "fixed",
         width: "40%",
-        top: "25%",
+        top: "20%",
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -72,6 +73,14 @@ const useStyles = createUseStyles({
             opacity: "0%",
         },
     },
+    "@keyframes fadeIn": {
+        "0%": {
+            opacity: "0%",
+        },
+        "100%": {
+            opacity: "100%",
+        },
+    },
     "@keyframes cursed": {
         "0%": {
             WebkitFilter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
@@ -86,19 +95,28 @@ const useStyles = createUseStyles({
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 30%, rgba(0,212,255,0) 100%)",
         color: "white",
-        padding: "16px 8px",
-        minWidth: "300px",
+        padding: "32px 8px",
+        minWidth: "400px",
         zIndex: 10,
         marginBottom: 16,
+        position: "absolute",
+        top: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        opacity: 0,
+        animationDuration: "0.5s",
+        animationName: "$fadeIn",
+        transitionTimingFunction: "ease-out",
+        animationDelay: "0.25s",
+        animationFillMode: "forwards",
     },
-    treasure: {
-        listStyle: "none",
-        padding: 0,
-        marginBottom: 0,
-    },
-    item: {
-        margin: 0,
-        lineHeight: "16px",
+    mesos: {
+        lineHeight: "28px",
+        fontSize: "18px",
+        marginBottom: "16px",
+        "& img": {
+            verticalAlign: "bottom",
+        },
     },
     itemName: {
         verticalAlign: "top",
@@ -110,28 +128,28 @@ const useStyles = createUseStyles({
         imageRendering: "pixelated",
         marginTop: "32px",
         marginBottom: "16px",
-        "&.open": {
-            animationDuration: "1s",
-            animationName: "$openChest",
-            transitionTimingFunction: "ease-in-out",
-            animationIterationCount: "infinite",
-            cursor: "pointer",
-        },
-        "&.fadeout": {
-            animationDuration: "0.5s",
-            animationName: "$fadeOut",
-            transitionTimingFunction: "ease-out",
-            animationIterationCount: "unset",
-            cursor: "unset",
-            animationFillMode: "forwards",
-        },
-        "&.cursed": {
-            animationDuration: "2s",
-            animationName: "$cursed",
-            transitionTimingFunction: "ease-in-out",
-            animationIterationCount: "infinite",
-            animationDirection: "alternate-reverse",
-        },
+    },
+    cursed: {
+        animationDuration: "2s",
+        animationName: "$cursed",
+        transitionTimingFunction: "ease-in-out",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+    },
+    open: {
+        animationDuration: "1s",
+        animationName: "$openChest",
+        transitionTimingFunction: "ease-in-out",
+        animationIterationCount: "infinite",
+        cursor: "pointer",
+    },
+    fadeOut: {
+        animationDuration: "0.5s",
+        animationName: "$fadeOut",
+        transitionTimingFunction: "ease-out",
+        animationIterationCount: "unset",
+        cursor: "unset",
+        animationFillMode: "forwards",
     },
     lockContainer: {
         backgroundColor: "rgba(0, 0, 0, 0.7)",
@@ -162,7 +180,6 @@ const useStyles = createUseStyles({
         padding: "8px",
         borderRadius: "4px",
     },
-    warningText: {},
 });
 
 export enum TREASURE_BOX_CURSES {
@@ -288,29 +305,29 @@ const TreasureBox = ({
                     <img
                         src={TreasureChestImage}
                         className={classNames(classes.treasureChest, {
-                            open: completed,
-                            fadeout: isChestOpened,
-                            cursed: !completed && !isChestOpened && curse,
+                            [classes.open]: completed,
+                            [classes.fadeOut]: isChestOpened,
+                            [classes.cursed]: !completed && !isChestOpened && curse,
                         })}
                         onClick={handleClickChest}
                     />
                     {isChestOpened && (
-                        <div className={classes.center}>
-                            <div className={classNames(classes.treasureContainer)}>
-                                You obtain:
-                                <ul className={classes.treasure}>
-                                    {items.map((item: Item) => (
-                                        <li key={item.name} className={classes.item}>
-                                            <img src={item.image} /> <span className={classes.itemName}>{item.name}</span>
-                                        </li>
-                                    ))}
-                                    {mesos > 0 && (
-                                        <li className={classes.item}>
-                                            <img src={MesoImage} /> {mesos}
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
+                        <div className={classNames(classes.treasureContainer)}>
+                            <div>You obtain:</div>
+
+                            {mesos > 0 && mesos < 50 && (
+                                <div className={classes.mesos}>
+                                    <img src={MesoImage} /> {mesos}
+                                </div>
+                            )}
+                            {mesos >= 50 && (
+                                <div className={classes.mesos}>
+                                    <img src={MesoCoinImage} /> {mesos}
+                                </div>
+                            )}
+                            {items.map((item, i) => (
+                                <ItemView item={item} key={i} highlight={true} />
+                            ))}
                         </div>
                     )}
                     {!completed && (
@@ -320,19 +337,23 @@ const TreasureBox = ({
                     )}
                 </div>
                 {Puzzle && (
-                    <>
+                    <div
+                        className={classNames({
+                            [classes.fadeOut]: isChestOpened,
+                        })}
+                    >
                         {curse && (
                             <p className={classes.warning}>
                                 <Icon icon={WarningIcon} size="sm" />
                                 {"  "}
-                                <span className={classes.warningText}>Every time you change the lock, you'll lose 1 HP.</span>
+                                <span>Every time you change the lock, you'll lose 1 HP.</span>
                             </p>
                         )}
 
                         <div className={classes.puzzleContainer}>
                             <Puzzle onComplete={() => setCompleted(true)} completed={completed} onInteraction={handlePuzzleInteraction} />
                         </div>
-                    </>
+                    </div>
                 )}
 
                 <div className={classes.buttonContainer}>

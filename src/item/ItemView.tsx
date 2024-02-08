@@ -68,12 +68,21 @@ const useStyles = createUseStyles({
     rarityContainer: {
         display: "flex",
     },
+    highlight: {
+        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+    },
 });
 
-const ItemView = ({ item }: { item: Item }) => {
+const ItemView = ({ item, highlight }: { item: Item; highlight?: boolean }) => {
     const classes = useStyles();
     return (
-        <div key={item.name} className={classes.item}>
+        <div
+            key={item.name}
+            className={classNames(classes.item, {
+                [classes.highlight]: highlight,
+            })}
+        >
             <img src={item.image} className={classes.itemImage} />
             <div>{item.name}</div>
             <div className={classes.rarityContainer}>
