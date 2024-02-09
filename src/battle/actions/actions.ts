@@ -637,8 +637,7 @@ const onEffectEventTrigger = ({
         });
 
         if (abilityUsed) {
-            // Procs may not proc procs
-            // dispatch(onUseAbility({ actor: combatant, source, ability }));
+            dispatch(onUseAbility({ actor: combatant, source, ability }));
         }
     };
 };

@@ -1058,7 +1058,7 @@ export const chargingStone: Item = {
                         icon: AlchemistStoneImage,
                         description:
                             "Empowering the next cast of a Charged spell. If left unused at the end of your turn, unleash an Energy Bolt.",
-                        duration: 1,
+                        duration: 0,
                         weaponAnimation: "glow",
                         onAbility: {
                             conditions: [
@@ -1091,7 +1091,6 @@ export const chargingStone: Item = {
                                 ],
                                 upgrades: [],
                             },
-                            removeEffect: true,
                         },
                     },
                 ],
