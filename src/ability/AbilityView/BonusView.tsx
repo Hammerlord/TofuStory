@@ -68,11 +68,7 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
                 }
 
                 if (hasEffectClass) {
-                    return (
-                        <span key={i}>
-                            to targets {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "afflicted by a debuff" : "affected by a buff"}
-                        </span>
-                    );
+                    return <span key={i}>to {hasEffectClass === EFFECT_CLASSES.DEBUFF ? "debuffed" : "buffed"} targets</span>;
                 }
                 if (healthPercentage !== undefined) {
                     return (

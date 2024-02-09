@@ -460,29 +460,11 @@ const triboltAction: Action = {
         rotateToFaceTarget: true,
     },
     targetArea: 1,
-    bonus: {
-        conditions: [
-            {
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                hasEffect: "Charged",
-            },
-        ],
-        damage: 2,
-    },
 };
 
 const tribolt2Action: Action = {
     ...triboltAction,
     damage: 4,
-    bonus: {
-        conditions: [
-            {
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                hasEffect: "Charged",
-            },
-        ],
-        damage: 3,
-    },
 };
 
 const tribolt2: Ability = {
@@ -644,7 +626,7 @@ const thunderclap2: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 3,
+            damage: 2,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -933,7 +915,7 @@ const wishUponAStar2: Ability = {
     image: StarHairPinImage,
     level: 2,
     rarity: RARITIES.UNCOMMON,
-    description: "On card draw, cast a star for 3 damage. On deck recycle, cast more stars.",
+    description: "Fling 2 damage stars on draw or deck cycle.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -982,7 +964,7 @@ export const wishUponAStar: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: StarHairPinImage,
-    description: "On card draw, cast a star for 2 damage. On deck recycle, cast more stars.",
+    description: "Fling 2 damage stars on draw or deck cycle.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1025,14 +1007,14 @@ const fireArrow2: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 15,
+            damage: 13,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -1040,7 +1022,7 @@ const fireArrow2: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 2,
+                    duration: 3,
                 },
             ],
             bonus: [
@@ -1051,7 +1033,7 @@ const fireArrow2: Ability = {
                             hasEffectType: [EFFECT_TYPES.BURN],
                         },
                     ],
-                    damage: 6,
+                    damage: 5,
                 },
             ],
         },
@@ -1062,13 +1044,13 @@ export const fireArrow: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 12,
+            damage: 10,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -1076,7 +1058,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 2,
+                    duration: 3,
                 },
             ],
             bonus: [
@@ -1087,7 +1069,7 @@ export const fireArrow: Ability = {
                             hasEffectType: [EFFECT_TYPES.BURN],
                         },
                     ],
-                    damage: 4,
+                    damage: 3,
                 },
             ],
         },
@@ -1512,13 +1494,13 @@ const coldBeam2: Ability = {
     name: "Cold Beam",
     image: ColdBeamImage,
     resourceCost: 2,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 9,
+            damage: 8,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1527,7 +1509,7 @@ const coldBeam2: Ability = {
             effects: [
                 {
                     ...chill,
-                    duration: 4,
+                    duration: 3,
                 },
             ],
             bonus: [
@@ -1553,13 +1535,13 @@ export const coldBeam: Ability = {
     name: "Cold Beam",
     image: ColdBeamImage,
     resourceCost: 2,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 7,
+            damage: 6,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1591,71 +1573,39 @@ export const coldBeam: Ability = {
     upgrades: [coldBeam2],
 };
 
-const shatter2: Ability = {
-    name: "Shatter",
+const reboundingShard2: Ability = {
+    name: "Rebounding Shard",
     image: NimbleJewelImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     reusable: true,
-    description: "Polymorph", // Hack
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
-            animation: ANIMATION_TYPES.BEAM,
-            damage: 9,
-            bonus: [
-                {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.FREEZE],
-                        },
-                        {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffect: "Polymorph",
-                        },
-                    ],
-                    damage: 9,
-                },
-            ],
+            animation: ANIMATION_TYPES.YOYO,
+            damage: 11,
         },
     ],
 };
 
-export const shatter: Ability = {
-    name: "Shatter",
+export const reboundingShard: Ability = {
+    name: "Rebounding Shard",
     image: NimbleJewelImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     reusable: true,
-    description: "Polymorph", // Hack
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
-            animation: ANIMATION_TYPES.BEAM,
-            damage: 7,
-            bonus: [
-                {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.FREEZE],
-                        },
-                        {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffect: "Polymorph",
-                        },
-                    ],
-                    damage: 7,
-                },
-            ],
+            animation: ANIMATION_TYPES.YOYO,
+            damage: 8,
         },
     ],
-    upgrades: [shatter2],
+    upgrades: [reboundingShard2],
 };
 
 const thunderBolt2: Ability = {
@@ -1663,7 +1613,7 @@ const thunderBolt2: Ability = {
     image: ThunderBoltImage,
     level: 2,
     resourceCost: 1,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description: "Charged: Cast again for 3 damage",
     actions: [
         {
@@ -1703,7 +1653,7 @@ export const thunderBolt: Ability = {
     name: "Thunder Bolt",
     image: ThunderBoltImage,
     resourceCost: 1,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description: "Charged: Cast again for 2 damage",
     actions: [
         {
@@ -2441,7 +2391,6 @@ const vm: Ability = {
 const volatileMagic2: Ability = {
     ...vm,
     level: 2,
-    resourceCost: 1,
     preemptive: true,
 };
 
@@ -2577,7 +2526,7 @@ const icyDraft2: Ability = {
                 rotateToFaceTarget: true,
                 rotate: 135,
             },
-            damage: 10,
+            damage: 5,
             effects: [
                 {
                     ...freeze,
@@ -2625,7 +2574,7 @@ export const icyDraft: Ability = {
                 rotateToFaceTarget: true,
                 rotate: 135,
             },
-            damage: 7,
+            damage: 2,
             effects: [
                 {
                     ...freeze,
@@ -2747,12 +2696,12 @@ const divineStar2: Ability = {
     name: "Divine Star",
     resourceCost: 2,
     image: GlisteningStarImage,
-    description: "Heal 1 HP for every strike.",
+    description: "Heal 1 HP each hit.",
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 7,
-            secondaryDamage: 5,
+            damage: 8,
+            secondaryDamage: 6,
             targetArea: 3,
             numTargets: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2780,11 +2729,11 @@ export const divineStar: Ability = {
     name: "Divine Star",
     resourceCost: 2,
     image: GlisteningStarImage,
-    description: "Heal 1 HP for every strike.",
+    description: "Heal 1 HP each hit.",
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             targetArea: 3,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,

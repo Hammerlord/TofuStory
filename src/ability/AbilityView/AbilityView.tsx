@@ -315,7 +315,7 @@ const AbilityView = forwardRef(
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                             {ricochet && (
                                 <div>
-                                    Bounces to up to {numTargets} other targets{" "}
+                                    Bounces to {numTargets} other targets{" "}
                                     {secondaryDamage && (
                                         <>
                                             for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
