@@ -18,8 +18,6 @@ export const rollRarity = (player, bonuses = { uncommon: 0, rare: 0 }): RARITIES
     const uncommonChance = UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
     const rareChance = RARE_ITEM_CHANCE + bonusRareChance;
 
-    console.log(uncommonChance, "rare chance:", rareChance);
-
     if (roll <= rareChance) {
         return RARITIES.RARE;
     }

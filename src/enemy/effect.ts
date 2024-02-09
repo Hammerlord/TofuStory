@@ -70,14 +70,14 @@ export const championsRibbon: Effect = {
 
 export const pigHeaded: Effect = {
     name: "Pig-Headed",
-    description: "While stunned:",
+    description: "While stunned or frozen:",
     icon: PigsHeadImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackDamageReceived: 2,
     conditions: [
         {
-            hasEffectType: [EFFECT_TYPES.STUN],
+            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
             calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         },
     ],

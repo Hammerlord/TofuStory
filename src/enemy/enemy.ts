@@ -64,7 +64,7 @@ import {
 } from "./../ability/types";
 import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, poisonous } from "./effect";
+import { championsRibbon, hardwood, pigHeaded, poisonous } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -242,22 +242,7 @@ export const pig: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "Pig-Headed",
-            description: "While stunned:",
-            icon: PigsHeadImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: 2,
-            conditions: [
-                {
-                    hasEffectType: [EFFECT_TYPES.STUN],
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-    ],
+    effects: [pigHeaded],
 };
 
 export const ribbonPig: Minion = {
@@ -300,23 +285,7 @@ export const ribbonPig: Minion = {
             ],
         },
     ],
-    effects: [
-        championsRibbon,
-        {
-            name: "Pig-Headed",
-            description: "While stunned:",
-            icon: PigsHeadImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: 2,
-            conditions: [
-                {
-                    hasEffectType: [EFFECT_TYPES.STUN],
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-    ],
+    effects: [championsRibbon, pigHeaded],
 };
 
 export const orangeMushroom: Minion = {
