@@ -543,6 +543,7 @@ const arcaneAiming: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     duration: 0,
+    attackPower: 1,
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
