@@ -76,22 +76,10 @@ export const snail: Minion = {
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 3,
-    armor: 9,
+    maxHP: 12,
     image: BlueSnailImage,
     abilities: [attack, loaf],
     mesos: 3,
-    effects: [
-        {
-            name: "Tough Shell",
-            icon: BlueSnailShellImage,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "Prevents armor decay.",
-        },
-    ],
 };
 
 export const shroom: Minion = {
