@@ -1415,6 +1415,8 @@ export const starEarrings: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: StarEarringsImage,
+                        description: "When you Stun, Freeze or Silence an enemy, draw a card.",
+                        duration: 2, // Ticks down immediately
                         onApplyEffect: {
                             conditions: [
                                 {
