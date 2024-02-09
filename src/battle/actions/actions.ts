@@ -1159,6 +1159,17 @@ const pushPlaybackQueue = ({
     side: BATTLEFIELD_SIDES;
 }) => {
     return (dispatch, getState) => {
+        let playbackTime = action.playbackTime;
+        if (!playbackTime) {
+            if (action.ricochet) {
+                playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 4) * allTargetIndices.length;
+            } else if ((actionParent as Ability)?.actions?.length > 1) {
+                playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
+            } else {
+                playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
+            }
+        }
+
         dispatch(
             pushEventQueue({
                 ...getState().battle,
@@ -1170,9 +1181,7 @@ const pushPlaybackQueue = ({
                 allTargetIndices,
                 targetSide: side,
                 actionParent,
-                playbackTime:
-                    action.playbackTime ||
-                    ((actionParent as Ability)?.actions?.length > 1 ? MULTI_ACTION_PLAYBACK_SPEED : NORMAL_ACTION_PLAYBACK_SPEED),
+                playbackTime,
             } as Event)
         );
     };
