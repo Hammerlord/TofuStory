@@ -99,7 +99,6 @@ export const megaHeal: Ability = {
 
 export const stomp: Ability = {
     name: "Stomp",
-    resourceCost: 1,
     actions: [
         {
             damage: 2,

@@ -178,20 +178,19 @@ export const darkLord: Minion = {
         {
             name: "Lucky Seven",
             image: KumbiImage,
-            resourceCost: 1,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    damage: 3,
+                    damage: 2,
                     icon: KumbiImage,
                 },
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    damage: 3,
+                    damage: 2,
                     icon: KumbiImage,
                 },
             ],
@@ -199,7 +198,6 @@ export const darkLord: Minion = {
         {
             name: "Avenger",
             image: AvengerImage,
-            resourceCost: 1,
             actions: [
                 {
                     damage: 5,

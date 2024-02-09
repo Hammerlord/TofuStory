@@ -116,7 +116,6 @@ export const athena: Minion = {
         },
         {
             name: "Combined Assault",
-            resourceCost: 1,
             image: FelineBerserkImage,
             description: "Commands all targeted allies to attack",
             actions: [

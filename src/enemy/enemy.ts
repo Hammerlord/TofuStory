@@ -143,6 +143,7 @@ export const redSnail: Minion = {
         {
             name: "Rollout",
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -351,6 +352,7 @@ export const orangeMushroom: Minion = {
             name: "Whomp",
             image: MushroomOmokImage,
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,

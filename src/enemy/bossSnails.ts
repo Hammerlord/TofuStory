@@ -163,7 +163,6 @@ export const mutantSnailEnemy: Minion = {
         },
         {
             name: "Whip",
-            resourceCost: 1,
             image: RedWhipImage,
             actions: [
                 {

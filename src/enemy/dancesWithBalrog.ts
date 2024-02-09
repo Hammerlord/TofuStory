@@ -26,6 +26,7 @@ import {
     GiganticSledgeImage,
     HighPaladinImage,
     IntrepidSlashImage,
+    IronMaceImage,
     JrBalrogImage,
     MossySnailImage,
     OmokPigImage,
@@ -275,19 +276,18 @@ export const dancesWithBalrog: Minion = {
     maxHP: 300,
     abilities: [
         {
-            name: "Bash",
-            image: BrickImage,
+            name: "Slam",
+            image: IronMaceImage,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 7,
                 },
             ],
         },
         {
             name: "Slash Blast",
-            resourceCost: 1,
             image: SlashBlastImage,
             actions: [
                 {
@@ -300,17 +300,16 @@ export const dancesWithBalrog: Minion = {
         },
         {
             name: "Brandish",
-            resourceCost: 1,
             image: BrandishImage,
             description: "Hits twice",
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                 },
@@ -337,19 +336,19 @@ export const dancesWithBalrog: Minion = {
             ],
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,

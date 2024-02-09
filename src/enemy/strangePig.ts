@@ -224,7 +224,6 @@ export const mutantRibbonPig: Minion = {
         },
         {
             name: "Seismic Toss",
-            resourceCost: 1,
             image: MountainIcon,
             actions: throwRocks,
         },

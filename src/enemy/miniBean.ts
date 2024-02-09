@@ -68,6 +68,7 @@ const delicious: Effect = {
 const disgusting: Effect = {
     name: "Disgusting",
     icon: YuckImage,
+    description: "Try not to touch it!",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     onDeath: {
@@ -206,7 +207,6 @@ const throwFood: Ability = {
 
 const picoDrop: Ability = {
     name: "Pico Drop",
-    resourceCost: 1,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
