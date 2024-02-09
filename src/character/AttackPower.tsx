@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Action, Effect } from "../ability/types";
+import { ACTION_TYPES, Action, Effect, TARGET_TYPES } from "../ability/types";
 import { calculateAttackPowerDamage, getEnabledEffects } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
@@ -52,7 +52,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     for (const ability of abilities) {
         if (!ability.resourceCost) {
             for (const action of ability.actions) {
-                if (action.damage) {
+                if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && action.damage) {
                     basicAttackDamage = action.damage;
                     break;
                 }
