@@ -81,6 +81,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     MULTIPLIER_TYPES,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
@@ -537,6 +538,28 @@ export const mpEater: Ability = {
     upgrades: [mpEater2],
 };
 
+const arcaneAiming: Effect = {
+    name: "Arcane Aim",
+    icon: ArcaneAimImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    duration: 0,
+    onAttack: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                name: "Arcane Aiming",
+                icon: ArcaneAimImage,
+                disableDisplayIcon: true,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                attackPower: 1,
+                duration: 1,
+            },
+        ],
+    },
+};
+
 const arcaneAim2: Ability = {
     name: "Arcane Aim",
     image: ArcaneAimImage,
@@ -552,29 +575,7 @@ const arcaneAim2: Ability = {
             drawCards: {
                 amount: 1,
             },
-            effects: [
-                {
-                    name: "Arcane Aim",
-                    icon: ArcaneAimImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 0,
-                    onAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        effects: [
-                            {
-                                name: "Arcane Aiming",
-                                icon: ArcaneAimImage,
-                                disableDisplayIcon: true,
-                                type: EFFECT_TYPES.NONE,
-                                class: EFFECT_CLASSES.BUFF,
-                                attackPower: 1,
-                                duration: 1,
-                            },
-                        ],
-                    },
-                },
-            ],
+            effects: [arcaneAiming],
         },
     ],
 };
@@ -590,29 +591,7 @@ export const arcaneAim: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Arcane Aim",
-                    icon: ArcaneAimImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 0,
-                    onAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        effects: [
-                            {
-                                name: "Arcane Aiming",
-                                icon: ArcaneAimImage,
-                                disableDisplayIcon: true,
-                                type: EFFECT_TYPES.NONE,
-                                class: EFFECT_CLASSES.BUFF,
-                                attackPower: 1,
-                                duration: 1,
-                            },
-                        ],
-                    },
-                },
-            ],
+            effects: [arcaneAiming],
         },
     ],
     upgrades: [arcaneAim2],
@@ -701,6 +680,7 @@ const frostBarrier2: Ability = {
     name: "Frost Barrier",
     image: ElementalAdaptationImage,
     resourceCost: 1,
+    level: 2,
     rarity: RARITIES.UNCOMMON,
     description: "Attackers are Chilled for 2 turns.",
     actions: [
@@ -732,36 +712,12 @@ const frostBarrier2: Ability = {
 };
 
 export const frostBarrier: Ability = {
-    name: "Frost Barrier",
-    image: ElementalAdaptationImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
-    description: "Attackers are Chilled for 2 turns.",
+    ...frostBarrier2,
+    level: 1,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            ...frostBarrier2.actions[0],
             armor: 5,
-            effects: [
-                {
-                    name: "Frost Barrier",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: ElementalAdaptationImage,
-                    image: ElementalAdaptationEffectImage,
-                    duration: 2,
-                    maxStacks: 1,
-                    onReceiveAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                        effects: [
-                            {
-                                ...chill,
-                                duration: 3,
-                            },
-                        ],
-                    },
-                },
-            ],
         },
     ],
     upgrades: [frostBarrier2],
@@ -804,36 +760,13 @@ const chainLightning2: Ability = {
 };
 
 export const chainLightning: Ability = {
-    name: "Chain Lightning",
-    image: LightningOrbImage,
-    resourceCost: 2,
-    rarity: RARITIES.UNCOMMON,
+    ...chainLightning2,
+    level: 1,
     actions: [
         {
+            ...chainLightning2.actions[0],
             damage: 8,
             secondaryDamage: 5,
-            targetArea: 5,
-            numTargets: 5,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            ricochet: true,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-            icon: LightningOrbProjectileImage,
-            animationOptions: {
-                width: 70,
-                height: 70,
-                opacity: 0.8,
-                flash: 200,
-            },
-            bonus: {
-                damage: 2,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-            },
         },
     ],
     upgrades: [chainLightning2],
@@ -915,7 +848,7 @@ const wishUponAStar2: Ability = {
     image: StarHairPinImage,
     level: 2,
     rarity: RARITIES.UNCOMMON,
-    description: "Fling 2 damage stars on draw or deck cycle.",
+    description: "Fling 3 damage stars on draw or deck cycle.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1041,37 +974,12 @@ const fireArrow2: Ability = {
 };
 
 export const fireArrow: Ability = {
-    name: "Fire Arrow",
-    image: FireArrowImage,
-    resourceCost: 2,
-    rarity: RARITIES.UNCOMMON,
+    ...fireArrow2,
+    level: 1,
     actions: [
         {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            icon: FireArrowProjectileImage,
+            ...fireArrow2.actions[0],
             damage: 10,
-            animationOptions: {
-                height: 90,
-                rotateToFaceTarget: true,
-            },
-            effects: [
-                {
-                    ...burn,
-                    duration: 3,
-                },
-            ],
-            bonus: [
-                {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.BURN],
-                        },
-                    ],
-                    damage: 3,
-                },
-            ],
         },
     ],
     upgrades: [fireArrow2],
@@ -1261,43 +1169,10 @@ const avatarOfTheStars2: Ability = {
 };
 
 export const avatarOfTheStars: Ability = {
+    ...avatarOfTheStars2,
     name: "Avatar Of The Stars",
-    image: StarfishImage,
-    rarity: RARITIES.RARE,
-    depletedOnUse: true,
+    level: 1,
     resourceCost: 2,
-    description: "When you use an offense ability that costs 1 or more mana, add Swift to your hand.",
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Avatar Of The Stars",
-                    icon: StarfishImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    maxStacks: 1,
-                    duration: 3,
-                    override: {
-                        portrait: StarfishIdleImage,
-                    },
-                    description: "When you use an offense ability that costs 1 or more mana, add Swift to your hand.",
-                    onOffensiveAbility: {
-                        conditions: [
-                            {
-                                comparator: "gt",
-                                resourceCost: 0,
-                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                            },
-                        ],
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        addCards: [{ ...swift, removeAfterTurn: true }],
-                    },
-                },
-            ],
-        },
-    ],
     upgrades: [avatarOfTheStars2],
 };
 
@@ -1346,30 +1221,8 @@ export const greaterBolt2: Ability = {
 };
 
 export const greaterBolt: Ability = {
-    name: "Greater Bolt",
-    image: EnergyBoltImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
-    description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
-    effectsWhileOwned: [
-        {
-            name: "Greater Bolt",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            skillBonus: [
-                {
-                    comparator: "includes",
-                    skill: "bolt",
-                    damage: 1,
-                },
-                {
-                    comparator: "includes",
-                    skill: "greater bolt",
-                    damage: 1,
-                },
-            ],
-        },
-    ],
+    ...greaterBolt2,
+    level: 1,
     actions: [
         {
             damage: 5,
@@ -1420,31 +1273,9 @@ const throwTheBook2: Ability = {
 };
 
 export const throwTheBook: Ability = {
-    name: "Throw The Book",
-    image: PurpleFlyingBookIconImage,
+    ...throwTheBook2,
+    level: 1,
     resourceCost: 3,
-    rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to the amount of cards you own",
-    actions: [
-        {
-            damage: 1,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-            icon: PurpleFlyingBookImage,
-            playbackTime: 400,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                width: 300,
-                height: 100,
-            },
-            multiplier: {
-                type: MULTIPLIER_TYPES.ALL_CARDS,
-                value: 1,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-            },
-        },
-    ],
     upgrades: [throwTheBook2],
 };
 
@@ -1495,6 +1326,7 @@ const coldBeam2: Ability = {
     image: ColdBeamImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1532,42 +1364,12 @@ const coldBeam2: Ability = {
 };
 
 export const coldBeam: Ability = {
-    name: "Cold Beam",
-    image: ColdBeamImage,
-    resourceCost: 2,
-    rarity: RARITIES.UNCOMMON,
+    ...coldBeam2,
+    level: 1,
     actions: [
         {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            icon: ColdBeamProjectileImage,
+            ...coldBeam2.actions[0],
             damage: 6,
-            animationOptions: {
-                height: 100,
-                rotateToFaceTarget: true,
-            },
-            area: 1,
-            effects: [
-                {
-                    ...chill,
-                    duration: 3,
-                },
-            ],
-            bonus: [
-                {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                            hasEffect: "Charged",
-                        },
-                    ],
-                    effects: [
-                        {
-                            ...freeze,
-                        },
-                    ],
-                },
-            ],
         },
     ],
     upgrades: [coldBeam2],
@@ -1650,10 +1452,8 @@ const thunderBolt2: Ability = {
 };
 
 export const thunderBolt: Ability = {
-    name: "Thunder Bolt",
-    image: ThunderBoltImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    ...thunderBolt2,
+    level: 1,
     description: "Charged: Cast again for 2 damage",
     actions: [
         {
@@ -1763,14 +1563,8 @@ const aurora2: Ability = {
 };
 
 export const aurora: Ability = {
-    name: "Aurora",
-    image: HighWisdomImage,
-    resourceCost: 5,
-    rarity: RARITIES.UNCOMMON,
-    description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded.",
-    onAbilityUse: {
-        resourceCost: -1,
-    },
+    ...aurora2,
+    level: 1,
     actions: [
         {
             damage: 8,
@@ -1812,27 +1606,13 @@ const feedback2: Ability = {
 };
 
 export const feedback: Ability = {
+    ...feedback2,
+    level: 1,
     name: "Feedback",
-    image: TeleportMasteryFireImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
-    description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
     actions: [
         {
-            damage: 0,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.HOSTILE,
+            ...feedback2.actions[0],
             area: 1,
-            icon: TeleportMasteryFireImage,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            secondaryAction: {
-                target: "actor",
-                resources: 1,
-                flatDamage: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
-                },
-            },
         },
     ],
     upgrades: [feedback2],
@@ -1966,31 +1746,8 @@ const goutOfFlame2: Ability = {
 };
 
 export const goutOfFlame: Ability = {
-    name: "Gout Of Flame",
-    resourceCost: 1,
-    rarity: RARITIES.COMMON,
-    image: DoTPunisherImage,
-    description: "When drawn, Burn a random enemy.",
-    onDraw: {
-        ability: {
-            name: "Flame Gout",
-            image: DoTPunisherImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    icon: FireMarbleImage,
-                    effects: [
-                        {
-                            ...burn,
-                            duration: 3,
-                        },
-                    ],
-                },
-            ],
-        },
-    },
+    ...goutOfFlame2,
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2013,6 +1770,7 @@ const temporalBag2: Ability = {
     resourceCost: 0,
     rarity: RARITIES.COMMON,
     image: EmptySackImage,
+    level: 2,
     description: "Place up to 3 cards from your hand on top of your deck.",
     actions: [
         {
@@ -2027,11 +1785,8 @@ const temporalBag2: Ability = {
 };
 
 export const temporalBag: Ability = {
-    name: "Temporal Bag",
-    resourceCost: 0,
-    rarity: RARITIES.COMMON,
-    image: EmptySackImage,
-    description: "Place up to 2 cards from your hand on top of your deck.",
+    ...temporalBag2,
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2079,26 +1834,12 @@ const greatestBolt2: Ability = {
 };
 
 export const greatestBolt: Ability = {
-    name: "Greatest Bolt",
-    resourceCost: 2,
-    rarity: RARITIES.RARE,
-    image: PurpleEnergyBoltImage,
-    description: "+2 damage for every other 'bolt' card you own.",
-    overrideBodyText: true,
+    ...greatestBolt2,
+    level: 1,
     actions: [
         {
+            ...greatestBolt2.actions[0],
             damage: 10,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: PurpleEnergyBoltProjectileImage,
-            playbackTime: 400,
-            animationOptions: {
-                rotate: -45,
-                rotateToFaceTarget: true,
-                width: 150,
-                height: 150,
-            },
             bonus: {
                 damage: 2,
                 multiplier: {
@@ -2131,21 +1872,9 @@ const copySpell2: Ability = {
 };
 
 export const copySpell: Ability = {
-    name: "Copy Spell",
-    image: CakeTemptationImage,
+    ...copySpell2,
+    level: 1,
     resourceCost: 1,
-    rarity: RARITIES.RARE,
-    description: "Create a copy of a card in your hand.",
-    depletedOnUse: true,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
-            },
-        },
-    ],
     upgrades: [copySpell2],
 };
 
@@ -2154,6 +1883,7 @@ const moltenLaser2: Ability = {
     image: FlameHazeImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2173,27 +1903,9 @@ const moltenLaser2: Ability = {
 };
 
 export const moltenLaser: Ability = {
-    name: "Molten Laser",
-    image: FlameHazeImage,
+    ...moltenLaser2,
+    level: 1,
     depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    resourceCost: 2,
-    actions: [
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.BEAM,
-            icon: FireMarbleImage,
-            damage: 7,
-            destroyArmor: 1,
-            effects: [
-                {
-                    ...burn,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
     upgrades: [moltenLaser2],
 };
 
@@ -2202,6 +1914,7 @@ const combust2: Ability = {
     image: ParalyzeImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     description: "Deals damage equal to the cumulative damage of all Burns on the target.",
     actions: [
         {
@@ -2223,11 +1936,8 @@ const combust2: Ability = {
 };
 
 export const combust: Ability = {
-    name: "Combust",
-    image: ParalyzeImage,
-    resourceCost: 2,
-    rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to the cumulative damage of all Burns on the target.",
+    ...combust2,
+    level: 1,
     actions: [
         {
             area: 1,
@@ -2264,7 +1974,7 @@ const leechingFlame2: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 5,
+                    duration: 4,
                 },
                 {
                     name: "Leeching Flame",
@@ -2272,7 +1982,7 @@ const leechingFlame2: Ability = {
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    duration: 5,
+                    duration: 4,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         resources: 1,
@@ -2291,12 +2001,8 @@ const leechingFlame2: Ability = {
 };
 
 export const leechingFlame: Ability = {
-    name: "Leeching Flame",
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
-    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
-    image: EliteFirebrandImage,
-    depletedOnUse: true,
+    ...leechingFlame2,
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2313,7 +2019,7 @@ export const leechingFlame: Ability = {
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    duration: 5,
+                    duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         resources: 1,
@@ -2419,21 +2125,9 @@ const bagFromBeyond2: Ability = {
 };
 
 export const bagFromBeyond: Ability = {
-    name: "Bag From Beyond",
-    image: InkSackImage,
+    ...bagFromBeyond2,
+    level: 1,
     resourceCost: 1,
-    rarity: RARITIES.RARE,
-    depletedOnUse: true,
-    description: "Retrieve a random Depleted card and place it in your hand.",
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            retrieveDepletedCards: {
-                amount: 1,
-            },
-        },
-    ],
     upgrades: [bagFromBeyond2],
 };
 
@@ -2443,6 +2137,7 @@ export const arcaneWard2: Ability = {
     resourceCost: 1,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2463,26 +2158,12 @@ export const arcaneWard2: Ability = {
 };
 
 export const arcaneWard: Ability = {
-    name: "Arcane Ward",
-    image: ElementalAdaptationFPImage,
-    resourceCost: 1,
-    depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
+    ...arcaneWard2,
+    level: 1,
     actions: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            ...arcaneWard2.actions[0],
             armor: 15,
-            effects: [
-                {
-                    name: "Arcane Ward",
-                    icon: ElementalAdaptationFPImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    preventArmorDecay: true,
-                    duration: 1,
-                },
-            ],
         },
     ],
     upgrades: [arcaneWard2],
@@ -2538,49 +2219,12 @@ const icyDraft2: Ability = {
 };
 
 export const icyDraft: Ability = {
-    name: "Icy Draft",
-    image: IcicleImage,
-    resourceCost: 1,
-    rarity: RARITIES.COMMON,
-    description: "When drawn, Chill a random enemy.",
-    onDraw: {
-        ability: {
-            name: "Chilling Draft",
-            image: SnowflakeIcon,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    icon: SnowflakeIcon,
-                    effects: [
-                        {
-                            ...chill,
-                            duration: 3,
-                        },
-                    ],
-                },
-            ],
-        },
-    },
+    ...icyDraft2,
+    level: 1,
     actions: [
         {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            playbackTime: 500,
-            icon: IcicleImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            ...icyDraft2.actions[0],
             damage: 2,
-            effects: [
-                {
-                    ...freeze,
-                    duration: 1,
-                },
-            ],
         },
     ],
     upgrades: [icyDraft2],
@@ -2698,6 +2342,7 @@ const divineStar2: Ability = {
     image: GlisteningStarImage,
     description: "Heal 1 HP each hit.",
     rarity: RARITIES.COMMON,
+    level: 2,
     actions: [
         {
             damage: 8,
@@ -2726,33 +2371,14 @@ const divineStar2: Ability = {
 };
 
 export const divineStar: Ability = {
-    name: "Divine Star",
-    resourceCost: 2,
-    image: GlisteningStarImage,
-    description: "Heal 1 HP each hit.",
-    rarity: RARITIES.COMMON,
+    ...divineStar2,
+    level: 1,
     actions: [
         {
+            ...divineStar2.actions[0],
             damage: 6,
             targetArea: 3,
             numTargets: 2,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            ricochet: true,
-            animation: ANIMATION_TYPES.YOYO,
-            icon: GlisteningStarImage,
-            animationOptions: {
-                width: 75,
-                height: 75,
-                flash: 500,
-            },
-            secondaryAction: {
-                target: "actor",
-                healing: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
-                },
-            },
         },
     ],
     upgrades: [divineStar2],
@@ -2777,10 +2403,8 @@ export const moonlight2: Ability = {
 };
 
 export const moonlight: Ability = {
-    name: "Moonlight",
-    resourceCost: 1,
-    image: LunarPiecesImage,
-    rarity: RARITIES.COMMON,
+    ...moonlight2,
+    level: 1,
     actions: [
         {
             healing: 3,
@@ -2849,44 +2473,11 @@ const zap2: Ability = {
 };
 
 export const zap: Ability = {
-    name: "Zap",
-    resourceCost: 1,
-    image: ThunderSparkImage,
-    description: "When drawn, Stun a random enemy.",
-    rarity: RARITIES.COMMON,
-    onDraw: {
-        ability: {
-            name: "Spark",
-            image: ThunderSparkImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    playbackTime: 500,
-                    icon: ThunderSparkImage,
-                    animationOptions: {
-                        rotateToFaceTarget: true,
-                        rotate: 135,
-                        flash: 500,
-                    },
-                    effects: [stun],
-                },
-            ],
-        },
-    },
+    ...zap2,
+    level: 1,
     actions: [
         {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            playbackTime: 500,
-            icon: ThunderSparkImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-                flash: 200,
-            },
+            ...zap2.actions[0],
             damage: 5,
             bonus: {
                 damage: 3,
@@ -2933,30 +2524,12 @@ const frostfireBlast2: Ability = {
 };
 
 export const frostfireBlast: Ability = {
-    name: "Frostfire Blast",
-    resourceCost: 1,
-    image: AdvancedChargeImage,
-    rarity: RARITIES.COMMON,
+    ...frostfireBlast2,
+    level: 1,
     actions: [
         {
+            ...frostfireBlast2.actions[0],
             damage: 3,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-            playbackTime: 500,
-            icon: AdvancedChargeImage,
-            animationOptions: {
-                flash: 500,
-            },
-            effects: [
-                {
-                    ...burn,
-                },
-                {
-                    ...chill,
-                    duration: 3,
-                },
-            ],
         },
     ],
     upgrades: [frostfireBlast2],
@@ -2979,11 +2552,7 @@ const manaGem2: Ability = {
 };
 
 export const manaGem: Ability = {
-    name: "Mana Gem",
-    resourceCost: 0,
-    image: ManaImage,
-
-    rarity: RARITIES.COMMON,
+    ...manaGem2,
     level: 1,
     actions: [
         {
