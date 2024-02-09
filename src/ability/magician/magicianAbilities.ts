@@ -1,4 +1,5 @@
 import {
+    AdvancedChargeImage,
     ArcaneAimImage,
     BigSnowballImage,
     BlueRushImage,
@@ -2961,4 +2962,64 @@ export const zap: Ability = {
         },
     ],
     upgrades: [zap2],
+};
+
+const frostfireBlast2: Ability = {
+    name: "Frostfire Blast",
+    resourceCost: 1,
+    level: 2,
+    image: AdvancedChargeImage,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 6,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            playbackTime: 500,
+            icon: AdvancedChargeImage,
+            animationOptions: {
+                flash: 500,
+            },
+            effects: [
+                {
+                    ...burn,
+                },
+                {
+                    ...chill,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const frostfireBlast: Ability = {
+    name: "Frostfire Blast",
+    resourceCost: 1,
+    image: AdvancedChargeImage,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            playbackTime: 500,
+            icon: AdvancedChargeImage,
+            animationOptions: {
+                flash: 500,
+            },
+            effects: [
+                {
+                    ...burn,
+                },
+                {
+                    ...chill,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+    upgrades: [frostfireBlast2],
 };
