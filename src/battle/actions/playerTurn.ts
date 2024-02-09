@@ -152,6 +152,25 @@ export const startPlayerTurn = () => {
             dispatch(checkHalveArmor(getPlayerSideInfo()));
         }
 
+        dispatch(checkTurnResourceGain(getPlayerSideInfo()));
+
+        playerSide.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
+            }
+        });
+
+        playerSide.forEach((combatant: Combatant | null) => {
+            if (!combatant) {
+                return;
+            }
+
+            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
+            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.NONE));
+        });
+
+        // Drawing cards last so that eg. drawing Zap (stun) can benefit from Star Earrings (draw a card on CC).
+        // Maybe I'll regret this ordering for some other reason later.
         const { battle } = getState();
         const player: Combatant = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
         const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState, player?.id) }).reduce(
@@ -165,23 +184,10 @@ export const startPlayerTurn = () => {
             })
         );
 
-        dispatch(checkTurnResourceGain(getPlayerSideInfo()));
-
         playerSide.forEach((combatant: Combatant | null) => {
-            if (!combatant) {
-                return;
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnInProgress }));
             }
-
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
-        });
-
-        playerSide.forEach((combatant: Combatant | null) => {
-            if (!combatant) {
-                return;
-            }
-
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.NONE));
         });
     };
 };

@@ -114,6 +114,7 @@ export enum EFFECT_EVENT_KEYS {
     onResourcesSpent = "onResourcesSpent",
     onResourcesGained = "onResourcesGained",
     onTurnStart = "onTurnStart",
+    onTurnInProgress = "onTurnInProgress",
     onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
     onEnd = "onEnd",
@@ -196,6 +197,7 @@ export interface Effect {
     onResourcesSpent?: EffectEventTrigger;
     onResourcesGained?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
+    onTurnInProgress?: EffectEventTrigger;
     onTurnEnd?: EffectEventTrigger;
     /** When the effect ticks down and ends naturally, not when it is removed or dispelled */
     onEnd?: EffectEventTrigger;

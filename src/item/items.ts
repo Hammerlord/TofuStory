@@ -1414,6 +1414,7 @@ export const starEarrings: Item = {
                         name: "Star Earrings",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
+                        icon: StarEarringsImage,
                         onApplyEffect: {
                             conditions: [
                                 {
@@ -1543,7 +1544,7 @@ export const deckOfCards: Item = {
                         icon: ASetOfMemoryCardsImage,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        onTurnStart: {
+                        onTurnInProgress: {
                             ability: {
                                 name: "Deck of Playing Cards",
                                 image: ASetOfMemoryCardsImage,
