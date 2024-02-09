@@ -163,7 +163,11 @@ export interface Effect {
     drawCardsPerTurn?: number;
     /** If true, effect has no effect on its owner */
     excludeEffectOwner?: boolean;
-    immunities?: EFFECT_TYPES[];
+    /** Prevent application of certain effects */
+    immunities?: {
+        type: "effect-type" | "effect";
+        value: EFFECT_TYPES[] | string[]; // If string[], provide the names of the effects
+    };
     preventArmorDecay?: boolean;
     armorReceived?: number; // Increased armor received, that is; ditto for below
     attackDamageReceived?: number;

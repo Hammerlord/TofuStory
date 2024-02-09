@@ -45,7 +45,10 @@ export const controlImmune: Effect = {
     name: "Control Immunity",
     description: "Target cannot be stunned, frozen, or silenced.",
     icon: NoStunIcon,
-    immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+    immunities: {
+        type: "effect-type",
+        value: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+    },
     duration: 6,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,

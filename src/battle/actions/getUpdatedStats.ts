@@ -125,9 +125,18 @@ export const getUpdatedStats = ({
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
                 return true;
             }
-            return enabledEffects.some((targetEffect: Effect) =>
-                targetEffect.immunities?.some((type: EFFECT_TYPES) => type === effect.type)
-            );
+            return enabledEffects.some((targetEffect: Effect) => {
+                const { type, value = [] } = targetEffect.immunities || {};
+
+                if (type === "effect-type") {
+                    return value.some((type: EFFECT_TYPES) => type === effect.type);
+                }
+
+                if (type === "effect") {
+                    console.log("is immune to?", value, effect.name);
+                    return value.some((name: string) => name === effect.name);
+                }
+            });
         };
 
         const effects: CombatEffect[] = actionEffects

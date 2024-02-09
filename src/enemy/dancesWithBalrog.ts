@@ -72,7 +72,10 @@ const golemStanceEffect: Effect = {
     icon: StoneGolemIconImage,
     description:
         "Immune to Stun, Bleed, Poison. Attacks apply Crushing Blow, increasing damage received from attacks and decreasing armor gained from sources.",
-    immunities: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON],
+    immunities: {
+        type: "effect-type",
+        value: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON],
+    },
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: false,

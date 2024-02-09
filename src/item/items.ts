@@ -1259,7 +1259,10 @@ export const fairyWing: Item = {
                         name: "Fairy Wing",
                         icon: FairyWingImage,
                         duration: 5,
-                        immunities: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.POISON],
+                        immunities: {
+                            type: "effect-type",
+                            value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.POISON],
+                        },
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                     },

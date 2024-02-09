@@ -117,7 +117,10 @@ const stalagmite: Minion = {
             name: "Earthen",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            immunities: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
+            immunities: {
+                type: "effect-type",
+                value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
+            },
         },
     ],
 };
