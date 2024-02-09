@@ -2,9 +2,14 @@ import classNames from "classnames";
 import Handlebars from "handlebars";
 import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
+import { findCombatantData } from "../../battle/actions/actions";
+import { passesConditions } from "../../battle/passesConditions";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { getMultiplier } from "../../battle/utils";
+import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
+import { RARITIES } from "../../item/types";
 import { Ability, Action, CONDITION_TARGETS, HandAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
@@ -19,10 +24,6 @@ import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
-import { passesConditions } from "../../battle/passesConditions";
-import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { useAppSelector } from "../../hooks";
-import { findCombatantData } from "../../battle/actions/actions";
 
 const useStyles = createUseStyles({
     root: {
@@ -53,7 +54,7 @@ const useStyles = createUseStyles({
         display: "flex",
         justifyContent: "space-between",
         textShadow: Array.from({ length: 10 })
-            .map(() => "0 0 2px white")
+            .map(() => "0 0 2.5px white")
             .join(", "),
         lineHeight: "16px",
         zIndex: 1,
@@ -61,6 +62,12 @@ const useStyles = createUseStyles({
     name: {
         fontWeight: 600,
         fontSize: "1.1rem",
+        "&.rare": {
+            color: "#796000",
+        },
+        "&.uncommon": {
+            color: "#00437d",
+        },
     },
     portraitContainer: {
         position: "absolute",
@@ -284,7 +291,12 @@ const AbilityView = forwardRef(
                     >
                         <span className={classes.header}>
                             {cornerIcon}
-                            <span className={classes.name}>
+                            <span
+                                className={classNames(classes.name, {
+                                    rare: ability.rarity === RARITIES.RARE,
+                                    uncommon: ability.rarity === RARITIES.UNCOMMON,
+                                })}
+                            >
                                 {name}{" "}
                                 {ability.level > 1 &&
                                     Array.from({ length: ability.level })

@@ -8,6 +8,7 @@ import { JOB_CARD_MAP } from "../ability";
 import { shellThrow } from "../ability/neutralAbilities";
 import Button from "../view/Button";
 import { Ability, HandAbility } from "../ability/types";
+import { RARITIES } from "../item/types";
 
 const useStyles = createUseStyles({
     class: {
@@ -46,6 +47,17 @@ const DevAbilityViewer = ({ onClose }) => {
         return cards.map((card) => ({ ...card, instanceId: uuid.v4() }));
     };
 
+    const rarityChart = {
+        [RARITIES.COMMON]: 1,
+        [RARITIES.UNCOMMON]: 2,
+        [RARITIES.RARE]: 3,
+    };
+
+    const formatCards = (cards?: Ability[]): HandAbility[] => {
+        return applyInstanceId(cards).sort((a: Ability, b) => {
+            return (rarityChart[a.rarity] || 0) - (rarityChart[b.rarity] || 0);
+        });
+    };
     return (
         <div>
             <Button variant="contained" color="primary" onClick={() => setIsViewingUpgrades((prev) => !prev)}>
@@ -65,17 +77,17 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div className={classes.viewer}>
                     <p>Neutral Cards</p>
-                    <Grid cards={applyInstanceId([shellThrow])} />
+                    <Grid cards={formatCards([shellThrow])} />
                     <hr />
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
                     </p>
-                    <Grid cards={applyInstanceId(JOB_CARD_MAP[selectedClass]?.all)} />
+                    <Grid cards={formatCards(JOB_CARD_MAP[selectedClass]?.all)} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
                         <div key={secondaryClass}>
                             <hr />
                             <p>{secondaryClass}</p>
-                            <Grid cards={applyInstanceId(JOB_CARD_MAP[secondaryClass]?.all)} />
+                            <Grid cards={formatCards(JOB_CARD_MAP[secondaryClass]?.all)} />
                         </div>
                     ))}
                 </div>

@@ -1,6 +1,5 @@
 import {
     ArcaneAimImage,
-    ArcaneOverdriveImage,
     BigSnowballImage,
     BlueRushImage,
     CakeTemptationImage,
@@ -70,6 +69,7 @@ import {
     WizMushImage,
 } from "../../images";
 import { SnowflakeIcon } from "../../images/icons";
+import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -84,12 +84,13 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { burn, chill, freeze, stun, silence } from "./../Effects";
+import { burn, chill, freeze, stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
     image: OldEnergyBoltImage,
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     level: 2,
     actions: [
         {
@@ -117,6 +118,7 @@ export const energyBolt: Ability = {
     name: "Energy Bolt",
     image: OldEnergyBoltImage,
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 2,
@@ -145,6 +147,7 @@ const magicFang2: Ability = {
     image: BlueRushImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             area: 1,
@@ -176,6 +179,7 @@ export const magicFang: Ability = {
     name: "Magic Fang",
     image: BlueRushImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             area: 1,
@@ -233,6 +237,7 @@ const magicClaw2: Ability = {
     image: MagicClawImage,
     description: "Hits twice",
     level: 2,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             ...magicClawAction,
@@ -272,6 +277,7 @@ export const magicClaw: Ability = {
     resourceCost: 2,
     image: MagicClawImage,
     description: "Hits twice",
+    rarity: RARITIES.COMMON,
     actions: [
         magicClawAction,
         {
@@ -289,6 +295,7 @@ const magicGuard2: Ability = {
     name: "Magic Guard",
     resourceCost: 1,
     image: MagicGuardImage,
+    rarity: RARITIES.UNCOMMON,
     level: 2,
     actions: [
         {
@@ -316,6 +323,7 @@ export const magicGuard: Ability = {
     name: "Magic Guard",
     resourceCost: 1,
     image: MagicGuardImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -343,6 +351,7 @@ const magicArmor2: Ability = {
     name: "Magic Armor",
     resourceCost: 1,
     image: MagicArmorOldImage,
+    rarity: RARITIES.COMMON,
     level: 2,
     actions: [
         {
@@ -357,6 +366,7 @@ export const magicArmor: Ability = {
     name: "Magic Armor",
     resourceCost: 1,
     image: MagicArmorOldImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -371,6 +381,7 @@ const barrier2: Ability = {
     name: "Barrier",
     resourceCost: 1,
     image: MagicArmorImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -393,6 +404,7 @@ export const barrier: Ability = {
     name: "Barrier",
     resourceCost: 1,
     image: MagicArmorImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -416,6 +428,7 @@ const teleport2: Ability = {
     name: "Teleport",
     resourceCost: 1,
     image: TeleportImage,
+    rarity: RARITIES.COMMON,
     level: 2,
     actions: [
         {
@@ -432,6 +445,7 @@ export const teleport: Ability = {
     name: "Teleport",
     resourceCost: 1,
     image: TeleportImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -485,6 +499,7 @@ const tribolt2: Ability = {
     name: "Tribolt",
     image: TriboltImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     description: "Randomly hits the target or its neighbors, x3",
     level: 2,
     actions: [tribolt2Action, tribolt2Action, tribolt2Action],
@@ -493,6 +508,7 @@ const tribolt2: Ability = {
 export const tribolt: Ability = {
     name: "Tribolt",
     image: TriboltImage,
+    rarity: RARITIES.COMMON,
     resourceCost: 1,
     description: "Randomly hits the target or its neighbors, x3",
     actions: [triboltAction, triboltAction, triboltAction],
@@ -505,6 +521,7 @@ const mpEater2: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
+    rarity: RARITIES.RARE,
     description: "Destroy a target's resources",
     actions: [
         {
@@ -528,6 +545,7 @@ export const mpEater: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
+    rarity: RARITIES.RARE,
     description: "Destroy up to 2 resources on the target",
     actions: [
         {
@@ -552,6 +570,7 @@ const arcaneAim2: Ability = {
     image: ArcaneAimImage,
     level: 2,
     resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
     description: "Gain +1 attack power for every attack made this turn.",
     overrideBodyText: true,
     actions: [
@@ -592,6 +611,7 @@ export const arcaneAim: Ability = {
     name: "Arcane Aim",
     image: ArcaneAimImage,
     resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
     description: "Gain +1 attack power for every attack made this turn.",
     overrideBodyText: true,
     actions: [
@@ -631,6 +651,7 @@ const thunderclap2: Ability = {
     image: TeleportMasteryImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 3,
@@ -648,6 +669,7 @@ export const thunderclap: Ability = {
     name: "Thunderclap",
     image: TeleportMasteryImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             area: 2,
@@ -666,6 +688,7 @@ const ignite2: Ability = {
     image: IgniteImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             area: 2,
@@ -685,6 +708,7 @@ export const ignite: Ability = {
     name: "Ignite",
     image: IgniteImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             area: 1,
@@ -705,6 +729,7 @@ const frostBarrier2: Ability = {
     name: "Frost Barrier",
     image: ElementalAdaptationImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "Attackers are Chilled for 2 turns.",
     actions: [
         {
@@ -738,6 +763,7 @@ export const frostBarrier: Ability = {
     name: "Frost Barrier",
     image: ElementalAdaptationImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "Attackers are Chilled for 2 turns.",
     actions: [
         {
@@ -774,6 +800,7 @@ const chainLightning2: Ability = {
     image: LightningOrbImage,
     level: 2,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 10,
@@ -808,6 +835,7 @@ export const chainLightning: Ability = {
     name: "Chain Lightning",
     image: LightningOrbImage,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 8,
@@ -844,6 +872,7 @@ export const swift: Ability = {
     image: StarImage,
     resourceCost: 0,
     removeAfterTurn: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 3,
@@ -873,6 +902,7 @@ const shootingStars2: Ability = {
     level: 2,
     depletedOnUse: true,
     image: ShimmeringStarsImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             addCards: [swift, swift],
@@ -887,6 +917,7 @@ export const shootingStars: Ability = {
     resourceCost: 1,
     depletedOnUse: true,
     image: ShimmeringStarsImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             addCards: [swift, swift],
@@ -911,6 +942,7 @@ const wishUponAStar2: Ability = {
     resourceCost: 1,
     image: StarHairPinImage,
     level: 2,
+    rarity: RARITIES.UNCOMMON,
     description: "On card draw, cast a star for 3 damage. On deck recycle, cast more stars.",
     actions: [
         {
@@ -958,6 +990,7 @@ const wishUponAStar2: Ability = {
 export const wishUponAStar: Ability = {
     name: "Wish Upon A Star",
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     image: StarHairPinImage,
     description: "On card draw, cast a star for 2 damage. On deck recycle, cast more stars.",
     actions: [
@@ -1002,6 +1035,7 @@ const fireArrow2: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
+    rarity: RARITIES.COMMON,
     level: 2,
     actions: [
         {
@@ -1038,6 +1072,7 @@ export const fireArrow: Ability = {
     name: "Fire Arrow",
     image: FireArrowImage,
     resourceCost: 2,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1179,6 +1214,7 @@ const conjureTreat2: Ability = {
     level: 2,
     resourceCost: 1,
     description: "Conjure a treat.",
+    rarity: RARITIES.UNCOMMON,
     image: ParfaitCupcakeImage,
     actions: [
         {
@@ -1196,6 +1232,7 @@ export const conjureTreat: Ability = {
     name: "Conjure Treat",
     resourceCost: 1,
     description: "Conjure a treat.",
+    rarity: RARITIES.UNCOMMON,
     image: ParfaitCupcakeImage,
     actions: [
         {
@@ -1214,6 +1251,7 @@ const avatarOfTheStars2: Ability = {
     name: "Avatar Of The Stars",
     level: 2,
     image: StarfishImage,
+    rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 1,
     description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
@@ -1253,6 +1291,7 @@ const avatarOfTheStars2: Ability = {
 export const avatarOfTheStars: Ability = {
     name: "Avatar Of The Stars",
     image: StarfishImage,
+    rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 2,
     description: "When you use an offense ability that costs 1 or more mana, add Swift to your hand.",
@@ -1295,6 +1334,7 @@ export const greaterBolt2: Ability = {
     image: EnergyBoltImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
@@ -1337,6 +1377,7 @@ export const greaterBolt: Ability = {
     name: "Greater Bolt",
     image: EnergyBoltImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
     effectsWhileOwned: [
         {
@@ -1381,6 +1422,7 @@ const throwTheBook2: Ability = {
     level: 2,
     image: PurpleFlyingBookIconImage,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to the amount of cards you own",
     actions: [
         {
@@ -1409,6 +1451,7 @@ export const throwTheBook: Ability = {
     name: "Throw The Book",
     image: PurpleFlyingBookIconImage,
     resourceCost: 3,
+    rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to the amount of cards you own",
     actions: [
         {
@@ -1437,6 +1480,7 @@ const magicBooster2: Ability = {
     name: "Magic Booster",
     image: MagicBoosterImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1458,6 +1502,7 @@ export const magicBooster: Ability = {
     name: "Magic Booster",
     image: MagicBoosterImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1477,6 +1522,7 @@ const coldBeam2: Ability = {
     name: "Cold Beam",
     image: ColdBeamImage,
     resourceCost: 2,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1517,6 +1563,7 @@ export const coldBeam: Ability = {
     name: "Cold Beam",
     image: ColdBeamImage,
     resourceCost: 2,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1558,6 +1605,7 @@ const shatter2: Ability = {
     name: "Shatter",
     image: NimbleJewelImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     reusable: true,
     description: "Polymorph", // Hack
     actions: [
@@ -1590,6 +1638,7 @@ export const shatter: Ability = {
     name: "Shatter",
     image: NimbleJewelImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     reusable: true,
     description: "Polymorph", // Hack
     actions: [
@@ -1624,6 +1673,7 @@ const thunderBolt2: Ability = {
     image: ThunderBoltImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     description: "Charged: Cast again for 3 damage",
     actions: [
         {
@@ -1663,6 +1713,7 @@ export const thunderBolt: Ability = {
     name: "Thunder Bolt",
     image: ThunderBoltImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     description: "Charged: Cast again for 2 damage",
     actions: [
         {
@@ -1704,6 +1755,7 @@ const slimmingMuffin2: Ability = {
     image: ChocolateMuffinImage,
     level: 2,
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     description: "Deplete a card in your hand to use this.",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
@@ -1727,6 +1779,7 @@ export const slimmingMuffin: Ability = {
     name: "Conjured Slimming Muffin",
     image: ChocolateMuffinImage,
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     description: "Deplete a card in your hand to use this.",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
@@ -1752,6 +1805,7 @@ const aurora2: Ability = {
     image: HighWisdomImage,
     level: 2,
     resourceCost: 5,
+    rarity: RARITIES.UNCOMMON,
     description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
@@ -1772,6 +1826,7 @@ export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
     resourceCost: 5,
+    rarity: RARITIES.UNCOMMON,
     description: "Reduce cost by 1 for every ability used this turn, until Aurora is used or discarded.",
     onAbilityUse: {
         resourceCost: -1,
@@ -1794,6 +1849,7 @@ const feedback2: Ability = {
     image: TeleportMasteryFireImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
     actions: [
         {
@@ -1819,6 +1875,7 @@ export const feedback: Ability = {
     name: "Feedback",
     image: TeleportMasteryFireImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
     actions: [
         {
@@ -1844,6 +1901,7 @@ export const feedback: Ability = {
 export const metronome: Ability = {
     name: "Metronome",
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     image: InfinityImage,
     description: "Cast 2 random spells.",
     actions: [
@@ -1864,6 +1922,7 @@ const arcaneChanneling2: Ability = {
     name: "Arcane Channeling",
     level: 2,
     resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
     image: ThunderBreakImage,
     actions: [
@@ -1878,6 +1937,7 @@ const arcaneChanneling2: Ability = {
 export const arcaneChanneling: Ability = {
     name: "Arcane Channeling",
     resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
     image: ThunderBreakImage,
     actions: [
@@ -1893,6 +1953,7 @@ export const arcaneChanneling: Ability = {
 export const polymorph: Ability = {
     name: "Polymorph",
     resourceCost: 2,
+    rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
     description: "Sets targets' base attack to 1.",
     depletedOnUse: true,
@@ -1923,6 +1984,7 @@ export const polymorph: Ability = {
 const goutOfFlame2: Ability = {
     name: "Gout Of Flame",
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     image: DoTPunisherImage,
     level: 2,
     description: "When drawn, Burn a random enemy.",
@@ -1966,6 +2028,7 @@ const goutOfFlame2: Ability = {
 export const goutOfFlame: Ability = {
     name: "Gout Of Flame",
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     image: DoTPunisherImage,
     description: "When drawn, Burn a random enemy.",
     onDraw: {
@@ -2008,6 +2071,7 @@ export const goutOfFlame: Ability = {
 const temporalBag2: Ability = {
     name: "Temporal Bag",
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     image: EmptySackImage,
     description: "Place up to 3 cards from your hand on top of your deck.",
     actions: [
@@ -2025,6 +2089,7 @@ const temporalBag2: Ability = {
 export const temporalBag: Ability = {
     name: "Temporal Bag",
     resourceCost: 0,
+    rarity: RARITIES.COMMON,
     image: EmptySackImage,
     description: "Place up to 2 cards from your hand on top of your deck.",
     actions: [
@@ -2043,6 +2108,7 @@ export const temporalBag: Ability = {
 const greatestBolt2: Ability = {
     name: "Greatest Bolt",
     resourceCost: 2,
+    rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
     level: 2,
     description: "+2 damage for every other 'bolt' card you own.",
@@ -2075,6 +2141,7 @@ const greatestBolt2: Ability = {
 export const greatestBolt: Ability = {
     name: "Greatest Bolt",
     resourceCost: 2,
+    rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
     description: "+2 damage for every other 'bolt' card you own.",
     overrideBodyText: true,
@@ -2109,6 +2176,7 @@ const copySpell2: Ability = {
     image: CakeTemptationImage,
     level: 2,
     resourceCost: 0,
+    rarity: RARITIES.RARE,
     description: "Create a copy of a card in your hand.",
     depletedOnUse: true,
     actions: [
@@ -2126,6 +2194,7 @@ export const copySpell: Ability = {
     name: "Copy Spell",
     image: CakeTemptationImage,
     resourceCost: 1,
+    rarity: RARITIES.RARE,
     description: "Create a copy of a card in your hand.",
     depletedOnUse: true,
     actions: [
@@ -2144,6 +2213,7 @@ const moltenLaser2: Ability = {
     name: "Molten Laser",
     image: FlameHazeImage,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2166,6 +2236,7 @@ export const moltenLaser: Ability = {
     name: "Molten Laser",
     image: FlameHazeImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     resourceCost: 2,
     actions: [
         {
@@ -2190,6 +2261,7 @@ const combust2: Ability = {
     name: "Combust",
     image: ParalyzeImage,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to the cumulative damage of all Burns on the target.",
     actions: [
         {
@@ -2214,6 +2286,7 @@ export const combust: Ability = {
     name: "Combust",
     image: ParalyzeImage,
     resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to the cumulative damage of all Burns on the target.",
     actions: [
         {
@@ -2239,6 +2312,7 @@ const leechingFlame2: Ability = {
     name: "Leeching Flame",
     resourceCost: 1,
     level: 2,
+    rarity: RARITIES.UNCOMMON,
     description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -2279,6 +2353,7 @@ const leechingFlame2: Ability = {
 export const leechingFlame: Ability = {
     name: "Leeching Flame",
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -2321,6 +2396,7 @@ const vm: Ability = {
     name: "Volatile Magic",
     image: StarfallMagicSquareImage,
     resourceCost: 2,
+    rarity: RARITIES.RARE,
     depletedOnUse: true,
     description: "When you use an offense ability that costs 2+ Mana, cast a 1-2 cost offense ability for free.",
     overrideBodyText: true,
@@ -2387,6 +2463,7 @@ export const volatileMagic: Ability = {
 const bagFromBeyond2: Ability = {
     name: "Bag From Beyond",
     image: InkSackImage,
+    rarity: RARITIES.RARE,
     resourceCost: 0,
     depletedOnUse: true,
     level: 2,
@@ -2406,6 +2483,7 @@ export const bagFromBeyond: Ability = {
     name: "Bag From Beyond",
     image: InkSackImage,
     resourceCost: 1,
+    rarity: RARITIES.RARE,
     depletedOnUse: true,
     description: "Retrieve a random Depleted card and place it in your hand.",
     actions: [
@@ -2425,6 +2503,7 @@ export const arcaneWard2: Ability = {
     image: ElementalAdaptationFPImage,
     resourceCost: 1,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2449,6 +2528,7 @@ export const arcaneWard: Ability = {
     image: ElementalAdaptationFPImage,
     resourceCost: 1,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2474,6 +2554,7 @@ const icyDraft2: Ability = {
     image: IcicleImage,
     level: 2,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     description: "When drawn, Chill a random enemy.",
     onDraw: {
         ability: {
@@ -2521,6 +2602,7 @@ export const icyDraft: Ability = {
     name: "Icy Draft",
     image: IcicleImage,
     resourceCost: 1,
+    rarity: RARITIES.COMMON,
     description: "When drawn, Chill a random enemy.",
     onDraw: {
         ability: {
@@ -2569,6 +2651,7 @@ export const hyperMetronome: Ability = {
     name: "Hyper Metronome",
     image: PurpleInfinityImage,
     resourceCost: 2,
+    rarity: RARITIES.RARE,
     description: "Cast 3 random spells.",
     depletedOnUse: true,
     actions: [
@@ -2590,6 +2673,7 @@ const avalanche: Ability = {
     image: PepeRollingASnowballImage,
     resourceCost: 2,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2617,6 +2701,7 @@ const snowBoulder: Ability = {
     image: BigSnowballImage,
     resourceCost: 1,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2644,6 +2729,7 @@ export const snowball: Ability = {
     name: "Snowball",
     image: SnowballImage,
     resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2672,6 +2758,7 @@ const divineStar2: Ability = {
     resourceCost: 2,
     image: GlisteningStarImage,
     description: "Heal 1 HP for every strike.",
+    rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 7,
@@ -2704,6 +2791,7 @@ export const divineStar: Ability = {
     resourceCost: 2,
     image: GlisteningStarImage,
     description: "Heal 1 HP for every strike.",
+    rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 5,
@@ -2736,6 +2824,7 @@ export const moonlight2: Ability = {
     resourceCost: 1,
     level: 2,
     image: LunarPiecesImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             healing: 5,
@@ -2752,6 +2841,7 @@ export const moonlight: Ability = {
     name: "Moonlight",
     resourceCost: 1,
     image: LunarPiecesImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             healing: 3,
@@ -2771,6 +2861,7 @@ const zap2: Ability = {
     image: ThunderSparkImage,
     description: "When drawn, Stun a random enemy.",
     level: 2,
+    rarity: RARITIES.COMMON,
     onDraw: {
         ability: {
             name: "Spark",
@@ -2823,6 +2914,7 @@ export const zap: Ability = {
     resourceCost: 1,
     image: ThunderSparkImage,
     description: "When drawn, Stun a random enemy.",
+    rarity: RARITIES.COMMON,
     onDraw: {
         ability: {
             name: "Spark",

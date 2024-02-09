@@ -1,6 +1,6 @@
 import { onBattleEnd } from "./../battle/actions/phases";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
-import { Item } from "../item/types";
+import { Item, RARITIES } from "../item/types";
 
 export enum TARGET_TYPES {
     HOSTILE = "hostile",
@@ -513,6 +513,7 @@ export interface Ability {
     minion?: Minion;
     image?: string;
     channelDuration?: number;
+    rarity?: RARITIES;
     castTime?: number;
     description?: string;
     /** Escape hatch to depend on description only if the body text generator is unmanageable */
