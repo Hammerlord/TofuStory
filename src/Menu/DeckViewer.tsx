@@ -5,7 +5,7 @@ import { HandAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     root: {
-        background: "rgba(10, 10, 10, 0.85)",
+        background: "rgba(15, 15, 15, 0.9)",
         width: "calc(80vw)",
         height: "calc(80vh)",
         position: "absolute",
@@ -62,7 +62,7 @@ const DeckViewer = ({ deck, onClose, player }: { deck: HandAbility[]; onClose; p
                 </button>
                 {deck.map((card: HandAbility) => (
                     <div className={classes.abilityContainer} key={card.instanceId}>
-                        <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} />
+                        <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} disableGlow={true} />
                     </div>
                 ))}
             </div>
