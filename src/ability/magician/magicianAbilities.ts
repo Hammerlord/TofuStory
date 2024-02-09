@@ -847,7 +847,8 @@ const wishUponAStar2: Ability = {
     image: StarHairPinImage,
     level: 2,
     rarity: RARITIES.COMMON,
-    description: "Fling 3 damage stars on draw or deck cycle.",
+    description: "Fling 3-damage stars on draw or deck cycle.",
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -858,7 +859,6 @@ const wishUponAStar2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: StarHairPinImage,
-                    duration: 3,
                     description: "Shooting stars on card draw and deck cycle.",
                     onDrawCard: {
                         ability: {
@@ -892,11 +892,9 @@ const wishUponAStar2: Ability = {
 };
 
 export const wishUponAStar: Ability = {
-    name: "Wish Upon A Star",
-    resourceCost: 1,
-    rarity: RARITIES.COMMON,
-    image: StarHairPinImage,
-    description: "Fling 2 damage stars on draw or deck cycle.",
+    ...wishUponAStar2,
+    level: 1,
+    description: "Fling 2-damage stars on draw or deck cycle.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -907,7 +905,6 @@ export const wishUponAStar: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: StarHairPinImage,
-                    duration: 3,
                     description: "Shooting stars on card draw and deck cycle.",
                     onDrawCard: {
                         ability: {
