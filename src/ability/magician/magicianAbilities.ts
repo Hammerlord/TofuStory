@@ -23,6 +23,7 @@ import {
     FlameHazeImage,
     GlisteningStarImage,
     HighWisdomImage,
+    HolyMagicShellImage,
     IcicleImage,
     IgniteImage,
     InfinityImage,
@@ -286,7 +287,7 @@ const magicGuard2: Ability = {
     name: "Magic Guard",
     resourceCost: 1,
     image: MagicGuardImage,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     level: 2,
     actions: [
         {
@@ -311,10 +312,8 @@ const magicGuard2: Ability = {
 };
 
 export const magicGuard: Ability = {
-    name: "Magic Guard",
-    resourceCost: 1,
-    image: MagicGuardImage,
-    rarity: RARITIES.UNCOMMON,
+    ...magicGuard2,
+    level: 1,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -377,7 +376,7 @@ const barrier2: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 9,
+            armor: 10,
             bonus: {
                 conditions: [
                     {
@@ -847,7 +846,7 @@ const wishUponAStar2: Ability = {
     resourceCost: 1,
     image: StarHairPinImage,
     level: 2,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     description: "Fling 3 damage stars on draw or deck cycle.",
     actions: [
         {
@@ -895,7 +894,7 @@ const wishUponAStar2: Ability = {
 export const wishUponAStar: Ability = {
     name: "Wish Upon A Star",
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     image: StarHairPinImage,
     description: "Fling 2 damage stars on draw or deck cycle.",
     actions: [
@@ -980,6 +979,17 @@ export const fireArrow: Ability = {
         {
             ...fireArrow2.actions[0],
             damage: 10,
+            bonus: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                            hasEffectType: [EFFECT_TYPES.BURN],
+                        },
+                    ],
+                    damage: 3,
+                },
+            ],
         },
     ],
     upgrades: [fireArrow2],
@@ -1415,7 +1425,7 @@ const thunderBolt2: Ability = {
     image: ThunderBoltImage,
     level: 2,
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     description: "Charged: Cast again for 3 damage",
     actions: [
         {
@@ -1915,7 +1925,7 @@ const combust2: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     level: 2,
-    description: "Deals damage equal to the cumulative damage of all Burns on the target.",
+    description: "Deals damage equal to the pending damage of all Burns on the target.",
     actions: [
         {
             area: 2,
@@ -1974,7 +1984,7 @@ const leechingFlame2: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 4,
+                    duration: 5,
                 },
                 {
                     name: "Leeching Flame",
@@ -2011,7 +2021,7 @@ export const leechingFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    duration: 4,
                 },
                 {
                     name: "Leeching Flame",
@@ -2562,4 +2572,33 @@ export const manaGem: Ability = {
         },
     ],
     upgrades: [manaGem2],
+};
+
+export const magicShell2: Ability = {
+    name: "Magic Shell",
+    resourceCost: 1,
+    level: 2,
+    reusable: true,
+    rarity: RARITIES.UNCOMMON,
+    image: HolyMagicShellImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 9,
+        },
+    ],
+};
+
+export const magicShell: Ability = {
+    ...magicShell2,
+    level: 1,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            armor: 6,
+        },
+    ],
+    upgrades: [magicShell2],
 };
