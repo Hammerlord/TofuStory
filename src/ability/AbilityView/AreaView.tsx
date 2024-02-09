@@ -79,7 +79,7 @@ const Area = ({
     ));
     return (
         <div className={classes.root}>
-            Area: {areaIndicator}
+            {areaIndicator}
             <span
                 className={classNames(classes.mainTarget, {
                     [classes.highlight]: hasBonus,
