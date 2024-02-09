@@ -72,6 +72,7 @@ const realShadow: Minion = {
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 1,
                     icon: KumbiImage,
+                    effects: [{ ...poison, duration: 2 }],
                 },
             ],
         },
