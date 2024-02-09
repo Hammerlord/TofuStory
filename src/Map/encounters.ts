@@ -1,6 +1,6 @@
 import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
-import { clandestine, lifeLink, poisonous } from "../enemy/effect";
+import { sneaky, lifeLink, poisonous } from "../enemy/effect";
 import { avenger, elite, eliteSquad, eliteTrio, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { attack, tantrum } from "./../enemy/abilities";
 import { getRandomItem, shuffle } from "./../utils";
@@ -44,7 +44,7 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
 };
 
 const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, sneaky]);
     const baseEnemy = getRandomItem(eliteMap.squad);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
@@ -68,7 +68,7 @@ const generateEliteSquad = (eliteMap: EliteMap): (Minion | null)[] => {
 };
 
 const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, clandestine]);
+    const affix = getRandomItem([thorns, raging, avenger, shielding, explosive, lifeLink, sneaky]);
     const baseEnemy = getRandomItem(eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -98,7 +98,7 @@ const generateEliteTriad = (eliteMap: EliteMap): (Minion | null)[] => {
 };
 
 const generateEliteDuo = (eliteMap: EliteMap): (Minion | null)[] => {
-    const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, clandestine, poisonous]);
+    const affix = getRandomItem([thorns, raging, shielding, explosive, lifeLink, sneaky, poisonous]);
     const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -159,7 +159,7 @@ const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
             },
         },
     };
-    const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming, clandestine, poisonous]);
+    const affix = getRandomItem([thorns, raging, shielding, eruptive, swarming, sneaky, poisonous]);
     const baseEnemy = getRandomItem(eliteMap.single);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);

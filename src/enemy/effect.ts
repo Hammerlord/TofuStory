@@ -329,15 +329,15 @@ export const lifeLink: Effect = {
     },
 };
 
-export const clandestine: Effect = {
-    name: "Clandestine",
-    description: "This character periodically stealths.",
+export const sneaky: Effect = {
+    name: "Sneaky",
+    description: "Periodically stealths. Gains +1 attack power while stealthed.",
     canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: SmilingImpIcon,
-    turnsTriggerFrequency: 4,
+    turnsTriggerFrequency: 3,
     onWaveStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
@@ -351,11 +351,15 @@ export const clandestine: Effect = {
                 onReceiveAttack: {
                     removeEffect: true,
                 },
+                onAttack: {
+                    removeEffect: true,
+                },
+                attackPower: 1,
                 duration: 2,
             },
         ],
     },
-    onTurnStart: {
+    onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         conditions: [
             {
@@ -375,7 +379,11 @@ export const clandestine: Effect = {
                 onReceiveAttack: {
                     removeEffect: true,
                 },
-                duration: 3,
+                onAttack: {
+                    removeEffect: true,
+                },
+                attackPower: 1,
+                duration: 2,
             },
         ],
     },
