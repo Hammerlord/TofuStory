@@ -254,7 +254,7 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.ALL_CARDS) {
         const allCards = [...deck, ...hand, ...discard];
-        const multValue = typeof value === "number" ? value + 1 : 1;
+        const multValue = typeof value === "number" ? value : 1;
 
         if (!filters) {
             return Math.floor(allCards.length * multValue);
