@@ -1,32 +1,36 @@
-import { arcaneChanneling } from "./../../ability/magician/magicianAbilities";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
+import { aggregateAbilityEffects } from "../../Menu/utils";
+import { JOB_CARD_MAP } from "../../ability";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import {
-    Ability,
-    Action,
     ACTION_TYPES,
+    AUTO_CAST_ABILITY_TYPES,
+    Ability,
+    AbilityEffects,
+    Action,
+    AutoCastAbility,
+    CONDITION_TARGETS,
     CombatEffect,
-    EffectEventTrigger,
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
+    EffectEventTrigger,
     HandAbility,
     MORPH_TYPES,
-    TARGET_TYPES,
-    AbilityEffects,
-    AUTO_CAST_ABILITY_TYPES,
-    CONDITION_TARGETS,
     SELECT_CARD_TYPES,
-    AutoCastAbility,
+    TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
+import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
+import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
     applyMovement,
@@ -46,13 +50,8 @@ import { createCombatant } from "./../../enemy/createEnemy";
 import { getRandomInt } from "./../../utils";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
-import { getUpdatedStats, UpdatedCombatantStats } from "./getUpdatedStats";
+import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { JOB_CARD_MAP } from "../../ability";
-import { aggregateAbilityEffects } from "../../Menu/utils";
-import getCardSelection from "../selectCardUtils";
-import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
-import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};

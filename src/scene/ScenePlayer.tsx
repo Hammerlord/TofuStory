@@ -6,7 +6,7 @@ import Camp from "../Map/Camp";
 import { REGIONS } from "../Map/regions";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { Ability, Minion } from "../ability/types";
+import { Ability, HandAbility, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Button from "../view/Button";
@@ -201,8 +201,8 @@ const ScenePlayer = ({
     onExit: Function;
     onShop: Function;
     onTransition?: Function;
-    deck: Ability[];
-    updateDeck: (newDeck: Ability[]) => void;
+    deck: HandAbility[];
+    updateDeck: (newDeck: HandAbility[]) => void;
     onChangeRegion: (region: REGIONS) => void;
 }) => {
     const [dialogIndex, setDialogIndex] = useState(0);
@@ -374,7 +374,7 @@ const ScenePlayer = ({
         });
     };
 
-    const handleRemoveAbility = (updatedDeck: Ability[]) => {
+    const handleRemoveAbility = (updatedDeck: HandAbility[]) => {
         setIsRemovingAbility(false);
         updateDeck(updatedDeck);
     };
@@ -416,7 +416,7 @@ const ScenePlayer = ({
                                 </div>
                                 <div className={classes.dialog} onClick={handleClickDialog}>
                                     <div>
-                                        {dialog.map((line, i) => (
+                                        {dialog.map((line: string, i: number) => (
                                             <p key={i}>{interpolateDialog(line)}</p>
                                         ))}
                                     </div>
@@ -429,7 +429,7 @@ const ScenePlayer = ({
                             </div>
                             {responses && (
                                 <div className={classes.feedbackContainer}>
-                                    {responses.map((response, i) => (
+                                    {responses.map((response, i: number) => (
                                         <div
                                             className={classNames(classes.option, classes.response)}
                                             key={i}

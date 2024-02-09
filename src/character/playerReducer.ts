@@ -1,3 +1,4 @@
+import uuid from "uuid";
 import { cloneDeep } from "lodash";
 import { Ability } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -52,7 +53,7 @@ export const playerStateSlice = createSlice({
                     class: action.payload.selectedClass,
                     effects: aggregateItemEffects(classMap[action.payload.selectedClass].items),
                 },
-                deck: action.payload.deck,
+                deck: action.payload.deck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })),
             };
         },
         updateDeck: (state, action: PayloadAction<Ability[]>) => {

@@ -94,8 +94,8 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                         {[...JOB_CARD_MAP[selectedClass].starters]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
-                                <div className={classes.abilityContainer} key={i}>
-                                    <AbilityView ability={ability} key={i} player={player} />
+                                <div className={classes.abilityContainer} key={[ability.name, i].join("-")}>
+                                    <AbilityView ability={ability} player={player} />
                                 </div>
                             ))}
                     </div>

@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { JOB_CARD_MAP } from "../ability";
-import { Ability } from "../ability/types";
-import { getMaxHP } from "../battle/utils";
-import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
-import { Item } from "../item/types";
 import CardGrid from "../Menu/CardGrid";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
+import { JOB_CARD_MAP } from "../ability";
+import { Ability, HandAbility } from "../ability/types";
+import { getMaxHP } from "../battle/utils";
+import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
+import { Item } from "../item/types";
 import Button from "../view/Button";
 
 const useStyles = createUseStyles({
@@ -104,7 +104,7 @@ const Camp = ({
     updatePlayer,
 }: {
     onExit: () => void;
-    deck: Ability[];
+    deck: HandAbility[];
     player: any;
     updateDeck: (updated: Ability[]) => void;
     updatePlayer: (updated: any) => void;

@@ -293,7 +293,7 @@ const TreasureBox = ({
                                 </div>
                             )}
                             {items.map((item, i) => (
-                                <ItemView item={item} key={i} highlight={true} />
+                                <ItemView item={item} key={[item.name, i].join("-")} highlight={true} />
                             ))}
                         </div>
                     )}

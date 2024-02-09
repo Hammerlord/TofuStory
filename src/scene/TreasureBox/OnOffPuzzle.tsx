@@ -48,7 +48,7 @@ const OnOffPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     return (
         <div>
             {answer.map((a: boolean, i: number) => (
-                <div className={classes.iconContainer} onClick={() => onClickTile(i)} key={i}>
+                <div className={classes.iconContainer} onClick={() => onClickTile(i)} key={[a, i].join("-")}>
                     <img src={a ? MesoCoinImage : MesoImage} className={classes.icon} key={a ? MesoCoinImage : MesoImage} />
                 </div>
             ))}

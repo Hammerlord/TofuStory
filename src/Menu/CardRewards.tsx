@@ -1,8 +1,10 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { Ability, HandAbility } from "../ability/types";
 import { Item } from "../item/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
@@ -75,7 +77,8 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
         const shuffled = [...cardRewardOptions, ...shuffle(potentialAbilities)];
         const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
         // Use deck to determine which abilities have a higher chance to roll
-        setRolledAbiliies(shuffled.slice(0, numChoices));
+        const abilities: HandAbility[] = shuffled.slice(0, numChoices).map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
+        setRolledAbiliies(abilities);
     }, []);
 
     const handleSelectClick = () => {
@@ -90,13 +93,13 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
                     <h1>Pick an ability to acquire</h1>
                 </div>
                 <div className={classes.abilityContainer}>
-                    {rolledAbilities.map((ability, i) => (
+                    {rolledAbilities.map((ability: HandAbility, i) => (
                         <div
                             className={classNames(classes.ability, {
                                 selected: i === selectedAbilityIndex,
                             })}
                             onClick={() => setSelectedAbilityIndex(i)}
-                            key={i}
+                            key={ability.instanceId}
                         >
                             <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} disableGlow={true} />
                         </div>

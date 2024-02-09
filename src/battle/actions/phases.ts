@@ -113,10 +113,18 @@ export const startBattle = ({
                         const bSort = b.preemptive ? 1 : 0;
                         return bSort - aSort;
                     })
-                    .map((card) => ({
-                        ...card,
-                        instanceId: uuid.v4(),
-                    })),
+                    .map((card) => {
+                        const { instanceId, name } = card;
+                        if (!instanceId) {
+                            console.warn(name, "did not have an instance id. Generating one.");
+                            return {
+                                ...card,
+                                instanceId: uuid.v4(),
+                            };
+                        }
+
+                        return card;
+                    }),
                 discard: [],
                 hand: [],
                 depleted: [],

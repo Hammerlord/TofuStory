@@ -273,7 +273,7 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
         <div className={classes.root}>
             <div className={classes.inner}>
                 {cardLayout.map((card, i) => (
-                    <React.Fragment key={i}>
+                    <React.Fragment key={[card, i].join("-")}>
                         <div
                             className={classNames(classes.cardContainer, {
                                 flip: isCardRevealed(i),

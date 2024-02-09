@@ -1,10 +1,10 @@
+import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
-import Button from "../view/Button";
-import classNames from "classnames";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { Ability, HandAbility } from "../ability/types";
 import { XIcon } from "../images/icons";
+import Button from "../view/Button";
 
 const useStyles = createUseStyles({
     root: {
@@ -79,12 +79,12 @@ const CardRemovalGrid = ({
                 <h3>Select an ability to remove</h3>
                 <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
                 <div className={classes.abilitySection}>
-                    {cards.map((card, i) => (
+                    {cards.map((card: HandAbility, i: number) => (
                         <div
                             className={classNames(classes.ability, {
                                 selectedForRemoval: i === selectedAbilityIndexToRemove,
                             })}
-                            key={i}
+                            key={card.instanceId}
                             onClick={() => setSelectedAbilityIndexToRemove(i)}
                         >
                             <AbilityView ability={card} />

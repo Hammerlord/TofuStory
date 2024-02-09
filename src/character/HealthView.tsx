@@ -55,7 +55,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         />{" "}
                         from attacks. <br /> Modifiers:
                         {damageModifiers.map(({ name, attackDamageReceived, icon }, i) => (
-                            <div key={i}>
+                            <div key={[name, i].join("-")}>
                                 <Icon icon={icon} /> {name} {attackDamageReceived < 0 ? "-" : "+"}
                                 {attackDamageReceived}
                             </div>

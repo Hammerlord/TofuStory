@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability } from "../ability/types";
+import { Ability, HandAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     abilityContainer: {
@@ -17,7 +17,7 @@ const CardGrid = ({
     highlightColour = "#45ff61",
     onClickAbility = () => {},
 }: {
-    cards: Ability[];
+    cards: HandAbility[];
     selectedAbilityIndex?: number;
     highlightColour?: string;
     onClickAbility?: any;
@@ -28,7 +28,7 @@ const CardGrid = ({
             {cards.map((card, i) => (
                 <div
                     className={classes.abilityContainer}
-                    key={i}
+                    key={card.instanceId}
                     onClick={() => onClickAbility(card, i)}
                     style={{
                         boxShadow: selectedAbilityIndex === i ? `0 0 8px 4px ${highlightColour}` : "",

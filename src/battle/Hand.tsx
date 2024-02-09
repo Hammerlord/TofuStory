@@ -82,7 +82,7 @@ const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, classNam
                 <AbilityView
                     onClick={(e) => handleAbilityClick(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}
-                    key={i}
+                    key={ability.instanceId}
                     ability={ability}
                     player={player}
                     ref={refs[i]}

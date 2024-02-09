@@ -99,7 +99,7 @@ const ItemSelection = ({
                         <div
                             onClick={() => setSelectedIndex(i)}
                             className={classNames({ selected: i === selectedIndex }, classes.item)}
-                            key={i}
+                            key={[choice.name, i].join("-")}
                         >
                             <ItemView item={choice} />
                         </div>

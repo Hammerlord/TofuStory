@@ -1,9 +1,10 @@
-import Button from "../view/Button";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability } from "../ability/types";
+import { Ability, HandAbility } from "../ability/types";
+import Button from "../view/Button";
 
 const useStyles = createUseStyles({
     root: {
@@ -46,8 +47,8 @@ const UpgradeTile = ({ card, onClick, isSelected }) => {
                     [classes.highlighted]: isSelected,
                 })}
             >
-                {card.upgrades.map((card, i) => (
-                    <AbilityView ability={card} key={i} />
+                {card.upgrades.map((card: Ability, i: number) => (
+                    <AbilityView ability={card} key={[card.name, i].join("-")} />
                 ))}
             </div>
         </div>
@@ -82,10 +83,10 @@ const CardUpgradeGrid = ({
     onCancel,
     onConfirm,
 }: {
-    cards: Ability[];
+    cards: HandAbility[];
     highlightColour?: string;
     onCancel?: () => void;
-    onConfirm?: (updatedDeck: Ability[]) => void;
+    onConfirm?: (updatedDeck: HandAbility[]) => void;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useGridStyles();
@@ -96,11 +97,11 @@ const CardUpgradeGrid = ({
                 <h3>Select an ability to upgrade</h3>
 
                 <div className={classes.abilitySection}>
-                    {cards.map((card, i) => (
+                    {cards.map((card: HandAbility, i) => (
                         <UpgradeTile
                             card={card}
                             onClick={() => setSelectedAbilityIndex(i)}
-                            key={i}
+                            key={card.instanceId}
                             isSelected={i === selectedAbilityIndex}
                         />
                     ))}
@@ -116,10 +117,12 @@ const CardUpgradeGrid = ({
                                         return;
                                     }
 
-                                    const updatedCards = [
-                                        ...cards.filter((_, i) => i !== selectedAbilityIndex),
-                                        cards[selectedAbilityIndex].upgrades[0],
-                                    ];
+                                    const upgrade = {
+                                        ...cards[selectedAbilityIndex].upgrades[0],
+                                        instanceId: uuid.v4(),
+                                    };
+
+                                    const updatedCards = [...cards.filter((_, i) => i !== selectedAbilityIndex), upgrade];
                                     onConfirm(updatedCards);
                                 }}
                                 disabled={!cards[selectedAbilityIndex]}

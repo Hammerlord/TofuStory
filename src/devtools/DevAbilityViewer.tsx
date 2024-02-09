@@ -1,11 +1,13 @@
-import Button from "../view/Button";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { JOB_CARD_MAP } from "../ability";
+import uuid from "uuid";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { PLAYER_CLASSES, SECONDARY_JOBS } from "../Menu/types";
+import { JOB_CARD_MAP } from "../ability";
 import { shellThrow } from "../ability/neutralAbilities";
+import Button from "../view/Button";
+import { Ability, HandAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     class: {
@@ -36,6 +38,14 @@ const DevAbilityViewer = ({ onClose }) => {
 
     const Grid = isViewingUpgrades ? CardUpgradeGrid : CardGrid;
 
+    const applyInstanceId = (cards?: Ability[]): HandAbility[] => {
+        if (!cards) {
+            return [];
+        }
+
+        return cards.map((card) => ({ ...card, instanceId: uuid.v4() }));
+    };
+
     return (
         <div>
             <Button variant="contained" color="primary" onClick={() => setIsViewingUpgrades((prev) => !prev)}>
@@ -55,17 +65,17 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div className={classes.viewer}>
                     <p>Neutral Cards</p>
-                    <Grid cards={[shellThrow]} />
+                    <Grid cards={applyInstanceId([shellThrow])} />
                     <hr />
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
                     </p>
-                    <Grid cards={JOB_CARD_MAP[selectedClass]?.all || []} />
+                    <Grid cards={applyInstanceId(JOB_CARD_MAP[selectedClass]?.all)} />
                     {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
                         <div key={secondaryClass}>
                             <hr />
                             <p>{secondaryClass}</p>
-                            <Grid cards={JOB_CARD_MAP[secondaryClass]?.all || []} />
+                            <Grid cards={applyInstanceId(JOB_CARD_MAP[secondaryClass]?.all)} />
                         </div>
                     ))}
                 </div>

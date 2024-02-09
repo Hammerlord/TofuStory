@@ -146,9 +146,9 @@ const AbilityTooltip = ({
     if (cardsToAdd.length > 0) {
         tooltips.push(
             <div className={classes.cards} key={"cards"}>
-                {cardsToAdd.map((ability: Ability, i) => (
-                    <div className={"card-container"} key={i}>
-                        <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
+                {cardsToAdd.map((card: Ability, i) => (
+                    <div className={"card-container"} key={[card.name, i].join("-")}>
+                        <AbilityView ability={card} deck={deck} hand={hand} discard={discard} />
                     </div>
                 ))}
             </div>
