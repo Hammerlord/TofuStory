@@ -713,7 +713,7 @@ const BattlefieldContainer = () => {
                     <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
                 )}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
-                {selectCardsPrompt && (
+                {selectCardsPrompt && !events.length && (
                     <SelectCardOverlay
                         player={player}
                         selectCardsPrompt={selectCardsPrompt}
