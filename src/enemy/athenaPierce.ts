@@ -1,4 +1,4 @@
-import { avenger, hardy, bleed } from "../ability/Effects";
+import { avenger, bleed, hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
     AthenaAttackStanceImage,
@@ -7,10 +7,8 @@ import {
     CoveringFireImage,
     FelineBerserkImage,
     HurricaneImage,
-    SharpEyesImage,
     SoaringHawkImage,
     VitalHunterImage,
-    WeaponMasteryImage,
     WolfImage,
 } from "../images";
 import { TornadoIcon } from "../images/icons";
@@ -19,13 +17,14 @@ import { attack } from "./abilities";
 export const guardWolf: Minion = {
     name: "Wolf",
     isBoss: true,
-    maxHP: 125,
+    maxHP: 100,
     image: WolfImage,
     abilities: [
         attack,
         {
-            name: "Howl",
-            description: "Grants 10 armor to allies.",
+            name: "Protective Howl",
+            description: "Grants 10 armor to allies and dispels negative status effects.",
+            castTime: 1,
             resourceCost: 3,
             actions: [
                 {
@@ -34,6 +33,7 @@ export const guardWolf: Minion = {
                     animation: ANIMATION_TYPES.SHOUT,
                     area: 2,
                     armor: 10,
+                    removeDebuffs: true,
                 },
             ],
         },
@@ -255,13 +255,15 @@ export const guardHawk: Minion = {
         attack,
         {
             name: "Cyclone",
-            description: "Blasts targets with a cyclone that deals 1 damage and applies a Bleed for 2 turns.",
+            image: TornadoIcon,
+            description: "Blasts targets with a cyclone that deals 3 damage and applies a Bleed for 3 turns.",
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    damage: 1,
+                    damage: 3,
                     area: 4,
                     icon: TornadoIcon,
                     animationOptions: {
@@ -271,7 +273,7 @@ export const guardHawk: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 2,
+                            duration: 3,
                         },
                     ],
                 },
