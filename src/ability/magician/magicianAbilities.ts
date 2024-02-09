@@ -38,6 +38,7 @@ import {
     MagicClawProjectileImage,
     MagicFangProjectileImage,
     MagicGuardImage,
+    ManaImage,
     MetalBucketSnowmanImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
@@ -106,12 +107,6 @@ const energyBolt2: Ability = {
                 rotateToFaceTarget: true,
             },
         },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            playbackTime: 250,
-            resources: 1,
-        },
     ],
 };
 
@@ -132,12 +127,6 @@ export const energyBolt: Ability = {
                 rotate: -45,
                 rotateToFaceTarget: true,
             },
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            playbackTime: 250,
-            resources: 1,
         },
     ],
     upgrades: [energyBolt2],
@@ -3022,4 +3011,37 @@ export const frostfireBlast: Ability = {
         },
     ],
     upgrades: [frostfireBlast2],
+};
+
+const manaGem2: Ability = {
+    name: "Mana Gem",
+    resourceCost: 0,
+    image: ManaImage,
+    rarity: RARITIES.COMMON,
+    level: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 1,
+            armor: 3,
+        },
+    ],
+};
+
+export const manaGem: Ability = {
+    name: "Mana Gem",
+    resourceCost: 0,
+    image: ManaImage,
+
+    rarity: RARITIES.COMMON,
+    level: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 1,
+        },
+    ],
+    upgrades: [manaGem2],
 };

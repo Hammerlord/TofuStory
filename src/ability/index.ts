@@ -30,6 +30,7 @@ import {
     magicClaw,
     magicFang,
     magicGuard,
+    manaGem,
     metronome,
     moltenLaser,
     moonlight,
@@ -173,8 +174,9 @@ export const JOB_CARD_MAP = {
             moonlight,
             zap,
             frostfireBlast,
+            manaGem,
         ],
-        starters: [energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor, teleport],
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
     [MAGICIAN_SECONDARY_JOBS.FIRE_POISON_MAGE]: {
         all: [],
