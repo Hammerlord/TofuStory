@@ -1,3 +1,6 @@
+import { bash, slashBlast } from "./../../ability/warrior/warriorAbilities";
+import { energyBolt, magicFang, magicClaw } from "./../../ability/magician/magicianAbilities";
+import { attack } from "./../../enemy/abilities";
 import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { rally } from "../../enemy/abilities";
 import { GoldRichieImage, GuardWarriorImage, GuardWizardImage, MesoCoinImage, MesoImage, WeaponMasteryImage } from "../../images";
@@ -122,13 +125,16 @@ export const adventurerFighter = {
     name: "Fighter",
     image: GuardWarriorImage,
     maxHP: 75,
-    damage: 2,
-    abilities: [rally],
+    abilities: [{ ...bash }, { ...slashBlast }, rally],
 };
 
 export const adventurerIceWizard = {
     name: "Ice-Lightning Wizard",
     image: GuardWizardImage,
     maxHP: 60,
-    damage: 3,
+    abilities: [
+        { ...energyBolt },
+        { ...magicFang },
+        { ...magicClaw, actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })) },
+    ],
 };
