@@ -1,15 +1,11 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, HandAbility } from "../ability/types";
-import { Item, RARITIES } from "../item/types";
-import { shuffle } from "../utils";
-import Button from "../view/Button";
-import Overlay from "../view/Overlay";
-import { rollRarity } from "../item/utils";
+import { BATTLE_TYPES } from "../battle/types";
 import {
     BOSS_RARE_RATE,
     COLOR_RARITY_COMMON,
@@ -18,7 +14,11 @@ import {
     ELITE_RARE_RATE,
     ELITE_UNCOMMON_RATE,
 } from "../constants";
-import { BATTLE_TYPES } from "../battle/types";
+import { Item, RARITIES } from "../item/types";
+import { rollRarity } from "../item/utils";
+import { shuffle } from "../utils";
+import Button from "../view/Button";
+import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
     inner: {
@@ -103,10 +103,7 @@ const CardRewards = ({
     cardRewardOptions?: Ability[];
     rewardType?: BATTLE_TYPES;
 }) => {
-    const [rolledAbilities, setRolledAbiliies] = useState([]);
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
-    const classes = useStyles();
-    useEffect(() => {
+    const rolledAbilities = useMemo(() => {
         const { starters, all } = JOB_CARD_MAP[player.class];
 
         const potentialAbilities = [
@@ -133,10 +130,10 @@ const CardRewards = ({
             choices.push(filteredByRarity);
         });
 
-        const abilities: HandAbility[] = choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
-
-        setRolledAbiliies(abilities);
+        return choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
     }, []);
+    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const classes = useStyles();
 
     const handleSelectClick = () => {
         updateDeck([rolledAbilities[selectedAbilityIndex], ...deck]);

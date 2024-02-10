@@ -87,26 +87,23 @@ const SelectCardOverlay = ({
     deck: Ability[];
     discard: Ability[];
 }) => {
-    const [abilityChoices, setAbilityChoices] = useState([]);
     const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
     const { type, maxAmount: configuredMax } = selectCards;
     const maxAmount = configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
+    const [abilityChoices] = useState(
+        getCardSelection({
+            hand,
+            selectCards,
+            selectedAbilityId: abilityQueued?.selectedAbilityId,
+            player,
+        })
+    );
+
     const selectedAbilities = abilityChoices.filter(({ instanceId }) => selectedAbilityIds.includes(instanceId));
     const dispatch = useAppDispatch();
     const [hide, setHide] = useState(false);
-
-    useEffect(() => {
-        setAbilityChoices(
-            getCardSelection({
-                hand,
-                selectCards,
-                selectedAbilityId: abilityQueued?.selectedAbilityId,
-                player,
-            })
-        );
-    }, []);
 
     const handleSelectClick = () => {
         // Bug: No onDeplete event being triggered here

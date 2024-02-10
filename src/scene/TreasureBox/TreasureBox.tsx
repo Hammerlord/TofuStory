@@ -1,21 +1,19 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { playerStateSlice } from "../../character/playerReducer";
+import { useAppDispatch } from "../../hooks";
+import Icon from "../../icon/Icon";
 import { MesoCoinImage, MesoImage, TreasureChestImage } from "../../images";
 import { LockIcon, WarningIcon } from "../../images/icons";
-import { Item, ITEM_TYPES, RARITIES } from "../../item/types";
-import { ITEMS } from "../../Map/routes/eventList";
+import ItemView from "../../item/ItemView";
+import { Item } from "../../item/types";
+import { rollItemPool } from "../../item/utils";
 import { getRandomInt, getRandomItem } from "../../utils";
 import BannerNotice from "../../view/BannerNotice";
 import Button from "../../view/Button";
-import { PuzzleProps } from "./types";
-import { useAppDispatch } from "../../hooks";
-import { playerStateSlice } from "../../character/playerReducer";
-import Icon from "../../icon/Icon";
 import Overlay from "../../view/Overlay";
-import { COMMON_ITEM_CHANCE, RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../../constants";
-import ItemView from "../../item/ItemView";
-import { rollItemPool, rollRarity } from "../../item/utils";
+import { PuzzleProps } from "./types";
 
 const useStyles = createUseStyles({
     inner: {

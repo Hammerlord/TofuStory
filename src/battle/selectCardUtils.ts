@@ -1,9 +1,9 @@
-import { Ability, SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
-import uuid from "uuid";
-import { HandAbility } from "../ability/types";
 import { Action } from "@reduxjs/toolkit";
+import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
+import { HandAbility } from "../ability/types";
 import { shuffle } from "../utils";
+import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 
 const getCardSelection = ({
     hand,
@@ -15,11 +15,11 @@ const getCardSelection = ({
     selectedAbilityId?: string;
     hand: HandAbility[];
     player: any;
-}): (Ability | HandAbility)[] => {
+}): HandAbility[] => {
     const { effects = {}, type, filters } = selectCards || {};
     const { removeAfterTurn, ...other } = effects;
 
-    const createNewOption = (ability: Ability | HandAbility): HandAbility => {
+    const createNewOption = (ability: HandAbility): HandAbility => {
         return {
             ...ability,
             instanceId: uuid.v4(),
