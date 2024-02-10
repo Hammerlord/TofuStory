@@ -603,6 +603,7 @@ export enum SELECT_CARD_TYPES {
 }
 
 export enum AUTO_CAST_ABILITY_TYPES {
+    OFFENSE_FROM_CLASS = "offense-from-class",
     FROM_CLASS = "from-class",
     PRESET_CARDS = "preset-cards",
 }
@@ -611,4 +612,5 @@ export interface AutoCastAbility {
     type: AUTO_CAST_ABILITY_TYPES;
     amount: number;
     presetCards?: Ability[];
+    filters?: { property: string; comparator: "includes" | "eq" | "lt" | "gt"; value: any }[];
 }

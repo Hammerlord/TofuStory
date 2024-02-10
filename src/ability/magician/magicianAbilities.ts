@@ -2075,25 +2075,8 @@ const vm: Ability = {
                             },
                         ],
                         autoCastAbilities: {
-                            type: AUTO_CAST_ABILITY_TYPES.PRESET_CARDS,
-                            presetCards: [
-                                magicClaw,
-                                magicFang,
-                                ignite,
-                                tribolt,
-                                greaterBolt,
-                                goutOfFlame,
-                                thunderBolt,
-                                thunderclap,
-                                chainLightning,
-                                fireArrow,
-                                coldBeam,
-                                greatestBolt,
-                                polymorph,
-                                moltenLaser,
-                                combust,
-                                leechingFlame,
-                            ],
+                            type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
+                            filters: [{ property: "resourceCost", comparator: "lt", value: 3 }],
                             amount: 1,
                         },
                     },
@@ -2106,7 +2089,7 @@ const vm: Ability = {
 const volatileMagic2: Ability = {
     ...vm,
     level: 2,
-    preemptive: true,
+    resourceCost: 1,
 };
 
 export const volatileMagic: Ability = {

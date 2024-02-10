@@ -28,7 +28,7 @@ import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
 import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
-import { passesConditions } from "../passesConditions";
+import { passesConditions, passesValueComparison } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
@@ -1201,12 +1201,22 @@ const checkHandleAutoCast = ({
             return;
         }
 
-        const { type, amount, presetCards = [] } = autoCastAbilities;
+        const { type, amount, presetCards = [], filters } = autoCastAbilities;
         let cards = [];
         if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
             cards = JOB_CARD_MAP[actor.class]?.all || [];
         } else if (type === AUTO_CAST_ABILITY_TYPES.PRESET_CARDS) {
             cards = presetCards;
+        } else if (type === AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS) {
+            cards = (JOB_CARD_MAP[actor.class]?.all || []).filter(isOffensiveAbility);
+        }
+
+        if (filters) {
+            cards = cards.filter((card) => {
+                return filters.every(({ property, comparator, value }) =>
+                    passesValueComparison({ val: card[property], otherVal: value, comparator })
+                );
+            });
         }
 
         if (!cards.length) {
