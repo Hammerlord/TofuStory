@@ -178,7 +178,7 @@ export const JOB_CARD_MAP = {
             manaGem,
             magicShell,
         ],
-        starters: [energyBolt, energyBolt, manaGem, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
     [MAGICIAN_SECONDARY_JOBS.FIRE_POISON_MAGE]: {
         all: [],

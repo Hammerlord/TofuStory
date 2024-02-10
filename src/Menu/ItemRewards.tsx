@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
-import { goldenHammer, incense } from "../item/items";
+import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
-import { Item, ITEM_TYPES } from "../item/types";
-import { ITEMS } from "../Map/routes/eventList";
+import { goldenHammer } from "../item/items";
+import { ITEM_TYPES, Item } from "../item/types";
+import { rollItemPool } from "../item/utils";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { rollItemPool } from "../item/utils";
-import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 
 const useStyles = createUseStyles({
     inner: {
