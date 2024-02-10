@@ -283,7 +283,7 @@ export const eat: Ability = {
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
                 ({ name }) => ({
                     calculationTarget: CONDITION_TARGETS.TARGET,
-                    characterName: name,
+                    name,
                     comparator: "eq",
                 })
             ),
