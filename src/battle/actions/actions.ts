@@ -764,7 +764,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
                             ...oldCombatant,
                             HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
                             armor: oldCombatant.armor + armor,
-                            resources: oldCombatant.resources + resources,
+                            resources: Math.max(0, oldCombatant.resources + resources),
                             effects: calculateEffectChanges(effects, combatantEffects),
                             mesos: oldCombatant.mesos + mesos,
                         };
