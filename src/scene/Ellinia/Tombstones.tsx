@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
-import { shuffle } from "../../utils";
-import { createUseStyles } from "react-jss";
-import Icon from "../../icon/Icon";
-import { TombstoneIcon } from "../../images/icons";
-import Tooltip from "../../view/Tooltip";
-import { GreenFairiesImage } from "../../images";
 import classNames from "classnames";
+import { useEffect, useState } from "react";
+import { createUseStyles } from "react-jss";
+import { GreenFairiesImage } from "../../images";
+import { TombstoneIcon } from "../../images/icons";
+import { shuffle } from "../../utils";
+import Tooltip from "../../view/Tooltip";
 
 const useStyles = createUseStyles({
     tombstoneContainer: {

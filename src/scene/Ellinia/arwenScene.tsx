@@ -6,8 +6,24 @@ import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
 import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
 import { glassShoe } from "../../item/items";
-import TreasureBox from "../TreasureBox/TreasureBox";
 import { Scene, ScriptNode } from "../types";
+import {
+    ArwenIntroScene,
+    DarkForest1,
+    DarkForest2,
+    DarkForestMaladies,
+    LupinForest,
+    LupinForest2,
+    LupinForest3,
+    LupinForest4,
+    LupinForestMaladies,
+    TombstonesTwilitForest,
+    TombstonesTwilitForestFairies,
+    TwilitForest,
+    TwilitForest2,
+    TwilitForest3,
+    TwilitForest4,
+} from "./ArwenBackdrops";
 import DimPath from "./DimPath";
 import FollowFairies from "./FollowFairies";
 import Tombstones from "./Tombstones";
@@ -169,6 +185,7 @@ const glassShoeDialog = [
 
 const endingDialog = [
     {
+        scene: ArwenIntroScene,
         speaker: arwen,
         dialog: ["Ah, an adventuring one has returned!"],
     },
@@ -263,6 +280,7 @@ const maladyDialog: ScriptNode[] = [
                         ],
                     },
                     {
+                        scene: DarkForestMaladies,
                         speaker: malady,
                         dialog: [
                             "[The Malady swoop down.] Hmm! What's this we spy with our little eye? They sent a seeker. An unusual one who could almost pass as human to a less discerning gaze... Did they know?",
@@ -299,6 +317,7 @@ const maladyDialog: ScriptNode[] = [
                                         ],
                                     },
                                     {
+                                        scene: TwilitForest,
                                         background: AltForestBGImage,
                                         region: REGIONS.HIDDEN_FOREST,
                                         dialog: [
@@ -318,9 +337,14 @@ const maladyDialog: ScriptNode[] = [
                                         ],
                                     },
                                     {
+                                        scene: TwilitForest2,
                                         dialog: [
                                             "[As you venture forward, the path grows unnaturally darker and darker... You won't be able to find your way like this.",
-                                            "In front of you, something glimmers feebly with old magic. Maybe you can restore the light somehow.]",
+                                        ],
+                                    },
+                                    {
+                                        dialog: [
+                                            "[In front of you, something glimmers feebly with old magic, so feebly you almost missed it. Maybe you can restore the light somehow.]",
                                         ],
                                         responses: [
                                             {
@@ -331,6 +355,7 @@ const maladyDialog: ScriptNode[] = [
                                                         dialog: [],
                                                     },
                                                     {
+                                                        scene: TwilitForest3,
                                                         background: AltForestBG2Image,
                                                         dialog: ["[The light restored, you can now continue forward.]"],
                                                     },
@@ -356,6 +381,7 @@ const maladyDialog: ScriptNode[] = [
                                                         ],
                                                     },
                                                     {
+                                                        scene: TwilitForest4,
                                                         dialog: [
                                                             "[You sense yourself being surrounded by strange presences. You can feel their forlorn stares even as they say nothing to you.]",
                                                         ],
@@ -365,8 +391,10 @@ const maladyDialog: ScriptNode[] = [
                                                             "[They seem to be echoes, or something thereabouts--they definitely don't seem alive. The echoes manifest into dark, fluttering shapes, like large moths.",
                                                             "They meander closer and closer as if drawn to a flame.",
                                                             "...",
-                                                            "Abruptly, the echoes turn hostile, and poise to attack you.",
                                                         ],
+                                                    },
+                                                    {
+                                                        dialog: ["Abruptly, the echoes turn hostile, and poise to attack you."],
                                                         responses: [
                                                             {
                                                                 text: "Confront them.",
@@ -375,6 +403,7 @@ const maladyDialog: ScriptNode[] = [
                                                         ],
                                                     },
                                                     {
+                                                        scene: TwilitForest3,
                                                         speaker: malady,
                                                         dialog: [
                                                             "[Malady's voices echo around the trees.]",
@@ -392,8 +421,9 @@ const maladyDialog: ScriptNode[] = [
                                                         dialog: ["Is the seeker the same as they are?"],
                                                     },
                                                     {
+                                                        scene: TombstonesTwilitForest,
                                                         dialog: [
-                                                            "[You venture forward to a clearing where you spot a small group of ancient grave markers. It appears to be a gravesite.]",
+                                                            "[You come across a small group of ancient grave markers. It appears to be a gravesite.]",
                                                         ],
                                                         responses: [
                                                             {
@@ -427,6 +457,7 @@ const maladyDialog: ScriptNode[] = [
                                                                         dialog: ["We, Malady, are not afraid."],
                                                                     },
                                                                     {
+                                                                        scene: TombstonesTwilitForestFairies,
                                                                         dialog: [
                                                                             "[The tiny fairy-creatures you saw from the gravesite are now fluttering around you. They seem to be trying to get your attention. Maybe they can help you get out of here.]",
                                                                         ],
@@ -439,6 +470,8 @@ const maladyDialog: ScriptNode[] = [
                                                                                         dialog: [],
                                                                                     },
                                                                                     {
+                                                                                        scene: LupinForest,
+                                                                                        region: REGIONS.ELLINIA,
                                                                                         background: ElliniaBGImage,
                                                                                         dialog: [
                                                                                             "[You find yourself where you began in the forest, along with a treasure chest.]",
@@ -447,8 +480,9 @@ const maladyDialog: ScriptNode[] = [
                                                                                     {
                                                                                         treasureBox: true,
                                                                                         dialog: [""],
-                                                                                    } as ScriptNode, // Why does it say treasureBox doesn't exist as a property on this interface?
+                                                                                    },
                                                                                     {
+                                                                                        scene: LupinForestMaladies,
                                                                                         speaker: malady,
                                                                                         dialog: [
                                                                                             "Ohohoho! Well done. It seems the pawn was even able to befriend the lost echoes of fae folk--perhaps the seeker was once one favored by the forest.",
@@ -468,6 +502,7 @@ const maladyDialog: ScriptNode[] = [
                                                                                         ],
                                                                                     },
                                                                                     {
+                                                                                        scene: LupinForest,
                                                                                         speaker: malady,
                                                                                         dialog: [
                                                                                             "The curse will continue on, even if Malady do not.",
@@ -506,10 +541,12 @@ const maladyDialog: ScriptNode[] = [
 
 const lupinsDialog = [
     {
+        scene: LupinForest3,
         speaker: zombieLupin,
         dialog: ["[The infected Lupin makes more gargling sounds, but none are discernible.]"],
     },
     {
+        scene: LupinForest4,
         dialog: [
             "[As the creature crumples to the grass, you realize you're being flanked by a group of infected Lupins. These Zombie Lupins seem even more aggressive than the one you just fought.]",
         ],
@@ -519,6 +556,7 @@ const lupinsDialog = [
                 encounter: zombieLupinsFight,
                 next: [
                     {
+                        scene: LupinForest,
                         dialog: [
                             "[That seems to be the last of them... for now. The forest is eerily quiet, but you can feel an unsettling aura emanate from beyond the trees.",
                             "First, a quick break before moving forward.]",
@@ -529,6 +567,7 @@ const lupinsDialog = [
                                 camp: true,
                                 next: [
                                     {
+                                        scene: DarkForest1,
                                         dialog: [
                                             "[If you could figure out who, or what, is behind this so-called curse, maybe you could stop it at its source.",
                                             "Meanwhile, you get this sense that you're being watched...]",
@@ -543,6 +582,7 @@ const lupinsDialog = [
                                         dialog: ["[The footsteps are approaching.]"],
                                     },
                                     {
+                                        scene: DarkForest2,
                                         speaker: faust,
                                         dialog: ["......"],
                                     },
@@ -555,6 +595,7 @@ const lupinsDialog = [
                                                 encounter: faustFight,
                                                 next: [
                                                     {
+                                                        scene: DarkForest1,
                                                         dialog: ["[Something shiny tumbles from the fallen heap of rotten fur.]"],
                                                         items: [glassShoe],
                                                     },
@@ -576,11 +617,100 @@ const lupinsDialog = [
     },
 ];
 
+const inLupinForest = {
+    speaker: arwen,
+    dialog: [
+        "If one must wait, perhaps one could help? Lord Grendel works so hard, he hasn't time to leave the library, and there is always so much trouble happening outside.",
+        "Adventurers are helpful ones, yes?",
+    ],
+    responses: [
+        {
+            text: "I think you're mistaken, I'm...",
+            next: [
+                {
+                    speaker: rowen,
+                    dialog: [
+                        "If one would be a listening one: Rowen and Arwen do not judge by appearances, and neither does old, wise Grendel. Oneselves are oneselves. The adventuring one is an adventurer.",
+                        "Monstrous ones are monsters. All different.",
+                    ],
+                },
+                {
+                    speaker: arwen,
+                    dialog: [
+                        "But now may oneself inquire, is the adventuring one a helping one?",
+                        "In the forest is a curse spread by evil ones called Malady. Oneselves have cast magic to stop the curse from reaching Ellinia, but outside, the curse infects many of the ones called monsters.",
+                    ],
+                },
+                {
+                    speaker: rowen,
+                    dialog: ["When monstrous ones are infected, infected ones are dangerous, and can spread the curse to others."],
+                },
+                {
+                    speaker: arwen,
+                    dialog: ["However, adventuring ones have no need to worry! The curse doesn't affect adventurers."],
+                },
+                {
+                    speaker: rowen,
+                    dialog: ["If one would clear out the monsters, oneselves would be grateful."],
+                },
+                {
+                    speaker: arwen,
+                    dialog: [
+                        "Very grateful. And might an extra helpful one do another favor, if possible?",
+                        "Arwen lost a very precious glass shoe in the forest when escaping an infected monstrous one. If one could retrieve it, Arwen would be happy.",
+                    ],
+                },
+                {
+                    speaker: rowen,
+                    dialog: [
+                        "Rowen remembers. It was a powerful infected one who chased Arwen. If one seeks the glass shoe, one should be careful. That infected one could be even stronger now.",
+                    ],
+                },
+                {
+                    scene: LupinForest,
+                    dialog: [
+                        "[Somehow, you find yourself back in Ellinia forest on an errand...",
+                        "Maybe taking care of this curse will convince Grendel and his assistants to help you in turn.]",
+                    ],
+                },
+                {
+                    dialog: ["[The thought seems more and more naive every second.]"],
+                },
+                {
+                    scene: LupinForest2,
+                    speaker: lupin,
+                    dialog: ["[As you venture forward, a furry shape darts into sight.]"],
+                },
+                {
+                    speaker: lupin,
+                    dialog: ["[It's just a Lupin. But something seems off. The Lupin looks at you and makes a wet, gargling noise.]"],
+                },
+                {
+                    speaker: lupin,
+                    dialog: ["R-r... uh...", "Rrrun...!"],
+                },
+                {
+                    speaker: lupin,
+                    dialog: ["[Even as it speaks, the Lupin is lunging toward you, its eyes milky.]"],
+                    responses: [
+                        {
+                            text: "Defend yourself.",
+                            encounter: lupinFight,
+                            next: lupinsDialog,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
 export const arwenScene: Scene = {
     characters: [],
     script: [
         {
             background: ElliniaBGImage,
+            scene: ArwenIntroScene,
             dialog: [
                 "[This forest village is home to the sagacious magicians. Maybe the old wizard who oversees it will have some insight about your situation...]",
             ],
@@ -605,7 +735,7 @@ export const arwenScene: Scene = {
             ],
             responses: [
                 {
-                    text: "Um...",
+                    text: "Um... who are you?",
                     next: [
                         {
                             speaker: arwen,
@@ -615,9 +745,10 @@ export const arwenScene: Scene = {
                         },
                         {
                             speaker: rowen,
-                            dialog: [
-                                "[Rowen gestures.] Oneself is called Rowen, and that one is called Arwen. Together, oneselves assist the one called Grendel.",
-                            ],
+                            dialog: ["Together, oneselves assist the one called Grendel."],
+                        },
+                        {
+                            dialog: ["[Something about these beings seems uncanny... almost like...]"],
                             responses: [
                                 {
                                     text: "So you're fairies? Does that mean you're monsters?",
@@ -632,132 +763,34 @@ export const arwenScene: Scene = {
                                             speaker: rowen,
                                             dialog: ["Fairies are not monsters. Very big difference, see?"],
                                         },
+                                        inLupinForest,
+                                    ],
+                                },
+                                {
+                                    text: "You can understand me?",
+                                    next: [
                                         {
+                                            speaker: arwen,
+                                            dialog: ["Yes, how clearly one speaks!"],
+                                        },
+                                        {
+                                            speaker: rowen,
+                                            dialog: ["Perfectly clearly."],
+                                        },
+                                        {
+                                            speaker: arwen,
+                                            dialog: ["O-of course--that is oneselves are wise and knowing creatures of the forest!"],
+                                        },
+                                        {
+                                            speaker: rowen,
                                             dialog: [
-                                                "[It occurs to you that just about everyone up to this point hasn't understood anything you've said, but these two fairies do.]",
-                                            ],
-                                            responses: [
-                                                {
-                                                    text: "But you can understand non-human speech.",
-                                                    next: [
-                                                        {
-                                                            speaker: arwen,
-                                                            dialog: [
-                                                                "Yes, o-of course--oneselves are wise and knowing creatures of the forest.",
-                                                            ],
-                                                        },
-                                                        {
-                                                            speaker: rowen,
-                                                            dialog: [
-                                                                "[Rowen nods.] Yes, Arwen is right exactly. Of course oneselves understand mushroom-speak, even speak from mushroom enthusiasts such as this adventuring one.",
-                                                            ],
-                                                        },
-                                                        {
-                                                            dialog: ["[Hm. It seems they really think you're just a regular adventurer?]"],
-                                                        },
-                                                        {
-                                                            speaker: arwen,
-                                                            dialog: [
-                                                                "If one must wait, perhaps one could help? Lord Grendel works so hard, he hasn't time to leave the library, and there is always so much trouble happening outside.",
-                                                                "Adventurers are helpful ones, yes?",
-                                                            ],
-                                                            responses: [
-                                                                {
-                                                                    text: "I think you're mistaken, I'm...",
-                                                                    next: [
-                                                                        {
-                                                                            speaker: rowen,
-                                                                            dialog: [
-                                                                                "If one would be a listening one: Rowen and Arwen do not judge by appearances, and neither does old, wise Grendel. Oneselves are oneselves. The adventuring one is an adventurer.",
-                                                                                "Monstrous ones are monsters. All different.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: arwen,
-                                                                            dialog: [
-                                                                                "But now may oneself inquire, is the adventuring one a helping one?",
-                                                                                "In the forest is a curse spread by evil ones called Malady. Oneselves have cast magic to stop the curse from reaching Ellinia, but outside, the curse infects many of the ones called monsters.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: rowen,
-                                                                            dialog: [
-                                                                                "When monstrous ones are infected, infected ones are dangerous, and can spread the curse to others.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: arwen,
-                                                                            dialog: [
-                                                                                "However, adventuring ones have no need to worry! The curse doesn't affect adventurers.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: rowen,
-                                                                            dialog: [
-                                                                                "If one would clear out the monsters, oneselves would be grateful.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: arwen,
-                                                                            dialog: [
-                                                                                "Very grateful. And might an extra helpful one do another favor, if possible?",
-                                                                                "Arwen lost a very precious glass shoe in the forest when escaping an infected monstrous one. If one could retrieve it, Arwen would be happy.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: rowen,
-                                                                            dialog: [
-                                                                                "Rowen remembers. It was a powerful infected one who chased Arwen. If one seeks the glass shoe, one should be careful. That infected one could be even stronger now.",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            dialog: [
-                                                                                "[Somehow, you find yourself back in Ellinia forest on an errand...",
-                                                                                "Maybe taking care of this curse will convince Grendel and his assistants to help you in turn.]",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            dialog: [
-                                                                                "[The thought seems more and more naive every second.]",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: lupin,
-                                                                            dialog: [
-                                                                                "[As you venture forward, a furry shape darts into sight.]",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: lupin,
-                                                                            dialog: [
-                                                                                "[It's just a Lupin. But something seems off. The Lupin looks at you and makes a wet, gargling noise.]",
-                                                                            ],
-                                                                        },
-                                                                        {
-                                                                            speaker: lupin,
-                                                                            dialog: ["R-r... uh...", "Rrrun...!"],
-                                                                        },
-                                                                        {
-                                                                            speaker: lupin,
-                                                                            dialog: [
-                                                                                "[Even as it speaks, the Lupin is lunging toward you, its eyes milky.]",
-                                                                            ],
-                                                                            responses: [
-                                                                                {
-                                                                                    text: "Defend yourself.",
-                                                                                    encounter: lupinFight,
-                                                                                    next: lupinsDialog,
-                                                                                },
-                                                                            ],
-                                                                        },
-                                                                    ],
-                                                                },
-                                                            ],
-                                                        },
-                                                    ],
-                                                },
+                                                "[Rowen nods.] Yes, Arwen is right exactly. Of course oneselves understand mushroom-speak, even speak from mushroom enthusiasts such as this adventuring one.",
                                             ],
                                         },
+                                        {
+                                            dialog: ["[Hm. It seems they really think you're just a regular adventurer?]"],
+                                        },
+                                        inLupinForest,
                                     ],
                                 },
                             ],
