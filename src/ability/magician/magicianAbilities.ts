@@ -1795,6 +1795,7 @@ const temporalBag2: Ability = {
 export const temporalBag: Ability = {
     ...temporalBag2,
     level: 1,
+    description: "Place up to 2 cards from your hand on top of your deck.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2215,7 +2216,7 @@ const icyDraft2: Ability = {
                 rotateToFaceTarget: true,
                 rotate: 135,
             },
-            damage: 5,
+            damage: 6,
             effects: [
                 {
                     ...freeze,
@@ -2232,7 +2233,7 @@ export const icyDraft: Ability = {
     actions: [
         {
             ...icyDraft2.actions[0],
-            damage: 2,
+            damage: 3,
         },
     ],
     upgrades: [icyDraft2],
