@@ -272,7 +272,7 @@ export const topaz: Item = {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         numAbilitiesUsed: {
                             amount: 5,
-                            type: ACTION_TYPES.EFFECT,
+                            type: [ACTION_TYPES.EFFECT],
                         },
                         comparator: "modulo",
                     },
@@ -810,7 +810,7 @@ export const risingStar: Item = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         numAbilitiesUsed: {
-                            type: ACTION_TYPES.ATTACK,
+                            type: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
                             amount: 7,
                         },
                         comparator: "modulo",
@@ -1733,7 +1733,7 @@ export const blueJeanShorts: Item = {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         numAbilitiesUsed: {
                             amount: 10,
-                            type: ACTION_TYPES.EFFECT,
+                            type: [ACTION_TYPES.EFFECT],
                         },
                         comparator: "modulo",
                     },

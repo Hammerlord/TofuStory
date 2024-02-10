@@ -220,10 +220,13 @@ export const passesConditions = ({
             }
 
             if (numAbilitiesUsed !== undefined) {
-                const { amount: required = numAbilitiesUsed, type } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
-                const abilityMatchesType = (ability: Ability) =>
-                    !type || Boolean(ability?.actions?.some((action: Action) => action.type === type));
+                const { amount: required = numAbilitiesUsed, type = [] } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
+                const abilityMatchesType = (ability: Ability) => {
+                    return !type || ability?.actions?.some((action: Action) => type.some((t) => t === action.type));
+                };
+
                 const used = combatant.abilityHistory.filter(abilityMatchesType).length;
+                const sourceMatchesType = !source.source || abilityMatchesType(source.source as Ability);
 
                 if (
                     !passesValueComparison({
@@ -231,7 +234,7 @@ export const passesConditions = ({
                         otherVal: required,
                         comparator,
                     }) ||
-                    !abilityMatchesType(source.source as Ability)
+                    !sourceMatchesType
                 ) {
                     return false;
                 }

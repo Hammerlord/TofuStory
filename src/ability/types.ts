@@ -337,7 +337,7 @@ export interface Condition {
     numAbilitiesUsed?:
         | number
         | {
-              type?: ACTION_TYPES;
+              type?: ACTION_TYPES[];
               amount: number;
           };
     sourceType?: TRIGGER_SOURCE_TYPES;
