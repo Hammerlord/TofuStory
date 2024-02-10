@@ -76,6 +76,7 @@ const useStyles = createUseStyles({
         background: "rgba(10, 10, 10, 0.7)",
         borderRadius: "4px",
         padding: "6px 8px",
+        color: COLOR_RARITY_COMMON,
     },
     uncommonText: {
         color: COLOR_RARITY_UNCOMMON,
@@ -116,9 +117,15 @@ const CardRewards = ({
         const choices = [...cardRewardOptions];
         const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
 
+        let bonus = { rare: 0, uncommon: 0 };
+        if (rewardType === BATTLE_TYPES.BOSS) {
+            bonus = { rare: BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+        } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
+            bonus = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+        }
+
         Array.from({ length: numChoices - cardRewardOptions.length }).forEach(() => {
-            const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
-            const selectedRarity = rollRarity(player, { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE });
+            const selectedRarity = rollRarity(player, bonus);
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
@@ -144,7 +151,7 @@ const CardRewards = ({
                 </div>
                 <div className={classes.abilitySectionContainer}>
                     {rolledAbilities.map((ability: HandAbility, i) => (
-                        <div className={classes.abilityContainer}>
+                        <div className={classes.abilityContainer} key={ability.instanceId}>
                             <div className={classes.rarityContainer}>
                                 <span
                                     className={classNames(classes.diamond, {
@@ -167,7 +174,6 @@ const CardRewards = ({
                                     selected: i === selectedAbilityIndex,
                                 })}
                                 onClick={() => setSelectedAbilityIndex(i)}
-                                key={ability.instanceId}
                             >
                                 <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} disableGlow={true} />
                             </div>
