@@ -73,6 +73,9 @@ const useStyles = createUseStyles({
     },
     rarityContainer: {
         marginBottom: "16px",
+        background: "rgba(10, 10, 10, 0.7)",
+        borderRadius: "4px",
+        padding: "6px 8px",
     },
     uncommonText: {
         color: COLOR_RARITY_UNCOMMON,
