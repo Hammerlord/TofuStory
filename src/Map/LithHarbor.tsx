@@ -4,11 +4,12 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import CardRewards from "../Menu/CardRewards";
 import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
-import { WorldMapIcon } from "../images/icons";
+import { HeavyCheckMarkIcon, WorldMapIcon } from "../images/icons";
 import tutorial from "../Menu/tutorial";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
 import { PLAYER_CLASSES } from "../Menu/types";
+import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {
@@ -80,12 +81,19 @@ const useStyles = createUseStyles({
         paddingBottom: 48,
         borderRadius: 8,
     },
+    icon: {
+        margin: "auto",
+    },
 });
+
+const OLAF = "olaf";
+const TEOJOHN = "teo-john";
 
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
     const [promptTutorial, setPromptTutorial] = useState(true);
     const [showAcquireAbility, setShowAcquireAbility] = useState(false);
+    const [visitedMap, setVisitedMap] = useState({});
 
     const handleTutorialConfirmation = () => {
         onBattle &&
@@ -111,15 +119,33 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         <>
                             <h2>Lith Harbor</h2>
                             <div className={classes.eventsContainer}>
-                                <div className={classNames(classes.node, classes.balcony)} onClick={() => onClickScene(lithEventsOlaf)}>
+                                <div
+                                    className={classNames(classes.node, classes.balcony)}
+                                    onClick={() => {
+                                        if (!visitedMap[OLAF]) {
+                                            onClickScene(lithEventsOlaf);
+                                            setVisitedMap((prev) => ({ ...prev, [OLAF]: true }));
+                                        }
+                                    }}
+                                >
                                     Event
                                     <img src={LithHarborBalconyImage} />
-                                    <div className={classes.event}>?</div>
+                                    <div className={classes.event}>{!visitedMap[OLAF] ? "?" : <Icon icon={HeavyCheckMarkIcon} />}</div>
                                 </div>
-                                <div className={classNames(classes.node, classes.shark)} onClick={() => onClickScene(lithEventsTeoJohn)}>
+                                <div
+                                    className={classNames(classes.node, classes.shark)}
+                                    onClick={() => {
+                                        if (!visitedMap[TEOJOHN]) {
+                                            onClickScene(lithEventsTeoJohn);
+                                            setVisitedMap((prev) => ({ ...prev, [TEOJOHN]: true }));
+                                        }
+                                    }}
+                                >
                                     Event
                                     <img src={LithHarborSharkImage} />
-                                    <div className={classes.event}>?</div>
+                                    <div className={classes.event}>
+                                        {!visitedMap[TEOJOHN] ? "?" : <Icon icon={HeavyCheckMarkIcon} className={classes.icon} />}{" "}
+                                    </div>
                                 </div>
                                 <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
                                     Exit to World Map

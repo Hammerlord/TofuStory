@@ -14,6 +14,7 @@ export { default as FireIcon } from "./Fire.svg";
 export { default as FireworksIcon } from "./Fireworks.svg";
 export { default as GreenHeartIcon } from "./GreenHeart.svg";
 export { default as HeartIcon } from "./Heart.svg";
+export { default as HeavyCheckMarkIcon } from "./HeavyCheckMark.svg";
 export { default as HelmetIcon } from "./Helmet.svg";
 export { default as HourglassIcon } from "./Hourglass.svg";
 export { default as HouseIcon } from "./House.svg";
