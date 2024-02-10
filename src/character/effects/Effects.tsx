@@ -195,8 +195,8 @@ const Effects = ({ combatantInfo, healing }) => {
             {effects.map(
                 (effect, i) =>
                     effect.image && (
-                        <span className={classes.center}>
-                            <span className={classes.customEffect} key={i}>
+                        <span className={classes.center} key={effect.id || [effect.name, i].join("-")}>
+                            <span className={classes.customEffect}>
                                 <img src={effect.image} key={effect.image} />
                             </span>
                         </span>

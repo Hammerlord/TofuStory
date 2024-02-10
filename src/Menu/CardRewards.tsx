@@ -166,7 +166,7 @@ const CardRewards = ({
                                         [classes.rareText]: ability.rarity === RARITIES.RARE,
                                     })}
                                 >
-                                    {ability.rarity}
+                                    {ability.rarity || RARITIES.COMMON}
                                 </span>
                             </div>
                             <div
