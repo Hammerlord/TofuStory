@@ -33,6 +33,10 @@ const useStyles = createUseStyles({
         borderRadius: "8px",
         marginBottom: "96px",
     },
+    puzzlePlaceholder: {
+        marginBottom: "96px",
+        minHeight: "88px",
+    },
     bannerContainer: {
         position: "fixed",
         width: "40%",
@@ -322,6 +326,7 @@ const TreasureBox = ({
                         </div>
                     </div>
                 )}
+                {!Puzzle && <div className={classes.puzzlePlaceholder} />}
 
                 <div className={classes.buttonContainer}>
                     {!completed && (

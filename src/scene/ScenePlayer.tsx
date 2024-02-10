@@ -159,6 +159,8 @@ const useStyles = createUseStyles({
         position: "absolute",
         top: "50%",
         left: "50%",
+        width: "100%",
+        height: "100%",
     },
 });
 
@@ -389,96 +391,102 @@ const ScenePlayer = ({
     const canSkip = !responses && !items && !itemChoices;
 
     return (
-        <div className={classes.root}>
-            <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
-            <div className={classes.backgroundOverlay} />
-            <div className={classes.inner}>
-                {!Puzzle && !showCamp && !isRemovingAbility && !showTreasure && (
-                    <>
-                        <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
+        <>
+            <div className={classes.root}>
+                <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
+                <div className={classes.backgroundOverlay} />
+                <div className={classes.inner}>
+                    {!Puzzle && !showCamp && !isRemovingAbility && !showTreasure && (
+                        <>
+                            <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
-                        <div className={classes.wrapper}>
-                            <div className={classes.dialogContainer}>
-                                {canSkip && (
-                                    <div className={classes.skipButton}>
-                                        <Button onClick={handleSkip}>Skip</Button>
-                                    </div>
-                                )}
-                                <div className={classes.portraitContainer}>
-                                    {speaker && (
-                                        <>
-                                            <div className={classes.portrait}>
-                                                <img src={speaker.image} key={speaker.name} />
-                                            </div>{" "}
-                                            <div className={classes.speakerName}>{speaker?.name}</div>
-                                        </>
-                                    )}
-                                </div>
-                                <div className={classes.dialog} onClick={handleClickDialog}>
-                                    <div>
-                                        {dialog.map((line: string, i: number) => (
-                                            <p key={i}>{interpolateDialog(line)}</p>
-                                        ))}
-                                    </div>
-                                    {!responses && !items && (
-                                        <div className={classes.dialogArrow}>
-                                            <span>❯</span>
+                            <div className={classes.wrapper}>
+                                <div className={classes.dialogContainer}>
+                                    {canSkip && (
+                                        <div className={classes.skipButton}>
+                                            <Button onClick={handleSkip}>Skip</Button>
                                         </div>
                                     )}
-                                </div>
-                            </div>
-                            {responses && (
-                                <div className={classes.feedbackContainer}>
-                                    {responses.map((response, i: number) => (
-                                        <div
-                                            className={classNames(classes.option, classes.response)}
-                                            key={i}
-                                            onClick={() => handleClickResponse(response)}
-                                        >
-                                            <span>
-                                                {interpolateDialog(response.text)} {getResponseAffix(response)}
-                                            </span>
+                                    <div className={classes.portraitContainer}>
+                                        {speaker && (
+                                            <>
+                                                <div className={classes.portrait}>
+                                                    <img src={speaker.image} key={speaker.name} />
+                                                </div>{" "}
+                                                <div className={classes.speakerName}>{speaker?.name}</div>
+                                            </>
+                                        )}
+                                    </div>
+                                    <div className={classes.dialog} onClick={handleClickDialog}>
+                                        <div>
+                                            {dialog.map((line: string, i: number) => (
+                                                <p key={i}>{interpolateDialog(line)}</p>
+                                            ))}
                                         </div>
-                                    ))}
+                                        {!responses && !items && (
+                                            <div className={classes.dialogArrow}>
+                                                <span>❯</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
-                            {items && (
-                                <div className={classes.feedbackContainer} onClick={handleClickItems}>
-                                    <div className={classes.option}>
-                                        - You gain -
-                                        {items.map((item) => (
-                                            <div key={item.name}>
-                                                <img src={item.image} /> {item.name}
+                                {responses && (
+                                    <div className={classes.feedbackContainer}>
+                                        {responses.map((response, i: number) => (
+                                            <div
+                                                className={classNames(classes.option, classes.response)}
+                                                key={i}
+                                                onClick={() => handleClickResponse(response)}
+                                            >
+                                                <span>
+                                                    {interpolateDialog(response.text)} {getResponseAffix(response)}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    </>
-                )}
-                {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
-            </div>
-            {showCamp && (
-                <Camp deck={deck} player={player} updateDeck={updateDeck} updatePlayer={updatePlayer} onExit={() => setShowCamp(false)} />
-            )}
-            {itemChoices && (
-                <ItemSelection {...itemChoices} player={player} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />
-            )}
-            {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
-            {showTreasure && (
-                <div className={classes.treasureBoxContainer}>
-                    <TreasureBox
-                        onExit={() => {
-                            setShowTreasure(false);
-                            setDialogIndex((prev) => prev + 1);
-                        }}
-                        onLoot={handleObtainLoot}
-                        player={player}
-                    />
+                                )}
+                                {items && (
+                                    <div className={classes.feedbackContainer} onClick={handleClickItems}>
+                                        <div className={classes.option}>
+                                            - You gain -
+                                            {items.map((item) => (
+                                                <div key={item.name}>
+                                                    <img src={item.image} /> {item.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
+                    {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
                 </div>
+                {showCamp && (
+                    <Camp
+                        deck={deck}
+                        player={player}
+                        updateDeck={updateDeck}
+                        updatePlayer={updatePlayer}
+                        onExit={() => setShowCamp(false)}
+                    />
+                )}
+                {itemChoices && (
+                    <ItemSelection {...itemChoices} player={player} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />
+                )}
+                {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
+            </div>
+            {showTreasure && (
+                <TreasureBox
+                    onExit={() => {
+                        setShowTreasure(false);
+                        setDialogIndex((prev) => prev + 1);
+                    }}
+                    onLoot={handleObtainLoot}
+                    player={player}
+                />
             )}
-        </div>
+        </>
     );
 };
 

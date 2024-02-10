@@ -567,6 +567,9 @@ const lupinsDialog = [
                                 camp: true,
                                 next: [
                                     {
+                                        dialog: ["[You continue on.]"],
+                                    },
+                                    {
                                         scene: DarkForest1,
                                         dialog: [
                                             "[If you could figure out who, or what, is behind this so-called curse, maybe you could stop it at its source.",
@@ -679,7 +682,7 @@ const inLupinForest = {
                 {
                     scene: LupinForest2,
                     speaker: lupin,
-                    dialog: ["[As you venture forward, a furry shape darts into sight.]"],
+                    dialog: ["[Suddenly, a furry shape darts into sight.]"],
                 },
                 {
                     speaker: lupin,
@@ -779,7 +782,9 @@ export const arwenScene: Scene = {
                                         },
                                         {
                                             speaker: arwen,
-                                            dialog: ["O-of course--that is oneselves are wise and knowing creatures of the forest!"],
+                                            dialog: [
+                                                "O-of course--that is because oneselves are wise and knowing creatures of the forest!",
+                                            ],
                                         },
                                         {
                                             speaker: rowen,

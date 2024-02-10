@@ -147,8 +147,27 @@ export const LupinForest2 = ({ player }) => {
     );
 };
 
+const lupinForest3UseStyles = createUseStyles({
+    root: {
+        position: "relative",
+        background: `url(${DeepeningForestImage}) no-repeat`,
+        width: "1000px",
+        height: "600px",
+    },
+    character,
+    player: {
+        top: 324,
+        left: 300,
+        height: "65px",
+    },
+    lupin: {
+        top: 403,
+        left: 550,
+    },
+});
+
 export const LupinForest3 = ({ player }) => {
-    const classes = lupinForest2UseStyles();
+    const classes = lupinForest3UseStyles();
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
@@ -171,16 +190,16 @@ const lupinForest4UseStyles = createUseStyles({
         height: "65px",
     },
     lupin: {
-        top: 383,
-        left: 550,
+        top: 61,
+        left: 500,
     },
     lupin2: {
         top: 379,
         left: 668,
     },
     lupin3: {
-        top: 379,
-        left: 600,
+        top: 359,
+        left: 750,
     },
 });
 
