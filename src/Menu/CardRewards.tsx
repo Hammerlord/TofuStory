@@ -10,7 +10,15 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { rollRarity } from "../item/utils";
-import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
+import {
+    BOSS_RARE_RATE,
+    COLOR_RARITY_COMMON,
+    COLOR_RARITY_RARE,
+    COLOR_RARITY_UNCOMMON,
+    ELITE_RARE_RATE,
+    ELITE_UNCOMMON_RATE,
+} from "../constants";
+import { BATTLE_TYPES } from "../battle/types";
 
 const useStyles = createUseStyles({
     inner: {
@@ -76,7 +84,21 @@ const useStyles = createUseStyles({
 
 const BASE_NUM_CHOICES = 3;
 
-const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = [] }) => {
+const CardRewards = ({
+    deck,
+    player,
+    updateDeck,
+    onClose,
+    cardRewardOptions = [],
+    rewardType,
+}: {
+    deck: HandAbility[];
+    player;
+    updateDeck;
+    onClose;
+    cardRewardOptions?: Ability[];
+    rewardType?: BATTLE_TYPES;
+}) => {
     const [rolledAbilities, setRolledAbiliies] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
@@ -92,7 +114,8 @@ const CardRewards = ({ deck, player, updateDeck, onClose, cardRewardOptions = []
         const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
 
         Array.from({ length: numChoices - cardRewardOptions.length }).forEach(() => {
-            const selectedRarity = rollRarity(player, { uncommon: 0, rare: 0 });
+            const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
+            const selectedRarity = rollRarity(player, { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;

@@ -9,6 +9,7 @@ import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { rollItemPool } from "../item/utils";
+import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 
 const useStyles = createUseStyles({
     inner: {
@@ -42,10 +43,6 @@ const useStyles = createUseStyles({
         WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
     },
 });
-
-const BOSS_RARE_RATE = 0.3;
-const ELITE_RARE_RATE = 0.2;
-const ELITE_UNCOMMON_RATE = 0.25;
 
 const ItemRewards = ({
     player,

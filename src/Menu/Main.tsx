@@ -459,6 +459,7 @@ const Main = () => {
                             updateDeck={handleUpdateDeck}
                             onClose={handleCloseCardRewards}
                             cardRewardOptions={battle.cardRewards}
+                            rewardType={battle.type}
                         />
                     )}
                     {itemRewardsOpen && (
