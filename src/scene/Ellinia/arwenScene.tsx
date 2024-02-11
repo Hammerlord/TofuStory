@@ -281,6 +281,7 @@ const maladyDialog: ScriptNode[] = [
                     },
                     {
                         scene: DarkForestMaladies,
+                        disableTransition: true,
                         speaker: malady,
                         dialog: [
                             "[The Malady swoop down.] Hmm! What's this we spy with our little eye? They sent a seeker. An unusual one who could almost pass as human to a less discerning gaze... Did they know?",
@@ -336,6 +337,7 @@ const maladyDialog: ScriptNode[] = [
                                     },
                                     {
                                         scene: TwilitForest2,
+                                        disableTransition: true,
                                         dialog: [
                                             "[As you venture forward, the path grows unnaturally darker and darker... You won't be able to find your way like this.",
                                         ],
@@ -380,6 +382,7 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         scene: TwilitForest4,
+                                                        disableTransition: true,
                                                         dialog: [
                                                             "[You sense yourself being surrounded by strange presences. You can feel their forlorn stares even as they say nothing to you.]",
                                                         ],
@@ -420,6 +423,7 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         scene: TombstonesTwilitForest,
+                                                        disableTransition: true,
                                                         dialog: [
                                                             "[You come across a small group of ancient grave markers. It appears to be a gravesite.]",
                                                         ],
@@ -586,6 +590,7 @@ const lupinsDialog = [
     },
     {
         scene: LupinForest4,
+        disableTransition: true,
         dialog: [
             "[As the creature crumples to the grass, you realize you're being flanked by a group of infected Lupins. These Zombie Lupins seem even more aggressive than the one you just fought.]",
         ],
@@ -658,14 +663,6 @@ const inLupinForest = {
                 },
                 {
                     speaker: rowen,
-                    dialog: ["When monstrous ones are infected, infected ones are dangerous, and can spread the curse to others."],
-                },
-                {
-                    speaker: arwen,
-                    dialog: ["However, adventuring ones have no need to worry! The curse doesn't affect adventurers."],
-                },
-                {
-                    speaker: rowen,
                     dialog: ["If one would clear out the monsters, oneselves would be grateful."],
                 },
                 {
@@ -680,6 +677,11 @@ const inLupinForest = {
                     dialog: [
                         "Rowen remembers. It was a powerful infected one who chased Arwen. If one seeks the glass shoe, one should be careful. That infected one could be even stronger now.",
                     ],
+                    responses: [
+                        {
+                            text: "Wait--",
+                        },
+                    ],
                 },
                 {
                     scene: LupinForest,
@@ -693,6 +695,7 @@ const inLupinForest = {
                 },
                 {
                     scene: LupinForest2,
+                    disableTransition: true,
                     speaker: lupin,
                     dialog: ["[Suddenly, a furry shape darts into sight.]"],
                 },

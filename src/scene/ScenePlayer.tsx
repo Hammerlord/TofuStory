@@ -253,21 +253,25 @@ const ScenePlayer = ({
         }
     }, [dialogIndex]);
 
+    const onProceedDialog = () => {
+        const newDialogIndex = dialogIndex + 1;
+        if (newDialogIndex <= script.length - 1) {
+            const { scene: newScene, disableTransition } = script[newDialogIndex] || {};
+            if (newScene && newScene !== Backdrop && !disableTransition) {
+                onTransition(() => {
+                    setDialogIndex(newDialogIndex);
+                });
+            } else {
+                setDialogIndex(newDialogIndex);
+            }
+        } else {
+            onExit();
+        }
+    };
+
     const handleClickDialog = () => {
         if (!responses && !items) {
-            const newDialogIndex = dialogIndex + 1;
-            if (newDialogIndex <= script.length - 1) {
-                const { scene: newScene } = script[newDialogIndex] || {};
-                if (newScene && newScene !== Backdrop) {
-                    onTransition(() => {
-                        setDialogIndex(newDialogIndex);
-                    });
-                } else {
-                    setDialogIndex(newDialogIndex);
-                }
-            } else {
-                onExit();
-            }
+            onProceedDialog();
         }
     };
 
@@ -299,7 +303,7 @@ const ScenePlayer = ({
 
             if (!next && !shop && !isExit) {
                 // This dialogue node just goes to the next index
-                setDialogIndex((prev) => prev + 1);
+                onProceedDialog();
             }
         };
         if (encounter) {

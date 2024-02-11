@@ -42,6 +42,8 @@ export interface ScriptNode {
         image: string;
     };
     scene?: ({ player }: { player: Combatant }) => JSX.Element;
+    // Do not fade to black if scene changes
+    disableTransition?: boolean;
     background?: string;
     puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: (success?: boolean) => void }) => JSX.Element;
     treasureBox?: boolean;
