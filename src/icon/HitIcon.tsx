@@ -31,6 +31,7 @@ const HitIcon = ({ statChanges }) => {
     const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
     const classes = useStyles();
     const ref = useRef();
+    const animationRef = useRef();
 
     useEffect(() => {
         if (!statChanges.damage) {
@@ -38,19 +39,24 @@ const HitIcon = ({ statChanges }) => {
         }
 
         if (ref.current) {
+            if (animationRef.current) {
+                //@ts-ignore
+                animationRef.current.cancel();
+            }
             //@ts-ignore
-            ref.current?.animate(
+            const animation = ref.current?.animate(
                 [
                     {
                         opacity: 1,
-                        offset: 0.6,
+                        offset: 0.8,
                         display: "block",
                     },
                     { opacity: 0, display: "block" },
                 ],
-                2000
+                1500
             );
 
+            animationRef.current = animation;
             setOldStatChanges(statChanges);
         }
     }, [statChanges]);
