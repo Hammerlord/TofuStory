@@ -8,7 +8,7 @@ import { MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "..
 import ItemView from "../item/ItemView";
 import { goldenHammer, incense } from "../item/items";
 import { Item, RARITIES } from "../item/types";
-import { rollItemPool } from "../item/utils";
+import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { SECONDARY_JOBS } from "./types";
@@ -116,6 +116,22 @@ const useStyles = createUseStyles({
     },
 });
 
+const NUM_SHOP_ABILITIES = 6;
+const NUM_SHOP_ITEMS = 4;
+const NUM_SHOP_CONSUMABLES = 2;
+
+const ABILITIES_PRICE_RARITY_MAP = {
+    [RARITIES.COMMON]: [50, 70],
+    [RARITIES.UNCOMMON]: [90, 120],
+    [RARITIES.RARE]: [140, 170],
+};
+
+const ITEMS_PRICE_RARITY_MAP = {
+    [RARITIES.COMMON]: [80, 100],
+    [RARITIES.UNCOMMON]: [130, 150],
+    [RARITIES.RARE]: [180, 210],
+};
+
 const Shop = ({
     player,
     onBuyItem,
@@ -151,33 +167,13 @@ const Shop = ({
         return Math.max(0, price - Math.floor(discount * price));
     };
 
-    const createShopItems = ({
-        items,
-        numItems,
-        priceMin,
-        priceMax,
-    }: {
-        items: any[];
-        numItems?: number;
-        priceMin: number;
-        priceMax: number;
-    }): { item: any; price: number }[] => {
-        return shuffle(items)
-            .slice(0, numItems || items.length)
-            .map((item) => ({ item, price: applyDiscount(getRandomInt(priceMin, priceMax)) }));
-    };
-
     const refreshItems = () => {
         // Abilities
-        const abilitiesForSale: { item: Ability; price: number }[] = [];
         const otherSecondaryJobs = Object.values(SECONDARY_JOBS[player.class]).filter((job) => job !== player.secondaryClass) || [];
         const otherSecondaryJobCards = otherSecondaryJobs.reduce(
             (acc: Ability[], job: string) => [...acc, ...JOB_CARD_MAP[job]],
             [] as Ability[]
         ) as Ability[];
-        if (otherSecondaryJobCards.length) {
-            abilitiesForSale.push({ item: getRandomItem(otherSecondaryJobCards), price: applyDiscount(getRandomInt(150, 170)) });
-        }
 
         const firstJobAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
             if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
@@ -186,44 +182,40 @@ const Shop = ({
 
             return ability;
         });
-        const potentialAbilities = firstJobAbilities.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []);
-        abilitiesForSale.push(...createShopItems({ items: potentialAbilities, numItems: 6, priceMin: 100, priceMax: 125 }));
-        // Use deck to determine which abilities have a higher chance to roll
-        setAbilities(shuffle(abilitiesForSale));
+
+        const potentialAbilities = firstJobAbilities.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []).concat(otherSecondaryJobCards);
+        const rolledAbilities = [];
+        Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
+            const selectedRarity = rollRarity(player);
+            const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
+                const noDuplicate = rolledAbilities.every((choice) => choice.name !== ability.name);
+                return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
+            });
+            rolledAbilities.push(filteredByRarity);
+        });
+
+        const abilitiesForSale = rolledAbilities.map((ability: Ability) => {
+            const priceRangeForRarity: [number, number] = ABILITIES_PRICE_RARITY_MAP[ability.rarity || RARITIES.COMMON] as [number, number];
+            const price = getRandomInt(...priceRangeForRarity);
+            return { price, item: ability };
+        });
+
+        setAbilities(abilitiesForSale);
 
         // Items
         const itemsRolledForSale = [];
-        Array.from({ length: 4 }).forEach(() => {
+        Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
             const item = getRandomItem(rollItemPool({ player, excludeItems: itemsRolledForSale }));
             itemsRolledForSale.push(item);
         });
-        const rareItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.RARE);
-        const uncommonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.UNCOMMON);
-        const commonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.COMMON || !item.rarity);
 
-        const itemsForSale = [
-            ...createShopItems({
-                items: commonItems,
-                priceMin: 70,
-                priceMax: 100,
-            }),
-            ...createShopItems({
-                items: uncommonItems,
-                priceMin: 120,
-                priceMax: 150,
-            }),
-            ...createShopItems({
-                items: rareItems,
-                priceMin: 180,
-                priceMax: 210,
-            }),
-            ...createShopItems({
-                items: [incense, incense, goldenHammer, goldenHammer, goldenHammer],
-                numItems: 2,
-                priceMin: 80,
-                priceMax: 100,
-            }),
-        ];
+        itemsRolledForSale.push(...shuffle([incense, incense, goldenHammer, goldenHammer, goldenHammer]).slice(0, NUM_SHOP_CONSUMABLES));
+
+        const itemsForSale = itemsRolledForSale.map((item) => {
+            const priceRangeForRarity: [number, number] = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON];
+            const price = getRandomInt(...priceRangeForRarity);
+            return { price, item };
+        });
 
         setItems(itemsForSale);
 
