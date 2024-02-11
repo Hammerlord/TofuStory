@@ -525,7 +525,7 @@ const BattlefieldContainer = () => {
             setTimeout(() => {
                 dispatch(popEventQueue());
                 // Play the next move slightly slower than the actual animation so that the animation has a bit of time to complete.
-            }, playbackTime + 200);
+            }, playbackTime + 250);
         }
         eventQueueRef.current = events;
     }, [events, battleState]);

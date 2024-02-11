@@ -231,12 +231,11 @@ const useStyles = createUseStyles({
         },
     },
     dying: {
-        animation: "$deadAnimation 1s forwards",
+        animation: "$deadAnimation .75s forwards",
         transitionTimingFunction: "ease-in-out",
         animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
-    },
-    dead: {
-        opacity: 0,
+        animationDelay: "0.2s",
+        opacity: 1,
     },
     stasis: {
         WebkitFilter: "brightness(0.25)",
@@ -406,7 +405,6 @@ const CombatantView = forwardRef(
             className: classNames("portrait", classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dying]: !action && playDeathAnimation,
-                [classes.dead]: !action && oldState?.HP <= 0 && !willPerformActions,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
