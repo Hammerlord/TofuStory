@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
@@ -30,8 +30,8 @@ const useStyles = createUseStyles({
 const HitIcon = ({ statChanges }) => {
     const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
     const classes = useStyles();
-    const ref = useRef();
-    const animationRef = useRef();
+    const ref: MutableRefObject<HTMLSpanElement> = useRef();
+    const animationRef: MutableRefObject<Animation> = useRef();
 
     useEffect(() => {
         if (!statChanges.damage) {
@@ -39,11 +39,7 @@ const HitIcon = ({ statChanges }) => {
         }
 
         if (ref.current) {
-            if (animationRef.current) {
-                //@ts-ignore
-                animationRef.current.cancel();
-            }
-            //@ts-ignore
+            animationRef.current?.cancel();
             const animation = ref.current?.animate(
                 [
                     {

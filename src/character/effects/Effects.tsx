@@ -142,7 +142,7 @@ const useStyles = createUseStyles({
 /**
  * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
  */
-const Effects = ({ combatantInfo, healing }) => {
+const Effects = ({ combatantInfo, statChanges }) => {
     const classes = useStyles();
 
     if (!combatantInfo?.combatant) {
@@ -176,7 +176,7 @@ const Effects = ({ combatantInfo, healing }) => {
         <div className={classes.root}>
             {
                 <span className={classes.center}>
-                    <Healing amount={healing} />
+                    <Healing statChanges={statChanges} />
                     <Burn amount={burn} />
                     <Chill amount={chill} />
                     <Stealth isStealthed={isStealthed} />

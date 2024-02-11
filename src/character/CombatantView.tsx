@@ -483,7 +483,7 @@ const CombatantView = forwardRef(
                                         </div>
                                     )}
                                     {(oldState.HP > 0 || isLifeLinked) && (
-                                        <Effects combatantInfo={combatantInfo} healing={statChanges?.healing} />
+                                        <Effects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
