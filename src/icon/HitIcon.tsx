@@ -1,20 +1,9 @@
 import { createUseStyles } from "react-jss";
 import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 
 const useStyles = createUseStyles({
-    "@keyframes fadeOut": {
-        "0%": {
-            opacity: 1,
-        },
-        "50%": {
-            opacity: 1,
-        },
-        "100%": {
-            opacity: 0,
-        },
-    },
     root: {
         position: "absolute",
         top: "50%",
@@ -22,8 +11,7 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%) translateY(-50%)",
         height: "100%",
         width: "100%",
-        animationName: "$fadeOut",
-        animationDuration: "2s",
+        display: "none",
         "& .icon": {
             width: "350%",
             height: "350%",
@@ -40,23 +28,34 @@ const useStyles = createUseStyles({
 });
 
 const HitIcon = ({ statChanges }) => {
-    const [oldStatChanges, setOldStatChanges] = useState({});
+    const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
     const classes = useStyles();
+    const ref = useRef();
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setOldStatChanges(statChanges);
-        }, 2000);
+        if (!statChanges.damage) {
+            return;
+        }
 
-        return () => {
-            clearTimeout(timeout);
-        };
+        if (ref.current) {
+            //@ts-ignore
+            ref.current?.animate(
+                [
+                    {
+                        opacity: 1,
+                        offset: 0.6,
+                        display: "block",
+                    },
+                    { opacity: 0, display: "block" },
+                ],
+                2000
+            );
+
+            setOldStatChanges(statChanges);
+        }
     }, [statChanges]);
 
-    if (!statChanges.damage || oldStatChanges === statChanges) {
-        return null;
-    }
-    return <Icon icon={<BoomIcon />} className={classes.root} text={statChanges.damage} />;
+    return <Icon icon={<BoomIcon />} className={classes.root} text={oldStatChanges.damage} ref={ref} />;
 };
 
 export default HitIcon;

@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { forwardRef } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -80,7 +81,7 @@ interface IconInterface {
     [x: string]: any;
 }
 
-const Icon = ({ text, icon, background, size = "md", className, style, children, ...other }: IconInterface) => {
+const Icon = forwardRef(({ text, icon, background, size = "md", className, style, children, ...other }: IconInterface, ref: any) => {
     const classes = useStyles();
     size = ["sm", "md", "lg", "xl"].includes(size) ? size : undefined;
     let iconNode;
@@ -99,13 +100,13 @@ const Icon = ({ text, icon, background, size = "md", className, style, children,
     }
 
     return (
-        <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other}>
+        <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other} ref={ref}>
             <span className={classNames(classes.inner)}>
                 {iconNode}
                 {children ? children : <span className={classNames("text", classes.text)}>{text}</span>}
             </span>
         </span>
     );
-};
+});
 
 export default Icon;
