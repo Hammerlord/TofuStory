@@ -343,7 +343,9 @@ const CombatantView = forwardRef(
         const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
-        const combatantInfo = findCombatantData(() => state, oldState?.id);
+        // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
+        // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
+        const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
 
         useEffect(() => {
             const isCombatantChanged = oldState?.id !== combatant?.id;
