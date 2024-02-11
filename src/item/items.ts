@@ -1,4 +1,4 @@
-import { burn } from "./../ability/Effects";
+import { armorUp, burn } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, bleed } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -558,14 +558,7 @@ export const aquamarine: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: AquamarineImage,
-    effects: [
-        {
-            name: "Aquamarine",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            armorReceived: 1,
-        },
-    ],
+    effects: [armorUp],
 };
 
 export const boneHelm: Item = {

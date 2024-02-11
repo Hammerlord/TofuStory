@@ -71,7 +71,7 @@ import {
     TriboltImage,
     WizMushImage,
 } from "../../images";
-import { SnowflakeIcon } from "../../images/icons";
+import { ShieldIcon, SnowflakeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
@@ -88,7 +88,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { burn, chill, freeze, stun } from "./../Effects";
+import { armorUp, burn, chill, freeze, stun } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -850,6 +850,7 @@ const wishUponAStar2: Ability = {
     rarity: RARITIES.COMMON,
     description: "Fling 3-damage stars on draw or deck cycle.",
     depletedOnUse: true,
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -865,12 +866,7 @@ const wishUponAStar2: Ability = {
                         ability: {
                             name: "Falling Star",
                             image: StarImage,
-                            actions: [
-                                {
-                                    ...fallingStar,
-                                    damage: 3,
-                                },
-                            ],
+                            actions: [fallingStar],
                         },
                     },
                     onDeckCycle: {
@@ -881,7 +877,6 @@ const wishUponAStar2: Ability = {
                                 {
                                     ...fallingStar,
                                     area: 1,
-                                    damage: 3,
                                 },
                             ],
                         },
@@ -2601,31 +2596,33 @@ export const manaGem: Ability = {
     upgrades: [manaGem2],
 };
 
-export const magicShell2: Ability = {
-    name: "Magic Shell",
+export const wardBooster2: Ability = {
+    name: "Ward Booster",
     resourceCost: 1,
     level: 2,
-    reusable: true,
     rarity: RARITIES.UNCOMMON,
     image: HolyMagicShellImage,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 9,
+            target: TARGET_TYPES.SELF,
+            armor: 3,
+            effects: [armorUp],
         },
     ],
 };
 
-export const magicShell: Ability = {
-    ...magicShell2,
+export const wardBooster: Ability = {
+    ...wardBooster2,
+    depletedOnUse: true,
     level: 1,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 6,
+            target: TARGET_TYPES.SELF,
+            armor: 3,
+            effects: [armorUp],
         },
     ],
-    upgrades: [magicShell2],
+    upgrades: [wardBooster2],
 };

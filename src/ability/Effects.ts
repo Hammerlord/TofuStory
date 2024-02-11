@@ -12,6 +12,7 @@ import {
     MedalIcon,
     MilitaryMedalIcon,
     NoStunIcon,
+    ShieldIcon,
     SnowflakeIcon,
     SpeechBubbleIcon,
     VolcanoIcon,
@@ -461,4 +462,13 @@ export const attackPower: Effect = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
     duration: 1,
+};
+
+export const armorUp: Effect = {
+    name: "Armor Up",
+    icon: ShieldIcon,
+    description: "Receiving +1 armor from armor sources",
+    class: EFFECT_CLASSES.BUFF,
+    type: EFFECT_TYPES.NONE,
+    armorReceived: 1,
 };
