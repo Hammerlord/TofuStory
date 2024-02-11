@@ -2253,11 +2253,12 @@ export const hyperMetronome: Ability = {
     ],
 };
 
-const avalanche: Ability = {
+const avalanche2: Ability = {
     name: "Avalanche",
     image: PepeRollingASnowballImage,
     resourceCost: 2,
-    depletedOnUse: true,
+    level: 2,
+    removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -2269,7 +2270,7 @@ const avalanche: Ability = {
                 height: 125,
             },
             icon: BigSnowballImage,
-            damage: 13,
+            damage: 15,
             area: 2,
             effects: [
                 {
@@ -2281,12 +2282,25 @@ const avalanche: Ability = {
     ],
 };
 
-const snowBoulder: Ability = {
+const avalanche: Ability = {
+    ...avalanche2,
+    level: 1,
+    actions: [
+        {
+            ...avalanche2.actions[0],
+            damage: 13,
+        },
+    ],
+    upgrades: [avalanche2],
+};
+
+const snowBoulder2: Ability = {
     name: "Snow Boulder",
     image: BigSnowballImage,
     resourceCost: 1,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2297,7 +2311,7 @@ const snowBoulder: Ability = {
                 height: 75,
             },
             icon: BigSnowballImage,
-            damage: 7,
+            damage: 9,
             area: 1,
             effects: [
                 {
@@ -2305,16 +2319,30 @@ const snowBoulder: Ability = {
                     duration: 2,
                 },
             ],
-            addCardsToDeck: [avalanche],
+            addCardsToDeck: [avalanche2],
         },
     ],
 };
 
-export const snowball: Ability = {
+const snowBoulder: Ability = {
+    ...snowBoulder2,
+    level: 1,
+    actions: [
+        {
+            ...snowBoulder2.actions[0],
+            damage: 7,
+            addCardsToDeck: [avalanche],
+        },
+    ],
+    upgrades: [snowBoulder2],
+};
+
+const snowball2: Ability = {
     name: "Snowball",
     image: SnowballImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2326,16 +2354,23 @@ export const snowball: Ability = {
                 width: 40,
                 height: 40,
             },
-            damage: 5,
+            damage: 8,
             effects: [
                 {
                     ...chill,
                     duration: 1,
                 },
             ],
-            addCardsToDeck: [snowBoulder],
+            addCardsToDeck: [snowBoulder2],
         },
     ],
+};
+
+export const snowball: Ability = {
+    ...snowball2,
+    level: 1,
+    actions: [{ ...snowball2.actions[0], damage: 5, addCardsToDeck: [snowBoulder] }],
+    upgrades: [snowball2],
 };
 
 const divineStar2: Ability = {
