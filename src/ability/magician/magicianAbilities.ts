@@ -998,20 +998,20 @@ const parfaitCupcake2: Ability = {
     resourceCost: 0,
     image: ParfaitCupcakeImage,
     removeAfterTurn: true,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            resources: 3,
+            resources: 2,
+            armor: 3,
         },
     ],
 };
 
 const parfaitCupcake: Ability = {
-    name: "Parfait Cupcake",
-    resourceCost: 0,
-    image: ParfaitCupcakeImage,
-    removeAfterTurn: true,
+    ...parfaitCupcake2,
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1026,27 +1026,24 @@ const chocolateCupcake2: Ability = {
     resourceCost: 0,
     image: ChocolateCupcakeImage,
     removeAfterTurn: true,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             healing: 5,
-            armor: 5,
         },
     ],
 };
 
 const chocolateCupcake: Ability = {
-    name: "Chocolate Cupcake",
-    resourceCost: 0,
-    image: ChocolateCupcakeImage,
-    removeAfterTurn: true,
+    ...chocolateCupcake2,
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             healing: 3,
-            armor: 3,
         },
     ],
 };
@@ -1056,29 +1053,7 @@ const pieceOfCake2: Ability = {
     resourceCost: 0,
     image: PieceOfBirthdayCakeImage,
     removeAfterTurn: true,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Cake",
-                    icon: PieceOfBirthdayCakeImage,
-                    disableDisplayIcon: true,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                },
-            ],
-        },
-    ],
-};
-
-const pieceOfCake: Ability = {
-    name: "Piece Of Cake",
-    resourceCost: 0,
-    image: PieceOfBirthdayCakeImage,
-    removeAfterTurn: true,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1091,6 +1066,28 @@ const pieceOfCake: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
+                },
+            ],
+        },
+    ],
+};
+
+const pieceOfCake: Ability = {
+    ...pieceOfCake2,
+    level: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Cake",
+                    icon: PieceOfBirthdayCakeImage,
+                    disableDisplayIcon: true,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    duration: 5,
                 },
             ],
         },
