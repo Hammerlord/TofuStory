@@ -1,7 +1,7 @@
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
-import { createRef, useEffect, useRef, useState } from "react";
 
 const useStyles = createUseStyles({
     root: {

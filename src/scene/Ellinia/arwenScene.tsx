@@ -460,6 +460,7 @@ const maladyDialog: ScriptNode[] = [
                                                                     },
                                                                     {
                                                                         scene: TombstonesTwilitForestFairies,
+                                                                        disableTransition: true,
                                                                         dialog: [
                                                                             "[The tiny fairy-creatures you saw from the gravesite are now fluttering around you. They seem to be trying to get your attention. Maybe they can help you get out of here.]",
                                                                         ],
