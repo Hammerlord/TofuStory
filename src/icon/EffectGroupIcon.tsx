@@ -5,7 +5,6 @@ import { passesConditions } from "../battle/passesConditions";
 import { Combatant } from "../character/types";
 import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
 
-import { Fury } from "../resource/ResourcesView";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";

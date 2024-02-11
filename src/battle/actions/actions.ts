@@ -738,7 +738,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
                 // This is the effect to extend the duration and/or stacks
                 updatedEffects[i] = {
                     ...updatedEffects[i],
-                    duration: updatedEffects[i].duration + incomingEffect.duration,
+                    duration: (updatedEffects[i].duration || Infinity) + (incomingEffect.duration || Infinity),
                     stacks: (updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0),
                 };
             }
