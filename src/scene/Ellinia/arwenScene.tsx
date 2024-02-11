@@ -305,8 +305,8 @@ const maladyDialog: ScriptNode[] = [
                                     {
                                         speaker: malady,
                                         dialog: [
-                                            "The one you defeated we lovingly called Faust. He slew countless adventurers before you.",
-                                            "Call us monstrous ones for his creation, if the hypocrites will. At least we do not hide it behind sparkles and glitter. Heehee!",
+                                            "The ones you defeated slew countless adventurers before you.",
+                                            "Call us monstrous ones for their creation, if the hypocrites will. At least we do not hide it behind sparkles and glitter. Heehee!",
                                         ],
                                     },
                                     {
@@ -332,9 +332,7 @@ const maladyDialog: ScriptNode[] = [
                                         ],
                                     },
                                     {
-                                        dialog: [
-                                            "[Silence falls. Is there a reason Malady haven't confronted you directly? They also don't seem upset that you killed their creation.]",
-                                        ],
+                                        dialog: ["[Silence falls. Is there a reason Malady haven't confronted you directly?]"],
                                     },
                                     {
                                         scene: TwilitForest2,
@@ -470,7 +468,7 @@ const maladyDialog: ScriptNode[] = [
                                                                                         dialog: [],
                                                                                     },
                                                                                     {
-                                                                                        scene: LupinForest,
+                                                                                        scene: DarkForest1,
                                                                                         region: REGIONS.ELLINIA,
                                                                                         background: ElliniaBGImage,
                                                                                         dialog: [
@@ -482,7 +480,7 @@ const maladyDialog: ScriptNode[] = [
                                                                                         dialog: [""],
                                                                                     },
                                                                                     {
-                                                                                        scene: LupinForestMaladies,
+                                                                                        scene: DarkForestMaladies,
                                                                                         speaker: malady,
                                                                                         dialog: [
                                                                                             "Ohohoho! Well done. It seems the pawn was even able to befriend the lost echoes of fae folk--perhaps the seeker was once one favored by the forest.",
@@ -493,30 +491,71 @@ const maladyDialog: ScriptNode[] = [
                                                                                         speaker: malady,
                                                                                         dialog: [
                                                                                             "But we, Malady, have decided what we are long ago. Twisted, betrayed, shunned. Our will shall not be stopped.",
+                                                                                            "Now shall the pawn face the one we lovingly call Faust.",
                                                                                         ],
+                                                                                    },
+                                                                                    {
+                                                                                        dialog: [
+                                                                                            "[The heavy footsteps from earlier have returned, and are now approaching.]",
+                                                                                        ],
+                                                                                    },
+                                                                                    {
+                                                                                        scene: DarkForest2,
+                                                                                        speaker: faust,
+                                                                                        dialog: ["......"],
+                                                                                    },
+                                                                                    {
+                                                                                        speaker: faust,
+                                                                                        dialog: ["[The giant Zombie Lupin charges you!]"],
                                                                                         responses: [
                                                                                             {
-                                                                                                text: "Confront Malady.",
-                                                                                                encounter: maladysFight,
+                                                                                                text: "Defend yourself.",
+                                                                                                encounter: faustFight,
+                                                                                                next: [
+                                                                                                    {
+                                                                                                        scene: DarkForestMaladies,
+                                                                                                        dialog: [
+                                                                                                            "[Something shiny tumbles from the fallen heap of rotten fur.]",
+                                                                                                        ],
+                                                                                                        items: [glassShoe],
+                                                                                                    },
+                                                                                                    {
+                                                                                                        speaker: malady,
+                                                                                                        dialog: [
+                                                                                                            "The beloved one Merusa had foretold this end, long before Malady ever came to be. But we had not understood, then, what a creature a mere mushroom could be.",
+                                                                                                        ],
+                                                                                                    },
+                                                                                                    {
+                                                                                                        speaker: malady,
+                                                                                                        dialog: [
+                                                                                                            "Now, we do. Now, we are ready. Hehehe! Come, then, seeker. Learn why we are Malady.",
+                                                                                                        ],
+                                                                                                        responses: [
+                                                                                                            {
+                                                                                                                text: "Confront Malady.",
+                                                                                                                encounter: maladysFight,
+                                                                                                            },
+                                                                                                        ],
+                                                                                                    },
+                                                                                                    {
+                                                                                                        speaker: malady,
+                                                                                                        dialog: [
+                                                                                                            "The curse will continue on, even if Malady do not.",
+                                                                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
+                                                                                                            "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
+                                                                                                        ],
+                                                                                                    },
+                                                                                                    {
+                                                                                                        dialog: [
+                                                                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
+                                                                                                            "Perhaps it's time to return to Ellinia.]",
+                                                                                                        ],
+                                                                                                    },
+                                                                                                    ...endingDialog,
+                                                                                                ],
                                                                                             },
                                                                                         ],
                                                                                     },
-                                                                                    {
-                                                                                        scene: LupinForest,
-                                                                                        speaker: malady,
-                                                                                        dialog: [
-                                                                                            "The curse will continue on, even if Malady do not.",
-                                                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
-                                                                                            "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
-                                                                                        ],
-                                                                                    },
-                                                                                    {
-                                                                                        dialog: [
-                                                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
-                                                                                            "Perhaps it's time to return to Ellinia.]",
-                                                                                        ],
-                                                                                    },
-                                                                                    ...endingDialog,
                                                                                 ],
                                                                             },
                                                                         ],
@@ -578,38 +617,11 @@ const lupinsDialog = [
                                     },
                                     {
                                         dialog: [
-                                            "[There's a rumbling in the distance. It feels like footsteps, very large ones. Something tells you that whatever it is, it's far worse than the zombified Lupins from earlier.]",
+                                            "[There's a rumbling in the distance. It feels like footsteps, very large ones. Something tells you that whatever it is, it's far worse than the zombified Lupins from earlier.",
+                                            "Before you can investigate, however, a voice calls out.]",
                                         ],
                                     },
-                                    {
-                                        dialog: ["[The footsteps are approaching.]"],
-                                    },
-                                    {
-                                        scene: DarkForest2,
-                                        speaker: faust,
-                                        dialog: ["......"],
-                                    },
-                                    {
-                                        speaker: faust,
-                                        dialog: ["[The giant Zombie Lupin charges you!]"],
-                                        responses: [
-                                            {
-                                                text: "Defend yourself.",
-                                                encounter: faustFight,
-                                                next: [
-                                                    {
-                                                        scene: DarkForest1,
-                                                        dialog: ["[Something shiny tumbles from the fallen heap of rotten fur.]"],
-                                                        items: [glassShoe],
-                                                    },
-                                                    {
-                                                        dialog: ["[That oversized Zombie Lupin was being controlled by someone. But who?]"],
-                                                    },
-                                                    ...maladyDialog,
-                                                ],
-                                            },
-                                        ],
-                                    },
+                                    ...maladyDialog,
                                 ],
                             },
                         ],

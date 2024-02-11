@@ -258,6 +258,8 @@ export const DarkForest2 = ({ player }) => {
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
             <img src={FaustImage} className={classNames(classes.giantLupin, classes.character)} />
+            <img src={malady.image} className={classNames(classes.malady1, classes.character)} />
+            <img src={malady.image} className={classNames(classes.malady2, classes.character)} />
         </div>
     );
 };
