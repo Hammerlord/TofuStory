@@ -12,6 +12,7 @@ import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { SECONDARY_JOBS } from "./types";
+import AbilityRarityTag from "../ability/AbilityView/RarityTag";
 
 const HEADER_BAR = 72;
 
@@ -71,7 +72,7 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         display: "inline-block",
-        minHeight: "360px",
+        minHeight: "400px",
         verticalAlign: "bottom",
         margin: 16,
     },
@@ -338,6 +339,7 @@ const Shop = ({
                     <div className={classes.abilitiesSection}>
                         {abilities.map(({ item, price }, i) => (
                             <div className={classes.abilityContainer} key={i}>
+                                <AbilityRarityTag ability={item} />
                                 <div
                                     className={classNames(classes.ability, {
                                         selected: i === selectedAbilityIndex,
