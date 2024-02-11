@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
@@ -60,7 +60,8 @@ const ItemRewards = ({
     overrideItems: Item[];
 }) => {
     const classes = useStyles();
-    const rewards = useMemo(() => {
+    const [rewards, setRewards] = useState([]);
+    useEffect(() => {
         const alreadyObtained = playerCurrentItems.reduce((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
                 acc[item.name] = true;
@@ -79,9 +80,8 @@ const ItemRewards = ({
         }
 
         items.push(...[goldenHammer]);
-
+        setRewards(items);
         onLoot({ items });
-        return items;
     }, []);
 
     return (
@@ -93,7 +93,7 @@ const ItemRewards = ({
 
                 <div className={classes.container}>
                     {rewards.map((item: Item, i) => (
-                        <div className={classes.itemContainer} key={i}>
+                        <div className={classes.itemContainer} key={[item.name, i].join("-")}>
                             <ItemView item={item} />
                         </div>
                     ))}
