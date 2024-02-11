@@ -13,8 +13,7 @@
         "deploy": "gh-pages -d dist",
         "index-images": "node ./scripts/indeximages.ts"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "Hammerlord",
     "dependencies": {
         "@material-ui/core": "^4.12.3",
         "@reduxjs/toolkit": "^1.8.5",
