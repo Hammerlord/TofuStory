@@ -192,7 +192,11 @@ const Shop = ({
         setAbilities(shuffle(abilitiesForSale));
 
         // Items
-        const itemsRolledForSale = Array.from({ length: 4 }).map(() => getRandomItem(rollItemPool(player)));
+        const itemsRolledForSale = [];
+        Array.from({ length: 4 }).forEach(() => {
+            const item = getRandomItem(rollItemPool({ player, excludeItems: itemsRolledForSale }));
+            itemsRolledForSale.push(item);
+        });
         const rareItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.RARE);
         const uncommonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.UNCOMMON);
         const commonItems = itemsRolledForSale.filter((item) => item.rarity === RARITIES.COMMON || !item.rarity);

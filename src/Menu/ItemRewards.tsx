@@ -71,7 +71,7 @@ const ItemRewards = ({
         const items = (overrideItems || []).filter((item: Item) => !alreadyObtained[item.name]);
         if (!items.length) {
             const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
-            const itemPool = rollItemPool(player, { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE });
+            const itemPool = rollItemPool({ player, bonuses: { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE } });
             const equipment = getRandomItem(itemPool);
             if (equipment) {
                 items.push(equipment);

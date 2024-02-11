@@ -232,8 +232,8 @@ const TreasureBox = ({
         if (initItems?.length > 0) {
             setItems(initItems);
         } else {
-            const bonus = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
-            const equipment = getRandomItem(rollItemPool(player, bonus));
+            const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
+            const equipment = getRandomItem(rollItemPool({ player, bonuses }));
             if (equipment) {
                 setItems([equipment]);
             } else {

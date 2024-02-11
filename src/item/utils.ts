@@ -29,8 +29,16 @@ export const rollRarity = (player, bonuses = { uncommon: 0, rare: 0 }): RARITIES
     return RARITIES.COMMON;
 };
 
-export const rollItemPool = (player, bonuses = { uncommon: 0, rare: 0 }): Item[] => {
-    const alreadyObtained = player.items.reduce((acc, item: Item) => {
+export const rollItemPool = ({
+    player,
+    excludeItems = [],
+    bonuses = { uncommon: 0, rare: 0 },
+}: {
+    player;
+    excludeItems?: Item[];
+    bonuses?: { uncommon: number; rare: number };
+}): Item[] => {
+    const alreadyObtained = player.items.concat(excludeItems).reduce((acc, item: Item) => {
         if (item.type === ITEM_TYPES.EQUIPMENT) {
             acc[item.name] = true;
         }
