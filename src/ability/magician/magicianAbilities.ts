@@ -695,7 +695,7 @@ const frostBarrier2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     icon: ElementalAdaptationImage,
                     duration: 2,
-                    maxStacks: 1,
+                    maxApplications: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         effects: [
@@ -1153,7 +1153,7 @@ const avatarOfTheStars2: Ability = {
                     icon: StarfishImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    maxStacks: 1,
+                    maxApplications: 1,
                     duration: 3,
                     override: {
                         portrait: StarfishIdleImage,
@@ -2047,53 +2047,66 @@ export const leechingFlame: Ability = {
     upgrades: [leechingFlame2],
 };
 
-const vm: Ability = {
+const volatileMagicEffect: Effect = {
+    name: "Volatile Magic",
+    description: "When you use a 2+ cost offense ability, cast another 0-2 cost offense ability.",
+    icon: StarfallMagicSquareImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    maxApplications: 1,
+    stacks: 3,
+    onAbility: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                comparator: "gt",
+                resourceCost: 1,
+                isOffense: true,
+            },
+        ],
+        autoCastAbilities: {
+            type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
+            filters: [{ property: "resourceCost", comparator: "lt", value: 3 }],
+            amount: 1,
+        },
+        decrementStacks: 1,
+    },
+};
+
+const volatileMagic2: Ability = {
     name: "Volatile Magic",
     image: StarfallMagicSquareImage,
-    resourceCost: 2,
+    resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "When you use an offense ability that costs 2+ Mana, cast a 1-2 cost offense ability for free.",
+    description: "For the next 4 times you use a 2+ cost offense ability, cast another 0-2 cost offense ability.",
     overrideBodyText: true,
+    level: 2,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Volatile Magic",
-                    icon: StarfallMagicSquareImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    onAbility: {
-                        conditions: [
-                            {
-                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                comparator: "gt",
-                                resourceCost: 1,
-                                isOffense: true,
-                            },
-                        ],
-                        autoCastAbilities: {
-                            type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
-                            filters: [{ property: "resourceCost", comparator: "lt", value: 3 }],
-                            amount: 1,
-                        },
-                    },
+                    ...volatileMagicEffect,
+                    stacks: 4,
                 },
             ],
         },
     ],
 };
 
-const volatileMagic2: Ability = {
-    ...vm,
-    level: 2,
-    resourceCost: 1,
-};
-
 export const volatileMagic: Ability = {
-    ...vm,
+    ...volatileMagic2,
+    level: 1,
+    description: "For the next 3 times you use a 2+ cost offense ability, cast another 0-2 cost offense ability.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [volatileMagicEffect],
+        },
+    ],
     upgrades: [volatileMagic2],
 };
 

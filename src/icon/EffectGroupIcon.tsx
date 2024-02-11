@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatEffect, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant } from "../character/types";
 import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
@@ -135,6 +135,14 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
     const silenced = isSilenced && canBeSilenced;
     const disabled = silenced || !passedConditions;
 
+    const stackCount = effects.reduce((acc, effect: CombatEffect) => {
+        if (effect.stacks) {
+            return acc + effect.stacks;
+        }
+
+        return acc + 1;
+    }, 0);
+
     const tooltipContent = (
         <div className={classes.tooltipContents}>
             <div className={classNames(classes.iconContainer)}>
@@ -241,7 +249,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                                 <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                             </span>
                         )}
-                        {effects.length > 1 && <span className={classNames(classes.iconText, classes.stacks)}>{effects.length}</span>}
+                        {stackCount > 1 && <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>}
                     </>
                 </Icon>
                 {isSilenced && canBeSilenced && <Icon icon={<SpeechBubbleIcon />} className={classes.silenceIcon} />}

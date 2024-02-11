@@ -87,12 +87,15 @@ export interface EffectEventTrigger {
     // If a string is supplied, it is a reference
     ability?: Ability | string;
     multiplier?: Multiplier;
+    // Names of effects to remove from the combatant
     removeEffects?: string[];
     area?: number;
     excludePrimaryTarget?: boolean;
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
     chance?: number; // A percentage of occurrence, up to 1
+    // Reduces a stack of the parent effect when this event triggers. If the parent effect has 1 or no stacks, this behaves like removeEffect.
+    decrementStacks?: number;
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -156,8 +159,11 @@ export interface Effect {
     // The larger, possibly animated effect image to display on top of the combatant portrait
     image?: string;
     weaponAnimation?: "glow";
-    /** When reapplied at the stack maximum, the stack with the lowest duration will pandemic, instead of adding another stack */
-    maxStacks?: number;
+    // Stacks is the number of this effect but stored on the same effect object, rather than the traditional "n" effect objects representing "n" stacks.
+    // See Volatile Magic for usage.
+    stacks?: number;
+    /** When reapplied at the application maximum, the application with the lowest duration will pandemic, instead of adding another application */
+    maxApplications?: number;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;
     resourcesPerTurn?: number;

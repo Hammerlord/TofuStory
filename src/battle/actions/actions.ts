@@ -480,6 +480,7 @@ const onEffectEventTrigger = ({
             usableWhileDead,
             autoCastAbilities,
             chance = 1,
+            decrementStacks = 0,
             ...other
         } = effectEvent;
 
@@ -517,9 +518,16 @@ const onEffectEventTrigger = ({
         const chanceCheckPass = Math.random() < chance * chanceMultiplier;
 
         const checkRemoveEffect = () => {
-            if (removeEffect) {
-                const { combatant } = findCombatantData(getState, ownerId) || {};
+            const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - decrementStacks };
+            const { combatant } = findCombatantData(getState, ownerId) || {};
+
+            if (removeEffect || updatedEffect.stacks === 0) {
                 const newEffects = combatant.effects.filter(({ id }) => id !== effect.id);
+                dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+            } else if (decrementStacks && updatedEffect.stacks > 0) {
+                const newEffects = combatant.effects.map((e: CombatEffect) => {
+                    return e.id === effect.id ? updatedEffect : e;
+                });
                 dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
             }
         };
@@ -694,14 +702,14 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
     const updatedEffects = existingEffects.slice();
 
     incomingEffects.forEach((incomingEffect: CombatEffect) => {
-        if (!incomingEffect.maxStacks) {
+        if (!incomingEffect.maxApplications) {
             updatedEffects.push(incomingEffect);
             return;
         }
 
         const idCountMap = {};
         updatedEffects.forEach((effect: CombatEffect) => {
-            if (!effect.maxStacks) {
+            if (!effect.maxApplications) {
                 return;
             }
 
@@ -719,7 +727,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             }
         });
 
-        if (!idCountMap[incomingEffect.name] || idCountMap[incomingEffect.name].count < incomingEffect.maxStacks) {
+        if (!idCountMap[incomingEffect.name] || idCountMap[incomingEffect.name].count < incomingEffect.maxApplications) {
             updatedEffects.push(incomingEffect);
             return;
         }
@@ -727,10 +735,11 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
         updatedEffects.forEach((effect: CombatEffect, i) => {
             const { lowestDuration } = idCountMap[effect.name] || {};
             if (lowestDuration?.id === effect.id) {
-                // This is the effect to extend the duration
+                // This is the effect to extend the duration and/or stacks
                 updatedEffects[i] = {
                     ...updatedEffects[i],
                     duration: updatedEffects[i].duration + incomingEffect.duration,
+                    stacks: (updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0),
                 };
             }
         });
