@@ -1,8 +1,7 @@
-import { createRef, useEffect, useRef, useState } from "react";
-import Button from "../view/Button";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { AnonymushroomImage } from "../images";
-import { ButtonBase } from "@material-ui/core";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = createUseStyles({
     userPositionContainer: {

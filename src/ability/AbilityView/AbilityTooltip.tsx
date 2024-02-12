@@ -1,4 +1,4 @@
-import { Tooltip } from "@material-ui/core";
+import Tooltip from "@material-ui/core/Tooltip";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";

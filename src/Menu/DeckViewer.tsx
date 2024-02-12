@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { ClickAwayListener } from "@material-ui/core";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { HandAbility } from "../ability/types";
 
 const useStyles = createUseStyles({

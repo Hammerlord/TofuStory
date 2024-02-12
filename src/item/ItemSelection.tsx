@@ -7,6 +7,7 @@ import Overlay from "../view/Overlay";
 import { ITEM_TYPES, Item } from "./types";
 import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "./ItemView";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     inner: {
@@ -50,7 +51,7 @@ const ItemSelection = ({
 }: {
     items?: Item[];
     numChoices: number;
-    player: any;
+    player: Player;
     onSelectClick: (item: Item) => void;
     onClose: () => void;
 }) => {

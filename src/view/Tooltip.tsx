@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { Tooltip as MuiTooltip } from "@material-ui/core";
+import MuiTooltip from "@material-ui/core/Tooltip";
 
 const useStyles = createUseStyles({
     tooltip: {

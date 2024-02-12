@@ -1,4 +1,5 @@
-import { IconButton, Slider } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import Slider from "@material-ui/core/Slider";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";

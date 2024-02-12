@@ -104,6 +104,7 @@ const CardRewards = ({
 
         return choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
     }, []);
+
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useStyles();
 

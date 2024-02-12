@@ -1,4 +1,5 @@
-import { ClickAwayListener, Popper } from "@material-ui/core";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Popper from "@material-ui/core/Popper";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";

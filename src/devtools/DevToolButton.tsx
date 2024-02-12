@@ -1,4 +1,9 @@
-import { ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Divider from "@material-ui/core/Divider";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
+import Popper from "@material-ui/core/Popper";
+
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import Map from "../Map/Map";

@@ -1,7 +1,6 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { MouseEventHandler, useMemo } from "react";
 import uuid from "uuid";
-import { Ability } from "../../ability/types";
 import Notification from "./Notification";
 
 const useStyles = makeStyles({
