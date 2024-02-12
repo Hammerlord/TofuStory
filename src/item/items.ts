@@ -600,19 +600,43 @@ export const garnet: Item = {
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
-            name: "Garnet",
+            name: "Garnet Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: GarnetImage,
             disableDisplayIcon: true,
-            attackPower: 3,
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    resourcePercentage: 0.7,
-                    comparator: "gt",
-                },
-            ],
+            // Resources are spent right before using an ability, and we want to retain the attack power that ability even if it brings you below the threshold
+            onResourcesGained: {
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        resourcePercentage: 0.7,
+                        comparator: "gt",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Garnet",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: GarnetImage,
+                        disableDisplayIcon: true,
+                        attackPower: 3,
+                        maxApplications: 1,
+                        onAbility: {
+                            conditions: [
+                                {
+                                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                    resourcePercentage: 0.8,
+                                    comparator: "lt",
+                                },
+                            ],
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };
