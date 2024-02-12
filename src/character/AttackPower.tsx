@@ -8,6 +8,7 @@ import Tooltip from "../view/Tooltip";
 import { Combatant } from "./types";
 import { ATTACK_POWER_COEFF } from "../battle/constants";
 import { CombatantInfo } from "../battle/types";
+import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -46,22 +47,10 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return null;
     }
 
-    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
-    let basicAttackDamage = 0;
+    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage || 0;
+    const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatant)];
 
-    for (const ability of abilities) {
-        if (!ability.resourceCost) {
-            for (const action of ability.actions) {
-                if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && action.damage) {
-                    basicAttackDamage = action.damage;
-                    break;
-                }
-            }
-        }
-    }
-
-    const combatantDamage = overrideDamage || basicAttackDamage;
-    const { damage, timesToAttack } = casting?.ability?.actions.reduce(
+    const { damage, timesToAttack } = abilityToUse?.actions.reduce(
         (acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
@@ -75,8 +64,8 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                 damage: (isAttack && action.damage) || acc.damage,
             };
         },
-        { damage: combatantDamage, timesToAttack: 0 }
-    ) || { damage: combatantDamage, timesToAttack: 1 };
+        { damage: 0, timesToAttack: 0 }
+    ) || { damage: 0, timesToAttack: 1 };
 
     const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
         return !excludeEffectOwner && attackPower !== 0;
@@ -86,14 +75,15 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     }, 0);
 
     const totalDamage = (() => {
-        const total = calculateAttackPowerDamage({ totalAttackPower, damage });
+        const total = calculateAttackPowerDamage({ totalAttackPower, damage: overrideDamage || damage });
         if (total < 0) {
             return 0;
         }
         return total;
     })();
 
-    if (!totalDamage) {
+    const hasYetToCastAbility = !casting && abilityToUse?.castTime;
+    if (!totalDamage || hasYetToCastAbility) {
         return null;
     }
 

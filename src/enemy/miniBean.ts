@@ -16,6 +16,8 @@ import {
     UnagiImage,
     YuckImage,
     ZingyKebabImage,
+    SuckInImage,
+    BigSuckImage,
 } from "../images";
 import { hardy } from "./../ability/Effects";
 import {
@@ -136,6 +138,7 @@ export const moldyCheese: Minion = {
 
 const suckIn: Ability = {
     name: "Suck In",
+    image: SuckInImage,
     preemptive: true,
     actions: [
         {
@@ -207,6 +210,7 @@ const throwFood: Ability = {
 
 const picoDrop: Ability = {
     name: "Pico Drop",
+    image: ToyHammerImage,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -259,6 +263,7 @@ export const miniBean: Minion = {
         suckIn,
         {
             name: "Big Suck",
+            image: BigSuckImage,
             resourceCost: 3,
             channelDuration: 3,
             castTime: 1,

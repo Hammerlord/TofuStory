@@ -6,6 +6,7 @@ import {
     BlueSnailShellImage,
     BombImage,
     CurseEyeImage,
+    DarkSightImage,
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
     FireBoarImage,
@@ -47,7 +48,17 @@ import {
     WoodenClubImage,
     ZombieLupinJumpImage,
 } from "../images";
-import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MountainIcon, MuscleIcon, ShieldIcon, ZzzIcon } from "../images/icons";
+import {
+    BloodIcon,
+    CactusIcon,
+    CrossedSwordsIcon,
+    DizzyIcon,
+    EyeIcon,
+    MountainIcon,
+    MuscleIcon,
+    ShieldIcon,
+    ZzzIcon,
+} from "../images/icons";
 import { redPotion } from "../item/items";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, bleed } from "./../ability/Effects";
 import {
@@ -436,6 +447,7 @@ export const noobB: Minion = {
         },
         {
             name: "Flurry",
+            image: WoodenClubImage,
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -538,6 +550,7 @@ export const thiefAssassin: Minion = {
         {
             name: "Dark Sight",
             resourceCost: 3,
+            image: DarkSightImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -554,6 +567,7 @@ export const thiefAssassin: Minion = {
         {
             name: "Lucky Seven",
             resourceCost: 3,
+            image: KumbiImage,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
@@ -698,6 +712,7 @@ export const wildBoar: Minion = {
         {
             name: "Wild Charge",
             resourceCost: 3,
+            image: WildBoarImage,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -775,6 +790,7 @@ export const axeStump: Minion = {
         },
         {
             name: "Barbs",
+            image: CactusIcon,
             resourceCost: 3,
             actions: [
                 {
@@ -784,7 +800,7 @@ export const axeStump: Minion = {
                     effects: [
                         {
                             ...thorns,
-                            duration: 3,
+                            duration: 2,
                         },
                     ],
                 },
@@ -812,6 +828,7 @@ export const fireBoar: Minion = {
         },
         {
             name: "Blazing Charge",
+            image: FireBoarImage,
             resourceCost: 3,
             actions: [
                 {
@@ -872,6 +889,7 @@ export const ligator: Minion = {
         {
             name: "Chomp",
             resourceCost: 3,
+            image: BloodIcon,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -909,6 +927,7 @@ export const eliteLigator: Minion = {
         },
         {
             name: "Chomp",
+            image: BloodIcon,
             resourceCost: 3,
             actions: [
                 {

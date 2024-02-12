@@ -84,6 +84,7 @@ const realShadow: Minion = {
             class: EFFECT_CLASSES.NONE,
             onDeath: {
                 ability: {
+                    image: BystanderImage,
                     name: "Reveal",
                     actions: [
                         {
@@ -125,6 +126,7 @@ const shadowClonesEffect: Effect = {
         usableWhileStunned: true,
         ability: {
             name: "Shadow Clones",
+            image: BystanderImage,
             resourceCost: 0,
             actions: [
                 {

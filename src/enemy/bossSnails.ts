@@ -4,6 +4,7 @@ import {
     BlueSnailShellImage,
     ManoImage,
     MutantSnailImage,
+    MutateImage,
     RedSnailImage,
     RedSnailShellImage,
     RedWhipImage,
@@ -22,6 +23,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { JapaneseOgreIcon } from "../images/icons";
 
 export const minionSnail: Minion = {
     ...snail,
@@ -205,6 +207,7 @@ export const mutantSnailEnemy: Minion = {
         },
         {
             name: "Frenzied Tantrum",
+            image: JapaneseOgreIcon,
             description: "{{ caster }} will tantrum, dealing 3 hits per move.",
             resourceCost: 3,
             channelDuration: 2,
@@ -244,6 +247,7 @@ export const mutantSnailEnemy: Minion = {
         },
         {
             name: "Mutate",
+            image: MutateImage,
             resourceCost: 3,
             actions: [
                 {
@@ -346,6 +350,7 @@ export const manoEnemy: Minion = {
         },
         {
             name: "Withdraw",
+            image: BlueSnailShellImage,
             channelDuration: 2,
             resourceCost: 3,
             actions: [
@@ -364,6 +369,7 @@ export const manoEnemy: Minion = {
         },
         {
             name: "Rollout",
+            image: RedSnailShellImage,
             castTime: 1,
             channelDuration: 3,
             resourceCost: 3,

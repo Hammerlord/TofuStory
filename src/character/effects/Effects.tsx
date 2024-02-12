@@ -34,7 +34,7 @@ const useStyles = createUseStyles({
         },
     },
     stun: {
-        top: -70,
+        top: -60,
         width: "48px",
         height: "48px",
         position: "absolute",

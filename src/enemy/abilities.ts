@@ -1,5 +1,5 @@
-import { HasteImage } from "../images";
-import { CrossedSwordsIcon, ZzzIcon } from "../images/icons";
+import { HasteImage, IronHogHoofImage } from "../images";
+import { CrossedSwordsIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 
 export const attack: Ability = {
@@ -26,21 +26,10 @@ export const loaf: Ability = {
     ],
 };
 
-export const move: Ability = {
-    name: "Move",
-    actions: [
-        {
-            movement: 1,
-            description: "{{caster}} has moved.",
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.MOVEMENT,
-        },
-    ],
-};
-
 export const rally: Ability = {
     name: "Rally",
     resourceCost: 3,
+    image: ShieldIcon,
     actions: [
         {
             area: 2,
@@ -53,6 +42,7 @@ export const rally: Ability = {
 
 export const tantrum: Ability = {
     name: "Tantrum",
+    image: JapaneseOgreIcon,
     description: "{{ caster }} will tantrum, dealing 2 hits per move.",
     resourceCost: 3,
     channelDuration: 2,
@@ -69,36 +59,9 @@ export const tantrum: Ability = {
     ],
 };
 
-export const shiningLaser: Ability = {
-    name: "Shining Laser",
-    description: "{{ caster }} is shining mightily!!!",
-    resourceCost: 3,
-    castTime: 1,
-    actions: [
-        {
-            damage: 10,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-    ],
-};
-
-export const megaHeal: Ability = {
-    name: "Mega Heal!!!",
-    description: "{{ caster }} is about to unleash a Mega Heal!!",
-    resourceCost: 3,
-    castTime: 1,
-    actions: [
-        {
-            healing: 10,
-            target: TARGET_TYPES.FRIENDLY,
-            type: ACTION_TYPES.EFFECT,
-        },
-    ],
-};
-
 export const stomp: Ability = {
     name: "Stomp",
+    image: IronHogHoofImage,
     actions: [
         {
             damage: 2,

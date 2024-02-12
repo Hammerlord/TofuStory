@@ -35,69 +35,6 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
 /**
- * 1) If a movement ability was picked, check that there are no obstructions blocking that movement.
- * Otherwise, pick a different ability.
- * 2) Check the resource cost of the ability.
- * 3) Check if there is space for a minion.
- * 4) If the ability applies a buff that the actor already has, don't use it.
- * 5) If the ability only heals, do not use it at full health.
- */
-const canUseAbility = ({ actorInfo, ability }: { actorInfo: CombatantInfo; ability: Ability }): boolean => {
-    const resourceCost = ability.resourceCost || 0;
-    const { combatant: actor, friendly } = actorInfo;
-    // @ts-ignore -- There are no enemy abilities which cost 'x'
-    if ((actor.resources || 0) < resourceCost) {
-        return false;
-    }
-
-    const getCalculationTarget = (type: CONDITION_TARGETS) => {
-        if (!type || type === CONDITION_TARGETS.ACTOR) {
-            return actorInfo;
-        }
-    };
-
-    if (!passesConditions({ getCalculationTarget, proc: ability })) {
-        return false;
-    }
-
-    if (ability.minion) {
-        return friendly.some((combatant) => !combatant || combatant.HP === 0);
-    }
-
-    const abilityEffects = ability.actions.reduce((acc, { effects = [] }) => {
-        return [...acc, ...effects];
-    }, []);
-
-    if (actor.effects.some(({ name }) => abilityEffects.some((effect) => effect.name === name))) {
-        return false;
-    }
-
-    // TODO this does not check who is being targeted to receive the healing; they could be full health
-    if (ability.actions.length === 1 && ability.actions[0].healing > 0) {
-        return friendly.some((combatant) => combatant && combatant.HP < getMaxHP(combatant));
-    }
-
-    const movementAction = ability.actions.find((action) => action.movement);
-    if (movementAction) {
-        const index = friendly.findIndex((e: Combatant) => e && e.id === actor.id);
-        return (
-            getPossibleMoveIndices({
-                currentLocationIndex: index,
-                friendly,
-                movement: movementAction.movement,
-            }).length > 0
-        );
-    }
-
-    if (ability.depletedOnUse) {
-        // If it is a deplete ability, never use it again
-        return actor.abilityHistory.every((a) => a.name !== ability.name);
-    }
-
-    return true;
-};
-
-/**
  * Given an ability, pick a target that makes sense
  */
 const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: CombatantInfo }): { index: number; side: BATTLEFIELD_SIDES } => {
@@ -219,7 +156,7 @@ const enemyAction = (combatantId: string) => {
 };
 
 export const getUseAbilityIndex = (actor: Combatant): number => {
-    const { resources, maxResources, abilities } = actor;
+    const { resources = 0, maxResources = 3, abilities = [] } = actor || {};
 
     let abilityIndex = 0;
     if (resources >= maxResources) {
@@ -273,20 +210,9 @@ const enemyUseAbility = (combatantId: string) => {
         const { side, index } = autoPickTarget({ ability, actor: actorData });
         const { castTime, channelDuration } = ability;
 
-        const updatedAbilities = [...actor.abilities];
-        const [used] = updatedAbilities.splice(abilityIndex, 1);
-        updatedAbilities.push(used);
-        dispatch(
-            updateCombatant({
-                combatantId,
-                newProperties: {
-                    abilities: updatedAbilities,
-                },
-            })
-        );
-
         if (!castTime && !channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
+            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
             return;
         }
 
@@ -321,6 +247,7 @@ const enemyUseAbility = (combatantId: string) => {
                     },
                 })
             );
+            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
         }
     };
 };
@@ -391,6 +318,7 @@ export const startEnemyTurn = () => {
 
             const enemy = eligible[0];
             if (!enemy) {
+                dispatch(checkTurnResourceGain(getEnemySideInfo()));
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                 return;
             }
@@ -414,8 +342,6 @@ export const startEnemyTurn = () => {
         };
 
         makeEnemyMove();
-
-        dispatch(checkTurnResourceGain(getEnemySideInfo()));
     };
 };
 

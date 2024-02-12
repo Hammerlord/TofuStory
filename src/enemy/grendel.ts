@@ -206,6 +206,7 @@ const volcanicBurst: Ability = {
 const stormBarrier: Ability = {
     name: "Storm Barrier",
     resourceCost: 3,
+    image: MagicArmorImage,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -227,6 +228,7 @@ const stormBarrier: Ability = {
                     onTurnStart: {
                         ability: {
                             name: "Storm Pulse",
+                            image: MagicArmorImage,
                             actions: [
                                 {
                                     target: TARGET_TYPES.HOSTILE,

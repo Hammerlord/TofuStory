@@ -7,7 +7,6 @@ import { Event } from "../battle/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
-import CastingIndicator from "../icon/CastingIndicator";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
@@ -19,6 +18,7 @@ import Health from "./HealthView";
 import PlayerResources from "./PlayerResources";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
+import Telegraph from "./Telegraph";
 import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
@@ -51,10 +51,11 @@ const useStyles = createUseStyles({
     header: {
         textAlign: "center",
         left: "50%",
-        bottom: "100%",
+        bottom: "80%",
         transform: "translateX(-50%)",
         position: "absolute",
         width: "100%",
+        zIndex: 3,
     },
     inner: {
         height: "100%",
@@ -431,6 +432,7 @@ const CombatantView = forwardRef(
 
         const imageNode = getImageNode(imageProps);
         const dialog = (actionParent as unknown as Ability)?.dialog || "";
+
         return (
             <div
                 className={classNames(classes.root, {
@@ -449,7 +451,7 @@ const CombatantView = forwardRef(
 
                     {oldState?.HP > 0 && (
                         <div className={classes.header}>
-                            {oldState.casting && <CastingIndicator casting={oldState.casting} combatant={oldState} />}
+                            <Telegraph combatant={combatant} />
                             {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
                         </div>
                     )}

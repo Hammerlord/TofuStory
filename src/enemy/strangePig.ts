@@ -11,8 +11,8 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { MutantRibbonPigImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
-import { MountainIcon } from "../images/icons";
+import { IronHogHoofImage, MutantRibbonPigImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
+import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
 import { championsRibbon, pigHeaded } from "./effect";
 
 export const strangePig: Minion = {
@@ -168,6 +168,7 @@ export const mutantRibbonPig: Minion = {
     abilities: [
         {
             name: "Stomp",
+            image: IronHogHoofImage,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
@@ -194,7 +195,7 @@ export const mutantRibbonPig: Minion = {
         },
         {
             name: "Reckless Charge",
-            image: OmokPigImage,
+            image: JapaneseOgreIcon,
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -263,6 +264,7 @@ export const mutantRibbonPig: Minion = {
                             targetType: TRIGGER_TARGET_TYPES.ACTOR,
                             ability: {
                                 name: "Retaliate",
+                                image: OmokPigImage,
                                 actions: [
                                     {
                                         type: ACTION_TYPES.ATTACK,
