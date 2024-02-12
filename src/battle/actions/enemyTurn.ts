@@ -7,6 +7,7 @@ import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
     getHealableIndices,
+    getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
     hasTruesight,
@@ -23,9 +24,16 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
 /**
- * Given an ability, pick a target that makes sense
+ * Given an ability, pick a target that makes sense.
+ * Index may be undefined if there were no valid indices to choose from.
  */
-const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: CombatantInfo }): { index: number; side: BATTLEFIELD_SIDES } => {
+const autoPickTarget = ({
+    ability,
+    actor,
+}: {
+    ability: Ability;
+    actor: CombatantInfo;
+}): { index: number | undefined; side: BATTLEFIELD_SIDES } => {
     const { hostile, friendly, friendlySide, hostileSide, index } = actor;
 
     const { actions = [], minion } = ability;
@@ -46,6 +54,21 @@ const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: Combatant
                     excludeStealth: !hasTruesight(actor.combatant),
                 })
             ),
+        };
+    }
+
+    const movementAction = ability.actions.find((action) => action.movement);
+    if (movementAction) {
+        const index = friendly.findIndex((e: Combatant) => e && e.id === actor.combatant?.id);
+        const possibleMoves = getPossibleMoveIndices({
+            currentLocationIndex: index,
+            friendly,
+            movement: movementAction.movement,
+        });
+
+        return {
+            side: friendlySide,
+            index: shuffle(possibleMoves)[0],
         };
     }
 
@@ -202,6 +225,11 @@ const enemyUseAbility = (combatantId: string) => {
 
         const { side, index } = autoPickTarget({ ability, actor: actorData });
         const { castTime, channelDuration } = ability;
+
+        if (typeof index === "undefined") {
+            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
+            return;
+        }
 
         if (!castTime && !channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
