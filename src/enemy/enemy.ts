@@ -47,7 +47,7 @@ import {
     WoodenClubImage,
     ZombieLupinJumpImage,
 } from "../images";
-import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MountainIcon, MuscleIcon, ZzzIcon } from "../images/icons";
+import { CrossedSwordsIcon, DizzyIcon, EyeIcon, MountainIcon, MuscleIcon, ShieldIcon, ZzzIcon } from "../images/icons";
 import { redPotion } from "../item/items";
 import { burn, elite, hardy, poison, raging, stealth, stun, thorns, bleed } from "./../ability/Effects";
 import {
@@ -62,14 +62,14 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { block, slashBlast } from "./../ability/warrior/warriorAbilities";
+import { bash, block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
 import { championsRibbon, hardwood, pigHeaded, poisonous } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
     maxHP: 10,
-    abilities: [attack, loaf],
+    abilities: [loaf, attack, attack],
     image: SnailImage,
     mesos: 2,
 };
@@ -78,7 +78,7 @@ export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 12,
     image: BlueSnailImage,
-    abilities: [attack, loaf],
+    abilities: [attack, loaf, attack],
     mesos: 3,
 };
 
@@ -117,6 +117,16 @@ export const shroom: Minion = {
                 },
             ],
         },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
     ],
 };
 
@@ -128,8 +138,11 @@ export const redSnail: Minion = {
     mesos: 5,
     abilities: [
         attack,
+        loaf,
+        attack,
         {
             name: "Rollout",
+            image: RedSnailShellImage,
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -342,7 +355,7 @@ export const orangeMushroom: Minion = {
 
 export const noobA: Minion = {
     name: "Beginner A",
-    maxHP: 40,
+    maxHP: 35,
     image: NoobClubAImage,
     mesos: 10,
     items: [{ ...redPotion, healing: 10 }],
@@ -354,6 +367,17 @@ export const noobA: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 2,
+                },
+            ],
+        },
+        {
+            name: "Block",
+            image: ShieldIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    armor: 5,
                 },
             ],
         },
@@ -370,12 +394,12 @@ export const noobA: Minion = {
             ],
         },
         {
-            name: "Block",
+            ...attack,
             actions: [
                 {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 5,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                 },
             ],
         },
@@ -384,7 +408,7 @@ export const noobA: Minion = {
 
 export const noobB: Minion = {
     name: "Beginner B",
-    maxHP: 40,
+    maxHP: 35,
     image: NoobClubBImage,
     mesos: 10,
     items: [{ ...redPotion, healing: 10 }],
@@ -396,6 +420,17 @@ export const noobB: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 2,
+                },
+            ],
+        },
+        {
+            name: "Block",
+            image: ShieldIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    armor: 5,
                 },
             ],
         },
@@ -422,12 +457,12 @@ export const noobB: Minion = {
             ],
         },
         {
-            name: "Block",
+            ...attack,
             actions: [
                 {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 5,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                 },
             ],
         },
@@ -436,15 +471,16 @@ export const noobB: Minion = {
 
 export const noobAWarrior = {
     name: "Beginner A",
-    maxHP: 40,
+    maxHP: 60,
     image: NoobWarriorAImage,
-    damage: 3,
-    mesos: 1,
+    mesos: 30,
     abilities: [
+        bash,
         {
             ...slashBlast,
             resourceCost: 0,
         },
+        bash,
         {
             ...block,
             resourceCost: 0,
@@ -454,15 +490,16 @@ export const noobAWarrior = {
 
 export const noobBWarrior = {
     name: "Beginner B",
-    maxHP: 40,
+    maxHP: 60,
     image: NoobWarriorBImage,
-    damage: 3,
-    mesos: 1,
+    mesos: 30,
     abilities: [
+        bash,
         {
             ...slashBlast,
             resourceCost: 0,
         },
+        bash,
         {
             ...block,
             resourceCost: 0,
@@ -493,6 +530,10 @@ export const thiefAssassin: Minion = {
                     icon: SubiImage,
                 },
             ],
+        },
+        {
+            ...enemyHaste,
+            dialog: "I am speed.",
         },
         {
             name: "Dark Sight",
@@ -529,10 +570,6 @@ export const thiefAssassin: Minion = {
                     icon: SubiImage,
                 },
             ],
-        },
-        {
-            ...enemyHaste,
-            dialog: "I am speed.",
         },
     ],
 };
@@ -584,6 +621,7 @@ export const olaf: Minion = {
                 },
             ],
         },
+        attack,
     ],
     image: OlafImage,
 };
@@ -856,6 +894,7 @@ export const eliteLigator: Minion = {
     image: LigatorImage,
     maxHP: 45,
     mesos: 25,
+    resources: 1,
     effects: [elite, raging],
     abilities: [
         {
@@ -913,6 +952,7 @@ export const greenMushroom: Minion = {
                 },
             ],
         },
+        attack,
     ],
 };
 
@@ -970,6 +1010,17 @@ export const elliniaGreenMushroom: Minion = {
                             duration: 1,
                         },
                     ],
+                },
+            ],
+        },
+        {
+            name: "Attack",
+            image: CrossedSwordsIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                 },
             ],
         },
@@ -1211,7 +1262,7 @@ export const zombieLupin: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
@@ -1386,7 +1437,7 @@ export const darkStoneGolem: Minion = {
             image: DarkStoneGolemRubbleImage,
             actions: [
                 {
-                    damage: 10,
+                    damage: 15,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },

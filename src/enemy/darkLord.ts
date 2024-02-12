@@ -213,6 +213,19 @@ export const darkLord: Minion = {
             ],
         },
         {
+            name: "Throw Star",
+            image: KumbiImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 3,
+                    icon: KumbiImage,
+                },
+            ],
+        },
+        {
             name: "Dark Sight",
             resourceCost: 3,
             preemptive: true,

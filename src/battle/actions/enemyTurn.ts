@@ -148,9 +148,9 @@ const autoPickTarget = ({ ability, actor }: { ability: Ability; actor: Combatant
     };
 };
 
-const handleCastTick = (actorId: string) => {
+const handleCastTick = (combatantId: string) => {
     return (dispatch, getState) => {
-        const { combatant } = findCombatantData(getState, actorId);
+        const { combatant } = findCombatantData(getState, combatantId);
         const { ability, castTime = 0, channelDuration, selectedIndex, selectedSide } = combatant.casting;
 
         const updatedCasting = { ...combatant.casting };
@@ -164,7 +164,7 @@ const handleCastTick = (actorId: string) => {
 
         dispatch(
             updateCombatant({
-                combatantId: actorId,
+                combatantId,
                 newProperties: {
                     casting: updatedCasting.channelDuration || updatedCasting.castTime ? updatedCasting : null,
                 },
@@ -179,90 +179,27 @@ const handleCastTick = (actorId: string) => {
 
         // If the original selected target is no longer valid, switch to a random new target. TODO area abilities could still be valid in the same spot
         const index =
-            battle[selectedIndex]?.HP > 0 ? selectedIndex : autoPickTarget({ ability, actor: findCombatantData(getState, actorId) }).index;
-        if (typeof index === "number") {
-            dispatch(useAbility({ actorId, ability, side: selectedSide, selectedIndex: index }));
+            battle[selectedIndex]?.HP > 0
+                ? selectedIndex
+                : autoPickTarget({ ability, actor: findCombatantData(getState, combatantId) }).index;
+
+        if (typeof index !== "number") {
+            return;
         }
+
+        dispatch(useAbility({ actorId: combatantId, ability, side: selectedSide, selectedIndex: index }));
+        const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
+        const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
+
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    resources: postAbilityActor.resources - resourceCost,
+                },
+            })
+        );
     };
-};
-
-const CHANCE_TO_SKIP_REPEAT_ABILITY = 0.8;
-const CHANCE_TO_SUMMON_MULTIPLIER = 0.15;
-
-/**
- * Given an enemy or minion, pick an ability from its pool of abilities. (Not meant to be used for the player character who has cards etc.)
- * TODO -- If it is a single target attack, check that there is an enemy that can be targeted (eg. handle stealth).
- */
-const pickAbility = ({ actorInfo }: { actorInfo: CombatantInfo }): Ability => {
-    const { combatant: actor, friendly } = actorInfo;
-    let [specialAbilities, regularAbilities] = partition(
-        (a) => a.resourceCost > 0,
-        actor.abilities.filter((a) => canUseAbility({ actorInfo, ability: a }))
-    );
-
-    const validPriorityAbilities = specialAbilities.concat(regularAbilities).filter((ability: Ability) => {
-        return ability.priority || (ability.preemptive && actor.abilityHistory.every(({ name }) => name !== ability.name));
-    });
-
-    if (validPriorityAbilities.length > 0) {
-        return getRandomItem(validPriorityAbilities);
-    }
-
-    // If we are capped resources, we should always use a special ability, preferably the most expensive ones
-    if (specialAbilities.length > 0 && actor.resources === actor.maxResources) {
-        // TS does not have findLast array method
-        const lastMaxSpecialAbilityUsed = (actor.abilityHistory as any).findLast((ability) => ability.resourceCost === actor.maxResources);
-        let validMaxResourceAbilities = specialAbilities.filter(({ resourceCost }) => resourceCost === actor.maxResources);
-        if (validMaxResourceAbilities.length > 1 && lastMaxSpecialAbilityUsed) {
-            validMaxResourceAbilities = validMaxResourceAbilities.filter(({ name }) => name !== lastMaxSpecialAbilityUsed?.name);
-        }
-        return getRandomItem(validMaxResourceAbilities.length ? validMaxResourceAbilities : specialAbilities);
-    }
-
-    if (Math.random() <= CHANCE_TO_SKIP_REPEAT_ABILITY) {
-        // We are assuming that same name === same ability even though that is not actually guaranteed
-        const lastAbilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
-        if (lastAbilityUsed) {
-            // Don't remove its only ability though
-            if (regularAbilities.length > 1) {
-                const filtered = regularAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
-                // Deprioritize defensive abilities
-                const isSupportAbility = ({ actions }) =>
-                    actions.every(({ targetType }) => ![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(targetType));
-                const isAllSupportAbilitiesRemaining = filtered.every(isSupportAbility);
-                if (!isAllSupportAbilitiesRemaining && !isSupportAbility(lastAbilityUsed)) {
-                    regularAbilities = filtered;
-                }
-            }
-            specialAbilities = specialAbilities.filter(({ name }) => name !== lastAbilityUsed.name);
-        }
-    }
-
-    // Higher chance of picking minion summon if there are many spaces to summon
-    let [minionSummonAbilities, otherAbilities] = partition(
-        (ability) => ability.minion || ability.actions.some((a: Action) => a.summon),
-        regularAbilities
-    );
-    const chanceToSummon = getPossibleSummonIndices(friendly).length * CHANCE_TO_SUMMON_MULTIPLIER;
-    if (minionSummonAbilities.length > 0 && Math.random() <= chanceToSummon) {
-        return getRandomItem(minionSummonAbilities);
-    }
-
-    // Pick a special ability at just a chance
-    if (specialAbilities.length > 0) {
-        let mostExpensive = 0;
-        specialAbilities.forEach(({ resourceCost }) => {
-            if (resourceCost > mostExpensive) {
-                mostExpensive = resourceCost;
-            }
-        });
-
-        if (Math.random() < actor.resources / actor.maxResources) {
-            return getRandomItem(specialAbilities);
-        }
-    }
-
-    return getRandomItem(otherAbilities);
 };
 
 const enemyAction = (combatantId: string) => {
@@ -275,10 +212,46 @@ const enemyAction = (combatantId: string) => {
         const itemIndex = checkUseItem(actorData.combatant);
         if (itemIndex !== undefined) {
             dispatch(useItem({ itemIndex, actorId: combatantId }));
-        } else {
-            dispatch(enemyUseAbility(combatantId));
         }
+
+        dispatch(enemyUseAbility(combatantId));
     };
+};
+
+export const getUseAbilityIndex = (actor: Combatant): number => {
+    const { resources, maxResources, abilities } = actor;
+
+    let abilityIndex = 0;
+    if (resources >= maxResources) {
+        const specialAbilityIndex = abilities.findIndex((ability) => ability.resourceCost === "x" || ability.resourceCost > 0);
+        if (specialAbilityIndex > -1) {
+            abilityIndex = specialAbilityIndex;
+        }
+    }
+
+    return abilityIndex;
+};
+
+const puntCurrentAbilityToEndOfQueue = (combatantId: string) => (dispatch, getState) => {
+    const actorData = findCombatantData(getState, combatantId);
+    if (!actorData) {
+        return;
+    }
+
+    const actor = actorData.combatant;
+    const abilityIndex = getUseAbilityIndex(actor);
+    const updatedAbilities = [...actor.abilities];
+    const [used] = updatedAbilities.splice(abilityIndex, 1);
+    updatedAbilities.push(used);
+
+    dispatch(
+        updateCombatant({
+            combatantId,
+            newProperties: {
+                abilities: updatedAbilities,
+            },
+        })
+    );
 };
 
 const enemyUseAbility = (combatantId: string) => {
@@ -288,17 +261,35 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
 
-        const ability = pickAbility({ actorInfo: actorData }); // Needs to be upfront resource cost?
+        const { combatant: actor } = actorData;
+
+        const abilityIndex = getUseAbilityIndex(actor);
+
+        const ability = actor.abilities[abilityIndex];
         if (!ability) {
             return;
         }
+
         const { side, index } = autoPickTarget({ ability, actor: actorData });
         const { castTime, channelDuration } = ability;
+
+        const updatedAbilities = [...actor.abilities];
+        const [used] = updatedAbilities.splice(abilityIndex, 1);
+        updatedAbilities.push(used);
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    abilities: updatedAbilities,
+                },
+            })
+        );
 
         if (!castTime && !channelDuration) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
             return;
         }
+
         const casting = {
             ability,
             castTime,
@@ -307,20 +298,29 @@ const enemyUseAbility = (combatantId: string) => {
             selectedSide: side,
         };
 
-        const { combatant: actor } = actorData;
-
-        const resourceCost = (ability.resourceCost === "x" ? actor.resources : ability.resourceCost) || 0;
         dispatch(
             updateCombatant({
                 combatantId,
                 newProperties: {
                     casting,
-                    resources: actor.resources - resourceCost,
                 },
             })
         );
+
         if (!ability.castTime) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
+
+            const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
+            const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
+
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        resources: postAbilityActor.resources - resourceCost,
+                    },
+                })
+            );
         }
     };
 };
@@ -358,8 +358,6 @@ export const startEnemyTurn = () => {
             dispatch(checkHalveArmor(getEnemySideInfo()));
         }
 
-        dispatch(checkTurnResourceGain(getEnemySideInfo()));
-
         enemySide.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
@@ -390,6 +388,7 @@ export const startEnemyTurn = () => {
             const eligible = shuffle(enemySide)
                 .filter(isEligibleToMove)
                 .sort((a, b) => (b?.isBoss || false) - (a?.isBoss || false));
+
             const enemy = eligible[0];
             if (!enemy) {
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
@@ -400,18 +399,23 @@ export const startEnemyTurn = () => {
             acted[id] = true;
             const unableToAct = isUnableToAct(enemy) || !enemy.abilities?.length;
             const delay = unableToAct ? 500 : 1500;
+
             setTimeout(() => {
                 // Enemies who are unable to act still must lose a turn when casting an ability
                 if (casting) {
                     dispatch(handleCastTick(id));
                 } else if (!unableToAct) {
                     dispatch(enemyAction(id));
+                } else {
+                    dispatch(puntCurrentAbilityToEndOfQueue(id));
                 }
                 makeEnemyMove();
             }, delay);
         };
 
         makeEnemyMove();
+
+        dispatch(checkTurnResourceGain(getEnemySideInfo()));
     };
 };
 

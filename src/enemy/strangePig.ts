@@ -167,6 +167,22 @@ export const mutantRibbonPig: Minion = {
     maxHP: 250,
     abilities: [
         {
+            name: "Stomp",
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.STOMP,
+                    summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
+                },
+            ],
+        },
+        {
+            name: "Seismic Toss",
+            image: MountainIcon,
+            actions: throwRocks,
+        },
+        {
             ...attack,
             actions: [
                 {
@@ -223,22 +239,6 @@ export const mutantRibbonPig: Minion = {
                     summon: [{ minion: [stalagmite] }],
                 },
                 ...throwRocks,
-            ],
-        },
-        {
-            name: "Seismic Toss",
-            image: MountainIcon,
-            actions: throwRocks,
-        },
-        {
-            name: "Stomp",
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    animation: ANIMATION_TYPES.STOMP,
-                    summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
-                },
             ],
         },
     ],

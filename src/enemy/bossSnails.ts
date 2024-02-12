@@ -194,6 +194,16 @@ export const mutantSnailEnemy: Minion = {
             ],
         },
         {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
             name: "Frenzied Tantrum",
             description: "{{ caster }} will tantrum, dealing 3 hits per move.",
             resourceCost: 3,
@@ -303,6 +313,16 @@ export const manoEnemy: Minion = {
             ],
         },
         {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
             name: "Call Snail",
             image: RedSnailImage,
             minion: redMinionSnail,
@@ -311,6 +331,16 @@ export const manoEnemy: Minion = {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
                 },
             ],
         },

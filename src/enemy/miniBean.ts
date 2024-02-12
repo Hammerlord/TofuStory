@@ -244,9 +244,19 @@ export const miniBean: Minion = {
                 },
             ],
         },
-        suckIn,
-        picoDrop,
         throwFood,
+        picoDrop,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        suckIn,
         {
             name: "Big Suck",
             resourceCost: 3,
