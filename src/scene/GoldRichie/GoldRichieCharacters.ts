@@ -125,7 +125,7 @@ export const adventurerFighter = {
     name: "Fighter",
     image: GuardWarriorImage,
     maxHP: 75,
-    abilities: [{ ...bash }, { ...slashBlast }, rally],
+    abilities: [{ ...bash }, { ...slashBlast, resourceCost: 3 }, rally],
 };
 
 export const adventurerIceWizard = {
@@ -134,7 +134,7 @@ export const adventurerIceWizard = {
     maxHP: 60,
     abilities: [
         { ...energyBolt },
-        { ...magicFang },
-        { ...magicClaw, actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })) },
+        { ...magicFang, resourceCost: 3 },
+        { ...magicClaw, resourceCost: 3, actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })) },
     ],
 };
