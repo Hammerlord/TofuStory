@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { cloneDeep } from "lodash";
-import { Ability } from "./../ability/types";
+import { Ability, HandAbility } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
@@ -56,10 +56,17 @@ export const playerStateSlice = createSlice({
                 deck: action.payload.deck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })),
             };
         },
-        updateDeck: (state, action: PayloadAction<Ability[]>) => {
+        updateDeck: (state, action: PayloadAction<(HandAbility | Ability)[]>) => {
             return {
                 ...state,
-                deck: action.payload,
+                deck: action.payload.map((card) => {
+                    // @ts-ignore We are checking the existence of instanceId here anyway
+                    if (card.instanceId) {
+                        return card;
+                    }
+
+                    return { ...card, instanceId: uuid.v4() };
+                }),
             };
         },
         restartGame: () => {
