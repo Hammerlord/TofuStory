@@ -1,18 +1,10 @@
-import { EFFECT_CLASSES, EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
+import { EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
-import {
-    checkEventTrigger,
-    drawCards,
-    findCombatantData,
-    onEndTurnTriggers,
-    recalculateEffectsFromAbilities,
-    tickDownStatusEffects,
-    useAbility,
-} from "./actions";
+import { checkEventTrigger, drawCards, findCombatantData, onEndTurnTriggers, recalculateEffectsFromAbilities, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -158,15 +150,6 @@ export const startPlayerTurn = () => {
             if (combatant) {
                 dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
             }
-        });
-
-        playerSide.forEach((combatant: Combatant | null) => {
-            if (!combatant) {
-                return;
-            }
-
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.NONE));
         });
 
         // Drawing cards last so that eg. drawing Zap (stun) can benefit from Star Earrings (draw a card on CC).

@@ -332,11 +332,14 @@ export const engravedStone: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: HumilityStoneImage,
-                        duration: 1,
+                        duration: 2, // Ticks down immediately due to turn end
                         onReceiveAttack: {
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                             removeEffect: true,
                             resources: 1,
+                        },
+                        onTurnStart: {
+                            removeEffect: true,
                         },
                     },
                 ],
@@ -963,7 +966,7 @@ export const redHeadband: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: RedHeadbandImage,
                         resourcesPerTurn: 1,
-                        duration: 1,
+                        duration: 0,
                     },
                 ],
             },
@@ -1261,7 +1264,7 @@ export const fairyWing: Item = {
     image: FairyWingImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "On wave start, you are immune to Bleed, Burn, and Poison for 4 turns.",
+    description: "On wave start, you are immune to Bleed, Burn, and Poison for 5 turns.",
     effects: [
         {
             name: "Fairy Wing Item",
@@ -1433,7 +1436,7 @@ export const starEarrings: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: StarEarringsImage,
                         description: "When you Stun, Freeze or Silence an enemy, draw a card.",
-                        duration: 2, // Ticks down immediately
+                        duration: 1,
                         onApplyEffect: {
                             conditions: [
                                 {

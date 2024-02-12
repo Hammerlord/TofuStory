@@ -935,7 +935,7 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.DEBUFF));
+            dispatch(tickDownStatusEffects(combatant.id));
         });
     };
 };

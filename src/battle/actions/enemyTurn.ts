@@ -1,6 +1,5 @@
-import { partition } from "ramda";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { Ability, Action, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
@@ -8,8 +7,6 @@ import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
     getHealableIndices,
-    getMaxHP,
-    getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
     hasTruesight,
@@ -17,18 +14,9 @@ import {
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
-import { passesConditions } from "./../passesConditions";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import {
-    checkEventTrigger,
-    findCombatantData,
-    onEndTurnTriggers,
-    tickDownStatusEffects,
-    updateCombatant,
-    useAbility,
-    useItem,
-} from "./actions";
+import { checkEventTrigger, findCombatantData, onEndTurnTriggers, updateCombatant, useAbility, useItem } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -296,15 +284,6 @@ export const startEnemyTurn = () => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
-        });
-
-        enemySide.forEach((combatant: Combatant | null) => {
-            if (!combatant) {
-                return;
-            }
-
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.BUFF));
-            dispatch(tickDownStatusEffects(combatant.id, EFFECT_CLASSES.NONE));
         });
 
         const acted = {};

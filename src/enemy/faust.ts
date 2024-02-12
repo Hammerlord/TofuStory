@@ -1,4 +1,3 @@
-import { lifeLink } from "./effect";
 import {
     CursedDollImage,
     FaustImage,
@@ -7,8 +6,6 @@ import {
     MonkeyBananaImage,
     PoisonImage,
     RespawnTokenImage,
-    WorkGlovesImage,
-    ZombieMushroomTicketImage,
 } from "../images";
 import { CloudyIcon, SmilingImpIcon } from "../images/icons";
 import { hardy, poison, stun } from "./../ability/Effects";
@@ -24,6 +21,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { lifeLink } from "./effect";
 import { bananaPeelCard } from "./enemy";
 
 export const faust: Minion = {
@@ -222,7 +220,7 @@ export const ghostlyPuppeteerL: Minion = {
                         onReceiveAttack: {
                             removeEffect: true,
                         },
-                        duration: 2, // Ticks down immediately when applied
+                        duration: 1,
                     },
                 ],
             },

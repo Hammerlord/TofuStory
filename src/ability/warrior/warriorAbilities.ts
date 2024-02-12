@@ -439,7 +439,7 @@ export const warBanner2: Ability = {
                                 effects: [
                                     {
                                         ...drumOfWarAttackPower,
-                                        duration: 2, // Tick down occurs after onTurnStart events
+                                        duration: 1,
                                     },
                                 ],
                             },
@@ -496,7 +496,7 @@ export const warBanner: Ability = {
                                 effects: [
                                     {
                                         ...drumOfWarAttackPower,
-                                        duration: 2, // Tick down occurs after onTurnStart events
+                                        duration: 1,
                                     },
                                 ],
                             },
