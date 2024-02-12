@@ -1,12 +1,14 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import uuid from "uuid";
 import CardGrid from "../Menu/CardGrid";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { JOB_CARD_MAP } from "../ability";
 import { Ability, HandAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
+import { Player } from "../character/types";
 import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
 import { Item } from "../item/types";
 import Button from "../view/Button";
@@ -105,7 +107,7 @@ const Camp = ({
 }: {
     onExit: () => void;
     deck: HandAbility[];
-    player: any;
+    player: Player;
     updateDeck: (updated: Ability[]) => void;
     updatePlayer: (updated: any) => void;
 }) => {
@@ -149,7 +151,8 @@ const Camp = ({
     if (isLearningAbility) {
         const potentialAbilities = JOB_CARD_MAP[player.class].all
             .concat(JOB_CARD_MAP[player.secondaryClass]?.all || [])
-            .filter((ability: Ability) => !ability.depletedOnUse);
+            .filter((ability: Ability) => !ability.depletedOnUse)
+            .map((card) => ({ ...card, instanceId: uuid.v4() }));
 
         return (
             <div className={classes.root}>

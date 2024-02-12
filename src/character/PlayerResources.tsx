@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import Tooltip from "../view/Tooltip";
+import { Player } from "./types";
 
 const useStyles = createUseStyles({
     "@keyframes animation": {
@@ -34,7 +35,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const PlayerResources = ({ player }: { player: any }) => {
+const PlayerResources = ({ player }: { player: Player }) => {
     const [oldResources, setOldResources] = useState(player.resources);
     const classes = useStyles();
 

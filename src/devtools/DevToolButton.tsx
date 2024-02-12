@@ -1,25 +1,25 @@
 import { ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@material-ui/core";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
 import Map from "../Map/Map";
+import Shop from "../Menu/Shop";
+import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
 import CardGame from "../scene/CardGame";
+import DimPath from "../scene/Ellinia/DimPath";
+import FollowFairies from "../scene/Ellinia/FollowFairies";
+import Tombstones from "../scene/Ellinia/Tombstones";
 import KittenBarrelsQuest from "../scene/Kerning/kpq/KittenBarrelsQuest";
 import RopeQuest from "../scene/Kerning/kpq/RopeQuest";
 import ComboPuzzle from "../scene/TreasureBox/ComboPuzzle";
-import SortingPuzzle from "../scene/TreasureBox/SortingPuzzle";
 import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
-import TreasureBox from "../scene/TreasureBox/TreasureBox";
-import DevAbilityViewer from "./DevAbilityViewer";
-import DevStageBattle from "./DevStageBattle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
+import SortingPuzzle from "../scene/TreasureBox/SortingPuzzle";
+import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import Button from "../view/Button";
+import DevAbilityViewer from "./DevAbilityViewer";
 import DevItemViewer from "./DevItemViewer";
-import Shop from "../Menu/Shop";
-import Tombstones from "../scene/Ellinia/Tombstones";
-import DimPath from "../scene/Ellinia/DimPath";
-import FollowFairies from "../scene/Ellinia/FollowFairies";
+import DevStageBattle from "./DevStageBattle";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -193,7 +193,7 @@ const DevToolButton = () => {
                     initItems={[]}
                     initMesos={[123, 123]}
                     Puzzle={TREASURE_PUZZLE_MAP[treasurePuzzleName]}
-                    player={wizardProperties}
+                    player={wizardProperties as any}
                     curse={"damage"}
                 />
             )}
@@ -205,7 +205,11 @@ const DevToolButton = () => {
                 </div>
             )}
             {isShopOpen && (
-                <Shop player={{ ...defaultCharacterProperties, mesos: 1000 }} onBuyItem={() => {}} onExit={() => setIsShopOpen(false)} />
+                <Shop
+                    player={{ ...defaultCharacterProperties, mesos: 1000 } as any}
+                    onBuyItem={() => {}}
+                    onExit={() => setIsShopOpen(false)}
+                />
             )}
         </>
     );

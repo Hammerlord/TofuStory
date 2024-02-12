@@ -14,6 +14,7 @@ import BannerNotice from "../../view/BannerNotice";
 import Button from "../../view/Button";
 import Overlay from "../../view/Overlay";
 import { PuzzleProps } from "./types";
+import { Player } from "../../character/types";
 
 const useStyles = createUseStyles({
     inner: {
@@ -210,7 +211,7 @@ const TreasureBox = ({
     title?: string;
     onLoot: ({ mesos, items }: { mesos: number; items: Item[] }) => void;
     Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => JSX.Element;
-    player: any;
+    player: Player;
     curse?: "damage";
 }) => {
     const classes = useStyles();

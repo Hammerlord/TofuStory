@@ -22,7 +22,7 @@ import Reticle from "./Reticle";
 import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
-import { Combatant } from "./types";
+import { Combatant, Player } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -321,7 +321,7 @@ const CombatantView = forwardRef(
             showReticle,
             ...other
         }: {
-            combatant?: Combatant;
+            combatant?: Combatant | Player;
             onClick: (event: any) => void;
             isTargeted: boolean;
             event: CurrentEvent;
@@ -501,7 +501,7 @@ const CombatantView = forwardRef(
 
                                 <div className={classes.rightContainer}>
                                     <AttackPower combatantInfo={combatantInfo} />
-                                    {combatant?.isPlayer && <PlayerResources player={combatant} />}
+                                    {combatant?.isPlayer && <PlayerResources player={combatant as Player} />}
                                 </div>
                                 {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />

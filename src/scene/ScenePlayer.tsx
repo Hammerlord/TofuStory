@@ -12,6 +12,7 @@ import { Item } from "../item/types";
 import Button from "../view/Button";
 import TreasureBox from "./TreasureBox/TreasureBox";
 import { Scene, ScriptNode, ScriptResponse } from "./types";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -187,7 +188,7 @@ const ScenePlayer = ({
     onChangeRegion,
 }: {
     scene: Scene;
-    player: any;
+    player: Player;
     updatePlayer: (updated: any) => void;
     onBattle: (
         props: {

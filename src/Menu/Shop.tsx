@@ -13,6 +13,7 @@ import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { SECONDARY_JOBS } from "./types";
 import AbilityRarityTag from "../ability/AbilityView/RarityTag";
+import { Player } from "../character/types";
 
 const HEADER_BAR = 72;
 
@@ -139,7 +140,7 @@ const Shop = ({
     merchant,
     onExit,
 }: {
-    player: any;
+    player: Player;
     onBuyItem: ({
         items,
         mesosSpent,

@@ -9,6 +9,7 @@ import { rollItemPool } from "../item/utils";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     inner: {
@@ -51,7 +52,7 @@ const ItemRewards = ({
     rewardType,
     overrideItems,
 }: {
-    player: any;
+    player: Player;
     playerCurrentItems: Item[];
     onLoot: ({ items }: { items: Item[] }) => void;
     onClose: () => void;
