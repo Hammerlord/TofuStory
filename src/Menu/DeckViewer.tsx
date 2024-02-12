@@ -37,7 +37,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const DeckViewer = ({ deck, onClose, player }: { deck: HandAbility[]; onClose; player }) => {
+const DeckViewer = ({ deck, onClose }: { deck: HandAbility[]; onClose; player }) => {
     const classes = useStyles();
     const getResourceCost = (ability: HandAbility): number => {
         if (ability.resourceCost === "x") {
@@ -62,7 +62,7 @@ const DeckViewer = ({ deck, onClose, player }: { deck: HandAbility[]; onClose; p
                 </button>
                 {deck.map((card: HandAbility) => (
                     <div className={classes.abilityContainer} key={card.instanceId}>
-                        <AbilityView ability={card} deck={deck} hand={[]} discard={[]} player={player} disableGlow={true} />
+                        <AbilityView ability={card} disableGlow={true} disableBattleBonuses={true} />
                     </div>
                 ))}
             </div>

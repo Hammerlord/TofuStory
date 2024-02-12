@@ -1,5 +1,5 @@
 import { EFFECT_CLASSES, EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
-import { Combatant } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES } from "../types";
@@ -172,7 +172,7 @@ export const startPlayerTurn = () => {
         // Drawing cards last so that eg. drawing Zap (stun) can benefit from Star Earrings (draw a card on CC).
         // Maybe I'll regret this ordering for some other reason later.
         const { battle } = getState();
-        const player: Combatant = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const player: Player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
         const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState, player?.id) }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
             player.drawCardsPerTurn

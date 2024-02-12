@@ -1,4 +1,4 @@
-import { Combatant } from "./../character/types";
+import { Combatant, Player } from "./../character/types";
 import { Ability, Action, CombatEffect } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
@@ -71,12 +71,12 @@ export interface Wave {
 }
 
 export interface CombatantInfo {
-    combatant: Combatant;
-    index: number;
-    friendly: (Combatant | null)[];
-    hostile: (Combatant | null)[];
-    friendlySide: BATTLEFIELD_SIDES;
-    hostileSide: BATTLEFIELD_SIDES;
+    combatant: Combatant | Player;
+    index?: number;
+    friendly?: (Combatant | null)[];
+    hostile?: (Combatant | null)[];
+    friendlySide?: BATTLEFIELD_SIDES;
+    hostileSide?: BATTLEFIELD_SIDES;
 }
 
 export enum BATTLE_TYPES {

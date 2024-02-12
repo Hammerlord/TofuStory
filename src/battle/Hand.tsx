@@ -1,8 +1,9 @@
+import classNames from "classnames";
 import { useEffect, useState } from "react";
+import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { HandAbility } from "../ability/types";
-import { createUseStyles } from "react-jss";
-import classNames from "classnames";
+import { CombatantInfo } from "./types";
 
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
@@ -39,7 +40,19 @@ const useStyles = createUseStyles({
     },
 });
 
-const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, className, player, refs }) => {
+const Hand = ({
+    hand,
+    onAbilityClick,
+    selectedAbilityId,
+    className,
+    refs,
+}: {
+    hand: HandAbility[];
+    onAbilityClick: Function;
+    selectedAbilityId: string;
+    className: string;
+    refs;
+}) => {
     const [oldHand, setOldHand] = useState([]);
     const classes = useStyles();
 
@@ -84,11 +97,7 @@ const Hand = ({ deck, hand, discard, onAbilityClick, selectedAbilityId, classNam
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
                     ability={ability}
-                    player={player}
                     ref={refs[i]}
-                    deck={deck}
-                    hand={hand}
-                    discard={discard}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),
                         [classes.slideOut]: !isCardInHand(ability, hand),

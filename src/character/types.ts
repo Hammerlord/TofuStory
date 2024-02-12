@@ -1,3 +1,4 @@
+import { PLAYER_CLASSES } from "../Menu/types";
 import { Ability, Minion } from "../ability/types";
 import { BATTLEFIELD_SIDES } from "../battle/types";
 import { Item } from "../item/types";
@@ -28,6 +29,12 @@ export interface Combatant extends Minion {
     resourcesPerTurn?: number;
     items: Item[];
     mesos?: number;
-    drawCardsPerTurn: number;
     weapon?: string; // Weapon image
+}
+
+export interface Player extends Combatant {
+    class?: PLAYER_CLASSES;
+    secondaryClass?: string | null;
+    drawCardsPerTurn: number;
+    weaponSkins: { name: string; image: string };
 }

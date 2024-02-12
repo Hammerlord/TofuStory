@@ -4,6 +4,7 @@ import { JOB_CARD_MAP } from "../ability";
 import { HandAbility } from "../ability/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
+import { Player } from "../character/types";
 
 const getCardSelection = ({
     hand,
@@ -14,7 +15,7 @@ const getCardSelection = ({
     selectCards: SelectCards;
     selectedAbilityId?: string;
     hand: HandAbility[];
-    player: any;
+    player: Player;
 }): HandAbility[] => {
     const { effects = {}, type, filters } = selectCards || {};
     const { removeAfterTurn, ...other } = effects;

@@ -5,6 +5,7 @@ import uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, HandAbility } from "../ability/types";
 import Button from "../view/Button";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -28,7 +29,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const UpgradeTile = ({ card, onClick, isSelected }) => {
+const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick; isSelected: boolean }) => {
     const classes = useStyles();
     if (!card.upgrades?.length) {
         return null;

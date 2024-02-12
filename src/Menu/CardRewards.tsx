@@ -128,7 +128,7 @@ const CardRewards = ({
                                 })}
                                 onClick={() => setSelectedAbilityIndex(i)}
                             >
-                                <AbilityView ability={ability} player={player} deck={deck} hand={[]} discard={[]} disableGlow={true} />
+                                <AbilityView ability={ability} disableGlow={true} disableBattleBonuses={true} />
                             </div>
                         </div>
                     ))}

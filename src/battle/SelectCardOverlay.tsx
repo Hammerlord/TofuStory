@@ -11,6 +11,8 @@ import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
 import { XIcon } from "../images/icons";
+import { Player } from "../character/types";
+import { CombatantInfo } from "./types";
 
 const useStyles = createUseStyles({
     inner: {
@@ -73,16 +75,16 @@ const { updateBattle } = battleStateSlice?.actions || {};
 const SelectCardOverlay = ({
     selectCardsPrompt,
     hand,
-    onSelect,
     player,
+    onSelect,
     onCancel,
     deck,
     discard,
 }: {
     selectCardsPrompt: PlayerSelectCardsPrompt;
     hand: HandAbility[];
+    player: Player;
     onSelect: () => void;
-    player: any;
     onCancel: () => void;
     deck: Ability[];
     discard: Ability[];
@@ -204,7 +206,7 @@ const SelectCardOverlay = ({
                                     }}
                                     key={ability.instanceId}
                                 >
-                                    <AbilityView ability={ability} deck={deck} hand={hand} discard={discard} />
+                                    <AbilityView ability={ability} />
                                     {isSelectedForRemoval(ability.instanceId) && (
                                         <div className={classes.x}>
                                             <XIcon />

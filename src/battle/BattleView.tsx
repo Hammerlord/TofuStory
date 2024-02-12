@@ -4,7 +4,7 @@ import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
 import { Effect, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
-import { Combatant } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
@@ -182,16 +182,14 @@ const BattlefieldContainer = () => {
         notification,
         backgroundImage,
     }: BattleState = state.battle;
-    const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-    const allyRefs: React.RefObject<HTMLElement>[] = useMemo(
-        () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
-        []
-    );
-    const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(
-        () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()),
-        []
-    );
+    const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
+
+    const getCharacterRefs = () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()) as React.RefObject<HTMLElement>[];
+
+    const allyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
+    const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
+
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
@@ -703,9 +701,6 @@ const BattlefieldContainer = () => {
                             refs={abilityRefs}
                             selectedAbilityId={selectedAbilityId}
                             onAbilityClick={handleAbilityClick}
-                            player={player}
-                            deck={deck}
-                            discard={discard}
                         />
                     </div>
                 </div>
