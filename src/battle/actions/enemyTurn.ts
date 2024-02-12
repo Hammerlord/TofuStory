@@ -158,15 +158,20 @@ const enemyAction = (combatantId: string) => {
 export const getUseAbilityIndex = (actor: Combatant): number => {
     const { resources = 0, maxResources = 3, abilities = [] } = actor || {};
 
-    let abilityIndex = 0;
     if (resources >= maxResources) {
         const specialAbilityIndex = abilities.findIndex((ability) => ability.resourceCost === "x" || ability.resourceCost > 0);
         if (specialAbilityIndex > -1) {
-            abilityIndex = specialAbilityIndex;
+            return specialAbilityIndex;
         }
     }
 
-    return abilityIndex;
+    const abilityIndex = abilities.findIndex((ability) => !ability.resourceCost);
+    const { resourceCost = 0 } = abilities[abilityIndex] || {};
+    if (resourceCost === "x" || resourceCost <= resources) {
+        return abilityIndex;
+    }
+
+    return -1;
 };
 
 const puntCurrentAbilityToEndOfQueue = (combatantId: string) => (dispatch, getState) => {
