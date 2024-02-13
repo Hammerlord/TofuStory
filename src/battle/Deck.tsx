@@ -91,7 +91,8 @@ const Deck = ({
     };
 
     const getAbilityLevel = (ability) => {
-        return Array.from({ length: ability.level })
+        const numStars = ability.level > 1 ? ability.level : 0;
+        return Array.from({ length: numStars })
             .map(() => "⋆")
             .join("");
     };
