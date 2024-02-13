@@ -349,36 +349,36 @@ export const shout: Ability = {
     upgrades: [shout2],
 };
 
-export const spikedArmor2: Ability = {
-    name: "Spiked Armor",
+export const spikes2: Ability = {
+    name: "Spikes",
     level: 2,
     resourceCost: 1,
     image: SpikeBallImage,
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 9,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [{ ...thorns, duration: 4 }],
+            effects: [thorns],
             type: ACTION_TYPES.EFFECT,
+            armor: 8,
         },
     ],
 };
 
-export const spikedArmor: Ability = {
-    name: "Spiked Armor",
+export const spikes: Ability = {
+    name: "Spikes",
     resourceCost: 1,
     image: SpikeBallImage,
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 7,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [{ ...thorns, duration: 3 }],
+            effects: [thorns],
             type: ACTION_TYPES.EFFECT,
+            armor: 5,
         },
     ],
-    upgrades: [spikedArmor2],
+    upgrades: [spikes2],
 };
 
 const drumOfWarAttackPower: Effect = {
