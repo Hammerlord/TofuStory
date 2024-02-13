@@ -67,6 +67,7 @@ export interface Wave {
     presetDeck?: Ability[];
     winCondition?: {
         defeatBoss?: boolean;
+        surviveRounds?: number;
     };
 }
 

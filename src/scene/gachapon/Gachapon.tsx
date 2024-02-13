@@ -8,7 +8,7 @@ import GachaponScene from "./GachaponScene";
 const gachaponMachine: Minion = {
     name: "Gachapon Machine",
     image: GachaponImage,
-    maxHP: 3,
+    maxHP: 999,
     abilities: [],
 };
 
@@ -18,6 +18,10 @@ const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves:
     waves: [
         {
             enemies: [null, null, gachaponMachine, null, null],
+            description: [<>Hit the Gachapon machine as much as you can in 5 turns!</>],
+            winCondition: {
+                surviveRounds: 5,
+            },
         },
     ],
 };
@@ -38,55 +42,21 @@ export const gachaponEvents: Scene = {
                     next: [
                         {
                             speaker: gachaponMachine,
-                            dialog: ["The machine makes a clunking sound.", "It dispensed something!"],
-                            items: [redPotion],
+                            dialog: ["The machine makes a clanking sound, like something got lodged. It lights up with a prompt..."],
                         },
                         {
                             dialog: ["..."],
+                            itemChoices: {
+                                numChoices: 3,
+                            },
+                        },
+                        {
+                            speaker: gachaponMachine,
+                            dialog: ["The gachapon machine now appears to be malfunctioning..."],
                             responses: [
                                 {
-                                    text: "Hit the gachapon machine again.",
-                                    encounter: gachaponFight,
-                                    next: [
-                                        {
-                                            speaker: gachaponMachine,
-                                            dialog: ["The machine makes a clunking sound.", "It dispensed something!"],
-                                            items: [bluePotion],
-                                        },
-                                        {
-                                            dialog: ["..."],
-                                            responses: [
-                                                {
-                                                    text: "Hit the gachapon machine again.",
-                                                    encounter: gachaponFight,
-                                                    next: [
-                                                        {
-                                                            speaker: gachaponMachine,
-                                                            dialog: [
-                                                                "The machine makes a clanking sound, like something got lodged. It lights up with a prompt...",
-                                                            ],
-                                                        },
-                                                        {
-                                                            dialog: ["..."],
-                                                            itemChoices: {
-                                                                numChoices: 3,
-                                                            } as any, // For some reason, items optional param not working
-                                                        },
-                                                        {
-                                                            speaker: gachaponMachine,
-                                                            dialog: ["The gachapon machine now appears to be malfunctioning..."],
-                                                            responses: [
-                                                                {
-                                                                    text: "Leave.",
-                                                                    isExit: true,
-                                                                },
-                                                            ],
-                                                        },
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                    ],
+                                    text: "Leave.",
+                                    isExit: true,
                                 },
                             ],
                         },

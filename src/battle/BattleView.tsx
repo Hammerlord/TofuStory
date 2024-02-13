@@ -183,6 +183,7 @@ const BattlefieldContainer = () => {
         state: battleState,
         notification,
         backgroundImage,
+        round,
     }: BattleState = state.battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
@@ -203,6 +204,10 @@ const BattlefieldContainer = () => {
     const isWinConditionTriggered = (() => {
         if (winCondition.defeatBoss) {
             return enemySide.every((enemy) => !enemy?.isBoss || enemy?.HP <= 0);
+        }
+
+        if (winCondition.surviveRounds && round === winCondition.surviveRounds) {
+            return true;
         }
 
         return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
