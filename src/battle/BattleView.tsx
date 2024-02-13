@@ -206,7 +206,8 @@ const BattlefieldContainer = () => {
             return enemySide.every((enemy) => !enemy?.isBoss || enemy?.HP <= 0);
         }
 
-        if (winCondition.surviveRounds && round === winCondition.surviveRounds) {
+        // +1 to account for 0 based start
+        if (winCondition.surviveRounds && round === winCondition.surviveRounds + 1) {
             return true;
         }
 
@@ -634,7 +635,7 @@ const BattlefieldContainer = () => {
                 <div className={classes.battlefieldContainer}>
                     <div className={classes.battlefield}>
                         <div className={classes.waves}>
-                            <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} cleared={false} />
+                            <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
