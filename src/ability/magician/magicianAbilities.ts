@@ -848,7 +848,7 @@ const wishUponAStar2: Ability = {
     image: StarHairPinImage,
     level: 2,
     rarity: RARITIES.COMMON,
-    description: "Fling 3-damage stars on draw or deck cycle.",
+    description: "Fling 2-damage stars on draw or deck cycle.",
     depletedOnUse: true,
     preemptive: true,
     actions: [
@@ -890,6 +890,7 @@ const wishUponAStar2: Ability = {
 export const wishUponAStar: Ability = {
     ...wishUponAStar2,
     level: 1,
+    preemptive: false,
     description: "Fling 2-damage stars on draw or deck cycle.",
     actions: [
         {
@@ -2368,8 +2369,8 @@ export const snowball: Ability = {
     upgrades: [snowball2],
 };
 
-const divineStar2: Ability = {
-    name: "Divine Star",
+const starBolt2: Ability = {
+    name: "Star Bolt",
     resourceCost: 2,
     image: GlisteningStarImage,
     description: "Heal 1 HP each hit.",
@@ -2402,18 +2403,18 @@ const divineStar2: Ability = {
     ],
 };
 
-export const divineStar: Ability = {
-    ...divineStar2,
+export const starBolt: Ability = {
+    ...starBolt2,
     level: 1,
     actions: [
         {
-            ...divineStar2.actions[0],
+            ...starBolt2.actions[0],
             damage: 6,
             targetArea: 3,
             numTargets: 2,
         },
     ],
-    upgrades: [divineStar2],
+    upgrades: [starBolt2],
 };
 
 export const moonlight2: Ability = {
