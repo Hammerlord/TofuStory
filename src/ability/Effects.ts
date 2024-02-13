@@ -44,11 +44,11 @@ export const thorns: Effect = {
 
 export const controlImmune: Effect = {
     name: "Control Immunity",
-    description: "Target cannot be stunned, frozen, or silenced.",
+    description: "Target cannot be stunned or frozen.",
     icon: NoStunIcon,
     immunities: {
         type: "effect-type",
-        value: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+        value: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
     },
     duration: 6,
     type: EFFECT_TYPES.NONE,
@@ -57,7 +57,7 @@ export const controlImmune: Effect = {
 
 export const hardy: Effect = {
     name: "Hardy",
-    description: "After being stunned, frozen or silenced, this character gains temporary immunity to those effects.",
+    description: "After being stunned or frozen, this character gains temporary immunity to those effects.",
     icon: HelmetIcon,
     disableDisplayIcon: true,
     onReceiveEffect: {
@@ -66,7 +66,7 @@ export const hardy: Effect = {
         conditions: [
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
                 comparator: "eq",
             },
             {
