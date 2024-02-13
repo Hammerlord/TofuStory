@@ -219,7 +219,7 @@ export const JOB_CARD_MAP = {
             whirlwind,
             rupture,
             bladestorm,
-            combatOrders,
+            //combatOrders, warrior does not have enough minions to justify including this now
             dustDevils,
             doubleTime,
             arsenal,

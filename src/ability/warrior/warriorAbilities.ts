@@ -35,6 +35,7 @@ import {
     CombatOrdersImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
+import { RARITIES } from "../../item/types";
 import { silence, stealth, stun, thorns, bleed } from "../Effects";
 import {
     Ability,
@@ -192,19 +193,13 @@ export const anger2: Ability = {
     level: 2,
     resourceCost: 0,
     image: RageImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 1,
             resources: 3,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-        },
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 1,
-            },
         },
     ],
 };
@@ -213,19 +208,13 @@ export const anger: Ability = {
     name: "Anger",
     resourceCost: 0,
     image: RageImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 1,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-        },
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 1,
-            },
         },
     ],
     upgrades: [anger2],
@@ -235,6 +224,7 @@ export const shieldStrike2: Ability = {
     name: "Shield Strike",
     level: 2,
     resourceCost: 2,
+    rarity: RARITIES.COMMON,
     image: ShieldRedImage,
     actions: [
         {
@@ -252,11 +242,12 @@ export const shieldStrike2: Ability = {
 
 export const shieldStrike: Ability = {
     name: "Shield Strike",
+    rarity: RARITIES.COMMON,
     resourceCost: 2,
     image: ShieldRedImage,
     actions: [
         {
-            damage: 7,
+            damage: 8,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -303,6 +294,7 @@ const shout2: Ability = {
     resourceCost: 0,
     image: ShoutImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             effects: [
@@ -330,6 +322,7 @@ export const shout: Ability = {
     resourceCost: 0,
     image: ShoutImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             effects: [
@@ -360,9 +353,10 @@ export const spikedArmor2: Ability = {
     level: 2,
     resourceCost: 1,
     image: SpikeBallImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 8,
+            armor: 9,
             target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, duration: 4 }],
             type: ACTION_TYPES.EFFECT,
@@ -374,9 +368,10 @@ export const spikedArmor: Ability = {
     name: "Spiked Armor",
     resourceCost: 1,
     image: SpikeBallImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 6,
+            armor: 7,
             target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, duration: 3 }],
             type: ACTION_TYPES.EFFECT,
@@ -410,6 +405,7 @@ export const warBanner2: Ability = {
     level: 2,
     resourceCost: 2,
     description: "When summoned or when your turn starts, grants 3 armor and +1 attack to allies within 2 spaces.",
+    rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
         image: FlagImage,
@@ -469,6 +465,7 @@ export const warBanner: Ability = {
     name: "War Banner",
     resourceCost: 2,
     description: "When summoned or when your turn starts, grants 2 armor and +1 attack to nearby allies.",
+    rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
         image: FlagImage,
@@ -522,9 +519,10 @@ export const yell2: Ability = {
     level: 2,
     resourceCost: 1,
     image: WarMushImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            area: 1,
+            area: 2,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.SHOUT,
@@ -532,7 +530,6 @@ export const yell2: Ability = {
                 {
                     name: "Admonished",
                     attackPower: -3,
-                    attackDamageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -547,9 +544,10 @@ export const yell: Ability = {
     name: "Yell",
     resourceCost: 1,
     image: WarMushImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            area: 1,
+            area: 2,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.SHOUT,
@@ -557,7 +555,6 @@ export const yell: Ability = {
                 {
                     name: "Admonished",
                     attackPower: -2,
-                    attackDamageReceived: 1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -574,6 +571,7 @@ export const bunchOBricks2: Ability = {
     level: 2,
     resourceCost: 1,
     image: BricksImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -587,6 +585,7 @@ export const bunchOBricks: Ability = {
     name: "Bunch o' Bricks",
     resourceCost: 1,
     image: BricksImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -603,10 +602,11 @@ export const hammerang2: Ability = {
     resourceCost: 1,
     reusable: true, // Hmm... beware of any ability that reduces resource cost
     image: HammerImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 8,
-            secondaryDamage: 6,
+            damage: 9,
+            secondaryDamage: 7,
             targetArea: 1,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -623,10 +623,11 @@ export const hammerang: Ability = {
     resourceCost: 1,
     reusable: true, // Hmm... beware of any ability that reduces resource cost
     image: HammerImage,
+    rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 6,
-            secondaryDamage: 4,
+            damage: 7,
+            secondaryDamage: 5,
             targetArea: 1,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -646,6 +647,7 @@ export const ironWill2: Ability = {
     image: IronWillImage,
     depletedOnUse: true,
     preemptive: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -654,10 +656,10 @@ export const ironWill2: Ability = {
                 {
                     name: "Iron Will",
                     icon: IronWillImage,
-                    description: "Receiving +3 armor from armor sources",
+                    description: "Receiving +2 armor from armor sources",
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
-                    armorReceived: 3,
+                    armorReceived: 2,
                 },
             ],
         },
@@ -669,6 +671,7 @@ export const ironWill: Ability = {
     resourceCost: 1,
     image: IronWillImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -695,6 +698,7 @@ export const hyperBody2: Ability = {
     image: HyperBodyImage,
     depletedOnUse: true,
     preemptive: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -720,6 +724,7 @@ export const hyperBody: Ability = {
     resourceCost: 1,
     image: HyperBodyImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -745,7 +750,7 @@ export const sweepingReach2: Ability = {
     level: 2,
     resourceCost: 0,
     image: WeaponBoosterImage,
-    description: "Increases the area of your next offensive ability by 1",
+    description: "Increases the area of your next 3 offensive abilities",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -756,42 +761,13 @@ export const sweepingReach2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: WeaponBoosterImage,
-                    description: "Increases the area of your next offensive ability by 1",
+                    description: "Increases the area of your offensive abilities by 1",
                     attackAreaIncrease: 1,
-                    onAttack: {
-                        removeEffect: true,
+                    stacks: 3,
+                    maxApplications: 1,
+                    onOffensiveAbility: {
+                        decrementStacks: 1,
                     },
-                },
-            ],
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            addCards: [
-                {
-                    name: "Sweeping Reach",
-                    image: WeaponBoosterImage,
-                    removeAfterTurn: true,
-                    resourceCost: 0,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
-                            effects: [
-                                {
-                                    name: "Sweeping Reach",
-                                    type: EFFECT_TYPES.NONE,
-                                    class: EFFECT_CLASSES.BUFF,
-                                    icon: WeaponBoosterImage,
-                                    description: "Increases the area of your next offensive ability by 1",
-                                    attackAreaIncrease: 1,
-                                    onAttack: {
-                                        removeEffect: true,
-                                    },
-                                },
-                            ],
-                        },
-                    ],
                 },
             ],
         },
@@ -802,6 +778,7 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 0,
     image: WeaponBoosterImage,
+    description: "Increases the area of your next 2 offensive abilities",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -814,8 +791,10 @@ export const sweepingReach: Ability = {
                     icon: WeaponBoosterImage,
                     description: "Increases the area of your next offensive ability by 1",
                     attackAreaIncrease: 1,
-                    onAttack: {
-                        removeEffect: true,
+                    stacks: 2,
+                    maxApplications: 1,
+                    onOffensiveAbility: {
+                        decrementStacks: 1,
                     },
                 },
             ],
@@ -827,8 +806,9 @@ export const sweepingReach: Ability = {
 export const sharpen2: Ability = {
     name: "Sharpen",
     level: 2,
-    resourceCost: 0,
+    resourceCost: 1,
     image: WeaponMasteryImage,
+    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -839,11 +819,7 @@ export const sharpen2: Ability = {
                     icon: WeaponMasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 4,
-                    duration: 0,
-                    onAttack: {
-                        removeEffect: true,
-                    },
+                    attackPower: 1,
                 },
             ],
         },
@@ -852,7 +828,7 @@ export const sharpen2: Ability = {
 
 export const sharpen: Ability = {
     name: "Sharpen",
-    resourceCost: 0,
+    resourceCost: 1,
     image: WeaponMasteryImage,
     actions: [
         {
@@ -864,11 +840,7 @@ export const sharpen: Ability = {
                     icon: WeaponMasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 3,
-                    duration: 0,
-                    onAttack: {
-                        removeEffect: true,
-                    },
+                    attackPower: 1,
                 },
             ],
         },
@@ -881,9 +853,10 @@ export const rush2: Ability = {
     level: 2,
     resourceCost: 1,
     image: RushImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 7,
+            damage: 10,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -891,7 +864,7 @@ export const rush2: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             drawCards: {
-                amount: 2,
+                amount: 1,
                 effects: {
                     resourceCost: -1,
                 },
@@ -904,9 +877,10 @@ export const rush: Ability = {
     name: "Rush",
     resourceCost: 1,
     image: RushImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 5,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -927,16 +901,17 @@ export const rush: Ability = {
 export const berserk2: Ability = {
     name: "Berserk",
     level: 2,
-    resourceCost: 1,
+    resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             drawCards: {
-                amount: 2,
+                amount: 1,
             },
         },
         {
@@ -951,17 +926,15 @@ export const berserk2: Ability = {
 
 export const berserk: Ability = {
     name: "Berserk",
-    resourceCost: 1,
+    resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
     description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            drawCards: {
-                amount: 1,
-            },
         },
         {
             type: ACTION_TYPES.EFFECT,
@@ -981,6 +954,7 @@ export const closeCombat2: Ability = {
     preemptive: true,
     image: CloseCombatImage,
     description: "Pulls enemies toward the selected target",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -998,6 +972,7 @@ export const closeCombat: Ability = {
     resourceCost: 1,
     image: CloseCombatImage,
     description: "Pulls enemies toward the selected target",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1020,7 +995,6 @@ export const recovery2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            healing: 3,
             effects: [
                 {
                     name: "Recovery",
@@ -1029,9 +1003,9 @@ export const recovery2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
                     duration: 3,
-                    onTurnStart: {
+                    onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
+                        healing: 4,
                     },
                 },
             ],
@@ -1047,7 +1021,6 @@ export const recovery: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            healing: 2,
             effects: [
                 {
                     name: "Recovery",
@@ -1056,9 +1029,9 @@ export const recovery: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
                     duration: 3,
-                    onTurnStart: {
+                    onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 2,
+                        healing: 3,
                     },
                 },
             ],
@@ -1072,9 +1045,11 @@ export const magicCrash2: Ability = {
     level: 2,
     resourceCost: 1,
     image: MagicCrashImage,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 3,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -1087,9 +1062,11 @@ export const magicCrash: Ability = {
     name: "Magic Crash",
     resourceCost: 2,
     image: MagicCrashImage,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 1,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -1101,7 +1078,7 @@ export const magicCrash: Ability = {
 export const dash2: Ability = {
     name: "Dash",
     level: 2,
-    resourceCost: 0,
+    resourceCost: 1,
     image: WarriorMasteryImage,
     actions: [
         {
@@ -1127,7 +1104,7 @@ export const dash2: Ability = {
 
 export const dash: Ability = {
     name: "Dash",
-    resourceCost: 0,
+    resourceCost: 1,
     image: WarriorMasteryImage,
     actions: [
         {
@@ -1156,6 +1133,7 @@ export const ironBody2: Ability = {
     level: 2,
     resourceCost: 1,
     image: IronBodyImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             armor: 9,
@@ -1179,6 +1157,7 @@ export const ironBody: Ability = {
     name: "Iron Body",
     resourceCost: 1,
     image: IronBodyImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             armor: 7,
@@ -1204,20 +1183,13 @@ export const rendingStrike2: Ability = {
     level: 2,
     resourceCost: 1,
     image: BlastExtraStrikeImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 5,
+            damage: 8,
             effects: [
-                {
-                    ...bleed,
-                    duration: 3,
-                },
-                {
-                    ...bleed,
-                    duration: 3,
-                },
                 {
                     ...bleed,
                     duration: 3,
@@ -1231,16 +1203,13 @@ export const rendingStrike: Ability = {
     name: "Rending Strike",
     resourceCost: 1,
     image: BlastExtraStrikeImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 5,
             effects: [
-                {
-                    ...bleed,
-                    duration: 3,
-                },
                 {
                     ...bleed,
                     duration: 3,
@@ -1255,7 +1224,8 @@ export const whirlwind2: Ability = {
     name: "Whirlwind",
     level: 2,
     image: PanicImage,
-    resourceCost: 1,
+    resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1265,7 +1235,7 @@ export const whirlwind2: Ability = {
             effects: [
                 {
                     ...bleed,
-                    duration: 4,
+                    duration: 3,
                 },
             ],
         },
@@ -1275,7 +1245,8 @@ export const whirlwind2: Ability = {
 export const whirlwind: Ability = {
     name: "Whirlwind",
     image: PanicImage,
-    resourceCost: 1,
+    resourceCost: 2,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1356,6 +1327,7 @@ export const bladestorm2: Ability = {
     resourceCost: 0,
     image: BladestormImage,
     depletedOnUse: true,
+    rarity: RARITIES.RARE,
     actions: [
         {
             addCards: [whirlwind2, whirlwind2, whirlwind2].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
@@ -1370,6 +1342,7 @@ export const bladestorm: Ability = {
     resourceCost: 0,
     image: BladestormImage,
     depletedOnUse: true,
+    rarity: RARITIES.RARE,
     actions: [
         {
             addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
@@ -1439,7 +1412,7 @@ export const dustDevils2: Ability = {
     resourceCost: 1,
     image: TornadoIcon,
     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
-    preemptive: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1449,12 +1422,13 @@ export const dustDevils2: Ability = {
                     name: "Dust Devils",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 4,
+                    duration: 5,
                     icon: TornadoIcon,
                     description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
                     onAttack: {
                         ability: {
                             name: "Dust Devils",
+                            image: TornadoIcon,
                             actions: [
                                 {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -1480,6 +1454,7 @@ export const dustDevils: Ability = {
     resourceCost: 1,
     image: TornadoIcon,
     description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1495,6 +1470,7 @@ export const dustDevils: Ability = {
                     onAttack: {
                         ability: {
                             name: "Dust Devils",
+                            image: TornadoIcon,
                             actions: [
                                 {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -1521,6 +1497,8 @@ export const doubleTime2: Ability = {
     image: DoubleTimeImage,
     resourceCost: 0,
     description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1541,6 +1519,8 @@ export const doubleTime: Ability = {
     image: DoubleTimeImage,
     resourceCost: 0,
     description: "Create a copy of a card in your hand. It costs 1 less and is Ephemeral",
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1563,6 +1543,7 @@ export const arsenal2: Ability = {
     resourceCost: 1,
     image: AdvancedWeaponMasteryImage,
     description: "Discover an offensive ability available to your class. It costs 2 less and is Ephemeral",
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1584,6 +1565,7 @@ export const arsenal: Ability = {
     resourceCost: 1,
     image: AdvancedWeaponMasteryImage,
     description: "Discover an offensive ability available to your class. It costs 1 less and is Ephemeral",
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1606,27 +1588,8 @@ export const sledge2: Ability = {
     resourceCost: 2,
     level: 2,
     image: GiganticSledgeImage,
+    rarity: RARITIES.UNCOMMON,
     description: "Deplete another card in your hand to use this ability",
-    depletedOnUse: true,
-    selectCards: {
-        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
-    },
-    actions: [
-        {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            damage: 25,
-            destroyArmor: 0.5,
-        },
-    ],
-};
-
-export const sledge: Ability = {
-    name: "Sledge",
-    resourceCost: 2,
-    image: GiganticSledgeImage,
-    description: "Deplete another card in your hand to use this ability",
-    depletedOnUse: true,
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },
@@ -1635,7 +1598,27 @@ export const sledge: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             damage: 20,
-            destroyArmor: 0.5,
+            destroyArmor: 1,
+        },
+    ],
+};
+
+export const sledge: Ability = {
+    name: "Sledge",
+    resourceCost: 2,
+    image: GiganticSledgeImage,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    description: "Deplete another card in your hand to use this ability",
+    selectCards: {
+        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 15,
+            destroyArmor: 1,
         },
     ],
     upgrades: [sledge2],
@@ -1646,6 +1629,7 @@ export const bladedArmor: Ability = {
     resourceCost: 1,
     image: MetalAxeImage,
     description: "When you lose armor, hurl a sidearm at a random enemy for 2 damage",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
