@@ -123,7 +123,7 @@ const Telegraph = ({ combatant }) => {
     }
 
     const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "" });
-    const abilityHasYetToCast = !castingCastTime && castTime;
+    const abilityHasYetToCast = typeof castingCastTime === "undefined" && castTime;
 
     return (
         <div className={classes.root}>
