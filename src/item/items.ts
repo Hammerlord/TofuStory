@@ -1499,7 +1499,7 @@ export const adamantiumPlate: Item = {
 
 export const wildKargoEye: Item = {
     name: "Wild Kargo Eye",
-    description: "Gain 1 attack power against unarmored targets.",
+    description: "Gain 1 attack power against debuffed targets.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: WildKargoEyeImage,
@@ -1511,8 +1511,7 @@ export const wildKargoEye: Item = {
             attackPower: 1,
             conditions: [
                 {
-                    comparator: "eq",
-                    armor: 0,
+                    hasEffectClass: EFFECT_CLASSES.DEBUFF,
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             ],
