@@ -352,6 +352,7 @@ export { default as ShoutImage } from "./Shout.png";
 export { default as ShroomImage } from "./Shroom.png";
 export { default as SlashBlastImage } from "./SlashBlast.png";
 export { default as SleepywoodRegionBGImage } from "./SleepywoodRegionBG.jpg";
+export { default as SlideImage } from "./Slide.png";
 export { default as SlimeImage } from "./Slime.png";
 export { default as SlimeBubbleImage } from "./SlimeBubble.png";
 export { default as SlimeIdleImage } from "./SlimeIdle.gif";

@@ -64,7 +64,7 @@ const realShadow: Minion = {
     abilities: [
         {
             name: "Throw Star",
-            image: KumbiImage,
+            image: SubiImage,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,

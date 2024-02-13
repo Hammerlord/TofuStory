@@ -1,6 +1,5 @@
-import { attack } from "./abilities";
-import { KingSlimeImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
-import { CrossedSwordsIcon, MountainIcon } from "../images/icons";
+import { KingSlimeImage, SlideImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
+import { MountainIcon } from "../images/icons";
 import { hardy, raging, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -10,10 +9,10 @@ import {
     MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
     Minion,
-    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { attack } from "./abilities";
 
 export const slimeGlobule: Minion = {
     name: "Slime Globule",
@@ -35,6 +34,7 @@ export const slimeGlobule: Minion = {
     abilities: [
         {
             name: "Slide",
+            image: SlideImage,
             actions: [
                 {
                     movement: 1,
@@ -46,6 +46,7 @@ export const slimeGlobule: Minion = {
         },
         {
             name: "Merge",
+            image: KingSlimeImage,
             resourceCost: 3,
             actions: [
                 {
@@ -114,6 +115,7 @@ export const kingSlimeEnemy: Minion = {
                 ],
                 ability: {
                     name: "Split",
+                    image: SlimeOmokImage,
                     actions: [
                         {
                             type: ACTION_TYPES.EFFECT,
