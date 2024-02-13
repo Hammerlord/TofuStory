@@ -2,12 +2,13 @@ import Button from "../view/Button";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { shuffle } from "../utils";
+import { getRandomItem, shuffle } from "../utils";
 import Overlay from "../view/Overlay";
 import { ITEM_TYPES, Item } from "./types";
 import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "./ItemView";
 import { Player } from "../character/types";
+import { rollItemPool } from "./utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -60,7 +61,6 @@ const ItemSelection = ({
      * for an unobtained item
      */
     const getInitItems = () => {
-        const itemSelection = [];
         const alreadyObtained = player.items.reduce((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
                 acc[item.name] = true;
@@ -68,15 +68,14 @@ const ItemSelection = ({
             return acc;
         }, {});
 
-        const unobtainedItems = shuffle(ITEMS.filter((item: Item) => !alreadyObtained[item.name]));
-
-        items.forEach((item: Item) => {
-            if (alreadyObtained[item.name]) {
-                itemSelection.push(unobtainedItems.shift());
-            } else {
-                itemSelection.push(item);
+        const itemSelection = items.filter((item: Item) => !alreadyObtained[item.name]);
+        for (let i = itemSelection.length; i < numChoices; ++i) {
+            const itemPool = rollItemPool({ player });
+            const equipment = getRandomItem(itemPool);
+            if (equipment) {
+                itemSelection.push(equipment);
             }
-        });
+        }
 
         return shuffle(itemSelection).slice(0, numChoices);
     };
