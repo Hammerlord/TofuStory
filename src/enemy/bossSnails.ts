@@ -214,6 +214,21 @@ export const mutantSnailEnemy: Minion = {
             castTime: 1,
             actions: [
                 {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+                {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     effects: [
@@ -224,24 +239,9 @@ export const mutantSnailEnemy: Minion = {
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
                             attackPower: 1,
-                            duration: 2,
+                            duration: 3,
                         },
                     ],
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 2,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
                 },
             ],
         },
