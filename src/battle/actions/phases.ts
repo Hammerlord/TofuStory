@@ -6,18 +6,18 @@ import { createCombatant } from "../../enemy/createEnemy";
 import { Item } from "../../item/types";
 import { shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLE_TYPES, Wave } from "../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
-const { updatePlayer } = playerStateSlice.actions;
+const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
-        const { playerSide, mesosAccumulated, isTutorial } = getState().battle;
+        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt } = getState().battle;
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
@@ -29,9 +29,16 @@ export const onBattleEnd = () => {
             return acc + mesosGained;
         }, 1);
 
+        dispatch(
+            pushBattleHistory({
+                totalDamageDealt,
+            })
+        );
+
         if (isTutorial) {
             return;
         }
+
         dispatch(
             updatePlayer({
                 armor: 0,
@@ -103,50 +110,52 @@ export const startBattle = ({
         };
         const { presetDeck, enemies } = waves[0];
 
-        dispatch(
-            updateBattle({
-                enemySide: enemies.map(createCombatant),
-                playerSide: [null, null, player, null, null],
-                deck: shuffle([...(presetDeck || deck).slice(), ...addAbilities])
-                    .sort((a, b) => {
-                        const aSort = a.preemptive ? 1 : 0;
-                        const bSort = b.preemptive ? 1 : 0;
-                        return bSort - aSort;
-                    })
-                    .map((card) => {
-                        const { instanceId, name } = card;
-                        if (!instanceId) {
-                            console.warn(name, "did not have an instance id. Generating one.");
-                            return {
-                                ...card,
-                                instanceId: uuid.v4(),
-                            };
-                        }
+        const battleObj: BattleState = {
+            enemySide: enemies.map(createCombatant),
+            playerSide: [null, null, player, null, null],
+            deck: shuffle([...(presetDeck || deck).slice(), ...addAbilities])
+                .sort((a, b) => {
+                    const aSort = a.preemptive ? 1 : 0;
+                    const bSort = b.preemptive ? 1 : 0;
+                    return bSort - aSort;
+                })
+                .map((card) => {
+                    const { instanceId, name } = card;
+                    if (!instanceId) {
+                        console.warn(name, "did not have an instance id. Generating one.");
+                        return {
+                            ...card,
+                            instanceId: uuid.v4(),
+                        };
+                    }
 
-                        return card;
-                    }),
-                discard: [],
-                hand: [],
-                depleted: [],
-                isPlayerTurn: true,
-                eventQueue: [],
-                playerActionQueue: [],
-                playerSummonsInPlay: {},
-                currentWaveIndex: 0,
-                waves,
-                round: 0,
-                selectCards: null,
-                mesosAccumulated: 0,
-                isTutorial,
-                state: BATTLE_STATES.BATTLE_START,
-                backgroundImage,
-                backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
-                type,
-                itemRewards,
-                cardRewards,
-                disableCardRewards,
-            })
-        );
+                    return card;
+                }),
+            discard: [],
+            hand: [],
+            depleted: [],
+            isPlayerTurn: true,
+            eventQueue: [],
+            playerActionQueue: [],
+            playerSummonsInPlay: {},
+            currentWaveIndex: 0,
+            waves,
+            round: 0,
+            selectCardsPrompt: null,
+            mesosAccumulated: 0,
+            isTutorial,
+            state: BATTLE_STATES.BATTLE_START,
+            backgroundImage,
+            backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
+            type,
+            itemRewards,
+            cardRewards,
+            disableCardRewards,
+            totalDamageDealt: 0,
+            charactersAttackedThisTurn: [],
+        };
+
+        dispatch(updateBattle(battleObj));
     };
 };
 

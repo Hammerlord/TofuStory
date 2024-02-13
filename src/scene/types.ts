@@ -1,7 +1,7 @@
 import { Ability, Minion } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { Combatant } from "../character/types";
-import { Item } from "../item/types";
+import { Item, RARITIES } from "../item/types";
 import { REGIONS } from "../Map/regions";
 
 export interface Scene {
@@ -23,6 +23,11 @@ export interface Shop {
         name: string;
     };
     hasDiscount?: boolean;
+}
+
+export interface ScriptConditions {
+    battleTotalDamage: number;
+    comparator: "lt" | "eq" | "gt";
 }
 
 export interface ScriptResponse {
@@ -55,9 +60,16 @@ export interface ScriptNode {
         items?: Item[];
         // How many different options the player can pick from
         numChoices: number;
+        bonuses?: {
+            rare: number;
+            uncommon: number;
+        };
     };
     region?: REGIONS;
     loseItems?: string[];
+    // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
+    // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
+    conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];
 }
 
 export interface NPC {

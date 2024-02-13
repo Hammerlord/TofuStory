@@ -13,8 +13,9 @@ export const rollRarity = (player, bonuses = { uncommon: 0, rare: 0 }): RARITIES
                 bonusRareChance: acc.bonusRareChance + rareRateIncrease,
             };
         },
-        { bonusUncommonChance: bonuses.uncommon, bonusRareChance: bonuses.rare }
+        { bonusUncommonChance: bonuses.uncommon || 0, bonusRareChance: bonuses.rare || 0 }
     );
+
     const uncommonChance = UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
     const rareChance = RARE_ITEM_CHANCE + bonusRareChance;
 

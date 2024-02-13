@@ -11,8 +11,10 @@ import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Button from "../view/Button";
 import TreasureBox from "./TreasureBox/TreasureBox";
-import { Scene, ScriptNode, ScriptResponse } from "./types";
+import { Scene, ScriptConditions, ScriptNode, ScriptResponse } from "./types";
 import { Player } from "../character/types";
+import { useAppSelector } from "../hooks";
+import { passesValueComparison } from "../battle/passesConditions";
 
 const useStyles = createUseStyles({
     root: {
@@ -208,16 +210,28 @@ const ScenePlayer = ({
     updateDeck: (newDeck: HandAbility[]) => void;
     onChangeRegion: (region: REGIONS) => void;
 }) => {
+    const { battleHistory = [] } = useAppSelector((state) => state)?.character || {};
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
+    const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
     const [background, setBackground] = useState(script[dialogIndex]?.background);
-    const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
     const [showCamp, setShowCamp] = useState(false);
     const [showTreasure, setShowTreasure] = useState(false);
-    const classes = useStyles();
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const { speaker, dialog = [], items, responses, puzzle, itemChoices, loseItems = [], treasureBox } = script[dialogIndex] || ({} as any);
+
+    const classes = useStyles();
+    const {
+        speaker,
+        dialog = [],
+        items,
+        responses,
+        puzzle,
+        itemChoices,
+        loseItems = [],
+        treasureBox,
+        conditionalNext,
+    } = script[dialogIndex] || ({} as any);
 
     useEffect(() => {
         if (!script[dialogIndex]) {
@@ -252,11 +266,19 @@ const ScenePlayer = ({
         if (treasureBox) {
             setShowTreasure(true);
         }
+
+        if (conditionalNext) {
+            const passing = conditionalNext.find(({ conditions }) => passesScriptConditions(conditions));
+            if (passing) {
+                setScript(passing.next);
+                setDialogIndex(0);
+            }
+        }
     }, [dialogIndex]);
 
     const onProceedDialog = () => {
         const newDialogIndex = dialogIndex + 1;
-        if (newDialogIndex <= script.length - 1) {
+        if (newDialogIndex <= script.length) {
             const { scene: newScene, disableTransition } = script[newDialogIndex] || {};
             if (newScene && newScene !== Backdrop && !disableTransition) {
                 onTransition(() => {
@@ -274,6 +296,21 @@ const ScenePlayer = ({
         if (!responses && !items) {
             onProceedDialog();
         }
+    };
+
+    const passesScriptConditions = (conditions: ScriptConditions[]): boolean => {
+        if (!conditions?.length) {
+            return true;
+        }
+
+        const recentBattle = battleHistory[battleHistory.length - 1];
+
+        const passesCondition = (condition: ScriptConditions): boolean => {
+            const { battleTotalDamage, comparator } = condition || {};
+            return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
+        };
+
+        return conditions.some(passesCondition);
     };
 
     const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility }: ScriptResponse) => {
@@ -337,7 +374,7 @@ const ScenePlayer = ({
         updatePlayer({
             items: [...player.items, item],
         });
-        if (dialogIndex < scene.script.length - 1) {
+        if (dialogIndex <= scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {
             onExit();

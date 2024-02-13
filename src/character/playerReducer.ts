@@ -1,3 +1,4 @@
+import { BattleState } from "./../battle/reducer";
 import uuid from "uuid";
 import { cloneDeep } from "lodash";
 import { Ability, HandAbility } from "./../ability/types";
@@ -17,6 +18,7 @@ const INITIAL_STATE = {
         [BATTLE_TYPES.ELITE_ENCOUNTER]: 0,
         [BATTLE_TYPES.BOSS]: 0,
     },
+    battleHistory: [],
 };
 
 export const playerStateSlice = createSlice({
@@ -101,6 +103,12 @@ export const playerStateSlice = createSlice({
                     effects: [...player.effects, ...effects.map(cloneDeep)],
                     items: player.items.filter((item, i: number) => i !== itemIndex),
                 },
+            };
+        },
+        pushBattleHistory: (state, action: PayloadAction<{ totalDamageDealt: number }>) => {
+            return {
+                ...state,
+                battleHistory: [...(state?.battleHistory || []), action.payload],
             };
         },
     },

@@ -46,12 +46,14 @@ const useStyles = createUseStyles({
 const ItemSelection = ({
     items = [],
     numChoices,
+    bonuses,
     player,
     onSelectClick,
     onClose,
 }: {
     items?: Item[];
     numChoices: number;
+    bonuses?: { uncommon: number; rare: number };
     player: Player;
     onSelectClick: (item: Item) => void;
     onClose: () => void;
@@ -70,7 +72,7 @@ const ItemSelection = ({
 
         const itemSelection = items.filter((item: Item) => !alreadyObtained[item.name]);
         for (let i = itemSelection.length; i < numChoices; ++i) {
-            const itemPool = rollItemPool({ player });
+            const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
             const equipment = getRandomItem(itemPool);
             if (equipment) {
                 itemSelection.push(equipment);

@@ -133,7 +133,6 @@ export const getUpdatedStats = ({
                 }
 
                 if (type === "effect") {
-                    console.log("is immune to?", value, effect.name);
                     return value.some((name: string) => name === effect.name);
                 }
             });

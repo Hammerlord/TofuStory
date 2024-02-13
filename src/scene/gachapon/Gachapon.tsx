@@ -2,13 +2,14 @@ import { Minion } from "../../ability/types";
 import { Wave } from "../../battle/types";
 import { GachaponImage } from "../../images";
 import { bluePotion, redPotion } from "../../item/items";
+import { RARITIES } from "../../item/types";
 import { Scene } from "../types";
 import GachaponScene from "./GachaponScene";
 
 const gachaponMachine: Minion = {
     name: "Gachapon Machine",
     image: GachaponImage,
-    maxHP: 999,
+    maxHP: 500,
     abilities: [],
 };
 
@@ -41,22 +42,106 @@ export const gachaponEvents: Scene = {
                     encounter: gachaponFight,
                     next: [
                         {
-                            speaker: gachaponMachine,
-                            dialog: ["The machine makes a clanking sound, like something got lodged. It lights up with a prompt..."],
-                        },
-                        {
-                            dialog: ["..."],
-                            itemChoices: {
-                                numChoices: 3,
-                            },
-                        },
-                        {
-                            speaker: gachaponMachine,
-                            dialog: ["The gachapon machine now appears to be malfunctioning..."],
-                            responses: [
+                            dialog: ["...!"],
+                            conditionalNext: [
                                 {
-                                    text: "Leave.",
-                                    isExit: true,
+                                    conditions: [
+                                        {
+                                            battleTotalDamage: 300,
+                                            comparator: "gt",
+                                        },
+                                    ],
+                                    next: [
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: [
+                                                "The machine makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
+                                            ],
+                                        },
+                                        {
+                                            dialog: ["..."],
+                                            itemChoices: {
+                                                numChoices: 3,
+                                                bonuses: {
+                                                    rare: 0.65,
+                                                    uncommon: 0.25,
+                                                },
+                                            },
+                                        },
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: ["The gachapon machine appears to be totally broken."],
+                                            responses: [
+                                                {
+                                                    text: "Leave.",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    conditions: [
+                                        {
+                                            battleTotalDamage: 99,
+                                            comparator: "gt",
+                                        },
+                                    ],
+                                    next: [
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: [
+                                                "The machine makes a bunch of clunking sounds, as if something got lodged. The screen lights up with a prompt...",
+                                            ],
+                                        },
+                                        {
+                                            dialog: ["..."],
+                                            itemChoices: {
+                                                numChoices: 3,
+                                                bonuses: {
+                                                    rare: 0.1,
+                                                    uncommon: 0.2,
+                                                },
+                                            },
+                                        },
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: ["The gachapon machine appears to be malfunctioning..."],
+                                            responses: [
+                                                {
+                                                    text: "Leave.",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    conditions: [],
+                                    next: [
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: [
+                                                "The machine makes a clunking sound, then stops, as if something got lodged. The screen lights up with a prompt...",
+                                            ],
+                                        },
+                                        {
+                                            dialog: ["..."],
+                                            itemChoices: {
+                                                numChoices: 3,
+                                            },
+                                        },
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: ["The gachapon machine appears to be malfunctioning..."],
+                                            responses: [
+                                                {
+                                                    text: "Leave.",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
                                 },
                             ],
                         },

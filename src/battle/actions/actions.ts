@@ -29,7 +29,7 @@ import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
 import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
@@ -784,6 +784,33 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
     );
 };
 
+const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
+    const battle: BattleState = getState().battle;
+    const isActorFriendly = battle.playerSide.some((combatant) => {
+        if (!combatant) {
+            return false;
+        }
+
+        if (combatant.id === source.actorId) {
+            return true;
+        }
+
+        if (source?.type === TRIGGER_SOURCE_TYPES.EFFECT) {
+            return (source?.source as CombatEffect).applierId === combatant.id;
+        }
+
+        return false;
+    });
+
+    if (isActorFriendly) {
+        dispatch(
+            updateBattle({
+                totalDamageDealt: (battle.totalDamageDealt || 0) + (damage || 0),
+            })
+        );
+    }
+};
+
 export const triggerStatChangeEvents =
     (statChanges: { statUpdate: UpdatedCombatantStats; source?: TriggerSource }[]) => (dispatch, getState) => {
         statChanges.forEach(({ statUpdate, source }) => {
@@ -835,6 +862,7 @@ export const triggerStatChangeEvents =
 
             if (rawDamage > 0) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
+                dispatch(updateDamageStatistics(rawDamage, source));
             }
 
             effects.forEach((e: CombatEffect) => {

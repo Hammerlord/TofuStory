@@ -39,6 +39,8 @@ export interface BattleState {
     cardRewards?: Ability[];
     disableCardRewards: boolean;
     notification?: Notification;
+    totalDamageDealt: number; // Should include DoTs, etc.
+    isTutorial?: boolean;
 }
 
 export interface PlayerSelectCardsPrompt {
