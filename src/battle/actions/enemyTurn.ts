@@ -178,6 +178,10 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
     };
     const abilityPassesConditions = (ability) => passesConditions({ getCalculationTarget, proc: ability });
 
+    if (!abilities.length) {
+        return -1;
+    }
+
     if (resources >= maxResources) {
         const specialAbilityIndex = abilities.findIndex(
             (ability) => abilityPassesConditions(ability) && (ability.resourceCost === "x" || ability.resourceCost > 0)
@@ -204,6 +208,9 @@ const requeueCurrentAbility = (combatantId: string) => (dispatch, getState) => {
 
     const actor = actorData.combatant;
     const abilityIndex = getUseAbilityIndex(actorData);
+    if (abilityIndex === -1) {
+        return;
+    }
     const updatedAbilities = [...actor.abilities];
     const [used] = updatedAbilities.splice(abilityIndex, 1);
     updatedAbilities.push(used);

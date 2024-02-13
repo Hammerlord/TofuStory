@@ -276,6 +276,6 @@ export const passesConditions = ({
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
     };
     // @ts-ignore -- conditionOperator is 'or' by default and we have a fallback here
-    const { conditions = [], conditionOperator = "or" } = proc;
+    const { conditions = [], conditionOperator = "or" } = proc || {};
     return !conditions.length || (conditionOperator === "or" ? conditions.some(passesCondition) : conditions.every(passesCondition));
 };
