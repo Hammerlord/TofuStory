@@ -1384,7 +1384,17 @@ const performAction = ({
         const updated = getUpdatedStats(updatedStatsProps);
 
         dispatch(applyStatChanges(updated.map((update) => update[0])));
-        if (secondaryAction) {
+
+        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
+            if (targetType === CONDITION_TARGETS.TARGET) {
+                // This is the primary target only
+                return findCombatantData(getState, combatants[selectedIndex]?.id);
+            } else if (targetType === CONDITION_TARGETS.ACTOR) {
+                return findCombatantData(getState, actorId);
+            }
+        };
+
+        if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source: parentSource })) {
             const updatedSecondary = getUpdatedStats({
                 ...updatedStatsProps,
                 // Based on secondaryAction.target, but only actor recipient is supported for now
@@ -1393,6 +1403,20 @@ const performAction = ({
                 action: secondaryAction,
             });
             dispatch(applyStatChanges(updatedSecondary.map((update) => update[0])));
+            if (secondaryAction.returnParentCardToHand) {
+                // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
+                const ability: HandAbility | undefined = parentSource?.source as HandAbility;
+                dispatch(deleteCard(ability.instanceId));
+                dispatch(
+                    checkCardActions(
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            addCards: [parentSource.source as Ability],
+                        },
+                        parentSource
+                    )
+                );
+            }
         }
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
@@ -1658,6 +1682,21 @@ export const drawCards = ({
         }
         dispatch(recalculateEffectsFromAbilities());
     };
+};
+
+/**
+ * Remove a card from existence based on its id.
+ */
+export const deleteCard = (abilityId: string) => (dispatch, getState) => {
+    const { hand, deck, discard } = getState().battle;
+
+    dispatch(
+        updateBattle({
+            hand: hand.filter((card: HandAbility) => card.instanceId !== abilityId),
+            deck: deck.filter((card: HandAbility) => card.instanceId !== abilityId),
+            discard: discard.filter((card: HandAbility) => card.instanceId !== abilityId),
+        })
+    );
 };
 
 /**

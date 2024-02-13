@@ -508,6 +508,9 @@ export interface Action {
         healing?: number;
         multiplier?: Multiplier;
         flatDamage?: number;
+        conditions?: Condition[];
+        effects?: Effect[];
+        returnParentCardToHand?: boolean;
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;

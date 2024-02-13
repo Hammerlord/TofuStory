@@ -31,12 +31,9 @@ export const onUsePlayerAbility = ({
                 actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id,
             })
         );
+
         // Some cards grant an effect when you hold them, so only remove it after the ability has been used
         dispatch(removeAbilityFromHand(selectedAbilityId));
-
-        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
-        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
-        dispatch(handleDiscard(ability));
         dispatch(recalculateEffectsFromAbilities());
     };
 };
@@ -44,15 +41,26 @@ export const onUsePlayerAbility = ({
 const removeAbilityFromHand = (abilityId: string) => {
     return (dispatch, getState) => {
         const { hand: originalHand } = getState().battle;
-        const handWithAbilityUsed = originalHand.slice();
+        const handWithAbilityUsed: HandAbility[] = originalHand.slice();
         const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);
-        handWithAbilityUsed.splice(index, 1);
+        if (index === -1) {
+            return;
+        }
+
+        const [ability] = handWithAbilityUsed.splice(index, 1);
+        if (!ability) {
+            return;
+        }
 
         dispatch(
             updateBattle({
                 hand: handWithAbilityUsed,
             })
         );
+
+        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
+        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
+        dispatch(handleDiscard(ability));
     };
 };
 

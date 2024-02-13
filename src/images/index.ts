@@ -192,6 +192,7 @@ export { default as IfritImage } from "./Ifrit.png";
 export { default as IgniteImage } from "./Ignite.png";
 export { default as InfinityImage } from "./Infinity.png";
 export { default as InkSackImage } from "./InkSack.png";
+export { default as InstinctualComboImage } from "./InstinctualCombo.png";
 export { default as IntrepidSlashImage } from "./IntrepidSlash.png";
 export { default as IronBodyImage } from "./IronBody.png";
 export { default as IronHogHoofImage } from "./IronHogHoof.png";

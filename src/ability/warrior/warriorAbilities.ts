@@ -33,6 +33,7 @@ import {
     WeaponMasteryImage,
     MetalAxeImage,
     CombatOrdersImage,
+    InstinctualComboImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
@@ -1661,4 +1662,78 @@ export const bladedArmor: Ability = {
             ],
         },
     ],
+};
+
+const guillotine2: Ability = {
+    name: "Guillotine",
+    level: 2,
+    resourceCost: 1,
+    image: InstinctualComboImage,
+    description: "Execute: Return to hand",
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 13,
+            bonus: {
+                damage: 7,
+                conditions: [
+                    {
+                        healthPercentage: 1,
+                        comparator: "lt",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                ],
+            },
+            secondaryAction: {
+                target: "actor",
+                returnParentCardToHand: true,
+                conditions: [
+                    {
+                        healthPercentage: 0,
+                        comparator: "eq",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const guillotine: Ability = {
+    name: "Guillotine",
+    resourceCost: 1,
+    image: InstinctualComboImage,
+    description: "Execute: Return to hand",
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 10,
+            bonus: {
+                damage: 5,
+                conditions: [
+                    {
+                        healthPercentage: 1,
+                        comparator: "lt",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                ],
+            },
+            secondaryAction: {
+                target: "actor",
+                returnParentCardToHand: true,
+                conditions: [
+                    {
+                        healthPercentage: 0,
+                        comparator: "eq",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [guillotine2],
 };
