@@ -185,7 +185,7 @@ export const getUseAbilityIndex = (actor: Combatant): number => {
     return -1;
 };
 
-const puntCurrentAbilityToEndOfQueue = (combatantId: string) => (dispatch, getState) => {
+const requeueCurrentAbility = (combatantId: string) => (dispatch, getState) => {
     const actorData = findCombatantData(getState, combatantId);
     if (!actorData) {
         return;
@@ -227,13 +227,13 @@ const enemyUseAbility = (combatantId: string) => {
         const { castTime, channelDuration } = ability;
 
         if (typeof index === "undefined") {
-            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
+            dispatch(requeueCurrentAbility(combatantId));
             return;
         }
 
         if (!castTime && !channelDuration) {
+            dispatch(requeueCurrentAbility(combatantId));
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
-            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
             return;
         }
 
@@ -254,6 +254,7 @@ const enemyUseAbility = (combatantId: string) => {
             })
         );
 
+        dispatch(requeueCurrentAbility(combatantId));
         if (!ability.castTime) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
 
@@ -268,7 +269,6 @@ const enemyUseAbility = (combatantId: string) => {
                     },
                 })
             );
-            dispatch(puntCurrentAbilityToEndOfQueue(combatantId));
         }
     };
 };
@@ -347,7 +347,7 @@ export const startEnemyTurn = () => {
                 } else if (!unableToAct) {
                     dispatch(enemyAction(id));
                 } else {
-                    dispatch(puntCurrentAbilityToEndOfQueue(id));
+                    dispatch(requeueCurrentAbility(id));
                 }
                 makeEnemyMove();
             }, delay);
