@@ -10,6 +10,7 @@ import {
     ParashockGuardImage,
     ShieldMasteryImage,
 } from "../../images";
+import { RARITIES } from "../../item/types";
 import { burn, chill, stun } from "../Effects";
 import {
     Ability,
@@ -29,7 +30,7 @@ export const flameCharge: Ability = {
     image: FlameChargeImage,
     actions: [
         {
-            damage: 5,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -48,7 +49,7 @@ export const blizzardCharge: Ability = {
     image: BlizzardChargeImage,
     actions: [
         {
-            damage: 5,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -77,7 +78,7 @@ export const lightningCharge: Ability = {
     actions: [
         {
             area: 1,
-            damage: 5,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -98,6 +99,7 @@ export const frostFire: Ability = {
     name: "Frostfire Within",
     resourceCost: 1,
     image: AdvancedChargeImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             addCards: [flameCharge, blizzardCharge].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -133,6 +135,7 @@ export const shieldMastery: Ability = {
     name: "Shield Mastery",
     resourceCost: 1,
     image: ShieldMasteryImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -159,6 +162,7 @@ export const blast: Ability = {
     resourceCost: 3,
     image: BlastImage,
     description: "Reduce cost by 1 for every ability used this turn, until Blast is used or discarded.",
+    rarity: RARITIES.UNCOMMON,
     onAbilityUse: {
         resourceCost: -1,
     },
@@ -185,11 +189,7 @@ export const judgment: Ability = {
     name: "Judgment",
     resourceCost: 3,
     image: HighPaladinImage,
-    description:
-        "Deals 1 damage multiplied by armor \n Reduce cost by 1 for every ability used this turn, until Judgment is used or discarded.",
-    onAbilityUse: {
-        resourceCost: -1,
-    },
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 1,
@@ -209,6 +209,7 @@ export const parashockGuard: Ability = {
     image: ParashockGuardImage,
     depletedOnUse: true,
     description: "(Armor gained equal to your current armor)",
+    rarity: RARITIES.RARE,
     actions: [
         {
             armor: 1,
@@ -227,6 +228,7 @@ export const elementalForce: Ability = {
     resourceCost: 1,
     depletedOnUse: true,
     image: ElementalForceImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -242,8 +244,8 @@ export const elementalForce: Ability = {
                             skill: flameCharge.name,
                             damage: 2,
                         },
-                        { skill: blizzardCharge.name, damage: 2 },
-                        { skill: lightningCharge.name, damage: 2 },
+                        { skill: blizzardCharge.name, damage: 3 },
+                        { skill: lightningCharge.name, damage: 3 },
                     ],
                 },
             ],

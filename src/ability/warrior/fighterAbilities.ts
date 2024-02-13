@@ -12,31 +12,33 @@ import {
     RisingRageImage,
     WorldReaverImage,
 } from "../../images";
+import { RARITIES } from "../../item/types";
 import { immunity, bleed } from "../Effects";
 import { Ability, Action, ACTION_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, MULTIPLIER_TYPES, TARGET_TYPES } from "../types";
 import { TRIGGER_TARGET_TYPES } from "./../types";
 
-export const intrepidSlash: Ability = {
-    name: "Intrepid Slash",
+export const braveSlash: Ability = {
+    name: "Brave Slash",
     resourceCost: 1,
     depletedOnUse: true,
     image: IntrepidSlashImage,
+    rarity: RARITIES.UNCOMMON,
     description: "Deal {{damage}} damage to a random enemy in the area, x3",
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
@@ -50,7 +52,7 @@ export const puncture: Ability = {
     image: PunctureImage,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             effects: [
@@ -70,6 +72,7 @@ export const chanceAttack: Ability = {
     image: ChanceAttackImage,
     depletedOnUse: true,
     description: "against debuffed enemies",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -80,7 +83,7 @@ export const chanceAttack: Ability = {
                     icon: ChanceAttackImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
+                    attackPower: 3,
                     conditions: [
                         {
                             calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
@@ -100,12 +103,12 @@ export const brandish: Ability = {
     description: "Hits twice",
     actions: [
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -144,6 +147,7 @@ export const parry: Ability = {
     resourceCost: 0,
     image: EndureImage,
     description: "(Armor multiplied by the number of attacks made this turn)",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             armor: 1,
@@ -213,6 +217,7 @@ export const worldReaver: Ability = {
     depletedOnUse: true,
     image: WorldReaverImage,
     description: "Deals 3 damage for every attack you made this turn",
+    rarity: RARITIES.RARE,
     actions: [
         {
             area: 1,
@@ -241,10 +246,11 @@ export const risingRage: Ability = {
     resourceCost: "x",
     image: RisingRageImage,
     description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             area: 1,
-            damage: 5,
+            damage: 8,
             multiplier: {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 type: MULTIPLIER_TYPES.RESOURCES_SPENT,
@@ -259,6 +265,7 @@ export const burningSoulBlade: Ability = {
     name: "Burning Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
         name: "Burning Soul Blade",

@@ -12,6 +12,7 @@ import {
     SpearSweepImage,
 } from "../../images";
 import { HeartIcon } from "../../images/icons";
+import { RARITIES } from "../../item/types";
 import { attackPower, silence, stealth, stun, bleed } from "../Effects";
 import {
     Ability,
@@ -87,6 +88,7 @@ export const darkThirst: Ability = {
     name: "Dark Thirst",
     resourceCost: 1,
     image: DarkThirstImage,
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -100,7 +102,7 @@ export const darkThirst: Ability = {
                     attackPower: 1,
                     lifeOnHit: 1,
                     lifeOnKill: 3,
-                    duration: 2,
+                    duration: 3,
                 },
                 {
                     ...bleed,
@@ -115,6 +117,7 @@ export const darkSpear: Ability = {
     name: "Dark Spear",
     resourceCost: 3,
     image: DarkSpearImage,
+    rarity: RARITIES.RARE,
     actions: [
         {
             damage: 7,
@@ -204,6 +207,7 @@ export const lordOfDarkness: Ability = {
     resourceCost: 2,
     image: LordOfDarknessImage,
     depletedOnUse: true,
+    rarity: RARITIES.RARE,
     description: "Retaliation: gain +1 attack power for 5 turns",
     actions: [
         {
@@ -233,13 +237,13 @@ export const gungnir: Ability = {
     resourceCost: 3,
     depletedOnUse: true,
     image: GungnirImage,
+    rarity: RARITIES.RARE,
     description: "(Damage equal to 50% of your max HP)",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
-            destroyArmor: 1,
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.MAX_HP,
@@ -254,6 +258,7 @@ export const nightshadeExplosion: Ability = {
     name: "Nightshade Explosion",
     resourceCost: 1,
     image: NightShadeExplosionImage,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 5,

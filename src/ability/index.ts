@@ -68,7 +68,7 @@ import {
     burningSoulBlade,
     chanceAttack,
     comboFury,
-    intrepidSlash,
+    braveSlash,
     parry,
     puncture,
     ragingBlow,
@@ -230,7 +230,7 @@ export const JOB_CARD_MAP = {
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],
-        all: [intrepidSlash, puncture, brandish, comboFury, chanceAttack, parry, ragingBlow, worldReaver, risingRage, burningSoulBlade],
+        all: [braveSlash, puncture, brandish, comboFury, chanceAttack, parry, ragingBlow, worldReaver, risingRage, burningSoulBlade],
     },
     [WARRIOR_SECONDARY_JOBS.DARK_KNIGHT]: {
         onJobUp: [evilEye, piercingDrive],
