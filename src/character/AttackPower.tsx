@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect, TARGET_TYPES } from "../ability/types";
-import { calculateAttackPowerDamage, getEnabledEffects } from "../battle/utils";
+import { calculateAttackPowerDamage, getEnabledEffects, isTurnActionPrevented } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
@@ -83,7 +83,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     })();
 
     const hasYetToCastAbility = !casting && abilityToUse?.castTime;
-    if (!totalDamage || hasYetToCastAbility) {
+    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatant)) {
         return null;
     }
 
