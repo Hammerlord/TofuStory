@@ -451,7 +451,7 @@ const CombatantView = forwardRef(
 
                     {oldState?.HP > 0 && (
                         <div className={classes.header}>
-                            <Telegraph combatant={combatant} />
+                            <Telegraph combatantInfo={combatantInfo} />
                             {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}
                         </div>
                     )}

@@ -48,7 +48,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     }
 
     const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage || 0;
-    const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatant)];
+    const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatantInfo)];
 
     const { damage, timesToAttack } = abilityToUse?.actions.reduce(
         (acc, action: Action) => {

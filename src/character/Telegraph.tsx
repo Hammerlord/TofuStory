@@ -8,6 +8,7 @@ import Tooltip from "../view/Tooltip";
 import { BATTLE_STATES } from "../battle/reducer";
 import { isUnableToAct } from "../battle/utils";
 import classNames from "classnames";
+import { CombatantInfo } from "../battle/types";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -97,16 +98,17 @@ const useStyles = createUseStyles({
 /**
  * Tells the player what this combatant wants to do next.
  */
-const Telegraph = ({ combatant }) => {
+const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
     const { battle } = useAppSelector((state) => state);
+    const { combatant } = combatantInfo || {};
 
     if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isUnableToAct(combatant)) {
         return null;
     }
 
     const { ability: castingAbility, channelDuration, castTime: castingCastTime } = combatant?.casting || {};
-    const ability = castingAbility || combatant?.abilities[getUseAbilityIndex(combatant)];
+    const ability = castingAbility || combatant?.abilities[getUseAbilityIndex(combatantInfo)];
 
     if (!ability) {
         return null;

@@ -1,8 +1,9 @@
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
+import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import {
     clearTurnHistory,
@@ -166,17 +167,26 @@ const enemyAction = (combatantId: string) => {
     };
 };
 
-export const getUseAbilityIndex = (actor: Combatant): number => {
-    const { resources = 0, maxResources = 3, abilities = [] } = actor || {};
+export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
+    const { resources = 0, maxResources = 3, abilities = [] } = actorInfo?.combatant || {};
+
+    const getCalculationTarget = (type: CONDITION_TARGETS) => {
+        if (!type || type === CONDITION_TARGETS.ACTOR) {
+            return actorInfo;
+        }
+    };
+    const abilityPassesConditions = (ability) => passesConditions({ getCalculationTarget, proc: ability });
 
     if (resources >= maxResources) {
-        const specialAbilityIndex = abilities.findIndex((ability) => ability.resourceCost === "x" || ability.resourceCost > 0);
+        const specialAbilityIndex = abilities.findIndex(
+            (ability) => abilityPassesConditions(ability) && (ability.resourceCost === "x" || ability.resourceCost > 0)
+        );
         if (specialAbilityIndex > -1) {
             return specialAbilityIndex;
         }
     }
 
-    const abilityIndex = abilities.findIndex((ability) => !ability.resourceCost);
+    const abilityIndex = abilities.findIndex((ability) => abilityPassesConditions(ability) && !ability.resourceCost);
     const { resourceCost = 0 } = abilities[abilityIndex] || {};
     if (resourceCost === "x" || resourceCost <= resources) {
         return abilityIndex;
@@ -192,7 +202,7 @@ const requeueCurrentAbility = (combatantId: string) => (dispatch, getState) => {
     }
 
     const actor = actorData.combatant;
-    const abilityIndex = getUseAbilityIndex(actor);
+    const abilityIndex = getUseAbilityIndex(actorData);
     const updatedAbilities = [...actor.abilities];
     const [used] = updatedAbilities.splice(abilityIndex, 1);
     updatedAbilities.push(used);
@@ -214,10 +224,9 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
 
+        const abilityIndex = getUseAbilityIndex(actorData);
+
         const { combatant: actor } = actorData;
-
-        const abilityIndex = getUseAbilityIndex(actor);
-
         const ability = actor.abilities[abilityIndex];
         if (!ability) {
             return;

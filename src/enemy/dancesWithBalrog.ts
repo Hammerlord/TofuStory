@@ -279,138 +279,6 @@ export const dancesWithBalrog: Minion = {
     maxHP: 300,
     abilities: [
         {
-            name: "Slam",
-            image: IronMaceImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                },
-            ],
-        },
-        {
-            name: "Slash Blast",
-            image: SlashBlastImage,
-            actions: [
-                {
-                    damage: 5,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                    area: 1,
-                },
-            ],
-        },
-        {
-            name: "Brandish",
-            image: BrandishImage,
-            description: "Hits twice",
-            actions: [
-                {
-                    damage: 4,
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                },
-                {
-                    damage: 4,
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                },
-            ],
-        },
-        {
-            name: "Brave Slash",
-            resourceCost: 3,
-            depletedOnUse: true,
-            image: IntrepidSlashImage,
-            castTime: 1,
-            description: "Deal {{damage}} damage to a random enemy within the targeted area, x3",
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: boarStanceEffect.name,
-                    comparator: "eq",
-                },
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: balrogStanceEffect.name,
-                    comparator: "eq",
-                },
-            ],
-            actions: [
-                {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
-                },
-                {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
-                },
-                {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
-                },
-            ],
-        },
-        {
-            name: "Sledge",
-            resourceCost: 3,
-            castTime: 1,
-            image: GiganticSledgeImage,
-            description: "Destroy 100% armor and deal 7 damage",
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: golemStanceEffect.name,
-                    comparator: "eq",
-                },
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: balrogStanceEffect.name,
-                    comparator: "eq",
-                },
-            ],
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                    destroyArmor: 1,
-                },
-            ],
-        },
-        {
-            name: "Judgment",
-            resourceCost: 3,
-            castTime: 1,
-            image: HighPaladinImage,
-            description: "Deal 1 damage times character armor",
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: snailStanceRedEffect.name,
-                    comparator: "eq",
-                },
-            ],
-            actions: [
-                {
-                    damage: 1,
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    multiplier: {
-                        type: MULTIPLIER_TYPES.ARMOR,
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                    },
-                },
-            ],
-        },
-        {
             name: "Snail Stance",
             image: RedSnailShellImage,
             priority: true,
@@ -498,6 +366,137 @@ export const dancesWithBalrog: Minion = {
                             duration: 2,
                         },
                     ],
+                },
+            ],
+        },
+        {
+            name: "Slam",
+            image: IronMaceImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 7,
+                },
+            ],
+        },
+        {
+            name: "Slash Blast",
+            image: SlashBlastImage,
+            actions: [
+                {
+                    damage: 5,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                    area: 1,
+                },
+            ],
+        },
+        {
+            name: "Brandish",
+            image: BrandishImage,
+            description: "Hits twice",
+            actions: [
+                {
+                    damage: 4,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                },
+                {
+                    damage: 4,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                },
+            ],
+        },
+        {
+            name: "Brave Slash",
+            resourceCost: 3,
+            image: IntrepidSlashImage,
+            castTime: 1,
+            description: "Deal {{damage}} damage to a random enemy within the targeted area, x3",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: boarStanceEffect.name,
+                    comparator: "eq",
+                },
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: balrogStanceEffect.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    damage: 4,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                    targetArea: 1,
+                },
+                {
+                    damage: 4,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                    targetArea: 1,
+                },
+                {
+                    damage: 4,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                    targetArea: 1,
+                },
+            ],
+        },
+        {
+            name: "Sledge",
+            resourceCost: 3,
+            castTime: 1,
+            image: GiganticSledgeImage,
+            description: "Destroy 100% armor and deal 7 damage",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: golemStanceEffect.name,
+                    comparator: "eq",
+                },
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: balrogStanceEffect.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 7,
+                    destroyArmor: 1,
+                },
+            ],
+        },
+        {
+            name: "Judgment",
+            resourceCost: 3,
+            castTime: 1,
+            image: HighPaladinImage,
+            description: "Deal 1 damage times character armor",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    hasEffect: snailStanceRedEffect.name,
+                    comparator: "eq",
+                },
+            ],
+            actions: [
+                {
+                    damage: 1,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.ARMOR,
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                    },
                 },
             ],
         },
