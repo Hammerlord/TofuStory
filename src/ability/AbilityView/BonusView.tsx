@@ -91,9 +91,12 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
                             Apply{" "}
                             {effects.map((e: Effect, i) => (
                                 <span key={e.name}>
-                                    <Icon icon={e.icon} size={"sm"} /> <Icon icon={<HourglassIcon />} text={e.duration} size={"sm"} />{" "}
+                                    <Icon icon={e.icon} size={"sm"} />{" "}
+                                    {typeof e.duration === "number" && e.duration !== Infinity && (
+                                        <Icon icon={<HourglassIcon />} text={e.duration} size={"sm"} />
+                                    )}
                                 </span>
-                            ))}{" "}
+                            ))}
                         </span>
                     );
                 }
