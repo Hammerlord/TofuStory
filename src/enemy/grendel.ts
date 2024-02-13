@@ -237,6 +237,10 @@ const stormBarrier: Ability = {
                                     area: 5,
                                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                                     icon: EncroachingDarknessImage,
+                                    animationOptions: {
+                                        width: 200,
+                                        height: 200,
+                                    },
                                 },
                                 {
                                     target: TARGET_TYPES.SELF,
@@ -247,7 +251,7 @@ const stormBarrier: Ability = {
                                             icon: WeaponBoosterImage,
                                             type: EFFECT_TYPES.NONE,
                                             class: EFFECT_CLASSES.BUFF,
-                                            attackPower: 2,
+                                            attackPower: 3,
                                             onReceiveDamage: {
                                                 conditions: [
                                                     {

@@ -689,10 +689,13 @@ export const getInducedAttack = (actor: Combatant): Action => {
     };
 };
 
-export const isUnableToAct = (combatant: Combatant): boolean => {
-    return combatant?.effects.some(
-        (effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type) || effect.preventTurnAction
-    );
+// This is used to determine whether an enemy should act during its turn. It shouldn't prevent effect events from triggering.
+export const isTurnActionPrevented = (combatant: Combatant): boolean => {
+    return combatant?.effects.some((effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
+};
+
+export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
+    return combatant?.effects.some((effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
 };
 
 export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movement = 0 }): number[] => {

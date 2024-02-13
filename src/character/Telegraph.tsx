@@ -6,7 +6,7 @@ import Icon from "../icon/Icon";
 import { HourglassIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { BATTLE_STATES } from "../battle/reducer";
-import { isUnableToAct } from "../battle/utils";
+import { isStunnedOrFrozen, isTurnActionPrevented } from "../battle/utils";
 import classNames from "classnames";
 import { CombatantInfo } from "../battle/types";
 
@@ -103,7 +103,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { battle } = useAppSelector((state) => state);
     const { combatant } = combatantInfo || {};
 
-    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isUnableToAct(combatant)) {
+    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isTurnActionPrevented(combatant)) {
         return null;
     }
 

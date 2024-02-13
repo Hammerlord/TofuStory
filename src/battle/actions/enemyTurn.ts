@@ -12,7 +12,8 @@ import {
     getPossibleSummonIndices,
     getValidTargetIndices,
     hasTruesight,
-    isUnableToAct,
+    isStunnedOrFrozen,
+    isTurnActionPrevented,
     updateCharacters,
 } from "../utils";
 import { TARGET_TYPES } from "./../../ability/types";
@@ -120,7 +121,7 @@ const handleCastTick = (combatantId: string) => {
             })
         );
 
-        if (updatedCasting.castTime || isUnableToAct(combatant)) {
+        if (updatedCasting.castTime || isStunnedOrFrozen(combatant)) {
             return;
         }
 
@@ -346,7 +347,7 @@ export const startEnemyTurn = () => {
 
             const { id, casting } = enemy;
             acted[id] = true;
-            const unableToAct = isUnableToAct(enemy) || !enemy.abilities?.length;
+            const unableToAct = isTurnActionPrevented(enemy) || !enemy.abilities?.length;
             const delay = unableToAct ? 500 : 1500;
 
             setTimeout(() => {

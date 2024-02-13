@@ -43,7 +43,7 @@ import {
     getPossibleSummonIndices,
     getValidTargetIndices,
     isSilenced,
-    isUnableToAct,
+    isStunnedOrFrozen,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
@@ -539,7 +539,7 @@ const onEffectEventTrigger = ({
         }
 
         const { combatant } = findCombatantData(getState, ownerId) || {};
-        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isUnableToAct(combatant));
+        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isStunnedOrFrozen(combatant));
         if (cannotTrigger) {
             return;
         }
@@ -1090,7 +1090,7 @@ const checkInduceAttack = ({
         }
         shuffle(affectedTargetIds).forEach((id) => {
             const { hostileSide, combatant } = findCombatantData(getState, id) || {};
-            if (!combatant.HP || isUnableToAct(combatant)) {
+            if (!combatant.HP || isStunnedOrFrozen(combatant)) {
                 return;
             }
 

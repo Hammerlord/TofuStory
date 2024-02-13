@@ -1,6 +1,6 @@
 import { Combatant } from "../../character/types";
 import { CombatantInfo } from "../types";
-import { getEnabledEffects, isSilenced, isUnableToAct } from "./../utils";
+import { getEnabledEffects, isSilenced, isStunnedOrFrozen } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
 export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispatch) => {
@@ -25,7 +25,7 @@ export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispat
 
 const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: number; resources: number } => {
     const { combatant } = combatantInfo;
-    if (isSilenced(combatant) || isUnableToAct(combatant)) {
+    if (isSilenced(combatant) || isStunnedOrFrozen(combatant)) {
         return {
             rawResources: 0,
             resources: 0,
