@@ -26,6 +26,8 @@ import { MAX_HAND_SIZE } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -226,7 +228,7 @@ const BattlefieldContainer = () => {
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
 
-    const warn = (text: string) => {
+    const warn = (text: string | JSX.Element) => {
         dispatch(
             setNotification({
                 severity: "warning",
@@ -249,7 +251,11 @@ const BattlefieldContainer = () => {
         setSelectedAllyIndex(null);
         const ability = hand.find((card: HandAbility) => card.instanceId === id);
         if (!canUseAbility(player, ability)) {
-            warn(`Need more resources to use ${ability.name}.`);
+            warn(
+                <div>
+                    Need more <ResourceIcon playerClass={player.class} /> {resourceClassNameMap[player.class]} to use {ability.name}.
+                </div>
+            );
             return;
         }
 

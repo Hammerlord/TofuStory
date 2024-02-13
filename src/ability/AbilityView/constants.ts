@@ -1,3 +1,4 @@
+import { PLAYER_CLASSES } from "../../Menu/types";
 import { MULTIPLIER_TYPES } from "../types";
 
 /**
@@ -47,3 +48,8 @@ export const RED = "rgb(221, 46, 68)";
 export const BLUE = "rgb(23, 111, 189)";
 export const GREEN = "rgb(50, 168, 82)";
 export const GREY = "rgb(100, 100, 100)";
+
+export const resourceClassNameMap = {
+    [PLAYER_CLASSES.WARRIOR]: "Fury",
+    [PLAYER_CLASSES.MAGICIAN]: "Mana",
+};

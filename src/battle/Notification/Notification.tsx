@@ -4,14 +4,15 @@ import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
     root: {
-        padding: "8px 32px",
+        padding: "8px 100px",
         zIndex: 4,
         cursor: "pointer",
         fontSize: "1.2rem",
         whiteSpace: "nowrap",
         lineHeight: "1.5rem",
         "&.warning": {
-            background: "#ffd342",
+            background:
+                "linear-gradient(90deg, rgba(255,212,0,0) 0%, rgba(255,212,0,0.9) 15%, rgba(255,212,0.9) 50%, rgba(255,212,0,0.9) 85%, rgba(255,212,0,0) 100%)",
             color: "black",
         },
         "&.error": {
