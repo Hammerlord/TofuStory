@@ -1305,16 +1305,29 @@ const checkHandleAutoCast = ({
     };
 };
 
-export const calculateTargetIndices = ({ action, selectedIndex, side, actorData, battle }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect } = action;
+export const calculateTargetIndices = ({
+    action,
+    selectedIndex,
+    side,
+    actorData,
+    targetData,
+    battle,
+}: {
+    action: Action;
+    selectedIndex: number;
+    side: BATTLEFIELD_SIDES;
+    actorData: CombatantInfo;
+    targetData: CombatantInfo;
+    battle: BattleState;
+}): number[] => {
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea } = action;
 
-    const targetCombatant = battle[side][selectedIndex];
-    const area = calculateActionArea({ action, actor: actorData, target: targetCombatant });
+    const area = calculateActionArea({ action, actor: actorData, target: targetData });
     const extraTargetIndices = shuffle(
         getValidTargetIndices(battle[side], {
             excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
             excludeIndex: selectedIndex,
-        })
+        }).filter((i) => Math.abs(i - selectedIndex) <= targetArea || area)
     ).slice(0, extraTargets);
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
@@ -1359,14 +1372,23 @@ const performAction = ({
         if (!actorData) {
             return;
         }
-        const targetCombatant = getState().battle[side][selectedIndex];
-        const area = calculateActionArea({ action, actor: actorData, target: targetCombatant });
 
-        const { vacuum, movement, numTargets: extraTargets = 0, secondaryAction, autoCastAbilities, retreat } = action;
+        const battleSide = getState().battle[side];
+        const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
+        const area = calculateActionArea({ action, actor: actorData, target });
+
+        const { vacuum, movement, secondaryAction, autoCastAbilities, retreat } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
         const combatants = getState().battle[side];
-        const targetIndices = calculateTargetIndices({ action, selectedIndex, side, actorData, battle: getState().battle });
+        const targetIndices = calculateTargetIndices({
+            action,
+            selectedIndex,
+            side,
+            actorData,
+            targetData: target,
+            battle: getState().battle,
+        });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
         const updatedStatsProps = {

@@ -25,7 +25,7 @@ import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } fr
 import { MAX_HAND_SIZE } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, Event } from "./types";
-import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
+import { calculateActionArea, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
@@ -634,17 +634,18 @@ const BattlefieldContainer = () => {
                 selectedIndex: hoveredCombatant.index,
                 side: hoveredCombatant.side,
                 actorData: findCombatantData(() => state, actorId),
+                targetData: findCombatantData(() => state, hoveredCombatant.id),
                 battle: state.battle,
             });
 
             const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
 
-            // TODO we need to pass in a copy of the enemy that has each action applied to it progressively, or subsequent action previews can be inaccurate
+            // Subsequent action previews can be inaccurate due to procs
             // TODO nondeterministic attacks like Hammerang also display incorrectly
             const updatedStatsProperties = {
                 actorId,
                 targetIds,
-                selectedIndex,
+                selectedIndex: hoveredCombatant.index,
                 action,
                 getCombatantById: (id: string) => findCombatantData(() => state, id),
                 actionParent: selectedAbility,
@@ -692,7 +693,9 @@ const BattlefieldContainer = () => {
                                         combatant={enemy}
                                         onClick={(e) => handleEnemyClick(e, i)}
                                         isSelected={false}
-                                        onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i })}
+                                        onMouseEnter={() =>
+                                            setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i, id: enemy?.id })
+                                        }
                                         onMouseLeave={() => setHoveredCombatant(null)}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         key={enemy?.id || i}
@@ -724,7 +727,9 @@ const BattlefieldContainer = () => {
                                                 combatant={ally}
                                                 onClick={(e) => handleAllyClick(e, i)}
                                                 isSelected={selectedAllyIndex === i}
-                                                onMouseEnter={() => setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i })}
+                                                onMouseEnter={() =>
+                                                    setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i, id: ally?.id })
+                                                }
                                                 onMouseLeave={() => setHoveredCombatant(null)}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 key={ally?.id || i}

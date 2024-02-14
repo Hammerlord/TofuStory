@@ -608,7 +608,7 @@ export const hammerang2: Ability = {
         {
             damage: 9,
             secondaryDamage: 7,
-            targetArea: 1,
+            targetArea: 2,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -629,7 +629,7 @@ export const hammerang: Ability = {
         {
             damage: 7,
             secondaryDamage: 5,
-            targetArea: 1,
+            targetArea: 2,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
