@@ -316,7 +316,7 @@ const useStyles = createUseStyles({
         zIndex: 5,
         fontSize: "18px",
         fontWeight: "bold",
-        background: "rgba(15, 15, 15, 0.8)",
+        background: "rgba(125, 15, 15, 0.8)",
         padding: "8px",
         position: "absolute",
         left: "50%",
@@ -328,11 +328,15 @@ const useStyles = createUseStyles({
         animationFillMode: "forwards",
         display: "flex",
         top: 10,
+        "&.nondeterministic": {
+            background: "rgba(100, 70, 70, 0.7)",
+        },
     },
     statUpdate: {
         display: "inline-block",
         margin: "0 8px",
         whiteSpace: "nowrap",
+        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
     },
 });
 
@@ -362,7 +366,7 @@ const CombatantView = forwardRef(
             isSelected: boolean;
             isHighlighted: boolean;
             showReticle: boolean;
-            previewStatUpdate?: UpdatedCombatantStats[];
+            previewStatUpdate?: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[];
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },
@@ -528,10 +532,15 @@ const CombatantView = forwardRef(
                         </div>
 
                         {previewStatUpdate && oldState?.HP > 0 && (
-                            <div className={classes.statUpdatePreview}>
-                                {previewStatUpdate.map((statUpdate, i) => (
+                            <div
+                                className={classNames(classes.statUpdatePreview, {
+                                    nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
+                                })}
+                            >
+                                {previewStatUpdate.map((preview, i) => (
                                     <div className={classes.statUpdate} key={["statUpdate", i].join("-")}>
-                                        <Icon icon={CrossedSwordsIcon} size="sm" /> {statUpdate.rawDamage || 0}
+                                        <Icon icon={CrossedSwordsIcon} size="sm" /> {preview.statUpdate.rawDamage || 0}
+                                        {preview.nondeterministic && "?"}
                                     </div>
                                 ))}
                             </div>

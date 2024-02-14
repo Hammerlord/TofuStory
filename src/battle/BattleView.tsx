@@ -618,7 +618,7 @@ const BattlefieldContainer = () => {
         targetRef: targets[selectedIndex]?.current,
     };
 
-    const abilityUsePreviews = ((): { [combatantId: string]: UpdatedCombatantStats[] } => {
+    const abilityUsePreviews = ((): { [combatantId: string]: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[] } => {
         if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
             return {};
         }
@@ -636,6 +636,7 @@ const BattlefieldContainer = () => {
                 actorData: findCombatantData(() => state, actorId),
                 targetData: findCombatantData(() => state, hoveredCombatant.id),
                 battle: state.battle,
+                disableRollExtraTargets: true,
             });
 
             const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
@@ -655,11 +656,15 @@ const BattlefieldContainer = () => {
             };
 
             getUpdatedStats(updatedStatsProperties).forEach(([statUpdate]) => {
-                if (!result[statUpdate.combatantId]) {
-                    result[statUpdate.combatantId] = [];
+                const combatantId = statUpdate.combatantId;
+                if (!result[combatantId]) {
+                    result[combatantId] = [];
                 }
 
-                result[statUpdate.combatantId].push(statUpdate);
+                result[combatantId].push({
+                    statUpdate,
+                    nondeterministic: action.numTargets && hoveredCombatant.index !== findCombatantData(() => state, combatantId)?.index,
+                });
             });
         });
 

@@ -1312,6 +1312,7 @@ export const calculateTargetIndices = ({
     actorData,
     targetData,
     battle,
+    disableRollExtraTargets,
 }: {
     action: Action;
     selectedIndex: number;
@@ -1319,16 +1320,19 @@ export const calculateTargetIndices = ({
     actorData: CombatantInfo;
     targetData: CombatantInfo;
     battle: BattleState;
+    disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
 }): number[] => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData });
-    const extraTargetIndices = shuffle(
-        getValidTargetIndices(battle[side], {
-            excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
-            excludeIndex: selectedIndex,
-        }).filter((i) => Math.abs(i - selectedIndex) <= targetArea || area)
-    ).slice(0, extraTargets);
+    let extraTargetIndices = getValidTargetIndices(battle[side], {
+        excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
+        excludeIndex: selectedIndex,
+    }).filter((i) => Math.abs(i - selectedIndex) <= targetArea || area);
+
+    if (!disableRollExtraTargets) {
+        extraTargetIndices = shuffle(extraTargetIndices).slice(0, extraTargets);
+    }
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect);
