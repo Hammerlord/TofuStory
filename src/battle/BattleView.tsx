@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { Action, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES } from "../ability/types";
+import { Action, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -24,11 +24,12 @@ import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, Event } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
 import { calculateActionArea, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
+import { passesConditions } from "./passesConditions";
 
 const useStyles = createUseStyles({
     root: {
@@ -629,12 +630,35 @@ const BattlefieldContainer = () => {
                 return;
             }
 
+            const actorData = findCombatantData(() => state, actorId);
+            const targetData = findCombatantData(() => state, hoveredCombatant.id);
+
+            const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
+                if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
+                    return actorData;
+                }
+
+                if (calculationTarget === TRIGGER_TARGET_TYPES.TARGET) {
+                    return targetData;
+                }
+            };
+
+            if (
+                !passesConditions({
+                    getCalculationTarget,
+                    proc: action,
+                    source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                })
+            ) {
+                return;
+            }
+
             const targetIndices = calculateTargetIndices({
                 action,
                 selectedIndex: hoveredCombatant.index,
                 side: hoveredCombatant.side,
-                actorData: findCombatantData(() => state, actorId),
-                targetData: findCombatantData(() => state, hoveredCombatant.id),
+                actorData,
+                targetData,
                 battle: state.battle,
                 disableRollExtraTargets: true,
             });
