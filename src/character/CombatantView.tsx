@@ -24,6 +24,7 @@ import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import { Combatant, Player } from "./types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
+import AbilityPreview from "./AbilityPreview";
 
 const useStyles = createUseStyles({
     root: {
@@ -304,40 +305,6 @@ const useStyles = createUseStyles({
         animationDuration: "0.75s",
         zIndex: -1,
     },
-    "@keyframes fadeIn": {
-        "0%": {
-            opacity: 0,
-        },
-        "100%": {
-            opacity: 1,
-        },
-    },
-    statUpdatePreview: {
-        zIndex: 5,
-        fontSize: "18px",
-        fontWeight: "bold",
-        background: "rgba(125, 15, 15, 0.8)",
-        padding: "8px",
-        position: "absolute",
-        left: "50%",
-        transform: "translateX(-50%)",
-        color: "white",
-        borderRadius: "4px",
-        animationName: "$fadeIn",
-        animationDuration: "0.5s",
-        animationFillMode: "forwards",
-        display: "flex",
-        top: 10,
-        "&.nondeterministic": {
-            background: "rgba(100, 70, 70, 0.7)",
-        },
-    },
-    statUpdate: {
-        display: "inline-block",
-        margin: "0 8px",
-        whiteSpace: "nowrap",
-        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
-    },
 });
 
 interface CurrentEvent extends Event {
@@ -531,20 +498,7 @@ const CombatantView = forwardRef(
                             )}
                         </div>
 
-                        {previewStatUpdate && oldState?.HP > 0 && (
-                            <div
-                                className={classNames(classes.statUpdatePreview, {
-                                    nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
-                                })}
-                            >
-                                {previewStatUpdate.map((preview, i) => (
-                                    <div className={classes.statUpdate} key={["statUpdate", i].join("-")}>
-                                        <Icon icon={CrossedSwordsIcon} size="sm" /> {preview.statUpdate.rawDamage || 0}
-                                        {preview.nondeterministic && "?"}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} />}
                         {oldState?.HP > 0 && (
                             <>
                                 <CombatantTooltip combatant={combatant} />

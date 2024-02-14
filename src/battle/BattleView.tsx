@@ -642,7 +642,6 @@ const BattlefieldContainer = () => {
             const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
 
             // Subsequent action previews can be inaccurate due to procs
-            // TODO nondeterministic attacks like Hammerang also display incorrectly
             const updatedStatsProperties = {
                 actorId,
                 targetIds,
@@ -655,15 +654,19 @@ const BattlefieldContainer = () => {
                 discard,
             };
 
-            getUpdatedStats(updatedStatsProperties).forEach(([statUpdate]) => {
+            getUpdatedStats(updatedStatsProperties).forEach(([statUpdate, action]) => {
                 const combatantId = statUpdate.combatantId;
                 if (!result[combatantId]) {
                     result[combatantId] = [];
                 }
 
+                const hasRandomSecondaryTargets =
+                    action.numTargets && hoveredCombatant.index !== findCombatantData(() => state, combatantId)?.index;
+                const targetsRandomly = action.target === TARGET_TYPES.RANDOM_HOSTILE;
+
                 result[combatantId].push({
                     statUpdate,
-                    nondeterministic: action.numTargets && hoveredCombatant.index !== findCombatantData(() => state, combatantId)?.index,
+                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
                 });
             });
         });
