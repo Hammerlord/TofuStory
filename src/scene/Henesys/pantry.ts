@@ -1,7 +1,7 @@
 import { ACTION_TYPES, TARGET_TYPES } from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
 import { miniBean } from "../../enemy/miniBean";
-import { CakeSliceImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
+import { CakeSliceImage, FrownyMaskImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
 import { Item, ITEM_TYPES } from "../../item/types";
 import { Scene, ScriptResponse } from "../types";
 import { Minion } from "./../../ability/types";
@@ -40,6 +40,7 @@ const mayaEnemy: Minion = {
     abilities: [
         {
             name: "Cower",
+            image: FrownyMaskImage,
             dialog: "Help!",
             actions: [
                 {

@@ -3,7 +3,15 @@ import { energyBolt, magicFang, magicClaw } from "./../../ability/magician/magic
 import { attack } from "./../../enemy/abilities";
 import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { rally } from "../../enemy/abilities";
-import { GoldRichieImage, GuardWarriorImage, GuardWizardImage, MesoCoinImage, MesoImage, WeaponMasteryImage } from "../../images";
+import {
+    FrownyMaskImage,
+    GoldRichieImage,
+    GuardWarriorImage,
+    GuardWizardImage,
+    MesoCoinImage,
+    MesoImage,
+    WeaponMasteryImage,
+} from "../../images";
 
 const mesoCoin: Minion = {
     name: "Meso",
@@ -65,6 +73,7 @@ export const goldRichie: Minion = {
     abilities: [
         {
             name: "Curl Up in Fetal Position",
+            image: FrownyMaskImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -86,6 +95,7 @@ export const goldRichie2: Minion = {
     abilities: [
         {
             name: "Curl Up in Fetal Position",
+            image: FrownyMaskImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

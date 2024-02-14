@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { BlueMushroomForestImage, DueyImage } from "../../images";
+import { BlueMushroomForestImage, DueyImage, FrownyMaskImage } from "../../images";
 import classNames from "classnames";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion, TARGET_TYPES } from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
@@ -37,6 +37,7 @@ export const duey: Minion = {
     abilities: [
         {
             name: "Curl Up in Fetal Position",
+            image: FrownyMaskImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

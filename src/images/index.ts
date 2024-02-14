@@ -146,6 +146,7 @@ export { default as FlanImage } from "./Flan.png";
 export { default as FlashJumpImage } from "./FlashJump.gif";
 export { default as ForkedTurkeyImage } from "./ForkedTurkey.png";
 export { default as FrostpreyImage } from "./Frostprey.png";
+export { default as FrownyMaskImage } from "./FrownyMask.png";
 export { default as FrozenTunaImage } from "./FrozenTuna.png";
 export { default as FungalStumpImage } from "./FungalStump.png";
 export { default as GachaponImage } from "./Gachapon.png";
