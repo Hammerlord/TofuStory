@@ -1322,13 +1322,13 @@ export const calculateTargetIndices = ({
     battle: BattleState;
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
 }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea } = action;
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0 } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData });
     let extraTargetIndices = getValidTargetIndices(battle[side], {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
-    }).filter((i) => Math.abs(i - selectedIndex) <= targetArea || area);
+    }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
 
     if (!disableRollExtraTargets) {
         extraTargetIndices = shuffle(extraTargetIndices).slice(0, extraTargets);

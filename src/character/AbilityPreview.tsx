@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
         zIndex: 5,
         fontSize: "18px",
         fontWeight: "bold",
-        background: "rgba(125, 15, 15, 0.9)",
+        background: "rgba(100, 15, 15, 0.9)",
         padding: "8px",
         position: "absolute",
         left: "50%",
