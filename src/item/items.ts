@@ -1,3 +1,4 @@
+import { drawCards } from "./../battle/actions/actions";
 import { armorUp, burn } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, bleed } from "../ability/Effects";
@@ -61,6 +62,7 @@ import {
     SapOfNependeathImage,
     SnowshoesImage,
     SpectrumGogglesImage,
+    SportyTShirtImage,
     StarEarringsImage,
     StarfallMagicSquareImage,
     SteelyImage,
@@ -1755,6 +1757,52 @@ export const blueJeanShorts: Item = {
                             type: [ACTION_TYPES.EFFECT],
                         },
                         comparator: "modulo",
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const sportyTShirt: Item = {
+    name: "Sporty T-Shirt",
+    description: "If you spend a turn without attacking, draw an extra card next turn.",
+    type: ITEM_TYPES.EQUIPMENT,
+    image: SportyTShirtImage,
+    effects: [
+        {
+            name: "Sporty T-Shirt Effect",
+            description: "If you spend a turn without attacking, draw an extra card next turn.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Sporty T-Shirt",
+                        description: "If you spend a turn without attacking, draw an extra card next turn.",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        onOffensiveAbility: {
+                            removeEffect: true,
+                        },
+                        onTurnEnd: {
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            effects: [
+                                {
+                                    name: "Sporty T-Shirt - Draw",
+                                    icon: SportyTShirtImage,
+                                    type: EFFECT_TYPES.NONE,
+                                    class: EFFECT_CLASSES.BUFF,
+                                    drawCardsPerTurn: 1,
+                                    duration: 2, // Ticks down on turn end
+                                    onTurnInProgress: {
+                                        removeEffect: true,
+                                    },
+                                },
+                            ],
+                        },
+                        duration: 1,
                     },
                 ],
             },

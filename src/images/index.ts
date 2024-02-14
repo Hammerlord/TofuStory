@@ -369,6 +369,7 @@ export { default as SpearSweepImage } from "./SpearSweep.png";
 export { default as SpectrumGogglesImage } from "./SpectrumGoggles.png";
 export { default as SpikeBallImage } from "./SpikeBall.png";
 export { default as SpikedMaceImage } from "./SpikedMace.png";
+export { default as SportyTShirtImage } from "./SportyTShirt.png";
 export { default as SquishyLiquidImage } from "./SquishyLiquid.png";
 export { default as StarImage } from "./Star.png";
 export { default as StarCandyPopsicleImage } from "./StarCandyPopsicle.png";
