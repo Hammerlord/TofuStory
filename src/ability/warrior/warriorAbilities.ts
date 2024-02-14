@@ -35,6 +35,7 @@ import {
     CombatOrdersImage,
     InstinctualComboImage,
     NamelessSwordImage,
+    BundleOfNailsImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
@@ -1813,4 +1814,35 @@ export const counterattack: Ability = {
         },
     ],
     upgrades: [counterattack2],
+};
+
+export const poundOfNails2: Ability = {
+    name: "Pound Of Nails",
+    resourceCost: 1,
+    image: BundleOfNailsImage,
+    rarity: RARITIES.UNCOMMON,
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [thorns, thorns, thorns],
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+};
+
+export const poundOfNails: Ability = {
+    name: "Pound Of Nails",
+    resourceCost: 2,
+    image: BundleOfNailsImage,
+    rarity: RARITIES.UNCOMMON,
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [thorns, thorns, thorns],
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    upgrades: [poundOfNails2],
 };
