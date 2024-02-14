@@ -969,6 +969,9 @@ export const redHeadband: Item = {
                         icon: RedHeadbandImage,
                         resourcesPerTurn: 1,
                         duration: 0,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
                     },
                 ],
             },
