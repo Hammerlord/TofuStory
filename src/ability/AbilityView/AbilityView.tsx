@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
@@ -218,14 +218,57 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
     });
 
     const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
-    const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
-        if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-            return playerInfo;
-        }
-    };
-    const hasConditionFulfilled = actions.some(
-        (action) => action.conditions && passesConditions({ getCalculationTarget, proc: action, source })
-    );
+
+    const hasConditionFulfilled = useMemo(() => {
+        return actions.some((action) => {
+            const conditionProcs = [];
+
+            if (action.conditions) {
+                conditionProcs.push(action);
+            }
+
+            if (Array.isArray(action.bonus)) {
+                conditionProcs.push(...action.bonus.map((bonus) => bonus));
+            } else if (action.bonus?.conditions) {
+                conditionProcs.push(action.bonus);
+            }
+
+            if (!conditionProcs.length) {
+                return;
+            }
+
+            if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+                return battle?.enemySide.some((combatant) => {
+                    const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
+                        if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+                            return playerInfo;
+                        }
+
+                        if (calculationTarget === CONDITION_TARGETS.TARGET) {
+                            return findCombatantData(() => state, combatant?.id);
+                        }
+                    };
+
+                    return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+                });
+            }
+
+            return battle?.playerSide.some((combatant) => {
+                const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
+                    if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+                        return playerInfo;
+                    }
+
+                    if (calculationTarget === CONDITION_TARGETS.TARGET) {
+                        return findCombatantData(() => state, combatant?.id);
+                    }
+                };
+
+                return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+            });
+        });
+    }, [ability, battle?.enemySide, battle?.playerSide]);
+
     const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, playerInfo });
     const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
