@@ -28,6 +28,8 @@ import { BATTLEFIELD_SIDES } from "./types";
 import { getRandomItem } from "../utils";
 import { ATTACK_POWER_COEFF } from "./constants";
 import { findCombatantData } from "./actions/actions";
+import { getUpdatedStats } from "./actions/getUpdatedStats";
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;

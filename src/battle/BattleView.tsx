@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { Effect, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Action, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -18,7 +18,7 @@ import TurnAnnouncement from "./Notification/TurnNotification";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { findCombatantData } from "./actions/actions";
+import { calculateTargetIndices, findCombatantData } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -28,6 +28,7 @@ import { BATTLEFIELD_SIDES, Event } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
 
 const useStyles = createUseStyles({
     root: {
@@ -617,6 +618,53 @@ const BattlefieldContainer = () => {
         targetRef: targets[selectedIndex]?.current,
     };
 
+    const abilityUsePreviews = ((): { [combatantId: string]: UpdatedCombatantStats[] } => {
+        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
+            return {};
+        }
+        const result = {};
+
+        selectedAbility.actions.forEach((action: Action) => {
+            if (![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target)) {
+                return;
+            }
+
+            const targetIndices = calculateTargetIndices({
+                action,
+                selectedIndex: hoveredCombatant.index,
+                side: hoveredCombatant.side,
+                actorData: findCombatantData(() => state, actorId),
+                battle: state.battle,
+            });
+
+            const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
+
+            // TODO we need to pass in a copy of the enemy that has each action applied to it progressively, or subsequent action previews can be inaccurate
+            // TODO nondeterministic attacks like Hammerang also display incorrectly
+            const updatedStatsProperties = {
+                actorId,
+                targetIds,
+                selectedIndex,
+                action,
+                getCombatantById: (id: string) => findCombatantData(() => state, id),
+                actionParent: selectedAbility,
+                hand,
+                deck,
+                discard,
+            };
+
+            getUpdatedStats(updatedStatsProperties).forEach(([statUpdate]) => {
+                if (!result[statUpdate.combatantId]) {
+                    result[statUpdate.combatantId] = [];
+                }
+
+                result[statUpdate.combatantId].push(statUpdate);
+            });
+        });
+
+        return result;
+    })();
+
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
             <div className={classes.root} onClick={handleBattlefieldClick}>
@@ -652,6 +700,7 @@ const BattlefieldContainer = () => {
                                         events={events}
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
+                                        previewStatUpdate={abilityUsePreviews[enemy?.id]}
                                         ref={enemyRefs[i]}
                                     />
                                 ))}

@@ -10,7 +10,7 @@ import Armor from "../icon/Armor";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
-import { ZzzIcon } from "../images/icons";
+import { CrossedSwordsIcon, ZzzIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import AttackPower from "./AttackPower";
 import CombatantTooltip from "./CombatantTooltip";
@@ -23,6 +23,7 @@ import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import { Combatant, Player } from "./types";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 
 const useStyles = createUseStyles({
     root: {
@@ -303,6 +304,36 @@ const useStyles = createUseStyles({
         animationDuration: "0.75s",
         zIndex: -1,
     },
+    "@keyframes fadeIn": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 1,
+        },
+    },
+    statUpdatePreview: {
+        zIndex: 5,
+        fontSize: "18px",
+        fontWeight: "bold",
+        background: "rgba(15, 15, 15, 0.8)",
+        padding: "8px",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        color: "white",
+        borderRadius: "4px",
+        animationName: "$fadeIn",
+        animationDuration: "0.5s",
+        animationFillMode: "forwards",
+        display: "flex",
+        top: 10,
+    },
+    statUpdate: {
+        display: "inline-block",
+        margin: "0 8px",
+        whiteSpace: "nowrap",
+    },
 });
 
 interface CurrentEvent extends Event {
@@ -320,6 +351,7 @@ const CombatantView = forwardRef(
             isSelected,
             isHighlighted,
             showReticle,
+            previewStatUpdate,
             ...other
         }: {
             combatant?: Combatant | Player;
@@ -330,6 +362,7 @@ const CombatantView = forwardRef(
             isSelected: boolean;
             isHighlighted: boolean;
             showReticle: boolean;
+            previewStatUpdate?: UpdatedCombatantStats[];
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },
@@ -493,6 +526,16 @@ const CombatantView = forwardRef(
                                 </>
                             )}
                         </div>
+
+                        {previewStatUpdate && oldState?.HP > 0 && (
+                            <div className={classes.statUpdatePreview}>
+                                {previewStatUpdate.map((statUpdate, i) => (
+                                    <div className={classes.statUpdate} key={["statUpdate", i].join("-")}>
+                                        <Icon icon={CrossedSwordsIcon} size="sm" /> {statUpdate.rawDamage || 0}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                         {oldState?.HP > 0 && (
                             <>
                                 <CombatantTooltip combatant={combatant} />

@@ -47,7 +47,7 @@ export const getUpdatedStats = ({
 }: {
     actorId?: string;
     targetIds: string[];
-    recipientIds: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
+    recipientIds?: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
     actionParent?: Ability | Item;
@@ -58,8 +58,8 @@ export const getUpdatedStats = ({
     discard: Ability[];
 }): [UpdatedCombatantStats, Action][] => {
     const actor = getCombatantById(actorId);
-    const targets = targetIds.map(getCombatantById);
-    const recipients = recipientIds?.map(getCombatantById);
+    const targets = targetIds.map(getCombatantById).filter((v) => v);
+    const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
     //const sourceTargets = (source.allTargetIds || []).map(getCalculationTarget); // TODO used to be used in calculating multipliers
 
     return (recipients || targets).map((target: CombatantInfo) => {
@@ -181,7 +181,7 @@ export const getUpdatedStats = ({
         return [
             {
                 combatantId: targetCombatant.id,
-                rawDamage: damage,
+                rawDamage: Math.min(targetCombatant.HP + targetCombatant.armor, damage),
                 healthDamage,
                 healing,
                 rawHealing,

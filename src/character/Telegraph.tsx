@@ -1,14 +1,13 @@
+import classNames from "classnames";
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
 import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
+import { CombatantInfo } from "../battle/types";
+import { isTurnActionPrevented } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { HourglassIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
-import { BATTLE_STATES } from "../battle/reducer";
-import { isStunnedOrFrozen, isTurnActionPrevented } from "../battle/utils";
-import classNames from "classnames";
-import { CombatantInfo } from "../battle/types";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {

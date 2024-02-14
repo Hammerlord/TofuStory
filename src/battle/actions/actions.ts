@@ -1305,6 +1305,38 @@ const checkHandleAutoCast = ({
     };
 };
 
+export const calculateTargetIndices = ({ action, selectedIndex, side, actorData, battle }): number[] => {
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect } = action;
+
+    const targetCombatant = battle[side][selectedIndex];
+    const area = calculateActionArea({ action, actor: actorData, target: targetCombatant });
+    const extraTargetIndices = shuffle(
+        getValidTargetIndices(battle[side], {
+            excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
+            excludeIndex: selectedIndex,
+        })
+    ).slice(0, extraTargets);
+
+    const isAffected = (combatant: Combatant | null, i: number): boolean => {
+        const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect);
+        const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+        if (excludePrimaryTarget) {
+            return inArea && i !== selectedIndex;
+        }
+
+        return inArea;
+    };
+
+    const combatants = battle[side];
+    return combatants.reduce((acc, character: Combatant | null, i: number) => {
+        if (isAffected(character, i)) {
+            acc.push(i);
+        }
+
+        return acc;
+    }, []);
+};
+
 const performAction = ({
     action,
     selectedIndex,
@@ -1330,44 +1362,11 @@ const performAction = ({
         const targetCombatant = getState().battle[side][selectedIndex];
         const area = calculateActionArea({ action, actor: actorData, target: targetCombatant });
 
-        const {
-            vacuum,
-            movement,
-            numTargets: extraTargets = 0,
-            excludePrimaryTarget,
-            secondaryAction,
-            autoCastAbilities,
-            retreat,
-            resurrect,
-        } = action;
+        const { vacuum, movement, numTargets: extraTargets = 0, secondaryAction, autoCastAbilities, retreat } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, selectedIndex }));
-
-        const extraTargetIndices = shuffle(
-            getValidTargetIndices(getState().battle[side], {
-                excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
-                excludeIndex: selectedIndex,
-            })
-        ).slice(0, extraTargets);
-
-        const isAffected = (combatant: Combatant | null, i: number): boolean => {
-            const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect);
-            const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
-            if (excludePrimaryTarget) {
-                return inArea && i !== selectedIndex;
-            }
-
-            return inArea;
-        };
-
         const combatants = getState().battle[side];
-        const targetIndices = combatants.reduce((acc, character: Combatant | null, i: number) => {
-            if (isAffected(character, i)) {
-                acc.push(i);
-            }
-
-            return acc;
-        }, []);
+        const targetIndices = calculateTargetIndices({ action, selectedIndex, side, actorData, battle: getState().battle });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
 
         const updatedStatsProps = {
@@ -1421,8 +1420,8 @@ const performAction = ({
 
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
         dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
-        // HACK: ensure that the selected index and "extra target indices" are hit first in playback
-        const allTargetIndices = uniq([selectedIndex, ...extraTargetIndices, ...targetIndices]);
+        // HACK: ensure that the selected index is hit first in playback
+        const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
 
         dispatch(
             pushPlaybackQueue({
