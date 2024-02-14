@@ -1727,8 +1727,9 @@ const counterattack2: Ability = {
     resourceCost: 1,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
+    description: "Next turn, when you are attacked, counter for 7 damage and inflict Bleed.",
+    overrideBodyText: true,
     level: 2,
-    description: "When attacked, counter for 7 damage and inflict Bleed.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1740,10 +1741,12 @@ const counterattack2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     image: NamelessSwordImage,
                     icon: NamelessSwordImage,
+                    duration: 2,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         ability: {
                             name: "Counter",
+                            image: NamelessSwordImage,
                             actions: [
                                 {
                                     type: ACTION_TYPES.ATTACK,
@@ -1758,6 +1761,9 @@ const counterattack2: Ability = {
                             ],
                         },
                     },
+                    onTurnStart: {
+                        removeEffect: true,
+                    },
                 },
             ],
         },
@@ -1765,12 +1771,9 @@ const counterattack2: Ability = {
 };
 
 export const counterattack: Ability = {
-    name: "Counter",
-    image: NamelessSwordImage,
-    resourceCost: 1,
-    depletedOnUse: true,
-    rarity: RARITIES.RARE,
-    description: "When attacked, counter for 5 damage and inflict Bleed.",
+    ...counterattack2,
+    level: 1,
+    description: "Next turn, when you are attacked, counter for 5 damage and inflict Bleed.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1782,10 +1785,12 @@ export const counterattack: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     image: NamelessSwordImage,
                     icon: NamelessSwordImage,
+                    duration: 2,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
                         ability: {
                             name: "Counter",
+                            image: NamelessSwordImage,
                             actions: [
                                 {
                                     type: ACTION_TYPES.ATTACK,
@@ -1799,6 +1804,9 @@ export const counterattack: Ability = {
                                 },
                             ],
                         },
+                    },
+                    onTurnStart: {
+                        removeEffect: true,
                     },
                 },
             ],
