@@ -1199,7 +1199,7 @@ const pushPlaybackQueue = ({
         let playbackTime = action.playbackTime;
         if (!playbackTime) {
             if (action.ricochet) {
-                playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 4) * Math.max(3, allTargetIndices.length);
+                playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 3) * Math.max(3, allTargetIndices.length);
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
             } else {
