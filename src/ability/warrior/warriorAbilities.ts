@@ -34,6 +34,7 @@ import {
     MetalAxeImage,
     CombatOrdersImage,
     InstinctualComboImage,
+    NamelessSwordImage,
 } from "../../images";
 import { FireworksIcon, TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
@@ -1736,4 +1737,90 @@ export const guillotine: Ability = {
         },
     ],
     upgrades: [guillotine2],
+};
+
+const counterattack2: Ability = {
+    name: "Counter",
+    image: NamelessSwordImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
+    level: 2,
+    description: "When attacked, counter for 7 damage and inflict Bleed.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Counter",
+                    type: EFFECT_TYPES.RAGE,
+                    class: EFFECT_CLASSES.BUFF,
+                    image: NamelessSwordImage,
+                    icon: NamelessSwordImage,
+                    onReceiveAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        ability: {
+                            name: "Counter",
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.ATTACK,
+                                    target: TARGET_TYPES.HOSTILE,
+                                    damage: 7,
+                                    effects: [
+                                        {
+                                            ...bleed,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const counterattack: Ability = {
+    name: "Counter",
+    image: NamelessSwordImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
+    description: "When attacked, counter for 5 damage and inflict Bleed.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Counter",
+                    type: EFFECT_TYPES.RAGE,
+                    class: EFFECT_CLASSES.BUFF,
+                    image: NamelessSwordImage,
+                    icon: NamelessSwordImage,
+                    onReceiveAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        ability: {
+                            name: "Counter",
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.ATTACK,
+                                    target: TARGET_TYPES.HOSTILE,
+                                    damage: 5,
+                                    effects: [
+                                        {
+                                            ...bleed,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [counterattack2],
 };

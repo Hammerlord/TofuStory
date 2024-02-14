@@ -262,6 +262,7 @@ export { default as MushroomSporeImage } from "./MushroomSpore.png";
 export { default as MutantRibbonPigImage } from "./MutantRibbonPig.gif";
 export { default as MutantSnailImage } from "./MutantSnail.png";
 export { default as MutateImage } from "./Mutate.png";
+export { default as NamelessSwordImage } from "./NamelessSword.png";
 export { default as NewspaperImage } from "./Newspaper.png";
 export { default as NewYearRiceSoupImage } from "./NewYearRiceSoup.png";
 export { default as NightShadeExplosionImage } from "./NightShadeExplosion.png";
