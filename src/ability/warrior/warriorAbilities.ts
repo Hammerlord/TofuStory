@@ -406,7 +406,7 @@ export const warBanner2: Ability = {
     name: "War Banner",
     level: 2,
     resourceCost: 2,
-    description: "When summoned or when your turn starts, grants 3 armor and +1 attack to allies within 2 spaces.",
+    description: "Every turn, grants 3 armor and +1 attack to allies within 2 spaces.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -466,7 +466,7 @@ export const warBanner2: Ability = {
 export const warBanner: Ability = {
     name: "War Banner",
     resourceCost: 2,
-    description: "When summoned or when your turn starts, grants 2 armor and +1 attack to nearby allies.",
+    description: "Every turn, grants 2 armor and +1 attack to nearby allies.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -752,7 +752,8 @@ export const sweepingReach2: Ability = {
     level: 2,
     resourceCost: 0,
     image: WeaponBoosterImage,
-    description: "Increases the area of your next 3 offensive abilities",
+    description: "+1 area for your next 3 offensive abilities",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -763,7 +764,7 @@ export const sweepingReach2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: WeaponBoosterImage,
-                    description: "Increases the area of your offensive abilities by 1",
+                    description: "Increases the area of your next offensive ability",
                     attackAreaIncrease: 1,
                     stacks: 3,
                     maxApplications: 1,
@@ -780,7 +781,8 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 0,
     image: WeaponBoosterImage,
-    description: "Increases the area of your next 2 offensive abilities",
+    description: "+1 area for your next 2 offensive abilities",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -791,7 +793,7 @@ export const sweepingReach: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: WeaponBoosterImage,
-                    description: "Increases the area of your next offensive ability by 1",
+                    description: "Increases the area of your next offensive ability",
                     attackAreaIncrease: 1,
                     stacks: 2,
                     maxApplications: 1,
@@ -1087,19 +1089,9 @@ export const dash2: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             drawCards: {
-                amount: 2,
+                amount: 3,
             },
             resources: 1,
-            effects: [
-                {
-                    name: "Dash",
-                    icon: WarriorMasteryImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    duration: 2,
-                    drawCardsPerTurn: 1,
-                },
-            ],
         },
     ],
 };
@@ -1115,16 +1107,6 @@ export const dash: Ability = {
             drawCards: {
                 amount: 2,
             },
-            effects: [
-                {
-                    name: "Dash",
-                    icon: WarriorMasteryImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    duration: 1,
-                    drawCardsPerTurn: 1,
-                },
-            ],
         },
     ],
     upgrades: [dash2],

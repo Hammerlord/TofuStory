@@ -190,6 +190,7 @@ export const judgment: Ability = {
     resourceCost: 3,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
+    description: "Deals damage equal to your armor",
     actions: [
         {
             damage: 1,
@@ -208,7 +209,7 @@ export const parashockGuard: Ability = {
     resourceCost: 1,
     image: ParashockGuardImage,
     depletedOnUse: true,
-    description: "(Armor gained equal to your current armor)",
+    description: "Gain armor equal to your current armor",
     rarity: RARITIES.RARE,
     actions: [
         {
