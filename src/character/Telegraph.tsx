@@ -41,6 +41,8 @@ const useStyles = createUseStyles({
     },
     abilityIcon: {
         width: 30,
+        maxHeight: 30,
+        objectFit: "contain",
         filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
     },
     "@keyframes upAndDown": {
