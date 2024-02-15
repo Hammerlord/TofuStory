@@ -320,7 +320,7 @@ export const lifeLink: Effect = {
                     multiplier: {
                         type: MULTIPLIER_TYPES.MAX_HP,
                         calculationTarget: CONDITION_TARGETS.ACTOR,
-                        value: 0.5,
+                        value: 0.3,
                     },
                     resurrect: true,
                 },
