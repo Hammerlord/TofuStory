@@ -347,7 +347,7 @@ const CombatantView = forwardRef(
         const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
 
-        const willPerformActions = events.some(({ actorId }) => actorId === combatant?.id);
+        const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
@@ -371,6 +371,7 @@ const CombatantView = forwardRef(
                 setOldState(combatant);
 
                 const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
+
                 if (isKillingBlow && !willPerformActions) {
                     setPlayDeathAnimation(true);
                 }
