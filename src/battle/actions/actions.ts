@@ -416,17 +416,23 @@ const handleDoTs =
         };
 
         const activeEffects = getEnabledEffects({ combatantInfo });
-        const damage = activeEffects.reduce((acc, effect) => {
+        const matchingDoTs = activeEffects.reduce((acc, effect) => {
             if (effect.type === dotType) {
-                return acc + (dotDamageMap[effect.type] || 0);
+                acc.push(effect);
             }
             return acc;
-        }, 0);
+        }, []);
+
+        const damage = matchingDoTs.length * dotDamageMap[dotType];
 
         if (damage) {
+            // Hack: If multiple characters applied DoT stacks, randomly pick one of them to attribute the full stack of damage to.
+            const actorId = getRandomItem(matchingDoTs.map((dot: CombatEffect) => dot.applierId));
+
             const updated = getUpdatedStats({
                 ...getState().battle,
                 targetIds: [combatantId],
+                actorId,
                 selectedIndex: index,
                 action: {
                     type: ACTION_TYPES.EFFECT,
@@ -443,6 +449,7 @@ const handleDoTs =
                         source: {
                             source: action,
                             type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            actorId,
                             targetId: combatantId,
                             statUpdate,
                             triggerHistory: [],
