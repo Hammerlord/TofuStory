@@ -1,3 +1,4 @@
+import { topaz } from "./../../item/items";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -677,15 +678,52 @@ export const checkEventTrigger = ({
         }
 
         combatant.effects.forEach((effect: CombatEffect) => {
-            const { uptime, turnsTriggerFrequency, [effectEventKey]: effectEvent, id } = effect;
+            const { [effectEventKey]: effectEvent, uptime, turnsTriggerFrequency, id } = effect;
+            if (!effectEvent) {
+                return;
+            }
+
+            // Dead characters generally cannot trigger effects except in case of killing blows
+            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
+            if (!usable) {
+                return;
+            }
+
+            const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
+
+            /**
+             * Update the number of times this effect event triggered (regardless of whether the actual effects went through or not).
+             * @see topaz for an example of what uses this metric
+             */
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        effects: combatant.effects.map((e) => {
+                            if (e.id !== id) {
+                                return e;
+                            }
+
+                            return {
+                                ...e,
+                                [effectEventKey]: {
+                                    ...e[effectEventKey],
+                                    eventTriggeredTimes,
+                                },
+                            };
+                        }),
+                    },
+                })
+            );
+
+            const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
+
             const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
             const historyKey = [effectEventKey, id].join("-");
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
-            // Dead characters generally cannot trigger effects except in case of killing blows
-            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
-            if (effectEvent && !alreadyTriggered && isTurnToTrigger && notTriggeringSameEffect && usable) {
+            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && usable) {
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent,

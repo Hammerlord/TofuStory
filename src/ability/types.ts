@@ -96,6 +96,10 @@ export interface EffectEventTrigger {
     chance?: number; // A percentage of occurrence, up to 1
     // Reduces a stack of the parent effect when this event triggers. If the parent effect has 1 or no stacks, this behaves like removeEffect.
     decrementStacks?: number;
+    // How many times did this event occur on the effect owner over the lifetime of the parent effect
+    eventTriggeredTimes?: number;
+    // How often should the effects proc compared to how often the event triggered. Modulo.
+    eventTriggerFrequency?: number;
 }
 
 export enum EFFECT_EVENT_KEYS {

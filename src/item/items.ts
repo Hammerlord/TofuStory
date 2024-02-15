@@ -257,29 +257,20 @@ export const redWhip: Item = {
 
 export const topaz: Item = {
     name: "Topaz",
-    description: "Every 5 effect abilities you use, gain Thorns.",
+    description: "Every 7 times you receive damage, gain Thorns.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: TopazImage,
     effects: [
         {
             name: "Topaz",
-            description: "Gaining thorns after using 5 effect abilities.",
+            description: "Gaining thorns after receiving damage 7 times.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAbility: {
+            onReceiveDamage: {
                 effects: [thorns],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: {
-                            amount: 5,
-                            type: [ACTION_TYPES.EFFECT],
-                        },
-                        comparator: "modulo",
-                    },
-                ],
+                eventTriggerFrequency: 7,
             },
         },
     ],
