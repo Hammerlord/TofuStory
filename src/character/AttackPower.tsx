@@ -47,7 +47,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return null;
     }
 
-    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage || 0;
+    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
     const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatantInfo)];
 
     const { damage, timesToAttack } = abilityToUse?.actions.reduce(
@@ -135,7 +135,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                     text={totalDamage || Math.max(0, totalAttackPower)}
                     className={classNames({
                         [classes.bonus]: totalAttackPower > 0,
-                        [classes.negative]: totalAttackPower < 0 || overrideDamage < combatant.damage,
+                        [classes.negative]: totalAttackPower < 0 || (!isNaN(overrideDamage) && overrideDamage < damage),
                         [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
                             [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
                         ),
