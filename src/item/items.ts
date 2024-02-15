@@ -111,6 +111,7 @@ export const stolenFence: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: StolenFenceImage,
+            disableDisplayIcon: true,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 5,

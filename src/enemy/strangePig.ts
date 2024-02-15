@@ -222,6 +222,7 @@ export const mutantRibbonPig: Minion = {
                             ...stun,
                             name: "Dazed",
                             duration: 2,
+                            bypassImmunity: true,
                         },
                     ],
                 },
@@ -257,7 +258,7 @@ export const mutantRibbonPig: Minion = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: OmokPigImage,
                         canBeSilenced: true,
-                        duration: 1,
+                        duration: 2,
                         onReceiveAttack: {
                             usableWhileStunned: false,
                             removeEffect: true,

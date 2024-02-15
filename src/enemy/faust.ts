@@ -182,31 +182,26 @@ export const ghostlyPuppeteerL: Minion = {
     ],
     effects: [
         {
+            type: EFFECT_TYPES.STEALTH,
+            class: EFFECT_CLASSES.BUFF,
+            name: "Stealth",
+            icon: CloudyIcon,
+            canBeSilenced: true,
+            description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+            onReceiveAttack: {
+                removeEffect: true,
+            },
+            duration: 1,
+        },
+        {
             name: "Ghostly",
-            description: "This character replenishes stealth every turn.",
+            description: "Occasionally stealths, becoming untargetable.",
             canBeSilenced: true,
             duration: Infinity,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SmilingImpIcon,
             turnsTriggerFrequency: 2,
-            onWaveStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        type: EFFECT_TYPES.STEALTH,
-                        class: EFFECT_CLASSES.BUFF,
-                        name: "Stealth",
-                        icon: CloudyIcon,
-                        canBeSilenced: true,
-                        description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
-                        onReceiveAttack: {
-                            removeEffect: true,
-                        },
-                        duration: 1,
-                    },
-                ],
-            },
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
@@ -220,7 +215,7 @@ export const ghostlyPuppeteerL: Minion = {
                         onReceiveAttack: {
                             removeEffect: true,
                         },
-                        duration: 1,
+                        duration: 2,
                     },
                 ],
             },

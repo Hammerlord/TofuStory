@@ -361,7 +361,7 @@ export const manoEnemy: Minion = {
                     effects: [
                         {
                             ...thorns,
-                            duration: 1,
+                            duration: 2,
                         },
                     ],
                 },

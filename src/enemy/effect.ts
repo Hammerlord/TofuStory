@@ -47,7 +47,7 @@ export const championsRibbon: Effect = {
                 class: EFFECT_CLASSES.BUFF,
                 icon: OmokPigImage,
                 canBeSilenced: true,
-                duration: 1,
+                duration: 2,
                 onReceiveAttack: {
                     usableWhileStunned: false,
                     removeEffect: true,
