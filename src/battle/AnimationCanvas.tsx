@@ -153,6 +153,8 @@ const AnimationCanvas = ({
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
 
+    const animationRefs = useRef([]);
+
     useEffect(() => {
         if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
             return;
@@ -174,13 +176,15 @@ const AnimationCanvas = ({
             spin = 720;
         }
 
+        animationRefs.current?.forEach((animation) => animation?.cancel());
+
         const options = { spin, rotation: rotate, playbackTime, rotateToFaceTarget };
         if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
             const animateProjectile = (target, projectileRefIndex: number) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
                 const refsTo = refsFrom + 1 * beamProjectileMultiplier;
                 const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
-                travel({
+                animationRefs.current = travel({
                     from: actorElement,
                     to: target,
                     object,
@@ -197,9 +201,9 @@ const AnimationCanvas = ({
                 allTargets.forEach(animateProjectile);
             }
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
+            animationRefs.current = travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
         } else if (animation === ANIMATION_TYPES.SPIN) {
-            travel({ from: actorElement, to: targetElement, ...options });
+            animationRefs.current = travel({ from: actorElement, to: targetElement, ...options });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {
@@ -220,7 +224,7 @@ const AnimationCanvas = ({
             }
 
             const refs = side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
-            travel({
+            animationRefs.current = travel({
                 object: refs[currentIndex]?.current,
                 from: refs[prevIndex]?.current,
                 to: refs[currentIndex]?.current,

@@ -153,8 +153,8 @@ export const travel = ({
     animationFrames[0].easing = "ease-out";
     animationFrames[animationFrames.length - 1].easing = "ease-in";
 
-    elementsToAnimate.forEach((el, i) => {
-        el.animate(animationFrames, {
+    return elementsToAnimate.map((el, i) => {
+        return el.animate(animationFrames, {
             duration: playbackTime,
             delay: i * 50,
         });
