@@ -76,7 +76,7 @@ export const lostNobleEcho: Minion = {
     abilities: [
         {
             name: "Lost Arrow",
-            image: ArrowImage,
+            image: AvengersArrowImage,
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,

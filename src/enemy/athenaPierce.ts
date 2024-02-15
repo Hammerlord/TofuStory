@@ -26,6 +26,7 @@ export const guardWolf: Minion = {
             description: "Grants 10 armor to allies and dispels negative status effects.",
             castTime: 1,
             resourceCost: 3,
+            image: WolfImage,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
