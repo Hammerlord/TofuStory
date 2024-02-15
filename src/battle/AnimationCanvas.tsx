@@ -174,7 +174,7 @@ const AnimationCanvas = ({
             spin = 720;
         }
 
-        const options = { spin, rotation: rotate, playbackTime };
+        const options = { spin, rotation: rotate, playbackTime, rotateToFaceTarget };
         if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
             const animateProjectile = (target, projectileRefIndex: number) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
@@ -184,7 +184,6 @@ const AnimationCanvas = ({
                     from: actorElement,
                     to: target,
                     object,
-                    rotateToFaceTarget,
                     sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                     fadeIn: animation === ANIMATION_TYPES.BEAM,

@@ -131,7 +131,7 @@ export const chill: Effect = {
     icon: SnowflakeIcon,
     type: EFFECT_TYPES.CHILL,
     class: EFFECT_CLASSES.DEBUFF,
-    duration: 5,
+    duration: 3,
     attackPower: -1,
     maxApplications: 3,
     description: "Reduces attack power by 1. Max 3 stacks.",

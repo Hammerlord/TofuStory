@@ -25,6 +25,8 @@ import {
     HighWisdomImage,
     HolyMagicShellImage,
     IcicleImage,
+    IcicleMinionImage,
+    IciclesPortraitImage,
     IgniteImage,
     InfinityImage,
     InkSackImage,
@@ -84,6 +86,7 @@ import {
     EFFECT_TYPES,
     Effect,
     MULTIPLIER_TYPES,
+    Minion,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -2626,4 +2629,82 @@ export const wardBooster: Ability = {
         },
     ],
     upgrades: [wardBooster2],
+};
+
+const icicleMinion: Minion = {
+    name: "Icicle",
+    image: IcicleMinionImage,
+    maxHP: 1,
+    abilities: [
+        {
+            name: "Strike",
+            image: IcicleMinionImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    animationOptions: {
+                        rotateToFaceTarget: true,
+                    },
+                    effects: [
+                        {
+                            ...chill,
+                        },
+                    ],
+                    secondaryAction: {
+                        target: "actor",
+                        damage: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const icicles: Ability = {
+    name: "Icicles",
+    image: IciclesPortraitImage,
+    rarity: RARITIES.RARE,
+    depletedOnUse: true,
+    description: "For your next 3 offense spells that cost 1+, summon a 3/1 Icicle.",
+    resourceCost: 1,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Icicles",
+                    description: "When you cast a 1+ cost offense spell, summon a 3/1 Icicle.",
+                    icon: IcicleMinionImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    maxApplications: 1,
+                    stacks: 3,
+                    onOffensiveAbility: {
+                        ability: {
+                            name: "Icicle",
+                            image: IcicleMinionImage,
+                            actions: [
+                                {
+                                    target: TARGET_TYPES.SELF,
+                                    type: ACTION_TYPES.EFFECT,
+                                    summon: [{ minion: [icicleMinion] }],
+                                },
+                            ],
+                        },
+                        conditions: [
+                            {
+                                comparator: "gt",
+                                resourceCost: 0,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            },
+                        ],
+                        decrementStacks: 1,
+                    },
+                },
+            ],
+        },
+    ],
 };

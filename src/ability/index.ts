@@ -50,6 +50,7 @@ import {
     volatileMagic,
     wishUponAStar,
     zap,
+    icicles,
 } from "./magician/magicianAbilities";
 import {
     darkImpale,
@@ -180,6 +181,7 @@ export const JOB_CARD_MAP = {
             frostfireBlast,
             manaGem,
             wardBooster,
+            icicles,
         ],
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },

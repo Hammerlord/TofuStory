@@ -218,7 +218,7 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const selectedAbility = selectedMinion?.abilities?.[0] || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
     const actorId: string | undefined = (selectedMinion || player)?.id;
     const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
 
@@ -230,7 +230,16 @@ const BattlefieldContainer = () => {
             (acc: number, { attackPower = 0 }) => acc + attackPower,
             0
         );
-        const totalDamage = (ally.damage || 0) + damageFromEffects;
+
+        const allyAttackDamage = ally.abilities.reduce((acc, ability) => {
+            ability?.actions?.forEach((action) => {
+                acc += action.damage || 0;
+            });
+
+            return acc;
+        }, 0);
+
+        const totalDamage = allyAttackDamage + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
     const noMoreMoves =
@@ -723,6 +732,7 @@ const BattlefieldContainer = () => {
                                 {(events[0]?.enemySide || enemySide).map((enemy, i: number) => (
                                     <CombatantView
                                         combatant={enemy}
+                                        isEnemy={true}
                                         onClick={(e) => handleEnemyClick(e, i)}
                                         isSelected={false}
                                         onMouseEnter={() =>
@@ -757,6 +767,7 @@ const BattlefieldContainer = () => {
                                         return (
                                             <CombatantView
                                                 combatant={ally}
+                                                isEnemy={false}
                                                 onClick={(e) => handleAllyClick(e, i)}
                                                 isSelected={selectedAllyIndex === i}
                                                 onMouseEnter={() =>

@@ -315,6 +315,7 @@ const CombatantView = forwardRef(
     (
         {
             combatant,
+            isEnemy,
             onClick,
             isTargeted,
             event,
@@ -326,6 +327,7 @@ const CombatantView = forwardRef(
             ...other
         }: {
             combatant?: Combatant | Player;
+            isEnemy: boolean;
             onClick: (event: any) => void;
             isTargeted: boolean;
             event: CurrentEvent;
@@ -453,7 +455,7 @@ const CombatantView = forwardRef(
                         </span>
                     )}
 
-                    {oldState?.HP > 0 && (
+                    {oldState?.HP > 0 && isEnemy && (
                         <div className={classes.header}>
                             <Telegraph combatantInfo={combatantInfo} />
                             {showResourceBar && <ResourceBar resources={oldState.resources} maxResources={oldState.maxResources} />}

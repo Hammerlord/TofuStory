@@ -190,6 +190,8 @@ export { default as HuntersBowImage } from "./HuntersBow.png";
 export { default as HurricaneImage } from "./Hurricane.png";
 export { default as HyperBodyImage } from "./HyperBody.png";
 export { default as IcicleImage } from "./Icicle.png";
+export { default as IcicleMinionImage } from "./IcicleMinion.png";
+export { default as IciclesPortraitImage } from "./IciclesPortrait.png";
 export { default as IfritImage } from "./Ifrit.png";
 export { default as IgniteImage } from "./Ignite.png";
 export { default as InfinityImage } from "./Infinity.png";
