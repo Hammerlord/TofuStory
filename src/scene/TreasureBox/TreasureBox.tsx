@@ -113,6 +113,7 @@ const useStyles = createUseStyles({
         transitionTimingFunction: "ease-out",
         animationDelay: "0.25s",
         animationFillMode: "forwards",
+        paddingBottom: 100,
     },
     mesos: {
         lineHeight: "28px",
@@ -121,6 +122,17 @@ const useStyles = createUseStyles({
         "& img": {
             verticalAlign: "bottom",
         },
+    },
+    itemsContainer: {
+        display: "flex",
+    },
+    item: {
+        margin: 16,
+    },
+    border: {
+        borderTop: 0,
+        width: 250,
+        borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
     },
     itemName: {
         verticalAlign: "top",
@@ -177,6 +189,9 @@ const useStyles = createUseStyles({
     },
     buttonContainer: {
         minHeight: "38px",
+        zIndex: 10,
+        position: "relative",
+        marginTop: 32,
     },
     warning: {
         color: "rgb(255, 225, 200)",
@@ -194,6 +209,8 @@ const { updatePlayer } = playerStateSlice?.actions || {};
 
 const CURSE_RARE_BONUS = 0.4;
 const CURSE_UNCOMMON_BONUS = 0.2;
+const BASE_NUM_CHOICES = 3; // How many choices are offered
+const maxAmount = 1; // How many items the player can choose
 
 const TreasureBox = ({
     onExit,
@@ -218,13 +235,13 @@ const TreasureBox = ({
     const [completed, setCompleted] = useState(!Puzzle);
     const [isChestOpened, setIsChestOpened] = useState(false);
     const [items, setItems] = useState([]);
+    const [selectedItemIndices, setSelectedItemIndices]: [number[], Function] = useState([]);
     const [mesos, setMesos] = useState(0);
     const dispatch = useAppDispatch();
 
     const handleClickChest = () => {
         if (completed) {
             setIsChestOpened(true);
-            onLoot({ mesos, items });
         }
     };
 
@@ -234,12 +251,16 @@ const TreasureBox = ({
             setItems(initItems);
         } else {
             const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
-            const equipment = getRandomItem(rollItemPool({ player, bonuses }));
-            if (equipment) {
-                setItems([equipment]);
-            } else {
-                mesosToSet += getRandomInt(100, 150);
-            }
+            const treasure = [];
+            Array.from({ length: BASE_NUM_CHOICES }).forEach(() => {
+                const equipment = getRandomItem(rollItemPool({ player, bonuses }));
+                if (equipment) {
+                    treasure.push(equipment);
+                } else {
+                    mesosToSet += getRandomInt(100, 150);
+                }
+            });
+            setItems(treasure);
         }
 
         if (Array.isArray(initMesos)) {
@@ -263,6 +284,26 @@ const TreasureBox = ({
         }
     };
 
+    const handleClickSelect = () => {
+        onLoot({ mesos, items: selectedItemIndices.map((i) => items[i]) });
+        onExit();
+    };
+
+    const handleClickItem = (index: number) => {
+        if (maxAmount === 1) {
+            setSelectedItemIndices([index]);
+            return;
+        }
+        if (selectedItemIndices.includes(index)) {
+            // Deselect if selected
+            setSelectedItemIndices((prev) => prev.filter((i) => i !== index));
+            return;
+        }
+        if (selectedItemIndices.length < maxAmount) {
+            setSelectedItemIndices((prev) => [...prev, index]);
+        }
+    };
+
     return (
         <Overlay>
             <div className={classes.bannerContainer}>
@@ -283,7 +324,7 @@ const TreasureBox = ({
                     />
                     {isChestOpened && (
                         <div className={classNames(classes.treasureContainer)}>
-                            <div>You obtain:</div>
+                            <div>You obtain</div>
 
                             {mesos > 0 && mesos < 50 && (
                                 <div className={classes.mesos}>
@@ -295,9 +336,19 @@ const TreasureBox = ({
                                     <img src={MesoCoinImage} /> {mesos}
                                 </div>
                             )}
-                            {items.map((item, i) => (
-                                <ItemView item={item} key={[item.name, i].join("-")} highlight={true} />
-                            ))}
+                            <hr className={classes.border} />
+                            <h3>Pick an item:</h3>
+                            <div className={classes.itemsContainer}>
+                                {items.map((item, i) => (
+                                    <ItemView
+                                        item={item}
+                                        key={[item.name, i].join("-")}
+                                        highlight={selectedItemIndices.includes(i)}
+                                        className={classes.item}
+                                        onClick={() => handleClickItem(i)}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     )}
                     {!completed && (
@@ -334,8 +385,8 @@ const TreasureBox = ({
                         </Button>
                     )}
                     {isChestOpened && (
-                        <Button color={"primary"} onClick={onExit}>
-                            {"Continue Journey"}
+                        <Button color={"primary"} onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
+                            {"Select"}
                         </Button>
                     )}
                 </div>

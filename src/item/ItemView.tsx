@@ -51,14 +51,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const ItemView = ({ item, highlight }: { item: Item; highlight?: boolean }) => {
+const ItemView = ({ item, highlight, className, onClick }: { item: Item; highlight?: boolean; className?: string; onClick? }) => {
     const classes = useStyles();
     return (
         <div
             key={item.name}
-            className={classNames(classes.item, {
+            className={classNames(classes.item, className, {
                 [classes.highlight]: highlight,
             })}
+            onClick={onClick}
         >
             <img src={item.image} className={classes.itemImage} />
             <div>{item.name}</div>
