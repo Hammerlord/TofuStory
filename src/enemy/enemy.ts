@@ -1156,6 +1156,13 @@ export const snailFriend: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onReceiveDamage: {
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numFriendly: 5,
+                        comparator: "lt",
+                    },
+                ],
                 removeEffect: true,
                 ability: {
                     name: "Get in here!",
@@ -1198,6 +1205,13 @@ export const bob: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onReceiveDamage: {
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        numFriendly: 5,
+                        comparator: "lt",
+                    },
+                ],
                 ability: {
                     name: "Get in here!",
                     image: SnailImage,
