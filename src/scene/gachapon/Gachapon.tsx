@@ -1,16 +1,27 @@
-import { Minion } from "../../ability/types";
+import { EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { Wave } from "../../battle/types";
-import { GachaponImage } from "../../images";
-import { bluePotion, redPotion } from "../../item/items";
-import { RARITIES } from "../../item/types";
+import { GachaponImage, MesoImage } from "../../images";
 import { Scene } from "../types";
 import GachaponScene from "./GachaponScene";
 
 const gachaponMachine: Minion = {
     name: "Gachapon Machine",
     image: GachaponImage,
-    maxHP: 500,
+    maxHP: 300,
     abilities: [],
+    effects: [
+        {
+            name: "Loose Change",
+            icon: MesoImage,
+            description: "Gives you 1 meso each time you hit it.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onReceiveDamage: {
+                mesos: 1,
+                targetType: TRIGGER_TARGET_TYPES.ACTOR,
+            },
+        },
+    ],
 };
 
 const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves: Wave[] } = {
@@ -47,7 +58,7 @@ export const gachaponEvents: Scene = {
                                 {
                                     conditions: [
                                         {
-                                            battleTotalDamage: 300,
+                                            battleTotalDamage: 200,
                                             comparator: "gt",
                                         },
                                     ],
@@ -83,7 +94,7 @@ export const gachaponEvents: Scene = {
                                 {
                                     conditions: [
                                         {
-                                            battleTotalDamage: 99,
+                                            battleTotalDamage: 100,
                                             comparator: "gt",
                                         },
                                     ],
@@ -117,7 +128,12 @@ export const gachaponEvents: Scene = {
                                     ],
                                 },
                                 {
-                                    conditions: [],
+                                    conditions: [
+                                        {
+                                            battleTotalDamage: 49,
+                                            comparator: "gt",
+                                        },
+                                    ],
                                     next: [
                                         {
                                             speaker: gachaponMachine,
@@ -140,6 +156,15 @@ export const gachaponEvents: Scene = {
                                                     isExit: true,
                                                 },
                                             ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    conditions: [],
+                                    next: [
+                                        {
+                                            speaker: gachaponMachine,
+                                            dialog: ["Nothing happens. The machine stands unaffected by your assault."],
                                         },
                                     ],
                                 },
