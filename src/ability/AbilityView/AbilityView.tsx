@@ -340,6 +340,8 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
         }
     }
 
+    const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player.resources;
+
     return (
         <AbilityTooltip ability={ability}>
             <div className={classNames(classes.root, className)}>
@@ -348,7 +350,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
                     className={classNames(classes.inner, {
                         [classes.selectedAbility]: isSelected,
                         [classes.ephemeral]: removeAfterTurn,
-                        [classes.glow]: !disableGlow && state.battle && hasBonus,
+                        [classes.glow]: canUseAbility && !disableGlow && state.battle && hasBonus,
                     })}
                     style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                 >
