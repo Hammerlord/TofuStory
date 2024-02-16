@@ -65,7 +65,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             };
         },
         { damage: 0, timesToAttack: 0 }
-    ) || { damage: 0, timesToAttack: 1 };
+    ) || { damage: 0, timesToAttack: 0 };
 
     const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
         return !excludeEffectOwner && attackPower !== 0;
@@ -83,7 +83,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     })();
 
     const hasYetToCastAbility = !casting && abilityToUse?.castTime;
-    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatant)) {
+    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatant) || !timesToAttack) {
         return null;
     }
 
