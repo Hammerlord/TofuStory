@@ -125,6 +125,7 @@ const faustFight = {
             },
         },
     ],
+    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/lywsorddis/54.%20Eregos.mp3",
 };
 
 const glassShoeDialog = [
