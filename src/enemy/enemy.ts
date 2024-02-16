@@ -1184,6 +1184,7 @@ export const bob: Minion = {
     name: "Bob",
     maxHP: 30,
     image: SnailImage,
+    isElite: true,
     abilities: [
         {
             name: "Attack",

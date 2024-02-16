@@ -4,6 +4,7 @@ import { NPC } from "./types";
 const bobEncounter = {
     characters: [bob.name],
     waves: [{ enemies: [null, null, bob, null, null] }],
+    backgroundMusic: "https://downloads.khinsider.com/game-soundtracks/album/maplestory-music/47.%2520Plot%2520of%2520Pixie.mp3",
 };
 
 export const bobSnailScene = {
@@ -55,7 +56,7 @@ export const bobSnailScene = {
                                 {
                                     speaker: bob,
                                     dialog: [
-                                        "Though I mean, you might have better luck than me. You look like a {{ class }}. Never seen that before.",
+                                        "Though I mean, you might have better luck than me. You look like a {{ class }}. Never seen that before. I mean, I've seen human {{ classPlural }}, but not monster ones.",
                                     ],
                                 },
                                 {
