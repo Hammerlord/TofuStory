@@ -1348,6 +1348,10 @@ export const malady: Minion = {
                     movement: 3,
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.MOVEMENT,
+                },
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
                     effects: [
                         {
                             ...stealth,
@@ -1368,7 +1372,7 @@ export const malady: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.EFFECT,
                     effects: [
-                        { ...poison, duration: 1 },
+                        { ...poison, duration: 2 },
                         { ...burn, duration: 1 },
                     ],
                 },
