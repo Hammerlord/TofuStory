@@ -9,19 +9,19 @@ const useStyles = createUseStyles({
         borderRadius: "32px",
         verticalAlign: "bottom",
         "&.sm": {
-            width: "20px",
-            height: "20px",
-            minWidth: "20px",
-            minHeight: "20px",
+            width: "22px",
+            height: "22px",
+            minWidth: "22px",
+            minHeight: "22px",
             "& .text": {
                 fontSize: "14px",
             },
         },
         "&.md": {
-            width: "28px",
-            height: "28px",
-            minWidth: "28px",
-            minHeight: "28px",
+            width: "30px",
+            height: "30px",
+            minWidth: "30px",
+            minHeight: "30px",
         },
         "&.lg": {
             width: "36px",
