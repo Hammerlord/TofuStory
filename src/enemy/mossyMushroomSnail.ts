@@ -1,7 +1,8 @@
-import { attack } from "./abilities";
-import { agedShell, toughShell, weightedShell } from "./effect";
+import { preventArmorDecay } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { GreenFairiesImage, MossyMushroomImage, MossySnailImage, MushroomOmokImage } from "../images";
+import { attack } from "./abilities";
+import { agedShell, weightedShell } from "./effect";
 
 export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
@@ -94,7 +95,7 @@ export const mossySnail: Minion = {
     ],
     effects: [
         agedShell,
-        toughShell,
+        preventArmorDecay,
         {
             ...weightedShell,
             skillBonus: [

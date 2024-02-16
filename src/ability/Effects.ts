@@ -2,6 +2,7 @@ import { BombImage, GemHeartImage, NimbleJewelCImage, PoisonImage, UpMATTImage, 
 import {
     AngerIcon,
     BloodIcon,
+    BlueBlackShieldIcon,
     CactusIcon,
     CloudyIcon,
     DizzyIcon,
@@ -12,6 +13,8 @@ import {
     MedalIcon,
     MilitaryMedalIcon,
     NoStunIcon,
+    PristineBlueBlackShieldIcon,
+    PristineShieldIcon,
     ShieldIcon,
     SnowflakeIcon,
     SpeechBubbleIcon,
@@ -471,4 +474,32 @@ export const armorUp: Effect = {
     class: EFFECT_CLASSES.BUFF,
     type: EFFECT_TYPES.NONE,
     armorReceived: 1,
+};
+
+export const preventArmorDecay: Effect = {
+    name: "Pristine Armor",
+    icon: PristineShieldIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    preventArmorDecay: true,
+    canBeSilenced: true,
+};
+
+export const defUp: Effect = {
+    name: "Defense Up",
+    icon: BlueBlackShieldIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    attackDamageReceived: -1,
+};
+
+export const pristineDefense: Effect = {
+    name: "Pristine Defense Up",
+    icon: PristineBlueBlackShieldIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    preventArmorDecay: true,
+    attackDamageReceived: -1,
 };

@@ -1,6 +1,7 @@
 export { default as AngerIcon } from "./Anger.svg";
 export { default as ArrowDownIcon } from "./ArrowDown.svg";
 export { default as BloodIcon } from "./Blood.svg";
+export { default as BlueBlackShieldIcon } from "./BlueBlackShield.svg";
 export { default as BoomIcon } from "./Boom.svg";
 export { default as CactusIcon } from "./Cactus.svg";
 export { default as CampingIcon } from "./Camping.svg";
@@ -29,6 +30,8 @@ export { default as MountainIcon } from "./Mountain.svg";
 export { default as MuscleIcon } from "./Muscle.svg";
 export { default as MusicIcon } from "./Music.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
+export { default as PristineBlueBlackShieldIcon } from "./PristineBlueBlackShield.svg";
+export { default as PristineShieldIcon } from "./PristineShield.svg";
 export { default as QuestionMarkIcon } from "./QuestionMark.svg";
 export { default as ShieldIcon } from "./Shield.svg";
 export { default as SmilingImpIcon } from "./SmilingImp.svg";

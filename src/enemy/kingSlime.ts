@@ -1,6 +1,6 @@
-import { KingSlimeImage, SlideImage, SlimeBubbleImage, SlimeIdleImage, SlimeOmokImage, SquishyLiquidImage } from "../images";
+import { KingSlimeImage, SlideImage, SlimeIdleImage, SlimeOmokImage } from "../images";
 import { MountainIcon } from "../images/icons";
-import { hardy, raging, stun } from "./../ability/Effects";
+import { hardy, pristineDefense, raging, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -78,25 +78,11 @@ export const kingSlimeEnemy: Minion = {
     maxHP: 300,
     armor: 25,
     effects: [
-        {
-            ...hardy,
-            name: "Thick Slime",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -3,
-            canBeSilenced: false,
-            icon: SquishyLiquidImage,
-            disableDisplayIcon: false,
-        },
-        {
-            name: "Bubbly",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            icon: SlimeBubbleImage,
-            description: "Preventing armor decay.",
-        },
+        hardy,
+        // TODO use stacks
+        pristineDefense,
+        pristineDefense,
+        pristineDefense,
         {
             name: "Squishy Inside",
             description: "When this character receives direct damage, it will burst into three vulnerable slimes.",

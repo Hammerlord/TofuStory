@@ -1,4 +1,4 @@
-import { hardy, poison, stealth, bleed } from "../ability/Effects";
+import { hardy, poison, stealth, bleed, preventArmorDecay } from "../ability/Effects";
 import {
     AvengerImage,
     KumbiImage,
@@ -44,16 +44,7 @@ const shadowClone: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "Shadow Clone",
-            icon: BystanderImage,
-            description: "Preventing armor decay.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            preventArmorDecay: true,
-        },
-    ],
+    effects: [preventArmorDecay],
 };
 
 const realShadow: Minion = {

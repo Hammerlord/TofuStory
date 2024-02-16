@@ -60,7 +60,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
         textShadow: Array.from({ length: 10 })
-            .map(() => "0 0 2px black")
+            .map(() => "0 0 3px black")
             .join(", "),
         fontSize: "16px",
         fontWeight: "bold",

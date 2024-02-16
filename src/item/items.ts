@@ -1,7 +1,6 @@
-import { drawCards } from "./../battle/actions/actions";
 import { armorUp, burn } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
-import { chill, poison, thorns, bleed } from "../ability/Effects";
+import { chill, poison, thorns, bleed, preventArmorDecay } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -374,12 +373,7 @@ export const panlid: Item = {
                 armor: 10,
                 effects: [
                     {
-                        name: "Pan Lid",
-                        description: "Preventing armor decay.",
-                        icon: PanlidImage,
-                        class: EFFECT_CLASSES.BUFF,
-                        type: EFFECT_TYPES.NONE,
-                        preventArmorDecay: true,
+                        ...preventArmorDecay,
                         duration: 2,
                     },
                 ],

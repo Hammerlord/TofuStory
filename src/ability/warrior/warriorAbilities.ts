@@ -1,3 +1,4 @@
+import { preventArmorDecay } from "./../Effects";
 import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
@@ -1126,11 +1127,7 @@ export const ironBody2: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Iron Body",
-                    icon: IronBodyImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    preventArmorDecay: true,
+                    ...preventArmorDecay,
                     duration: 2,
                 },
             ],
@@ -1150,11 +1147,7 @@ export const ironBody: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Iron Body",
-                    icon: IronBodyImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    preventArmorDecay: true,
+                    ...preventArmorDecay,
                     duration: 1,
                 },
             ],

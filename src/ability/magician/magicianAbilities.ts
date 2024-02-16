@@ -91,7 +91,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, stun } from "./../Effects";
+import { armorUp, burn, chill, freeze, stun, preventArmorDecay } from "./../Effects";
 
 const energyBolt2: Ability = {
     name: "Energy Bolt",
@@ -2146,11 +2146,7 @@ export const arcaneWard2: Ability = {
             armor: 20,
             effects: [
                 {
-                    name: "Arcane Ward",
-                    icon: ElementalAdaptationFPImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    preventArmorDecay: true,
+                    ...preventArmorDecay,
                     duration: 1,
                 },
             ],

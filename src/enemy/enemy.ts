@@ -3,7 +3,6 @@ import {
     BananaPeelImage,
     BlackManualImage,
     BlueSnailImage,
-    BlueSnailShellImage,
     BombImage,
     CurseEyeImage,
     DarkSightImage,
@@ -40,7 +39,6 @@ import {
     SlimeIdleImage,
     SnailImage,
     SnailShellImage,
-    SquishyLiquidImage,
     StumpImage,
     SubiImage,
     WeaponMasteryImage,
@@ -60,7 +58,7 @@ import {
     ZzzIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
-import { burn, elite, hardy, poison, raging, stealth, stun, thorns, bleed } from "./../ability/Effects";
+import { bleed, burn, elite, hardy, poison, raging, stealth, stun, thorns, pristineDefense } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -207,12 +205,8 @@ export const slime: Minion = {
     ],
     effects: [
         {
-            name: "Thick Slime",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -1,
-            icon: SquishyLiquidImage,
-            description: "Prevents armor decay. While this character has armor:",
+            ...pristineDefense,
+            description: "While this character has armor:",
             preventArmorDecay: true,
             conditions: [
                 {

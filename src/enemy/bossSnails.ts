@@ -1,5 +1,3 @@
-import { attack } from "./abilities";
-import { snail, blueSnail, redSnail } from "./enemy";
 import {
     BlueSnailShellImage,
     ManoImage,
@@ -12,7 +10,8 @@ import {
     SnailShellImage,
     WeaponMasteryImage,
 } from "../images";
-import { hardy, thorns } from "./../ability/Effects";
+import { JapaneseOgreIcon } from "../images/icons";
+import { hardy, thorns, preventArmorDecay } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -23,7 +22,8 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { JapaneseOgreIcon } from "../images/icons";
+import { attack } from "./abilities";
+import { blueSnail, redSnail, snail } from "./enemy";
 
 export const minionSnail: Minion = {
     ...snail,
@@ -130,15 +130,7 @@ export const mutantSnailEnemy: Minion = {
     armor: 75,
     mesos: 100,
     effects: [
-        {
-            name: "Tough Shell",
-            icon: BlueSnailShellImage,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "Prevents armor decay.",
-        },
+        preventArmorDecay,
         {
             ...hardy,
             name: "Tyrant Shell",
@@ -392,15 +384,7 @@ export const manoEnemy: Minion = {
             description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
             canBeSilenced: false,
         },
-        {
-            name: "Tough Shell",
-            icon: BlueSnailShellImage,
-            preventArmorDecay: true,
-            canBeSilenced: true,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "Prevents armor decay.",
-        },
+        preventArmorDecay,
         {
             name: "Weighted Shell",
             icon: RedSnailShellImage,

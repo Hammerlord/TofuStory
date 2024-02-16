@@ -1,3 +1,4 @@
+import { defUp } from "./../ability/Effects";
 import { hardy, poison } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -23,7 +24,6 @@ import {
     SapOfNependeathImage,
     ShiningFairyImage,
     SnailShellImage,
-    StolenFenceImage,
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
@@ -85,8 +85,7 @@ export const pigHeaded: Effect = {
 
 export const hardwood: Effect = {
     name: "Hardwood",
-    description:
-        "When attacked, character receives -1 damage from additional attacks for the turn. Effect is disabled if the character is burning.",
+    description: "When attacked, character gains +1 defense up for the rest of the turn. Effect is disabled if the character is burning.",
     icon: FirewoodImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -102,14 +101,11 @@ export const hardwood: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {
-                name: "Hardwood Barricade",
+                ...defUp,
+                name: "Barricade",
                 description: "Effect is disabled if the character is burning.",
-                icon: StolenFenceImage,
                 attackDamageReceived: -1,
-                canBeSilenced: true,
                 duration: 1,
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -259,16 +255,6 @@ export const agedShell: Effect = {
     icon: SnailShellImage,
     description: "After being stunned or frozen, gains temporary immunity to those effects.",
     canBeSilenced: false,
-};
-
-export const toughShell: Effect = {
-    name: "Tough Shell",
-    icon: BlueSnailShellImage,
-    preventArmorDecay: true,
-    canBeSilenced: true,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    description: "Prevents armor decay.",
 };
 
 export const weightedShell: Effect = {

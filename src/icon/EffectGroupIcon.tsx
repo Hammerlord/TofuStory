@@ -103,7 +103,23 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         lifeOnHit = 0,
         armorReceived = 0,
         drawCardsPerTurn = 0,
-    } = effects[0];
+        preventArmorDecay,
+    } = effects.reduce((acc, cur, i) => {
+        if (i === 0) {
+            return acc;
+        }
+        const updated = {
+            ...acc,
+        };
+
+        for (const property in cur) {
+            if (typeof cur[property] === "number") {
+                updated[property] += cur[property];
+            }
+        }
+
+        return updated;
+    }, effects[0]);
 
     if (!icon) {
         return null;
@@ -167,12 +183,12 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     )}
                     {attackDamageReceived !== 0 && (
                         <div>
-                            Receiving{" "}
+                            ◆
                             <Icon
                                 icon={<CrossedSwordsIcon />}
                                 text={attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`}
                             />
-                            damage from attacks
+                            damage taken from attacks
                         </div>
                     )}
                     {armor > 0 && (
@@ -216,6 +232,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                         </div>
                     ))}
                 </div>
+                {preventArmorDecay && <div>Prevents armor decay</div>}
                 {canBeSilenced && <div>◆ Can be silenced</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
