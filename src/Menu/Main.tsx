@@ -281,27 +281,27 @@ const Main = () => {
     let handleUseItem;
     if (battle) {
         if (battle.isPlayerTurn) {
-            handleUseItem = (itemIndex: number) => {
-                const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
+            handleUseItem = (item: Item) => {
+                const { upgradeCard, removeCard } = item;
                 if (!upgradeCard && !removeCard) {
-                    dispatch(useConsumable(itemIndex));
+                    dispatch(useConsumable(item));
                 }
             };
         }
     } else {
-        handleUseItem = (itemIndex: number) => {
-            const { upgradeCard, removeCard } = player.items[itemIndex] as Item;
+        handleUseItem = (item: Item) => {
+            const { upgradeCard, removeCard } = item;
             if (upgradeCard) {
-                setUpgradingAbility(() => () => dispatch(useConsumable(itemIndex)));
+                setUpgradingAbility(() => () => dispatch(useConsumable(item)));
                 return;
             }
 
             if (removeCard) {
-                setRemovingAbility(() => () => dispatch(useConsumable(itemIndex)));
+                setRemovingAbility(() => () => dispatch(useConsumable(item)));
                 return;
             }
 
-            dispatch(useConsumable(itemIndex));
+            dispatch(useConsumable(item));
         };
     }
 

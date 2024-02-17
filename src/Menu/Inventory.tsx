@@ -17,11 +17,22 @@ const useStyles = createUseStyles({
         justifyContent: "center",
         height: "100%",
         boxSizing: "border-box",
+        position: "relative",
     },
     item: {
         border: "1px solid transparent",
         height: "50px",
         padding: 4,
+    },
+    stacks: {
+        color: "white",
+        position: "absolute",
+        left: 5,
+        bottom: 3,
+        fontWeight: "bold",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
     },
     selectedItem: {
         border: "1px solid rgba(255, 255, 255, 0.8)",
@@ -71,7 +82,7 @@ const useStyles = createUseStyles({
 
 const ITEM_CLASS_NAME = "inventory-item";
 
-const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (itemIndex: number) => void }) => {
+const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (item: Item) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
@@ -85,8 +96,10 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
         }
     };
 
+    const selectedItem = inventory[selectedItemIndex];
+
     const handleItemUse = () => {
-        onUseItem(selectedItemIndex);
+        onUseItem(selectedItem);
         setMenuAnchor(null);
         setSelectedItemIndex(null);
     };
@@ -102,7 +115,6 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
         }
     };
 
-    const selectedItem = inventory[selectedItemIndex];
     const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
 
     return (
@@ -117,13 +129,16 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                             [classes.selectedItem]: i === selectedItemIndex,
                         })}
                     />
+                    <span className={classes.stacks}>{item.stacks > 1 && item.stacks}</span>
                 </div>
             ))}
             {menuAnchor && (
                 <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu}>
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
-                            <div className={classes.itemName}>{selectedItem.name}</div>
+                            <div className={classes.itemName}>
+                                {selectedItem.name} {selectedItem.stacks > 1 && `x${selectedItem.stacks}`}
+                            </div>
                             <div className={classes.rarity}>
                                 <span
                                     className={classNames(classes.diamond, {

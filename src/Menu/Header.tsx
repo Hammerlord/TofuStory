@@ -8,6 +8,7 @@ import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
 import Tooltip from "../view/Tooltip";
+import { Item } from "../item/types";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -66,7 +67,7 @@ const Header = ({
     onUseItem,
     onSelectWeaponSkin,
 }: {
-    onUseItem?: (itemIndex: number) => void;
+    onUseItem?: (item: Item) => void;
     onSelectWeaponSkin: (weaponSkin: string) => void;
 }) => {
     const classes = useStyles();

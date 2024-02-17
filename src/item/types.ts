@@ -26,6 +26,7 @@ export interface Item {
     removeCard?: boolean;
     abilityChoices?: 1;
     rarity?: RARITIES;
+    stacks?: number;
     camp?: {
         abilityChoices?: number;
         healing?: number;

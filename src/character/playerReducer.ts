@@ -78,7 +78,28 @@ export const playerStateSlice = createSlice({
         },
         acquireItems: (state, action: PayloadAction<Item[]>) => {
             const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];
-            const newItems = [...state.player.items, ...action.payload].sort((a: Item, b: Item) => {
+            let newItems = [...state.player.items];
+
+            // Stack consumable/material items
+            action.payload.forEach((item: Item) => {
+                if (item.type === ITEM_TYPES.EQUIPMENT) {
+                    newItems.push(item);
+                    return;
+                }
+
+                const existingIndex = newItems.findIndex((i) => i.name === item.name);
+                if (existingIndex === -1) {
+                    newItems.push(item);
+                    return;
+                }
+
+                newItems[existingIndex] = {
+                    ...newItems[existingIndex],
+                    stacks: (newItems[existingIndex].stacks || 1) + 1,
+                };
+            });
+
+            newItems.sort((a: Item, b: Item) => {
                 return order.findIndex((type) => type === a.type) - order.findIndex((type) => type === b.type);
             });
 
@@ -91,19 +112,35 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        useConsumable: (state, action: PayloadAction<number>) => {
+        useConsumable: (state, action: PayloadAction<Item>) => {
             // Out of combat consumable use. In-combat uses a different action, see battleStateSlice.
-            const itemIndex = action.payload;
             const player = state.player;
-            const { healing = 0, resources = 0, effects = [] } = player.items[itemIndex];
+            const { name, healing = 0, resources = 0, effects = [], stacks = 0 } = action.payload || {};
+
+            let updatedItems = [...player.items];
+            if (!stacks || stacks === 1) {
+                updatedItems = updatedItems.filter((item) => item.name !== name);
+            } else {
+                updatedItems = updatedItems.map((item) => {
+                    if (item.name === name) {
+                        return {
+                            ...item,
+                            stacks: item.stacks - 1,
+                        };
+                    }
+
+                    return item;
+                });
+            }
+
             return {
                 ...state,
                 player: {
-                    ...state.player,
+                    ...player,
                     HP: Math.min(getMaxHP(player), player.HP + healing),
                     resources: Math.min(player.maxResources, player.resources + resources),
                     effects: [...player.effects, ...effects.map(cloneDeep)],
-                    items: player.items.filter((item, i: number) => i !== itemIndex),
+                    items: updatedItems,
                 },
             };
         },

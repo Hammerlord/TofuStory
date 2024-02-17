@@ -189,7 +189,7 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
-const { logVisitedEvent, addInfamy: addInfamy } = playerStateSlice.actions;
+const { logVisitedEvent, addInfamy, acquireItems } = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -436,8 +436,8 @@ const ScenePlayer = ({
             return acc + (item.pickUp?.mesos || 0);
         }, 0);
 
+        dispatch(acquireItems(regularItems));
         updatePlayer({
-            items: [...player.items, ...regularItems],
             mesos: calculateUpdatedMesos({ player, mesos }),
         });
 
@@ -454,9 +454,7 @@ const ScenePlayer = ({
                 mesos: calculateUpdatedMesos({ player, mesos: item.pickUp.mesos }),
             });
         } else {
-            updatePlayer({
-                items: [...player.items, item],
-            });
+            dispatch(acquireItems([item]));
         }
 
         if (dialogIndex <= scene.script.length - 1) {
@@ -509,9 +507,9 @@ const ScenePlayer = ({
     };
 
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
+        dispatch(acquireItems(items));
         updatePlayer({
             mesos: calculateUpdatedMesos({ player, mesos }),
-            items: [...player.items, ...items],
         });
     };
 
