@@ -126,7 +126,6 @@ export const playerEndTurn = () => {
         setTimeout(() => {
             dispatch(
                 updateBattle({
-                    isPlayerTurn: false,
                     discard: [...prepareForDiscard(hand), ...discard],
                     hand: [],
                 })

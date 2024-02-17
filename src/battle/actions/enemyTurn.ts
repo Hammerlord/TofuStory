@@ -293,13 +293,6 @@ const enemyUseAbility = (combatantId: string) => {
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers(getState().battle.enemySide));
-        setTimeout(() => {
-            dispatch(
-                updateBattle({
-                    isPlayerTurn: true,
-                })
-            );
-        }, 1000);
     };
 };
 
