@@ -4,7 +4,7 @@ import { EventScene } from "./types";
 const bobEncounter = {
     characters: [bob.name],
     waves: [{ enemies: [null, null, bob, null, null] }],
-    backgroundMusic: "https://downloads.khinsider.com/game-soundtracks/album/maplestory-music/47.%2520Plot%2520of%2520Pixie.mp3",
+    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
 };
 
 export const bobSnailScene: EventScene = {

@@ -186,12 +186,6 @@ const Main = () => {
                     case SCENE_CONDITION_TYPES.NOTOREITY:
                         return passesValueComparison({ val: value, otherVal: player.notoreity, comparator });
                     case SCENE_CONDITION_TYPES.VISITED_SCENES:
-                        console.log(
-                            "?",
-                            visitedEvents,
-                            value,
-                            passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator })
-                        );
                         // visitedEvents is stored as a map of IDs
                         return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });
                 }
@@ -199,12 +193,6 @@ const Main = () => {
         };
 
         const getRandomEvent = (): EventScene | undefined => {
-            console.log(
-                "possible events:",
-                events.filter((e: EventScene) => {
-                    return !visitedEvents[e.id] && passesConditions(e);
-                })
-            );
             return getRandomItem(
                 events.filter((e: EventScene) => {
                     return !visitedEvents[e.id] && passesConditions(e);
