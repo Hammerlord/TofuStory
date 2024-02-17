@@ -247,6 +247,43 @@ const checkHitEffects = ({
                 )
             );
         }
+
+        const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { mesoSteal = 0 }) => acc + mesoSteal, 0);
+
+        if (totalMesoSteal) {
+            const updatedTargets = getUpdatedStats({
+                ...getState().battle,
+                actorId: actor.id,
+                targetIds: [actor.id],
+                selectedIndex: index,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    stealMesos: totalMesoSteal * affectedTargets.length,
+                },
+                source,
+                getCombatantById: (id) => findCombatantData(getState, id),
+            });
+
+            dispatch(applyStatChanges(updatedTargets.map(([statUpdate]) => statUpdate)));
+            const totalMesosGained = updatedTargets.reduce((acc, [statUpdate]) => {
+                return acc + Math.abs(statUpdate.mesos);
+            }, 0);
+
+            const updatedActor = getUpdatedStats({
+                ...getState().battle,
+                actorId: actor.id,
+                targetIds: [actor.id],
+                selectedIndex: index,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    mesos: totalMesosGained,
+                },
+                source,
+                getCombatantById: (id) => findCombatantData(getState, id),
+            });
+
+            dispatch(applyStatChanges(updatedActor.map(([statUpdate]) => statUpdate)));
+        }
     };
 };
 
@@ -820,7 +857,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
                             armor: oldCombatant.armor + armor,
                             resources: Math.max(0, oldCombatant.resources + resources),
                             effects: calculateEffectChanges(effects, combatantEffects),
-                            mesos: oldCombatant.mesos + mesos,
+                            mesos: Math.max(0, oldCombatant.mesos + mesos),
                         };
                     }),
                 })

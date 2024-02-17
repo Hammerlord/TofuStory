@@ -8,6 +8,7 @@ import {
     DarkSightImage,
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
+    DoubleStabImage,
     FireBoarImage,
     GreenMushroomImage,
     HornyMushroomImage,
@@ -39,8 +40,11 @@ import {
     SlimeIdleImage,
     SnailImage,
     SnailShellImage,
+    StealImage,
     StumpImage,
     SubiImage,
+    ThiefImage,
+    TriangularZamadarImage,
     WeaponMasteryImage,
     WildBoarImage,
     WoodenClubImage,
@@ -49,6 +53,7 @@ import {
 import {
     BloodIcon,
     CactusIcon,
+    CloudyIcon,
     CrossedSwordsIcon,
     DizzyIcon,
     EyeIcon,
@@ -1477,4 +1482,84 @@ export const darkStoneGolem: Minion = {
         },
     ],
     effects: [hardy],
+};
+
+export const mesoThief: Minion = {
+    name: "ImaTheif",
+    maxHP: 50,
+    image: ThiefImage,
+    resources: 0,
+    mesos: 50,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Double Stab",
+            image: DoubleStabImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Dark Sight",
+            image: DarkSightImage,
+            resourceCost: 3,
+            dialog: "So long, and thanks for all the mesos!",
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...stealth,
+                            description: "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
+                            preventTurnAction: true,
+                            duration: 2,
+                            onEnd: {
+                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                ability: {
+                                    name: "Retreat",
+                                    dialog: "Ciao!",
+                                    actions: [
+                                        {
+                                            type: ACTION_TYPES.EFFECT,
+                                            target: TARGET_TYPES.SELF,
+                                            retreat: true,
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Thief",
+            description: "Steals mesos with each attack.",
+            icon: StealImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            mesoSteal: 10,
+        },
+    ],
 };

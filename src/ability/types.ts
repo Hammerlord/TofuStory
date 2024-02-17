@@ -188,6 +188,8 @@ export interface Effect {
     /** Damage to reflect back to attackers */
     thorns?: number;
     lifeOnKill?: number;
+    /** Mesos received when hitting an enemy. Only works if the enemy has mesos to steal. */
+    mesoSteal?: number;
     abilityDamageReceived?: AbilityDamageReceived[];
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
@@ -491,6 +493,7 @@ export interface Action {
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     mesos?: number;
+    stealMesos?: number;
     // Dispels all debuffs currently on the character
     removeDebuffs?: boolean;
     // Names of effects to be removed
