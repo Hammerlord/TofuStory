@@ -56,7 +56,7 @@ const useStyles = createUseStyles({
         height: "100%",
     },
     menu: {
-        background: "rgba(50, 46, 46, 0.9)",
+        background: "rgba(30, 30, 30, 0.95)",
         border: "1px solid rgba(255, 255, 255, 0.5)",
         borderRadius: "4px",
         fontFamily: "Barlow",
