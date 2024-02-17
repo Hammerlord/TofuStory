@@ -510,7 +510,7 @@ const ScenePlayer = ({
 
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         updatePlayer({
-            mesos: Math.max(0, player.mesos + mesos),
+            mesos: calculateUpdatedMesos({ player, mesos }),
             items: [...player.items, ...items],
         });
     };
