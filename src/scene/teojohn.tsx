@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { JohnImage, LithHarborSharkFullImage, TeoImage } from "../images";
 import { halfEatenHotdog } from "../item/items";
-import { Scene } from "./types";
+import { EventScene } from "./types";
 
 const teo = {
     name: "Teo",
@@ -56,8 +56,8 @@ const TeoJohn = ({ player }) => {
     );
 };
 
-export const lithEventsTeoJohn: Scene = {
-    characters: [teo.name, john.name],
+export const lithEventsTeoJohn: EventScene = {
+    id: "teo-john",
     script: [
         {
             scene: TeoJohn,

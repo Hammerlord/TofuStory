@@ -1,39 +1,42 @@
 import classNames from "classnames";
+import { clamp } from "ramda";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
-import { startBattle } from "../battle/actions/phases";
-import BattlefieldContainer from "../battle/BattleView";
-import { battleStateSlice, BATTLE_STATES } from "../battle/reducer";
-import CardRewards from "./CardRewards";
-import JobUp from "../character/JobUp";
-import { playerStateSlice } from "../character/playerReducer";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { Item } from "../item/types";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
 import { REGIONS } from "../Map/regions";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { toLith } from "../Map/routes/routes";
 import { BG_MAP, NODE_TYPES, RouteNode, TOWN_MAP } from "../Map/types";
+import { Ability } from "../ability/types";
+import BattlefieldContainer from "../battle/BattleView";
+import { updateCombatant } from "../battle/actions/actions";
+import { startBattle } from "../battle/actions/phases";
+import { BATTLE_STATES, battleStateSlice } from "../battle/reducer";
+import { BATTLE_TYPES } from "../battle/types";
+import { getMaxHP } from "../battle/utils";
+import JobUp from "../character/JobUp";
+import { playerStateSlice } from "../character/playerReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { Item } from "../item/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
-import { NPC } from "../scene/types";
 import Overlay from "../view/Overlay";
 import CardRemovalGrid from "./CardRemovalGrid";
+import CardRewards from "./CardRewards";
 import CardUpgradeGrid from "./CardUpgradeGrid";
 import ClassSelection from "./ClassSelection";
 import GameOver from "./GameOver";
 import Header from "./Header";
+import ItemRewards from "./ItemRewards";
 import Shop from "./Shop";
 import Sound from "./Sound";
-import { NPCTracker, PLAYER_CLASSES } from "./types";
+import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { BATTLE_TYPES } from "../battle/types";
-import ItemRewards from "./ItemRewards";
-import { updateCombatant } from "../battle/actions/actions";
-import { clamp } from "ramda";
-import { getMaxHP } from "../battle/utils";
+import { events } from "../Map/routes/eventList";
+import { getRandomItem } from "../utils";
+import { SCENE_CONDITION_TYPES, EventScene, SceneCondition } from "../scene/types";
+import { passesValueComparison } from "../battle/passesConditions";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -94,7 +97,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems, incrementEncounterTypeWon } =
+const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems, incrementEncounterTypeWon, logVisitedEvent } =
     playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
@@ -110,7 +113,6 @@ const Main = () => {
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
     const [treasure, setTreasure] = useState(null);
-    const [visitedNPCs, setVisitedNPCs] = useState({});
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const [upgradingAbility, setUpgradingAbility] = useState(null);
     const [removingAbility, setRemovingAbility] = useState(null);
@@ -119,7 +121,7 @@ const Main = () => {
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
-    const { player, deck, battlesWon } = character || {};
+    const { player, deck, battlesWon, visitedEvents } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
@@ -169,29 +171,52 @@ const Main = () => {
         }
     }, [battle?.state]);
 
-    const handleEventNode = ({ npc }: { npc?: NPC }) => {
-        const { character, scenes } = npc || {};
-        const visited = visitedNPCs[character] as NPCTracker;
-        if (!visited) {
-            setScene(scenes.intro);
-            setVisitedNPCs((prev) => ({
-                ...prev,
-                [character]: {
-                    ...prev[character],
-                    spoken: 1,
-                },
-            }));
-            return;
-        }
+    const handleEventNode = (node) => {
+        const passesConditions = (event: EventScene) => {
+            if (!event.conditions) {
+                return true;
+            }
 
-        // @ts-ignore - Using defaults if it doesn't exist
-        const { spoken = 0, fought = 0, helped = 0 } = visited || {}; //TODO
-        if (fought > 0) {
-            setScene(scenes.fought);
-            return;
-        }
+            return event.conditions.every((condition: SceneCondition) => {
+                const { type, value, comparator } = condition;
 
-        setScene(scenes.notorious);
+                switch (type) {
+                    case SCENE_CONDITION_TYPES.PLAYER_CLASS:
+                        return passesValueComparison({ val: value, otherVal: player.class, comparator });
+                    case SCENE_CONDITION_TYPES.NOTOREITY:
+                        return passesValueComparison({ val: value, otherVal: player.notoreity, comparator });
+                    case SCENE_CONDITION_TYPES.VISITED_SCENES:
+                        console.log(
+                            "?",
+                            visitedEvents,
+                            value,
+                            passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator })
+                        );
+                        // visitedEvents is stored as a map of IDs
+                        return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });
+                }
+            });
+        };
+
+        const getRandomEvent = (): EventScene | undefined => {
+            console.log(
+                "possible events:",
+                events.filter((e: EventScene) => {
+                    return !visitedEvents[e.id] && passesConditions(e);
+                })
+            );
+            return getRandomItem(
+                events.filter((e: EventScene) => {
+                    return !visitedEvents[e.id] && passesConditions(e);
+                })
+            );
+        };
+
+        const scene = node.event || getRandomEvent();
+        if (scene) {
+            dispatch(logVisitedEvent(scene.id));
+            setScene(scene);
+        }
     };
 
     const handleTransition = (callback: Function = () => {}) => {
@@ -307,16 +332,6 @@ const Main = () => {
             const { characters = [], ...other } = encounter;
             dispatch(startBattle({ ...other }));
             setEncounterVictoryCallback(() => onVictory);
-            const newVisited = characters.reduce((acc, character: string) => {
-                return {
-                    ...acc,
-                    [character]: {
-                        ...visitedNPCs[character],
-                        fought: (visitedNPCs[character]?.fought || 0) + 1,
-                    },
-                };
-            }, visitedNPCs);
-            setVisitedNPCs(newVisited);
         };
 
         handleTransition(callback);

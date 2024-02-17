@@ -6,7 +6,7 @@ import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
 import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
 import { glassShoe } from "../../item/items";
-import { Scene, ScriptNode } from "../types";
+import { EventScene, ScriptNode } from "../types";
 import {
     ArwenIntroScene,
     DarkForest1,
@@ -725,8 +725,8 @@ const inLupinForest = {
     ],
 };
 
-export const arwenScene: Scene = {
-    characters: [],
+export const arwenScene: EventScene = {
+    id: "fairies-ellinia-campaign",
     script: [
         {
             background: ElliniaBGImage,

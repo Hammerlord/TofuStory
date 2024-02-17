@@ -1,17 +1,33 @@
-import { Ability, Minion } from "../ability/types";
+import { Ability } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { Combatant } from "../character/types";
-import { Item, RARITIES } from "../item/types";
+import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
 
-export interface Scene {
-    characters: string[]; // Character names to mark who you have interacted with
+export enum SCENE_CONDITION_TYPES {
+    NOTOREITY = "notoreity",
+    // Scene.id strings
+    VISITED_SCENES = "visited-scenes",
+    PLAYER_CLASS = "player-class",
+}
+
+export interface SceneCondition {
+    type: SCENE_CONDITION_TYPES;
+    // Includes is for array values
+    comparator: "lt" | "gt" | "eq" | "includes";
+    // The value of what the player class, etc. needs to be
+    value: any;
+}
+
+export interface EventScene {
+    id: string; // Scene ID to track which scenes you have visited
     script: ScriptNode[];
+    // Array of conditions resolves with AND operator by default
+    conditions?: SceneCondition[];
 }
 
 export interface SceneEncounter {
     addAbilities?: Ability[];
-    characters: string[];
     waves: Wave[];
     disableCardRewards?: boolean;
     itemRewards?: Item[];
@@ -39,6 +55,7 @@ export interface ScriptResponse {
     shop?: Shop;
     camp?: boolean;
     removeAbility?: boolean;
+    id?: string; // Scene ID to track which scenes you have visited
 }
 
 export interface ScriptNode {
@@ -70,16 +87,6 @@ export interface ScriptNode {
     // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
     conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];
-}
-
-export interface NPC {
-    character: string;
-    scenes: {
-        intro: Scene;
-        fought: Scene;
-        notorious: Scene;
-        helped: Scene;
-    };
 }
 
 export interface SceneProps {

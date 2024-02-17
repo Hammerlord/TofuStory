@@ -1,7 +1,7 @@
 import { EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { Wave } from "../../battle/types";
 import { GachaponImage, MesoImage } from "../../images";
-import { Scene } from "../types";
+import { EventScene } from "../types";
 import GachaponScene from "./GachaponScene";
 
 const gachaponMachine: Minion = {
@@ -38,8 +38,8 @@ const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves:
     ],
 };
 
-export const gachaponEvents: Scene = {
-    characters: [],
+export const gachaponEvents: EventScene = {
+    id: "gachapon",
     script: [
         {
             scene: () => <GachaponScene />,
@@ -50,6 +50,7 @@ export const gachaponEvents: Scene = {
             responses: [
                 {
                     text: "Hit the gachapon machine.",
+                    notoriety: 1,
                     encounter: gachaponFight,
                     next: [
                         {

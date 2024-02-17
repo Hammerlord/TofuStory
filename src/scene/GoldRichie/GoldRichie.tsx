@@ -1,5 +1,5 @@
 import { Wave } from "../../battle/types";
-import { NPC } from "../types";
+import { SCENE_CONDITION_TYPES, EventScene } from "../types";
 import { adventurerFighter, adventurerIceWizard, goldRichie, goldRichie2 } from "./GoldRichieCharacters";
 
 const goldRichieFight1: { characters: string[]; waves: Wave[] } = {
@@ -20,107 +20,104 @@ const goldRichieFight2: { characters: string[]; waves: Wave[] } = {
     ],
 };
 
-export const goldRichieMerchant: NPC = {
-    character: goldRichie.name,
-    scenes: {
-        intro: {
-            characters: [goldRichie.name],
-            script: [
+export enum GOLD_RICHIE_EVENTS {
+    INTRO = "gold-richie-intro",
+    TRADE = "gold-richie-trade",
+    FOUGHT = "gold-richie-fought",
+    MERCENARIES = "gold-richie-mercenaries",
+    RETRADE = "gold-richie-retrade",
+}
+
+export const goldRichieIntro: EventScene = {
+    id: GOLD_RICHIE_EVENTS.INTRO,
+    script: [
+        {
+            scene: () => <div />,
+            speaker: goldRichie,
+            dialog: ["Ahh! A monster!"],
+        },
+        {
+            speaker: goldRichie,
+            dialog: [
+                "I knew I should have hired an adventurer, but every last one of them says they 'hate escort quests'!",
+                "Well, I can't help that I'm a merchant in need of escorting! If I could dash and jump around like those youngsters, I wouldn't need to hire anyone, now would I?",
+            ],
+        },
+        {
+            speaker: goldRichie,
+            dialog: ["... Wait, you want to trade? Please tell me you want to trade, um... Mushroom sir and-or ma'am."],
+            responses: [
                 {
-                    scene: () => <div />,
-                    speaker: goldRichie,
-                    dialog: ["Ahh! A monster!"],
+                    text: "Trade with Gold Richie",
+                    shop: {
+                        merchant: goldRichie,
+                    },
+                    id: GOLD_RICHIE_EVENTS.TRADE,
                 },
+                { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, notoriety: 5, id: GOLD_RICHIE_EVENTS.FOUGHT }, // accept function?
+            ],
+        },
+    ],
+};
+
+export const goldRichieMercenaries: EventScene = {
+    id: GOLD_RICHIE_EVENTS.MERCENARIES,
+    conditions: [
+        {
+            type: SCENE_CONDITION_TYPES.VISITED_SCENES,
+            value: GOLD_RICHIE_EVENTS.FOUGHT,
+            comparator: "includes",
+        },
+    ],
+    script: [
+        {
+            scene: () => <div />,
+            speaker: goldRichie,
+            dialog: ["You again! The mushroom with the weird cap!"],
+        },
+        {
+            speaker: goldRichie,
+            dialog: [
+                "This time, you dastardly creature, I'm prepared. And I plan on taking back every last meso you stole from me, plus premium.",
+            ],
+        },
+        {
+            speaker: goldRichie,
+            dialog: ["Guards!"],
+            responses: [
+                { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, notoriety: 5 },
+                { text: "Give up all your mesos", isExit: true },
+                { text: "Give up a random item", isExit: true },
+            ],
+        },
+    ],
+};
+
+export const goldRichieRetrade: EventScene = {
+    id: GOLD_RICHIE_EVENTS.RETRADE,
+    conditions: [
+        {
+            type: SCENE_CONDITION_TYPES.VISITED_SCENES,
+            value: GOLD_RICHIE_EVENTS.TRADE,
+            comparator: "includes",
+        },
+    ],
+    script: [
+        {
+            scene: () => <div />,
+            speaker: goldRichie,
+            dialog: [
+                "We meet again! I heard you've made something of a name for yourself.",
+                "But, that's not necessarily the business of a merchant like me, is it?",
+            ],
+            responses: [
                 {
-                    speaker: goldRichie,
-                    dialog: [
-                        "I knew I should have hired an adventurer, but every last one of them says they 'hate escort quests'!",
-                        "Well, I can't help that I'm a merchant in need of escorting! If I could dash and jump around like those youngsters, I wouldn't need to hire anyone, now would I?",
-                    ],
-                },
-                {
-                    speaker: goldRichie,
-                    dialog: ["... Wait, you want to trade? Please tell me you want to trade, um... Mushroom sir and-or ma'am."],
-                    responses: [
-                        {
-                            text: "Trade with Gold Richie",
-                            shop: {
-                                merchant: goldRichie,
-                            },
-                        },
-                        { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, notoriety: 1 }, // accept function?
-                    ],
+                    text: "Trade with Gold Richie",
+                    shop: {
+                        merchant: goldRichie,
+                    },
                 },
             ],
         },
-        fought: {
-            characters: [goldRichie.name],
-            script: [
-                {
-                    scene: () => <div />,
-                    speaker: goldRichie,
-                    dialog: ["You again! The mushroom with the weird cap!"],
-                },
-                {
-                    speaker: goldRichie,
-                    dialog: [
-                        "This time, you dastardly creature, I'm prepared. And I plan on taking back every last meso you stole from me, plus premium.",
-                    ],
-                },
-                {
-                    speaker: goldRichie,
-                    dialog: ["Guards!"],
-                    responses: [
-                        { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, notoriety: 1 },
-                        { text: "Give up all your mesos", isExit: true },
-                    ],
-                },
-            ],
-        },
-        notorious: {
-            characters: [goldRichie.name],
-            script: [
-                {
-                    scene: () => <div />,
-                    speaker: goldRichie,
-                    dialog: [
-                        "We meet again! I heard you've made something of a name for yourself.",
-                        "But, that's not necessarily the business of a merchant like me, is it?",
-                    ],
-                    responses: [
-                        {
-                            text: "Trade with Gold Richie",
-                            shop: {
-                                merchant: goldRichie,
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        helped: {
-            characters: [goldRichie.name],
-            script: [
-                {
-                    scene: () => <div />,
-                    speaker: goldRichie,
-                    dialog: ["Ah, Sir Mushroom! [Gold Richie squints.] Or... lady, whichever it is."],
-                },
-                {
-                    speaker: goldRichie,
-                    dialog: [
-                        "Now, a merchant remembers past favours granted to him, and I'm no different, so why don't I offer you a deal on my wares this time around?",
-                    ],
-                    responses: [
-                        {
-                            text: "Trade with Gold Richie",
-                            shop: {
-                                merchant: goldRichie,
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-    },
+    ],
 };

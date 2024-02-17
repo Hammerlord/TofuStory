@@ -38,6 +38,13 @@ export const passesValueComparison = ({
             if (typeof val === "string" && typeof otherVal === "string") {
                 return val.toLowerCase().includes(otherVal.toLowerCase());
             }
+            if (Array.isArray(val)) {
+                if (Array.isArray(otherVal)) {
+                    return val.every((item) => otherVal.includes(item));
+                }
+
+                return val.includes(otherVal);
+            }
         }
         default:
             return false;

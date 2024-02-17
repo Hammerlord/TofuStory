@@ -1,7 +1,7 @@
-import { dueyScenario } from "../../scene/Duey/duey";
-import { goldRichieMerchant } from "../../scene/GoldRichie/GoldRichie";
-import { noob } from "../../scene/Noob";
-import { bobScenario } from "../../scene/bob";
+import { dueyIntroScene } from "../../scene/Duey/duey";
+import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
+import { bobSnailScene } from "../../scene/bob";
+import { EventScene } from "../../scene/types";
 import {
     adamantiumPlate,
     alligatorTube,
@@ -64,7 +64,7 @@ import {
     workGloves,
 } from "./../../item/items";
 
-export const events = [goldRichieMerchant, noob, dueyScenario, bobScenario];
+export const events: EventScene[] = [goldRichieIntro, goldRichieMercenaries, goldRichieRetrade, dueyIntroScene, bobSnailScene];
 
 /**
  * Items acquirable from elite/boss battles and treasure boxes

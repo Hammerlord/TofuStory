@@ -3,7 +3,7 @@ import { BATTLE_TYPES } from "../../battle/types";
 import { miniBean } from "../../enemy/miniBean";
 import { CakeSliceImage, FrownyMaskImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
 import { Item, ITEM_TYPES } from "../../item/types";
-import { Scene, ScriptResponse } from "../types";
+import { EventScene, ScriptResponse } from "../types";
 import { Minion } from "./../../ability/types";
 import { eat } from "./../../enemy/miniBean";
 import PantryScene from "./PantryScene";
@@ -258,8 +258,8 @@ const mugMayaOption: ScriptResponse = {
     ],
 };
 
-const pantry: Scene = {
-    characters: [],
+const pantry: EventScene = {
+    id: "Pantry",
     script: [
         {
             background: HenesysRegionBGImage,

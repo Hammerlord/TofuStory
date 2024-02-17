@@ -4,7 +4,7 @@ import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
 import { LithHarborBalconyFullImage, OlafImage, PuppetreeImage } from "../images";
 import { redHeadband } from "../item/items";
-import { Scene } from "./types";
+import { EventScene } from "./types";
 
 const olafNPC = {
     name: "Olaf",
@@ -89,8 +89,8 @@ const postFight = [
     },
 ];
 
-export const lithEventsOlaf: Scene = {
-    characters: [olafNPC.name],
+export const lithEventsOlaf: EventScene = {
+    id: "Olaf",
     script: [
         {
             scene: Olaf,

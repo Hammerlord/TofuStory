@@ -3,7 +3,7 @@ import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../en
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
 import { KerningCityBGImage, SleepywoodRegionBGImage, SwampRegionBGImage } from "../../../images";
 import { REGIONS } from "../../../Map/regions";
-import { Scene } from "../../types";
+import { EventScene } from "../../types";
 import Barrels from "./Barrels";
 import Barrels2 from "./Barrels2";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
@@ -266,8 +266,8 @@ const lastStage = {
     ],
 };
 
-export const KPQ: Scene = {
-    characters: [],
+export const KPQ: EventScene = {
+    id: "kpq",
     script: [
         {
             background: KerningCityBGImage,

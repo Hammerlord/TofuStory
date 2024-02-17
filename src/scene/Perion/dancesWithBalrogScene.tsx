@@ -2,7 +2,7 @@ import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { dancesWithBalrog } from "../../enemy/dancesWithBalrog";
 import { DancesWithBalrogImage } from "../../images";
-import { Scene } from "../types";
+import { EventScene } from "../types";
 
 const dancesWithBalrogCharacter = {
     name: "Dances With Balrog",
@@ -10,7 +10,6 @@ const dancesWithBalrogCharacter = {
 };
 
 const dancesWithBalrogFight = {
-    characters: [],
     waves: [
         {
             enemies: [null, null, dancesWithBalrog, null, null],
@@ -20,8 +19,8 @@ const dancesWithBalrogFight = {
     backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
-export const dancesWithBalrogScene: Scene = {
-    characters: [],
+export const dancesWithBalrogScene: EventScene = {
+    id: "warrior-class-leader-scene",
     script: [
         {
             speaker: dancesWithBalrogCharacter,

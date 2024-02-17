@@ -1,15 +1,15 @@
 import { CaseyImage } from "../../images";
 import { alligatorTube, amethyst, cactus } from "../../item/items";
 import CardGame from "../CardGame";
-import { Scene } from "../types";
+import { EventScene } from "../types";
 
 const caseyCharacter = {
     name: "Casey",
     image: CaseyImage,
 };
 
-const kerningMatchingCards: Scene = {
-    characters: [],
+const kerningMatchingCards: EventScene = {
+    id: "casey-intro",
     script: [
         {
             speaker: caseyCharacter,

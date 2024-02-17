@@ -11,10 +11,11 @@ import ItemSelection from "../item/ItemSelection";
 import { Item } from "../item/types";
 import Button from "../view/Button";
 import TreasureBox from "./TreasureBox/TreasureBox";
-import { Scene, ScriptConditions, ScriptNode, ScriptResponse } from "./types";
+import { EventScene, ScriptConditions, ScriptNode, ScriptResponse } from "./types";
 import { Player } from "../character/types";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { passesValueComparison } from "../battle/passesConditions";
+import { playerStateSlice } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     root: {
@@ -177,6 +178,8 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
+const { logVisitedEvent } = playerStateSlice.actions;
+
 const ScenePlayer = ({
     scene,
     player,
@@ -189,13 +192,12 @@ const ScenePlayer = ({
     updateDeck,
     onChangeRegion,
 }: {
-    scene: Scene;
+    scene: EventScene;
     player: Player;
     updatePlayer: (updated: any) => void;
     onBattle: (
         props: {
             addAbilities?: Ability[];
-            characters: string[];
             waves: {
                 enemies: Minion[];
             }[];
@@ -211,6 +213,8 @@ const ScenePlayer = ({
     onChangeRegion: (region: REGIONS) => void;
 }) => {
     const { battleHistory = [] } = useAppSelector((state) => state)?.character || {};
+    const dispatch = useAppDispatch();
+
     const [dialogIndex, setDialogIndex] = useState(0);
     const [script, setScript] = useState(scene.script);
     const [Puzzle, setPuzzle] = useState(() => script[dialogIndex]?.puzzle || null);
@@ -221,6 +225,7 @@ const ScenePlayer = ({
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
 
     const classes = useStyles();
+
     const {
         speaker,
         dialog = [],
@@ -313,8 +318,12 @@ const ScenePlayer = ({
         return conditions.some(passesCondition);
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility }: ScriptResponse) => {
+    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id }: ScriptResponse) => {
         const callback = () => {
+            if (id) {
+                dispatch(logVisitedEvent(id));
+            }
+
             if (next) {
                 setScript(next);
                 setDialogIndex(0);

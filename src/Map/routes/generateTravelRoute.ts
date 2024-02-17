@@ -74,9 +74,7 @@ const generateTravelRoute = ({
                 };
                 --numTreasures;
             } else if (type === NODE_TYPES.EVENT) {
-                transformedNode.npc = {
-                    ...getRandomItem(events),
-                };
+                // No op, event generation is handled live
                 --numEvents;
             } else if (type === NODE_TYPES.RESTING_ZONE) {
                 numEncountersSinceRestPoint = 0;

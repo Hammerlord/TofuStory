@@ -9,7 +9,6 @@ import {
     PerionRegionBGImage,
 } from "../images";
 import { Item } from "../item/types";
-import { NPC } from "./../scene/types";
 import Henesys from "./Henesys";
 import KerningCity from "./KerningCity";
 import LithHarbor from "./LithHarbor";
@@ -34,7 +33,7 @@ export interface RouteNode {
     y: number;
     type?: NODE_TYPES;
     encounter?: Wave[];
-    npc?: NPC;
+    event?;
     treasure?: {
         puzzle: Function;
         mesos?: number[]; // [min, max]
@@ -66,7 +65,6 @@ export interface Route {
     enemies?: (Minion | null)[][];
     /** Pool of preset enemies when generating a fight with multiple waves, expected to be easier than the single-wave `enemies` bucket. */
     multiWaveEnemies?: (Minion | null)[][];
-    events?: NPC[];
     treasure?: {
         mesos?: { min: number; max: number };
         items?: Item[];

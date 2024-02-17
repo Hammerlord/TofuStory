@@ -1,7 +1,7 @@
 import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { grendel, introGrendel } from "../../enemy/grendel";
-import { Scene } from "../types";
+import { EventScene } from "../types";
 
 const grendelFight = {
     characters: [],
@@ -17,8 +17,8 @@ const grendelFight = {
     backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
-export const grendelScene: Scene = {
-    characters: [],
+export const grendelScene: EventScene = {
+    id: "magician-class-leader-scene",
     script: [
         {
             speaker: grendel,

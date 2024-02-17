@@ -3,12 +3,6 @@ export enum PLAYER_CLASSES {
     MAGICIAN = "Magician",
 }
 
-export interface NPCTracker {
-    fought: number;
-    spoken: number;
-    helped: number;
-}
-
 export enum WARRIOR_SECONDARY_JOBS {
     FIGHTER = "Fighter",
     DARK_KNIGHT = "Dark Knight",

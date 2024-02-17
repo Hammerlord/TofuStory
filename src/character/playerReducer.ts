@@ -19,6 +19,7 @@ const INITIAL_STATE = {
         [BATTLE_TYPES.BOSS]: 0,
     },
     battleHistory: [],
+    visitedEvents: {}, // { [eventId: string]: number } - value is number of times visited
 };
 
 export const playerStateSlice = createSlice({
@@ -109,6 +110,16 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 battleHistory: [...(state?.battleHistory || []), action.payload],
+            };
+        },
+        logVisitedEvent: (state, action: PayloadAction<string>) => {
+            const eventId = action.payload;
+            return {
+                ...state,
+                visitedEvents: {
+                    ...state.visitedEvents,
+                    [eventId]: (state.visitedEvents[eventId] || 0) + 1,
+                },
             };
         },
     },

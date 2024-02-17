@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion, TARGET_TYPES } from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
 import { blueSnail, redSnail, shroom } from "../../enemy/enemy";
-import { NPC, Scene } from "../types";
+import { EventScene } from "../types";
 import { unsignedLetter } from "../../item/items";
 
 const dueyEffect: Effect = {
@@ -229,8 +229,8 @@ const mobFight = {
     type: BATTLE_TYPES.ENCOUNTER,
 };
 
-export const randomEventDuey: Scene = {
-    characters: [],
+export const dueyIntroScene: EventScene = {
+    id: "duey-intro",
     script: [
         {
             scene: DueyIntroScene,
@@ -451,57 +451,4 @@ export const randomEventDuey: Scene = {
             ],
         },
     ],
-};
-
-// WIP: Just following the contract for now, NPC interaction tracking needs to change
-export const dueyScenario: NPC = {
-    character: duey.name,
-    scenes: {
-        intro: {
-            characters: ["Duey"],
-            script: randomEventDuey.script,
-        },
-        fought: {
-            characters: ["Duey"],
-            script: [
-                {
-                    dialog: ["[Work in progress]"],
-                    responses: [
-                        {
-                            text: "Leave.",
-                            isExit: true,
-                        },
-                    ],
-                },
-            ],
-        },
-        notorious: {
-            characters: ["Duey"],
-            script: [
-                {
-                    dialog: ["[Work in progress]"],
-                    responses: [
-                        {
-                            text: "Leave.",
-                            isExit: true,
-                        },
-                    ],
-                },
-            ],
-        },
-        helped: {
-            characters: ["Duey"],
-            script: [
-                {
-                    dialog: ["[Work in progress]"],
-                    responses: [
-                        {
-                            text: "Leave.",
-                            isExit: true,
-                        },
-                    ],
-                },
-            ],
-        },
-    },
 };

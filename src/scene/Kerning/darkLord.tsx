@@ -3,7 +3,7 @@ import { BATTLE_TYPES } from "../../battle/types";
 import { darkLord } from "../../enemy/darkLord";
 import { thiefAssassin } from "../../enemy/enemy";
 import { DarkLordImage } from "../../images";
-import { Scene, ScriptNode } from "../types";
+import { EventScene, ScriptNode } from "../types";
 
 const darkLordCharacter = {
     name: "Dark Lord",
@@ -145,8 +145,8 @@ export const toilet: ScriptNode[] = [
     },
 ];
 
-export const barScene: Scene = {
-    characters: [],
+export const barScene: EventScene = {
+    id: "rogue-class-leader-event",
     script: [
         {
             dialog: ["[It seems all dark in the club house. Is the place abandoned?]"],
