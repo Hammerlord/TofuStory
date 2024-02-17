@@ -1,6 +1,7 @@
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
+import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
 import { EventScene } from "../../scene/types";
 import {
@@ -75,6 +76,7 @@ export const events: EventScene[] = [
     bobSnailScene,
     noobIntro,
     noobRivalWarrior,
+    wantedPosterScene,
 ];
 
 /**

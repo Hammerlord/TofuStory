@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
     },
     poster: {
         background: "#e4ddb9",
-        maxWidth: "600px",
+        width: "500px",
         fontSize: "24px",
         padding: PADDING,
         display: "inline-block",
@@ -35,7 +35,7 @@ const useStyles = createUseStyles({
         border: "1px solid rgba(0, 0, 0, 0.25)",
     },
     playerImage: {
-        width: "50%",
+        width: "40%",
         objectFit: "contain",
         imageRendering: "pixelated",
         margin: "32px 0",
@@ -47,9 +47,14 @@ const useStyles = createUseStyles({
         borderTop: "1px solid rgba(0, 0, 0, 0.5)",
         borderBottom: "1px solid rgba(0, 0, 0, 0.5)",
         padding: "8px 0",
+        color: "white",
+        background: "rgba(0, 0, 0, 0.5)",
     },
     bounty: {
         fontSize: "48px",
+        color: "white",
+        background: "rgba(0, 0, 0, 0.5)",
+        marginTop: 16,
     },
 });
 
@@ -85,7 +90,7 @@ const WantedPoster = ({ player, onComplete, onExit, infamy = 1, bounty = 100 }) 
                     <div>
                         <Button variant="contained" color="primary" onClick={onClickTearDown}>
                             Tear it down
-                        </Button>
+                        </Button>{" "}
                         <Button variant="contained" color="secondary" onClick={onExit}>
                             Leave it up
                         </Button>

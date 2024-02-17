@@ -121,7 +121,7 @@ const Main = () => {
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
-    const { player, deck, battlesWon, visitedEvents } = character || {};
+    const { player, deck, battlesWon, visitedEvents, infamy } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
@@ -182,9 +182,9 @@ const Main = () => {
 
                 switch (type) {
                     case SCENE_CONDITION_TYPES.PLAYER_CLASS:
-                        return passesValueComparison({ val: value, otherVal: player.class, comparator });
+                        return passesValueComparison({ val: player.class, otherVal: value, comparator });
                     case SCENE_CONDITION_TYPES.INFAMY:
-                        return passesValueComparison({ val: value, otherVal: player.infamy, comparator });
+                        return passesValueComparison({ val: infamy, otherVal: value, comparator });
                     case SCENE_CONDITION_TYPES.VISITED_SCENES:
                         // visitedEvents is stored as a map of IDs
                         return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });
