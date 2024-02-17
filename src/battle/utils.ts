@@ -803,7 +803,7 @@ export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
 
-export const calculateUpdatedMesos = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
+export const calculateMesoGain = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
     const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
         return acc + mesosGained;
     }, 1);

@@ -5,7 +5,7 @@ import { Ability, HandAbility } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
-import { getMaxHP } from "../battle/utils";
+import { calculateMesoGain, getMaxHP } from "../battle/utils";
 import { Item, ITEM_TYPES } from "../item/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { PLAYER_CLASSES } from "../Menu/types";
@@ -109,6 +109,23 @@ export const playerStateSlice = createSlice({
                     ...state.player,
                     effects: aggregateItemEffects(newItems),
                     items: newItems,
+                },
+            };
+        },
+        updateMesos: (state, action: PayloadAction<number | undefined>) => {
+            const incomingMesos = action.payload || 0;
+            let updated = 0;
+            if (incomingMesos > 0) {
+                updated = calculateMesoGain({ player: state.player, mesos: incomingMesos });
+            } else {
+                updated = Math.max(0, state.player.mesos + incomingMesos);
+            }
+
+            return {
+                ...state,
+                player: {
+                    ...state.player,
+                    mesos: updated,
                 },
             };
         },

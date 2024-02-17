@@ -18,7 +18,7 @@ import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
 import { shuffle } from "../utils";
 import { mesoItem } from "../item/items";
-import { calculateUpdatedMesos } from "../battle/utils";
+import { calculateMesoGain } from "../battle/utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -189,7 +189,7 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
-const { logVisitedEvent, addInfamy, acquireItems } = playerStateSlice.actions;
+const { logVisitedEvent, addInfamy, acquireItems, updateMesos } = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -437,9 +437,7 @@ const ScenePlayer = ({
         }, 0);
 
         dispatch(acquireItems(regularItems));
-        updatePlayer({
-            mesos: calculateUpdatedMesos({ player, mesos }),
-        });
+        dispatch(updateMesos(mesos));
 
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
@@ -450,9 +448,7 @@ const ScenePlayer = ({
 
     const handleSelectItemChoice = (item: Item) => {
         if (item.pickUp) {
-            updatePlayer({
-                mesos: calculateUpdatedMesos({ player, mesos: item.pickUp.mesos }),
-            });
+            dispatch(updateMesos(item.pickUp.mesos));
         } else {
             dispatch(acquireItems([item]));
         }
@@ -508,9 +504,7 @@ const ScenePlayer = ({
 
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         dispatch(acquireItems(items));
-        updatePlayer({
-            mesos: calculateUpdatedMesos({ player, mesos }),
-        });
+        dispatch(updateMesos(mesos));
     };
 
     const canSkip = !responses && !items && !itemChoices && dialogIndex < script.length - 1;

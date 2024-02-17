@@ -11,10 +11,10 @@ import { BATTLE_TYPES, Wave } from "../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
-import { calculateUpdatedMesos } from "../utils";
+import { calculateMesoGain } from "../utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
-const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
+const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
@@ -43,7 +43,8 @@ export const onBattleEnd = () => {
                 HP: player.HP,
                 turnHistory: [],
                 abilityHistory: [],
-                mesos: calculateUpdatedMesos({ player, mesos: mesosAccumulated }),
+                // Tricky: Player is the in-combat player who may have had its mesos value change over the course of battle
+                mesos: calculateMesoGain({ player, mesos: mesosAccumulated }),
             })
         );
     };

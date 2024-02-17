@@ -97,8 +97,17 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updatePlayer, onSelectClass, updateDeck, restartGame, useConsumable, acquireItems, incrementEncounterTypeWon, logVisitedEvent } =
-    playerStateSlice.actions;
+const {
+    updatePlayer,
+    onSelectClass,
+    updateDeck,
+    restartGame,
+    useConsumable,
+    acquireItems,
+    updateMesos,
+    incrementEncounterTypeWon,
+    logVisitedEvent,
+} = playerStateSlice.actions;
 const { closeBattle } = battleStateSlice.actions;
 
 const Main = () => {
@@ -343,9 +352,9 @@ const Main = () => {
         const { maxHP = 0, HP = 0 } = statChanges;
         const effectiveMaxHP = getMaxHP(player) + maxHP;
         const newHP = clamp(0, effectiveMaxHP, player.HP + HP);
+        dispatch(updateMesos(-mesosSpent));
         dispatch(
             updatePlayer({
-                mesos: Math.max(0, player.mesos - mesosSpent),
                 HP: newHP,
                 maxHP: player.maxHP + maxHP,
             })
@@ -362,12 +371,7 @@ const Main = () => {
     };
 
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
-        dispatch(
-            updatePlayer({
-                mesos: Math.max(0, player.mesos + mesos),
-            })
-        );
-
+        dispatch(updateMesos(mesos));
         dispatch(acquireItems(items));
     };
 
