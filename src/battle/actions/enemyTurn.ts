@@ -244,12 +244,10 @@ const enemyUseAbility = (combatantId: string) => {
         const { castTime, channelDuration } = ability;
 
         if (typeof index === "undefined") {
-            dispatch(requeueCurrentAbility(combatantId));
             return;
         }
 
         if (!castTime && !channelDuration) {
-            dispatch(requeueCurrentAbility(combatantId));
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
             return;
         }
@@ -271,7 +269,6 @@ const enemyUseAbility = (combatantId: string) => {
             })
         );
 
-        dispatch(requeueCurrentAbility(combatantId));
         if (!ability.castTime) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
 
@@ -341,6 +338,18 @@ export const startEnemyTurn = () => {
             const enemy = eligible[0];
             if (!enemy) {
                 dispatch(checkTurnResourceGain(getEnemySideInfo()));
+                // Queue the next ability unless the combatant is channeling.
+                // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
+                getEnemySideInfo().forEach((combatantInfo) => {
+                    if (!combatantInfo) {
+                        return;
+                    }
+
+                    const combatant = combatantInfo.combatant;
+                    if (combatant.HP > 0 && !combatant.casting?.channelDuration) {
+                        dispatch(requeueCurrentAbility(combatant.id));
+                    }
+                });
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                 return;
             }
@@ -356,8 +365,6 @@ export const startEnemyTurn = () => {
                     dispatch(handleCastTick(id));
                 } else if (!unableToAct) {
                     dispatch(enemyAction(id));
-                } else {
-                    dispatch(requeueCurrentAbility(id));
                 }
                 makeEnemyMove();
             }, delay);
