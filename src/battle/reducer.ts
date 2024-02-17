@@ -4,6 +4,7 @@ import { Ability, HandAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, Wave } from "./types";
+import { getMaxHP } from "./utils";
 
 // Text banner notification to display some info during battle
 interface Notification {
@@ -112,6 +113,41 @@ export const battleStateSlice = createSlice({
             return {
                 ...state,
                 state: action.payload,
+            };
+        },
+        useConsumable: (state, action: PayloadAction<Item>) => {
+            const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
+
+            return {
+                ...state,
+                playerSide: state.playerSide.map((combatant) => {
+                    if (!combatant?.isPlayer) {
+                        return combatant;
+                    }
+
+                    let updatedItems = [...combatant.items];
+                    if (!stacks || stacks === 1) {
+                        updatedItems = updatedItems.filter((item) => item.name !== name);
+                    } else {
+                        updatedItems = updatedItems.map((item) => {
+                            if (item.name === name) {
+                                return {
+                                    ...item,
+                                    stacks: item.stacks - 1,
+                                };
+                            }
+
+                            return item;
+                        });
+                    }
+
+                    return {
+                        ...combatant,
+                        HP: Math.min(getMaxHP(combatant), combatant.HP + healing),
+                        resources: Math.min(combatant.maxResources, combatant.resources + resources),
+                        items: updatedItems,
+                    };
+                }),
             };
         },
         setNotification: (state, action: PayloadAction<Notification>) => {

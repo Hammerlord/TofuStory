@@ -108,7 +108,7 @@ const {
     incrementEncounterTypeWon,
     logVisitedEvent,
 } = playerStateSlice.actions;
-const { closeBattle } = battleStateSlice.actions;
+const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
 const Main = () => {
     const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
@@ -293,6 +293,7 @@ const Main = () => {
             handleUseItem = (item: Item) => {
                 const { upgradeCard, removeCard } = item;
                 if (!upgradeCard && !removeCard) {
+                    dispatch(battleUseConsumable(item));
                     dispatch(useConsumable(item));
                 }
             };

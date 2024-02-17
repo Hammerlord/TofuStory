@@ -132,7 +132,7 @@ export const playerStateSlice = createSlice({
         useConsumable: (state, action: PayloadAction<Item>) => {
             // Out of combat consumable use. In-combat uses a different action, see battleStateSlice.
             const player = state.player;
-            const { name, healing = 0, resources = 0, effects = [], stacks = 0 } = action.payload || {};
+            const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             let updatedItems = [...player.items];
             if (!stacks || stacks === 1) {
@@ -156,7 +156,6 @@ export const playerStateSlice = createSlice({
                     ...player,
                     HP: Math.min(getMaxHP(player), player.HP + healing),
                     resources: Math.min(player.maxResources, player.resources + resources),
-                    effects: [...player.effects, ...effects.map(cloneDeep)],
                     items: updatedItems,
                 },
             };
