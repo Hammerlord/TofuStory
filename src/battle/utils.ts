@@ -2,7 +2,7 @@ import { CombatantInfo, TriggerSource } from "./types";
 /**
  * @file Helpers for various battle functions
  */
-import { Combatant } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { CrossedSwordsIcon } from "../images/icons";
 import { Item } from "../item/types";
 import {
@@ -801,4 +801,12 @@ export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex
     const action = ability.actions[0];
     const area = calculateActionArea({ action, actor }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
+};
+
+export const calculateUpdatedMesos = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
+    const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
+        return acc + mesosGained;
+    }, 1);
+
+    return Math.max(0, player.mesos + Math.floor(mesos * mesosGainedMultiplier));
 };

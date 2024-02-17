@@ -18,6 +18,7 @@ import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
 import { shuffle } from "../utils";
 import { mesoItem } from "../item/items";
+import { calculateUpdatedMesos } from "../battle/utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -437,7 +438,7 @@ const ScenePlayer = ({
 
         updatePlayer({
             items: [...player.items, ...regularItems],
-            mesos: player.mesos + mesos,
+            mesos: calculateUpdatedMesos({ player, mesos }),
         });
 
         if (dialogIndex < scene.script.length - 1) {
@@ -450,7 +451,7 @@ const ScenePlayer = ({
     const handleSelectItemChoice = (item: Item) => {
         if (item.pickUp) {
             updatePlayer({
-                mesos: player.mesos + (item.pickUp.mesos || 0),
+                mesos: calculateUpdatedMesos({ player, mesos: item.pickUp.mesos }),
             });
         } else {
             updatePlayer({

@@ -11,6 +11,7 @@ import { BATTLE_TYPES, Wave } from "../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
+import { calculateUpdatedMesos } from "../utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
@@ -25,9 +26,6 @@ export const onBattleEnd = () => {
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
-            return acc + mesosGained;
-        }, 1);
 
         dispatch(
             pushBattleHistory({
@@ -45,7 +43,7 @@ export const onBattleEnd = () => {
                 HP: player.HP,
                 turnHistory: [],
                 abilityHistory: [],
-                mesos: player.mesos + Math.floor(mesosAccumulated * mesosGainedMultiplier),
+                mesos: calculateUpdatedMesos({ player, mesos: mesosAccumulated }),
             })
         );
     };
