@@ -19,7 +19,7 @@ export const slimeGlobule: Minion = {
     image: SlimeIdleImage,
     isBoss: true,
     maxHP: 100,
-    resources: 0,
+    resources: 1,
     effects: [
         stun,
         hardy,
