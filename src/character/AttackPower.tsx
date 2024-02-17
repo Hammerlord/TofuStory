@@ -83,7 +83,8 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     })();
 
     const hasYetToCastAbility = !casting && abilityToUse?.castTime;
-    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatant) || !timesToAttack) {
+    const isMinionNotAttacking = !combatant.isPlayer && !timesToAttack;
+    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatant) || isMinionNotAttacking) {
         return null;
     }
 

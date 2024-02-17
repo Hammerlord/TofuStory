@@ -823,6 +823,7 @@ export const sharpen2: Ability = {
                 {
                     name: "Sharpen",
                     icon: WeaponMasteryImage,
+                    disableDisplayIcon: true,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
@@ -843,6 +844,7 @@ export const sharpen: Ability = {
             effects: [
                 {
                     name: "Sharpen",
+                    disableDisplayIcon: true,
                     icon: WeaponMasteryImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
