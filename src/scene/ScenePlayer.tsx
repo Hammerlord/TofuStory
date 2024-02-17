@@ -268,6 +268,7 @@ const ScenePlayer = ({
 
     useEffect(() => {
         if (!script[dialogIndex]) {
+            onExit();
             return;
         }
 
@@ -505,7 +506,7 @@ const ScenePlayer = ({
         });
     };
 
-    const canSkip = !responses && !items && !itemChoices;
+    const canSkip = !responses && !items && !itemChoices && dialogIndex < script.length - 1;
 
     return (
         <>
