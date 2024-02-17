@@ -89,14 +89,7 @@ const realShadow: Minion = {
                 },
             },
         },
-        {
-            name: "Shadow Clone",
-            icon: BystanderImage,
-            description: "Preventing armor decay.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            preventArmorDecay: true,
-        },
+        preventArmorDecay,
     ],
 };
 
