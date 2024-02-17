@@ -33,6 +33,7 @@ export interface SceneEncounter {
     disableCardRewards?: boolean;
     itemRewards?: Item[];
     type?: BATTLE_TYPES;
+    backgroundMusic?: string;
 }
 
 export interface Shop {

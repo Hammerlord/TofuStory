@@ -6,11 +6,13 @@ import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 const noobEncounter1 = {
     characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobA, null, noobB, null] }],
+    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
 };
 
 const noobEncounter2 = {
     characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobAWarrior, null, noobBWarrior, null] }],
+    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
 };
 
 enum NOOB_EVENT_IDS {

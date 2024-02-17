@@ -1,9 +1,11 @@
+import { mesoThief } from "../../enemy/enemy";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
-import { EventScene } from "../../scene/types";
+import { mesoThiefScene } from "../../scene/misc";
+import { EventScene, SCENE_CONDITION_TYPES } from "../../scene/types";
 import {
     adamantiumPlate,
     alligatorTube,
@@ -77,6 +79,7 @@ export const events: EventScene[] = [
     noobIntro,
     noobRivalWarrior,
     wantedPosterScene,
+    mesoThiefScene,
 ];
 
 /**

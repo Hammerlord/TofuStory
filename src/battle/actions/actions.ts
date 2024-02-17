@@ -254,7 +254,7 @@ const checkHitEffects = ({
             const updatedTargets = getUpdatedStats({
                 ...getState().battle,
                 actorId: actor.id,
-                targetIds: [actor.id],
+                targetIds: affectedTargets,
                 selectedIndex: index,
                 action: {
                     type: ACTION_TYPES.EFFECT,
@@ -567,7 +567,10 @@ const onEffectEventTrigger = ({
             const { combatant } = findCombatantData(getState, ownerId) || {};
 
             if (removeEffect || updatedEffect.stacks === 0) {
-                const newEffects = combatant.effects.filter(({ id }) => id !== effect.id);
+                const removedEffects = [];
+                const newEffects = [];
+                combatant.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
+                dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, source }]));
                 dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
             } else if (decrementStacks && updatedEffect.stacks > 0) {
                 const newEffects = combatant.effects.map((e: CombatEffect) => {

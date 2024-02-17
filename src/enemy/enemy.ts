@@ -1486,7 +1486,7 @@ export const darkStoneGolem: Minion = {
 
 export const mesoThief: Minion = {
     name: "ImaTheif",
-    maxHP: 50,
+    maxHP: 70,
     image: ThiefImage,
     resources: 0,
     mesos: 50,
@@ -1508,12 +1508,12 @@ export const mesoThief: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 4,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },
@@ -1531,7 +1531,7 @@ export const mesoThief: Minion = {
                             ...stealth,
                             description: "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
                             preventTurnAction: true,
-                            duration: 2,
+                            duration: 3,
                             onEnd: {
                                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                 ability: {
@@ -1542,6 +1542,19 @@ export const mesoThief: Minion = {
                                             type: ACTION_TYPES.EFFECT,
                                             target: TARGET_TYPES.SELF,
                                             retreat: true,
+                                        },
+                                    ],
+                                },
+                            },
+                            onEffectRemoved: {
+                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                ability: {
+                                    name: "",
+                                    dialog: "Dammit! My escape path!",
+                                    actions: [
+                                        {
+                                            type: ACTION_TYPES.NONE,
+                                            target: TARGET_TYPES.SELF,
                                         },
                                     ],
                                 },
