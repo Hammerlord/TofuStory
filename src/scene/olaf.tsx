@@ -138,7 +138,7 @@ export const lithEventsOlaf: EventScene = {
                                 "Well, I hate to pick on naive creatures who've taken the wrong turn, but I should take care of this before the next batch of greenhorns come around...",
                                 "[Olaf makes a menacing gesture with his arms.]",
                             ],
-                            responses: [{ text: "Prepare for Olaf's attack.", encounter: olafFight, notoriety: 1, next: postFight }],
+                            responses: [{ text: "Prepare for Olaf's attack.", encounter: olafFight, infamy: 1, next: postFight }],
                         },
                     ],
                 },
@@ -152,7 +152,7 @@ export const lithEventsOlaf: EventScene = {
                                 "Just warning you, I'm not one of those newbie adventurers you can pick on.",
                             ],
                             responses: [
-                                { text: "Fight!", encounter: olafFight, notoriety: 1, next: postFight },
+                                { text: "Fight!", encounter: olafFight, infamy: 1, next: postFight },
                                 { text: "On second thought... [Leave before you attract any more attention.]", isExit: true },
                             ],
                         },

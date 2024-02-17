@@ -180,7 +180,7 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
-const { logVisitedEvent } = playerStateSlice.actions;
+const { logVisitedEvent, addInfamy: addInfamy } = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -238,6 +238,7 @@ const ScenePlayer = ({
         loseItems = [],
         treasureBox,
         conditionalNext,
+        infamy,
     } = script[dialogIndex] || ({} as any);
 
     const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
@@ -269,6 +270,7 @@ const ScenePlayer = ({
         if (!script[dialogIndex]) {
             return;
         }
+
         const { scene: newScene, background, region }: ScriptNode = script[dialogIndex];
         if (region) {
             onChangeRegion(region);
@@ -306,6 +308,10 @@ const ScenePlayer = ({
                 setDialogIndex(0);
             }
         }
+
+        if (infamy) {
+            dispatch(addInfamy(infamy));
+        }
     }, [dialogIndex]);
 
     const onProceedDialog = () => {
@@ -330,6 +336,12 @@ const ScenePlayer = ({
         }
     };
 
+    const onCompletePuzzle = (completionPayload: { success?: boolean; infamy?: number }) => {
+        const { infamy = 0 } = completionPayload || {};
+        dispatch(addInfamy(infamy));
+        handleClickDialog();
+    };
+
     const passesScriptConditions = (conditions: ScriptConditions[]): boolean => {
         if (!conditions?.length) {
             return true;
@@ -345,7 +357,7 @@ const ScenePlayer = ({
         return conditions.some(passesCondition);
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id }: ScriptResponse) => {
+    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id, infamy }: ScriptResponse) => {
         const callback = () => {
             if (id) {
                 dispatch(logVisitedEvent(id));
@@ -378,6 +390,10 @@ const ScenePlayer = ({
             if (!next && !shop && !isExit) {
                 // This dialogue node just goes to the next index
                 onProceedDialog();
+            }
+
+            if (infamy) {
+                dispatch(addInfamy(infamy));
             }
         };
         if (encounter) {
@@ -561,7 +577,7 @@ const ScenePlayer = ({
                             </div>
                         </>
                     )}
-                    {typeof Puzzle === "function" && <Puzzle player={player} onComplete={handleClickDialog} />}
+                    {typeof Puzzle === "function" && <Puzzle player={player} onComplete={onCompletePuzzle} onExit={handleClickDialog} />}
                 </div>
                 {showCamp && (
                     <Camp

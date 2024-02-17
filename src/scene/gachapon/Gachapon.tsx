@@ -50,7 +50,7 @@ export const gachaponEvents: EventScene = {
             responses: [
                 {
                     text: "Hit the gachapon machine.",
-                    notoriety: 1,
+                    infamy: 1,
                     encounter: gachaponFight,
                     next: [
                         {

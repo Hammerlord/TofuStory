@@ -125,7 +125,7 @@ const Main = () => {
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
-        const route = generateTravelRoute({ startingRoute: toLith, notoreity: 0, numRoutesComplete: 0 });
+        const route = generateTravelRoute({ startingRoute: toLith, infamy: 0, numRoutesComplete: 0 });
         setRoute(route);
         setLocationNode(route);
         setSceneRegion(null);
@@ -183,8 +183,8 @@ const Main = () => {
                 switch (type) {
                     case SCENE_CONDITION_TYPES.PLAYER_CLASS:
                         return passesValueComparison({ val: value, otherVal: player.class, comparator });
-                    case SCENE_CONDITION_TYPES.NOTOREITY:
-                        return passesValueComparison({ val: value, otherVal: player.notoreity, comparator });
+                    case SCENE_CONDITION_TYPES.INFAMY:
+                        return passesValueComparison({ val: value, otherVal: player.infamy, comparator });
                     case SCENE_CONDITION_TYPES.VISITED_SCENES:
                         // visitedEvents is stored as a map of IDs
                         return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });

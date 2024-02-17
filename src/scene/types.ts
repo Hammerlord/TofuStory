@@ -5,7 +5,7 @@ import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
 
 export enum SCENE_CONDITION_TYPES {
-    NOTOREITY = "notoreity",
+    INFAMY = "infamy",
     // Scene.id strings
     VISITED_SCENES = "visited-scenes",
     PLAYER_CLASS = "player-class",
@@ -22,6 +22,7 @@ export interface SceneCondition {
 export interface EventScene {
     id: string; // Scene ID to track which scenes you have visited
     script: ScriptNode[];
+    repeatable?: boolean;
     // Array of conditions resolves with AND operator by default
     conditions?: SceneCondition[];
 }
@@ -51,7 +52,7 @@ export interface ScriptResponse {
     isExit?: boolean;
     encounter?: SceneEncounter;
     next?: ScriptNode[];
-    notoriety?: number;
+    infamy?: number;
     shop?: Shop;
     camp?: boolean;
     removeAbility?: boolean;
@@ -67,7 +68,15 @@ export interface ScriptNode {
     // Do not fade to black if scene changes
     disableTransition?: boolean;
     background?: string;
-    puzzle?: ({ player, onComplete }: { player: Combatant; onComplete: (success?: boolean) => void }) => JSX.Element;
+    puzzle?: ({
+        player,
+        onComplete,
+        onExit,
+    }: {
+        player: Combatant;
+        onComplete: ({ success, infamy }?: { success?: boolean; infamy?: number }) => void;
+        onExit: () => void;
+    }) => JSX.Element;
     treasureBox?: boolean;
     dialog: string[];
     responses?: ScriptResponse[];
@@ -94,9 +103,10 @@ export interface ScriptNode {
     // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
     conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];
+    infamy?: number;
 }
 
 export interface SceneProps {
     player?: Combatant;
-    onComplete?: () => void;
+    onComplete?: ({ success, infamy }?: { success?: boolean; infamy?: number }) => void;
 }

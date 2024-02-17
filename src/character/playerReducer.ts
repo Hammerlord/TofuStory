@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     },
     battleHistory: [],
     visitedEvents: {}, // { [eventId: string]: number } - value is number of times visited
+    infamy: 0,
 };
 
 export const playerStateSlice = createSlice({
@@ -120,6 +121,12 @@ export const playerStateSlice = createSlice({
                     ...state.visitedEvents,
                     [eventId]: (state.visitedEvents[eventId] || 0) + 1,
                 },
+            };
+        },
+        addInfamy: (state, action: PayloadAction<number>) => {
+            return {
+                ...state,
+                infamy: state.infamy + action.payload,
             };
         },
     },

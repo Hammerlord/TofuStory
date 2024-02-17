@@ -356,6 +356,7 @@ export { default as ShoImage } from "./Sho.png";
 export { default as ShoRopeImage } from "./ShoRope.png";
 export { default as ShoutImage } from "./Shout.png";
 export { default as ShroomImage } from "./Shroom.png";
+export { default as SkullPatchImage } from "./SkullPatch.png";
 export { default as SlashBlastImage } from "./SlashBlast.png";
 export { default as SleepywoodRegionBGImage } from "./SleepywoodRegionBG.jpg";
 export { default as SlideImage } from "./Slide.png";

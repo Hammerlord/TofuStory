@@ -1,14 +1,13 @@
-import Button from "../view/Button";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
-import { Combatant } from "../character/types";
-import { MesoCoinImage } from "../images";
+import { useAppSelector } from "../hooks";
+import { MesoCoinImage, SkullPatchImage } from "../images";
+import Button from "../view/Button";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
-import { useAppSelector } from "../hooks";
+import Tooltip from "../view/Tooltip";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -31,11 +30,11 @@ const useStyles = createUseStyles({
     stats: {
         lineHeight: "56px",
     },
-    mesos: {
+    tallyDisplay: {
         margin: "0 16px",
         display: "inline-block",
     },
-    mesoImage: {
+    tallyImage: {
         verticalAlign: "middle",
         marginRight: "8px",
     },
@@ -73,7 +72,7 @@ const Header = ({
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
     const { character, battle } = useAppSelector((state) => state);
-    const { player: playerCharacter, deck } = character || {};
+    const { player: playerCharacter, deck, infamy } = character || {};
     const playerCombatant = battle?.playerSide.find((combatant) => combatant?.isPlayer);
     const player = playerCombatant || playerCharacter;
 
@@ -85,10 +84,22 @@ const Header = ({
                 <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
                     {deck.length} abilities
                 </Button>
-                <div className={classes.mesos}>
-                    <img src={MesoCoinImage} className={classes.mesoImage} />
+                <div className={classes.tallyDisplay}>
+                    <img src={MesoCoinImage} className={classes.tallyImage} />
                     {player.mesos}
                 </div>
+                <Tooltip
+                    title={
+                        <div>
+                            Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
+                        </div>
+                    }
+                >
+                    <div className={classes.tallyDisplay}>
+                        <img src={SkullPatchImage} className={classes.tallyImage} />
+                        {infamy || 0}
+                    </div>
+                </Tooltip>
             </div>
             {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
             <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />

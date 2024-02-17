@@ -15,11 +15,11 @@ import { events } from "./eventList";
  */
 const generateTravelRoute = ({
     startingRoute,
-    notoreity,
+    infamy,
     numRoutesComplete,
 }: {
     startingRoute: Route;
-    notoreity: number;
+    infamy: number;
     numRoutesComplete: number;
 }) => {
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {

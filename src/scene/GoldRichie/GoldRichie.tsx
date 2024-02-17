@@ -54,7 +54,7 @@ export const goldRichieIntro: EventScene = {
                     },
                     id: GOLD_RICHIE_EVENTS.TRADE,
                 },
-                { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, notoriety: 5, id: GOLD_RICHIE_EVENTS.FOUGHT }, // accept function?
+                { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, infamy: 5, id: GOLD_RICHIE_EVENTS.FOUGHT }, // accept function?
             ],
         },
     ],
@@ -85,7 +85,7 @@ export const goldRichieMercenaries: EventScene = {
             speaker: goldRichie,
             dialog: ["Guards!"],
             responses: [
-                { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, notoriety: 5 },
+                { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, infamy: 5 },
                 { text: "Give up all your mesos", isExit: true },
                 { text: "Give up a random item", isExit: true },
             ],

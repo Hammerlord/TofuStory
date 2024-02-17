@@ -53,13 +53,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const WantedPoster = ({ player, onTearDown, onExit, bounty = 10000 }) => {
+const WantedPoster = ({ player, onComplete, onExit, infamy = 1, bounty = 100 }) => {
     const classes = useStyles();
     const [isTornDown, setIsTornDown] = useState(false);
 
     const onClickTearDown = () => {
         setIsTornDown(true);
-        onTearDown();
+        onComplete({
+            infamy: -5,
+        });
     };
 
     return (
@@ -75,8 +77,8 @@ const WantedPoster = ({ player, onTearDown, onExit, bounty = 10000 }) => {
                         <div className={classes.heading}>WANTED</div>
                         <img src={player.image} className={classes.playerImage} />
                         <div>MUSHROOM WITH UNUSUAL CAP</div>
-                        <div>CAUTION: VERY DANGEROUS</div>
-                        <div className={classes.bounty}>{bounty} MESO BOUNTY</div>
+                        <div>CAUTION: DANGEROUS</div>
+                        <div className={classes.bounty}>{bounty * infamy} MESO BOUNTY</div>
                     </div>
                 </div>
                 {!isTornDown && (

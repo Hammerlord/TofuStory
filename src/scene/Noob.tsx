@@ -44,7 +44,7 @@ export const noobIntro: EventScene = {
                 {
                     text: "Fight the beginners.",
                     encounter: noobEncounter1,
-                    notoriety: 1,
+                    infamy: 1,
                     next: [
                         {
                             speaker: noobA,
@@ -52,7 +52,7 @@ export const noobIntro: EventScene = {
                             responses: [
                                 {
                                     text: "Chase them!",
-                                    notoriety: 1,
+                                    infamy: 1,
                                     next: [
                                         {
                                             speaker: noobB,
@@ -175,7 +175,7 @@ export const noobRivalWarrior: EventScene = {
                 {
                     text: "Fight the beginners.",
                     encounter: noobEncounter2,
-                    notoriety: 1,
+                    infamy: 1,
                     next: [
                         {
                             speaker: noobBWarrior,
