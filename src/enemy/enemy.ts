@@ -990,6 +990,18 @@ export const hornyMushroom: Minion = {
                 },
             ],
         },
+        loaf,
+        {
+            name: "Attack",
+            image: CrossedSwordsIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
     ],
     effects: [thorns],
     mesos: 7,
@@ -1050,6 +1062,18 @@ export const elliniaHornyMushroom: Minion = {
     image: HornyMushroomImage,
     maxHP: 50,
     abilities: [
+        {
+            name: "Attack",
+            image: CrossedSwordsIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        loaf,
         {
             name: "Attack",
             image: CrossedSwordsIcon,
