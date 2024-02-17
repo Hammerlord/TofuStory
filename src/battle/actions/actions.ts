@@ -498,6 +498,29 @@ const handleDoTs =
         }
     };
 
+const checkRemoveEffect =
+    ({ effect, effectEvent, source, ownerId }) =>
+    (dispatch, getState) => {
+        const { removeEffect, decrementStacks = 0 } = effectEvent;
+
+        const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - (decrementStacks || 1) };
+        const { combatant } = findCombatantData(getState, ownerId) || {};
+
+        if (removeEffect || updatedEffect.stacks === 0) {
+            const removedEffects = [];
+            const newEffects = [];
+            combatant.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
+
+            dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, source }]));
+            dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+        } else if (decrementStacks && updatedEffect.stacks > 0) {
+            const newEffects = combatant.effects.map((e: CombatEffect) => {
+                return e.id === effect.id ? updatedEffect : e;
+            });
+            dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+        }
+    };
+
 const onEffectEventTrigger = ({
     effectEvent,
     effect,
@@ -562,26 +585,8 @@ const onEffectEventTrigger = ({
         });
         const chanceCheckPass = Math.random() < chance * chanceMultiplier;
 
-        const checkRemoveEffect = () => {
-            const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - decrementStacks };
-            const { combatant } = findCombatantData(getState, ownerId) || {};
-
-            if (removeEffect || updatedEffect.stacks === 0) {
-                const removedEffects = [];
-                const newEffects = [];
-                combatant.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
-                dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, source }]));
-                dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-            } else if (decrementStacks && updatedEffect.stacks > 0) {
-                const newEffects = combatant.effects.map((e: CombatEffect) => {
-                    return e.id === effect.id ? updatedEffect : e;
-                });
-                dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-            }
-        };
-
         if (conditionsPassed && chanceCheckPass) {
-            checkRemoveEffect();
+            dispatch(checkRemoveEffect({ effect, effectEvent, source, ownerId }));
         } else {
             return;
         }
@@ -731,6 +736,8 @@ export const checkEventTrigger = ({
 
             const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
 
+            // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
+            const currentEffects = findCombatantData(getState, combatantId)?.combatant?.effects || [];
             /**
              * Update the number of times this effect event triggered (regardless of whether the actual effects went through or not).
              * @see topaz for an example of what uses this metric
@@ -739,7 +746,7 @@ export const checkEventTrigger = ({
                 updateCombatant({
                     combatantId,
                     newProperties: {
-                        effects: combatant.effects.map((e) => {
+                        effects: currentEffects.map((e) => {
                             if (e.id !== id) {
                                 return e;
                             }

@@ -1551,6 +1551,7 @@ export const deckOfCards: Item = {
             class: EFFECT_CLASSES.BUFF,
             onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                removeEffect: true,
                 effects: [
                     {
                         name: "Mulligan",
