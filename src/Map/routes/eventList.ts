@@ -14,6 +14,7 @@ import {
     aquamarine,
     ballerCane,
     battleShield,
+    bigMesoItem,
     blueJeanShorts,
     blueSaunaRobe,
     boneHelm,
@@ -39,6 +40,7 @@ import {
     koreanFan,
     leatherSandals,
     luckSack,
+    mesoItem,
     nependeathSap,
     panlid,
     pieceOfIce,
@@ -147,4 +149,6 @@ export const ITEMS = [
     sportyTShirt,
     leatherSandals,
     redHeadband,
+    mesoItem,
+    bigMesoItem,
 ];
