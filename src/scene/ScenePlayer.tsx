@@ -94,7 +94,15 @@ const useStyles = createUseStyles({
     },
     portrait: {
         minHeight: "70px",
-        minWidth: "80px",
+        minWidth: "100px",
+        maxHeight: "100px",
+        objectFit: "contain",
+        display: "flex",
+        alignItems: "flex-end",
+
+        "& img": {
+            margin: "0 auto",
+        },
     },
     dialog: {
         width: "100%",
