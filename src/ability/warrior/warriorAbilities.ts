@@ -1399,6 +1399,7 @@ export const dustDevils2: Ability = {
                                     icon: TornadoIcon,
                                     playbackTime: 350,
                                     numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                                    targetArea: 5,
                                 },
                             ],
                         },
@@ -1440,6 +1441,7 @@ export const dustDevils: Ability = {
                                     icon: TornadoIcon,
                                     playbackTime: 350,
                                     numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                                    targetArea: 5,
                                 },
                             ],
                         },
