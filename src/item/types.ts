@@ -21,7 +21,6 @@ export interface Item {
     resources?: number;
     type: ITEM_TYPES;
     image: string;
-    sellPrice?: number;
     effects?: Effect[];
     upgradeCard?: boolean;
     removeCard?: boolean;
@@ -43,5 +42,9 @@ export interface Item {
         // These take share out of the common drop rate
         uncommonRateIncrease?: number;
         rareRateIncrease?: number;
+    };
+    // Gives you something when picked up. The item itself disappears.
+    pickUp?: {
+        mesos?: number;
     };
 }

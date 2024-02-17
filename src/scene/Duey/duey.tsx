@@ -429,7 +429,9 @@ export const dueyIntroScene: EventScene = {
                                         },
                                         {
                                             dialog: ["May these words find you well.", "[The letter is unsigned.]"],
-                                            items: [unsignedLetter],
+                                            items: {
+                                                itemPool: [unsignedLetter],
+                                            },
                                         },
                                         {
                                             dialog: [

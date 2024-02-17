@@ -9,6 +9,7 @@ import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "./ItemView";
 import { Player } from "../character/types";
 import { rollItemPool } from "./utils";
+import { mesoItem } from "./items";
 
 const useStyles = createUseStyles({
     inner: {
@@ -46,6 +47,7 @@ const useStyles = createUseStyles({
 const ItemSelection = ({
     items = [],
     numChoices,
+    disableItemReplacements,
     bonuses,
     player,
     onSelectClick,
@@ -53,6 +55,7 @@ const ItemSelection = ({
 }: {
     items?: Item[];
     numChoices: number;
+    disableItemReplacements?: boolean;
     bonuses?: { uncommon: number; rare: number };
     player: Player;
     onSelectClick: (item: Item) => void;
@@ -71,12 +74,19 @@ const ItemSelection = ({
         }, {});
 
         const itemSelection = items.filter((item: Item) => !alreadyObtained[item.name]);
-        for (let i = itemSelection.length; i < numChoices; ++i) {
-            const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
-            const equipment = getRandomItem(itemPool);
-            if (equipment) {
-                itemSelection.push(equipment);
+
+        if (!disableItemReplacements) {
+            for (let i = itemSelection.length; i < numChoices; ++i) {
+                const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
+                const equipment = getRandomItem(itemPool);
+                if (equipment) {
+                    itemSelection.push(equipment);
+                }
             }
+        }
+
+        if (itemSelection.length === 0) {
+            itemSelection.push(mesoItem);
         }
 
         return shuffle(itemSelection).slice(0, numChoices);

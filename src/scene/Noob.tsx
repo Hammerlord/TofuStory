@@ -1,6 +1,6 @@
 import { PLAYER_CLASSES } from "../Menu/types";
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
-import { leatherSandals } from "../item/items";
+import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, sportyTShirt, sword } from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
 const noobEncounter1 = {
@@ -18,7 +18,7 @@ enum NOOB_EVENT_IDS {
     FOUGHT_WARRIOR = "noob-event-fight-warrior",
 }
 
-export const noobIntro = {
+export const noobIntro: EventScene = {
     id: NOOB_EVENT_IDS.INTRO,
     script: [
         {
@@ -60,14 +60,29 @@ export const noobIntro = {
                                         },
                                         {
                                             speaker: noobA,
-                                            dialog: ["WTF? Monsters aren't supposed to do that!"],
+                                            dialog: ["WTF? Monsters aren't supposed to do that! Hey, do something!"],
                                         },
                                         {
-                                            dialog: ["[The beginners sprint off. One of them dropped something...]"],
-                                            items: [leatherSandals],
+                                            speaker: noobB,
+                                            dialog: [
+                                                "But this was your idea...",
+                                                "[The beginner looks at you.] Uh, um, think quick, what'll make it go away!?",
+                                            ],
                                         },
                                         {
-                                            dialog: ["[The beginners are gone.]"],
+                                            speaker: noobB,
+                                            dialog: [
+                                                "But this was your idea...",
+                                                "[The beginner looks at you.] Uh, um, think quick, what'll make it go away!?",
+                                            ],
+                                            itemChoices: {
+                                                items: [leatherSandals, sportyTShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                numChoices: 3,
+                                                disableItemReplacements: true,
+                                            },
+                                        },
+                                        {
+                                            dialog: ["[While you picked up the item, the beginners made their escape.]"],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -82,7 +97,10 @@ export const noobIntro = {
                                     next: [
                                         {
                                             dialog: ["[The beginners sprint off. One of them dropped something...]"],
-                                            items: [leatherSandals],
+                                            items: {
+                                                itemPool: [leatherSandals, sportyTShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                amount: 1,
+                                            },
                                         },
                                         {
                                             dialog: ["[The beginners are gone.]"],
@@ -165,11 +183,7 @@ export const noobRivalWarrior: EventScene = {
                         },
                         {
                             speaker: noobAWarrior,
-                            dialog: ["Yikes! Run!!", "[The beginners sprint off. One of them dropped something...]"],
-                            items: [],
-                        },
-                        {
-                            dialog: [],
+                            dialog: ["Yikes! Run!!", "[The beginners sprint off once again.]"],
                             responses: [
                                 {
                                     text: "Leave.",

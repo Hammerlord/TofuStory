@@ -523,7 +523,9 @@ const maladyDialog: ScriptNode[] = [
                                                                                                         dialog: [
                                                                                                             "[Something shiny tumbles from the fallen heap of rotten fur.]",
                                                                                                         ],
-                                                                                                        items: [glassShoe],
+                                                                                                        items: {
+                                                                                                            itemPool: [glassShoe],
+                                                                                                        },
                                                                                                     },
                                                                                                     {
                                                                                                         speaker: malady,

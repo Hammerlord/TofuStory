@@ -100,7 +100,9 @@ export const lithEventsTeoJohn: EventScene = {
                         {
                             speaker: teo,
                             dialog: ["[Teo tosses something at you.]"],
-                            items: [halfEatenHotdog],
+                            items: {
+                                itemPool: [halfEatenHotdog],
+                            },
                         },
                         {
                             dialog: ["(Something tells you that being misunderstood by people is going to be a pattern...)"],

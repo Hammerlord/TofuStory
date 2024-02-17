@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Camp from "../Map/Camp";
 import { REGIONS } from "../Map/regions";
@@ -8,7 +8,7 @@ import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { Ability, HandAbility, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
-import { Item } from "../item/types";
+import { ITEM_TYPES, Item } from "../item/types";
 import Button from "../view/Button";
 import TreasureBox from "./TreasureBox/TreasureBox";
 import { EventScene, ScriptConditions, ScriptNode, ScriptResponse } from "./types";
@@ -16,6 +16,8 @@ import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
+import { shuffle } from "../utils";
+import { mesoItem } from "../item/items";
 
 const useStyles = createUseStyles({
     root: {
@@ -238,6 +240,31 @@ const ScenePlayer = ({
         conditionalNext,
     } = script[dialogIndex] || ({} as any);
 
+    const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
+        if (!items) {
+            return;
+        }
+
+        let { itemPool = [], amount } = items;
+        const alreadyObtained = player.items.reduce((acc, item: Item) => {
+            if (item.type === ITEM_TYPES.EQUIPMENT) {
+                acc[item.name] = true;
+            }
+            return acc;
+        }, {});
+
+        itemPool = itemPool.filter((item: Item) => !alreadyObtained[item.name]);
+        if (!itemPool.length) {
+            itemPool.push(mesoItem);
+        }
+
+        if (amount) {
+            return shuffle(itemPool).slice(0, amount);
+        }
+
+        return itemPool;
+    }, [items]);
+
     useEffect(() => {
         if (!script[dialogIndex]) {
             return;
@@ -368,10 +395,26 @@ const ScenePlayer = ({
         }
     };
 
-    const handleClickItems = () => {
-        updatePlayer({
-            items: [...player.items, ...items],
+    const handleClickItemsObtained = () => {
+        const itemsWithPickUpEffects = [];
+        const regularItems = [];
+        itemsObtainedFromScene.forEach((item) => {
+            if (item.pickUp) {
+                itemsWithPickUpEffects.push(item);
+            } else {
+                regularItems.push(item);
+            }
         });
+
+        const mesos = itemsWithPickUpEffects.reduce((acc, item: Item) => {
+            return acc + (item.pickUp?.mesos || 0);
+        }, 0);
+
+        updatePlayer({
+            items: [...player.items, ...regularItems],
+            mesos: player.mesos + mesos,
+        });
+
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {
@@ -380,9 +423,16 @@ const ScenePlayer = ({
     };
 
     const handleSelectItemChoice = (item: Item) => {
-        updatePlayer({
-            items: [...player.items, item],
-        });
+        if (item.pickUp) {
+            updatePlayer({
+                mesos: player.mesos + (item.pickUp.mesos || 0),
+            });
+        } else {
+            updatePlayer({
+                items: [...player.items, item],
+            });
+        }
+
         if (dialogIndex <= scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {
@@ -496,11 +546,11 @@ const ScenePlayer = ({
                                         ))}
                                     </div>
                                 )}
-                                {items && (
-                                    <div className={classes.feedbackContainer} onClick={handleClickItems}>
+                                {itemsObtainedFromScene && (
+                                    <div className={classes.feedbackContainer} onClick={handleClickItemsObtained}>
                                         <div className={classes.option}>
                                             - You gain -
-                                            {items.map((item) => (
+                                            {itemsObtainedFromScene.map((item) => (
                                                 <div key={item.name}>
                                                     <img src={item.image} /> {item.name}
                                                 </div>

@@ -93,7 +93,9 @@ const postFightDialog = {
                 {
                     speaker: mayaCharacter,
                     dialog: ["Um... it isn't much, but this piece of cake seems to be in okay shape. Please take it."],
-                    items: [cake],
+                    items: {
+                        itemPool: [cake],
+                    },
                 },
                 {
                     speaker: mayaCharacter,
@@ -122,7 +124,9 @@ const postFightDialog2 = {
             next: [
                 {
                     dialog: ["[You started grabbing some food.]"],
-                    items: [cake, unagi],
+                    items: {
+                        itemPool: [cake, unagi],
+                    },
                 },
                 {
                     speaker: mayaCharacter,
@@ -236,7 +240,9 @@ const mugMayaOption: ScriptResponse = {
                                         },
                                         {
                                             dialog: ["[There is some leftover food available.]"],
-                                            items: [cake, unagi],
+                                            items: {
+                                                itemPool: [cake, unagi],
+                                            },
                                         },
                                         {
                                             dialog: ["[The house is a mess. Perhaps it's time to go.]"],

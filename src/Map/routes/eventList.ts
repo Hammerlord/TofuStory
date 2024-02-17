@@ -1,5 +1,6 @@
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
+import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { bobSnailScene } from "../../scene/bob";
 import { EventScene } from "../../scene/types";
 import {
@@ -33,6 +34,7 @@ import {
     guideBook,
     ironMace,
     koreanFan,
+    leatherSandals,
     luckSack,
     nependeathSap,
     panlid,
@@ -41,6 +43,7 @@ import {
     pigsRibbonItem,
     plunger,
     rabbitFoot,
+    redHeadband,
     redHeartedEarrings,
     redWhip,
     respawnToken,
@@ -64,7 +67,15 @@ import {
     workGloves,
 } from "./../../item/items";
 
-export const events: EventScene[] = [goldRichieIntro, goldRichieMercenaries, goldRichieRetrade, dueyIntroScene, bobSnailScene];
+export const events: EventScene[] = [
+    goldRichieIntro,
+    goldRichieMercenaries,
+    goldRichieRetrade,
+    dueyIntroScene,
+    bobSnailScene,
+    noobIntro,
+    noobRivalWarrior,
+];
 
 /**
  * Items acquirable from elite/boss battles and treasure boxes
@@ -129,4 +140,6 @@ export const ITEMS = [
     rabbitFoot,
     blueJeanShorts,
     sportyTShirt,
+    leatherSandals,
+    redHeadband,
 ];

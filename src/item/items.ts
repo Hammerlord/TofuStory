@@ -44,6 +44,7 @@ import {
     LeatherSandalsImage,
     LetterImage,
     LuckSackImage,
+    MesoImage,
     NewspaperImage,
     PanlidImage,
     PieceOfIceImage,
@@ -291,7 +292,6 @@ export const leatherSandals: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: LeatherSandalsImage,
-    sellPrice: 10,
     effects: [
         {
             name: "Leather Sandals",
@@ -1797,4 +1797,14 @@ export const sportyTShirt: Item = {
             },
         },
     ],
+};
+
+export const mesoItem: Item = {
+    name: "Mesos",
+    description: "On pick up, grants 85 mesos.",
+    type: ITEM_TYPES.CONSUMABLE,
+    image: MesoImage,
+    pickUp: {
+        mesos: 85,
+    },
 };

@@ -71,7 +71,12 @@ export interface ScriptNode {
     treasureBox?: boolean;
     dialog: string[];
     responses?: ScriptResponse[];
-    items?: Item[];
+    // Items given straight to the player. If amount < itemPool.length, that number of items will be selected randomly
+    items?: {
+        itemPool: Item[];
+        amount?: number;
+    };
+
     itemChoices?: {
         // The pool of items that can be shown as options. If the items are already obtained, they will be replaced by unobtained items.
         items?: Item[];
@@ -81,6 +86,8 @@ export interface ScriptNode {
             rare: number;
             uncommon: number;
         };
+        // If there are no suitable replacements, mesos will be given instead.
+        disableItemReplacements?: boolean;
     };
     region?: REGIONS;
     loseItems?: string[];

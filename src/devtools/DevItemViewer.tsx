@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "../item/ItemView";
-import { glassShoe, goldenHammer, incense, leatherSandals, redHeadband } from "../item/items";
+import { glassShoe, goldenHammer, incense } from "../item/items";
 import { RARITIES } from "../item/types";
 
 const useStyles = createUseStyles({
@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const ITEM_MASTERLIST = [goldenHammer, incense, leatherSandals, glassShoe, redHeadband, ...ITEMS];
+export const ITEM_MASTERLIST = [goldenHammer, incense, glassShoe, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();
