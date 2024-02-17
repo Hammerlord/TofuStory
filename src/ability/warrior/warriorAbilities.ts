@@ -94,17 +94,7 @@ export const warLeap2: Ability = {
             damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [stun],
-            bonus: {
-                damage: 6,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        comparator: "eq",
-                    },
-                ],
-            },
+            effects: [bleed],
         },
     ],
 };
@@ -115,20 +105,10 @@ export const warLeap: Ability = {
     image: WarLeapImage,
     actions: [
         {
-            damage: 1,
+            damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [stun],
-            bonus: {
-                damage: 4,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        comparator: "eq",
-                    },
-                ],
-            },
+            effects: [bleed],
         },
     ],
     upgrades: [warLeap2],
