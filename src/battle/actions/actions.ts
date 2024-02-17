@@ -114,10 +114,8 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
-        const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce(
-            (acc, { lifeOnHit: lifeOnKill = 0 }) => acc + lifeOnKill,
-            0
-        );
+        const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+
         if (lifeOnKill === 0) {
             return;
         }
