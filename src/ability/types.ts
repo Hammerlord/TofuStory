@@ -507,6 +507,7 @@ export interface Action {
         opacity?: number; // Should be a decimal with a max value of 1
         flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
         fadeOut?: boolean;
+        sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
@@ -590,7 +591,6 @@ export enum ANIMATION_TYPES {
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
     ONE_WAY = "one-way",
-    ONE_WAY_SIDEWINDER = "one-way-sidewinder",
     RICOCHET = "ricochet",
     DROP = "drop",
     // This is the same as ACTION_TYPES.EFFECT

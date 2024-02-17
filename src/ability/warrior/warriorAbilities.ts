@@ -1393,7 +1393,9 @@ export const dustDevils2: Ability = {
                                 {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
                                     type: ACTION_TYPES.RANGE_ATTACK,
-                                    animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                                    animationOptions: {
+                                        sidewinder: true,
+                                    },
                                     damage: 2,
                                     secondaryDamage: 1,
                                     icon: TornadoIcon,
@@ -1436,7 +1438,9 @@ export const dustDevils: Ability = {
                                 {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
                                     type: ACTION_TYPES.RANGE_ATTACK,
-                                    animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                                    animationOptions: {
+                                        sidewinder: true,
+                                    },
                                     damage: 1,
                                     icon: TornadoIcon,
                                     playbackTime: 350,

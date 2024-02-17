@@ -54,7 +54,9 @@ export const faust: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 10,
-                    animation: ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                    animationOptions: {
+                        sidewinder: true,
+                    },
                     effects: [poison],
                 },
             ],

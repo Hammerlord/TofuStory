@@ -147,7 +147,7 @@ const AnimationCanvas = ({
     }, [actorElement]);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut } = animationOptions || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder } = animationOptions || {};
     const classes = useStyles({ playbackTime, flash } as any);
 
     // "Beam" animations shoot a bunch of projectile images
@@ -188,7 +188,7 @@ const AnimationCanvas = ({
                     from: actorElement,
                     to: target,
                     object,
-                    sidewinder: animation === ANIMATION_TYPES.ONE_WAY_SIDEWINDER,
+                    sidewinder,
                     returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                     fadeIn: animation === ANIMATION_TYPES.BEAM,
                     ...options,
