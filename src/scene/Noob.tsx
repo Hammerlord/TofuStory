@@ -1,4 +1,5 @@
 import { PLAYER_CLASSES } from "../Menu/types";
+import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
 import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, sportyTShirt, sword } from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
@@ -6,13 +7,13 @@ import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 const noobEncounter1 = {
     characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobA, null, noobB, null] }],
-    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
+    backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
 const noobEncounter2 = {
     characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobAWarrior, null, noobBWarrior, null] }],
-    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
+    backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
 enum NOOB_EVENT_IDS {

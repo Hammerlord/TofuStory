@@ -1,3 +1,4 @@
+import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { mesoThief } from "../enemy/enemy";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
@@ -20,7 +21,7 @@ export const mesoThiefScene: EventScene = {
                     text: "Defend yourself.",
                     encounter: {
                         waves: [{ enemies: [null, null, mesoThief, null, null] }],
-                        backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
+                        backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
                     },
                 },
             ],

@@ -1,5 +1,6 @@
 import { REGIONS } from "../../Map/regions";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
+import { CAMPAIGN_BOSS_MUSIC } from "../../battle/constants";
 import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
 import { lifeLink } from "../../enemy/effect";
 import { lupin, malady, zombieLupin } from "../../enemy/enemy";
@@ -125,7 +126,7 @@ const faustFight = {
             },
         },
     ],
-    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/lywsorddis/54.%20Eregos.mp3",
+    backgroundMusic: CAMPAIGN_BOSS_MUSIC,
 };
 
 const glassShoeDialog = [

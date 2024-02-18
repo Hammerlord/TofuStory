@@ -1,3 +1,4 @@
+import { CAMPAIGN_BOSS_MUSIC } from "../../../battle/constants";
 import { BATTLE_TYPES } from "../../../battle/types";
 import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../enemy/enemy";
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
@@ -56,7 +57,7 @@ const kingSlimeFight = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
-    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/lywsorddis/54.%20Eregos.mp3",
+    backgroundMusic: CAMPAIGN_BOSS_MUSIC,
 };
 
 const lastStage = {

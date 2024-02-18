@@ -1,10 +1,11 @@
+import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { bob } from "../enemy/enemy";
 import { EventScene } from "./types";
 
 const bobEncounter = {
     characters: [bob.name],
     waves: [{ enemies: [null, null, bob, null, null] }],
-    backgroundMusic: "https://dl.vgmdownloads.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3",
+    backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
 export const bobSnailScene: EventScene = {
