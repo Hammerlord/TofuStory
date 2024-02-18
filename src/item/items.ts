@@ -969,7 +969,7 @@ export const redHeadband: Item = {
 export const workGloves: Item = {
     name: "Work Gloves",
     image: WorkGlovesImage,
-    description: "Every 12 abilities you use, gain 1 attack power.",
+    description: "Every 10 abilities you use, gain 1 attack power. Max 3.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     effects: [
@@ -982,7 +982,7 @@ export const workGloves: Item = {
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: 12,
+                        numAbilitiesUsed: 10,
                         comparator: "modulo",
                     },
                 ],
@@ -994,6 +994,7 @@ export const workGloves: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,
+                        maxApplications: 3,
                     },
                 ],
             },
