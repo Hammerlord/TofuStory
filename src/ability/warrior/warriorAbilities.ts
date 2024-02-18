@@ -1947,6 +1947,7 @@ const chanceAttack2: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 2,
+                    disableDisplayIcon: true,
                     conditions: [
                         {
                             calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
@@ -1977,6 +1978,7 @@ export const chanceAttack: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 2,
+                    disableDisplayIcon: true,
                     conditions: [
                         {
                             calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
@@ -2157,6 +2159,7 @@ export const worldReaver: Ability = {
             effects: [
                 {
                     ...immunity,
+                    duration: 2, // Ticks down on turn end
                 },
             ],
         },
@@ -2294,7 +2297,7 @@ const shieldMastery2: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 2,
-                    duration: 1,
+                    duration: 2,
                 },
             ],
             addCards: [block2, block2, block2].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -2319,7 +2322,7 @@ export const shieldMastery: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     type: EFFECT_TYPES.NONE,
                     armorReceived: 2,
-                    duration: 1,
+                    duration: 2,
                 },
             ],
             addCards: [block, block, block].map((card) => ({ ...card, removeAfterTurn: true })),
@@ -2445,7 +2448,7 @@ export const bloodthirst: Ability = {
 
 export const battlelord: Ability = {
     name: "Battle Lord",
-    resourceCost: 2,
+    resourceCost: 1,
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
@@ -2457,15 +2460,15 @@ export const battlelord: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Lord of Darkness",
+                    name: "Battle Lord",
                     icon: LordOfDarknessImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
                     duration: 3,
                     lifeOnHit: 1,
-                    onReceiveDamage: {
-                        effects: [{ ...attackPower, duration: 3 }],
+                    onReceiveAttack: {
+                        effects: [{ ...attackPower, duration: 3, disableDisplayIcon: true }],
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     },
                     maxApplications: 1,

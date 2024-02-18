@@ -38,7 +38,7 @@ export const lostGuardEcho: Minion = {
         {
             resourceCost: 3,
             name: "Echo of Rallying",
-            image: WeaponBoosterImage,
+            image: ShieldIcon,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -52,7 +52,7 @@ export const lostGuardEcho: Minion = {
         {
             resourceCost: 3,
             name: "Echo of Rallying",
-            image: ShieldIcon,
+            image: WeaponBoosterImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

@@ -170,7 +170,6 @@ export const JOB_CARD_MAP = {
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
-            bash,
             warLeap,
             slashBlast,
             block,

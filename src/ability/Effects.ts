@@ -464,7 +464,6 @@ export const attackPower: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
-    duration: 1,
 };
 
 export const armorUp: Effect = {
