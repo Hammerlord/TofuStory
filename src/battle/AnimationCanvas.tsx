@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
-import { getCenterCoords, travel } from "../character/animations";
+import { explode, getCenterCoords, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 
@@ -33,27 +33,6 @@ const useStyles = createUseStyles({
         height: PROJECTILE_HEIGHT,
         position: "fixed",
         zIndex: 5,
-    },
-    "@keyframes explodeAnimation": {
-        from: {
-            transform: "scale(1)",
-            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            opacity: 0.8,
-        },
-        to: {
-            transform: "scale(7)",
-            opacity: 0,
-            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        },
-    },
-    exploding: {
-        animation: "$explodeAnimation",
-        transitionTimingFunction: "ease-in-out",
-        animationIterationCount: 1,
-        animationDuration: ({ playbackTime = 0 }: any) => `${playbackTime / 1000}s`,
-        maxWidth: "100px",
     },
     mirrorX: {
         transform: "scale(-1, 1)",
@@ -179,20 +158,30 @@ const AnimationCanvas = ({
         animationRefs.current?.forEach((animation) => animation?.cancel());
 
         const options = { spin, rotation: rotate, playbackTime, rotateToFaceTarget };
-        if (icon && animation !== ANIMATION_TYPES.ACTION_EXPLODE) {
+
+        if (icon) {
             const animateProjectile = (target, projectileRefIndex: number) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
                 const refsTo = refsFrom + 1 * beamProjectileMultiplier;
                 const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
-                animationRefs.current = travel({
-                    from: actorElement,
-                    to: target,
-                    object,
-                    sidewinder,
-                    returnToOrigin: animation === ANIMATION_TYPES.YOYO,
-                    fadeIn: animation === ANIMATION_TYPES.BEAM,
-                    ...options,
-                });
+
+                if (animation === ANIMATION_TYPES.ACTION_EXPLODE) {
+                    animationRefs.current = explode({
+                        from: actorElement,
+                        object,
+                        ...options,
+                    });
+                } else {
+                    animationRefs.current = travel({
+                        from: actorElement,
+                        to: target,
+                        object,
+                        sidewinder,
+                        returnToOrigin: animation === ANIMATION_TYPES.YOYO,
+                        fadeIn: animation === ANIMATION_TYPES.BEAM,
+                        ...options,
+                    });
+                }
             };
 
             if (ricochet) {
@@ -248,7 +237,7 @@ const AnimationCanvas = ({
     }, [eventId]);
 
     const getProjectileElement = (i: number) => {
-        const projectileDimensions = projectileRefs[i].current?.getBoundingClientRect() || { width: 70, height: 70 };
+        const projectileDimensions = { width: 70, height: 70 };
         const props = {
             key: i,
             ref: projectileRefs[i],
@@ -265,7 +254,6 @@ const AnimationCanvas = ({
             return (
                 <div
                     className={classNames(classes.iconProjectile, {
-                        [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
                         [classes.flash]: flash,
                         [classes.fadeOut]: fadeOut,
                     })}
@@ -287,7 +275,6 @@ const AnimationCanvas = ({
             return (
                 <div
                     className={classNames(classes.iconProjectile, {
-                        [classes.exploding]: animation === ANIMATION_TYPES.ACTION_EXPLODE,
                         [classes.flash]: flash,
                         [classes.fadeOut]: fadeOut,
                     })}

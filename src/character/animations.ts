@@ -160,3 +160,41 @@ export const travel = ({
         });
     });
 };
+
+export const explode = ({
+    from,
+    object,
+    playbackTime,
+}: {
+    object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
+    from: HTMLElement;
+    playbackTime: number;
+}) => {
+    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+
+    const animationFrames = [
+        {
+            transform: "unset",
+        },
+        {
+            transform: "scale(1)",
+            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            opacity: 0.8,
+            easing: "ease-out",
+            offset: 0.2,
+        },
+        {
+            transform: "scale(7)",
+            opacity: 0,
+            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            easing: "ease-in",
+        },
+    ];
+
+    return elementsToAnimate.map((el, i) => {
+        return el.animate(animationFrames, {
+            duration: playbackTime,
+            delay: i * 50,
+        });
+    });
+};
