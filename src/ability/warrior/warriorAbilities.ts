@@ -732,7 +732,7 @@ export const hyperBody: Ability = {
 export const sweepingReach2: Ability = {
     name: "Sweeping Reach",
     level: 2,
-    resourceCost: 0,
+    resourceCost: 1,
     image: WeaponBoosterImage,
     description: "+1 area for your next 3 offensive abilities",
     overrideBodyText: true,
@@ -761,7 +761,7 @@ export const sweepingReach2: Ability = {
 
 export const sweepingReach: Ability = {
     name: "Sweeping Reach",
-    resourceCost: 0,
+    resourceCost: 1,
     image: WeaponBoosterImage,
     description: "+1 area for your next 2 offensive abilities",
     overrideBodyText: true,
@@ -777,7 +777,7 @@ export const sweepingReach: Ability = {
                     icon: WeaponBoosterImage,
                     description: "Increases the area of your next offensive ability",
                     attackAreaIncrease: 1,
-                    stacks: 2,
+                    stacks: 1,
                     maxApplications: 1,
                     onOffensiveAbility: {
                         decrementStacks: 1,
@@ -1075,7 +1075,6 @@ export const dash2: Ability = {
             drawCards: {
                 amount: 3,
             },
-            resources: 1,
         },
     ],
 };
@@ -1101,7 +1100,7 @@ export const ironBody2: Ability = {
     level: 2,
     resourceCost: 1,
     image: IronBodyImage,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             armor: 9,
@@ -1121,7 +1120,7 @@ export const ironBody: Ability = {
     name: "Iron Body",
     resourceCost: 1,
     image: IronBodyImage,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             armor: 7,
@@ -1139,7 +1138,7 @@ export const ironBody: Ability = {
 };
 
 export const rendingStrike2: Ability = {
-    name: "Rending Strike",
+    name: "Rend",
     level: 2,
     resourceCost: 1,
     image: BlastExtraStrikeImage,
@@ -1148,8 +1147,16 @@ export const rendingStrike2: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 8,
+            damage: 3,
             effects: [
+                {
+                    ...bleed,
+                    duration: 3,
+                },
+                {
+                    ...bleed,
+                    duration: 3,
+                },
                 {
                     ...bleed,
                     duration: 3,
@@ -1160,7 +1167,7 @@ export const rendingStrike2: Ability = {
 };
 
 export const rendingStrike: Ability = {
-    name: "Rending Strike",
+    name: "Rend",
     resourceCost: 1,
     image: BlastExtraStrikeImage,
     rarity: RARITIES.UNCOMMON,
@@ -1168,8 +1175,12 @@ export const rendingStrike: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 5,
+            damage: 3,
             effects: [
+                {
+                    ...bleed,
+                    duration: 3,
+                },
                 {
                     ...bleed,
                     duration: 3,
@@ -1184,7 +1195,7 @@ export const whirlwind2: Ability = {
     name: "Whirlwind",
     level: 2,
     image: PanicImage,
-    resourceCost: 2,
+    resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1205,7 +1216,7 @@ export const whirlwind2: Ability = {
 export const whirlwind: Ability = {
     name: "Whirlwind",
     image: PanicImage,
-    resourceCost: 2,
+    resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1226,16 +1237,15 @@ export const whirlwind: Ability = {
 
 export const rupture2: Ability = {
     name: "Rupture",
-    resourceCost: 0,
+    resourceCost: 1,
     image: RedFistOfFuryImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 11,
             bonus: {
                 damage: 3,
-                area: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
                     calculationTarget: CONDITION_TARGETS.TARGET,
@@ -1254,16 +1264,15 @@ export const rupture2: Ability = {
 
 export const rupture: Ability = {
     name: "Rupture",
-    resourceCost: 0,
+    resourceCost: 1,
     image: RedFistOfFuryImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 9,
             bonus: {
                 damage: 2,
-                area: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.BLEEDS,
                     calculationTarget: CONDITION_TARGETS.TARGET,
@@ -1634,26 +1643,17 @@ const guillotine2: Ability = {
     level: 2,
     resourceCost: 1,
     image: InstinctualComboImage,
-    description: "Execute: Return to hand",
+    description: "Execute: Refund cost and return to hand",
     rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 13,
-            bonus: {
-                damage: 7,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        comparator: "lt",
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                    },
-                ],
-            },
+            damage: 15,
             secondaryAction: {
                 target: "actor",
                 returnParentCardToHand: true,
+                resources: 1,
                 conditions: [
                     {
                         healthPercentage: 0,
@@ -1670,26 +1670,17 @@ export const guillotine: Ability = {
     name: "Guillotine",
     resourceCost: 1,
     image: InstinctualComboImage,
-    description: "Execute: Return to hand",
+    description: "Execute: Refund cost and return to hand",
     rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 10,
-            bonus: {
-                damage: 5,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        comparator: "lt",
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                    },
-                ],
-            },
+            damage: 12,
             secondaryAction: {
                 target: "actor",
                 returnParentCardToHand: true,
+                resources: 1,
                 conditions: [
                     {
                         healthPercentage: 0,
@@ -1707,7 +1698,6 @@ const counterattack2: Ability = {
     name: "Counter",
     image: NamelessSwordImage,
     resourceCost: 1,
-    depletedOnUse: true,
     rarity: RARITIES.RARE,
     description: "Next turn, when you are attacked, counter for 7 damage and inflict Bleed.",
     overrideBodyText: true,
