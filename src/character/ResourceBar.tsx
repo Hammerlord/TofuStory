@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
 });
 
 const ResourceBar = ({ resources = 0, maxResources = 0 }) => {
-    const tooltipContents = <div>Accumulating energy for a special ability...</div>;
+    const tooltipContents = <div>Gaining energy for a special ability...</div>;
     const classes = useStyles();
     return (
         <Tooltip title={tooltipContents}>

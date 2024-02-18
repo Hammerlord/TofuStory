@@ -59,6 +59,7 @@ export interface TriggerSource {
     allTargetIds?: string[];
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
     triggerHistory: string[];
+    isProc?: boolean;
 }
 
 export interface Wave {

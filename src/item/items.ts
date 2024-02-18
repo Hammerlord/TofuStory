@@ -1043,7 +1043,8 @@ const chargedAbilityNames = JOB_CARD_MAP.Magician.all
 
 export const chargingStone: Item = {
     name: "Charging Stone",
-    description: "When you use an ability, certain spells become Charged. If left unused at the end of your turn, unleash an Energy Bolt.",
+    description:
+        "Playing a card grants Charged, empowering the next cast of certain spells. If unused by end of turn, fire an Energy Bolt.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -1055,6 +1056,7 @@ export const chargingStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                disableTriggerFromProcs: true,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -1068,8 +1070,7 @@ export const chargingStone: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
-                        description:
-                            "Empowering the next cast of a Charged spell. If left unused at the end of your turn, unleash an Energy Bolt.",
+                        description: "Charged. If unused at the end of your turn, fire an Energy Bolt.",
                         duration: 0,
                         weaponAnimation: "glow",
                         onAbility: {

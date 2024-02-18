@@ -100,6 +100,8 @@ export interface EffectEventTrigger {
     eventTriggeredTimes?: number;
     // How often should the effects proc compared to how often the event triggered. Modulo.
     eventTriggerFrequency?: number;
+    // Sources that were triggered from effect events cannot trigger this event
+    disableTriggerFromProcs?: boolean;
 }
 
 export enum EFFECT_EVENT_KEYS {

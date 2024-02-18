@@ -535,6 +535,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
+        source = { ...source, isProc: true };
         const { canBeSilenced, excludeEffectOwner } = effect;
         const {
             removeEffect,
@@ -768,7 +769,9 @@ export const checkEventTrigger = ({
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
-            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && usable) {
+            const canTriggerFromProcs = !source?.isProc || !effectEvent?.disableTriggerFromProcs;
+
+            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && usable && canTriggerFromProcs) {
                 dispatch(
                     onEffectEventTrigger({
                         effectEvent,
