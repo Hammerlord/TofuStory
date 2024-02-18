@@ -340,7 +340,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
         }
     }
 
-    const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player.resources;
+    const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player?.resources;
 
     return (
         <AbilityTooltip ability={ability}>
