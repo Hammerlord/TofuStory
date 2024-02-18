@@ -113,7 +113,8 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
         };
 
         for (const property in cur) {
-            if (typeof cur[property] === "number") {
+            // Duration should just be a singular effect's duration so we can display '*' (if some are not the same) or the time (if all are the same)
+            if (typeof cur[property] === "number" && property !== "duration") {
                 updated[property] += cur[property];
             }
         }
