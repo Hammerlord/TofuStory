@@ -80,6 +80,7 @@ export const passesConditions = ({
             HP,
             isOffense,
             numFriendly,
+            otherCalculationTarget,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -138,6 +139,26 @@ export const passesConditions = ({
             const { combatant, index, friendly } = calcTarget || {};
             if (!combatant) {
                 return false;
+            }
+
+            if (otherCalculationTarget) {
+                let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType);
+                if (!otherCalcTargets) {
+                    return false;
+                }
+
+                if (!Array.isArray(otherCalcTargets)) {
+                    otherCalcTargets = [otherCalcTargets];
+                }
+
+                const prop = otherCalculationTarget.property;
+                if (
+                    otherCalcTargets.some(
+                        (targetInfo) => !passesValueComparison({ val: combatant[prop], otherVal: targetInfo?.combatant[prop], comparator })
+                    )
+                ) {
+                    return false;
+                }
             }
 
             if (

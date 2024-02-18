@@ -323,6 +323,12 @@ export interface Bonus {
 export interface Condition {
     /** Equals | Less than | Greater than | Not equals/has -- Only used in pass/fail check */
     comparator?: "eq" | "lt" | "gt" | "not" | "modulo";
+    calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
+    // Comparing properties on another target, eg. HP between actor and target
+    otherCalculationTarget?: {
+        targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
+        property: string;
+    };
 
     /** Unique effects, not stacks; TODO numDebuffs/Buffs do nothing */
     numDebuffs?: number;
@@ -341,7 +347,6 @@ export interface Condition {
     armor?: number;
     /** Whether the name of the target matches the condition depending on comparator */
     name?: string | string[];
-    calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
     /** How far away the target/actor are from each other. Similar to area. 0 = directly across from each other. */
     proximity?: number;
     /** If the character is an elite enemy or boss */

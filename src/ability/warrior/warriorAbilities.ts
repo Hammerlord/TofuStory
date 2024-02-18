@@ -176,7 +176,7 @@ export const anger2: Ability = {
     name: "Anger",
     level: 2,
     resourceCost: 0,
-    image: RageImage,
+    image: EnrageImage,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -191,7 +191,7 @@ export const anger2: Ability = {
 export const anger: Ability = {
     name: "Anger",
     resourceCost: 0,
-    image: RageImage,
+    image: EnrageImage,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1826,4 +1826,65 @@ export const poundOfNails: Ability = {
         },
     ],
     upgrades: [poundOfNails2],
+};
+
+const overpower2: Ability = {
+    name: "Overpower",
+    resourceCost: 1,
+    rarity: RARITIES.COMMON,
+    image: RageImage,
+    level: 2,
+    description: "+4 damage to targets with less HP than you",
+    actions: [
+        {
+            damage: 8,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            area: 1,
+            bonus: {
+                damage: 4,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        comparator: "gt",
+                        otherCalculationTarget: {
+                            targetType: CONDITION_TARGETS.TARGET,
+                            property: "HP",
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const overpower: Ability = {
+    name: "Overpower",
+    resourceCost: 1,
+    rarity: RARITIES.COMMON,
+    image: RageImage,
+    description: "+3 damage to targets with less HP than you",
+    overrideBodyText: true,
+    actions: [
+        {
+            damage: 6,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            area: 1,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        comparator: "gt",
+                        otherCalculationTarget: {
+                            targetType: CONDITION_TARGETS.TARGET,
+                            property: "HP",
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [overpower2],
 };
