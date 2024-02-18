@@ -33,6 +33,7 @@ export const minionSnail: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             image: SnailShellImage,
+            icon: SnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
                 addCards: [
@@ -64,7 +65,8 @@ const blueMinionSnail: Minion = {
             name: "Blue Shell",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            image: SnailShellImage,
+            image: BlueSnailShellImage,
+            icon: SnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
                 addCards: [
@@ -97,7 +99,8 @@ const redMinionSnail: Minion = {
             name: "Red Shell",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            image: SnailShellImage,
+            image: RedSnailShellImage,
+            icon: SnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
                 addCards: [
@@ -163,6 +166,28 @@ export const mutantSnailEnemy: Minion = {
             ],
         },
         {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Call Snail",
+            image: SnailImage,
+            actions: [
+                {
+                    // HACK: this is just for animation playback
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                },
+            ],
+        },
+        {
             name: "Whip",
             image: RedWhipImage,
             actions: [
@@ -194,6 +219,44 @@ export const mutantSnailEnemy: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Mutate",
+            image: MutateImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    excludePrimaryTarget: true,
+                    area: 2,
+                    morph: {
+                        type: MORPH_TYPES.MAP,
+                        minions: [
+                            {
+                                conditions: [
+                                    {
+                                        name: "Blue Snail",
+                                        comparator: "eq",
+                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                                    },
+                                ],
+                                minion: redMinionSnail,
+                            },
+                            {
+                                conditions: [
+                                    {
+                                        name: "Snail",
+                                        comparator: "eq",
+                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                                    },
+                                ],
+                                minion: blueMinionSnail,
+                            },
+                        ],
+                    },
                 },
             ],
         },
@@ -234,44 +297,6 @@ export const mutantSnailEnemy: Minion = {
                             duration: 3,
                         },
                     ],
-                },
-            ],
-        },
-        {
-            name: "Mutate",
-            image: MutateImage,
-            resourceCost: 3,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    excludePrimaryTarget: true,
-                    area: 2,
-                    morph: {
-                        type: MORPH_TYPES.MAP,
-                        minions: [
-                            {
-                                conditions: [
-                                    {
-                                        name: "Blue Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: redMinionSnail,
-                            },
-                            {
-                                conditions: [
-                                    {
-                                        name: "Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: blueMinionSnail,
-                            },
-                        ],
-                    },
                 },
             ],
         },
@@ -341,6 +366,22 @@ export const manoEnemy: Minion = {
             ],
         },
         {
+            name: "Rollout",
+            image: RedSnailShellImage,
+            castTime: 1,
+            channelDuration: 3,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.YOYO,
+                    playbackTime: 600,
+                    damage: 7,
+                },
+            ],
+        },
+        {
             name: "Withdraw",
             image: BlueSnailShellImage,
             channelDuration: 2,
@@ -356,22 +397,6 @@ export const manoEnemy: Minion = {
                             duration: 2,
                         },
                     ],
-                },
-            ],
-        },
-        {
-            name: "Rollout",
-            image: RedSnailShellImage,
-            castTime: 1,
-            channelDuration: 3,
-            resourceCost: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.YOYO,
-                    playbackTime: 600,
-                    damage: 7,
                 },
             ],
         },
