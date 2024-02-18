@@ -1103,7 +1103,7 @@ export const ironBody2: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 9,
+            armor: 10,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -1129,7 +1129,7 @@ export const ironBody: Ability = {
             effects: [
                 {
                     ...preventArmorDecay,
-                    duration: 1,
+                    duration: 2,
                 },
             ],
         },
