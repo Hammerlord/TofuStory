@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import { calculateActionArea } from "../../battle/utils";
-import { Ability } from "../types";
+import { Ability, Action } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
 import classNames from "classnames";
 import { CombatantInfo } from "../../battle/types";
@@ -44,7 +44,7 @@ const Area = ({
     hand = [],
     discard = [],
 }: {
-    ability: Ability;
+    ability: { actions: Action[] };
     playerInfo: CombatantInfo;
     deck?: Ability[];
     hand?: Ability[];

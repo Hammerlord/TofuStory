@@ -38,7 +38,7 @@ const RadiateView = ({ ability, playerInfo, hand, deck, discard }) => {
     return (
         <div className={classes.root}>
             <span className={classes.auraLabel}>Radiate</span>
-            <Area ability={radiate} playerInfo={playerInfo} hand={hand} deck={deck} discard={discard} />
+            <Area ability={{ actions: [radiate] }} playerInfo={playerInfo} hand={hand} deck={deck} discard={discard} />
             <Debuffs effects={effects} />
         </div>
     );

@@ -22,7 +22,7 @@ export const getDamageStatistics = ({
     isAdditive: boolean;
 } => {
     const { actions = [] } = ability;
-    const attackActions = actions.filter((action) => action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK);
+    const attackActions = actions.filter((action) => action.damage > 0);
     if (attackActions.length === 0) {
         return {
             baseDamage: 0,
