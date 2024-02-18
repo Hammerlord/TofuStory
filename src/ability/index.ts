@@ -166,7 +166,7 @@ export const JOB_CARD_MAP = {
             wardBooster,
             icicles,
         ],
-        starters: [energyBolt, wishUponAStar, magicClaw],
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
