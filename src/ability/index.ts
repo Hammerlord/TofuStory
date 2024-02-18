@@ -235,7 +235,7 @@ export const JOB_CARD_MAP = {
             poundOfNails,
             overpower,
         ],
-        starters: [warLeap, slashBlast, slashBlast, slam, slam, block, block, block, bash, bash],
+        starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block],
     },
     [WARRIOR_SECONDARY_JOBS.FIGHTER]: {
         onJobUp: [brandish, puncture],
