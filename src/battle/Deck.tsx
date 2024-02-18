@@ -1,7 +1,7 @@
 import { compose } from "ramda";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
+import { HandAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 
 const DECK_COLOR = "#176fbd";
@@ -75,9 +75,9 @@ const Deck = ({
     depleted = [],
     viewDeckInOrder,
 }: {
-    deck: Ability[];
-    discard: Ability[];
-    depleted: Ability[];
+    deck: HandAbility[];
+    discard: HandAbility[];
+    depleted: HandAbility[];
     viewDeckInOrder: boolean;
 }) => {
     const classes = useStyles();
@@ -97,7 +97,7 @@ const Deck = ({
             .join("");
     };
 
-    const getAbilityMap = (items: Ability[]): { [abilityName: string]: { count: number; ability: Ability } } => {
+    const getAbilityMap = (items: HandAbility[]): { [abilityName: string]: { count: number; ability: HandAbility } } => {
         return items
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
@@ -113,7 +113,7 @@ const Deck = ({
             }, {});
     };
 
-    const getImage = (ability: Ability) => {
+    const getImage = (ability: HandAbility) => {
         const image = ability.image;
         let imageNode;
         if (typeof image === "string") {
@@ -126,7 +126,7 @@ const Deck = ({
         return imageNode;
     };
 
-    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: Ability } }) => {
+    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: HandAbility } }) => {
         return (
             <ul className={classes.abilityList}>
                 {Object.entries(abilityMap).map(([abilityName, { ability, count }]) => {
@@ -142,13 +142,13 @@ const Deck = ({
         );
     };
 
-    const getInOrderTooltip = (abilities: Ability[]) => {
+    const getInOrderTooltip = (abilities: HandAbility[]) => {
         return (
             <ul className={classes.abilityList}>
-                {abilities.map((ability) => {
+                {abilities.map((ability, i) => {
                     const imageNode = getImage(ability);
                     return (
-                        <li key={ability.name} className={classes.abilityItem}>
+                        <li key={ability.instanceId || i} className={classes.abilityItem}>
                             {imageNode} {ability.name} {getAbilityLevel(ability)}
                         </li>
                     );
