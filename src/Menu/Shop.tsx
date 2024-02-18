@@ -11,7 +11,6 @@ import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
-import { SECONDARY_JOBS } from "./types";
 import AbilityRarityTag from "../ability/AbilityView/RarityTag";
 import { Player } from "../character/types";
 
@@ -171,13 +170,7 @@ const Shop = ({
 
     const refreshItems = () => {
         // Abilities
-        const otherSecondaryJobs = Object.values(SECONDARY_JOBS[player.class]).filter((job) => job !== player.secondaryClass) || [];
-        const otherSecondaryJobCards = otherSecondaryJobs.reduce(
-            (acc: Ability[], job: string) => [...acc, ...JOB_CARD_MAP[job]],
-            [] as Ability[]
-        ) as Ability[];
-
-        const firstJobAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
+        const potentialAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
             if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
                 return ability.upgrades[0];
             }
@@ -185,7 +178,6 @@ const Shop = ({
             return ability;
         });
 
-        const potentialAbilities = firstJobAbilities.concat(JOB_CARD_MAP[player.secondaryClass]?.all || []).concat(otherSecondaryJobCards);
         const rolledAbilities = [];
         Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
             const selectedRarity = rollRarity(player);

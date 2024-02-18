@@ -15,7 +15,6 @@ import { startBattle } from "../battle/actions/phases";
 import { BATTLE_STATES, battleStateSlice } from "../battle/reducer";
 import { BATTLE_TYPES } from "../battle/types";
 import { getMaxHP } from "../battle/utils";
-import JobUp from "../character/JobUp";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { Item } from "../item/types";
@@ -117,7 +116,6 @@ const Main = () => {
     const [isResting, setIsResting] = useState(false);
     const [route, setRoute] = useState(null);
     const [locationNode, setLocationNode] = useState(null);
-    const [isSelectingSecondaryJob, setIsSelectingSecondaryJob] = useState(false);
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
@@ -146,15 +144,6 @@ const Main = () => {
     useEffect(() => {
         resetTravels();
     }, []);
-
-    useEffect(() => {
-        // TODO this is only applicable for warrior right now
-        const isWarrior = player?.class === PLAYER_CLASSES.WARRIOR;
-        const isJobUpTime = battlesWon.bossEncounter === 3 && !isActivityOpen && !player.secondaryClass && isWarrior;
-        if (isJobUpTime) {
-            setIsSelectingSecondaryJob(true);
-        }
-    }, [battlesWon]);
 
     useEffect(() => {
         // Check game over when player updates
@@ -314,16 +303,6 @@ const Main = () => {
             dispatch(useConsumable(item));
         };
     }
-
-    const handleJobUp = ({ job, jobUpAbilities }) => {
-        dispatch(
-            updatePlayer({
-                secondaryClass: job,
-            })
-        );
-        dispatch(updateDeck([...deck, ...jobUpAbilities]));
-        setIsSelectingSecondaryJob(false);
-    };
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
@@ -527,7 +506,6 @@ const Main = () => {
             )}
             {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
 
-            {isSelectingSecondaryJob && <JobUp player={player} onSelectClass={handleJobUp} />}
             {isGameOver && (
                 <GameOver
                     player={player}

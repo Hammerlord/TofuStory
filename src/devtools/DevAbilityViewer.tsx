@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
-import { PLAYER_CLASSES, SECONDARY_JOBS } from "../Menu/types";
+import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { shellThrow } from "../ability/neutralAbilities";
 import Button from "../view/Button";
@@ -83,13 +83,6 @@ const DevAbilityViewer = ({ onClose }) => {
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
                     </p>
                     <Grid cards={formatCards(JOB_CARD_MAP[selectedClass]?.all)} />
-                    {Object.values(SECONDARY_JOBS[selectedClass])?.map((secondaryClass: string) => (
-                        <div key={secondaryClass}>
-                            <hr />
-                            <p>{secondaryClass}</p>
-                            <Grid cards={formatCards(JOB_CARD_MAP[secondaryClass]?.all)} />
-                        </div>
-                    ))}
                 </div>
             )}
         </div>

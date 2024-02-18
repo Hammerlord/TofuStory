@@ -1,60 +1,81 @@
-import { preventArmorDecay } from "./../Effects";
 import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
+    BlastExtraStrikeImage,
     BlockImage,
+    BrandishImage,
     BrickImage,
     BricksImage,
+    BundleOfNailsImage,
+    BurningSoulBladeImage,
+    BurningSoulBladeMinionImage,
+    ChanceAttackImage,
     CloseCombatImage,
+    CombatOrdersImage,
+    ComboFuryImage,
+    DarkThirstImage,
+    DivineChargeImage,
     DoubleTimeImage,
+    EndureImage,
     EnrageImage,
-    BlastExtraStrikeImage,
     FlagImage,
     GiganticSledgeImage,
+    GungnirImage,
     HammerImage,
+    HighPaladinImage,
     HyperBodyImage,
+    InstinctualComboImage,
+    IntrepidSlashImage,
     IronBodyImage,
     IronWillImage,
-    SpikedMaceImage,
+    LordOfDarknessImage,
     MagicCrashImage,
+    MetalAxeImage,
+    NamelessSwordImage,
+    NightShadeExplosionImage,
     PanicImage,
+    ParashockGuardImage,
     PowerStanceImage,
+    PunctureImage,
     RageImage,
+    RagingBlowImage,
     RedFistOfFuryImage,
+    RisingRageImage,
     RushImage,
     SelfRecoveryImage,
+    ShieldMasteryImage,
     ShieldRedImage,
     ShoutImage,
     SlashBlastImage,
     SpikeBallImage,
+    SpikedMaceImage,
     WarLeapImage,
     WarMushImage,
     WarriorMasteryImage,
     WeaponBoosterImage,
     WeaponMasteryImage,
-    MetalAxeImage,
-    CombatOrdersImage,
-    InstinctualComboImage,
-    NamelessSwordImage,
-    BundleOfNailsImage,
+    WorldReaverImage,
 } from "../../images";
-import { FireworksIcon, TornadoIcon } from "../../images/icons";
+import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { silence, stealth, stun, thorns, bleed } from "../Effects";
+import { bleed, immunity, silence, stealth, stun, thorns, attackPower } from "../Effects";
 import {
-    Ability,
-    Action,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    Ability,
+    Action,
     CONDITION_TARGETS,
-    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
+import { preventArmorDecay } from "./../Effects";
 import { MULTIPLIER_TYPES } from "./../types";
+
+import { attack } from "../../enemy/abilities";
 
 export const bash2: Ability = {
     name: "Bash",
@@ -1877,4 +1898,480 @@ export const overpower: Ability = {
         },
     ],
     upgrades: [overpower2],
+};
+
+export const braveSlash: Ability = {
+    name: "Brave Slash",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: IntrepidSlashImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "Deal {{damage}} damage to a random enemy in the area, x3",
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
+        },
+        {
+            damage: 5,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
+        },
+        {
+            damage: 5,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            targetArea: 1,
+        },
+    ],
+};
+
+export const puncture: Ability = {
+    name: "Puncture",
+    resourceCost: 1,
+    image: PunctureImage,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            effects: [
+                {
+                    ...bleed,
+                    duration: 3,
+                },
+            ],
+            area: 1,
+        },
+    ],
+};
+
+export const chanceAttack: Ability = {
+    name: "Chance Attack",
+    resourceCost: 1,
+    image: ChanceAttackImage,
+    depletedOnUse: true,
+    description: "against debuffed enemies",
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Chance Attack",
+                    icon: ChanceAttackImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 3,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const brandish: Ability = {
+    name: "Brandish",
+    resourceCost: 1,
+    image: BrandishImage,
+    description: "Hits twice",
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            damage: 5,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+};
+
+export const comboFury: Ability = {
+    name: "Combo Fury",
+    resourceCost: 0,
+    image: ComboFuryImage,
+    description: "Deals 1 damage for every attack you made this turn, hitting twice",
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+export const parry: Ability = {
+    name: "Parry",
+    resourceCost: 0,
+    image: EndureImage,
+    description: "(Armor multiplied by the number of attacks made this turn)",
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            armor: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+const rageEffect = {
+    name: "Rage",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: RagingBlowImage,
+    skillBonus: [
+        {
+            skill: "Rising Rage",
+            damage: 1,
+        },
+        { skill: "Raging Blow", damage: 1 },
+    ],
+};
+
+const ragingBlowAction: Action = {
+    damage: 1,
+    type: ACTION_TYPES.ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+};
+
+export const ragingBlow: Ability = {
+    name: "Raging Blow",
+    resourceCost: 0,
+    image: RagingBlowImage,
+    description: "Hits twice",
+    actions: [
+        ragingBlowAction,
+        ragingBlowAction,
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    ...rageEffect,
+                },
+            ],
+        },
+    ],
+};
+
+ragingBlow.actions.push({
+    type: ACTION_TYPES.EFFECT,
+    target: TARGET_TYPES.SELF,
+    addCardsToDiscard: [
+        {
+            ...ragingBlow,
+        },
+    ],
+});
+
+export const worldReaver: Ability = {
+    name: "World Reaver",
+    resourceCost: 1,
+    depletedOnUse: true,
+    image: WorldReaverImage,
+    description: "Deals 3 damage for every attack you made this turn",
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            area: 1,
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    ...immunity,
+                },
+            ],
+        },
+    ],
+};
+
+export const risingRage: Ability = {
+    name: "Rising Rage",
+    resourceCost: "x",
+    image: RisingRageImage,
+    description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            area: 1,
+            damage: 8,
+            multiplier: {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+            },
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+};
+
+export const burningSoulBlade: Ability = {
+    name: "Burning Soul Blade",
+    resourceCost: 1,
+    image: BurningSoulBladeImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [],
+    minion: {
+        name: "Burning Soul Blade",
+        image: BurningSoulBladeMinionImage,
+        maxHP: 1,
+        abilities: [
+            {
+                ...attack,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 2,
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                name: "Burning Soul Blade",
+                icon: BurningSoulBladeMinionImage,
+                type: EFFECT_TYPES.IMMUNITY,
+                class: EFFECT_CLASSES.BUFF,
+                attackAreaIncrease: 1,
+                onAttack: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    effects: [
+                        {
+                            name: "Burning Soul Blade",
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.BUFF,
+                            attackPower: 1,
+                        },
+                    ],
+                },
+            },
+        ],
+    },
+};
+
+export const divineCharge: Ability = {
+    name: "Divine Charge",
+    resourceCost: 0,
+    image: DivineChargeImage,
+    description: "damage times the number of debuffs on the target",
+    actions: [
+        {
+            damage: 2,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            bonus: {
+                damage: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.DEBUFFS,
+                    calculationTarget: CONDITION_TARGETS.TARGET,
+                },
+            },
+        },
+    ],
+};
+
+export const shieldMastery: Ability = {
+    name: "Shield Mastery",
+    resourceCost: 1,
+    image: ShieldMasteryImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            armor: 2,
+            effects: [
+                {
+                    name: "Shield Mastery",
+                    icon: ShieldMasteryImage,
+                    class: EFFECT_CLASSES.BUFF,
+                    type: EFFECT_TYPES.NONE,
+                    preventArmorDecay: true,
+                    armorReceived: 2,
+                    duration: 1,
+                },
+            ],
+            addCards: [block, block].map((card) => ({ ...card, removeAfterTurn: true })),
+        },
+    ],
+};
+
+export const judgment: Ability = {
+    name: "Judgment",
+    resourceCost: 3,
+    image: HighPaladinImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "Deals damage equal to your armor",
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ARMOR,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+export const parashockGuard: Ability = {
+    name: "Parashock Guard",
+    resourceCost: 1,
+    image: ParashockGuardImage,
+    depletedOnUse: true,
+    description: "Gain armor equal to your current armor",
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            armor: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ARMOR,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+export const bloodthirst: Ability = {
+    name: "Bloodthirst",
+    resourceCost: 1,
+    image: DarkThirstImage,
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Bloodthirst",
+                    icon: DarkThirstImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    lifeOnHit: 1,
+                    lifeOnKill: 3,
+                    duration: 3,
+                },
+                {
+                    ...bleed,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const battlelord: Ability = {
+    name: "Battle Lord",
+    resourceCost: 2,
+    image: LordOfDarknessImage,
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
+    description: "Retaliation: gain +1 attack power for 5 turns",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Lord of Darkness",
+                    icon: LordOfDarknessImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    duration: 5,
+                    lifeOnHit: 1,
+                    onReceiveDamage: {
+                        effects: [{ ...attackPower, duration: 5 }],
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const gungnir: Ability = {
+    name: "Gungnir",
+    resourceCost: 3,
+    depletedOnUse: true,
+    image: GungnirImage,
+    rarity: RARITIES.RARE,
+    description: "(Damage equal to 50% of your max HP)",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            damage: 1,
+            multiplier: {
+                type: MULTIPLIER_TYPES.MAX_HP,
+                value: 0.5,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+export const nightshadeExplosion: Ability = {
+    name: "Nightshade Explosion",
+    resourceCost: 1,
+    image: NightShadeExplosionImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            resources: 2,
+            radiate: {
+                area: 2,
+                damage: 5,
+            },
+        },
+    ],
 };
