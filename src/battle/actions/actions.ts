@@ -501,7 +501,7 @@ const checkRemoveEffect =
     (dispatch, getState) => {
         const { removeEffect, decrementStacks = 0 } = effectEvent;
 
-        const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - (decrementStacks || 1) };
+        const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - (decrementStacks || 0) };
         const { combatant } = findCombatantData(getState, ownerId) || {};
 
         if (removeEffect || updatedEffect.stacks === 0) {
