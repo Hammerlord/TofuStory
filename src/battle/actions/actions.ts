@@ -2022,7 +2022,7 @@ export const useAbility = ({
         );
         dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
-        const { target: initialTarget } = actions[0];
+        const { target: initialTarget } = actions[0] || {};
         let prevSelection;
 
         const handleAction = (action: Action) => {
