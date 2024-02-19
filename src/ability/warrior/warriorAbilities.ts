@@ -2135,17 +2135,17 @@ export const ragingBlow: Ability = {
     upgrades: [ragingBlow2],
 };
 
-export const worldReaver: Ability = {
+const worldReaver2: Ability = {
     name: "World Reaver",
     resourceCost: 2,
     depletedOnUse: true,
     image: WorldReaverImage,
-    description: "Deals 3 damage for every attack you made this turn",
     rarity: RARITIES.RARE,
+    level: 2,
     actions: [
         {
             area: 1,
-            damage: 3,
+            damage: 15,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
@@ -2162,6 +2162,60 @@ export const worldReaver: Ability = {
                     duration: 2, // Ticks down on turn end
                 },
             ],
+        },
+    ],
+};
+
+export const worldReaver: Ability = {
+    name: "World Reaver",
+    resourceCost: 2,
+    depletedOnUse: true,
+    image: WorldReaverImage,
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            area: 1,
+            damage: 13,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            multiplier: {
+                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    ...immunity,
+                    duration: 2, // Ticks down on turn end
+                },
+            ],
+        },
+    ],
+    upgrades: [worldReaver2],
+};
+
+export const risingRage2: Ability = {
+    name: "Rising Rage",
+    resourceCost: "x",
+    image: RisingRageImage,
+    description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
+    rarity: RARITIES.UNCOMMON,
+    level: 2,
+    actions: [
+        {
+            area: 1,
+            damage: 8,
+            multiplier: {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+            },
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: RisingRageImage,
         },
     ],
 };
@@ -2186,6 +2240,7 @@ export const risingRage: Ability = {
             icon: RisingRageImage,
         },
     ],
+    upgrades: [risingRage2],
 };
 
 export const burningSoulBlade: Ability = {
@@ -2414,13 +2469,43 @@ export const parashockGuard: Ability = {
     upgrades: [parashockGuard2],
 };
 
-export const bloodthirst: Ability = {
+const bloodthirst2: Ability = {
     name: "Bloodthirst",
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain +1 life on hit, +3 life on kill, and +1 ATT, but self-inflict Bleed. 3 turns.",
+    description: "Gain +1 Leech, +3 life on kill, and +2 ATT, but self-inflict Bleed. 3 turns.",
     overrideBodyText: true,
+    level: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Bloodthirst",
+                    icon: DarkThirstImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 2,
+                    lifeOnHit: 1,
+                    lifeOnKill: 3,
+                    duration: 3,
+                    maxApplications: 1,
+                },
+                {
+                    ...bleed,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const bloodthirst: Ability = {
+    ...bloodthirst2,
+    description: "Gain +1 Leech, +3 life on kill, and +1 ATT, but self-inflict Bleed. 3 turns.",
+    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2446,13 +2531,13 @@ export const bloodthirst: Ability = {
     ],
 };
 
-export const battlelord: Ability = {
+const battlelord2: Ability = {
     name: "Battle Lord",
     resourceCost: 1,
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "Gain +1 life on hit and +1 ATT. Counter: gain +1 ATT. Lasts 3 turns.",
+    description: "Gain +1 life on hit and +1 ATT. Counter: gain +1 ATT. 3 turns.",
     overrideBodyText: true,
     actions: [
         {
@@ -2478,13 +2563,21 @@ export const battlelord: Ability = {
     ],
 };
 
-export const gungnir: Ability = {
+export const battlelord: Ability = {
+    ...battlelord2,
+    resourceCost: 2,
+    level: 1,
+    upgrades: [battlelord2],
+};
+
+const gungnir2: Ability = {
     name: "Gungnir",
-    resourceCost: 5,
+    resourceCost: 3,
     depletedOnUse: true,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "(Damage equal to 50% of your max HP)",
+    level: 2,
+    description: "Deal 40% of your HP in damage",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2492,9 +2585,54 @@ export const gungnir: Ability = {
             area: 2,
             damage: 1,
             multiplier: {
-                type: MULTIPLIER_TYPES.MAX_HP,
-                value: 0.5,
+                type: MULTIPLIER_TYPES.HP,
+                value: 0.4,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+};
+
+export const gungnir: Ability = {
+    name: "Gungnir",
+    resourceCost: 3,
+    depletedOnUse: true,
+    image: GungnirImage,
+    rarity: RARITIES.RARE,
+    description: "Deal 30% of your HP in damage",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 2,
+            damage: 1,
+            multiplier: {
+                type: MULTIPLIER_TYPES.HP,
+                value: 0.3,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+    upgrades: [gungnir2],
+};
+
+const nightshadeExplosion2: Ability = {
+    name: "Nightshade Explosion",
+    resourceCost: 1,
+    image: NightShadeExplosionImage,
+    rarity: RARITIES.UNCOMMON,
+    level: 2,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: NightShadeExplosionImage,
+            resources: 2,
+            radiate: {
+                area: 2,
+                damage: 7,
             },
         },
     ],
@@ -2519,4 +2657,5 @@ export const nightshadeExplosion: Ability = {
             },
         },
     ],
+    upgrades: [nightshadeExplosion2],
 };
