@@ -9,6 +9,7 @@ import {
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
     DoubleStabImage,
+    FangImage,
     FireBoarImage,
     FireMarbleImage,
     GreenMushroomImage,
@@ -19,6 +20,7 @@ import {
     LigatorImage,
     LupinImage,
     MaladyImage,
+    MarksmanshipImage,
     MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
@@ -35,6 +37,7 @@ import {
     PigIdleImage,
     PigsHeadImage,
     RedFistOfFuryImage,
+    RedMeatImage,
     RedSnailImage,
     RedSnailShellImage,
     RibbonPigIdleImage,
@@ -49,6 +52,7 @@ import {
     TriangularZamadarImage,
     WeaponMasteryImage,
     WildBoarImage,
+    WildKargoImage,
     WoodenClubImage,
     ZombieLupinJumpImage,
 } from "../images";
@@ -1611,6 +1615,10 @@ export const owlTower: Minion = {
     effects: [sentry],
     abilities: [
         {
+            ...loaf,
+            name: "Inert",
+        },
+        {
             name: "Owl Laser",
             image: FireMarbleImage,
             actions: [
@@ -1627,9 +1635,106 @@ export const owlTower: Minion = {
                 },
             ],
         },
+    ],
+};
+
+export const wildKargo: Minion = {
+    name: "Wild Kargo",
+    image: WildKargoImage,
+    maxHP: 150,
+    isElite: true,
+    abilities: [
         {
-            ...loaf,
-            name: "Inert",
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Shred",
+            image: BloodIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    effects: [
+                        {
+                            ...bleed,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Rip And Tear",
+            image: FangImage,
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    effects: [
+                        {
+                            ...bleed,
+                        },
+                    ],
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    effects: [
+                        {
+                            ...bleed,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Feed",
+            image: RedMeatImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                    secondaryAction: {
+                        target: "actor",
+                        healing: 15,
+                        resources: 1,
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Critical",
+            image: MarksmanshipImage,
+            description: "Gains +1 ATT against debuffed targets.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                },
+            ],
         },
     ],
 };
