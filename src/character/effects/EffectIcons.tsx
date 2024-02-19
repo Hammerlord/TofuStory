@@ -38,11 +38,6 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
     };
 
     const shouldGlow = (effects: CombatEffect[]) => {
-        console.log(
-            "check",
-            event,
-            effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id)
-        );
         return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);
     };
 

@@ -10,6 +10,7 @@ import {
     DarkStoneGolemRubbleImage,
     DoubleStabImage,
     FireBoarImage,
+    FireMarbleImage,
     GreenMushroomImage,
     HornyMushroomImage,
     InkSackImage,
@@ -30,6 +31,7 @@ import {
     OlafImage,
     OmokPigImage,
     OrangeMushroomIdleImage,
+    OwlTowerImage,
     PigIdleImage,
     PigsHeadImage,
     RedFistOfFuryImage,
@@ -63,7 +65,7 @@ import {
     ZzzIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
-import { bleed, burn, elite, hardy, poison, raging, stealth, stun, thorns, pristineDefense } from "./../ability/Effects";
+import { bleed, burn, elite, hardy, poison, raging, stealth, stun, thorns, pristineDefense, sentry } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1597,6 +1599,37 @@ export const mesoThief: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             mesoSteal: 10,
+        },
+    ],
+};
+
+export const owlTower: Minion = {
+    name: "Owl Tower",
+    image: OwlTowerImage,
+    maxHP: 100,
+    isElite: true,
+    effects: [sentry],
+    abilities: [
+        {
+            name: "Owl Laser",
+            image: FireMarbleImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.BEAM,
+                    icon: FireMarbleImage,
+                    animationOptions: {
+                        width: 40,
+                        height: 40,
+                    },
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            ...loaf,
+            name: "Inert",
         },
     ],
 };

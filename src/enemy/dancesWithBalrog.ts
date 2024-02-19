@@ -1,17 +1,13 @@
-import { attack } from "./abilities";
-import { burn, hardy } from "./../ability/Effects";
-import { TRIGGER_SOURCE_TYPES } from "./../battle/types";
-import { stun } from "../ability/Effects";
 import {
-    Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    Ability,
     CONDITION_TARGETS,
-    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Minion,
+    Effect,
     MULTIPLIER_TYPES,
+    Minion,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
@@ -20,7 +16,6 @@ import {
     BlueSnailShellImage,
     BoarIconImage,
     BrandishImage,
-    BrickImage,
     DancesWithBalrogImage,
     FireMarbleImage,
     GiganticSledgeImage,
@@ -38,6 +33,7 @@ import {
     WarLeapImage,
     WildBoarImage,
 } from "../images";
+import { burn, hardy } from "./../ability/Effects";
 
 const golemStanceEligible: Effect = {
     name: "Stone Golem Stance Ready",

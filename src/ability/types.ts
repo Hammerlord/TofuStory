@@ -130,6 +130,7 @@ export enum EFFECT_EVENT_KEYS {
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
+    onHostileAbility = "onHostileAbility",
     onHostileSummon = "onHostileSummon",
     onFriendlySummon = "onFriendlySummon",
     onArmorLoss = "onArmorLoss",
@@ -200,6 +201,7 @@ export interface Effect {
     onAttack?: EffectEventTrigger;
     onDeath?: EffectEventTrigger;
     onFriendlyDeath?: EffectEventTrigger;
+    onHostileAbility?: EffectEventTrigger;
     onHostileDeath?: EffectEventTrigger;
     onReceiveAttack?: EffectEventTrigger;
     onReceiveDamage?: EffectEventTrigger;

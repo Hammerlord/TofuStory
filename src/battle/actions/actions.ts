@@ -697,7 +697,7 @@ const onEffectEventTrigger = ({
         });
 
         if (abilityUsed) {
-            dispatch(onUseAbility({ actor: combatant, source, ability }));
+            dispatch(onUseAbility({ actorInfo: findCombatantData(getState, ownerId), source, ability }));
         }
     };
 };
@@ -2066,10 +2066,10 @@ export const useAbility = ({
 
         actions.forEach(handleAction);
 
-        const { combatant: actor } = findCombatantData(getState, actorId) || {};
+        const actorInfo = findCombatantData(getState, actorId);
         // Due to morph, the combatant may no longer exist
-        if (actor) {
-            dispatch(onUseAbility({ actor, source, ability }));
+        if (actorInfo) {
+            dispatch(onUseAbility({ actorInfo, source, ability }));
         }
     };
 };
@@ -2118,8 +2118,9 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
 };
 
 const onUseAbility =
-    ({ actor, source, ability }: { actor: Combatant; source: TriggerSource; ability: Ability }) =>
+    ({ actorInfo, source, ability }: { actorInfo: CombatantInfo; source: TriggerSource; ability: Ability }) =>
     (dispatch) => {
+        const { combatant: actor } = actorInfo;
         dispatch(
             updateCombatant({
                 combatantId: actor.id,
@@ -2156,6 +2157,18 @@ const onUseAbility =
                 })
             );
         }
+
+        actorInfo.hostile.forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onHostileAbility,
+                        source: source,
+                    })
+                );
+            }
+        });
     };
 
 /**

@@ -287,6 +287,7 @@ export { default as OldWoodenStaffImage } from "./OldWoodenStaff.png";
 export { default as OmokPigImage } from "./OmokPig.png";
 export { default as OrangeMushroomImage } from "./OrangeMushroom.png";
 export { default as OrangeMushroomIdleImage } from "./OrangeMushroomIdle.gif";
+export { default as OwlTowerImage } from "./OwlTower.png";
 export { default as PanicImage } from "./Panic.png";
 export { default as PanlidImage } from "./Panlid.png";
 export { default as ParalyzeImage } from "./Paralyze.png";

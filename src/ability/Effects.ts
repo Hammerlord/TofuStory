@@ -1,4 +1,13 @@
-import { BombImage, GemHeartImage, NimbleJewelCImage, PoisonImage, UpMATTImage, WeaponBoosterImage, WeaponMasteryImage } from "../images";
+import {
+    BombImage,
+    FireMarbleImage,
+    GemHeartImage,
+    NimbleJewelCImage,
+    PoisonImage,
+    UpMATTImage,
+    WeaponBoosterImage,
+    WeaponMasteryImage,
+} from "../images";
 import {
     AngerIcon,
     BloodIcon,
@@ -6,6 +15,7 @@ import {
     CactusIcon,
     CloudyIcon,
     DizzyIcon,
+    EyeIcon,
     FireIcon,
     HelmetIcon,
     JapaneseOgreAlternateIcon,
@@ -501,4 +511,34 @@ export const pristineDefense: Effect = {
     canBeSilenced: true,
     preventArmorDecay: true,
     attackDamageReceived: -1,
+};
+
+export const sentry: Effect = {
+    name: "Sentry",
+    description: "Fires a 2-damage laser at anything that moves.",
+    icon: EyeIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
+    onHostileAbility: {
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        disableTriggerFromProcs: true,
+        ability: {
+            name: "Sentry Laser",
+            image: FireMarbleImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.BEAM,
+                    icon: FireMarbleImage,
+                    animationOptions: {
+                        width: 25,
+                        height: 25,
+                    },
+                    damage: 2,
+                },
+            ],
+        },
+    },
 };
