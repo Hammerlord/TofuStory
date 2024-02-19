@@ -77,9 +77,31 @@ const useStyles = createUseStyles({
         left: 0,
         top: 0,
     },
+    "@keyframes glow": {
+        "0%": {
+            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
+        },
+        "100%": {
+            filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 5px #45ff61)",
+        },
+    },
+    glow: {
+        animationName: "$glow",
+        animationDuration: "1s",
+    },
 });
 
-const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; isSilenced?: boolean; owner: Combatant }) => {
+const EffectGroupIcon = ({
+    effects,
+    isSilenced,
+    owner,
+    glow,
+}: {
+    effects: Effect[];
+    isSilenced?: boolean;
+    owner: Combatant;
+    glow: boolean;
+}) => {
     if (!effects?.length) {
         return null;
     }
@@ -258,6 +280,7 @@ const EffectGroupIcon = ({ effects, isSilenced, owner }: { effects: Effect[]; is
                     icon={icon}
                     className={classNames({
                         [classes.disabled]: disabled,
+                        [classes.glow]: glow,
                     })}
                 >
                     <>

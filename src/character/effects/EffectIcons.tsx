@@ -2,6 +2,8 @@ import { partition } from "ramda";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_CLASSES, Effect } from "../../ability/types";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
+import { Combatant } from "../types";
+import { Event } from "../../battle/types";
 
 const useStyles = createUseStyles({
     buffs: {
@@ -12,7 +14,7 @@ const useStyles = createUseStyles({
 /**
  * Status effect icons to display below the combatant portrait
  */
-const EffectIconsContainer = ({ combatant, isSilenced }) => {
+const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Combatant; isSilenced: boolean; event: Event }) => {
     const classes = useStyles();
     if (!combatant) {
         return null;
@@ -35,16 +37,37 @@ const EffectIconsContainer = ({ combatant, isSilenced }) => {
         return Object.values(map);
     };
 
+    const shouldGlow = (effects: CombatEffect[]) => {
+        console.log(
+            "check",
+            event,
+            effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id)
+        );
+        return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);
+    };
+
     return (
         <>
             <div className={classes.buffs}>
                 {getEffectGroups(buffs).map((effects: CombatEffect[], i) => (
-                    <EffectGroupIcon effects={effects} key={effects[0]?.name || i} owner={combatant} isSilenced={isSilenced} />
+                    <EffectGroupIcon
+                        effects={effects}
+                        key={effects[0]?.name || i}
+                        owner={combatant}
+                        isSilenced={isSilenced}
+                        glow={shouldGlow(effects)}
+                    />
                 ))}
             </div>
             <div>
                 {getEffectGroups(debuffs).map((effects: CombatEffect[], i) => (
-                    <EffectGroupIcon effects={effects} key={effects[0]?.name || i} owner={combatant} isSilenced={isSilenced} />
+                    <EffectGroupIcon
+                        effects={effects}
+                        key={effects[0]?.name || i}
+                        owner={combatant}
+                        isSilenced={isSilenced}
+                        glow={shouldGlow(effects)}
+                    />
                 ))}
             </div>
         </>

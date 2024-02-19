@@ -1280,6 +1280,7 @@ const pushPlaybackQueue = ({
     allTargetIndices,
     actionParent,
     side,
+    source,
 }: {
     action: Action;
     actorId: string;
@@ -1287,6 +1288,7 @@ const pushPlaybackQueue = ({
     allTargetIndices: number[];
     actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
+    source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         let playbackTime = action.playbackTime;
@@ -1312,6 +1314,7 @@ const pushPlaybackQueue = ({
                 targetSide: side,
                 actionParent,
                 playbackTime,
+                source,
             } as Event)
         );
     };
@@ -1550,6 +1553,7 @@ const performAction = ({
                 allTargetIndices,
                 actionParent: parent,
                 side,
+                source,
             })
         );
 

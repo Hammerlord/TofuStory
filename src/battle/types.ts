@@ -28,6 +28,7 @@ export interface Event {
     id: string;
     playbackTime: number;
     actionParent?: Ability | Item;
+    source?: TriggerSource;
 }
 
 export interface EventGroup {
