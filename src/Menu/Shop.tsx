@@ -13,6 +13,7 @@ import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import AbilityRarityTag from "../ability/AbilityView/RarityTag";
 import { Player } from "../character/types";
+import { getUpgradeCard } from "./utils";
 
 const HEADER_BAR = 72;
 
@@ -172,7 +173,7 @@ const Shop = ({
         // Abilities
         const potentialAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
             if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
-                return ability.upgrades[0];
+                return getUpgradeCard(ability);
             }
 
             return ability;

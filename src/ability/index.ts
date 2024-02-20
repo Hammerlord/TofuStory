@@ -1,4 +1,5 @@
 import { PLAYER_CLASSES } from "../Menu/types";
+import { STARTER_MAX_LEVEL } from "./AbilityView/constants";
 import {
     arcaneAim,
     arcaneChanneling,
@@ -165,7 +166,13 @@ export const JOB_CARD_MAP = {
             wardBooster,
             icicles,
         ],
-        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
+        // !!! mutation !!! -- starter cards specified here have a custom max level
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(
+            (card) => {
+                card.maxLevel = STARTER_MAX_LEVEL;
+                return card;
+            }
+        ),
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
@@ -224,6 +231,10 @@ export const JOB_CARD_MAP = {
             battlelord,
             nightshadeExplosion,
         ],
-        starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block],
+        // !!! mutation !!! -- starter cards specified here have a custom max level
+        starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block].map((card) => {
+            card.maxLevel = STARTER_MAX_LEVEL;
+            return card;
+        }),
     },
 };

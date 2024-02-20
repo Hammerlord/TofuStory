@@ -53,3 +53,6 @@ export const resourceClassNameMap = {
     [PLAYER_CLASSES.WARRIOR]: "Fury",
     [PLAYER_CLASSES.MAGICIAN]: "Mana",
 };
+
+export const CARD_MAX_LEVEL = 2;
+export const STARTER_MAX_LEVEL = 3;

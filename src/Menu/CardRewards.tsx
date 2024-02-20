@@ -20,6 +20,8 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import AbilityRarityTag from "../ability/AbilityView/RarityTag";
+import { Player } from "../character/types";
+import { getUpgradeCard } from "./utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -69,7 +71,7 @@ const CardRewards = ({
     rewardType,
 }: {
     deck: HandAbility[];
-    player;
+    player: Player;
     updateDeck;
     onClose;
     cardRewardOptions?: Ability[];
@@ -79,8 +81,12 @@ const CardRewards = ({
         const { starters, all } = JOB_CARD_MAP[player.class];
 
         const potentialAbilities = [
-            ...all.filter((card) => starters.every(({ name }) => name !== card.name)),
-            ...(JOB_CARD_MAP[player.secondaryClass]?.all || []),
+            ...all.map((card) => {
+                if (starters.some(({ name }) => name === card.name)) {
+                    return getUpgradeCard(card);
+                }
+                return card;
+            }),
         ];
 
         const choices = [...cardRewardOptions];

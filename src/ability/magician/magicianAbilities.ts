@@ -116,7 +116,7 @@ export const energyBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
