@@ -1428,42 +1428,6 @@ export const puncture: Ability = {
     ],
 };
 
-export const chanceAttack: Ability = {
-    name: "Chance Attack",
-    resourceCost: 1,
-    image: ChanceAttackImage,
-    depletedOnUse: true,
-    description: "against debuffed enemies",
-    rarity: RARITIES.UNCOMMON,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Chance Attack",
-                    icon: ChanceAttackImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                    disableDisplayIcon: true,
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
-    upgrades: [
-        {
-            preemptive: true,
-        },
-    ],
-};
-
 export const brandish: Ability = {
     name: "Brandish",
     resourceCost: 1,
@@ -1806,6 +1770,7 @@ export const bloodthirst: Ability = {
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
     description: "Gain +1 Leech, +3 life on kill, and +1 ATT, but self-inflict Bleed. 3 turns.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
