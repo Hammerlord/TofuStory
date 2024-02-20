@@ -463,6 +463,11 @@ export interface Action {
     addCardsToDeck?: Ability[];
     /** Adds cards to your current discard pile */
     addCardsToDiscard?: Ability[];
+    moveCards?: {
+        from: "hand" | "deck" | "discard" | "deplete";
+        to: "hand" | "deck" | "discard" | "deplete";
+        amount: number;
+    };
     drawCards?: {
         amount: number;
         effects?: AbilityEffects;
@@ -496,6 +501,8 @@ export interface Action {
         minion: (Minion | string)[];
         // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
         positionIndex?: number;
+        // If true, there cannot be more than one minion with the same name on the board
+        noDuplicateMinions?: boolean;
     }[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
     morph?: Morph;
@@ -517,6 +524,7 @@ export interface Action {
         flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
         fadeOut?: boolean;
         sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
+        brightness?: number; // Value of 1 is normal brightness
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {

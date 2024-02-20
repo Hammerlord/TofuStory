@@ -517,6 +517,7 @@ export const sentry: Effect = {
     name: "Sentry",
     description: "Fires a 2-damage laser at anything that moves.",
     icon: EyeIcon,
+    image: EyeIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,

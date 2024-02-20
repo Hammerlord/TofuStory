@@ -114,7 +114,7 @@ const useStyles = createUseStyles({
         },
         "100%": {
             transform: "scale(1.5, 1.5) translateX(-50%)",
-            opacity: "0.3",
+            opacity: "0.4",
         },
     },
     customEffect: {
@@ -128,6 +128,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         transform: "translateX(-50%)",
         transformOrigin: "bottom left",
+        maxWidth: "50px",
     },
     freeze: {
         bottom: "-105px",
@@ -172,6 +173,16 @@ const Effects = ({ combatantInfo, statChanges }) => {
         }
         return acc;
     }, 0);
+
+    const getEffectImage = (image: string | JSX.Element) => {
+        if (typeof image === "string") {
+            return <img src={image} draggable="false" />;
+        } else if (typeof image === "function") {
+            const ImageNode = image as Function;
+            return <ImageNode />;
+        }
+    };
+
     return (
         <div className={classes.root}>
             {
@@ -196,9 +207,7 @@ const Effects = ({ combatantInfo, statChanges }) => {
                 (effect, i) =>
                     effect.image && (
                         <span className={classes.center} key={effect.id || [effect.name, i].join("-")}>
-                            <span className={classes.customEffect}>
-                                <img src={effect.image} key={effect.image} />
-                            </span>
+                            <span className={classes.customEffect}>{getEffectImage(effect.image)}</span>
                         </span>
                     )
             )}

@@ -9,63 +9,63 @@ import { BATTLEFIELD_SIDES, Event } from "./types";
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
 
-const useStyles = createUseStyles({
-    root: {
-        pointerEvents: "none", // Not an interactable layer
-        position: "fixed",
-        width: "100%",
-        height: "100%",
-    },
-    projectile: {
-        objectFit: "contain",
-        WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        position: "fixed",
-        minWidth: 40,
-        zIndex: 5,
-    },
-    projectileInner: {
-        height: "100%",
-        width: "100%",
-    },
-    iconProjectile: {
-        width: PROJECTILE_WIDTH,
-        height: PROJECTILE_HEIGHT,
-        position: "fixed",
-        zIndex: 5,
-    },
-    mirrorX: {
-        transform: "scale(-1, 1)",
-    },
-    "@keyframes flash": {
-        from: {
-            WebkitFilter: "brightness(1.25) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
-            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+// Bug with JSS where props are not passed to animation keyframes. Use HO function instead
+const useStyles = ({ brightness = 1, flash = 200 }) => {
+    return createUseStyles({
+        root: {
+            pointerEvents: "none", // Not an interactable layer
+            position: "fixed",
+            width: "100%",
+            height: "100%",
         },
-        to: {
-            WebkitFilter: "brightness(2.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
-            filter: "brightness(2.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
+        projectile: {
+            objectFit: "contain",
+            filter: `brightness(${brightness}) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)`,
+            position: "fixed",
+            minWidth: 40,
+            zIndex: 5,
         },
-    },
-    flash: {
-        animation: "$flash",
-        transitionTimingFunction: "ease-in-out",
-        animationIterationCount: "infinite",
-        animationDuration: ({ flash = 200 }: any) => flash,
-    },
-    "@keyframes fadeOut": {
-        "0%": {
-            opacity: 1,
+        projectileInner: {
+            height: "100%",
+            width: "100%",
         },
-        "100%": {
-            opacity: 0,
+        iconProjectile: {
+            width: PROJECTILE_WIDTH,
+            height: PROJECTILE_HEIGHT,
+            position: "fixed",
+            zIndex: 5,
         },
-    },
-    fadeOut: {
-        animationName: "$fadeOut",
-        animationDuration: `1s`,
-    },
-});
+        mirrorX: {
+            transform: "scale(-1, 1)",
+        },
+        "@keyframes flash": {
+            from: {
+                filter: `brightness(${brightness + 0.25}) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)`,
+            },
+            to: {
+                filter: `brightness(${brightness + 1.5}) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)`,
+            },
+        },
+        flash: {
+            animation: "$flash",
+            transitionTimingFunction: "ease-in-out",
+            animationIterationCount: "infinite",
+            animationDuration: flash,
+        },
+        "@keyframes fadeOut": {
+            "0%": {
+                opacity: 1,
+            },
+            "100%": {
+                opacity: 0,
+            },
+        },
+        fadeOut: {
+            animationName: "$fadeOut",
+            animationDuration: `1s`,
+        },
+    });
+};
 
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
@@ -126,8 +126,8 @@ const AnimationCanvas = ({
     }, [actorElement]);
 
     const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder } = animationOptions || {};
-    const classes = useStyles({ playbackTime, flash } as any);
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder, brightness } = animationOptions || {};
+    const classes = useStyles({ playbackTime, flash, brightness } as any)();
 
     // "Beam" animations shoot a bunch of projectile images
     const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;

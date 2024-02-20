@@ -20,6 +20,7 @@ import {
     EffectEventTrigger,
     HandAbility,
     MORPH_TYPES,
+    Minion,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
@@ -1094,13 +1095,25 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
 
         for (const summon of action.summon) {
             const { friendly, friendlySide } = findCombatantData(getState, actorId);
-            const { minion, positionIndex } = summon;
+            const { minion, positionIndex, noDuplicateMinions = false } = summon;
             const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
             if (typeof pos !== "number") {
                 break;
             }
-            const minionToSummon = getRandomItem(minion);
+
+            const availableMinions = minion.filter((minion: Minion | string) => {
+                if (noDuplicateMinions) {
+                    const minionName = typeof minion === "string" ? minion : minion?.name;
+                    return friendly.every((m: Combatant | null) => m?.name !== minionName);
+                }
+
+                return true;
+            });
+            const minionToSummon = getRandomItem(availableMinions);
             const summonedMinion = createCombatant(typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon);
+            if (!summonedMinion) {
+                break;
+            }
 
             dispatch(
                 updateBattle({
@@ -1834,6 +1847,7 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
             currentHandEffects,
             selectCards,
             retrieveDepletedCards,
+            moveCards,
         } = action;
         if (cardsToDraw) {
             dispatch(drawCards({ ...cardsToDraw, source }));
@@ -1953,6 +1967,29 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
             dispatch(
                 promptPlayerSelectCards({
                     selectCards,
+                })
+            );
+        }
+
+        if (moveCards) {
+            const { from, to, amount = 1 } = moveCards;
+            const validKeys = ["hand", "deck", "discard", "deplete"];
+            if (!validKeys.includes(from) || !validKeys.includes(to)) {
+                return;
+            }
+
+            const battle = getState().battle;
+            const fromPile: HandAbility[] = battle[from]?.slice() || [];
+            const toPile: HandAbility[] = battle[to]?.slice() || [];
+            // If there are no cards in the `from` pile, just whiff
+            for (let i = 0; i < amount && fromPile.length > 0; ++i) {
+                toPile.unshift(fromPile.shift());
+            }
+
+            dispatch(
+                updateBattle({
+                    [from]: fromPile,
+                    [to]: toPile,
                 })
             );
         }
