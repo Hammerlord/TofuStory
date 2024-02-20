@@ -3,9 +3,9 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, HandAbility } from "../ability/types";
+import { Ability, AbilityUpgrade, HandAbility } from "../ability/types";
 import Button from "../view/Button";
-import { Player } from "../character/types";
+import { cloneDeep } from "lodash";
 
 const useStyles = createUseStyles({
     root: {
@@ -29,6 +29,55 @@ const useStyles = createUseStyles({
     },
 });
 
+const getCardFromUpgrade = (card: Ability) => {
+    if (!card.upgrades) {
+        return;
+    }
+
+    const newCard = {
+        ...cloneDeep(card),
+        level: (card.level || 1) + 1,
+        instanceId: uuid.v4(),
+        upgrades: [],
+    };
+
+    const traverseAndApplyUpgradeStats = (upgradeObj: any, equivalentObj: any) => {
+        if (!upgradeObj || !equivalentObj) {
+            return;
+        }
+
+        Object.entries(upgradeObj).forEach(([key, val]) => {
+            if (typeof equivalentObj[key] === "undefined") {
+                equivalentObj[key] = val;
+                return;
+            }
+
+            if (typeof val === "number") {
+                equivalentObj[key] = (equivalentObj[key] || 0) + val;
+                return;
+            }
+
+            if (Array.isArray(val)) {
+                val.forEach((v, i) => {
+                    traverseAndApplyUpgradeStats(v, equivalentObj[key][i]);
+                });
+                return;
+            }
+
+            if (typeof val === "object") {
+                traverseAndApplyUpgradeStats(val, equivalentObj[key]);
+                return;
+            }
+
+            equivalentObj[key] = val;
+        });
+    };
+
+    traverseAndApplyUpgradeStats(card.upgrades[0], newCard);
+
+    return newCard;
+};
+
 const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick; isSelected: boolean }) => {
     const classes = useStyles();
     if (!card.upgrades?.length) {
@@ -48,9 +97,7 @@ const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick
                     [classes.highlighted]: isSelected,
                 })}
             >
-                {card.upgrades.map((card: Ability, i: number) => (
-                    <AbilityView ability={card} key={[card.name, i].join("-")} />
-                ))}
+                <AbilityView ability={getCardFromUpgrade(card)} />
             </div>
         </div>
     );
@@ -118,11 +165,7 @@ const CardUpgradeGrid = ({
                                         return;
                                     }
 
-                                    const upgrade = {
-                                        ...cards[selectedAbilityIndex].upgrades[0],
-                                        instanceId: uuid.v4(),
-                                    };
-
+                                    const upgrade = getCardFromUpgrade(cards[selectedAbilityIndex]);
                                     const updatedCards = [...cards.filter((_, i) => i !== selectedAbilityIndex), upgrade];
                                     onConfirm(updatedCards);
                                 }}

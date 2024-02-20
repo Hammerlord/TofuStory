@@ -99,5 +99,5 @@ export const shellThrow: Ability = {
             addCardsToDiscard: [shellThrowBlue],
         },
     ],
-    upgrades: [shellThrow2],
+    //upgrades: [shellThrow2],
 };

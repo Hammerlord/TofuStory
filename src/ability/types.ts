@@ -543,6 +543,61 @@ export interface Action {
     retreat?: boolean;
 }
 
+export interface AbilityUpgrade {
+    description?: string;
+    preemptive?: boolean;
+    resourceCost?: number;
+    depletedOnUse?: boolean;
+    // Eg. the first item maps to action[0]
+    actions?: {
+        // Numbers should be amount to increase by, not absolute value
+        damage?: number;
+        healing?: number;
+        secondaryDamage?: number;
+        resources?: number;
+        armor?: number;
+        numTargets?: number;
+        // If provided, maps to action[0].effects[0]
+        effects?: {
+            [key in EFFECT_EVENT_KEYS]?: {
+                ability?;
+            };
+        }[] &
+            { attackPower?: number; stacks?: number; duration?: number }[];
+        drawCards?: {
+            amount?: number;
+            effects?: AbilityEffects;
+            filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
+        };
+
+        area?: number;
+
+        selectCards?;
+        bonus?: { [key in keyof Bonus]?: Bonus[key] };
+        radiate?;
+        multiplier?;
+
+        addCardOptions?: {
+            // If true, the cards of addCards should be upgraded
+            isUpgraded?: boolean;
+            // The add cards array should have n extra cards added to it
+            appendCards?: number;
+        };
+        addCardsToDeckOptions?: {
+            // If true, the cards of addCards should be upgraded
+            isUpgraded?: boolean;
+            // The add cards array should have n extra cards added to it
+            appendCards?: number;
+        };
+        selectCardOptions?: {
+            // If true, the cards of addCards should be upgraded
+            isUpgraded?: boolean;
+            // The add cards array should have n extra cards added to it
+            appendCards?: number;
+        };
+    }[];
+}
+
 export interface Ability {
     name: string;
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
@@ -564,9 +619,12 @@ export interface Ability {
         resourceCost?: number;
     };
     dialog?: string;
-    upgrades?: Ability[];
+    // A map of properties to increment/decrement/add/remove on the ability object when upgraded.
+    upgrades?: AbilityUpgrade[];
     /** The upgrade level of this ability; assumed to be 1 (baseline) if not provided */
     level?: number;
+    /** Max upgrade level of this ability, default 2 */
+    maxLevel?: number;
     /** On battle start, this ability is shuffled to the top of your deck. */
     preemptive?: boolean;
     /** This is treated as a prerequisite to using the ability */

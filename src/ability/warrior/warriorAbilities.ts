@@ -77,20 +77,6 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { attack } from "../../enemy/abilities";
 
-export const bash2: Ability = {
-    name: "Bash",
-    level: 2,
-    resourceCost: 0,
-    image: BrickImage,
-    actions: [
-        {
-            damage: 5,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-    ],
-};
-
 export const bash: Ability = {
     name: "Bash",
     resourceCost: 0,
@@ -102,20 +88,13 @@ export const bash: Ability = {
             type: ACTION_TYPES.ATTACK,
         },
     ],
-    upgrades: [bash2],
-};
-
-export const warLeap2: Ability = {
-    name: "War Leap",
-    level: 2,
-    resourceCost: 0,
-    image: WarLeapImage,
-    actions: [
+    upgrades: [
         {
-            damage: 3,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            effects: [bleed],
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -132,20 +111,13 @@ export const warLeap: Ability = {
             effects: [bleed],
         },
     ],
-    upgrades: [warLeap2],
-};
-
-export const slashBlast2: Ability = {
-    name: "Slash Blast",
-    level: 2,
-    resourceCost: 1,
-    image: SlashBlastImage,
-    actions: [
+    upgrades: [
         {
-            damage: 7,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            area: 1,
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
         },
     ],
 };
@@ -162,19 +134,13 @@ export const slashBlast: Ability = {
             area: 1,
         },
     ],
-    upgrades: [slashBlast2],
-};
-
-export const slam2: Ability = {
-    name: "Slam",
-    level: 2,
-    resourceCost: 1,
-    image: SpikedMaceImage,
-    actions: [
+    upgrades: [
         {
-            damage: 10,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -190,21 +156,13 @@ export const slam: Ability = {
             type: ACTION_TYPES.ATTACK,
         },
     ],
-    upgrades: [slam2],
-};
-
-export const anger2: Ability = {
-    name: "Anger",
-    level: 2,
-    resourceCost: 0,
-    image: EnrageImage,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            damage: 3,
-            resources: 3,
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
         },
     ],
 };
@@ -222,25 +180,14 @@ export const anger: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
-    upgrades: [anger2],
-};
-
-export const shieldStrike2: Ability = {
-    name: "Shield Strike",
-    level: 2,
-    resourceCost: 2,
-    rarity: RARITIES.COMMON,
-    image: ShieldRedImage,
-    actions: [
+    upgrades: [
         {
-            damage: 10,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-        },
-        {
-            armor: 10,
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            actions: [
+                {
+                    damage: 1,
+                    resources: 1,
+                },
+            ],
         },
     ],
 };
@@ -262,19 +209,16 @@ export const shieldStrike: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
-    upgrades: [shieldStrike2],
-};
-
-export const block2: Ability = {
-    name: "Block",
-    level: 2,
-    resourceCost: 1,
-    image: BlockImage,
-    actions: [
+    upgrades: [
         {
-            armor: 9,
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    armor: 2,
+                },
+            ],
         },
     ],
 };
@@ -290,24 +234,13 @@ export const block: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
-    upgrades: [block2],
-};
-
-const shout2: Ability = {
-    name: "Shout",
-    level: 2,
-    resourceCost: 0,
-    image: ShoutImage,
-    depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            resources: 2,
-            drawCards: {
-                amount: 2,
-            },
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            actions: [
+                {
+                    armor: 3,
+                },
+            ],
         },
     ],
 };
@@ -329,21 +262,13 @@ export const shout: Ability = {
             animation: ANIMATION_TYPES.SHOUT,
         },
     ],
-    upgrades: [shout2],
-};
-
-export const spikes2: Ability = {
-    name: "Spikes",
-    level: 2,
-    resourceCost: 1,
-    image: SpikeBallImage,
-    rarity: RARITIES.COMMON,
-    actions: [
+    upgrades: [
         {
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [thorns],
-            type: ACTION_TYPES.EFFECT,
-            armor: 8,
+            actions: [
+                {
+                    resources: 1,
+                },
+            ],
         },
     ],
 };
@@ -361,7 +286,15 @@ export const spikes: Ability = {
             armor: 5,
         },
     ],
-    upgrades: [spikes2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 3,
+                },
+            ],
+        },
+    ],
 };
 
 const drumOfWarAttackPower: Effect = {
@@ -382,67 +315,6 @@ const drumOfWar: Action = {
     armor: 2,
     area: 1,
     effects: [drumOfWarAttackPower],
-};
-
-export const warBanner2: Ability = {
-    name: "War Banner",
-    level: 2,
-    resourceCost: 2,
-    description: "Every turn, grants 3 armor and +1 attack to allies within 2 spaces.",
-    rarity: RARITIES.UNCOMMON,
-    minion: {
-        name: "War Banner",
-        image: FlagImage,
-        maxHP: 5,
-        abilities: [],
-        effects: [
-            {
-                ...stealth,
-                duration: 4,
-            },
-            {
-                name: "War Banner - Drumbeat of War",
-                description: "Granting 3 armor and +1 attack to allies within 2 slots every turn.",
-                icon: FlagImage,
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                excludeEffectOwner: true,
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    ability: {
-                        name: "Drumbeat of War",
-                        actions: [
-                            {
-                                ...drumOfWar,
-                                armor: 3,
-                                area: 2,
-                                effects: [
-                                    {
-                                        ...drumOfWarAttackPower,
-                                        duration: 1,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                },
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    ability: {
-                        name: "Drumbeat of War",
-                        actions: [
-                            {
-                                ...drumOfWar,
-                                armor: 3,
-                                area: 2,
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-    },
-    actions: [],
 };
 
 export const warBanner: Ability = {
@@ -495,33 +367,7 @@ export const warBanner: Ability = {
         ],
     },
     actions: [],
-    upgrades: [warBanner2],
-};
-
-export const yell2: Ability = {
-    name: "Yell",
-    level: 2,
-    resourceCost: 1,
-    image: WarMushImage,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
-        {
-            area: 2,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.SHOUT,
-            effects: [
-                {
-                    name: "Admonished",
-                    attackPower: -3,
-                    duration: 2,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.DEBUFF,
-                    icon: WarMushImage,
-                },
-            ],
-        },
-    ],
+    upgrades: [],
 };
 
 export const yell: Ability = {
@@ -547,20 +393,17 @@ export const yell: Ability = {
             ],
         },
     ],
-    upgrades: [yell2],
-};
-
-export const bunchOBricks2: Ability = {
-    name: "Bunch o' Bricks",
-    level: 2,
-    resourceCost: 1,
-    image: BricksImage,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            addCards: [bash, bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            actions: [
+                {
+                    effects: [
+                        {
+                            attackPower: -1,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
@@ -577,27 +420,15 @@ export const bunchOBricks: Ability = {
             target: TARGET_TYPES.SELF,
         },
     ],
-    upgrades: [bunchOBricks2],
-};
-
-export const hammerang2: Ability = {
-    name: "Hammerang",
-    level: 2,
-    resourceCost: 1,
-    reusable: true, // Hmm... beware of any ability that reduces resource cost
-    image: HammerImage,
-    rarity: RARITIES.COMMON,
-    actions: [
+    upgrades: [
         {
-            damage: 9,
-            secondaryDamage: 7,
-            targetArea: 2,
-            numTargets: 2,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            ricochet: true,
-            animation: ANIMATION_TYPES.YOYO,
-            icon: HammerImage,
+            actions: [
+                {
+                    addCardOptions: {
+                        appendCards: 1,
+                    },
+                },
+            ],
         },
     ],
 };
@@ -621,29 +452,12 @@ export const hammerang: Ability = {
             icon: HammerImage,
         },
     ],
-    upgrades: [hammerang2],
-};
-
-export const ironWill2: Ability = {
-    name: "Iron Will",
-    level: 2,
-    resourceCost: 1,
-    image: IronWillImage,
-    depletedOnUse: true,
-    preemptive: true,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [
+            actions: [
                 {
-                    name: "Iron Will",
-                    icon: IronWillImage,
-                    description: "Receiving +2 armor from armor sources",
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    armorReceived: 2,
+                    damage: 2,
+                    secondaryDamage: 2,
                 },
             ],
         },
@@ -672,31 +486,9 @@ export const ironWill: Ability = {
             ],
         },
     ],
-    upgrades: [ironWill2],
-};
-
-export const hyperBody2: Ability = {
-    name: "Hyper Body",
-    level: 2,
-    resourceCost: 0,
-    image: HyperBodyImage,
-    depletedOnUse: true,
-    preemptive: true,
-    rarity: RARITIES.UNCOMMON,
-    description: "+1 healing from healing sources",
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Hyper Body",
-                    description: "+1 healing from healing sources",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    healingReceived: 1,
-                },
-            ],
+            preemptive: true,
         },
     ],
 };
@@ -707,7 +499,7 @@ export const hyperBody: Ability = {
     image: HyperBodyImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "+1 healing from healing sources",
+    description: "+1 healing received",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -715,7 +507,7 @@ export const hyperBody: Ability = {
             effects: [
                 {
                     name: "Hyper Body",
-                    description: "+1 healing from healing sources",
+                    description: "+1 healing received",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     healingReceived: 1,
@@ -723,35 +515,9 @@ export const hyperBody: Ability = {
             ],
         },
     ],
-    upgrades: [hyperBody2],
-};
-
-export const sweepingReach2: Ability = {
-    name: "Sweeping Reach",
-    level: 2,
-    resourceCost: 1,
-    image: WeaponBoosterImage,
-    description: "+1 area for your next 3 offensive abilities",
-    overrideBodyText: true,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Sweeping Reach",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: WeaponBoosterImage,
-                    description: "Increases the area of your next offensive ability",
-                    attackAreaIncrease: 1,
-                    stacks: 3,
-                    maxApplications: 1,
-                    onOffensiveAbility: {
-                        decrementStacks: 1,
-                    },
-                },
-            ],
+            preemptive: true,
         },
     ],
 };
@@ -760,7 +526,7 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
     image: WeaponBoosterImage,
-    description: "+1 area for your next 2 offensive abilities",
+    description: "+1 area for your next offensive ability",
     overrideBodyText: true,
     actions: [
         {
@@ -783,27 +549,16 @@ export const sweepingReach: Ability = {
             ],
         },
     ],
-    upgrades: [sweepingReach2],
-};
-
-export const sharpen2: Ability = {
-    name: "Sharpen",
-    level: 2,
-    resourceCost: 1,
-    image: WeaponMasteryImage,
-    preemptive: true,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            description: "+1 area for your next 2 offensive abilities",
+            actions: [
                 {
-                    name: "Sharpen",
-                    icon: WeaponMasteryImage,
-                    disableDisplayIcon: true,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -826,34 +581,22 @@ export const sharpen: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
+                    duration: 5,
                 },
             ],
         },
     ],
-    upgrades: [sharpen2],
-};
-
-export const rush2: Ability = {
-    name: "Rush",
-    level: 2,
-    resourceCost: 1,
-    image: RushImage,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            damage: 10,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            drawCards: {
-                amount: 1,
-                effects: {
-                    resourceCost: -1,
+            actions: [
+                {
+                    effects: [
+                        {
+                            duration: Infinity,
+                        },
+                    ],
                 },
-            },
+            ],
         },
     ],
 };
@@ -880,7 +623,15 @@ export const rush: Ability = {
             },
         },
     ],
-    upgrades: [rush2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
+        },
+    ],
 };
 
 export const berserk2: Ability = {
@@ -929,25 +680,15 @@ export const berserk: Ability = {
             },
         },
     ],
-    upgrades: [berserk2],
-};
-
-export const closeCombat2: Ability = {
-    name: "Close Combat",
-    level: 2,
-    resourceCost: 1,
-    preemptive: true,
-    image: CloseCombatImage,
-    description: "Pulls enemies toward the selected target",
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.HOSTILE,
-            vacuum: 2,
-            area: 2,
-            effects: [stun],
-            damage: 2,
+            actions: [
+                {
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+            ],
         },
     ],
 };
@@ -968,30 +709,11 @@ export const closeCombat: Ability = {
             damage: 1,
         },
     ],
-    upgrades: [closeCombat2],
-};
-
-export const recovery2: Ability = {
-    name: "Recovery",
-    level: 2,
-    resourceCost: 1,
-    image: SelfRecoveryImage,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            actions: [
                 {
-                    name: "Recovery",
-                    icon: SelfRecoveryImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    canBeSilenced: true,
-                    duration: 3,
-                    onTurnEnd: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
-                    },
+                    damage: 1,
                 },
             ],
         },
@@ -1022,56 +744,44 @@ export const recovery: Ability = {
             ],
         },
     ],
-    upgrades: [recovery2],
-};
-
-export const magicCrash2: Ability = {
-    name: "Magic Crash",
-    level: 2,
-    resourceCost: 1,
-    image: MagicCrashImage,
-    depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            damage: 9,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            effects: [{ ...silence }],
+            actions: [
+                {
+                    effects: [
+                        {
+                            onTurnEnd: {
+                                healing: 1,
+                            },
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
 
 export const magicCrash: Ability = {
     name: "Magic Crash",
-    resourceCost: 2,
+    resourceCost: 1,
     image: MagicCrashImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             effects: [{ ...silence }],
         },
     ],
-};
-
-export const dash2: Ability = {
-    name: "Dash",
-    level: 2,
-    resourceCost: 1,
-    image: WarriorMasteryImage,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            drawCards: {
-                amount: 3,
-            },
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -1089,24 +799,13 @@ export const dash: Ability = {
             },
         },
     ],
-    upgrades: [dash2],
-};
-
-export const ironBody2: Ability = {
-    name: "Iron Body",
-    level: 2,
-    resourceCost: 1,
-    image: IronBodyImage,
-    rarity: RARITIES.COMMON,
-    actions: [
+    upgrades: [
         {
-            armor: 10,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            actions: [
                 {
-                    ...preventArmorDecay,
-                    duration: 2,
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             ],
         },
@@ -1131,32 +830,11 @@ export const ironBody: Ability = {
             ],
         },
     ],
-    upgrades: [ironBody2],
-};
-
-export const rendingStrike2: Ability = {
-    name: "Rend",
-    level: 2,
-    resourceCost: 1,
-    image: BlastExtraStrikeImage,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            damage: 3,
-            effects: [
+            actions: [
                 {
-                    ...bleed,
-                    duration: 3,
-                },
-                {
-                    ...bleed,
-                    duration: 3,
-                },
-                {
-                    ...bleed,
-                    duration: 3,
+                    armor: 3,
                 },
             ],
         },
@@ -1185,25 +863,11 @@ export const rendingStrike: Ability = {
             ],
         },
     ],
-    upgrades: [rendingStrike2],
-};
-
-export const whirlwind2: Ability = {
-    name: "Whirlwind",
-    level: 2,
-    image: PanicImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 2,
-            damage: 5,
-            effects: [
+            actions: [
                 {
-                    ...bleed,
-                    duration: 3,
+                    damage: 3,
                 },
             ],
         },
@@ -1229,20 +893,13 @@ export const whirlwind: Ability = {
             ],
         },
     ],
-    upgrades: [whirlwind2],
-};
-
-export const rupture2: Ability = {
-    name: "Rupture",
-    resourceCost: 0,
-    depletedOnUse: true,
-    image: RedFistOfFuryImage,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            damage: 10,
-            effects: [bleed, stun],
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -1260,21 +917,13 @@ export const rupture: Ability = {
             effects: [bleed, stun],
         },
     ],
-    upgrades: [rupture2],
-};
-
-export const bladestorm2: Ability = {
-    name: "Bladestorm",
-    level: 2,
-    resourceCost: 0,
-    image: BladestormImage,
-    depletedOnUse: true,
-    rarity: RARITIES.RARE,
-    actions: [
+    upgrades: [
         {
-            addCards: [whirlwind2, whirlwind2, whirlwind2].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
         },
     ],
 };
@@ -1287,36 +936,20 @@ export const bladestorm: Ability = {
     rarity: RARITIES.RARE,
     actions: [
         {
-            addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({ ...card, resourceCost: 1, removeAfterTurn: true })),
+            addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
     ],
-    upgrades: [bladestorm2],
-};
-
-export const combatOrders2: Ability = {
-    name: "Combat Orders",
-    resourceCost: 0,
-    image: CombatOrdersImage,
-    description: "Commands all targeted allies to attack",
-    actions: [
+    upgrades: [
         {
-            area: 1,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [
+            actions: [
                 {
-                    name: "Inspired",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                    duration: 0,
-                    icon: CombatOrdersImage,
+                    addCardOptions: {
+                        isUpgraded: true,
+                    },
                 },
             ],
-            induceCombatantAttack: true,
-            playbackTime: 1200,
         },
     ],
 };
@@ -1345,53 +978,7 @@ export const combatOrders: Ability = {
             playbackTime: 1200,
         },
     ],
-    upgrades: [combatOrders2],
-};
-
-export const dustDevils2: Ability = {
-    name: "Dust Devils",
-    level: 2,
-    resourceCost: 1,
-    image: TornadoIcon,
-    description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
-    rarity: RARITIES.UNCOMMON,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Dust Devils",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 5,
-                    icon: TornadoIcon,
-                    description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
-                    onAttack: {
-                        ability: {
-                            name: "Dust Devils",
-                            image: TornadoIcon,
-                            actions: [
-                                {
-                                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                                    type: ACTION_TYPES.RANGE_ATTACK,
-                                    animationOptions: {
-                                        sidewinder: true,
-                                    },
-                                    damage: 1,
-                                    secondaryDamage: 2,
-                                    icon: TornadoIcon,
-                                    playbackTime: 350,
-                                    numTargets: 2, // Bug: 1 more target is hit than stated in this property
-                                    targetArea: 5,
-                                },
-                            ],
-                        },
-                    },
-                },
-            ],
-        },
-    ],
+    upgrades: [],
 };
 
 export const dustDevils: Ability = {
@@ -1436,28 +1023,26 @@ export const dustDevils: Ability = {
             ],
         },
     ],
-    upgrades: [dustDevils2],
-};
-
-export const doubleTime2: Ability = {
-    name: "Double Time",
-    level: 2,
-    image: DoubleTimeImage,
-    resourceCost: 0,
-    description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
-    depletedOnUse: true,
-    rarity: RARITIES.RARE,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
-                effects: {
-                    resourceCost: -2,
-                    removeAfterTurn: true,
+            actions: [
+                {
+                    effects: [
+                        {
+                            description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
+                            onAttack: {
+                                ability: {
+                                    actions: [
+                                        {
+                                            secondaryDamage: 2,
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
                 },
-            },
+            ],
         },
     ],
 };
@@ -1482,28 +1067,18 @@ export const doubleTime: Ability = {
             },
         },
     ],
-    upgrades: [doubleTime2],
-};
-
-export const arsenal2: Ability = {
-    name: "Arsenal",
-    level: 2,
-    resourceCost: 1,
-    image: AdvancedWeaponMasteryImage,
-    description: "Discover an offensive ability available to your class. It costs 2 less and is Ephemeral",
-    rarity: RARITIES.RARE,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.DISCOVER_FROM_CLASS,
-                filters: [ACTION_TYPES.ATTACK],
-                effects: {
-                    resourceCost: -2,
-                    removeAfterTurn: true,
+            description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
+            actions: [
+                {
+                    selectCards: {
+                        effects: {
+                            resourceCost: -2,
+                        },
+                    },
                 },
-            },
+            ],
         },
     ],
 };
@@ -1528,25 +1103,18 @@ export const arsenal: Ability = {
             },
         },
     ],
-    upgrades: [arsenal2],
-};
-
-export const sledge2: Ability = {
-    name: "Sledge",
-    resourceCost: 2,
-    level: 2,
-    image: GiganticSledgeImage,
-    rarity: RARITIES.UNCOMMON,
-    description: "Deplete another card in your hand to use this ability",
-    selectCards: {
-        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
-    },
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            damage: 20,
-            destroyArmor: 1,
+            description: "Discover an offensive ability available to your class. It costs 2 less and is Ephemeral",
+            actions: [
+                {
+                    selectCards: {
+                        effects: {
+                            resourceCost: -1,
+                        },
+                    },
+                },
+            ],
         },
     ],
 };
@@ -1569,7 +1137,15 @@ export const sledge: Ability = {
             destroyArmor: 1,
         },
     ],
-    upgrades: [sledge2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
+                },
+            ],
+        },
+    ],
 };
 
 export const bladedArmor: Ability = {
@@ -1611,34 +1187,6 @@ export const bladedArmor: Ability = {
     ],
 };
 
-const guillotine2: Ability = {
-    name: "Guillotine",
-    level: 2,
-    resourceCost: 1,
-    image: InstinctualComboImage,
-    description: "On kill: Refund cost and return to hand",
-    rarity: RARITIES.RARE,
-    actions: [
-        {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            damage: 16,
-            secondaryAction: {
-                target: "actor",
-                returnParentCardToHand: true,
-                resources: 1,
-                conditions: [
-                    {
-                        healthPercentage: 0,
-                        comparator: "eq",
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                    },
-                ],
-            },
-        },
-    ],
-};
-
 export const guillotine: Ability = {
     name: "Guillotine",
     resourceCost: 1,
@@ -1664,51 +1212,11 @@ export const guillotine: Ability = {
             },
         },
     ],
-    upgrades: [guillotine2],
-};
-
-const counterattack2: Ability = {
-    name: "Counter",
-    image: NamelessSwordImage,
-    resourceCost: 1,
-    rarity: RARITIES.RARE,
-    description: "Next turn, when you are attacked, counter for 7 damage and inflict Bleed.",
-    overrideBodyText: true,
-    level: 2,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            actions: [
                 {
-                    name: "Counter",
-                    type: EFFECT_TYPES.RAGE,
-                    class: EFFECT_CLASSES.BUFF,
-                    image: NamelessSwordImage,
-                    icon: NamelessSwordImage,
-                    duration: 2,
-                    onReceiveAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                        ability: {
-                            name: "Counter",
-                            image: NamelessSwordImage,
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.ATTACK,
-                                    target: TARGET_TYPES.HOSTILE,
-                                    damage: 7,
-                                    effects: [
-                                        {
-                                            ...bleed,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    },
-                    onTurnStart: {
-                        removeEffect: true,
-                    },
+                    damage: 3,
                 },
             ],
         },
@@ -1716,8 +1224,11 @@ const counterattack2: Ability = {
 };
 
 export const counterattack: Ability = {
-    ...counterattack2,
-    level: 1,
+    name: "Counter",
+    image: NamelessSwordImage,
+    resourceCost: 1,
+    rarity: RARITIES.RARE,
+    overrideBodyText: true,
     description: "Next turn, when you are attacked, counter for 5 damage and inflict Bleed.",
     actions: [
         {
@@ -1757,20 +1268,26 @@ export const counterattack: Ability = {
             ],
         },
     ],
-    upgrades: [counterattack2],
-};
-
-export const poundOfNails2: Ability = {
-    name: "Pound Of Nails",
-    resourceCost: 1,
-    image: BundleOfNailsImage,
-    rarity: RARITIES.UNCOMMON,
-    depletedOnUse: true,
-    actions: [
+    upgrades: [
         {
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [thorns, thorns, thorns],
-            type: ACTION_TYPES.EFFECT,
+            description: "Next turn, when you are attacked, counter for 7 damage and inflict Bleed.",
+            actions: [
+                {
+                    effects: [
+                        {
+                            onReceiveAttack: {
+                                ability: {
+                                    actions: [
+                                        {
+                                            damage: 2,
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
@@ -1788,35 +1305,9 @@ export const poundOfNails: Ability = {
             type: ACTION_TYPES.EFFECT,
         },
     ],
-    upgrades: [poundOfNails2],
-};
-
-const overpower2: Ability = {
-    name: "Overpower",
-    resourceCost: 1,
-    rarity: RARITIES.COMMON,
-    image: RageImage,
-    level: 2,
-    description: "+4 damage to targets with less HP than you",
-    actions: [
+    upgrades: [
         {
-            damage: 8,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            area: 1,
-            bonus: {
-                damage: 4,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        comparator: "gt",
-                        otherCalculationTarget: {
-                            targetType: CONDITION_TARGETS.TARGET,
-                            property: "HP",
-                        },
-                    },
-                ],
-            },
+            resourceCost: -1,
         },
     ],
 };
@@ -1849,60 +1340,61 @@ export const overpower: Ability = {
             },
         },
     ],
-    upgrades: [overpower2],
+    upgrades: [
+        {
+            description: "+4 damage to targets with less HP than you",
+            actions: [
+                {
+                    damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
+                },
+            ],
+        },
+    ],
 };
 
-const braveSlash2: Ability = {
+export const braveSlash: Ability = {
     name: "Brave Slash",
     resourceCost: 1,
     depletedOnUse: true,
     image: IntrepidSlashImage,
     rarity: RARITIES.UNCOMMON,
     description: "Randomly hits the target or its neighbors, x3",
-    level: 2,
     actions: [
         {
-            damage: 7,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 7,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 7,
+            damage: 5,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
     ],
-};
-
-export const braveSlash: Ability = {
-    ...braveSlash2,
-    level: 1,
-    actions: [
+    upgrades: [
         {
-            damage: 5,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            targetArea: 1,
-        },
-        {
-            damage: 5,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            targetArea: 1,
-        },
-        {
-            damage: 5,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            targetArea: 1,
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -1925,35 +1417,11 @@ export const puncture: Ability = {
             area: 1,
         },
     ],
-};
-
-const chanceAttack2: Ability = {
-    name: "Chance Attack",
-    resourceCost: 1,
-    image: ChanceAttackImage,
-    depletedOnUse: true,
-    preemptive: true,
-    level: 2,
-    description: "against debuffed enemies",
-    rarity: RARITIES.UNCOMMON,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            actions: [
                 {
-                    name: "Chance Attack",
-                    icon: ChanceAttackImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                    disableDisplayIcon: true,
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                        },
-                    ],
+                    damage: 2,
                 },
             ],
         },
@@ -1989,25 +1457,9 @@ export const chanceAttack: Ability = {
             ],
         },
     ],
-    upgrades: [chanceAttack2],
-};
-
-const brandish2: Ability = {
-    name: "Brandish",
-    resourceCost: 1,
-    image: BrandishImage,
-    description: "Hits twice",
-    level: 2,
-    actions: [
+    upgrades: [
         {
-            damage: 7,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            damage: 7,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
+            preemptive: true,
         },
     ],
 };
@@ -2029,7 +1481,18 @@ export const brandish: Ability = {
             target: TARGET_TYPES.HOSTILE,
         },
     ],
-    upgrades: [brandish2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
 };
 
 export const comboFury: Ability = {
@@ -2078,90 +1541,41 @@ export const parry: Ability = {
     ],
 };
 
-const ragingBlowAction: Action = {
-    damage: 3,
-    type: ACTION_TYPES.ATTACK,
-    target: TARGET_TYPES.HOSTILE,
-};
-
-const ragingBlow2: Ability = {
+export const ragingBlow: Ability = {
     name: "Raging Blow",
     resourceCost: 1,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
     description: "Hits twice",
-    level: 2,
-    actions: [
-        { ...ragingBlowAction, damage: 5 },
-        { ...ragingBlowAction, damage: 5 },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Rage",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: RagingBlowImage,
-                    disableDisplayIcon: true,
-                    skillBonus: [{ skill: "Raging Blow", damage: 2 }],
-                },
-            ],
-        },
-    ],
-};
-
-export const ragingBlow: Ability = {
-    ...ragingBlow2,
-    level: 1,
-    actions: [
-        ragingBlowAction,
-        ragingBlowAction,
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Rage",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: RagingBlowImage,
-                    disableDisplayIcon: true,
-                    skillBonus: [{ skill: "Raging Blow", damage: 2 }],
-                },
-            ],
-        },
-    ],
-    upgrades: [ragingBlow2],
-};
-
-const worldReaver2: Ability = {
-    name: "World Reaver",
-    resourceCost: 2,
-    depletedOnUse: true,
-    image: WorldReaverImage,
-    rarity: RARITIES.RARE,
-    level: 2,
     actions: [
         {
-            area: 1,
-            damage: 15,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-            },
+        },
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
         },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    ...immunity,
-                    duration: 2, // Ticks down on turn end
+                    name: "Rage",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: RagingBlowImage,
+                    disableDisplayIcon: true,
+                    skillBonus: [{ skill: "Raging Blow", damage: 2 }],
                 },
             ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [{ damage: 2 }, { damage: 2 }],
         },
     ],
 };
@@ -2178,10 +1592,6 @@ export const worldReaver: Ability = {
             damage: 13,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-            },
         },
         {
             type: ACTION_TYPES.EFFECT,
@@ -2194,28 +1604,13 @@ export const worldReaver: Ability = {
             ],
         },
     ],
-    upgrades: [worldReaver2],
-};
-
-export const risingRage2: Ability = {
-    name: "Rising Rage",
-    resourceCost: "x",
-    image: RisingRageImage,
-    description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
-    rarity: RARITIES.UNCOMMON,
-    level: 2,
-    actions: [
+    upgrades: [
         {
-            area: 1,
-            damage: 8,
-            multiplier: {
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                type: MULTIPLIER_TYPES.RESOURCES_SPENT,
-            },
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: RisingRageImage,
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
@@ -2229,7 +1624,7 @@ export const risingRage: Ability = {
     actions: [
         {
             area: 1,
-            damage: 7,
+            damage: 6,
             multiplier: {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 type: MULTIPLIER_TYPES.RESOURCES_SPENT,
@@ -2240,7 +1635,15 @@ export const risingRage: Ability = {
             icon: RisingRageImage,
         },
     ],
-    upgrades: [risingRage2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
 };
 
 export const burningSoulBlade: Ability = {
@@ -2288,29 +1691,6 @@ export const burningSoulBlade: Ability = {
     },
 };
 
-const divineCharge2: Ability = {
-    name: "Fierce Charge",
-    level: 2,
-    resourceCost: 1,
-    image: DivineChargeImage,
-    description: "Heal 1 for every enemy hit.",
-    actions: [
-        {
-            damage: 7,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            secondaryAction: {
-                target: "actor",
-                healing: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
-                },
-            },
-        },
-    ],
-};
-
 export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
@@ -2331,38 +1711,20 @@ export const divineCharge: Ability = {
             },
         },
     ],
-    upgrades: [divineCharge2],
-};
-
-const shieldMastery2: Ability = {
-    name: "Shield Mastery",
-    resourceCost: 1,
-    image: ShieldMasteryImage,
-    rarity: RARITIES.UNCOMMON,
-    depletedOnUse: true,
-    level: 2,
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
+            actions: [
                 {
-                    name: "Shield Mastery",
-                    icon: ShieldMasteryImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    armorReceived: 2,
-                    duration: 2,
+                    damage: 2,
                 },
             ],
-            addCards: [block2, block2, block2].map((card) => ({ ...card, removeAfterTurn: true })),
         },
     ],
 };
 
 export const shieldMastery: Ability = {
     name: "Shield Mastery",
-    resourceCost: 1,
+    resourceCost: 0,
     image: ShieldMasteryImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
@@ -2383,32 +1745,23 @@ export const shieldMastery: Ability = {
             addCards: [block, block, block].map((card) => ({ ...card, removeAfterTurn: true })),
         },
     ],
-    upgrades: [shieldMastery2],
-};
-
-export const judgment2: Ability = {
-    name: "Judgment",
-    resourceCost: 2,
-    level: 2,
-    image: HighPaladinImage,
-    rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to your armor",
-    actions: [
+    upgrades: [
         {
-            damage: 1,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ARMOR,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-            },
+            actions: [
+                {
+                    addCardOptions: {
+                        isUpgraded: true,
+                    },
+                },
+            ],
         },
     ],
 };
 
+// Prepend armor action
 export const judgment: Ability = {
     name: "Judgment",
-    resourceCost: 3,
+    resourceCost: 2,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to your armor",
@@ -2423,37 +1776,15 @@ export const judgment: Ability = {
             },
         },
     ],
-    upgrades: [judgment2],
+    upgrades: [],
 };
 
-const parashockGuard2: Ability = {
-    name: "Parashock Guard",
-    resourceCost: 1,
-    image: ParashockGuardImage,
-    description: "Gain armor equal to your current armor",
-    level: 2,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
-        {
-            armor: 3,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            bonus: {
-                armor: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.ARMOR,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                },
-            },
-        },
-    ],
-};
-
+// Prepend armor action
 export const parashockGuard: Ability = {
     name: "Parashock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
-    description: "Gain armor equal to your current armor",
+    description: "Double your current armor",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -2466,46 +1797,15 @@ export const parashockGuard: Ability = {
             },
         },
     ],
-    upgrades: [parashockGuard2],
+    upgrades: [],
 };
 
-const bloodthirst2: Ability = {
+export const bloodthirst: Ability = {
     name: "Bloodthirst",
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain +1 Leech, +3 life on kill, and +2 ATT, but self-inflict Bleed. 3 turns.",
-    overrideBodyText: true,
-    level: 2,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Bloodthirst",
-                    icon: DarkThirstImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
-                    lifeOnHit: 1,
-                    lifeOnKill: 3,
-                    duration: 3,
-                    maxApplications: 1,
-                },
-                {
-                    ...bleed,
-                    duration: 3,
-                },
-            ],
-        },
-    ],
-};
-
-export const bloodthirst: Ability = {
-    ...bloodthirst2,
     description: "Gain +1 Leech, +3 life on kill, and +1 ATT, but self-inflict Bleed. 3 turns.",
-    level: 1,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2531,9 +1831,9 @@ export const bloodthirst: Ability = {
     ],
 };
 
-const battlelord2: Ability = {
+export const battlelord: Ability = {
     name: "Battle Lord",
-    resourceCost: 1,
+    resourceCost: 2,
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
@@ -2561,34 +1861,9 @@ const battlelord2: Ability = {
             ],
         },
     ],
-};
-
-export const battlelord: Ability = {
-    ...battlelord2,
-    resourceCost: 2,
-    level: 1,
-    upgrades: [battlelord2],
-};
-
-const gungnir2: Ability = {
-    name: "Gungnir",
-    resourceCost: 3,
-    depletedOnUse: true,
-    image: GungnirImage,
-    rarity: RARITIES.RARE,
-    level: 2,
-    description: "Deal 40% of your HP in damage",
-    actions: [
+    upgrades: [
         {
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            area: 2,
-            damage: 1,
-            multiplier: {
-                type: MULTIPLIER_TYPES.HP,
-                value: 0.4,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-            },
+            resourceCost: -1,
         },
     ],
 };
@@ -2604,7 +1879,7 @@ export const gungnir: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 2,
+            area: 1,
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
@@ -2613,27 +1888,16 @@ export const gungnir: Ability = {
             },
         },
     ],
-    upgrades: [gungnir2],
-};
-
-const nightshadeExplosion2: Ability = {
-    name: "Nightshade Explosion",
-    resourceCost: 1,
-    image: NightShadeExplosionImage,
-    rarity: RARITIES.UNCOMMON,
-    level: 2,
-    actions: [
+    upgrades: [
         {
-            damage: 5,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: NightShadeExplosionImage,
-            resources: 2,
-            radiate: {
-                area: 2,
-                damage: 7,
-            },
+            description: "Deal 40% of your HP in damage",
+            actions: [
+                {
+                    multiplier: {
+                        value: 0.4,
+                    },
+                },
+            ],
         },
     ],
 };
@@ -2657,5 +1921,15 @@ export const nightshadeExplosion: Ability = {
             },
         },
     ],
-    upgrades: [nightshadeExplosion2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    radiate: {
+                        damage: 2,
+                    },
+                },
+            ],
+        },
+    ],
 };
