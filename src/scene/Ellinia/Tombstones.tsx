@@ -20,7 +20,6 @@ const useStyles = createUseStyles({
         height: "100%",
     },
     lightup: {
-        WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         width: "100%",
         height: "100%",
@@ -28,7 +27,6 @@ const useStyles = createUseStyles({
         left: 0,
     },
     complete: {
-        WebkitFilter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
     },
     "@keyframes fadeOut": {

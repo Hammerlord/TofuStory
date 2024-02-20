@@ -64,7 +64,6 @@ const useStyles = createUseStyles({
         top: 291,
     },
     character: {
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         cursor: "pointer",
     },
@@ -93,7 +92,6 @@ const useStyles = createUseStyles({
         position: "absolute",
     },
     selected: {
-        WebkitFilter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
         filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
     },
     clickIndicator: {

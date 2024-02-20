@@ -30,11 +30,9 @@ const useStyles = createUseStyles({
     },
     "@keyframes flash": {
         from: {
-            WebkitFilter: "saturate(0.5) brightness(0.75) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
             filter: "saturate(0.5) brightness(0.75) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
         },
         to: {
-            WebkitFilter: "saturate(0.5) brightness(1.25) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
             filter: "saturate(0.5) brightness(1.25) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 3px #fffee8)",
         },
     },
@@ -45,14 +43,12 @@ const useStyles = createUseStyles({
         animationDuration: 750,
     },
     lightup: {
-        WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
     },
     complete: {
-        WebkitFilter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
     },
     "@keyframes fadeOut": {

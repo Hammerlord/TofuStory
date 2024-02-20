@@ -39,7 +39,6 @@ const useStyles = createUseStyles({
         objectFit: "contain",
         imageRendering: "pixelated",
         margin: "32px 0",
-        WebkitFilter: "grayscale(0.7)",
         filter: "grayscale(0.7)",
     },
     heading: {

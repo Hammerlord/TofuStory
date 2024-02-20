@@ -26,21 +26,18 @@ const useStyles = createUseStyles({
         left: "75px",
         top: "228px",
         height: "65px",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     character1: {
         position: "absolute",
         left: "500px",
         top: "213px",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     character2: {
         position: "absolute",
         left: "550px",
         top: "224px",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
 });

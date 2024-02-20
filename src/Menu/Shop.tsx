@@ -40,7 +40,6 @@ const useStyles = createUseStyles({
         padding: "64px 0",
         "& .selected": {
             filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
-            WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
     },
     titleContainer: {

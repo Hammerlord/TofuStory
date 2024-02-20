@@ -31,9 +31,6 @@ const useStyles = createUseStyles({
     },
     routeNode: {
         position: "absolute",
-        WebkitFilter: Array.from({ length: 3 })
-            .map(() => "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))")
-            .join(" "),
         filter: Array.from({ length: 3 })
             .map(() => "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))")
             .join(" "),

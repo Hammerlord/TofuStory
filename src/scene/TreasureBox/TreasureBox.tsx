@@ -87,11 +87,9 @@ const useStyles = createUseStyles({
     },
     "@keyframes cursed": {
         "0%": {
-            WebkitFilter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
             filter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
         },
         "100%": {
-            WebkitFilter: "brightness(0.25) drop-shadow(0 0 10px purple) drop-shadow(0 0 5px purple)",
             filter: "brightness(0.25) drop-shadow(0 0 10px purple) drop-shadow(0 0 5px purple)",
         },
     },

@@ -18,7 +18,6 @@ const useStyles = createUseStyles({
         background: "#fffee8",
     },
     complete: {
-        WebkitFilter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.2) drop-shadow(0 0 2px #fffee8) drop-shadow(0 0 1px #fffee8)",
     },
 });

@@ -39,7 +39,6 @@ const useStyles = createUseStyles({
 
         "&.selected": {
             filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
-            WebkitFilter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
     },
 });

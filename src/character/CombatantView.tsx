@@ -34,12 +34,10 @@ const useStyles = createUseStyles({
         position: "relative",
 
         "&.-highlighted .portrait": {
-            WebkitFilter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
             filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
         },
 
         "&.-selected .portrait": {
-            WebkitFilter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
             filter: "drop-shadow(0 0 2px #ff3f38) drop-shadow(0 0 2px #ff3f38)",
         },
     },
@@ -134,15 +132,12 @@ const useStyles = createUseStyles({
     },
     "@keyframes casting": {
         "0%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
         "75%": {
-            WebkitFilter: "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(1.25) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
         },
         "100%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
     },
@@ -154,19 +149,16 @@ const useStyles = createUseStyles({
     },
     "@keyframes applyEffect": {
         "0%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             transform: "translateY(0)",
         },
 
         "75%": {
-            WebkitFilter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             transform: "translateY(-24px)",
         },
 
         "100%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             transform: "unset",
         },
@@ -229,7 +221,6 @@ const useStyles = createUseStyles({
         to: {
             transform: "translateY(-100px)",
             opacity: 0,
-            WebkitFilter: "brightness(0.5)",
             filter: "brightness(0.5)",
         },
     },
@@ -241,7 +232,6 @@ const useStyles = createUseStyles({
         opacity: 1,
     },
     stasis: {
-        WebkitFilter: "brightness(0.25)",
         filter: "brightness(0.25)",
         opacity: 1,
     },
@@ -264,7 +254,6 @@ const useStyles = createUseStyles({
         to: {
             transform: "translateX(-50%) scale(3)",
             opacity: 0,
-            WebkitFilter: "brightness(0.5)",
             filter: "brightness(0.5)",
         },
     },
@@ -283,14 +272,12 @@ const useStyles = createUseStyles({
     "@keyframes explodeAnimation": {
         from: {
             transform: "translateX(-50%) scale(1)",
-            WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             opacity: 0.8,
         },
         to: {
             transform: "translateX(-50%) scale(7)",
             opacity: 0,
-            WebkitFilter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
     },

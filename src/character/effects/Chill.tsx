@@ -40,7 +40,6 @@ const useStyles = createUseStyles({
         animationDirection: "alternate-reverse",
         boxShadow: "0 0 5px 3px rgba(255, 245, 200, 0.5)",
         "& svg": {
-            WebkitFilter: "drop-shadow(0 0 2px #fff2c4) drop-shadow(0 0 2px #fff2c4)",
             filter: "drop-shadow(0 0 2px #fff2c4) drop-shadow(0 0 2px #fff2c4)",
         },
     },

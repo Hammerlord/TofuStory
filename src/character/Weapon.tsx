@@ -87,15 +87,12 @@ const useStyles = createUseStyles({
     },
     "@keyframes glow": {
         "0%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
         "75%": {
-            WebkitFilter: "brightness(2.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
             filter: "brightness(2.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
         },
         "100%": {
-            WebkitFilter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
             filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
         },
     },

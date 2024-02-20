@@ -59,7 +59,6 @@ const introUseStyles = createUseStyles({
     },
     character: {
         position: "absolute",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
@@ -105,7 +104,6 @@ const progressedUseStyles = createUseStyles({
     },
     character: {
         position: "absolute",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {

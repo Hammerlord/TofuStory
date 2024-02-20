@@ -40,14 +40,12 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "280px",
         bottom: "227px",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     bonfire: {
         position: "absolute",
         left: "200px",
         top: "150px",
-        WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     activity: {

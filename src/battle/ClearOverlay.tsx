@@ -30,7 +30,6 @@ const useStyles = createUseStyles({
     clear: {
         animationName: "$down",
         animationDuration: "0.5s",
-        WebkitFilter: "drop-shadow(0 0 5px black)",
         filter: "drop-shadow(0 0 5px black)",
     },
     labelContainer: {

@@ -57,7 +57,6 @@ const useStyles = createUseStyles({
         width: 75,
         height: 75,
         position: "relative",
-        WebkitFilter: "drop-shadow(0 0 2px black)",
         filter: "drop-shadow(0 0 2px black)",
         margin: "auto",
         animationName: "$upAndDown",

@@ -21,7 +21,6 @@ import { TombstoneIcon } from "../../images/icons";
 
 const character = {
     position: "absolute",
-    WebkitFilter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
 };
 
@@ -281,7 +280,6 @@ export const twilitForestUseStyles = createUseStyles({
         background: `url(${TwilitForestImage}) no-repeat`,
         width: "1000px",
         height: "600px",
-        WebkitFilter: "brightness(0.4)",
         filter: "brightness(0.4)",
     },
     character,
@@ -307,7 +305,6 @@ export const twilitForestUseStyles2 = createUseStyles({
         background: `url(${TwilitForest2Image}) no-repeat`,
         width: "1000px",
         height: "600px",
-        WebkitFilter: "brightness(0.2)",
         filter: "brightness(0.2)",
     },
     character,
@@ -361,7 +358,6 @@ export const twilitForestUseStyles3 = createUseStyles({
         left: 680,
     },
     echo: {
-        WebkitFilter: "brightness(0.25) saturate(0.25) drop-shadow(0 0 5px rgba(0, 0, 0, 0.25))",
         filter: "brightness(0.25) saturate(0.25) drop-shadow(0 0 5px rgba(0, 0, 0, 0.25))",
     },
 });
@@ -431,7 +427,6 @@ export const tombstonesTwilitForestUseStyles = createUseStyles({
         left: 500,
     },
     lightup: {
-        WebkitFilter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
         position: "absolute",
         top: 300,

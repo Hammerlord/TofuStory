@@ -7,13 +7,11 @@ const useStyles = createUseStyles({
         from: {
             opacity: 0.8,
             transform: "translateY(-8px)",
-            WebkitFilter: "brightness(0.75)",
             filter: "brightness(0.75)",
         },
         to: {
             opacity: 0.2,
             transform: "translateY(0px)",
-            WebkitFilter: "brightness(0.75)",
             filter: "brightness(0.75)",
         },
     },
