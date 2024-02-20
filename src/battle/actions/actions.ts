@@ -1767,7 +1767,7 @@ export const drawCards = ({
 
         let handTooFull = false;
         for (const card of cardsToDraw) {
-            if (newHand.length >= MAX_HAND_SIZE) {
+            if (newHand.length > MAX_HAND_SIZE) {
                 newDiscard.push(card);
                 handTooFull = true;
                 continue;
