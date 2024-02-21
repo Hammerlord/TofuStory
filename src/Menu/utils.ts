@@ -1,3 +1,4 @@
+import { AbilityUpgrade } from "./../ability/types";
 import uuid from "uuid";
 import { cloneDeep } from "lodash";
 import { Ability, Effect } from "../ability/types";
@@ -44,12 +45,14 @@ export const getUpgradeCard = (card: Ability) => {
         instanceId: uuid.v4(),
     };
 
-    const traverseAndApplyUpgradeStats = (upgradeObj: any, equivalentObj: any) => {
+    const traverseAndApplyUpgradeStats = (upgradeObj: AbilityUpgrade | any, equivalentObj: any) => {
         if (!upgradeObj || !equivalentObj) {
             return;
         }
 
-        Object.entries(upgradeObj).forEach(([key, val]) => {
+        const { addCardOptions, selectCardOptions, addCardsToDeckOptions, ...other } = upgradeObj;
+
+        Object.entries(other).forEach(([key, val]) => {
             if (typeof equivalentObj[key] === "undefined") {
                 equivalentObj[key] = val;
                 return;
@@ -74,6 +77,30 @@ export const getUpgradeCard = (card: Ability) => {
 
             equivalentObj[key] = val;
         });
+
+        if (addCardOptions && equivalentObj.addCards) {
+            const { appendCards = 0, isUpgraded = false } = addCardOptions;
+            const cards = equivalentObj.addCards.slice(0, appendCards).map(cloneDeep);
+            equivalentObj.addCards = [...equivalentObj.addCards, ...cards].map((card) => {
+                return (isUpgraded && getUpgradeCard(card)) || card;
+            });
+        }
+
+        if (addCardsToDeckOptions && equivalentObj.addCardsToDeck) {
+            const { appendCards = 0, isUpgraded = false } = addCardsToDeckOptions;
+            const cards = equivalentObj.addCardsToDeck.slice(0, appendCards).map(cloneDeep);
+            equivalentObj.addCardsToDeck = [...equivalentObj.addCardsToDeck, ...cards].map((card) => {
+                return (isUpgraded && getUpgradeCard(card)) || card;
+            });
+        }
+
+        if (selectCardOptions && equivalentObj.selectCards?.cards) {
+            const { appendCards = 0, isUpgraded = false } = selectCardOptions;
+            const cards = equivalentObj.selectCards.slice(0, appendCards).map(cloneDeep);
+            equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map((card) => {
+                return (isUpgraded && getUpgradeCard(card)) || card;
+            });
+        }
     };
 
     traverseAndApplyUpgradeStats(card.upgrades[0], newCard);

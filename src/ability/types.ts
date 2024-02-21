@@ -543,6 +543,13 @@ export interface Action {
     retreat?: boolean;
 }
 
+export interface AddCardUpgradeOptions {
+    // If true, the cards of addCards should be upgraded
+    isUpgraded?: boolean;
+    // The add cards array should have n extra cards added to it
+    appendCards?: number;
+}
+
 export interface AbilityUpgrade {
     description?: string;
     preemptive?: boolean;
@@ -577,24 +584,9 @@ export interface AbilityUpgrade {
         radiate?;
         multiplier?;
 
-        addCardOptions?: {
-            // If true, the cards of addCards should be upgraded
-            isUpgraded?: boolean;
-            // The add cards array should have n extra cards added to it
-            appendCards?: number;
-        };
-        addCardsToDeckOptions?: {
-            // If true, the cards of addCards should be upgraded
-            isUpgraded?: boolean;
-            // The add cards array should have n extra cards added to it
-            appendCards?: number;
-        };
-        selectCardOptions?: {
-            // If true, the cards of addCards should be upgraded
-            isUpgraded?: boolean;
-            // The add cards array should have n extra cards added to it
-            appendCards?: number;
-        };
+        addCardOptions?: AddCardUpgradeOptions;
+        addCardsToDeckOptions?: AddCardUpgradeOptions;
+        selectCardOptions?: AddCardUpgradeOptions;
     }[];
 }
 
