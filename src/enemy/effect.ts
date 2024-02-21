@@ -263,7 +263,7 @@ export const weightedShell: Effect = {
     canBeSilenced: false,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "While this character has armor, its damage is increased.",
+    description: "While this character has armor:",
     attackPower: 1,
     skillBonus: [
         {

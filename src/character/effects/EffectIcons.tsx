@@ -2,7 +2,7 @@ import { partition } from "ramda";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_CLASSES, Effect } from "../../ability/types";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
-import { Combatant } from "../types";
+import { Combatant, Player } from "../types";
 import { Event } from "../../battle/types";
 
 const useStyles = createUseStyles({
@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
 /**
  * Status effect icons to display below the combatant portrait
  */
-const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Combatant; isSilenced: boolean; event: Event }) => {
+const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Combatant | Player; isSilenced: boolean; event: Event }) => {
     const classes = useStyles();
     if (!combatant) {
         return null;

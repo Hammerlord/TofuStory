@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import Tooltip from "../view/Tooltip";
 import { Player } from "./types";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     "@keyframes animation": {
@@ -51,10 +52,9 @@ const PlayerResources = ({ player }: { player: Player }) => {
     }, [player.resources]);
     const tooltipContents = (
         <div>
-            {player.resources} / {player.maxResources} <ResourceIcon size="sm" playerClass={player.class} /> <br />
-            Gaining a baseline <ResourceIcon text={player.resourcesPerTurn} size="sm" playerClass={player.class} /> per turn.
-            <hr />
-            These are your current resources. Abilities often cost resources in order to be used.
+            {player.resources} / {player.maxResources} <ResourceIcon size="sm" playerClass={player.class} />{" "}
+            {resourceClassNameMap[player.class]} <br />
+            Gaining <ResourceIcon text={player.resourcesPerTurn} size="sm" playerClass={player.class} /> per turn.
         </div>
     );
     return (

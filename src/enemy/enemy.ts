@@ -183,7 +183,7 @@ export const redSnail: Minion = {
             class: EFFECT_CLASSES.BUFF,
             preventArmorDecay: true,
             canBeSilenced: true,
-            description: "Prevents armor decay. While this character has armor, its damage is increased.",
+            description: "While this character has armor:",
             attackPower: 1,
             conditions: [
                 {

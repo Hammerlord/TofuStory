@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
-import { Combatant } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
 
 import Tooltip from "../view/Tooltip";
@@ -10,6 +10,7 @@ import Icon from "./Icon";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { useAppSelector } from "../hooks";
 import { findCombatantData } from "../battle/actions/actions";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -99,7 +100,7 @@ const EffectGroupIcon = ({
 }: {
     effects: Effect[];
     isSilenced?: boolean;
-    owner: Combatant;
+    owner: Combatant | Player;
     glow: boolean;
 }) => {
     if (!effects?.length) {
@@ -125,6 +126,7 @@ const EffectGroupIcon = ({
         lifeOnHit = 0,
         armorReceived = 0,
         drawCardsPerTurn = 0,
+        resourcesPerTurn = 0,
         preventArmorDecay,
     } = effects.reduce((acc, cur, i) => {
         if (i === 0) {
@@ -245,7 +247,15 @@ const EffectGroupIcon = ({
                     {drawCardsPerTurn !== 0 && (
                         <div>
                             {drawCardsPerTurn < 0 ? "-" : "+"}
-                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw on turn start
+                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw
+                        </div>
+                    )}
+                    {resourcesPerTurn !== 0 && (
+                        <div>
+                            {resourcesPerTurn < 0 ? "-" : "+"}
+                            {resourcesPerTurn}{" "}
+                            {resourceClassNameMap[(owner as Player)?.class] || resourcesPerTurn === 1 ? "resource" : "resources"}{" "}
+                            {"per turn"}
                         </div>
                     )}
                     {skillBonus.map(({ skill, damage = 0, comparator }) => (
