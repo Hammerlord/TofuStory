@@ -80,8 +80,18 @@ export const playerStateSlice = createSlice({
             const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];
             let newItems = [...state.player.items];
 
+            const regularItems = [];
+            const itemsWithPickUpEffects = [];
+            action.payload.forEach((item) => {
+                if (item.pickUp) {
+                    itemsWithPickUpEffects.push(item);
+                } else {
+                    regularItems.push(item);
+                }
+            });
+
             // Stack consumable/material items
-            action.payload.forEach((item: Item) => {
+            regularItems.forEach((item: Item) => {
                 if (item.type === ITEM_TYPES.EQUIPMENT) {
                     newItems.push(item);
                     return;
@@ -103,12 +113,23 @@ export const playerStateSlice = createSlice({
                 return order.findIndex((type) => type === a.type) - order.findIndex((type) => type === b.type);
             });
 
+            const incomingMesos = itemsWithPickUpEffects.reduce((acc, item: Item) => {
+                return acc + (item.pickUp?.mesos || 0);
+            }, 0);
+            let updatedMesos = 0;
+            if (incomingMesos > 0) {
+                updatedMesos = calculateMesoGain({ player: state.player, mesos: incomingMesos });
+            } else {
+                updatedMesos = Math.max(0, state.player.mesos + incomingMesos);
+            }
+
             return {
                 ...state,
                 player: {
                     ...state.player,
                     effects: aggregateItemEffects(newItems),
                     items: newItems,
+                    mesos: updatedMesos,
                 },
             };
         },

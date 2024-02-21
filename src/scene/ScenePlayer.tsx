@@ -422,22 +422,7 @@ const ScenePlayer = ({
     };
 
     const handleClickItemsObtained = () => {
-        const itemsWithPickUpEffects = [];
-        const regularItems = [];
-        itemsObtainedFromScene.forEach((item) => {
-            if (item.pickUp) {
-                itemsWithPickUpEffects.push(item);
-            } else {
-                regularItems.push(item);
-            }
-        });
-
-        const mesos = itemsWithPickUpEffects.reduce((acc, item: Item) => {
-            return acc + (item.pickUp?.mesos || 0);
-        }, 0);
-
-        dispatch(acquireItems(regularItems));
-        dispatch(updateMesos(mesos));
+        dispatch(acquireItems(itemsObtainedFromScene));
 
         if (dialogIndex < scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);
@@ -447,11 +432,7 @@ const ScenePlayer = ({
     };
 
     const handleSelectItemChoice = (item: Item) => {
-        if (item.pickUp) {
-            dispatch(updateMesos(item.pickUp.mesos));
-        } else {
-            dispatch(acquireItems([item]));
-        }
+        dispatch(acquireItems([item]));
 
         if (dialogIndex <= scene.script.length - 1) {
             setDialogIndex(dialogIndex + 1);

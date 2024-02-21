@@ -128,7 +128,7 @@ const Main = () => {
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
-    const { player, deck, battlesWon, visitedEvents, infamy } = character || {};
+    const { player, deck, visitedEvents, infamy } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
