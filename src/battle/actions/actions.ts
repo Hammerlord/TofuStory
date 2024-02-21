@@ -815,7 +815,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
 
         const idCountMap = {};
         updatedEffects.forEach((effect: CombatEffect) => {
-            if (!effect.maxApplications) {
+            if (!effect.maxApplications || effect.name !== incomingEffect.name) {
                 return;
             }
 
