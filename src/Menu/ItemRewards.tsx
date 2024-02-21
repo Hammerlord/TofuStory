@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
-import { goldenHammer } from "../item/items";
+import { goldenHammer, mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
 import { rollItemPool } from "../item/utils";
 import { getRandomItem } from "../utils";
@@ -28,20 +28,51 @@ const useStyles = createUseStyles({
         padding: "8px 96px",
         color: "white",
         marginBottom: "24px",
+        width: "40%",
     },
     container: {
         margin: "64px 0",
         verticalAlign: "top",
     },
+    containerInner: {
+        display: "inline-block",
+        background:
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.8) 70%, rgba(0,212,255,0) 100%)",
+
+        width: "40%",
+        color: "white",
+        padding: "64px 100px",
+    },
     selectContainer: {
         marginBottom: 40,
     },
-    itemContainer: {
+    item: {
         margin: 16,
-        display: "inline-block",
-        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+    },
+    border: {
+        borderTop: 0,
+        width: 250,
+        borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
+    },
+    itemChoices: {
+        marginBottom: 48,
+    },
+    rewardListIcon: {
+        verticalAlign: "bottom",
+        marginRight: 8,
+    },
+    listItem: {
+        lineHeight: "28px",
+        fontSize: "18px",
+        marginBottom: "16px",
+        "& img": {
+            verticalAlign: "bottom",
+        },
     },
 });
+
+const BASE_NUM_CHOICES = 3; // How many choices are offered
+const maxAmount = 1; // How many items the player can choose
 
 const ItemRewards = ({
     player,
@@ -61,6 +92,9 @@ const ItemRewards = ({
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState([]);
+    const [itemChoices, setItemChoices] = useState([]);
+    const [selectedItemIndices, setSelectedItemIndices] = useState([]);
+
     useEffect(() => {
         const alreadyObtained = playerCurrentItems.reduce((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
@@ -70,37 +104,79 @@ const ItemRewards = ({
         }, {});
 
         const items = (overrideItems || []).filter((item: Item) => !alreadyObtained[item.name]);
-        if (!items.length) {
-            const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
-            const itemPool = rollItemPool({ player, bonuses: { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE } });
-            const equipment = getRandomItem(itemPool);
-            if (equipment) {
-                items.push(equipment);
-            }
+        if (items.length < BASE_NUM_CHOICES) {
+            Array.from({ length: BASE_NUM_CHOICES - items.length }).forEach(() => {
+                const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
+                const itemPool = rollItemPool({ player, bonuses: { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE }, excludeItems: items });
+                const equipment = getRandomItem(itemPool);
+                if (equipment) {
+                    items.push(equipment);
+                }
+            });
         }
 
-        items.push(...[goldenHammer]);
-        setRewards(items);
-        onLoot({ items });
+        if (!items.length) {
+            items.push(mesoItem);
+        }
+
+        const itemRewards = [goldenHammer];
+        setRewards(itemRewards);
+        setItemChoices(items);
+        onLoot({ items: itemRewards });
     }, []);
+
+    const handleClickItem = (index: number) => {
+        if (maxAmount === 1) {
+            setSelectedItemIndices([index]);
+            return;
+        }
+        if (selectedItemIndices.includes(index)) {
+            // Deselect if selected
+            setSelectedItemIndices((prev) => prev.filter((i) => i !== index));
+            return;
+        }
+        if (selectedItemIndices.length < maxAmount) {
+            setSelectedItemIndices((prev) => [...prev, index]);
+        }
+    };
+
+    const handleClickSelect = () => {
+        onLoot({ items: selectedItemIndices.map((i) => itemChoices[i]) });
+        onClose();
+    };
 
     return (
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h1>You obtained</h1>
+                    <h2>Loot!</h2>
                 </div>
-
                 <div className={classes.container}>
-                    {rewards.map((item: Item, i) => (
-                        <div className={classes.itemContainer} key={[item.name, i].join("-")}>
-                            <ItemView item={item} />
+                    <div className={classes.containerInner}>
+                        <div>You obtain</div>
+                        {rewards.map((item: Item, i) => (
+                            <div className={classes.listItem} key={[item.name, i].join("-")}>
+                                <img src={item.image} /> <span>{item.name}</span>
+                            </div>
+                        ))}
+                        <hr className={classes.border} />
+                        <h3>Pick an item:</h3>
+                        <div className={classes.itemChoices}>
+                            {itemChoices.map((item, i) => (
+                                <ItemView
+                                    item={item}
+                                    key={[item.name, i].join("-")}
+                                    highlight={selectedItemIndices.includes(i)}
+                                    className={classes.item}
+                                    onClick={() => handleClickItem(i)}
+                                />
+                            ))}
                         </div>
-                    ))}
+                        <Button color="primary" onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
+                            Select!
+                        </Button>
+                    </div>
                 </div>
-                <Button color="primary" onClick={onClose}>
-                    Continue
-                </Button>
             </div>
         </Overlay>
     );

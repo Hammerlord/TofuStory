@@ -103,7 +103,7 @@ const ItemSelection = ({
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h1>Pick an item to acquire</h1>
+                    <h2>Pick an item</h2>
                 </div>
                 <div className={classes.container}>
                     {choices.map((choice: Item, i) => (
@@ -118,9 +118,6 @@ const ItemSelection = ({
                 </div>
                 <Button variant={"contained"} color="primary" disabled={!choices[selectedIndex]} onClick={handleSelectClick}>
                     Select!
-                </Button>{" "}
-                <Button variant={"contained"} onClick={onClose}>
-                    Exit without taking anything
                 </Button>
             </div>
         </Overlay>

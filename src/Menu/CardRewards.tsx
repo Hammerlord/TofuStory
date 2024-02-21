@@ -115,7 +115,7 @@ const CardRewards = ({
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h1>Pick an ability to acquire</h1>
+                    <h2>Pick an ability</h2>
                 </div>
                 <div className={classes.abilitySectionContainer}>
                     {rolledAbilities.map((ability: HandAbility, i) => (

@@ -95,10 +95,10 @@ const useStyles = createUseStyles({
     },
     treasureContainer: {
         background:
-            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 30%, rgba(0,212,255,0) 100%)",
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
         color: "white",
-        padding: "32px 8px",
-        minWidth: "400px",
+        padding: "64px 100px",
+        width: "40%",
         zIndex: 10,
         marginBottom: 16,
         position: "absolute",

@@ -5,7 +5,7 @@ const useStyles = createUseStyles({
         padding: "16px 0",
         fontWeight: "bold",
         background:
-            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 30%, rgba(0,212,255,0) 100%)",
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 70%, rgba(0,212,255,0) 100%)",
         color: "white",
         textAlign: "center",
         fontSize: "24px",
