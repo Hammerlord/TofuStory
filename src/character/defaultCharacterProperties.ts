@@ -12,7 +12,7 @@ import {
     WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
-import { chargingStone, engravedStone, redHeadband, tauromacisHorn } from "./../item/items";
+import { chargingStone, ragingStone, redHeadband } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */
@@ -24,9 +24,9 @@ const defaultCharacterProperties = {
     image: WarMushImage,
     HP: 75,
     maxHP: 75,
-    resourcesPerTurn: 2,
+    resourcesPerTurn: 1,
     maxResources: 6,
-    resources: 0,
+    resources: 1,
     armor: 0,
     turnHistory: [],
     abilityHistory: [],
@@ -34,7 +34,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: OldGladiusImage,
     effects: [],
-    items: [tauromacisHorn, redHeadband],
+    items: [ragingStone, redHeadband],
     drawCardsPerTurn: 3,
     weaponSkins: [
         { name: "Old Gladius", image: OldGladiusImage },

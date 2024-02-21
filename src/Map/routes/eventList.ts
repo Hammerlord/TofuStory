@@ -28,7 +28,6 @@ import {
     diamond,
     diamondOre,
     drakeBlood,
-    engravedStone,
     estherShield,
     fairyWing,
     fishSpear,
@@ -70,6 +69,7 @@ import {
     tortieShell,
     wildKargoEye,
     workGloves,
+    adventurerCape,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -97,7 +97,7 @@ export const ITEMS = [
     stolenFence,
     panlid,
     luckSack,
-    engravedStone,
+    adventurerCape,
     guideBook,
     alligatorTube,
     cactus,

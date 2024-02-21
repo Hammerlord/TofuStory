@@ -4,6 +4,7 @@ import { chill, poison, thorns, bleed, preventArmorDecay } from "../ability/Effe
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
+    AdventurerCapeImage,
     AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
@@ -306,26 +307,56 @@ export const leatherSandals: Item = {
     ],
 };
 
-export const engravedStone: Item = {
-    name: "Engraved Stone",
-    description: "When you are attacked, gain 1 resource. This may occur once per turn.",
+export const ragingStone: Item = {
+    name: "Raging Stone",
+    description: "When you spend 3 Fury, gain +1 Fury and draw an extra card next turn.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.COMMON,
     effects: [
         {
-            name: "Engraved Stone",
+            name: "Raging Stone",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onResourcesSpent: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                triggerFrequencyFromSum: 3,
+                effects: [
+                    {
+                        name: "Rage",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: HumilityStoneImage,
+                        duration: 2, // Ticks down immediately due to turn end
+                        drawCardsPerTurn: 1,
+                        resourcesPerTurn: 1,
+                        maxApplications: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const adventurerCape: Item = {
+    name: "Adventurer Cape",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: AdventurerCapeImage,
+    effects: [
+        {
+            name: "Adventurer Cape Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onTurnEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
-                        name: "Vigour",
+                        name: "Adventurer Cape",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: HumilityStoneImage,
+                        icon: AdventurerCapeImage,
                         duration: 2, // Ticks down immediately due to turn end
                         onReceiveAttack: {
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

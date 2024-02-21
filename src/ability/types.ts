@@ -100,6 +100,12 @@ export interface EffectEventTrigger {
     eventTriggeredTimes?: number;
     // How often should the effects proc compared to how often the event triggered. Modulo.
     eventTriggerFrequency?: number;
+    // Eg. if tracking resources spent, it's how many resources total have been spent over the lifetime of the parent effect.
+    // If not trackable in this manner, this property is 1:1 with eventTriggeredTimes.
+    triggerSum?: number;
+
+    // Eg. if event is tracking resources spent, a value of 3 = trigger this event every 3 resources spent.
+    triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
 }
@@ -586,7 +592,7 @@ export interface AbilityUpgrade {
 
         addCardOptions?: AddCardUpgradeOptions;
         addCardsToDeckOptions?: AddCardUpgradeOptions;
-        selectCardOptions?: AddCardUpgradeOptions;
+        selectCardOptions?: AddCardUpgradeOptions; // Only applicable if the card has selectCards.cards
     }[];
 }
 

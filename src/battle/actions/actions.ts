@@ -738,6 +738,7 @@ export const checkEventTrigger = ({
 
             // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
             const currentEffects = findCombatantData(getState, combatantId)?.combatant?.effects || [];
+            const triggerSum = (effectEvent.triggerSum || 0) + (source?.trackSumAmount || 1);
             /**
              * Update the number of times this effect event triggered (regardless of whether the actual effects went through or not).
              * @see topaz for an example of what uses this metric
@@ -756,6 +757,7 @@ export const checkEventTrigger = ({
                                 [effectEventKey]: {
                                     ...e[effectEventKey],
                                     eventTriggeredTimes,
+                                    triggerSum,
                                 },
                             };
                         }),
@@ -764,7 +766,6 @@ export const checkEventTrigger = ({
             );
 
             const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
-
             const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
             const historyKey = [effectEventKey, id].join("-");
             const history = source?.triggerHistory || [];
@@ -772,18 +773,29 @@ export const checkEventTrigger = ({
             const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
             const canTriggerFromProcs = !source?.isProc || !effectEvent?.disableTriggerFromProcs;
 
-            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && usable && canTriggerFromProcs) {
-                dispatch(
-                    onEffectEventTrigger({
-                        effectEvent,
-                        effect,
-                        ownerId: combatant.id,
-                        source: {
-                            ...source,
-                            triggerHistory: [...history, historyKey],
-                        },
-                    })
-                );
+            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && canTriggerFromProcs) {
+                const triggerTimesFromSum = (() => {
+                    const freq = effectEvent.triggerFrequencyFromSum;
+                    if (!freq) {
+                        return 1;
+                    }
+
+                    return Math.floor(triggerSum / freq) - Math.floor(effectEvent.triggerSum / freq);
+                })();
+
+                Array.from({ length: triggerTimesFromSum }).forEach(() => {
+                    dispatch(
+                        onEffectEventTrigger({
+                            effectEvent,
+                            effect,
+                            ownerId: combatant.id,
+                            source: {
+                                ...source,
+                                triggerHistory: [...history, historyKey],
+                            },
+                        })
+                    );
+                });
             }
         });
     };
@@ -921,7 +933,7 @@ export const triggerStatChangeEvents =
                 rawResources = 0,
                 removedEffects = [],
             } = statUpdate;
-            const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?) => {
+            const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?: { [key in keyof TriggerSource]? }) => {
                 dispatch(
                     checkEventTrigger({
                         combatantId,
@@ -932,30 +944,30 @@ export const triggerStatChangeEvents =
             };
 
             if (resources < 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent);
+                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesSpent, { trackSumAmount: Math.abs(resources) });
             }
 
             if (rawResources > 0) {
                 // This event currently includes overcapping resources; use overcappedResources when nuance required
-                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesGained);
+                dispatchEvent(EFFECT_EVENT_KEYS.onResourcesGained, { trackSumAmount: Math.abs(rawResources) });
             }
 
             if (healing > 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing);
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveHealing, { trackSumAmount: Math.abs(healing) });
             }
 
             if (overhealing > 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveOverhealing);
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveOverhealing, { trackSumAmount: Math.abs(overhealing) });
             }
 
             if (armor > 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor);
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor, { trackSumAmount: Math.abs(armor) });
             } else if (armor < 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onArmorLoss);
+                dispatchEvent(EFFECT_EVENT_KEYS.onArmorLoss, { trackSumAmount: Math.abs(armor) });
             }
 
             if (rawDamage > 0) {
-                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage);
+                dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage, { trackSumAmount: Math.abs(rawDamage) });
                 dispatch(updateDamageStatistics(rawDamage, source));
             }
 
@@ -2065,9 +2077,9 @@ export const useAbility = ({
 
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [] };
 
-        dispatch(
-            updateCombatant({ combatantId: actorId, newProperties: { resources: Math.max(0, combatant.resources - totalResourceCost) } })
-        );
+        const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
+        dispatch(applyStatChanges([resourceSpend]));
+        dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
         dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
         const { target: initialTarget } = actions[0] || {};

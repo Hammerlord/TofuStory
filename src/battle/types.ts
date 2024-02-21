@@ -61,6 +61,8 @@ export interface TriggerSource {
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
     triggerHistory: string[];
     isProc?: boolean;
+    // Number of eg. resources to add to EffectEventTrigger.triggerSum
+    trackSumAmount?: number;
 }
 
 export interface Wave {
