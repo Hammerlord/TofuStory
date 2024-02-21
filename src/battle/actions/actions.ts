@@ -1559,7 +1559,7 @@ const performAction = ({
                     checkCardActions(
                         {
                             type: ACTION_TYPES.EFFECT,
-                            addCards: [parentSource.source as Ability],
+                            addCards: [{ ...parentSource.source, effects: {} } as HandAbility],
                         },
                         parentSource
                     )
