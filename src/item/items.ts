@@ -341,6 +341,7 @@ export const ragingStone: Item = {
 
 export const adventurerCape: Item = {
     name: "Adventurer Cape",
+    description: "Once per turn, when you are attacked, gain 1 resource.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdventurerCapeImage,
