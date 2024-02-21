@@ -16,6 +16,11 @@ const useStyles = createUseStyles({
         "& .MuiTooltip-Arrow::before": {
             background: "rgba(25, 25, 25, 0.9)",
         },
+
+        "& hr": {
+            borderTop: 0,
+            opacity: 0.6,
+        },
     },
 });
 
