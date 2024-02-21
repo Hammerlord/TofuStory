@@ -71,6 +71,7 @@ import {
     closeCombat,
     comboFury,
     counterattack,
+    cross,
     dash,
     divineCharge,
     doubleTime,
@@ -202,6 +203,7 @@ export const JOB_CARD_MAP = {
             rendingStrike,
             whirlwind,
             rupture,
+            cross,
             bladestorm,
             //combatOrders, warrior does not have enough minions to justify including this now
             dustDevils,

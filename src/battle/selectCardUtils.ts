@@ -6,8 +6,12 @@ import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { Player } from "../character/types";
 
+const DEFAULT_NUM_OPTIONS = 3;
+
 const getCardSelection = ({
     hand,
+    deck,
+    discard,
     selectCards,
     selectedAbilityId,
     player,
@@ -15,6 +19,8 @@ const getCardSelection = ({
     selectCards: SelectCards;
     selectedAbilityId?: string;
     hand: HandAbility[];
+    deck: HandAbility[];
+    discard: HandAbility[];
     player: Player;
 }): HandAbility[] => {
     const { effects = {}, type, filters } = selectCards || {};
@@ -51,7 +57,7 @@ const getCardSelection = ({
         const secondJobCards = JOB_CARD_MAP[player.secondaryClass]?.all || [];
         const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
         const shuffled = shuffle(potentialAbilities);
-        return shuffled.slice(0, 3).map(createNewOption);
+        return shuffled.slice(0, DEFAULT_NUM_OPTIONS).map(createNewOption);
     }
 
     if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
@@ -65,6 +71,13 @@ const getCardSelection = ({
     if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
         return applyFilters(hand);
     }
+
+    if (type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK) {
+        return applyFilters(deck.concat(discard))
+            .slice(0, DEFAULT_NUM_OPTIONS)
+            .map((card) => ({ ...card, effects }));
+    }
+
     return [];
 };
 

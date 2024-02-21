@@ -3,6 +3,7 @@ import {
     BladestormImage,
     BlastExtraStrikeImage,
     BlockImage,
+    BlueFistOfFuryImage,
     BrandishImage,
     BrickImage,
     BricksImage,
@@ -905,16 +906,50 @@ export const whirlwind: Ability = {
 };
 
 export const rupture: Ability = {
-    name: "Rupture",
-    resourceCost: 0,
-    depletedOnUse: true,
+    name: "Right In The Kisser",
+    resourceCost: 1,
     image: RedFistOfFuryImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 7,
-            effects: [bleed, stun],
+            damage: 8,
+            effects: [stun],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const cross: Ability = {
+    name: "Cross",
+    resourceCost: 0,
+    image: BlueFistOfFuryImage,
+    depletedOnUse: true,
+    description: "Discover an attack from your deck. It costs 1 less until used or discarded.",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 5,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.DISCOVER_FROM_DECK,
+                filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+                effects: {
+                    resourceCost: -1,
+                },
+            },
         },
     ],
     upgrades: [

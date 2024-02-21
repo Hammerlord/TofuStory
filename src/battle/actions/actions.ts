@@ -1377,12 +1377,14 @@ const checkHandleAutoCast = ({
             if (selectCards) {
                 const { type } = selectCards;
 
-                const { hand, playerSide } = getState().battle;
+                const { hand, deck, discard, playerSide } = getState().battle;
                 const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
                 const card = getRandomItem(
                     getCardSelection({
                         hand,
+                        deck,
+                        discard,
                         selectCards: selectCards,
                         selectedAbilityId: parentAbility?.instanceId,
                         player,
@@ -1936,12 +1938,14 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
             if (isAutoCast) {
                 const { type, maxAmount = 1 } = selectCards;
 
-                const { hand, deck, playerSide } = getState().battle;
+                const { hand, deck, discard, playerSide } = getState().battle;
                 const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
                 const cards = getRandomItems(
                     getCardSelection({
                         hand,
+                        deck,
+                        discard,
                         selectCards: selectCards,
                         selectedAbilityId: null,
                         player,

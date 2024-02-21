@@ -39,6 +39,7 @@ export { default as BlastImage } from "./Blast.png";
 export { default as BlastExtraStrikeImage } from "./BlastExtraStrike.png";
 export { default as BlizzardChargeImage } from "./BlizzardCharge.png";
 export { default as BlockImage } from "./Block.png";
+export { default as BlueFistOfFuryImage } from "./BlueFistOfFury.png";
 export { default as BlueJeanShortsImage } from "./BlueJeanShorts.png";
 export { default as BlueMushroomCardImage } from "./BlueMushroomCard.png";
 export { default as BlueMushroomForestImage } from "./BlueMushroomForest.png";

@@ -85,17 +85,19 @@ const SelectCardOverlay = ({
     player: Player;
     onSelect: () => void;
     onCancel: () => void;
-    deck: Ability[];
-    discard: Ability[];
+    deck: HandAbility[];
+    discard: HandAbility[];
 }) => {
     const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
-    const { type, maxAmount: configuredMax } = selectCards;
+    const { type, maxAmount: configuredMax, effects } = selectCards;
     const maxAmount = configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
     const [abilityChoices] = useState(
         getCardSelection({
             hand,
+            deck,
+            discard,
             selectCards,
             selectedAbilityId: abilityQueued?.selectedAbilityId,
             player,
@@ -148,6 +150,32 @@ const SelectCardOverlay = ({
                 })
             );
             dispatch(drawCards({ amount: selectedAbilityIds.length }));
+        } else if (type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK) {
+            const updatedHand = [...hand];
+            const updatedDeck = [...deck];
+            const updatedDiscard = [...discard];
+            selectedAbilityIds.forEach((id) => {
+                const findAndAppendFrom = (pile: HandAbility[]): boolean => {
+                    const index = pile.findIndex((ability) => ability.instanceId === id);
+                    if (index > -1) {
+                        const [card] = pile.splice(index, 1);
+                        updatedHand.push({ ...card, effects });
+                        return true;
+                    }
+                };
+
+                if (!findAndAppendFrom(updatedDeck)) {
+                    findAndAppendFrom(updatedDiscard);
+                }
+            });
+
+            dispatch(
+                updateBattle({
+                    hand: updatedHand,
+                    deck: updatedDeck,
+                    discard: updatedDiscard,
+                })
+            );
         } else {
             dispatch(
                 updateBattle({
@@ -174,7 +202,8 @@ const SelectCardOverlay = ({
                         <div className={classes.titleContainer}>
                             <h2>
                                 {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
-                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability"}
+                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability for your class"}
+                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK && "Discover an ability from your deck"}
                                 {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                                 {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&

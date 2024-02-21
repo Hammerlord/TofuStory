@@ -688,6 +688,7 @@ export interface AbilityEffects {
 export enum SELECT_CARD_TYPES {
     COPY_FROM_HAND = "copy",
     DISCOVER_FROM_CLASS = "discover-from-class",
+    DISCOVER_FROM_DECK = "discover-from-deck",
     PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
     HAND_TO_TOP_DECK = "hand-to-top-deck",
