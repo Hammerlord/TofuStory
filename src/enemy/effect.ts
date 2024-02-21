@@ -12,7 +12,6 @@ import {
 import {
     AncientFairyImage,
     BatsEffectImage,
-    BlueSnailShellImage,
     FirewoodImage,
     GreenFairiesImage,
     OmokPigImage,
@@ -32,7 +31,7 @@ import { Effect } from "./../ability/types";
 
 export const championsRibbon: Effect = {
     name: "Champion's Ribbon",
-    description: "Once per turn, this character will counter when attacked.",
+    description: "Counters when attacked, once per turn.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: PigsRibbonImage,
@@ -85,7 +84,7 @@ export const pigHeaded: Effect = {
 
 export const hardwood: Effect = {
     name: "Hardwood",
-    description: "When attacked, character gains +1 defense up for the rest of the turn. Effect is disabled if the character is burning.",
+    description: "When attacked, this character gains +1 damage reduction for the turn. Effect is disabled by Burn.",
     icon: FirewoodImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -103,7 +102,7 @@ export const hardwood: Effect = {
             {
                 ...defUp,
                 name: "Barricade",
-                description: "Effect is disabled if the character is burning.",
+                description: "Effect is disabled by Burn.",
                 attackDamageReceived: -1,
                 duration: 1,
                 conditions: [
@@ -120,7 +119,7 @@ export const hardwood: Effect = {
 
 export const dryBranch: Effect = {
     name: "Dry Branch",
-    description: "While burning, this character receives extra damage from attacks.",
+    description: "Receives extra damage from attacks if Burning.",
     icon: TreeBranchImage,
     attackDamageReceived: 3,
     type: EFFECT_TYPES.NONE,
@@ -136,7 +135,7 @@ export const dryBranch: Effect = {
 
 export const bats: Effect = {
     name: "Bats!",
-    description: "Leeching health to the character who applied this effect.",
+    description: "Leeching HP to the applier of this effect.",
     icon: StumpyBatImage,
     image: BatsEffectImage,
     type: EFFECT_TYPES.NONE,
@@ -317,7 +316,7 @@ export const lifeLink: Effect = {
 
 export const sneaky: Effect = {
     name: "Sneaky",
-    description: "Periodically stealths. Gains +1 attack power while stealthed.",
+    description: "Periodically stealths. +1 ATT while stealthed.",
     canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
@@ -333,7 +332,7 @@ export const sneaky: Effect = {
                 name: "Stealth",
                 icon: CloudyIcon,
                 canBeSilenced: true,
-                description: "Untargetable by single-target attacks. Effect ends if this character is hit by area damage.",
+                description: "Untargetable. Effect ends if character attacks or is hit by area damage.",
                 onReceiveAttack: {
                     removeEffect: true,
                 },
@@ -361,7 +360,7 @@ export const sneaky: Effect = {
                 name: "Stealth",
                 icon: CloudyIcon,
                 canBeSilenced: true,
-                description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+                description: "Untargetable. Effect ends if character attacks or is hit by area damage.",
                 onReceiveAttack: {
                     removeEffect: true,
                 },
@@ -377,7 +376,7 @@ export const sneaky: Effect = {
 
 export const poisonous = {
     name: "Poisonous",
-    description: "This character's attacks apply poison for 1 turn.",
+    description: "Attacks apply poison for 1 turn.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: SapOfNependeathImage,
