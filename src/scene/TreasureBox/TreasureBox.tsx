@@ -95,10 +95,9 @@ const useStyles = createUseStyles({
     },
     treasureContainer: {
         background:
-            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.8) 70%, rgba(0,212,255,0) 100%)",
         color: "white",
         padding: "64px 100px",
-        width: "40%",
         zIndex: 10,
         marginBottom: 16,
         position: "absolute",
@@ -189,7 +188,7 @@ const useStyles = createUseStyles({
         minHeight: "38px",
         zIndex: 10,
         position: "relative",
-        marginTop: 32,
+        marginTop: 48,
     },
     warning: {
         color: "rgb(255, 225, 200)",
@@ -347,6 +346,13 @@ const TreasureBox = ({
                                     />
                                 ))}
                             </div>
+                            {isChestOpened && (
+                                <div className={classes.buttonContainer}>
+                                    <Button color={"primary"} onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
+                                        {"Select"}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     )}
                     {!completed && (
@@ -380,11 +386,6 @@ const TreasureBox = ({
                     {!completed && (
                         <Button color={"warning"} onClick={onExit}>
                             {"Abandon"}
-                        </Button>
-                    )}
-                    {isChestOpened && (
-                        <Button color={"primary"} onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
-                            {"Select"}
                         </Button>
                     )}
                 </div>
