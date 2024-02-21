@@ -561,6 +561,12 @@ export interface AbilityUpgrade {
     preemptive?: boolean;
     resourceCost?: number;
     depletedOnUse?: boolean;
+
+    addActions?: {
+        // If true, instead of .pushing to actions, the action will be prepended
+        prepend?: boolean;
+        actions: Action[];
+    };
     // Eg. the first item maps to action[0]
     actions?: {
         // Numbers should be amount to increase by, not absolute value

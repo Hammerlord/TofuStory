@@ -4,23 +4,16 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import AbilityRarityTag from "../ability/AbilityView/RarityTag";
 import { Ability, HandAbility } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
-import {
-    BOSS_RARE_RATE,
-    COLOR_RARITY_COMMON,
-    COLOR_RARITY_RARE,
-    COLOR_RARITY_UNCOMMON,
-    ELITE_RARE_RATE,
-    ELITE_UNCOMMON_RATE,
-} from "../constants";
+import { Player } from "../character/types";
+import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import AbilityRarityTag from "../ability/AbilityView/RarityTag";
-import { Player } from "../character/types";
 import { getUpgradeCard } from "./utils";
 
 const useStyles = createUseStyles({

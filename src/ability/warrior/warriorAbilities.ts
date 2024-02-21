@@ -1752,7 +1752,6 @@ export const shieldMastery: Ability = {
     ],
 };
 
-// Prepend armor action
 export const judgment: Ability = {
     name: "Judgment",
     resourceCost: 2,
@@ -1770,28 +1769,63 @@ export const judgment: Ability = {
             },
         },
     ],
-    upgrades: [],
+    upgrades: [
+        {
+            addActions: {
+                prepend: true,
+                actions: [
+                    {
+                        armor: 3,
+                        target: TARGET_TYPES.SELF,
+                        type: ACTION_TYPES.EFFECT,
+                    },
+                ],
+            },
+        },
+    ],
 };
 
-// Prepend armor action
 export const parashockGuard: Ability = {
     name: "Parashock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
     description: "Double your current armor",
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
     actions: [
         {
-            armor: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ARMOR,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
+            bonus: {
+                armor: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ARMOR,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        armor: 0,
+                        comparator: "gt",
+                    },
+                ],
             },
         },
     ],
-    upgrades: [],
+    upgrades: [
+        {
+            addActions: {
+                prepend: true,
+                actions: [
+                    {
+                        armor: 2,
+                        target: TARGET_TYPES.SELF,
+                        type: ACTION_TYPES.EFFECT,
+                    },
+                ],
+            },
+        },
+    ],
 };
 
 export const bloodthirst: Ability = {

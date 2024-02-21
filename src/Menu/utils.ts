@@ -1,9 +1,9 @@
-import { AbilityUpgrade } from "./../ability/types";
-import uuid from "uuid";
 import { cloneDeep } from "lodash";
+import uuid from "uuid";
+import { CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { Ability, Effect } from "../ability/types";
 import { Item } from "../item/types";
-import { CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { AbilityUpgrade } from "./../ability/types";
 
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
@@ -50,7 +50,7 @@ export const getUpgradeCard = (card: Ability) => {
             return;
         }
 
-        const { addCardOptions, selectCardOptions, addCardsToDeckOptions, ...other } = upgradeObj;
+        const { addCardOptions, selectCardOptions, addCardsToDeckOptions, addActions, ...other } = upgradeObj;
 
         Object.entries(other).forEach(([key, val]) => {
             if (typeof equivalentObj[key] === "undefined") {
@@ -100,6 +100,15 @@ export const getUpgradeCard = (card: Ability) => {
             equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map((card) => {
                 return (isUpgraded && getUpgradeCard(card)) || card;
             });
+        }
+
+        if (addActions && Array.isArray(equivalentObj.actions)) {
+            const { actions = [], prepend = false } = addActions;
+            if (prepend) {
+                equivalentObj.actions.unshift(...actions.map(cloneDeep));
+            } else {
+                equivalentObj.actions.push(...actions.map(cloneDeep));
+            }
         }
     };
 
