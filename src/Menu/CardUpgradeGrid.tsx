@@ -31,7 +31,9 @@ const useStyles = createUseStyles({
 
 const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick; isSelected: boolean }) => {
     const classes = useStyles();
-    if (!card.upgrades?.length) {
+
+    const upgrade = getUpgradeCard(card);
+    if (!upgrade) {
         return null;
     }
 
@@ -48,7 +50,7 @@ const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick
                     [classes.highlighted]: isSelected,
                 })}
             >
-                <AbilityView ability={getUpgradeCard(card)} />
+                <AbilityView ability={upgrade} />
             </div>
         </div>
     );
