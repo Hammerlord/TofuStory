@@ -175,7 +175,7 @@ export const anger: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 3,
+            damage: 7,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -185,8 +185,7 @@ export const anger: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
-                    resources: 1,
+                    damage: -3,
                 },
             ],
         },
@@ -933,6 +932,7 @@ export const cross: Ability = {
     resourceCost: 0,
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     description: "Discover an attack from your deck. It costs 1 less until used or discarded.",
     actions: [
         {
@@ -1232,7 +1232,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 13,
+            damage: 10,
             secondaryAction: {
                 target: "actor",
                 returnParentCardToHand: true,
@@ -1356,7 +1356,7 @@ export const overpower: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 6,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             area: 1,
@@ -1649,7 +1649,8 @@ export const burningSoulBlade: Ability = {
     name: "Burning Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
-    rarity: RARITIES.UNCOMMON,
+    description: "When this character attacks, it gains +1 ATT.",
+    rarity: RARITIES.RARE,
     actions: [],
     minion: {
         name: "Burning Soul Blade",
@@ -1662,28 +1663,22 @@ export const burningSoulBlade: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 2,
+                        damage: 1,
                     },
                 ],
             },
         ],
         effects: [
+            { ...immunity, duration: 3 },
             {
                 name: "Burning Soul Blade",
                 icon: BurningSoulBladeMinionImage,
-                type: EFFECT_TYPES.IMMUNITY,
+                type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                attackAreaIncrease: 1,
+                description: "When this character attacks, it gains +1 ATT.",
                 onAttack: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    effects: [
-                        {
-                            name: "Burning Soul Blade",
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                        },
-                    ],
+                    effects: [attackPower],
                 },
             },
         ],
@@ -1894,7 +1889,7 @@ export const gungnir: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.4,
+                        value: 0.1,
                     },
                 },
             ],
