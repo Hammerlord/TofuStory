@@ -177,17 +177,18 @@ const generateElite = (eliteMap: EliteMap): (Minion | null)[] => {
     return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
 };
 
-export const generateElites = (route: Route) => {
-    const eliteType = getRandomItem([1, 2, 3, 4]);
-    if (eliteType === 1) {
-        return [{ enemies: generateElite(route.elites) }];
-    } else if (eliteType === 2) {
-        return [{ enemies: generateEliteTriad(route.elites) }];
-    } else if (eliteType === 3) {
-        return [{ enemies: generateEliteSquad(route.elites) }];
-    } else {
-        return [{ enemies: generateEliteDuo(route.elites) }];
+export const generateElites = (route: Route): { enemies: Minion[] }[] => {
+    const getSquad = () => generateEliteSquad(route.elites);
+    const getTriad = () => generateEliteTriad(route.elites);
+    const getDuo = () => generateEliteDuo(route.elites);
+    const getSingle = () => generateElite(route.elites);
+
+    const eliteGenerators = [getSquad, getTriad, getDuo, getSingle];
+    if (route.elites.special?.length > 0) {
+        eliteGenerators.push(() => getRandomItem(route.elites.special));
     }
+
+    return [{ enemies: getRandomItem(eliteGenerators)() }];
 };
 
 export const generateWaves = (route: Route, fallbackRoute?: Route): Wave[] => {

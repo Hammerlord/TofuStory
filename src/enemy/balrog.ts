@@ -154,6 +154,7 @@ export const balrog: Minion = {
     name: "Balrog",
     maxHP: 666,
     image: JrBalrogImage,
+    isBoss: true,
     effects: [
         {
             name: "Summon Flames",

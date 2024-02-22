@@ -27,7 +27,11 @@ const generateTravelRoute = ({
         let currentNode;
         let numEvents = Math.floor(baseRoute.nodes.length / 4);
         let numTreasures = 1;
-        let numEliteEncounters = baseRoute.elites ? 1 : 0;
+        let numEliteEncounters = 0;
+        if (baseRoute.elites) {
+            const { numElites = 1 } = baseRoute.eliteOptions || {};
+            numEliteEncounters = numElites;
+        }
 
         const generateNodeType = () => {
             const types = [];

@@ -12,6 +12,7 @@ import {
     FangImage,
     FireBoarImage,
     FireMarbleImage,
+    FrownyMaskImage,
     GreenMushroomImage,
     HornyMushroomImage,
     InkSackImage,
@@ -21,6 +22,7 @@ import {
     LupinImage,
     MaladyImage,
     MarksmanshipImage,
+    MiniKargoImage,
     MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
@@ -48,6 +50,7 @@ import {
     StealImage,
     StumpImage,
     SubiImage,
+    TeleportImage,
     ThiefImage,
     TriangularZamadarImage,
     WeaponMasteryImage,
@@ -66,10 +69,25 @@ import {
     MountainIcon,
     MuscleIcon,
     ShieldIcon,
+    SweatDropsIcon,
     ZzzIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
-import { bleed, burn, elite, hardy, poison, raging, stealth, stun, thorns, pristineDefense, sentry } from "./../ability/Effects";
+import {
+    bleed,
+    burn,
+    elite,
+    hardy,
+    poison,
+    raging,
+    stealth,
+    stun,
+    thorns,
+    pristineDefense,
+    sentry,
+    avenger,
+    preventArmorDecay,
+} from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1484,6 +1502,8 @@ export const malady: Minion = {
 export const darkStoneGolem: Minion = {
     name: "Dark Stone Golem",
     maxHP: 100,
+    armor: 50,
+    isElite: true,
     image: DarkStoneGolemImage,
     abilities: [
         {
@@ -1511,7 +1531,7 @@ export const darkStoneGolem: Minion = {
             ],
         },
     ],
-    effects: [hardy],
+    effects: [hardy, preventArmorDecay],
 };
 
 export const mesoThief: Minion = {
@@ -1638,6 +1658,69 @@ export const owlTower: Minion = {
     ],
 };
 
+export const miniKargo: Minion = {
+    name: "Mini Kargo",
+    image: MiniKargoImage,
+    maxHP: 30,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Mini Kargo",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onFriendlyDeath: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        comparator: "eq",
+                        name: "Wild Kargo",
+                        //numFriendly: 1, // This is assuming Mini Kargo is the only one alive
+                    },
+                ],
+                effects: [
+                    {
+                        name: "Panic",
+                        description: "About to flee!",
+                        icon: FrownyMaskImage,
+                        type: EFFECT_TYPES.FEAR,
+                        class: EFFECT_CLASSES.DEBUFF,
+                        preventTurnAction: true,
+                        onTurnStart: {
+                            ability: {
+                                name: "Retreat",
+                                image: TeleportImage,
+                                actions: [
+                                    {
+                                        target: TARGET_TYPES.SELF,
+                                        type: ACTION_TYPES.EFFECT,
+                                        playbackTime: 1500,
+                                        retreat: true,
+                                        animationOptions: {
+                                            fadeOut: true, // TODO does nothing on combatant portraits
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+};
+
 export const wildKargo: Minion = {
     name: "Wild Kargo",
     image: WildKargoImage,
@@ -1667,6 +1750,27 @@ export const wildKargo: Minion = {
                             ...bleed,
                         },
                     ],
+                },
+            ],
+        },
+        {
+            name: "Call Family",
+            image: MiniKargoImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    summon: [{ minion: [miniKargo] }],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
                 },
             ],
         },
@@ -1709,6 +1813,14 @@ export const wildKargo: Minion = {
             resourceCost: 3,
             actions: [
                 {
+                    induceCombatantAttack: true,
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    area: 2,
+                    excludePrimaryTarget: true,
+                },
+                {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
@@ -1736,5 +1848,6 @@ export const wildKargo: Minion = {
                 },
             ],
         },
+        avenger,
     ],
 };

@@ -1517,6 +1517,7 @@ const performAction = ({
             battle: getState().battle,
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
+        const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id || targetIds[0], allTargetIds: targetIds };
 
         const updatedStatsProps = {
             ...getState().battle,
@@ -1525,7 +1526,7 @@ const performAction = ({
             targetIds,
             actorId,
             actionParent: parent,
-            source: parentSource,
+            source,
             getCombatantById: (id: string) => findCombatantData(getState, id),
         };
 
@@ -1542,7 +1543,7 @@ const performAction = ({
             }
         };
 
-        if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source: parentSource })) {
+        if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             const updatedSecondary = getUpdatedStats({
                 ...updatedStatsProps,
                 // Based on secondaryAction.target, but only actor recipient is supported for now
@@ -1567,7 +1568,6 @@ const performAction = ({
             }
         }
 
-        const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id, allTargetIds: targetIds };
         dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);

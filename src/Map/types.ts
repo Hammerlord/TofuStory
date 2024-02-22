@@ -7,6 +7,7 @@ import {
     KerningCityBGImage,
     LithRegionBGImage,
     PerionRegionBGImage,
+    SleepywoodRegionBGImage,
 } from "../images";
 import { Item } from "../item/types";
 import Henesys from "./Henesys";
@@ -51,6 +52,7 @@ export interface EliteMap {
     duo: Minion[];
     trio: Minion[];
     squad: Minion[];
+    special?: (Minion | null)[][]; // Elite encounters as-is, no affixes added
 }
 
 export interface Route {
@@ -71,6 +73,12 @@ export interface Route {
     }[];
     /** If not provided, the route will not have elites */
     elites?: EliteMap;
+    eliteOptions?: {
+        /** How many elites are on this route. If not provided, it's 1 (if elites are configured). */
+        numElites?: number;
+        /** If not provided, it's 1 (if elites are configured). */
+        numAffixes?: number;
+    };
     next?: Route[];
 }
 
@@ -95,6 +103,7 @@ export const BG_MAP = {
     [REGIONS.KERNING]: KerningCityBGImage,
     [REGIONS.LITH_HARBOR]: LithRegionBGImage,
     [REGIONS.PERION]: PerionRegionBGImage,
+    [REGIONS.SLEEPYWOOD]: SleepywoodRegionBGImage,
     [REGIONS.ELLINIA]: ElliniaBGImage,
     [REGIONS.HIDDEN_FOREST]: AltForestBGImage,
 };
