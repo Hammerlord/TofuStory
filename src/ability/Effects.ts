@@ -282,7 +282,7 @@ export const shielding: Effect = {
 
 export const volcano: Minion = {
     name: "Volcano",
-    maxHP: 6,
+    maxHP: 7,
     image: VolcanoIcon,
     abilities: [],
     effects: [
@@ -329,7 +329,7 @@ export const eruptive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: VolcanoIcon,
-    description: "Periodically summoning volcanoes that erupt, dealing area damage",
+    description: "Periodically summoning volcanoes that erupt, dealing area damage.",
     turnsTriggerFrequency: 3,
     onTurnStart: {
         usableWhileStunned: true,
@@ -357,7 +357,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "On death, explodes and applies a Burn that increases damage taken from additional Explodes for 1 turn.",
+    description: "On death, Explodes and applies a Burn that increases Explode damage taken.",
     onDeath: {
         usableWhileStunned: true,
         ability: {
@@ -374,7 +374,7 @@ export const explosive: Effect = {
                         multiplier: {
                             type: MULTIPLIER_TYPES.MAX_HP,
                             calculationTarget: CONDITION_TARGETS.ACTOR,
-                            value: 0.05,
+                            value: 0.1,
                         },
                     },
 
@@ -515,7 +515,7 @@ export const pristineDefense: Effect = {
 
 export const sentry: Effect = {
     name: "Sentry",
-    description: "Fires a 2-damage laser at anything that moves.",
+    description: "Fires a 2-damage laser whenever an enemy uses an ability.",
     icon: EyeIcon,
     image: EyeIcon,
     type: EFFECT_TYPES.NONE,

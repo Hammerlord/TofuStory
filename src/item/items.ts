@@ -309,7 +309,7 @@ export const leatherSandals: Item = {
 
 export const ragingStone: Item = {
     name: "Raging Stone",
-    description: "When you spend 3 Fury, gain 1 Fury and card draw next turn.",
+    description: "Every 3 Fury you spend, gain 1 Fury and card draw next turn.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
