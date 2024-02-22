@@ -23,6 +23,7 @@ export { default as AvengerImage } from "./Avenger.png";
 export { default as AvengersArrowImage } from "./AvengersArrow.png";
 export { default as AxeImage } from "./Axe.png";
 export { default as AxeStumpImage } from "./AxeStump.png";
+export { default as BackpackImage } from "./Backpack.png";
 export { default as BallerCaneImage } from "./BallerCane.png";
 export { default as BalrogIconImage } from "./BalrogIcon.png";
 export { default as BananaGrahamPieImage } from "./BananaGrahamPie.png";

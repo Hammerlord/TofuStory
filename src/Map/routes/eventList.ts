@@ -1,13 +1,13 @@
-import { mesoThief } from "../../enemy/enemy";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
 import { mesoThiefScene } from "../../scene/misc";
-import { EventScene, SCENE_CONDITION_TYPES } from "../../scene/types";
+import { EventScene } from "../../scene/types";
 import {
     adamantiumPlate,
+    adventurerCape,
     alligatorTube,
     amethyst,
     ancientTreeSap,
@@ -64,12 +64,12 @@ import {
     sword,
     tauromacisHorn,
     taurospearHorn,
+    theBackpack,
     tofuSpecial,
     topaz,
     tortieShell,
     wildKargoEye,
     workGloves,
-    adventurerCape,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -151,4 +151,5 @@ export const ITEMS = [
     redHeadband,
     mesoItem,
     bigMesoItem,
+    theBackpack,
 ];

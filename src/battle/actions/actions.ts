@@ -1,4 +1,3 @@
-import { topaz } from "./../../item/items";
 import { uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";

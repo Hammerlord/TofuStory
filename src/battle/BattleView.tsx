@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor } from "../ability/AbilityView/utils";
-import { Action, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Action, EFFECT_EVENT_KEYS, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -18,7 +18,7 @@ import TurnAnnouncement from "./Notification/TurnNotification";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { calculateTargetIndices, findCombatantData } from "./actions/actions";
+import { calculateTargetIndices, checkEventTrigger, findCombatantData } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -628,6 +628,38 @@ const BattlefieldContainer = () => {
         targetRef: targets[selectedIndex]?.current,
     };
 
+    const moveAbilityFromHandToDeckEffect = player?.effects.find((effect) => effect.allowMoveCardFromHandToDeck);
+
+    const handleClickDeck = () => {
+        if (!selectedAbilityId || !moveAbilityFromHandToDeckEffect) {
+            return;
+        }
+
+        setSelectedAbilityId(null);
+
+        const newHand = hand.slice();
+        const newDeck = deck.slice();
+        const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedAbilityId);
+        const [card] = newHand.splice(cardIndex, 1);
+        if (card) {
+            newDeck.unshift(card);
+        }
+
+        dispatch(
+            updateBattle({
+                hand: newHand,
+                deck: newDeck,
+            })
+        );
+
+        dispatch(
+            checkEventTrigger({
+                combatantId: player.id,
+                effectEventKey: EFFECT_EVENT_KEYS.onMoveCardFromHandToDeck,
+            })
+        );
+    };
+
     const abilityUsePreviews = ((): { [combatantId: string]: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[] } => {
         if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
             return {};
@@ -759,6 +791,8 @@ const BattlefieldContainer = () => {
                                     discard={discard}
                                     depleted={depleted}
                                     viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
+                                    onClickDeck={handleClickDeck}
+                                    highlightDeck={Boolean(selectedAbilityId && moveAbilityFromHandToDeckEffect)}
                                 />
                             </div>
                             <div className={classes.combatantContainer}>

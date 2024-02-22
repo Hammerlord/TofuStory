@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { HandAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
+import classNames from "classnames";
 
 const DECK_COLOR = "#176fbd";
 const DECK_SHADOW = "#125896";
@@ -67,6 +68,9 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         marginBottom: "4px",
     },
+    highlight: {
+        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+    },
 });
 
 const Deck = ({
@@ -74,11 +78,15 @@ const Deck = ({
     discard = [],
     depleted = [],
     viewDeckInOrder,
+    onClickDeck,
+    highlightDeck,
 }: {
     deck: HandAbility[];
     discard: HandAbility[];
     depleted: HandAbility[];
     viewDeckInOrder: boolean;
+    onClickDeck: (event: any) => void;
+    highlightDeck: boolean;
 }) => {
     const classes = useStyles();
 
@@ -191,7 +199,12 @@ const Deck = ({
     return (
         <div className={classes.root}>
             <Tooltip title={deckTooltip} placement={"right"}>
-                <div className={classes.deckContainer}>
+                <div
+                    className={classNames(classes.deckContainer, {
+                        [classes.highlight]: highlightDeck,
+                    })}
+                    onClick={onClickDeck}
+                >
                     <svg viewBox="0 0 100 100" className={classes.svg}>
                         {Array.from({ length: deck.length + discard.length }).map((_, i) => {
                             return (

@@ -12,6 +12,7 @@ import {
     AquamarineImage,
     ArwensGlassShoeImage,
     ASetOfMemoryCardsImage,
+    BackpackImage,
     BallerCaneImage,
     BattleShieldImage,
     BlueJeanShortsImage,
@@ -1855,4 +1856,39 @@ export const bigMesoItem: Item = {
     pickUp: {
         mesos: 175,
     },
+};
+
+export const theBackpack: Item = {
+    name: "The Backpack",
+    description: "Once per turn, you may move a card from your hand to the top of your deck.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: BackpackImage,
+    effects: [
+        {
+            name: "The Backpack",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Stash Card",
+                        description: "You may move one card from your hand to the top of your deck.",
+                        icon: BackpackImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.NONE,
+                        maxApplications: 1,
+                        allowMoveCardFromHandToDeck: true,
+                        onMoveCardFromHandToDeck: {
+                            decrementStacks: 1,
+                        },
+                        onTurnEnd: {
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
+        },
+    ],
 };

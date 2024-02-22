@@ -145,6 +145,7 @@ export enum EFFECT_EVENT_KEYS {
     onDeckCycle = "onDeckCycle", // Player's deck reset
     onBattleStart = "onBattleStart",
     onBattleEnd = "onBattleEnd",
+    onMoveCardFromHandToDeck = "onMoveCardFromHandToDeck",
 }
 
 export enum SCALING_VALUE_TYPES {
@@ -201,6 +202,7 @@ export interface Effect {
     /** Mesos received when hitting an enemy. Only works if the enemy has mesos to steal. */
     mesoSteal?: number;
     abilityDamageReceived?: AbilityDamageReceived[];
+    allowMoveCardFromHandToDeck?: boolean;
     conditions?: Condition[];
     onAbility?: EffectEventTrigger;
     onOffensiveAbility?: EffectEventTrigger;
@@ -221,6 +223,7 @@ export interface Effect {
     onResourcesGained?: EffectEventTrigger;
     onTurnStart?: EffectEventTrigger;
     onTurnInProgress?: EffectEventTrigger;
+    onMoveCardFromHandToDeck?: EffectEventTrigger;
     onTurnEnd?: EffectEventTrigger;
     /** When the effect ticks down and ends naturally, not when it is removed or dispelled */
     onEnd?: EffectEventTrigger;
