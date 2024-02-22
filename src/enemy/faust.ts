@@ -8,7 +8,7 @@ import {
     RespawnTokenImage,
 } from "../images";
 import { CloudyIcon, SmilingImpIcon } from "../images/icons";
-import { hardy, poison, stun } from "./../ability/Effects";
+import { hardy, poison, preventArmorDecay, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -26,7 +26,7 @@ import { bananaPeelCard } from "./enemy";
 
 export const faust: Minion = {
     name: "Faust",
-    maxHP: 350,
+    maxHP: 300,
     image: FaustImage,
     isBoss: true,
     abilities: [
@@ -88,14 +88,10 @@ export const faust: Minion = {
         {
             name: "Puppet Link",
             icon: CursedDollImage,
-            description: "Takes 3 damage whenever a Ghostly Puppeteer is struck by an attack. Becomes vulnerable if both Puppeteers die.",
+            description: "Becomes vulnerable if both Puppeteers die.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             canBeSilenced: false,
-            onFriendlyReceiveAttack: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 3,
-            },
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 damage: 50,
@@ -154,6 +150,10 @@ const puppeteerRevive: EffectEventTrigger = {
                                 calculationTarget: CONDITION_TARGETS.ACTOR,
                                 value: 1,
                             },
+                            secondaryAction: {
+                                target: "actor",
+                                armor: 50,
+                            },
                             resurrect: true,
                         },
                     ],
@@ -166,7 +166,8 @@ const puppeteerRevive: EffectEventTrigger = {
 export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
-    maxHP: 75,
+    maxHP: 25,
+    armor: 50,
     abilities: [
         {
             name: "Ghostly Mending",
@@ -236,6 +237,7 @@ export const ghostlyPuppeteerL: Minion = {
                 usableWhileDead: true,
             },
         },
+        preventArmorDecay,
     ],
 };
 

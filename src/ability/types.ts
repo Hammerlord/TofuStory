@@ -544,6 +544,7 @@ export interface Action {
         conditions?: Condition[];
         effects?: Effect[];
         returnParentCardToHand?: boolean;
+        armor?: number;
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
