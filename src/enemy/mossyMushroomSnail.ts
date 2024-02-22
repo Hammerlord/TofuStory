@@ -7,7 +7,7 @@ import { agedShell, weightedShell } from "./effect";
 export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
     maxHP: 200,
-    isBoss: true,
+    isElite: true,
     image: MossyMushroomImage,
     resources: 2,
     abilities: [
@@ -65,7 +65,7 @@ export const mossySnail: Minion = {
     maxHP: 100,
     armor: 100,
     image: MossySnailImage,
-    isBoss: true,
+    isElite: true,
     abilities: [
         {
             ...attack,
