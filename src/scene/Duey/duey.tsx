@@ -386,6 +386,7 @@ export const dueyIntroScene: EventScene = {
                 },
                 {
                     text: "That box looks like it could contain something nice. Mug Duey for it.",
+                    infamy: 5,
                     next: [
                         {
                             speaker: shroom,
@@ -397,7 +398,6 @@ export const dueyIntroScene: EventScene = {
                             responses: [
                                 {
                                     text: "Prepare for an attack.",
-                                    infamy: 5,
                                     encounter: dueyFight,
                                     next: [
                                         {

@@ -55,7 +55,7 @@ export const noobIntro: EventScene = {
                             responses: [
                                 {
                                     text: "Chase them!",
-                                    infamy: 1,
+                                    infamy: 3,
                                     next: [
                                         {
                                             speaker: noobB,

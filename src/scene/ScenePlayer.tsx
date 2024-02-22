@@ -19,6 +19,8 @@ import { playerStateSlice } from "../character/playerReducer";
 import { shuffle } from "../utils";
 import { mesoItem } from "../item/items";
 import { calculateMesoGain } from "../battle/utils";
+import { SkullPatchImage } from "../images";
+import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {
@@ -145,11 +147,11 @@ const useStyles = createUseStyles({
     },
     response: {
         marginBottom: "8px",
-        "& span:before": {
+        "& > span:before": {
             content: "'◇'",
             marginRight: "8px",
         },
-        "&:hover span:before": {
+        "&:hover > span:before": {
             content: "'◆'",
         },
     },
@@ -176,6 +178,10 @@ const useStyles = createUseStyles({
         left: "50%",
         width: "100%",
         height: "100%",
+    },
+    infamyContainer: {
+        filter: "drop-shadow(0 0 2px #ff3a3a) drop-shadow(0 0 2px #ff3a3a)",
+        marginRight: 8,
     },
 });
 
@@ -539,6 +545,11 @@ const ScenePlayer = ({
                                                 onClick={() => handleClickResponse(response)}
                                             >
                                                 <span>
+                                                    {response.infamy && (
+                                                        <span className={classes.infamyContainer}>
+                                                            <Icon icon={SkullPatchImage} size="sm" />
+                                                        </span>
+                                                    )}
                                                     {interpolateDialog(response.text)} {getResponseAffix(response)}
                                                 </span>
                                             </div>
