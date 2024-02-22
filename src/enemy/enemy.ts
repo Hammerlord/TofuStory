@@ -1206,7 +1206,7 @@ export const snailFriend: Minion = {
                         {
                             type: ACTION_TYPES.EFFECT,
                             target: TARGET_TYPES.SELF,
-                            summon: [{ minion: ["Snail Friend"] }],
+                            summon: [{ minion: [snail] }],
                         },
                     ],
                 },
