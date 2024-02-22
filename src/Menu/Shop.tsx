@@ -6,7 +6,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import { MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
 import ItemView from "../item/ItemView";
-import { goldenHammer, incense } from "../item/items";
+import { bigMesoItem, goldenHammer, incense, mesoItem } from "../item/items";
 import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
@@ -199,7 +199,7 @@ const Shop = ({
         // Items
         const itemsRolledForSale = [];
         Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
-            const item = getRandomItem(rollItemPool({ player, excludeItems: itemsRolledForSale }));
+            const item = getRandomItem(rollItemPool({ player, excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem] }));
             itemsRolledForSale.push(item);
         });
 
