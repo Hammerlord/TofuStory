@@ -38,6 +38,7 @@ export { default as SmilingImpIcon } from "./SmilingImp.svg";
 export { default as SnowflakeIcon } from "./Snowflake.svg";
 export { default as SparklesIcon } from "./Sparkles.svg";
 export { default as SpeechBubbleIcon } from "./SpeechBubble.svg";
+export { default as SweatDropsIcon } from "./SweatDrops.svg";
 export { default as ThoughtBubbleIcon } from "./ThoughtBubble.svg";
 export { default as TombstoneIcon } from "./Tombstone.svg";
 export { default as TornadoIcon } from "./Tornado.svg";

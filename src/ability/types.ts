@@ -25,6 +25,7 @@ export enum EFFECT_TYPES {
     IMMUNITY = "immunity", // including effects
     ATTACK_IMMUNITY = "attackImmunity",
     LIFE_LINK = "lifeLink",
+    FEAR = "fear",
 }
 
 export enum EFFECT_CLASSES {

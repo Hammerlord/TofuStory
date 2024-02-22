@@ -7,7 +7,7 @@ import Icon from "../../icon/Icon";
 import Bleed from "./Bleed";
 import Stealth from "./Stealth";
 import { getEnabledEffects } from "../../battle/utils";
-import { DizzyIcon, SpeechBubbleIcon } from "../../images/icons";
+import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons";
 import { NimbleJewelCImage } from "../../images";
 
 const useStyles = createUseStyles({
@@ -138,6 +138,29 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%) translateY(-50%)",
         opacity: 0.3,
     },
+    "@keyframes fearAnimation": {
+        "0%": {
+            opacity: 1,
+            transform: "rotate(180deg) scaleX(-1) translateY(-15%)",
+        },
+        "15%": {
+            opacity: 1,
+            transform: "rotate(180deg) scaleX(-1) translateY(-15%)",
+        },
+        "100%": {
+            opacity: 0,
+            transform: "rotate(180deg) scaleX(-1) translateX(15%) translateY(25%)",
+        },
+    },
+    fear: {
+        top: -60,
+        transform: "rotate(180deg) translateX(-50%)",
+        position: "absolute",
+        left: "50%",
+        animationName: "$fearAnimation",
+        animationDuration: "1s",
+        animationIterationCount: "infinite",
+    },
 });
 
 /**
@@ -161,6 +184,7 @@ const Effects = ({ combatantInfo, statChanges }) => {
     const isImmune = hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
     const isFrozen = hasStatusEffect(EFFECT_TYPES.FREEZE);
     const bleeds = effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
+    const isFeared = hasStatusEffect(EFFECT_TYPES.FEAR);
     const burn = effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.BURN) {
             return acc + effect.duration;
@@ -196,7 +220,7 @@ const Effects = ({ combatantInfo, statChanges }) => {
             {isSilenced && <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />}
             {isStunned && <Icon icon={<DizzyIcon />} size="xl" className={classes.stun} />}
             {isFrozen && <img src={NimbleJewelCImage} alt="Frozen" className={classes.freeze} />}
-
+            {isFeared && <Icon icon={<SweatDropsIcon />} size="xl" className={classes.fear} />}
             {isImmune && <div className={classes.immune} />}
             {bleeds.length > 0 && (
                 <div className={classes.bleed}>
