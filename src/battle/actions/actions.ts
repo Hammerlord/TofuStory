@@ -2173,7 +2173,15 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
 const onUseAbility =
     ({ actorInfo, source, ability }: { actorInfo: CombatantInfo; source: TriggerSource; ability: Ability }) =>
     (dispatch) => {
+        if (!actorInfo) {
+            return;
+        }
+
         const { combatant: actor } = actorInfo;
+        if (!actor) {
+            return;
+        }
+
         dispatch(
             updateCombatant({
                 combatantId: actor.id,

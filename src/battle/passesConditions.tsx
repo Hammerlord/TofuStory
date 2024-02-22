@@ -136,7 +136,7 @@ export const passesConditions = ({
         }
 
         const checkPass = (calcTarget: CombatantInfo) => {
-            const { combatant, index, friendly } = calcTarget || {};
+            const { combatant, index, friendly = [] } = calcTarget || {};
             if (!combatant) {
                 return false;
             }
