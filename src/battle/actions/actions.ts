@@ -290,32 +290,35 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
     return (dispatch, getState) => {
         const { friendly, hostile, combatant, friendlySide } = findCombatantData(getState, combatantId) || {};
 
+        if (friendly) {
+            // Remove all effects that have durations on them, reset resources and casting
+            // Order matters: do not remove status effects gained from onDeath event
+            dispatch(
+                updateBattle({
+                    [friendlySide]: friendly.map((combatant) => {
+                        if (combatant?.id === combatantId) {
+                            return {
+                                ...combatant,
+                                effects: combatant.effects.filter((e) => {
+                                    const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
+                                    return !hasDuration;
+                                }),
+                                casting: null,
+                                resources: 0,
+                            };
+                        }
+
+                        return combatant;
+                    }),
+                })
+            );
+        }
+
         dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, source: triggerSource }));
 
         if (!combatant || !friendly) {
             return;
         }
-
-        // Remove all effects that have durations on them, reset resources and casting
-        dispatch(
-            updateBattle({
-                [friendlySide]: friendly.map((combatant) => {
-                    if (combatant?.id === combatantId) {
-                        return {
-                            ...combatant,
-                            effects: combatant.effects.filter((e) => {
-                                const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
-                                return !hasDuration;
-                            }),
-                            casting: null,
-                            resources: 0,
-                        };
-                    }
-
-                    return combatant;
-                }),
-            })
-        );
 
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { id } = combatant || {};
