@@ -328,10 +328,11 @@ export const ragingStone: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: HumilityStoneImage,
-                        duration: 2, // Ticks down immediately due to turn end
                         drawCardsPerTurn: 1,
                         resourcesPerTurn: 1,
-                        maxApplications: 1,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
                     },
                 ],
             },
