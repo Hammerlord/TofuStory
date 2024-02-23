@@ -50,6 +50,7 @@ export const getUpgradeCard = (card: Ability, options?: { ignoreMaxLevel?: boole
             return;
         }
 
+        const cannotBeBelowZeroProperties = ["damage", "healing", "resourceCost", "armor"];
         const { addCardOptions, selectCardOptions, addCardsToDeckOptions, addActions, ...other } = upgradeObj;
 
         Object.entries(other).forEach(([key, val]) => {
@@ -60,6 +61,9 @@ export const getUpgradeCard = (card: Ability, options?: { ignoreMaxLevel?: boole
 
             if (typeof val === "number") {
                 equivalentObj[key] = (equivalentObj[key] || 0) + val;
+                if (cannotBeBelowZeroProperties.includes(key)) {
+                    equivalentObj[key] = Math.max(0, equivalentObj[key]);
+                }
                 return;
             }
 
