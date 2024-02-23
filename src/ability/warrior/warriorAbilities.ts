@@ -59,7 +59,7 @@ import {
 } from "../../images";
 import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { bleed, immunity, silence, stealth, stun, thorns, attackPower } from "../Effects";
+import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp } from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -476,16 +476,7 @@ export const ironWill: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [
-                {
-                    name: "Iron Will",
-                    icon: IronWillImage,
-                    description: "Receiving +2 armor from armor sources",
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    armorReceived: 2,
-                },
-            ],
+            effects: [armorUp, armorUp],
         },
     ],
     upgrades: [
@@ -740,7 +731,7 @@ export const recovery: Ability = {
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 2,
+                        healing: 3,
                     },
                 },
             ],
@@ -1738,7 +1729,7 @@ export const shieldMastery: Ability = {
                     duration: 2,
                 },
             ],
-            addCards: [block, block, block].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [block, block].map((card) => ({ ...card, removeAfterTurn: true })),
         },
     ],
     upgrades: [
@@ -1756,7 +1747,7 @@ export const shieldMastery: Ability = {
 
 export const judgment: Ability = {
     name: "Judgment",
-    resourceCost: 2,
+    resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
     description: "Deals damage equal to your armor",
