@@ -421,7 +421,6 @@ export const eliteTrio: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    attackPower: 1,
     icon: MedalIcon,
     description:
         "A member of an elite triad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
@@ -433,7 +432,7 @@ export const elite: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    attackPower: 2,
+    attackPower: 1,
     icon: MilitaryMedalIcon,
     description:
         "An elite champion, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
