@@ -173,7 +173,7 @@ const BattlefieldContainer = () => {
         deck,
         discard,
         depleted,
-        hand,
+        hand: baseHand,
         isPlayerTurn,
         enemySide,
         playerSide,
@@ -194,6 +194,7 @@ const BattlefieldContainer = () => {
     const allyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
+    const battlefieldRef: React.RefObject<HTMLDivElement> = React.createRef();
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
@@ -202,6 +203,8 @@ const BattlefieldContainer = () => {
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles({ backgroundImage } as any);
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
+
+    const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
 
     const isWinConditionTriggered = (() => {
         if (winCondition.defeatBoss) {
@@ -218,9 +221,7 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility =
-        selectedMinion?.abilities?.[0] ||
-        getAbilityUpgradedFromEffects({ combatant: player, ability: hand.find(({ instanceId }) => instanceId === selectedAbilityId) });
+    const selectedAbility = selectedMinion?.abilities?.[0] || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
     const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
@@ -847,7 +848,6 @@ const BattlefieldContainer = () => {
                             refs={abilityRefs}
                             selectedAbilityId={selectedAbilityId}
                             onAbilityClick={handleAbilityClick}
-                            player={player}
                         />
                     </div>
                 </div>

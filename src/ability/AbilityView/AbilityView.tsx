@@ -286,7 +286,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
         armor,
         damage: selfDamage,
         resourceGain,
-    } = ability.actions
+    } = actions
         .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
         .reduce((acc: any, action: Action) => {
             const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;

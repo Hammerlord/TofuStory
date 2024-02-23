@@ -53,7 +53,10 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
 
     let card = ability;
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {
-        card = getUpgradeCard(card, { ignoreMaxLevel: true });
+        card = {
+            ...(getUpgradeCard(card, { ignoreMaxLevel: true }) || card),
+            instanceId: card.instanceId,
+        };
     });
 
     return card;

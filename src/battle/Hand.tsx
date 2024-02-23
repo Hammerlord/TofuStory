@@ -47,14 +47,12 @@ const Hand = ({
     onAbilityClick,
     selectedAbilityId,
     className,
-    player,
     refs,
 }: {
     hand: HandAbility[];
     onAbilityClick: Function;
     selectedAbilityId: string;
     className: string;
-    player: Player;
     refs;
 }) => {
     const [oldHand, setOldHand] = useState([]);
@@ -100,7 +98,7 @@ const Hand = ({
                     onClick={(e) => handleAbilityClick(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
-                    ability={getAbilityUpgradedFromEffects({ ability, combatant: player })}
+                    ability={ability}
                     ref={refs[i]}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),
