@@ -196,6 +196,10 @@ const useStyles = createUseStyles({
         padding: "8px",
         borderRadius: "4px",
     },
+    disableButton: {
+        visibility: "hidden",
+        pointerEvents: "none",
+    },
 });
 
 export enum TREASURE_BOX_CURSES {
@@ -381,13 +385,17 @@ const TreasureBox = ({
                     </div>
                 )}
                 {!Puzzle && <div className={classes.puzzlePlaceholder} />}
-
-                <div className={classes.buttonContainer}>
-                    {!completed && (
-                        <Button color={"warning"} onClick={onExit}>
-                            {"Abandon"}
-                        </Button>
-                    )}
+                <div
+                    className={
+                        (classes.buttonContainer,
+                        classNames({
+                            [classes.disableButton]: isChestOpened,
+                        }))
+                    }
+                >
+                    <Button color={"warning"} onClick={onExit}>
+                        {"Abandon"}
+                    </Button>
                 </div>
             </div>
         </Overlay>
