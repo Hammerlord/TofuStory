@@ -759,7 +759,7 @@ const BattlefieldContainer = () => {
                     </div>
                 )}
                 <div className={classes.battlefieldContainer}>
-                    <div className={classes.battlefield}>
+                    <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.waves}>
                             <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />
                         </div>
@@ -837,6 +837,7 @@ const BattlefieldContainer = () => {
                     </div>
                     <AnimationCanvas
                         event={events[0]}
+                        battlefieldRef={battlefieldRef}
                         allyRefs={allyRefs}
                         enemyRefs={enemyRefs}
                         initialBattlefield={{ playerSide, enemySide }}

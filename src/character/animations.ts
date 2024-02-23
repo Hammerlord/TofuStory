@@ -238,3 +238,29 @@ export const tossUp = ({
         });
     });
 };
+
+export const shake = ({ object, delay, playbackTime }) => {
+    const animationFrames = [
+        {
+            transform: "translateY(0%)",
+            easing: "ease-out",
+        },
+        {
+            transform: "translateY(1%)",
+            easing: "ease-in-out",
+        },
+        {
+            transform: "translateY(-1%)",
+            easing: "ease-in-out",
+        },
+        {
+            transform: "translateY(0%)",
+            easing: "ease-in",
+        },
+    ];
+
+    object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
+    });
+};

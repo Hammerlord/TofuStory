@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
-import { explode, getCenterCoords, tossUp, travel } from "../character/animations";
+import { explode, getCenterCoords, shake, tossUp, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 
@@ -74,11 +74,13 @@ const AnimationCanvas = ({
     event,
     allyRefs = [],
     enemyRefs = [],
+    battlefieldRef,
     initialBattlefield,
 }: {
     event?: Event;
     allyRefs?: any[];
     enemyRefs?: any[];
+    battlefieldRef;
     initialBattlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     const {
@@ -240,6 +242,11 @@ const AnimationCanvas = ({
                 enemySide,
             };
         }, DISPLACEMENT_SPEED);
+
+        if (animation === ANIMATION_TYPES.STOMP && battlefieldRef.current) {
+            const shakeDuration = 175;
+            shake({ object: battlefieldRef.current, delay: playbackTime - shakeDuration, playbackTime: shakeDuration });
+        }
     }, [eventId]);
 
     const getProjectileElement = (i: number) => {
