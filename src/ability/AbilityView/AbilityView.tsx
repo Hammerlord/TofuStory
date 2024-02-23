@@ -153,6 +153,12 @@ const useStyles = createUseStyles({
     glow: {
         filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
     },
+    abilityLevel: {
+        color: "#25b814",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2.5px black")
+            .join(", "),
+    },
 });
 
 interface AbilityViewProps {
@@ -362,10 +368,13 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
                             })}
                         >
                             {name}{" "}
-                            {ability.level > 1 &&
-                                Array.from({ length: ability.level })
-                                    .map(() => "⋆")
-                                    .join("")}
+                            {ability.level > 1 && (
+                                <span className={classes.abilityLevel}>
+                                    {Array.from({ length: ability.level })
+                                        .map(() => "⋆")
+                                        .join("")}
+                                </span>
+                            )}
                         </span>{" "}
                         <AbilityResourceIcon ability={ability} playerClass={player?.class} />
                     </span>
