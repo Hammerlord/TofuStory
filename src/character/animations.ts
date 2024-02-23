@@ -246,11 +246,11 @@ export const shake = ({ object, delay, playbackTime }) => {
             easing: "ease-out",
         },
         {
-            transform: "translateY(1%)",
+            transform: "translateY(0.5%)",
             easing: "ease-in-out",
         },
         {
-            transform: "translateY(-1%)",
+            transform: "translateY(-0.5%)",
             easing: "ease-in-out",
         },
         {
