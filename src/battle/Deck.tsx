@@ -45,9 +45,11 @@ const useStyles = createUseStyles({
         borderRadius: "4px",
     },
     deckContainer: {
+        position: "relative",
+    },
+    deckContainerInner: {
         height: "100px",
         top: "16px",
-        position: "relative",
     },
     svg: {
         overflow: "visible",
@@ -233,7 +235,7 @@ const Deck = ({
                 {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
                 <Tooltip title={deckTooltip} placement={"right"}>
                     <div
-                        className={classNames(classes.deckContainer, {
+                        className={classNames(classes.deckContainerInner, {
                             [classes.highlight]: highlightDeck,
                         })}
                         onClick={onClickDeck}
