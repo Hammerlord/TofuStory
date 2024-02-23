@@ -736,6 +736,7 @@ export const pigsRibbonItem: Item = {
                         canBeSilenced: true,
                         duration: 1,
                         onReceiveAttack: {
+                            disableTriggerFromProcs: true,
                             usableWhileStunned: false,
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ACTOR,

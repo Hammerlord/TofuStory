@@ -11,7 +11,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, MutantRibbonPigImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
+import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
 import { championsRibbon, pigHeaded } from "./effect";
 
@@ -67,6 +67,7 @@ export const strangePig: Minion = {
                 usableWhileStunned: true,
                 ability: {
                     name: "Mutate",
+                    image: MutateImage,
                     actions: [
                         {
                             type: ACTION_TYPES.EFFECT,
@@ -262,6 +263,7 @@ export const mutantRibbonPig: Minion = {
                         onReceiveAttack: {
                             usableWhileStunned: false,
                             removeEffect: true,
+                            disableTriggerFromProcs: true,
                             targetType: TRIGGER_TARGET_TYPES.ACTOR,
                             ability: {
                                 name: "Retaliate",
