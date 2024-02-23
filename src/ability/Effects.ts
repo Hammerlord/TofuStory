@@ -362,6 +362,7 @@ export const explosive: Effect = {
         usableWhileStunned: true,
         ability: {
             name: "Explode",
+            image: BombImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -374,7 +375,7 @@ export const explosive: Effect = {
                         multiplier: {
                             type: MULTIPLIER_TYPES.MAX_HP,
                             calculationTarget: CONDITION_TARGETS.ACTOR,
-                            value: 0.1,
+                            value: 0.05,
                         },
                     },
 
