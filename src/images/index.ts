@@ -448,6 +448,7 @@ export { default as VictoriaIslandImage } from "./VictoriaIsland.png";
 export { default as VitalHunterImage } from "./VitalHunter.png";
 export { default as WarLeapImage } from "./WarLeap.png";
 export { default as WarMushImage } from "./WarMush.png";
+export { default as WarMushBattleLordImage } from "./WarMushBattleLord.png";
 export { default as WarriorMasteryImage } from "./WarriorMastery.png";
 export { default as WeaponBoosterImage } from "./WeaponBooster.png";
 export { default as WeaponMasteryImage } from "./WeaponMastery.png";

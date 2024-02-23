@@ -51,6 +51,7 @@ import {
     SpikeBallImage,
     SpikedMaceImage,
     WarLeapImage,
+    WarMushBattleLordImage,
     WarMushImage,
     WarriorMasteryImage,
     WeaponBoosterImage,
@@ -1862,18 +1863,22 @@ export const battlelord: Ability = {
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "Your cards become Upgraded by 1 level for 3 turns.",
+    description: "For 3 turns, your cards are Upgraded by 1 level.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.STOMP,
             effects: [
                 {
                     name: "Battle Lord",
                     icon: LordOfDarknessImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
+                    override: {
+                        portrait: WarMushBattleLordImage,
+                    },
                     duration: 3,
                     maxApplications: 1,
                     upgradeCardsByLevels: 1,
