@@ -1862,7 +1862,7 @@ export const battlelord: Ability = {
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "Gain +1 life on hit and +1 ATT. Counter: gain +1 ATT. 3 turns.",
+    description: "Your cards become Upgraded by 1 level for 3 turns.",
     overrideBodyText: true,
     actions: [
         {
@@ -1874,14 +1874,9 @@ export const battlelord: Ability = {
                     icon: LordOfDarknessImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
                     duration: 3,
-                    lifeOnHit: 1,
-                    onReceiveAttack: {
-                        effects: [{ ...attackPower, duration: 3, disableDisplayIcon: true }],
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    },
                     maxApplications: 1,
+                    upgradeCardsByLevels: 1,
                 },
             ],
         },

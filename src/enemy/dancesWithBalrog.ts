@@ -213,7 +213,6 @@ const boarStanceEffect: Effect = {
 export const boarStanceAbility: Ability = {
     name: "Boar Stance",
     image: BoarIconImage,
-    priority: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -278,7 +277,6 @@ export const dancesWithBalrog: Minion = {
         {
             name: "Snail Stance",
             image: RedSnailShellImage,
-            priority: true,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -301,7 +299,6 @@ export const dancesWithBalrog: Minion = {
         {
             name: "Golem Stance",
             image: StoneGolemIconImage,
-            priority: true,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -334,7 +331,6 @@ export const dancesWithBalrog: Minion = {
         {
             name: "Balrog Stance",
             image: BalrogIconImage,
-            priority: true,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,

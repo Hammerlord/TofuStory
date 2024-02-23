@@ -1,4 +1,6 @@
-import { Ability, ACTION_TYPES, Effect, TARGET_TYPES } from "./../types";
+import { getUpgradeCard } from "../../Menu/utils";
+import { Combatant, Player } from "../../character/types";
+import { Ability, ACTION_TYPES, CombatEffect, Effect, HandAbility, TARGET_TYPES } from "./../types";
 import { GREEN, GREY, BLUE, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
@@ -35,4 +37,24 @@ export const isOffensiveAbility = (ability: Ability): boolean => {
     return (
         ability?.actions.some((action) => action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) || false
     );
+};
+
+export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: HandAbility }) => {
+    if (!ability) {
+        return ability;
+    }
+
+    let totalUpgradeByLevels =
+        combatant?.effects.reduce((acc, effect: CombatEffect) => {
+            return acc + (effect.upgradeCardsByLevels || 0);
+        }, 0) || 0;
+
+    totalUpgradeByLevels += ability?.effects?.upgradedByLevels || 0;
+
+    let card = ability;
+    Array.from({ length: totalUpgradeByLevels }).forEach(() => {
+        card = getUpgradeCard(card, { ignoreMaxLevel: true });
+    });
+
+    return card;
 };

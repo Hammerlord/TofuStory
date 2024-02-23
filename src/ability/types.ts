@@ -268,6 +268,7 @@ export interface Effect {
     viewDeckInOrder?: boolean;
     minimumAttackDamage?: number;
     bypassImmunity?: boolean;
+    upgradeCardsByLevels?: number;
 }
 
 export interface CombatEffect extends Effect {
@@ -640,8 +641,6 @@ export interface Ability {
     selectCards?: SelectCards;
     /** Prerequisite to use the ability at all */
     conditions?: Condition[];
-    /** Enemies should prefer to use this ability if it is available */
-    priority?: boolean;
     effectsWhileOwned?: Effect[];
     onDraw?: {
         ability: Ability;
@@ -653,7 +652,7 @@ export interface Ability {
  */
 export interface HandAbility extends Ability {
     instanceId: string;
-    effects?: AbilityEffects;
+    effects?: AbilityEffects; // These effects last until the card is used or discarded
 }
 
 export enum ACTION_TYPES {
@@ -693,6 +692,7 @@ export interface AbilityEffects {
     resourceCost?: number;
     damage?: number;
     removeAfterTurn?: boolean;
+    upgradedByLevels?: number;
 }
 
 export enum SELECT_CARD_TYPES {

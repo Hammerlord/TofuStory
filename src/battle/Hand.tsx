@@ -4,6 +4,8 @@ import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { HandAbility } from "../ability/types";
 import { CombatantInfo } from "./types";
+import { getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
@@ -45,12 +47,14 @@ const Hand = ({
     onAbilityClick,
     selectedAbilityId,
     className,
+    player,
     refs,
 }: {
     hand: HandAbility[];
     onAbilityClick: Function;
     selectedAbilityId: string;
     className: string;
+    player: Player;
     refs;
 }) => {
     const [oldHand, setOldHand] = useState([]);
@@ -96,7 +100,7 @@ const Hand = ({
                     onClick={(e) => handleAbilityClick(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
-                    ability={ability}
+                    ability={getAbilityUpgradedFromEffects({ ability, combatant: player })}
                     ref={refs[i]}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),

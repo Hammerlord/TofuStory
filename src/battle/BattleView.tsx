@@ -1,7 +1,7 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
-import { getAbilityColor } from "../ability/AbilityView/utils";
+import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
 import { Action, EFFECT_EVENT_KEYS, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
@@ -218,7 +218,10 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = selectedMinion?.abilities?.[0] || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const selectedAbility =
+        selectedMinion?.abilities?.[0] ||
+        getAbilityUpgradedFromEffects({ combatant: player, ability: hand.find(({ instanceId }) => instanceId === selectedAbilityId) });
+
     const actorId: string | undefined = (selectedMinion || player)?.id;
     const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
 
@@ -844,6 +847,7 @@ const BattlefieldContainer = () => {
                             refs={abilityRefs}
                             selectedAbilityId={selectedAbilityId}
                             onAbilityClick={handleAbilityClick}
+                            player={player}
                         />
                     </div>
                 </div>

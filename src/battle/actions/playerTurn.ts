@@ -1,3 +1,4 @@
+import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
 import { EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { MAX_HAND_SIZE } from "../constants";
@@ -22,17 +23,20 @@ export const onUsePlayerAbility = ({
     return (dispatch, getState) => {
         const { playerSide, hand } = getState().battle;
 
-        const ability = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const ability: HandAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+
         dispatch(
             useAbility({
-                ability,
+                ability: getAbilityUpgradedFromEffects({ combatant: actor, ability }),
                 selectedIndex: selectedTargetIndex,
                 side: selectedTargetSide,
-                actorId: playerSide.find((c: Combatant | null) => c?.isPlayer).id,
+                actorId: actor?.id,
             })
         );
 
         // Some cards grant an effect when you hold them, so only remove it after the ability has been used
+        // Though this is causing a bug where abilities that grab your cards, such as Temporal Bag, can grab the card being used
         dispatch(removeAbilityFromHand(selectedAbilityId));
         dispatch(recalculateEffectsFromAbilities());
     };
