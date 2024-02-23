@@ -27,6 +27,14 @@ import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import AbilityPreview from "./AbilityPreview";
 
 const useStyles = createUseStyles({
+    "@keyframes highlightAnimation": {
+        from: {
+            filter: "brightness(1) drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
+        },
+        to: {
+            filter: "brightness(1.25) drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 5px #45ff61)",
+        },
+    },
     root: {
         minWidth: "20%",
         margin: "0 1vw",
@@ -34,7 +42,10 @@ const useStyles = createUseStyles({
         position: "relative",
 
         "&.-highlighted .portrait": {
-            filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
+            animationName: "$highlightAnimation",
+            animationDuration: "2s",
+            animationIterationCount: "infinite",
+            animationDirection: "alternate-reverse",
         },
 
         "&.-selected .portrait": {
