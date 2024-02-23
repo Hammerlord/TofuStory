@@ -444,7 +444,7 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain +1 attack power for every attack made this turn.",
+    description: "This turn only, gain +1 ATT power whenever you attack.",
     overrideBodyText: true,
     actions: [
         {

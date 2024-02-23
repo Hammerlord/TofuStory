@@ -374,7 +374,7 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
                         {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                         {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                         {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                        {ability.reusable && <div className={classes.bold}>Reusable</div>}
+                        {ability.reusable && <div className={classes.bold}>Boomerang</div>}
                         <DrawCards ability={ability} playerClass={player?.class} />
                         {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                         {ricochet && (

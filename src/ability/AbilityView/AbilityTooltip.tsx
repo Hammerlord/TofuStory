@@ -145,11 +145,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
 
     if (ability.preemptive) {
         tooltips.push(
-            <AbilityTooltipSection
-                title="Pre-Emptive"
-                description={"Start with this ability in hand when entering battle."}
-                key={"preemptive"}
-            />
+            <AbilityTooltipSection title="Pre-Emptive" description={"Start battle with this ability in hand."} key={"preemptive"} />
         );
     }
 
@@ -165,16 +161,12 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
 
     if (isDeplete) {
         tooltips.push(
-            <AbilityTooltipSection
-                title="Deplete"
-                description={"When used, deplete abilities are removed for the rest of the battle."}
-                key={"deplete"}
-            />
+            <AbilityTooltipSection title="Deplete" description={"'Deplete' abilities can only be used once per battle."} key={"deplete"} />
         );
     }
 
     if (isReusable) {
-        tooltips.push(<AbilityTooltipSection title="Reusable" description={"Ability returns to your hand after use."} key={"reusable"} />);
+        tooltips.push(<AbilityTooltipSection title="Boomerang" description={"Ability returns to your hand after use."} key={"reusable"} />);
     }
 
     return (
