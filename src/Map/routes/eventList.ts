@@ -70,6 +70,7 @@ import {
     tortieShell,
     wildKargoEye,
     workGloves,
+    icarusCape,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -152,4 +153,5 @@ export const ITEMS = [
     mesoItem,
     bigMesoItem,
     theBackpack,
+    icarusCape,
 ];

@@ -41,6 +41,7 @@ import {
     GuidebookImage,
     HotdogImage,
     HumilityStoneImage,
+    IcarusCapeImage,
     IronMaceImage,
     KoreanFanImage,
     LeatherSandalsImage,
@@ -243,17 +244,16 @@ export const amethyst: Item = {
 
 export const redWhip: Item = {
     name: "Red Whip",
-    description: "Every 3 turns, draw an extra card.",
+    description: "Every turn, draw an extra card.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: RedWhipImage,
     effects: [
         {
             name: "Red Whip",
-            description: "Draw an extra card every 3 turns.",
+            description: "Every turn, draw an extra card.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 3,
             drawCardsPerTurn: 1,
         },
     ],
@@ -1890,6 +1890,24 @@ export const theBackpack: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const icarusCape: Item = {
+    name: "Icarus Cape",
+    description: "Every 3 turns, draw an extra card.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: IcarusCapeImage,
+    effects: [
+        {
+            name: "Icarus Cape",
+            description: "Every 3 turns, draw an extra card.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 3,
+            drawCardsPerTurn: 1,
         },
     ],
 };

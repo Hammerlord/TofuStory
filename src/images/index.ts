@@ -198,6 +198,7 @@ export { default as HumilityStoneImage } from "./HumilityStone.png";
 export { default as HuntersBowImage } from "./HuntersBow.png";
 export { default as HurricaneImage } from "./Hurricane.png";
 export { default as HyperBodyImage } from "./HyperBody.png";
+export { default as IcarusCapeImage } from "./IcarusCape.png";
 export { default as IcicleImage } from "./Icicle.png";
 export { default as IcicleMinionImage } from "./IcicleMinion.png";
 export { default as IciclesPortraitImage } from "./IciclesPortrait.png";
