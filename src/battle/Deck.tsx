@@ -4,6 +4,8 @@ import { createUseStyles } from "react-jss";
 import { HandAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
+import { ArrowDownIcon } from "../images/icons";
+import { DownArrowImage } from "../images";
 
 const DECK_COLOR = "#176fbd";
 const DECK_SHADOW = "#125896";
@@ -44,8 +46,8 @@ const useStyles = createUseStyles({
     },
     deckContainer: {
         height: "100px",
-        zIndex: -1,
         top: "16px",
+        position: "relative",
     },
     svg: {
         overflow: "visible",
@@ -68,8 +70,37 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         marginBottom: "4px",
     },
+    "@keyframes indicatorAnimation": {
+        "0%": {
+            transform: "translateX(-50%) translateY(50%)",
+        },
+        "100%": {
+            transform: "translateX(-50%) translateY(0)",
+        },
+    },
+    indicator: {
+        animationName: "$indicatorAnimation",
+        animationDuration: "1.5s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        top: "-10%",
+    },
+    "@keyframes highlightAnimation": {
+        from: {
+            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
+        },
+        to: {
+            filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 5px #45ff61)",
+        },
+    },
     highlight: {
-        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        animationName: "$highlightAnimation",
+        animationDuration: "2s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
     },
 });
 
@@ -198,29 +229,32 @@ const Deck = ({
 
     return (
         <div className={classes.root}>
-            <Tooltip title={deckTooltip} placement={"right"}>
-                <div
-                    className={classNames(classes.deckContainer, {
-                        [classes.highlight]: highlightDeck,
-                    })}
-                    onClick={onClickDeck}
-                >
-                    <svg viewBox="0 0 100 100" className={classes.svg}>
-                        {Array.from({ length: deck.length + discard.length }).map((_, i) => {
-                            return (
-                                <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
-                                    <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
-                                    {i === deck.length + discard.length - 1 && (
-                                        <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                            {deck.length}
-                                        </text>
-                                    )}
-                                </svg>
-                            );
+            <div className={classes.deckContainer}>
+                {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
+                <Tooltip title={deckTooltip} placement={"right"}>
+                    <div
+                        className={classNames(classes.deckContainer, {
+                            [classes.highlight]: highlightDeck,
                         })}
-                    </svg>
-                </div>
-            </Tooltip>
+                        onClick={onClickDeck}
+                    >
+                        <svg viewBox="0 0 100 100" className={classes.svg}>
+                            {Array.from({ length: deck.length + discard.length }).map((_, i) => {
+                                return (
+                                    <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
+                                        <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
+                                        {i === deck.length + discard.length - 1 && (
+                                            <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
+                                                {deck.length}
+                                            </text>
+                                        )}
+                                    </svg>
+                                );
+                            })}
+                        </svg>
+                    </div>
+                </Tooltip>
+            </div>
 
             {discard.length > 0 && (
                 <Tooltip title={discardTooltip} placement={"right"}>

@@ -110,6 +110,7 @@ export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";
 export { default as DoubleStabImage } from "./DoubleStab.png";
 export { default as DoubleTimeImage } from "./DoubleTime.png";
+export { default as DownArrowImage } from "./DownArrow.png";
 export { default as DrakeBloodImage } from "./DrakeBlood.png";
 export { default as DrakeCardImage } from "./DrakeCard.png";
 export { default as DueyImage } from "./Duey.png";
