@@ -39,15 +39,18 @@ export const rollItemPool = ({
     excludeItems?: Item[];
     bonuses?: { uncommon: number; rare: number };
 }): Item[] => {
-    const alreadyObtained = player.items.concat(excludeItems).reduce((acc, item: Item) => {
+    // Exclude already-obtained equipment
+    const exclude = player.items.reduce((acc, item: Item) => {
         if (item.type === ITEM_TYPES.EQUIPMENT) {
             acc[item.name] = true;
         }
         return acc;
     }, {});
 
+    excludeItems.forEach((item) => (exclude[item.name] = true));
+
     const selectedRarity = rollRarity(player, bonuses);
-    let itemPool = ITEMS.filter((item: Item) => !alreadyObtained[item.name]);
+    let itemPool = ITEMS.filter((item: Item) => !exclude[item.name]);
     let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
     if (!filteredByRarity.length) {
         const changeRarity = {
