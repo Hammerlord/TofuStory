@@ -250,7 +250,7 @@ const TreasureBox = ({
             const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
             const treasure = [];
             Array.from({ length: BASE_NUM_CHOICES }).forEach(() => {
-                const equipment = getRandomItem(rollItemPool({ player, bonuses }));
+                const equipment = getRandomItem(rollItemPool({ player, bonuses, excludeItems: treasure }));
                 if (equipment) {
                     treasure.push(equipment);
                 } else {
