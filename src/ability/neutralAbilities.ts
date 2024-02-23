@@ -8,11 +8,20 @@ export const shellThrowRed: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 13,
+            damage: 14,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: RedSnailShellImage,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
         },
     ],
 };
@@ -24,62 +33,24 @@ const shellThrowBlue: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 10,
+            damage: 11,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: BlueSnailShellImage,
-            addCardsToDiscard: [shellThrowRed],
+            addCardsToDeck: [shellThrowRed],
         },
     ],
-};
-
-export const shellThrowRed2: Ability = {
-    name: "Shell Throw",
-    image: RedSnailShellImage,
-    depletedOnUse: true,
-    resourceCost: 1,
-    actions: [
+    upgrades: [
         {
-            damage: 16,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
-            icon: RedSnailShellImage,
-        },
-    ],
-};
-
-const shellThrowBlue2: Ability = {
-    name: "Shell Throw",
-    image: BlueSnailShellImage,
-    depletedOnUse: true,
-    resourceCost: 1,
-    actions: [
-        {
-            damage: 13,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
-            icon: BlueSnailShellImage,
-            addCardsToDiscard: [shellThrowRed2],
-        },
-    ],
-};
-
-export const shellThrow2: Ability = {
-    name: "Shell Throw",
-    image: SnailShellImage,
-    depletedOnUse: true,
-    resourceCost: 1,
-    actions: [
-        {
-            damage: 9,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
-            icon: SnailShellImage,
-            addCardsToDiscard: [shellThrowBlue2],
+            actions: [
+                {
+                    damage: 3,
+                    addCardsToDeckOptions: {
+                        isUpgraded: true,
+                    },
+                },
+            ],
         },
     ],
 };
@@ -91,13 +62,24 @@ export const shellThrow: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 7,
+            damage: 8,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: SnailShellImage,
-            addCardsToDiscard: [shellThrowBlue],
+            addCardsToDeck: [shellThrowBlue],
         },
     ],
-    //upgrades: [shellThrow2],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                    addCardsToDeckOptions: {
+                        isUpgraded: true,
+                    },
+                },
+            ],
+        },
+    ],
 };

@@ -367,7 +367,11 @@ export const warBanner: Ability = {
         ],
     },
     actions: [],
-    upgrades: [],
+    upgrades: [
+        {
+            resourceCost: -1,
+        },
+    ],
 };
 
 export const yell: Ability = {
@@ -694,12 +698,11 @@ export const closeCombat: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            type: ACTION_TYPES.EFFECT,
+            type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             vacuum: 2,
             area: 2,
             effects: [stun],
-            damage: 1,
         },
     ],
     upgrades: [
@@ -1057,12 +1060,12 @@ export const dustDevils: Ability = {
                 {
                     effects: [
                         {
-                            description: "When you attack, summon tornadoes that deal 1-2 damage and hit up to 3 enemies",
+                            description: "When you attack, summon tornadoes that deal 2 damage and hit up to 3 enemies",
                             onAttack: {
                                 ability: {
                                     actions: [
                                         {
-                                            secondaryDamage: 2,
+                                            damage: 1,
                                         },
                                     ],
                                 },
@@ -1345,7 +1348,7 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "+3 damage to targets with less HP than you",
+    description: "+4 damage to targets with less HP than you",
     overrideBodyText: true,
     actions: [
         {
@@ -1354,7 +1357,7 @@ export const overpower: Ability = {
             type: ACTION_TYPES.ATTACK,
             area: 1,
             bonus: {
-                damage: 3,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -1370,7 +1373,7 @@ export const overpower: Ability = {
     ],
     upgrades: [
         {
-            description: "+4 damage to targets with less HP than you",
+            description: "+5 damage to targets with less HP than you",
             actions: [
                 {
                     damage: 2,
@@ -1685,7 +1688,7 @@ export const divineCharge: Ability = {
     description: "Heal 1 for every enemy hit.",
     actions: [
         {
-            damage: 5,
+            damage: 6,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,

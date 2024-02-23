@@ -311,7 +311,7 @@ export const leatherSandals: Item = {
 
 export const ragingStone: Item = {
     name: "Raging Stone",
-    description: "Every 3 Fury you spend, gain 1 Fury and card draw next turn.",
+    description: "Every 2 Fury you spend, gain 1 Fury next turn.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -323,14 +323,13 @@ export const ragingStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 3,
+                triggerFrequencyFromSum: 2,
                 effects: [
                     {
                         name: "Rage",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: HumilityStoneImage,
-                        drawCardsPerTurn: 1,
                         resourcesPerTurn: 1,
                         onTurnInProgress: {
                             removeEffect: true,
@@ -1152,7 +1151,7 @@ export const chargingStone: Item = {
 export const snailStompers: Item = {
     name: "Snail Stompers",
     image: SnowshoesImage,
-    description: "+3 attack power against enemies with 10 or less HP.",
+    description: "+3 attack power against enemies with 15 or less HP.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -1164,7 +1163,7 @@ export const snailStompers: Item = {
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                    HP: 11,
+                    HP: 16,
                     comparator: "lt",
                 },
             ],
