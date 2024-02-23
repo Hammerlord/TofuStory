@@ -239,6 +239,8 @@ export const avenger: Effect = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    icon: JapaneseOgreIcon,
                     armor: 3,
                     resources: 1,
                     bonus: {
