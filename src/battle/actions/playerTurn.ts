@@ -25,6 +25,7 @@ export const onUsePlayerAbility = ({
 
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
         const ability: HandAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+        dispatch(removeAbilityFromHand(selectedAbilityId));
 
         dispatch(
             useAbility({
@@ -35,9 +36,7 @@ export const onUsePlayerAbility = ({
             })
         );
 
-        // Some cards grant an effect when you hold them, so only remove it after the ability has been used
-        // Though this is causing a bug where abilities that grab your cards, such as Temporal Bag, can grab the card being used
-        dispatch(removeAbilityFromHand(selectedAbilityId));
+        // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
     };
 };
