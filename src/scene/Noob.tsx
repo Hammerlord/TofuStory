@@ -1,7 +1,7 @@
 import { PLAYER_CLASSES } from "../Menu/types";
 import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
-import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, sportyTShirt, sword } from "../item/items";
+import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt, sword } from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
 const noobEncounter1 = {
@@ -79,7 +79,7 @@ export const noobIntro: EventScene = {
                                                 "[The beginner looks at you.] Uh, um, think quick, what'll make it go away!?",
                                             ],
                                             itemChoices: {
-                                                items: [leatherSandals, sportyTShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                items: [leatherSandals, tShirt, sword, redHeadband, blueJeanShorts, mesoItem],
                                                 numChoices: 3,
                                                 disableItemReplacements: true,
                                             },
@@ -101,7 +101,7 @@ export const noobIntro: EventScene = {
                                         {
                                             dialog: ["[The beginners sprint off. One of them dropped something...]"],
                                             items: {
-                                                itemPool: [leatherSandals, sportyTShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                itemPool: [leatherSandals, tShirt, sword, redHeadband, blueJeanShorts, mesoItem],
                                                 amount: 1,
                                             },
                                         },

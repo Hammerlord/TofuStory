@@ -452,6 +452,7 @@ export { default as WeaponBoosterImage } from "./WeaponBooster.png";
 export { default as WeaponMasteryImage } from "./WeaponMastery.png";
 export { default as WessImage } from "./Wess.png";
 export { default as WhiteRockImage } from "./WhiteRock.png";
+export { default as WhiteUndershirtImage } from "./WhiteUndershirt.png";
 export { default as WildBoarImage } from "./WildBoar.png";
 export { default as WildKargoImage } from "./WildKargo.gif";
 export { default as WildKargoEyeImage } from "./WildKargoEye.png";

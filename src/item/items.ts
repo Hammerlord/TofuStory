@@ -77,6 +77,7 @@ import {
     TopazImage,
     TortieShellImage,
     WeaponMasteryImage,
+    WhiteUndershirtImage,
     WildKargoEyeImage,
     WorkGlovesImage,
 } from "../images";
@@ -1765,13 +1766,13 @@ export const rabbitFoot: Item = {
 
 export const blueJeanShorts: Item = {
     name: "Blue Jean Shorts",
-    description: "When you play 10 support abilities, gain 1 resource.",
+    description: "When you play 7 support abilities, gain 1 resource.",
     type: ITEM_TYPES.EQUIPMENT,
     image: BlueJeanShortsImage,
     effects: [
         {
             name: "Blue Jean Shorts",
-            description: "When you play 10 support abilities, gain 1 resource.",
+            description: "When you play 7 support abilities, gain 1 resource.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onAbility: {
@@ -1781,7 +1782,7 @@ export const blueJeanShorts: Item = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         numAbilitiesUsed: {
-                            amount: 10,
+                            amount: 7,
                             type: [ACTION_TYPES.EFFECT],
                         },
                         comparator: "modulo",
@@ -1792,23 +1793,23 @@ export const blueJeanShorts: Item = {
     ],
 };
 
-export const sportyTShirt: Item = {
-    name: "Sporty T-Shirt",
-    description: "If you spend a turn without attacking, draw an extra card next turn.",
+export const tShirt: Item = {
+    name: "White T-Shirt",
+    description: "If you spend a turn without attacking, gain a resource next turn.",
     type: ITEM_TYPES.EQUIPMENT,
-    image: SportyTShirtImage,
+    image: WhiteUndershirtImage,
     effects: [
         {
-            name: "Sporty T-Shirt Effect",
-            description: "If you spend a turn without attacking, draw an extra card next turn.",
+            name: "White T-Shirt Effect",
+            description: "If you spend a turn without attacking, gain a resource next turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
-                        name: "Sporty T-Shirt",
-                        description: "If you spend a turn without attacking, draw an extra card next turn.",
+                        name: "White T-Shirt",
+                        description: "If you spend a turn without attacking, gain a resource next turn.",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         onOffensiveAbility: {
@@ -1818,12 +1819,11 @@ export const sportyTShirt: Item = {
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                             effects: [
                                 {
-                                    name: "Sporty T-Shirt - Draw",
-                                    icon: SportyTShirtImage,
+                                    name: "White T-Shirt",
+                                    icon: WhiteUndershirtImage,
                                     type: EFFECT_TYPES.NONE,
                                     class: EFFECT_CLASSES.BUFF,
-                                    drawCardsPerTurn: 1,
-                                    duration: 2, // Ticks down on turn end
+                                    resourcesPerTurn: 1,
                                     onTurnInProgress: {
                                         removeEffect: true,
                                     },
