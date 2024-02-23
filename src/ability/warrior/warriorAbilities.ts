@@ -418,6 +418,8 @@ export const bunchOBricks: Ability = {
             addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: BrickImage,
         },
     ],
     upgrades: [

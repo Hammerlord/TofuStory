@@ -6,6 +6,7 @@ import { JOB_CARD_MAP } from "../../ability";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
+    ANIMATION_TYPES,
     AUTO_CAST_ABILITY_TYPES,
     Ability,
     AbilityEffects,
@@ -2145,6 +2146,8 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
                     healing: item.healing,
                     resources: item.resources,
                     effects: item.effects,
+                    icon: item.image,
+                    animation: ANIMATION_TYPES.CONSUMABLE,
                 },
                 actorId,
                 selectedIndex: index,

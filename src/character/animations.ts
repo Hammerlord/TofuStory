@@ -198,3 +198,43 @@ export const explode = ({
         });
     });
 };
+
+export const tossUp = ({
+    from,
+    object,
+    playbackTime,
+}: {
+    object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
+    from: HTMLElement;
+    playbackTime: number;
+}) => {
+    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+
+    const animationFrames = [
+        {
+            transform: "translateY(0)",
+            filter: "brightness(1)",
+            opacity: 1,
+            easing: "ease-out",
+        },
+        {
+            transform: "translateY(-300%) rotate(360deg)",
+            opacity: 1,
+            filter: "brightness(1.5)",
+            easing: "ease-in-out",
+        },
+        {
+            transform: "translateY(0) rotate(720deg)",
+            opacity: 0,
+            filter: "brightness(1.5)",
+            easing: "ease-in",
+        },
+    ];
+
+    return elementsToAnimate.map((el, i) => {
+        return el.animate(animationFrames, {
+            duration: playbackTime,
+            delay: i * 50,
+        });
+    });
+};

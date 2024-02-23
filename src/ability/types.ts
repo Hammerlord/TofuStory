@@ -686,6 +686,7 @@ export enum ANIMATION_TYPES {
     STOMP = "stomp",
     ACTION_EXPLODE = "action-image-explode",
     SPIN = "spin", // Spin in place
+    CONSUMABLE = "consumable", // Eat a consumable
 }
 
 export interface AbilityEffects {

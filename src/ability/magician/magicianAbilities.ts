@@ -781,6 +781,8 @@ const parfaitCupcake: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: ParfaitCupcakeImage,
             resources: 2,
         },
     ],
@@ -804,6 +806,8 @@ const chocolateCupcake: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: ChocolateCupcakeImage,
             healing: 3,
         },
     ],
@@ -827,6 +831,8 @@ const pieceOfCake: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: PieceOfBirthdayCakeImage,
             effects: [
                 {
                     name: "Cake",
@@ -1187,6 +1193,8 @@ export const slimmingMuffin: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: ChocolateMuffinImage,
             healing: 3,
             drawCards: {
                 amount: 1,
@@ -1975,6 +1983,8 @@ export const moonlight: Ability = {
             healing: 3,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: LunarPiecesImage,
             drawCards: {
                 amount: 1,
             },
@@ -2103,6 +2113,8 @@ export const manaGem: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: ManaImage,
             resources: 1,
         },
     ],
