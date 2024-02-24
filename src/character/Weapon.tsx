@@ -55,6 +55,19 @@ const useStyles = createUseStyles({
         transition: "1s filter ease-in-out, 1s -webkit-filter ease-in-out",
         animationIterationCount: "infinite",
     },
+    ghost: {
+        "& img": {
+            transform: (options: any) => options?.transform || "scale(4, 4)",
+            imageRendering: "pixelated",
+        },
+        transformOrigin: "400% -400%",
+        opacity: 0,
+        position: "absolute",
+        left: "-250%",
+        top: 200,
+        width: "100%",
+        height: "100%",
+    },
 });
 
 const swing = ({ object, playbackTime = 500 }) => {
@@ -111,6 +124,27 @@ const whirl = ({ object, playbackTime = 500 }) => {
     });
 };
 
+const spin = ({ object, playbackTime = 1000, startingPoint }) => {
+    const animationFrames = [
+        {
+            transform: `rotate(${startingPoint}deg)`,
+            opacity: 0,
+        },
+        {
+            transform: `rotate(${startingPoint + 360}deg)`,
+            opacity: 0.2,
+        },
+        {
+            transform: `rotate(${startingPoint + 720}deg)`,
+            opacity: 0,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+    });
+};
+
 const Weapon = ({
     image,
     options,
@@ -129,7 +163,8 @@ const Weapon = ({
     const classes = useStyles(options as any);
     const { type, area } = action || {};
     const weaponRef = useRef();
-    const animationRef = useRef();
+    const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef());
+    const animationRefs = useRef([]);
 
     const rotation = useMemo(() => {
         if (type !== ACTION_TYPES.ATTACK || !target || !wielderRef || !action || area) {
@@ -144,14 +179,20 @@ const Weapon = ({
 
     useEffect(() => {
         //@ts-ignore
-        animationRef.current?.cancel();
+        animationRefs.current?.forEach((a) => a.cancel());
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {
             return;
         }
         if (area === 1) {
-            animationRef.current = swing({ object: weaponRef.current });
+            animationRefs.current = [swing({ object: weaponRef.current })];
         } else if (area >= 2) {
-            animationRef.current = whirl({ object: weaponRef.current });
+            animationRefs.current = [
+                whirl({ object: weaponRef.current }),
+                ...afterImagesRefs.map((ref, i) => {
+                    const startingPoint = i * (360 / afterImagesRefs.length);
+                    return spin({ object: ref.current, startingPoint });
+                }),
+            ];
         }
     }, [action]);
 
@@ -160,24 +201,37 @@ const Weapon = ({
     }
 
     return (
-        <div
-            className={classNames(classes.root, {
-                [classes.idle]: type !== ACTION_TYPES.ATTACK,
-                [classes.stab]: type === ACTION_TYPES.ATTACK && !area,
-            })}
-            style={{
-                transform: rotation ? `rotate(${rotation}deg)` : "unset",
-            }}
-            ref={weaponRef}
-        >
+        <>
+            {afterImagesRefs.map((ref, i) => (
+                <div
+                    className={classes.ghost}
+                    ref={ref}
+                    style={{
+                        transform: `rotate(${i * (360 / afterImagesRefs.length)}deg)`,
+                    }}
+                >
+                    <img src={image} />
+                </div>
+            ))}
             <div
-                className={classNames({
-                    [classes.glow]: isGlowing,
+                className={classNames(classes.root, {
+                    [classes.idle]: type !== ACTION_TYPES.ATTACK,
+                    [classes.stab]: type === ACTION_TYPES.ATTACK && !area,
                 })}
+                style={{
+                    transform: rotation ? `rotate(${rotation}deg)` : "unset",
+                }}
+                ref={weaponRef}
             >
-                <img src={image} />
+                <div
+                    className={classNames({
+                        [classes.glow]: isGlowing,
+                    })}
+                >
+                    <img src={image} />
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
