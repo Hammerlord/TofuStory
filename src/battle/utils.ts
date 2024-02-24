@@ -351,6 +351,19 @@ export const getMultiplier = ({
     return 1;
 };
 
+export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
+    if (!turnsTriggerFrequency) {
+        return true;
+    }
+
+    if (uptime === 0) {
+        return false;
+    }
+
+    // Uptime starts at 0, so 'every 3 turns' should be 2 for turnsTriggerFrequency (n - 1)
+    return uptime % (turnsTriggerFrequency - 1) === 0;
+};
+
 /**
  * Given a character, return its effects that have not been canceled due to silence or failing conditions.
  */
@@ -386,8 +399,11 @@ export const getEnabledEffects = ({
         const { canBeSilenced, turnsTriggerFrequency, uptime } = effect;
         const disabled = silenced && canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
 
-        const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
-        return !disabled && passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect }) && isTurnToTrigger;
+        return (
+            !disabled &&
+            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect }) &&
+            isTurnToTrigger({ turnsTriggerFrequency, uptime })
+        );
     });
 };
 

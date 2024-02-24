@@ -46,6 +46,7 @@ import {
     getValidTargetIndices,
     isSilenced,
     isStunnedOrFrozen,
+    isTurnToTrigger,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
@@ -773,10 +774,15 @@ export const checkEventTrigger = ({
             const historyKey = [effectEventKey, id].join("-");
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
-            const isTurnToTrigger = !turnsTriggerFrequency || uptime % turnsTriggerFrequency === 0;
             const canTriggerFromProcs = !source?.isProc || !effectEvent?.disableTriggerFromProcs;
 
-            if (!alreadyTriggered && isTurnToTrigger && meetsTriggerTimes && notTriggeringSameEffect && canTriggerFromProcs) {
+            if (
+                !alreadyTriggered &&
+                isTurnToTrigger({ turnsTriggerFrequency, uptime }) &&
+                meetsTriggerTimes &&
+                notTriggeringSameEffect &&
+                canTriggerFromProcs
+            ) {
                 const triggerTimesFromSum = (() => {
                     const freq = effectEvent.triggerFrequencyFromSum;
                     if (!freq) {
