@@ -1,7 +1,7 @@
 import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
 import { EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
@@ -93,7 +93,7 @@ const handleDiscard = (ability: HandAbility) => {
                 pushEventQueue({
                     ...getState().battle,
                     id: uuid.v4(),
-                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                    playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
                     cardsAddedTo: "deplete",
                 } as Event)
