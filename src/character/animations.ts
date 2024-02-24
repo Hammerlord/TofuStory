@@ -339,7 +339,7 @@ export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
             offset: 0.6,
         },
         {
-            transform: "translateY(5)",
+            transform: "translateY(5px)",
             offset: 0.75,
         },
         {
