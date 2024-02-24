@@ -1,5 +1,5 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
-import { ACTION_TYPES, Ability, CombatAbility } from "../types";
+import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility } from "../types";
 import { ResourceIcon } from "./ResourceIcon";
 
 const DrawCards = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
@@ -7,11 +7,19 @@ const DrawCards = ({ ability, playerClass }: { ability: Ability | CombatAbility;
     if (!drawCards) {
         return null;
     }
-    const { amount = 0, effects = {}, filters = [] } = drawCards;
-    const { resourceCost = 0, damage = 0 } = effects;
+    const { amount = 0, effects = [], filters = [] } = drawCards;
     if (!amount) {
         return null;
     }
+
+    const { resourceCost = 0 } = effects.reduce(
+        (acc, e: AbilityEffect) => {
+            return {
+                resourceCost: acc.resourceCost + (e.resourceCost || 0),
+            };
+        },
+        { resourceCost: 0 }
+    );
 
     const attackCards = filters.some((filter) => filter === ACTION_TYPES.ATTACK || filter === ACTION_TYPES.RANGE_ATTACK); // Attack and range attack are currently not differentiated
 

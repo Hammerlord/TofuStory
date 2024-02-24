@@ -1,3 +1,4 @@
+import { AbilityEffect } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
@@ -103,12 +104,15 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
  * Player conditional helpers
  */
 export const canUseAbility = (character, ability: CombatAbility | undefined): boolean => {
-    const { resourceCost = 0, effects = {} } = ability;
-    const { resourceCost: temporaryResourceCost = 0 } = effects;
+    const { resourceCost = 0, effects = [] } = ability;
     if (resourceCost === "x") {
         return character.resources >= 1;
     }
-    return resourceCost + temporaryResourceCost <= (character.resources || 0);
+
+    const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
+        return acc + (e.resourceCost || 0);
+    }, 0);
+    return resourceCost + resourceCostFromEffects <= (character.resources || 0);
 };
 
 /**
@@ -582,14 +586,6 @@ export const getHealableIndices = (characters: (Combatant | null)[]): number[] =
     const indices = getValidTargetIndices(characters);
     // Injured targets only
     return indices.filter((i) => characters[i].HP < getMaxHP(characters[i]));
-};
-
-export const updateCardEffects = (card: CombatAbility, newEffects: { resourceCost?: number }): CombatAbility => {
-    const newCard = { ...card, effects: { ...card.effects } };
-    Object.entries(newEffects).forEach(([key, value]) => {
-        newCard.effects[key] = (newCard.effects[key] || 0) + value;
-    });
-    return newCard;
 };
 
 export const calculateActionArea = ({

@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { getMultiplier } from "../../battle/utils";
+import { canUseAbility, getMultiplier } from "../../battle/utils";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
@@ -385,7 +385,7 @@ const AbilityView = forwardRef(
             }
         }
 
-        const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player?.resources;
+        const isAbilityUsable = canUseAbility(player, ability);
 
         return (
             <AbilityTooltip ability={ability}>
@@ -400,7 +400,7 @@ const AbilityView = forwardRef(
                         className={classNames(classes.inner, {
                             [classes.selectedAbility]: isSelected,
                             [classes.ephemeral]: removeAfterTurn,
-                            [classes.glow]: canUseAbility && !disableGlow && state.battle && hasBonus,
+                            [classes.glow]: isAbilityUsable && !disableGlow && state.battle && hasBonus,
                             "-flipped": flipped,
                         })}
                         style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}

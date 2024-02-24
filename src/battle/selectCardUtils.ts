@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
-import { CombatAbility } from "../ability/types";
+import { AbilityEffect, CombatAbility } from "../ability/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { Player } from "../character/types";
@@ -23,15 +23,15 @@ const getCardSelection = ({
     discard: CombatAbility[];
     player: Player;
 }): CombatAbility[] => {
-    const { effects = {}, type, filters } = selectCards || {};
-    const { removeAfterTurn, ...other } = effects;
+    const { effects = [], type, filters } = selectCards || {};
+    const removeParentCardAfterTurn = effects.some((e: AbilityEffect) => e.removeParentCardAfterTurn); // Can't this stay as a part of `effects` and get read there?
 
     const createNewOption = (ability: CombatAbility): CombatAbility => {
         return {
             ...ability,
             instanceId: uuid.v4(),
-            removeAfterTurn,
-            effects: other,
+            removeAfterTurn: removeParentCardAfterTurn,
+            effects,
         };
     };
 

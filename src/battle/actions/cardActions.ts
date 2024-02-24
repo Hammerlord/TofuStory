@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
-import { ACTION_TYPES, Ability, AbilityEffects, Action, EFFECT_EVENT_KEYS, CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
+import { ACTION_TYPES, Ability, AbilityEffect, Action, EFFECT_EVENT_KEYS, CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
@@ -14,12 +14,12 @@ import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
 export const drawCards = ({
-    effects = {},
+    effects = [],
     filters = [],
     amount,
     source,
 }: {
-    effects?: AbilityEffects;
+    effects?: AbilityEffect[];
     filters?: ACTION_TYPES[];
     amount: number;
     source?: TriggerSource;
@@ -75,16 +75,11 @@ export const drawCards = ({
                 continue;
             }
 
-            const existingEffects = card.effects || {};
-            const incomingEffects = effects || {};
+            const existingEffects = card.effects || [];
+            const incomingEffects = effects || [];
             newHand.push({
                 ...card,
-                effects: {
-                    ...existingEffects,
-                    ...effects,
-                    damage: (existingEffects.damage || 0) + (incomingEffects.damage || 0),
-                    resourceCost: (existingEffects.resourceCost || 0) + (incomingEffects.resourceCost || 0),
-                },
+                effects: [...existingEffects, ...incomingEffects],
             });
         }
 
@@ -99,7 +94,7 @@ export const drawCards = ({
         };
 
         dispatch(updateBattle(newState));
-        cardsToDraw.forEach((card: Ability) => {
+        cardsToDraw.forEach((card: CombatAbility) => {
             if (card.onDraw?.ability) {
                 const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
                 dispatch(useAbility({ ability: card.onDraw?.ability, actorId: player?.id }));
@@ -139,7 +134,7 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
-export const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: boolean) => {
+export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }, source: TriggerSource, isAutoCast?: boolean) => {
     return (dispatch, getState) => {
         const {
             drawCards: cardsToDraw,
@@ -151,6 +146,7 @@ export const checkCardActions = (action: Action, source: TriggerSource, isAutoCa
             retrieveDepletedCards,
             moveCards,
         } = action;
+
         if (cardsToDraw) {
             dispatch(drawCards({ ...cardsToDraw, source }));
         }
@@ -250,7 +246,7 @@ export const checkCardActions = (action: Action, source: TriggerSource, isAutoCa
         if (currentHandEffects) {
             dispatch(
                 updateBattle({
-                    hand: getState().battle.hand.map((card: Ability) => ({ ...card, effects: { ...currentHandEffects } })),
+                    hand: getState().battle.hand.map((card: CombatAbility) => ({ ...card, effects: [{ ...currentHandEffects }] })),
                 })
             );
         }

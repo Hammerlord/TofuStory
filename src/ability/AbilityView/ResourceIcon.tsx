@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Fury, Mana } from "../../resource/ResourcesView";
-import { Ability, CombatAbility } from "../types";
+import { Ability, AbilityEffect, CombatAbility } from "../types";
 import { PLAYER_CLASSES } from "../../Menu/types";
 
 const useStyles = createUseStyles({
@@ -18,11 +18,15 @@ const useStyles = createUseStyles({
 });
 
 const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
-    // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
-    const { resourceCost, effects = {} } = ability;
-    const resourceCostFromEffect = effects.resourceCost || 0;
     const classes = useStyles();
-    const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffect);
+    // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
+    const { resourceCost, effects = [] } = ability;
+
+    const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
+        return acc + (e.resourceCost || 0);
+    }, 0);
+    const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffects);
+
     const Icon =
         {
             [PLAYER_CLASSES.WARRIOR]: Fury,
@@ -32,8 +36,8 @@ const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | Comb
         <Icon
             text={totalResourceCost}
             className={classNames({
-                [classes.bonus]: resourceCostFromEffect < 0,
-                [classes.penalty]: resourceCostFromEffect > 0,
+                [classes.bonus]: resourceCostFromEffects < 0,
+                [classes.penalty]: resourceCostFromEffects > 0,
             })}
         />
     );

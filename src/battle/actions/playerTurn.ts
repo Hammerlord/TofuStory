@@ -1,15 +1,15 @@
 import uuid from "uuid";
 import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
-import { EFFECT_EVENT_KEYS, CombatAbility } from "../../ability/types";
+import { CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event } from "../types";
-import { clearTurnHistory, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
+import { clearTurnHistory, getEnabledEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
+import { drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
@@ -105,7 +105,10 @@ const handleDiscard = (ability: CombatAbility) => {
             updateBattle({
                 hand: newHand.map((card: CombatAbility) => {
                     if (card.onAbilityUse) {
-                        return updateCardEffects(card, card.onAbilityUse);
+                        return {
+                            ...card,
+                            effects: [...card.effects, { ...card.onAbilityUse }],
+                        };
                     }
                     return card;
                 }),
@@ -118,11 +121,16 @@ const handleDiscard = (ability: CombatAbility) => {
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
+        const ability = findCombatantData(getState, actorId)?.combatant?.abilities[0];
+        if (!ability) {
+            return;
+        }
+
         dispatch(
             useAbility({
                 selectedIndex,
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
-                ability: findCombatantData(getState, actorId)?.combatant?.abilities[0],
+                ability,
                 actorId,
             })
         );

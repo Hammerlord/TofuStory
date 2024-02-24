@@ -1,6 +1,6 @@
 import { getUpgradeCard } from "../../Menu/utils";
 import { Combatant, Player } from "../../character/types";
-import { Ability, ACTION_TYPES, CombatEffect, Effect, CombatAbility, TARGET_TYPES } from "./../types";
+import { Ability, ACTION_TYPES, CombatEffect, Effect, CombatAbility, TARGET_TYPES, AbilityEffect } from "./../types";
 import { GREEN, GREY, BLUE, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
@@ -49,7 +49,7 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
             return acc + (effect.upgradeCardsByLevels || 0);
         }, 0) || 0;
 
-    totalUpgradeByLevels += ability?.effects?.upgradedByLevels || 0;
+    totalUpgradeByLevels += ability.effects?.reduce((acc, e: AbilityEffect) => acc + (e.upgradedByLevels || 0), 0) || 0;
 
     let card = ability;
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {

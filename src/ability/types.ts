@@ -70,7 +70,7 @@ export interface EffectEventTrigger {
     healing?: number;
     drawCards?: {
         amount: number;
-        effects?: AbilityEffects;
+        effects?: AbilityEffect[];
     };
     addCards?: Ability[];
     resurrect?: boolean;
@@ -415,7 +415,7 @@ export interface SelectCards {
     type: SELECT_CARD_TYPES;
     cards?: Ability[];
     filters?: ACTION_TYPES[];
-    effects?: AbilityEffects;
+    effects?: AbilityEffect[];
     maxAmount?: number;
 }
 
@@ -468,7 +468,7 @@ export interface Action {
     /** Displaces characters toward the target index */
     vacuum?: number;
     /** Effects on the cards currently in the hand */
-    currentHandEffects?: AbilityEffects;
+    currentHandEffects?: AbilityEffect;
     /** Adds cards to your current hand */
     addCards?: Ability[];
     addCardsToDeck?: Ability[];
@@ -481,7 +481,7 @@ export interface Action {
     };
     drawCards?: {
         amount: number;
-        effects?: AbilityEffects;
+        effects?: AbilityEffect[];
         filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
     };
     selectCards?: SelectCards;
@@ -591,7 +591,7 @@ export interface AbilityUpgrade {
             { attackPower?: number; stacks?: number; duration?: number }[];
         drawCards?: {
             amount?: number;
-            effects?: AbilityEffects;
+            effects?: AbilityEffect;
             filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
         };
 
@@ -651,8 +651,8 @@ export interface Ability {
  * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
  */
 export interface CombatAbility extends Ability {
-    instanceId: string;
-    effects?: AbilityEffects; // These effects last until the card is used or discarded
+    instanceId?: string;
+    effects?: AbilityEffect[];
 }
 
 export enum ACTION_TYPES {
@@ -688,10 +688,13 @@ export enum ANIMATION_TYPES {
     CONSUMABLE = "consumable", // Eat a consumable
 }
 
-export interface AbilityEffects {
+/**
+ * Effects modifying the ability
+ */
+export interface AbilityEffect {
     resourceCost?: number;
     damage?: number;
-    removeAfterTurn?: boolean;
+    removeParentCardAfterTurn?: boolean;
     upgradedByLevels?: number;
 }
 

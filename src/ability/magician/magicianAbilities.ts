@@ -1198,9 +1198,11 @@ export const slimmingMuffin: Ability = {
             healing: 3,
             drawCards: {
                 amount: 1,
-                effects: {
-                    resourceCost: -1,
-                },
+                effects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
             },
         },
     ],

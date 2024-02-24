@@ -9,7 +9,7 @@ import {
     ANIMATION_TYPES,
     AUTO_CAST_ABILITY_TYPES,
     Ability,
-    AbilityEffects,
+    AbilityEffect,
     Action,
     AutoCastAbility,
     CONDITION_TARGETS,
@@ -606,7 +606,7 @@ const onEffectEventTrigger = ({
         const targetIds = getCalculationTargetIds(targetType);
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
-        dispatch(checkCardActions(other as Action, source));
+        dispatch(checkCardActions(other, source));
         const owner = findCombatantData(getState, ownerId);
         if (owner?.combatant?.isPlayer) {
             dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any }));
@@ -1392,7 +1392,7 @@ const checkHandleAutoCast = ({
         }
 
         Array.from({ length: amount }).forEach(() => {
-            const abilityToCast: Ability = getRandomItem(cards);
+            const abilityToCast: CombatAbility = getRandomItem(cards);
             const { resourceCost: abilityCost, selectCards } = abilityToCast;
 
             // selectCards on ability is currently always deplete as a prerequisite to using the ability. So deplete an ability here.
@@ -1561,7 +1561,7 @@ const performAction = ({
                     checkCardActions(
                         {
                             type: ACTION_TYPES.EFFECT,
-                            addCards: [{ ...parentSource.source, effects: {} } as CombatAbility],
+                            addCards: [{ ...parentSource.source, effects: [] } as CombatAbility],
                         },
                         parentSource
                     )
@@ -1773,15 +1773,18 @@ export const useAbility = ({
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
-    ability: Ability | CombatAbility;
+    ability: CombatAbility;
     actorId: string;
     isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
-        const { resourceCost = 0, actions = [], effects = {} } = ability;
+        const { resourceCost = 0, actions = [], effects = [] } = ability as CombatAbility;
         const { combatant } = findCombatantData(getState, actorId) || {};
-        const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + (effects.resourceCost || 0));
+        const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
+            return acc + (e.resourceCost || 0);
+        }, 0);
+        const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + resourceCostFromEffects);
 
         // Append the final resource cost. This value may be used in calculations
         ability = {
@@ -1794,7 +1797,7 @@ export const useAbility = ({
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
-        dispatch(checkSummonMinion({ ability: ability as CombatAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
+        dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
         const { target: initialTarget } = actions[0] || {};
         let prevSelection;

@@ -615,9 +615,11 @@ export const rush: Ability = {
             target: TARGET_TYPES.SELF,
             drawCards: {
                 amount: 1,
-                effects: {
-                    resourceCost: -1,
-                },
+                effects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
             },
         },
     ],
@@ -943,9 +945,11 @@ export const cross: Ability = {
             selectCards: {
                 type: SELECT_CARD_TYPES.DISCOVER_FROM_DECK,
                 filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
-                effects: {
-                    resourceCost: -1,
-                },
+                effects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
             },
         },
     ],
@@ -1092,10 +1096,12 @@ export const doubleTime: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.COPY_FROM_HAND,
-                effects: {
-                    resourceCost: -1,
-                    removeAfterTurn: true,
-                },
+                effects: [
+                    {
+                        resourceCost: -1,
+                        removeParentCardAfterTurn: true,
+                    },
+                ],
             },
         },
     ],
@@ -1128,10 +1134,12 @@ export const arsenal: Ability = {
             selectCards: {
                 type: SELECT_CARD_TYPES.DISCOVER_FROM_CLASS,
                 filters: [ACTION_TYPES.ATTACK],
-                effects: {
-                    resourceCost: -1,
-                    removeAfterTurn: true,
-                },
+                effects: [
+                    {
+                        resourceCost: -1,
+                        removeParentCardAfterTurn: true,
+                    },
+                ],
             },
         },
     ],
