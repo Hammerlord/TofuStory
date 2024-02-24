@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { createRef, forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { Event } from "../battle/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
@@ -10,8 +11,9 @@ import Armor from "../icon/Armor";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
-import { CrossedSwordsIcon, ZzzIcon } from "../images/icons";
+import { ZzzIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
+import AbilityPreview from "./AbilityPreview";
 import AttackPower from "./AttackPower";
 import CombatantTooltip from "./CombatantTooltip";
 import Health from "./HealthView";
@@ -23,8 +25,6 @@ import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import { Combatant, Player } from "./types";
-import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import AbilityPreview from "./AbilityPreview";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -180,33 +180,6 @@ const useStyles = createUseStyles({
         transition: "1s filter linear, 1s -webkit-filter linear",
         animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
     },
-    "@keyframes stompingAnimation": {
-        "0%": {
-            transform: "translateY(0)",
-        },
-        "60%": {
-            transform: "translateY(-100px)",
-        },
-        "75%": {
-            transform: "translateY(5)",
-        },
-        "75.5%": {
-            transform: "translateY(0) scaleX(1.05) scaleY(0.85)",
-        },
-        "80%": {
-            transform: "scaleX(1.05) scaleY(0.85)",
-        },
-        "100%": {
-            transform: "scaleX(1) scaleY(1)",
-        },
-    },
-    stomping: {
-        animationDuration: "1s",
-        transitionTimingFunction: "ease-in-out",
-        animationName: "$stompingAnimation",
-        transformOrigin: "center bottom",
-        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
-    },
     highlightText: {
         "& .text": {
             color: "#42f57b",
@@ -280,29 +253,6 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
         zIndex: -1,
     },
-    "@keyframes explodeAnimation": {
-        from: {
-            transform: "translateX(-50%) scale(1)",
-            filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            opacity: 0.8,
-        },
-        to: {
-            transform: "translateX(-50%) scale(7)",
-            opacity: 0,
-            filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-        },
-    },
-    exploding: {
-        animation: "$explodeAnimation",
-        transitionTimingFunction: "ease-in-out",
-        position: "absolute",
-        left: "50%",
-        transform: "translateX(-50%)",
-        transformOrigin: "50% 50%",
-        animationIterationCount: 1,
-        animationDuration: "0.75s",
-        zIndex: -1,
-    },
 });
 
 interface CurrentEvent extends Event {
@@ -342,7 +292,6 @@ const CombatantView = forwardRef(
         const state = useAppSelector((state) => state);
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
-        const [weaponRef] = useState(createRef() as React.RefObject<any>);
         const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
 
         const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
@@ -351,6 +300,7 @@ const CombatantView = forwardRef(
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
+        const weaponRef = useRef();
 
         useEffect(() => {
             const isCombatantChanged = oldState?.id !== combatant?.id;
@@ -415,7 +365,6 @@ const CombatantView = forwardRef(
                 [classes.dying]: !action && playDeathAnimation,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
-                [classes.stomping]: animation === ANIMATION_TYPES.STOMP,
                 [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
             }),
             style: {
@@ -464,7 +413,6 @@ const CombatantView = forwardRef(
                         <div ref={ref as any} className={classNames(classes.portrait)}>
                             {oldState && (
                                 <>
-                                    {animation === ANIMATION_TYPES.EXPLODE && getImageNode({ className: classes.exploding })}
                                     <Tooltip open={Boolean(dialog)} title={dialog} placement="top">
                                         <div>{imageNode}</div>
                                     </Tooltip>

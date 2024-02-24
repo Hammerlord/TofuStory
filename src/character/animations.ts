@@ -259,7 +259,7 @@ export const shake = ({ object, delay, playbackTime }) => {
         },
     ];
 
-    object.animate(animationFrames, {
+    return object.animate(animationFrames, {
         duration: playbackTime,
         delay,
     });
@@ -321,7 +321,43 @@ export const sendToPile = ({
         },
     ];
 
-    object.animate(animationFrames, {
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+    });
+};
+
+export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
+    const animationFrames = [
+        {
+            transform: "translateY(0)",
+            easing: "ease-out",
+            transformOrigin: "center bottom",
+            offset: 0,
+        },
+        {
+            transform: "translateY(-150px)",
+            offset: 0.6,
+        },
+        {
+            transform: "translateY(5)",
+            offset: 0.75,
+        },
+        {
+            transform: "translateY(0) scaleX(1.05) scaleY(0.85)",
+            offset: 0.755,
+        },
+        {
+            transform: "scaleX(1.05) scaleY(0.85)",
+            offset: 0.8,
+        },
+        {
+            transform: "scaleX(1) scaleY(1)",
+            easing: "ease-in",
+            offset: 1,
+        },
+    ];
+
+    return object.animate(animationFrames, {
         duration: playbackTime,
     });
 };

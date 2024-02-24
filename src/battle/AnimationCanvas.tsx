@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, HandAbility } from "../ability/types";
-import { explode, getCenterCoords, sendToPile, shake, tossUp, travel } from "../character/animations";
+import { explode, getCenterCoords, playStompAnimation, sendToPile, shake, tossUp, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 import AbilityView from "../ability/AbilityView/AbilityView";
@@ -223,6 +223,16 @@ const AnimationCanvas = ({
             animationRefs.current = travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
         } else if (animation === ANIMATION_TYPES.SPIN) {
             animationRefs.current = travel({ from: actorElement, to: targetElement, ...options });
+        } else if (animation === ANIMATION_TYPES.STOMP) {
+            const shakeDuration = 175;
+            const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
+            if (battlefieldRef.current) {
+                shake({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
+            }
+
+            animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
+        } else if (animation === ANIMATION_TYPES.EXPLODE) {
+            animationRefs.current = explode({ from: actorElement, playbackTime: playbackTime - 250 });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {
@@ -264,11 +274,6 @@ const AnimationCanvas = ({
                 enemySide,
             };
         }, DISPLACEMENT_SPEED);
-
-        if (animation === ANIMATION_TYPES.STOMP && battlefieldRef.current) {
-            const shakeDuration = 175;
-            shake({ object: battlefieldRef.current, delay: playbackTime - shakeDuration, playbackTime: shakeDuration });
-        }
     }, [eventId]);
 
     useEffect(() => {
