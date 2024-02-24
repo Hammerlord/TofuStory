@@ -136,7 +136,7 @@ const AnimationCanvas = ({
 
     const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: MAX_BEAM_PROJECTILES * 5 }).map(() => useRef() as any);
-    const depleteCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
+    const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
 
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
@@ -272,11 +272,29 @@ const AnimationCanvas = ({
     }, [eventId]);
 
     useEffect(() => {
-        depleteCardRefs.forEach((ref) => {
-            if (ref.current) {
-                animationRefs.current.push(
-                    sendToPile({ object: ref.current, playbackTime: playbackTime - 250, to: depleteRef.current, desaturate: true })
-                );
+        const addedTo = event?.cardsAddedTo;
+        addCardRefs.forEach((ref) => {
+            let props;
+            if (addedTo === "deplete") {
+                props = {
+                    to: depleteRef.current,
+                    desaturate: true,
+                    darken: true,
+                };
+            } else if (addedTo === "deck") {
+                props = {
+                    to: deckRef.current,
+                };
+            } else if (addedTo === "discard") {
+                props = {
+                    to: deckRef.current,
+                    desaturate: true,
+                };
+            }
+
+            // No animation for added to hand -- having the hand gain cards will suffice
+            if (ref.current && props) {
+                animationRefs.current.push(sendToPile({ object: ref.current, playbackTime, ...props }));
             }
         });
     }, [eventId]);
@@ -343,8 +361,8 @@ const AnimationCanvas = ({
         <div className={classNames("animation-canvas", classes.root)}>
             {icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}
             <div className={classes.center}>
-                {event?.newDepleteCards?.map((ability: HandAbility, i) => (
-                    <div className={classes.abilityContainer} ref={depleteCardRefs[i]} key={ability.instanceId}>
+                {event?.newCards?.map((ability: HandAbility, i) => (
+                    <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
                         <AbilityView ability={ability} disableGlow={true} />
                     </div>
                 ))}

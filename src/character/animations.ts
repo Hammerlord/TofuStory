@@ -265,11 +265,23 @@ export const shake = ({ object, delay, playbackTime }) => {
     });
 };
 
-export const sendToPile = ({ object, playbackTime, to, desaturate }: { object; playbackTime: number; to; desaturate: boolean }) => {
+export const sendToPile = ({
+    object,
+    playbackTime,
+    to,
+    desaturate = false,
+    darken = false,
+}: {
+    object;
+    playbackTime: number;
+    to;
+    desaturate?: boolean;
+    darken?: boolean;
+}) => {
     const { x, y } = getCenterCoords(object);
     const { x: x2, y: y2 } = getCenterCoords(to);
-    const xDiff = (x2 - x) * 2; // *2 because of 0.5 scale
-    const yDiff = (y2 - y) * 2; // *2 because of 0.5 scale
+    const xDiff = (x2 - x) * 3; // *3 because of 0.3 scale
+    const yDiff = (y2 - y) * 3; // *3 because of 0.3 scale
 
     const rotation = getRotationToFaceTarget({ x, y, x2, y2 });
 
@@ -294,8 +306,15 @@ export const sendToPile = ({ object, playbackTime, to, desaturate }: { object; p
             easing: "ease-in",
         },
         {
-            transform: `scaleX(0.5) scaleY(0.5) translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
-            filter: `saturate(${desaturate ? 0 : 1}) brightness(${desaturate ? 0.2 : 1})`,
+            transform: "translateY(0)",
+            filter: `saturate(${desaturate ? 0 : 1}) brightness(${desaturate ? 0.5 : 1})`,
+            offset: 0.75,
+            opacity: 1,
+            easing: "ease-in",
+        },
+        {
+            transform: `scaleX(0.3) scaleY(0.3) translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
+            filter: `saturate(${desaturate ? 0 : 1}) brightness(${darken ? 0.2 : 1})`,
             opacity: 0,
             offset: 0.9,
             easing: "ease-in",

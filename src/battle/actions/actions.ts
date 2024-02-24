@@ -29,7 +29,7 @@ import { Combatant } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
-import { MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
@@ -1900,6 +1900,17 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
                     instanceId: uuid.v4(),
                 });
             });
+
+            dispatch(
+                pushEventQueue({
+                    ...getState().battle,
+                    id: uuid.v4(),
+                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                    newCards: addCardsToDeck,
+                    cardsAddedTo: "deck",
+                } as Event)
+            );
+
             dispatch(
                 updateBattle({
                     deck: updatedDeck,
@@ -1908,6 +1919,16 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
         }
 
         if (addCardsToDiscard) {
+            dispatch(
+                pushEventQueue({
+                    ...getState().battle,
+                    id: uuid.v4(),
+                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                    newCards: addCardsToDiscard,
+                    cardsAddedTo: "discard",
+                } as Event)
+            );
+
             dispatch(
                 updateBattle({
                     discard: [
@@ -2000,10 +2021,23 @@ const checkCardActions = (action: Action, source: TriggerSource, isAutoCast?: bo
             const battle = getState().battle;
             const fromPile: HandAbility[] = battle[from]?.slice() || [];
             const toPile: HandAbility[] = battle[to]?.slice() || [];
+            const cardsToMove = [];
             // If there are no cards in the `from` pile, just whiff
             for (let i = 0; i < amount && fromPile.length > 0; ++i) {
-                toPile.unshift(fromPile.shift());
+                cardsToMove.push(fromPile.shift());
             }
+
+            toPile.unshift(...cardsToMove);
+
+            dispatch(
+                pushEventQueue({
+                    ...getState().battle,
+                    id: uuid.v4(),
+                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                    newCards: cardsToMove,
+                    cardsAddedTo: to,
+                } as Event)
+            );
 
             dispatch(
                 updateBattle({

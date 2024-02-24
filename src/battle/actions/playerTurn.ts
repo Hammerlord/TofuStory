@@ -94,7 +94,8 @@ const handleDiscard = (ability: HandAbility) => {
                     ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
-                    newDepleteCards: [ability],
+                    newCards: [ability],
+                    cardsAddedTo: "deplete",
                 } as Event)
             );
         }

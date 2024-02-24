@@ -29,10 +29,9 @@ export interface Event {
     playbackTime: number;
     actionParent?: Ability | Item;
     source?: TriggerSource;
-    // Cards which have just been added to the Deplete pile, for animation purposes.
-    newDepleteCards?: Ability[];
-    // Cards which have just been added to the deck, for animation purposes.
-    newDeckCards?: Ability[];
+    // Cards which have been added to hand/deck/discard/deplete, for animation purposes.
+    newCards: Ability[];
+    cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
 }
 
 export interface EventGroup {
