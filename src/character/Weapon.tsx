@@ -70,36 +70,44 @@ const useStyles = createUseStyles({
     },
 });
 
-const swing = ({ object, playbackTime = 500 }) => {
+const swing = ({ object, playbackTime = 500, opacity = 1, delay = 0, startingPoint = 0 }) => {
     const animationFrames = [
         {
-            transform: "rotate(0deg)",
+            transform: `rotate(${startingPoint}deg)`,
             offset: 0.25,
             easing: "ease-out",
+            opacity,
         },
         {
-            transform: "rotate(-35deg)",
+            transform: `rotate(${startingPoint - 35}deg)`,
             offset: 0.5,
+            opacity,
         },
         {
-            transform: "rotate(20deg)",
+            transform: `rotate(${startingPoint + 20}deg)`,
             offset: 0.55,
+            opacity,
         },
         {
-            transform: "rotate(120deg)",
+            transform: `rotate(${startingPoint + 120}deg)`,
             offset: 0.75,
+            opacity,
         },
         {
-            transform: "rotate(50deg)",
+            transform: `rotate(${startingPoint + 50}deg)`,
             easing: "ease-in",
             offset: 0.9,
+            opacity,
         },
     ];
 
     return object.animate(animationFrames, {
         duration: playbackTime,
+        delay,
     });
 };
+
+const arc = ({ object, playbackTime = 500, delay = 0 }) => {};
 
 const whirl = ({ object, playbackTime = 500 }) => {
     const animationFrames = [
@@ -184,7 +192,12 @@ const Weapon = ({
             return;
         }
         if (area === 1) {
-            animationRefs.current = [swing({ object: weaponRef.current })];
+            animationRefs.current = [
+                swing({ object: weaponRef.current }),
+                ...afterImagesRefs.map((ref, i) => {
+                    return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 120 });
+                }),
+            ];
         } else if (area >= 2) {
             animationRefs.current = [
                 whirl({ object: weaponRef.current }),
@@ -203,13 +216,7 @@ const Weapon = ({
     return (
         <>
             {afterImagesRefs.map((ref, i) => (
-                <div
-                    className={classes.ghost}
-                    ref={ref}
-                    style={{
-                        transform: `rotate(${i * (360 / afterImagesRefs.length)}deg)`,
-                    }}
-                >
+                <div className={classes.ghost} ref={ref} key={i}>
                     <img src={image} />
                 </div>
             ))}
