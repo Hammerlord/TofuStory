@@ -39,7 +39,7 @@ export const faust: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: MonkeyBananaImage,
                     damage: 5,
-                    animation: ANIMATION_TYPES.CAST,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     addCardsToDeck: [bananaPeelCard],
                 },
             ],
