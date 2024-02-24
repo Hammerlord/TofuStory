@@ -1,18 +1,17 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { Player } from "../character/types";
 import { useAppDispatch } from "../hooks";
+import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { drawCards } from "./actions/actions";
 import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
-import { XIcon } from "../images/icons";
-import { Player } from "../character/types";
-import { CombatantInfo } from "./types";
+import { drawCards } from "./actions/cardActions";
 
 const useStyles = createUseStyles({
     inner: {
