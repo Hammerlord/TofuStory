@@ -292,7 +292,7 @@ const AnimationCanvas = ({
                 };
             } else if (addedTo === "discard") {
                 props = {
-                    to: deckRef.current,
+                    to: discardRef.current,
                     desaturate: true,
                 };
             }

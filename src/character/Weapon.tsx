@@ -107,8 +107,6 @@ const swing = ({ object, playbackTime = 500, opacity = 1, delay = 0, startingPoi
     });
 };
 
-const arc = ({ object, playbackTime = 500, delay = 0 }) => {};
-
 const whirl = ({ object, playbackTime = 500 }) => {
     const animationFrames = [
         {
@@ -195,7 +193,7 @@ const Weapon = ({
             animationRefs.current = [
                 swing({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
-                    return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 120 });
+                    return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 110 });
                 }),
             ];
         } else if (area >= 2) {
