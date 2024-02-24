@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, HandAbility } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 
@@ -77,7 +77,7 @@ const CardRemovalGrid = ({
                 <h3>Select an ability to remove</h3>
                 <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
                 <div className={classes.abilitySection}>
-                    {cards.map((card: HandAbility, i: number) => (
+                    {cards.map((card: CombatAbility, i: number) => (
                         <div
                             className={classNames(classes.ability, {
                                 selectedForRemoval: i === selectedAbilityIndexToRemove,

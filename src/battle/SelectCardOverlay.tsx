@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { HandAbility, SELECT_CARD_TYPES } from "../ability/types";
+import { CombatAbility, SELECT_CARD_TYPES } from "../ability/types";
 import { Player } from "../character/types";
 import { useAppDispatch } from "../hooks";
 import { XIcon } from "../images/icons";
@@ -80,12 +80,12 @@ const SelectCardOverlay = ({
     discard,
 }: {
     selectCardsPrompt: PlayerSelectCardsPrompt;
-    hand: HandAbility[];
+    hand: CombatAbility[];
     player: Player;
     onSelect: () => void;
     onCancel: () => void;
-    deck: HandAbility[];
-    discard: HandAbility[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
 }) => {
     const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
     const classes = useStyles();
@@ -117,7 +117,7 @@ const SelectCardOverlay = ({
         if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
             const updatedHand = [];
             const updatedDeck = [...deck];
-            hand.forEach((ability: HandAbility) => {
+            hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
                     updatedDeck.unshift(ability);
                 } else {
@@ -134,7 +134,7 @@ const SelectCardOverlay = ({
         } else if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
             const updatedHand = [];
             const updatedDiscard = [...discard];
-            hand.forEach((ability: HandAbility) => {
+            hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
                     updatedDiscard.unshift(...prepareForDiscard([ability]));
                 } else {
@@ -153,7 +153,7 @@ const SelectCardOverlay = ({
             const updatedDeck = [...deck];
             const updatedDiscard = [...discard];
             selectedAbilityIds.forEach((id) => {
-                const findAndAppendFrom = (pile: HandAbility[]): boolean => {
+                const findAndAppendFrom = (pile: CombatAbility[]): boolean => {
                     const index = pile.findIndex((ability) => ability.instanceId === id);
                     if (index > -1) {
                         const [card] = pile.splice(index, 1);
@@ -210,7 +210,7 @@ const SelectCardOverlay = ({
                             </h2>
                         </div>
                         <div className={classes.abilityContainer}>
-                            {abilityChoices.map((ability: HandAbility) => (
+                            {abilityChoices.map((ability: CombatAbility) => (
                                 <div
                                     className={classNames(classes.ability, {
                                         selected: selectedAbilityIds.includes(ability.instanceId),

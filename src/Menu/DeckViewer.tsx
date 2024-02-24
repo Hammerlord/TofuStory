@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import { HandAbility } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -37,9 +37,9 @@ const useStyles = createUseStyles({
     },
 });
 
-const DeckViewer = ({ deck, onClose }: { deck: HandAbility[]; onClose; player }) => {
+const DeckViewer = ({ deck, onClose }: { deck: CombatAbility[]; onClose; player }) => {
     const classes = useStyles();
-    const getResourceCost = (ability: HandAbility): number => {
+    const getResourceCost = (ability: CombatAbility): number => {
         if (ability.resourceCost === "x") {
             return Infinity;
         }
@@ -60,7 +60,7 @@ const DeckViewer = ({ deck, onClose }: { deck: HandAbility[]; onClose; player })
                 <button className={classes.closeBar} onClick={onClose}>
                     Close
                 </button>
-                {deck.map((card: HandAbility) => (
+                {deck.map((card: CombatAbility) => (
                     <div className={classes.abilityContainer} key={card.instanceId}>
                         <AbilityView ability={card} disableGlow={true} disableBattleBonuses={true} />
                     </div>

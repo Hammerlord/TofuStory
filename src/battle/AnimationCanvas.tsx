@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, HandAbility } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, CombatAbility } from "../ability/types";
 import { explode, getCenterCoords, playStompAnimation, sendToPile, shake, tossUp, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
@@ -366,7 +366,7 @@ const AnimationCanvas = ({
         <div className={classNames("animation-canvas", classes.root)}>
             {icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}
             <div className={classes.center}>
-                {event?.newCards?.map((ability: HandAbility, i) => (
+                {event?.newCards?.map((ability: CombatAbility, i) => (
                     <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
                         <AbilityView ability={ability} disableGlow={true} />
                     </div>

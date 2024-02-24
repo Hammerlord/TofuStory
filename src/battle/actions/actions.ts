@@ -18,7 +18,7 @@ import {
     EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
     EffectEventTrigger,
-    HandAbility,
+    CombatAbility,
     MORPH_TYPES,
     Minion,
     SELECT_CARD_TYPES,
@@ -1362,7 +1362,7 @@ const checkHandleAutoCast = ({
 }: {
     autoCastAbilities: AutoCastAbility;
     actor: any; // This is expected to be the player
-    parentAbility?: HandAbility;
+    parentAbility?: CombatAbility;
 }) => {
     return (dispatch, getState) => {
         if (!autoCastAbilities || !actor.class) {
@@ -1491,7 +1491,7 @@ const performAction = ({
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
-    parent?: Ability | Item | HandAbility;
+    parent?: Ability | Item | CombatAbility;
     parentSource: TriggerSource;
     isAutoCast?: boolean;
 }) => {
@@ -1555,13 +1555,13 @@ const performAction = ({
             dispatch(applyStatChanges(updatedSecondary.map((update) => update[0])));
             if (secondaryAction.returnParentCardToHand) {
                 // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
-                const ability: HandAbility | undefined = parentSource?.source as HandAbility;
+                const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
                 dispatch(deleteCard(ability.instanceId));
                 dispatch(
                     checkCardActions(
                         {
                             type: ACTION_TYPES.EFFECT,
-                            addCards: [{ ...parentSource.source, effects: {} } as HandAbility],
+                            addCards: [{ ...parentSource.source, effects: {} } as CombatAbility],
                         },
                         parentSource
                     )
@@ -1735,7 +1735,7 @@ const checkSummonMinion = ({
 }: {
     side: BATTLEFIELD_SIDES;
     selectedIndex: number;
-    ability: HandAbility;
+    ability: CombatAbility;
     actorId: string;
     parentSource: TriggerSource;
 }) => {
@@ -1773,7 +1773,7 @@ export const useAbility = ({
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
-    ability: Ability | HandAbility;
+    ability: Ability | CombatAbility;
     actorId: string;
     isAutoCast?: boolean;
 }) => {
@@ -1794,7 +1794,7 @@ export const useAbility = ({
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
-        dispatch(checkSummonMinion({ ability: ability as HandAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
+        dispatch(checkSummonMinion({ ability: ability as CombatAbility, selectedIndex, side: initialSide, actorId, parentSource: source }));
 
         const { target: initialTarget } = actions[0] || {};
         let prevSelection;

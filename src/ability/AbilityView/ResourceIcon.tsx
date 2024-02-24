@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Fury, Mana } from "../../resource/ResourcesView";
-import { Ability, HandAbility } from "../types";
+import { Ability, CombatAbility } from "../types";
 import { PLAYER_CLASSES } from "../../Menu/types";
 
 const useStyles = createUseStyles({
@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | HandAbility; playerClass: PLAYER_CLASSES }) => {
+const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
     const { resourceCost, effects = {} } = ability;
     const resourceCostFromEffect = effects.resourceCost || 0;

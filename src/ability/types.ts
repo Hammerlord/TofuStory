@@ -650,7 +650,7 @@ export interface Ability {
 /**
  * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
  */
-export interface HandAbility extends Ability {
+export interface CombatAbility extends Ability {
     instanceId: string;
     effects?: AbilityEffects; // These effects last until the card is used or discarded
 }

@@ -7,7 +7,7 @@ import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { shellThrow } from "../ability/neutralAbilities";
 import Button from "../view/Button";
-import { Ability, HandAbility } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { RARITIES } from "../item/types";
 
 const useStyles = createUseStyles({
@@ -39,7 +39,7 @@ const DevAbilityViewer = ({ onClose }) => {
 
     const Grid = isViewingUpgrades ? CardUpgradeGrid : CardGrid;
 
-    const applyInstanceId = (cards?: Ability[]): HandAbility[] => {
+    const applyInstanceId = (cards?: Ability[]): CombatAbility[] => {
         if (!cards) {
             return [];
         }
@@ -53,7 +53,7 @@ const DevAbilityViewer = ({ onClose }) => {
         [RARITIES.RARE]: 3,
     };
 
-    const formatCards = (cards?: Ability[]): HandAbility[] => {
+    const formatCards = (cards?: Ability[]): CombatAbility[] => {
         return applyInstanceId(cards).sort((a: Ability, b) => {
             return (rarityChart[a.rarity] || 0) - (rarityChart[b.rarity] || 0);
         });

@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
-import { EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
+import { EFFECT_EVENT_KEYS, CombatAbility } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -26,7 +26,7 @@ export const onUsePlayerAbility = ({
         const { playerSide, hand } = getState().battle;
 
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const ability: HandAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+        const ability: CombatAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
         dispatch(removeAbilityFromHand(selectedAbilityId));
 
         dispatch(
@@ -46,7 +46,7 @@ export const onUsePlayerAbility = ({
 const removeAbilityFromHand = (abilityId: string) => {
     return (dispatch, getState) => {
         const { hand: originalHand } = getState().battle;
-        const handWithAbilityUsed: HandAbility[] = originalHand.slice();
+        const handWithAbilityUsed: CombatAbility[] = originalHand.slice();
         const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);
         if (index === -1) {
             return;
@@ -69,7 +69,7 @@ const removeAbilityFromHand = (abilityId: string) => {
     };
 };
 
-const handleDiscard = (ability: HandAbility) => {
+const handleDiscard = (ability: CombatAbility) => {
     return (dispatch, getState) => {
         const { removeAfterTurn, reusable, depletedOnUse, minion } = ability;
 
@@ -103,7 +103,7 @@ const handleDiscard = (ability: HandAbility) => {
 
         dispatch(
             updateBattle({
-                hand: newHand.map((card: HandAbility) => {
+                hand: newHand.map((card: CombatAbility) => {
                     if (card.onAbilityUse) {
                         return updateCardEffects(card, card.onAbilityUse);
                     }
@@ -199,7 +199,7 @@ export const startPlayerTurn = () => {
     };
 };
 
-export const prepareForDiscard = (cards: HandAbility[]): HandAbility[] => {
+export const prepareForDiscard = (cards: CombatAbility[]): CombatAbility[] => {
     return cards
         .filter((ability) => !ability.removeAfterTurn)
         .map((hand) => ({

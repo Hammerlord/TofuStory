@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
-import { HandAbility } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { Player } from "../character/types";
@@ -18,15 +18,15 @@ const getCardSelection = ({
 }: {
     selectCards: SelectCards;
     selectedAbilityId?: string;
-    hand: HandAbility[];
-    deck: HandAbility[];
-    discard: HandAbility[];
+    hand: CombatAbility[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
     player: Player;
-}): HandAbility[] => {
+}): CombatAbility[] => {
     const { effects = {}, type, filters } = selectCards || {};
     const { removeAfterTurn, ...other } = effects;
 
-    const createNewOption = (ability: HandAbility): HandAbility => {
+    const createNewOption = (ability: CombatAbility): CombatAbility => {
         return {
             ...ability,
             instanceId: uuid.v4(),
@@ -35,7 +35,7 @@ const getCardSelection = ({
         };
     };
 
-    const applyFilters = (cards: HandAbility[]) => {
+    const applyFilters = (cards: CombatAbility[]) => {
         // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
         if (selectedAbilityId) {
             cards = cards.filter(({ instanceId }) => instanceId !== selectedAbilityId);

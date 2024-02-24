@@ -5,7 +5,7 @@ import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import AbilityRarityTag from "../ability/AbilityView/RarityTag";
-import { Ability, HandAbility } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { Player } from "../character/types";
 import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
@@ -62,7 +62,7 @@ const CardRewards = ({
     cardRewardOptions = [],
     rewardType,
 }: {
-    deck: HandAbility[];
+    deck: CombatAbility[];
     player: Player;
     updateDeck;
     onClose;
@@ -118,7 +118,7 @@ const CardRewards = ({
                     <h2>Pick an ability</h2>
                 </div>
                 <div className={classes.abilitySectionContainer}>
-                    {rolledAbilities.map((ability: HandAbility, i) => (
+                    {rolledAbilities.map((ability: CombatAbility, i) => (
                         <div className={classes.abilityContainer} key={ability.instanceId}>
                             <AbilityRarityTag ability={ability} />
                             <div

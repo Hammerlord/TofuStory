@@ -1,8 +1,8 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
-import { ACTION_TYPES, Ability, HandAbility } from "../types";
+import { ACTION_TYPES, Ability, CombatAbility } from "../types";
 import { ResourceIcon } from "./ResourceIcon";
 
-const DrawCards = ({ ability, playerClass }: { ability: Ability | HandAbility; playerClass: PLAYER_CLASSES }) => {
+const DrawCards = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
     const drawCards = ability.actions.find((action) => action.drawCards)?.drawCards;
     if (!drawCards) {
         return null;

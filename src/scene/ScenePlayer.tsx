@@ -6,7 +6,7 @@ import Camp from "../Map/Camp";
 import { REGIONS } from "../Map/regions";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { Ability, HandAbility, Minion } from "../ability/types";
+import { Ability, CombatAbility, Minion } from "../ability/types";
 import ItemSelection from "../item/ItemSelection";
 import { ITEM_TYPES, Item } from "../item/types";
 import Button from "../view/Button";
@@ -226,8 +226,8 @@ const ScenePlayer = ({
     onExit: Function;
     onShop: Function;
     onTransition?: Function;
-    deck: HandAbility[];
-    updateDeck: (newDeck: HandAbility[]) => void;
+    deck: CombatAbility[];
+    updateDeck: (newDeck: CombatAbility[]) => void;
     onChangeRegion: (region: REGIONS) => void;
 }) => {
     const { battleHistory = [] } = useAppSelector((state) => state)?.character || {};
@@ -486,7 +486,7 @@ const ScenePlayer = ({
         });
     };
 
-    const handleRemoveAbility = (updatedDeck: HandAbility[]) => {
+    const handleRemoveAbility = (updatedDeck: CombatAbility[]) => {
         setIsRemovingAbility(false);
         updateDeck(updatedDeck);
     };

@@ -15,7 +15,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Effect,
-    HandAbility,
+    CombatAbility,
     MULTIPLIER_TYPES,
     Multiplier,
     SCALING_VALUE_TYPES,
@@ -102,7 +102,7 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
 /**
  * Player conditional helpers
  */
-export const canUseAbility = (character, ability: HandAbility | undefined): boolean => {
+export const canUseAbility = (character, ability: CombatAbility | undefined): boolean => {
     const { resourceCost = 0, effects = {} } = ability;
     const { resourceCost: temporaryResourceCost = 0 } = effects;
     if (resourceCost === "x") {
@@ -584,7 +584,7 @@ export const getHealableIndices = (characters: (Combatant | null)[]): number[] =
     return indices.filter((i) => characters[i].HP < getMaxHP(characters[i]));
 };
 
-export const updateCardEffects = (card: HandAbility, newEffects: { resourceCost?: number }): HandAbility => {
+export const updateCardEffects = (card: CombatAbility, newEffects: { resourceCost?: number }): CombatAbility => {
     const newCard = { ...card, effects: { ...card.effects } };
     Object.entries(newEffects).forEach(([key, value]) => {
         newCard.effects[key] = (newCard.effects[key] || 0) + value;

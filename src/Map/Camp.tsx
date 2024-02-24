@@ -6,7 +6,7 @@ import CardGrid from "../Menu/CardGrid";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { JOB_CARD_MAP } from "../ability";
-import { Ability, HandAbility } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Player } from "../character/types";
 import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
@@ -104,7 +104,7 @@ const Camp = ({
     updatePlayer,
 }: {
     onExit: () => void;
-    deck: HandAbility[];
+    deck: CombatAbility[];
     player: Player;
     updateDeck: (updated: Ability[]) => void;
     updatePlayer: (updated: any) => void;

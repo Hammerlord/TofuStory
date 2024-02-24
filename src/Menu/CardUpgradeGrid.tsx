@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, AbilityUpgrade, HandAbility } from "../ability/types";
+import { Ability, AbilityUpgrade, CombatAbility } from "../ability/types";
 import Button from "../view/Button";
 import { cloneDeep } from "lodash";
 import { getUpgradeCard } from "./utils";
@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const UpgradeTile = ({ card, onClick, isSelected }: { card: HandAbility; onClick; isSelected: boolean }) => {
+const UpgradeTile = ({ card, onClick, isSelected }: { card: CombatAbility; onClick; isSelected: boolean }) => {
     const classes = useStyles();
 
     const upgrade = getUpgradeCard(card);
@@ -84,10 +84,10 @@ const CardUpgradeGrid = ({
     onCancel,
     onConfirm,
 }: {
-    cards: HandAbility[];
+    cards: CombatAbility[];
     highlightColour?: string;
     onCancel?: () => void;
-    onConfirm?: (updatedDeck: HandAbility[]) => void;
+    onConfirm?: (updatedDeck: CombatAbility[]) => void;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const classes = useGridStyles();
@@ -98,7 +98,7 @@ const CardUpgradeGrid = ({
                 <h3>Select an ability to upgrade</h3>
 
                 <div className={classes.abilitySection}>
-                    {cards.map((card: HandAbility, i) => (
+                    {cards.map((card: CombatAbility, i) => (
                         <UpgradeTile
                             card={card}
                             onClick={() => setSelectedAbilityIndex(i)}

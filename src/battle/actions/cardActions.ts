@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
-import { ACTION_TYPES, Ability, AbilityEffects, Action, EFFECT_EVENT_KEYS, HandAbility, SELECT_CARD_TYPES } from "../../ability/types";
+import { ACTION_TYPES, Ability, AbilityEffects, Action, EFFECT_EVENT_KEYS, CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
@@ -129,9 +129,9 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 
     dispatch(
         updateBattle({
-            hand: hand.filter((card: HandAbility) => card.instanceId !== abilityId),
-            deck: deck.filter((card: HandAbility) => card.instanceId !== abilityId),
-            discard: discard.filter((card: HandAbility) => card.instanceId !== abilityId),
+            hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
+            deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
+            discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
         })
     );
 };
@@ -304,8 +304,8 @@ export const checkCardActions = (action: Action, source: TriggerSource, isAutoCa
             }
 
             const battle = getState().battle;
-            const fromPile: HandAbility[] = battle[from]?.slice() || [];
-            const toPile: HandAbility[] = battle[to]?.slice() || [];
+            const fromPile: CombatAbility[] = battle[from]?.slice() || [];
+            const toPile: CombatAbility[] = battle[to]?.slice() || [];
             const cardsToMove = [];
             // If there are no cards in the `from` pile, just whiff
             for (let i = 0; i < amount && fromPile.length > 0; ++i) {
@@ -363,7 +363,7 @@ export const recalculateEffectsFromAbilities = () => {
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
  */
 export const depleteAbilities =
-    ({ actorId, abilities = [] }: { actorId: string; abilities: HandAbility[] }) =>
+    ({ actorId, abilities = [] }: { actorId: string; abilities: CombatAbility[] }) =>
     (dispatch, getState) => {
         const { hand, depleted = [] } = getState().battle;
         dispatch(
@@ -378,7 +378,7 @@ export const depleteAbilities =
 
         dispatch(
             updateBattle({
-                hand: hand.filter((ability: HandAbility) => {
+                hand: hand.filter((ability: CombatAbility) => {
                     return abilities.every((card) => card.instanceId !== ability.instanceId);
                 }),
                 depleted: [...depleted, ...abilities],

@@ -1,7 +1,7 @@
 import { BattleState } from "./../battle/reducer";
 import uuid from "uuid";
 import { cloneDeep } from "lodash";
-import { Ability, HandAbility } from "./../ability/types";
+import { Ability, CombatAbility } from "./../ability/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
@@ -60,7 +60,7 @@ export const playerStateSlice = createSlice({
                 deck: action.payload.deck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })),
             };
         },
-        updateDeck: (state, action: PayloadAction<(HandAbility | Ability)[]>) => {
+        updateDeck: (state, action: PayloadAction<(CombatAbility | Ability)[]>) => {
             return {
                 ...state,
                 deck: action.payload.map((card) => {

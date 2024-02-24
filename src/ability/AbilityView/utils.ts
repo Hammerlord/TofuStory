@@ -1,6 +1,6 @@
 import { getUpgradeCard } from "../../Menu/utils";
 import { Combatant, Player } from "../../character/types";
-import { Ability, ACTION_TYPES, CombatEffect, Effect, HandAbility, TARGET_TYPES } from "./../types";
+import { Ability, ACTION_TYPES, CombatEffect, Effect, CombatAbility, TARGET_TYPES } from "./../types";
 import { GREEN, GREY, BLUE, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
@@ -39,7 +39,7 @@ export const isOffensiveAbility = (ability: Ability): boolean => {
     );
 };
 
-export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: HandAbility }) => {
+export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: CombatAbility }) => {
     if (!ability) {
         return ability;
     }

@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { HandAbility } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
@@ -46,7 +46,7 @@ const Hand = ({
     className,
     refs,
 }: {
-    hand: HandAbility[];
+    hand: CombatAbility[];
     onAbilityClick: Function;
     selectedAbilityId: string;
     className: string;
@@ -67,12 +67,12 @@ const Hand = ({
     }, [hand]);
 
     const handleAbilityClick = (event, id: string) => {
-        if (hand.some((card: HandAbility) => card.instanceId === id)) {
+        if (hand.some((card: CombatAbility) => card.instanceId === id)) {
             onAbilityClick(event, id);
         }
     };
 
-    const isCardInHand = (card: HandAbility, hand: HandAbility[]): boolean => {
+    const isCardInHand = (card: CombatAbility, hand: CombatAbility[]): boolean => {
         return hand.some((c) => c.instanceId === card.instanceId);
     };
 
@@ -90,7 +90,7 @@ const Hand = ({
 
     return (
         <div className={className}>
-            {handToDisplay.map((ability: HandAbility, i: number) => (
+            {handToDisplay.map((ability: CombatAbility, i: number) => (
                 <AbilityView
                     onClick={(e) => handleAbilityClick(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}

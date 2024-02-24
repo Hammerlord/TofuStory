@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Ability, HandAbility, SelectCards } from "../ability/types";
+import { Ability, CombatAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, Wave } from "./types";
@@ -16,10 +16,10 @@ interface Notification {
 export interface BattleState {
     enemySide: (Combatant | null)[];
     playerSide: (Combatant | null)[];
-    deck: HandAbility[];
-    discard: HandAbility[];
-    hand: HandAbility[];
-    depleted: HandAbility[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
+    hand: CombatAbility[];
+    depleted: CombatAbility[];
     isPlayerTurn: boolean | null;
     eventQueue: Event[];
     playerActionQueue: object[];

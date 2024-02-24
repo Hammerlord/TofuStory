@@ -10,7 +10,7 @@ import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { Ability, Action, CONDITION_TARGETS, HandAbility, TARGET_TYPES } from "../types";
+import { Ability, Action, CONDITION_TARGETS, CombatAbility, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
@@ -201,7 +201,7 @@ const useStyles = createUseStyles({
 interface AbilityViewProps {
     onClick?: (event: any) => void;
     isSelected?: boolean;
-    ability: Ability | HandAbility;
+    ability: Ability | CombatAbility;
     className?: string;
     // Eg. when viewing cards during card reward, the cards should not glow
     disableGlow?: boolean;

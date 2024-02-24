@@ -1,7 +1,7 @@
 import { compose } from "ramda";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { HandAbility } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
 import { ArrowDownIcon } from "../images/icons";
@@ -117,9 +117,9 @@ const Deck = ({
     discardRef,
     depleteRef,
 }: {
-    deck: HandAbility[];
-    discard: HandAbility[];
-    depleted: HandAbility[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
+    depleted: CombatAbility[];
     viewDeckInOrder: boolean;
     onClickDeck: (event: any) => void;
     highlightDeck: boolean;
@@ -144,7 +144,7 @@ const Deck = ({
             .join("");
     };
 
-    const getAbilityMap = (items: HandAbility[]): { [abilityName: string]: { count: number; ability: HandAbility } } => {
+    const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
         return items
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
@@ -160,7 +160,7 @@ const Deck = ({
             }, {});
     };
 
-    const getImage = (ability: HandAbility) => {
+    const getImage = (ability: CombatAbility) => {
         const image = ability.image;
         let imageNode;
         if (typeof image === "string") {
@@ -173,7 +173,7 @@ const Deck = ({
         return imageNode;
     };
 
-    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: HandAbility } }) => {
+    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: CombatAbility } }) => {
         return (
             <ul className={classes.abilityList}>
                 {Object.entries(abilityMap).map(([abilityName, { ability, count }]) => {
@@ -189,7 +189,7 @@ const Deck = ({
         );
     };
 
-    const getInOrderTooltip = (abilities: HandAbility[]) => {
+    const getInOrderTooltip = (abilities: CombatAbility[]) => {
         return (
             <ul className={classes.abilityList}>
                 {abilities.map((ability, i) => {

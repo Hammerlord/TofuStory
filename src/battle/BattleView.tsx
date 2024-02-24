@@ -2,7 +2,7 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
-import { Action, EFFECT_EVENT_KEYS, Effect, HandAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Action, EFFECT_EVENT_KEYS, Effect, CombatAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -273,7 +273,7 @@ const BattlefieldContainer = () => {
         }
 
         setSelectedAllyIndex(null);
-        const ability = hand.find((card: HandAbility) => card.instanceId === id);
+        const ability = hand.find((card: CombatAbility) => card.instanceId === id);
         if (!canUseAbility(player, ability)) {
             warn(
                 <div>
