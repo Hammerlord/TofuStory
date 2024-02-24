@@ -25,6 +25,7 @@ import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
 import { Player } from "../../character/types";
+import { MapleLeavesImage } from "../../images";
 
 const useStyles = createUseStyles({
     root: {
@@ -50,6 +51,10 @@ const useStyles = createUseStyles({
         color: "rgba(0, 0, 0, 0.95)",
         fontFamily: "Barlow",
         lineHeight: "16px",
+        backfaceVisibility: "hidden",
+        "&.-flipped": {
+            transform: "rotateY(180deg)",
+        },
     },
     header: {
         display: "flex",
@@ -159,6 +164,38 @@ const useStyles = createUseStyles({
             .map(() => "0 0 2.5px black")
             .join(", "),
     },
+    cardBack: {
+        background: "#176fbd",
+        transformStyle: "preserve-3d",
+        backfaceVisibility: "hidden",
+        width: "100%",
+        height: "100%",
+        display: "inline-block",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        borderRadius: "4px",
+        transform: "rotateY(180deg)",
+        transition: "transform 0.25s",
+        border: "5px solid white",
+        boxSizing: "content-box",
+        "&:before": {
+            content: "' '",
+            backgroundImage: `url(${MapleLeavesImage})`,
+            width: "100%",
+            height: "100%",
+            opacity: 0.1,
+            display: "block",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            backgroundPosition: "50% 0",
+        },
+
+        "&.-flipped": {
+            transform: "unset",
+        },
+    },
 });
 
 interface AbilityViewProps {
@@ -170,80 +207,98 @@ interface AbilityViewProps {
     disableGlow?: boolean;
     // Eg. when viewing cards during card rewards, the cards should not have temporary in-battle bonuses applied to them
     disableBattleBonuses?: boolean;
+    // If true, the backside of the card is shown
+    flipped?: boolean;
 }
 
-const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disableGlow, disableBattleBonuses }: AbilityViewProps, ref) => {
-    const classes = useStyles();
-    const state = useAppSelector((state) => state);
-    const { character, battle } = state;
-    const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
-    const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
-    const cardImage = minion?.image || image;
-    let imageNode = null;
+const AbilityView = forwardRef(
+    ({ onClick, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped }: AbilityViewProps, ref) => {
+        const classes = useStyles();
+        const state = useAppSelector((state) => state);
+        const { character, battle } = state;
+        const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
+        const cardImage = minion?.image || image;
+        let imageNode = null;
 
-    if (typeof cardImage === "string") {
-        imageNode = <img src={cardImage} className={classes.portrait} draggable="false" />;
-    } else if (typeof image === "function") {
-        const ImageNode = image as Function;
-        imageNode = (
-            <div>
-                <ImageNode className={classes.portrait} />
-            </div>
-        );
-    }
-
-    let playerInfo = findCombatantData(() => state, character.player?.id);
-    let player: Player | undefined;
-    if (disableBattleBonuses || !playerInfo?.combatant) {
-        player = character.player;
-        playerInfo = { combatant: player };
-    } else {
-        player = playerInfo?.combatant as Player;
-    }
-
-    // Depending on whether we want to show combat bonuses based on your current hand, deck, etc., grab those objects from either state
-    const {
-        hand = [],
-        deck = [],
-        discard = [],
-    } = (() => {
-        if (disableBattleBonuses || !battle) {
-            return { deck: character.deck };
+        if (typeof cardImage === "string") {
+            imageNode = <img src={cardImage} className={classes.portrait} draggable="false" />;
+        } else if (typeof image === "function") {
+            const ImageNode = image as Function;
+            imageNode = (
+                <div>
+                    <ImageNode className={classes.portrait} />
+                </div>
+            );
         }
 
-        return battle;
-    })();
+        let playerInfo = findCombatantData(() => state, character.player?.id);
+        let player: Player | undefined;
+        if (disableBattleBonuses || !playerInfo?.combatant) {
+            player = character.player;
+            playerInfo = { combatant: player };
+        } else {
+            player = playerInfo?.combatant as Player;
+        }
 
-    const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
-        ability,
-        playerInfo,
-        deck,
-        hand,
-        discard,
-    });
-
-    const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
-
-    const hasConditionFulfilled = useMemo(() => {
-        return actions.some((action) => {
-            const conditionProcs = [];
-
-            if (action.conditions) {
-                conditionProcs.push(action);
+        // Depending on whether we want to show combat bonuses based on your current hand, deck, etc., grab those objects from either state
+        const {
+            hand = [],
+            deck = [],
+            discard = [],
+        } = (() => {
+            if (disableBattleBonuses || !battle) {
+                return { deck: character.deck };
             }
 
-            if (Array.isArray(action.bonus)) {
-                conditionProcs.push(...action.bonus.map((bonus) => bonus));
-            } else if (action.bonus?.conditions) {
-                conditionProcs.push(action.bonus);
-            }
+            return battle;
+        })();
 
-            if (!conditionProcs.length) {
-                return;
-            }
+        const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
+            ability,
+            playerInfo,
+            deck,
+            hand,
+            discard,
+        });
 
-            if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-                return battle?.enemySide.some((combatant) => {
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
+
+        const hasConditionFulfilled = useMemo(() => {
+            return actions.some((action) => {
+                const conditionProcs = [];
+
+                if (action.conditions) {
+                    conditionProcs.push(action);
+                }
+
+                if (Array.isArray(action.bonus)) {
+                    conditionProcs.push(...action.bonus.map((bonus) => bonus));
+                } else if (action.bonus?.conditions) {
+                    conditionProcs.push(action.bonus);
+                }
+
+                if (!conditionProcs.length) {
+                    return;
+                }
+
+                if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+                    return battle?.enemySide.some((combatant) => {
+                        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
+                            if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+                                return playerInfo;
+                            }
+
+                            if (calculationTarget === CONDITION_TARGETS.TARGET) {
+                                return findCombatantData(() => state, combatant?.id);
+                            }
+                        };
+
+                        return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+                    });
+                }
+
+                return battle?.playerSide.some((combatant) => {
                     const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
                         if (calculationTarget === CONDITION_TARGETS.ACTOR) {
                             return playerInfo;
@@ -256,188 +311,180 @@ const AbilityView = forwardRef(({ onClick, isSelected, ability, className, disab
 
                     return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
                 });
-            }
+            });
+        }, [ability, battle?.enemySide, battle?.playerSide]);
 
-            return battle?.playerSide.some((combatant) => {
-                const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
-                    if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                        return playerInfo;
-                    }
+        const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, playerInfo });
+        const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
-                    if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                        return findCombatantData(() => state, combatant?.id);
-                    }
+        let hasMultiplier = false;
+        let armorCornerIcon = false;
+        let healingCornerIcon = false;
+
+        const {
+            healing,
+            armor,
+            damage: selfDamage,
+            resourceGain,
+        } = actions
+            .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
+            .reduce((acc: any, action: Action) => {
+                const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
+                const multiplier = getMultiplier({
+                    multiplier: action.multiplier,
+                    actor: playerInfo,
+                    deck,
+                    hand,
+                    discard,
+                });
+                if (multiplier > 1) {
+                    hasMultiplier = true;
+                }
+                return {
+                    healing: (acc.healing || 0) + healing * multiplier,
+                    armor: (acc.armor || 0) + armor * multiplier,
+                    damage: (acc.damage || 0) + damage * multiplier,
+                    resourceGain: (acc.resourceGain || 0) + resources * multiplier,
                 };
+            }, {}) as any;
 
-                return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
-            });
-        });
-    }, [ability, battle?.enemySide, battle?.playerSide]);
-
-    const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, playerInfo });
-    const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
-
-    let hasMultiplier = false;
-    let armorCornerIcon = false;
-    let healingCornerIcon = false;
-
-    const {
-        healing,
-        armor,
-        damage: selfDamage,
-        resourceGain,
-    } = actions
-        .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
-        .reduce((acc: any, action: Action) => {
-            const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
-            const multiplier = getMultiplier({
-                multiplier: action.multiplier,
-                actor: playerInfo,
-                deck,
-                hand,
-                discard,
-            });
-            if (multiplier > 1) {
-                hasMultiplier = true;
+        const cornerIcon = (() => {
+            if (baseDamage > 0) {
+                return <DamageIcon ability={ability} player={player} deck={deck} hand={hand} discard={discard} />;
             }
-            return {
-                healing: (acc.healing || 0) + healing * multiplier,
-                armor: (acc.armor || 0) + armor * multiplier,
-                damage: (acc.damage || 0) + damage * multiplier,
-                resourceGain: (acc.resourceGain || 0) + resources * multiplier,
-            };
-        }, {}) as any;
 
-    const cornerIcon = (() => {
-        if (baseDamage > 0) {
-            return <DamageIcon ability={ability} player={player} deck={deck} hand={hand} discard={discard} />;
-        }
+            if (armor > 0) {
+                armorCornerIcon = true;
+                return <ArmorIcon ability={ability} playerInfo={playerInfo} />;
+            }
 
-        if (armor > 0) {
-            armorCornerIcon = true;
-            return <ArmorIcon ability={ability} playerInfo={playerInfo} />;
-        }
+            if (healing > 0) {
+                healingCornerIcon = true;
+                return (
+                    <Icon
+                        icon={<HeartIcon />}
+                        text={healing}
+                        className={classNames({
+                            [classes.highlightText]: hasMultiplier,
+                        })}
+                    />
+                );
+            }
 
-        if (healing > 0) {
-            healingCornerIcon = true;
-            return (
-                <Icon
-                    icon={<HeartIcon />}
-                    text={healing}
-                    className={classNames({
-                        [classes.highlightText]: hasMultiplier,
-                    })}
-                />
-            );
-        }
+            return <div className={classes.iconPlaceholder} />;
+        })();
 
-        return <div className={classes.iconPlaceholder} />;
-    })();
-
-    const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions || hasConditionFulfilled;
-    let attackDamage = 0;
-    for (const ability of minion?.abilities || []) {
-        for (const action of ability.actions) {
-            if (action.damage) {
-                attackDamage = action.damage;
-                break;
+        const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions || hasConditionFulfilled;
+        let attackDamage = 0;
+        for (const ability of minion?.abilities || []) {
+            for (const action of ability.actions) {
+                if (action.damage) {
+                    attackDamage = action.damage;
+                    break;
+                }
             }
         }
-    }
 
-    const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player?.resources;
+        const canUseAbility = ability.resourceCost === "x" || ability.resourceCost <= player?.resources;
 
-    return (
-        <AbilityTooltip ability={ability}>
-            <div className={classNames(classes.root, className)}>
-                <div
-                    onClick={onClick}
-                    className={classNames(classes.inner, {
-                        [classes.selectedAbility]: isSelected,
-                        [classes.ephemeral]: removeAfterTurn,
-                        [classes.glow]: canUseAbility && !disableGlow && state.battle && hasBonus,
-                    })}
-                    style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
-                >
-                    <span className={classes.header}>
-                        {cornerIcon}
-                        <span
-                            className={classNames(classes.name, {
-                                rare: ability.rarity === RARITIES.RARE,
-                                uncommon: ability.rarity === RARITIES.UNCOMMON,
-                            })}
-                        >
-                            {name}{" "}
-                            {ability.level > 1 && (
-                                <span className={classes.abilityLevel}>
-                                    {Array.from({ length: ability.level })
-                                        .map(() => "⋆")
-                                        .join("")}
-                                </span>
-                            )}
-                        </span>{" "}
-                        <AbilityResourceIcon ability={ability} playerClass={player?.class} />
-                    </span>
-                    <div className={classes.portraitContainer}>{imageNode}</div>
-                    <div className={classes.body}>
-                        {preemptive && <div className={classes.bold}>Pre-emptive</div>}
-                        {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
-                        {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                        {ability.reusable && <div className={classes.bold}>Boomerang</div>}
-                        <DrawCards ability={ability} playerClass={player?.class} />
-                        {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
-                        {ricochet && (
-                            <div>
-                                Bounces to {numTargets} other targets{" "}
-                                {secondaryDamage && (
-                                    <>
-                                        for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
-                                    </>
+        return (
+            <AbilityTooltip ability={ability}>
+                <div className={classNames(classes.root, className)}>
+                    <div
+                        className={classNames(classes.cardBack, {
+                            "-flipped": flipped,
+                        })}
+                    />
+                    <div
+                        onClick={onClick}
+                        className={classNames(classes.inner, {
+                            [classes.selectedAbility]: isSelected,
+                            [classes.ephemeral]: removeAfterTurn,
+                            [classes.glow]: canUseAbility && !disableGlow && state.battle && hasBonus,
+                            "-flipped": flipped,
+                        })}
+                        style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
+                    >
+                        <span className={classes.header}>
+                            {cornerIcon}
+                            <span
+                                className={classNames(classes.name, {
+                                    rare: ability.rarity === RARITIES.RARE,
+                                    uncommon: ability.rarity === RARITIES.UNCOMMON,
+                                })}
+                            >
+                                {name}{" "}
+                                {ability.level > 1 && (
+                                    <span className={classes.abilityLevel}>
+                                        {Array.from({ length: ability.level })
+                                            .map(() => "⋆")
+                                            .join("")}
+                                    </span>
                                 )}
-                            </div>
-                        )}
-                        {!healingCornerIcon && healing > 0 && (
-                            <div>
-                                Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
-                            </div>
-                        )}
-                        {!armorCornerIcon && armor > 0 && (
-                            <div>
-                                Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
-                            </div>
-                        )}
-                        {resourceGain > 0 && (
-                            <div>
-                                Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
-                            </div>
-                        )}
-                        {selfDamage > 0 && (
-                            <div>
-                                Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
-                            </div>
-                        )}
-                        {!overrideBodyText && <Buffs ability={ability} player={player} />}
-                        <CardsToAdd ability={ability} />
-                        {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
-                        <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
-                        {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
-                        {interpolatedDescription && <div>{interpolatedDescription}</div>}
+                            </span>{" "}
+                            <AbilityResourceIcon ability={ability} playerClass={player?.class} />
+                        </span>
+                        <div className={classes.portraitContainer}>{imageNode}</div>
+                        <div className={classes.body}>
+                            {preemptive && <div className={classes.bold}>Pre-emptive</div>}
+                            {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
+                            {depletedOnUse && <div className={classes.bold}>Deplete</div>}
+                            {ability.reusable && <div className={classes.bold}>Boomerang</div>}
+                            <DrawCards ability={ability} playerClass={player?.class} />
+                            {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
+                            {ricochet && (
+                                <div>
+                                    Bounces to {numTargets} other targets{" "}
+                                    {secondaryDamage && (
+                                        <>
+                                            for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                            {!healingCornerIcon && healing > 0 && (
+                                <div>
+                                    Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
+                                </div>
+                            )}
+                            {!armorCornerIcon && armor > 0 && (
+                                <div>
+                                    Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
+                                </div>
+                            )}
+                            {resourceGain > 0 && (
+                                <div>
+                                    Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
+                                </div>
+                            )}
+                            {selfDamage > 0 && (
+                                <div>
+                                    Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
+                                </div>
+                            )}
+                            {!overrideBodyText && <Buffs ability={ability} player={player} />}
+                            <CardsToAdd ability={ability} />
+                            {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
+                            <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
+                            {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
+                            {interpolatedDescription && <div>{interpolatedDescription}</div>}
+                        </div>
+                        <div className={classes.footer}>
+                            {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
+                            <AbilityTypeView targetType={targetType} type={type} minion={minion} />
+                            {minion && (
+                                <div className={classes.minionStats}>
+                                    <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
+                                    <Icon icon={<CrossedSwordsIcon />} text={attackDamage} className={classes.minionDamage} />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div className={classes.footer}>
-                        {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
-                        <AbilityTypeView targetType={targetType} type={type} minion={minion} />
-                        {minion && (
-                            <div className={classes.minionStats}>
-                                <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
-                                <Icon icon={<CrossedSwordsIcon />} text={attackDamage} className={classes.minionDamage} />
-                            </div>
-                        )}
-                    </div>
+                    <div className={classes.refContainer} ref={ref as any} />
                 </div>
-                <div className={classes.refContainer} ref={ref as any} />
-            </div>
-        </AbilityTooltip>
-    );
-});
+            </AbilityTooltip>
+        );
+    }
+);
 
 export default AbilityView;
