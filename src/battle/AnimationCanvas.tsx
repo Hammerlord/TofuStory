@@ -1,10 +1,11 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES } from "../ability/types";
-import { explode, getCenterCoords, shake, tossUp, travel } from "../character/animations";
+import { ACTION_TYPES, ANIMATION_TYPES, HandAbility } from "../ability/types";
+import { explode, getCenterCoords, sendToPile, shake, tossUp, travel } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
+import AbilityView from "../ability/AbilityView/AbilityView";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -17,6 +18,7 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             position: "fixed",
             width: "100%",
             height: "100%",
+            zIndex: 5,
         },
         projectile: {
             objectFit: "contain",
@@ -64,6 +66,17 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             animationName: "$fadeOut",
             animationDuration: `1s`,
         },
+        abilityContainer: {
+            margin: 16,
+            display: "inline-block",
+            opacity: 0,
+        },
+        center: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translateX(-50%) translateY(-50%)",
+        },
     });
 };
 
@@ -75,12 +88,18 @@ const AnimationCanvas = ({
     allyRefs = [],
     enemyRefs = [],
     battlefieldRef,
+    deckRef,
+    discardRef,
+    depleteRef,
     initialBattlefield,
 }: {
     event?: Event;
     allyRefs?: any[];
     enemyRefs?: any[];
     battlefieldRef;
+    deckRef;
+    discardRef;
+    depleteRef;
     initialBattlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     const {
@@ -117,6 +136,8 @@ const AnimationCanvas = ({
 
     const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: MAX_BEAM_PROJECTILES * 5 }).map(() => useRef() as any);
+    const depleteCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
+
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { x: actorX, y: actorY } = useMemo(() => {
@@ -158,6 +179,7 @@ const AnimationCanvas = ({
         }
 
         animationRefs.current?.forEach((animation) => animation?.cancel());
+        animationRefs.current = [];
 
         const options = { spin, rotation: rotate, playbackTime, rotateToFaceTarget };
 
@@ -249,6 +271,16 @@ const AnimationCanvas = ({
         }
     }, [eventId]);
 
+    useEffect(() => {
+        depleteCardRefs.forEach((ref) => {
+            if (ref.current) {
+                animationRefs.current.push(
+                    sendToPile({ object: ref.current, playbackTime: playbackTime - 250, to: depleteRef.current, desaturate: true })
+                );
+            }
+        });
+    }, [eventId]);
+
     const getProjectileElement = (i: number) => {
         const projectileDimensions = { width: 70, height: 70 };
         const props = {
@@ -308,7 +340,16 @@ const AnimationCanvas = ({
     const numProjectiles = projectileTargets.filter((val) => val).length * beamProjectileMultiplier;
 
     return (
-        <div className={classes.root}>{icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}</div>
+        <div className={classNames("animation-canvas", classes.root)}>
+            {icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}
+            <div className={classes.center}>
+                {event?.newDepleteCards?.map((ability: HandAbility, i) => (
+                    <div className={classes.abilityContainer} ref={depleteCardRefs[i]} key={ability.instanceId}>
+                        <AbilityView ability={ability} disableGlow={true} />
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 };
 

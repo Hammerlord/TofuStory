@@ -1,15 +1,16 @@
 import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
 import { EFFECT_EVENT_KEYS, HandAbility } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { MAX_HAND_SIZE } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES } from "../types";
+import { BATTLEFIELD_SIDES, Event } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCardEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, drawCards, findCombatantData, onEndTurnTriggers, recalculateEffectsFromAbilities, useAbility } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import uuid from "uuid";
 
-const { updateBattle } = battleStateSlice.actions;
+const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 export const onUsePlayerAbility = ({
     selectedTargetIndex,
@@ -85,6 +86,17 @@ const handleDiscard = (ability: HandAbility) => {
         } else if (!minion && !removeAfterTurn) {
             // Minions go into a special bucket rather than immediately to discard; see useAbility
             newDiscard.push(...prepareForDiscard([ability]));
+        }
+
+        if (depletedOnUse) {
+            dispatch(
+                pushEventQueue({
+                    ...getState().battle,
+                    id: uuid.v4(),
+                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                    newDepleteCards: [ability],
+                } as Event)
+            );
         }
 
         dispatch(

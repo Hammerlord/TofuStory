@@ -195,6 +195,9 @@ const BattlefieldContainer = () => {
     const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
     const battlefieldRef: React.RefObject<HTMLDivElement> = React.createRef();
+    const deckRef: React.RefObject<HTMLDivElement> = React.createRef();
+    const discardRef: React.RefObject<HTMLDivElement> = React.createRef();
+    const depleteRef: React.RefObject<HTMLDivElement> = React.createRef();
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
@@ -797,6 +800,9 @@ const BattlefieldContainer = () => {
                                     viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
                                     onClickDeck={handleClickDeck}
                                     highlightDeck={Boolean(selectedAbilityId && moveAbilityFromHandToDeckEffect)}
+                                    deckRef={deckRef}
+                                    discardRef={discardRef}
+                                    depleteRef={depleteRef}
                                 />
                             </div>
                             <div className={classes.combatantContainer}>
@@ -840,6 +846,9 @@ const BattlefieldContainer = () => {
                         battlefieldRef={battlefieldRef}
                         allyRefs={allyRefs}
                         enemyRefs={enemyRefs}
+                        deckRef={deckRef}
+                        discardRef={discardRef}
+                        depleteRef={depleteRef}
                         initialBattlefield={{ playerSide, enemySide }}
                     />
                     <div className={classes.abilityContainer}>

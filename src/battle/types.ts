@@ -22,13 +22,17 @@ export interface Event {
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];
     actorId?: string;
-    allTargetIndices: number[];
+    allTargetIndices?: number[];
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
     playbackTime: number;
     actionParent?: Ability | Item;
     source?: TriggerSource;
+    // Cards which have just been added to the Deplete pile, for animation purposes.
+    newDepleteCards?: Ability[];
+    // Cards which have just been added to the deck, for animation purposes.
+    newDeckCards?: Ability[];
 }
 
 export interface EventGroup {

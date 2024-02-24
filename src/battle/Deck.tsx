@@ -113,6 +113,9 @@ const Deck = ({
     viewDeckInOrder,
     onClickDeck,
     highlightDeck,
+    deckRef,
+    discardRef,
+    depleteRef,
 }: {
     deck: HandAbility[];
     discard: HandAbility[];
@@ -120,6 +123,9 @@ const Deck = ({
     viewDeckInOrder: boolean;
     onClickDeck: (event: any) => void;
     highlightDeck: boolean;
+    deckRef;
+    discardRef;
+    depleteRef;
 }) => {
     const classes = useStyles();
 
@@ -239,6 +245,7 @@ const Deck = ({
                             [classes.highlight]: highlightDeck,
                         })}
                         onClick={onClickDeck}
+                        ref={deckRef}
                     >
                         <svg viewBox="0 0 100 100" className={classes.svg}>
                             {Array.from({ length: deck.length + discard.length }).map((_, i) => {
@@ -258,17 +265,17 @@ const Deck = ({
                 </Tooltip>
             </div>
 
-            {discard.length > 0 && (
-                <Tooltip title={discardTooltip} placement={"right"}>
-                    <div className={classes.onCooldown}>Discard: {discard.length}</div>
-                </Tooltip>
-            )}
+            <Tooltip title={discardTooltip} placement={"right"}>
+                <div className={classes.onCooldown} ref={discardRef}>
+                    Discard: {discard.length}
+                </div>
+            </Tooltip>
 
-            {depleted.length > 0 && (
-                <Tooltip title={depleteTooltip} placement={"right"}>
-                    <div className={classes.depleted}>Depleted: {depleted.length}</div>
-                </Tooltip>
-            )}
+            <Tooltip title={depleteTooltip} placement={"right"}>
+                <div className={classes.depleted} ref={depleteRef}>
+                    Depleted: {depleted.length}
+                </div>
+            </Tooltip>
         </div>
     );
 };

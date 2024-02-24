@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { HandAbility } from "../ability/types";
-import { CombatantInfo } from "./types";
-import { getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
-import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
