@@ -55,7 +55,7 @@ import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { checkCardActions, deleteCard } from "./cardActions";
+import { checkCardActions, deleteCard, depleteAbilities } from "./cardActions";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -1415,16 +1415,7 @@ const checkHandleAutoCast = ({
 
                 if (card) {
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                        dispatch(updateBattle({ hand: hand.filter((ability: HandAbility) => ability.instanceId !== card?.instanceId) }));
-                        if (abilityToCast.depletedOnUse) {
-                            dispatch(
-                                checkEventTrigger({
-                                    combatantId: actor.id,
-                                    effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
-                                    source: { source: abilityToCast, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
-                                })
-                            );
-                        }
+                        dispatch(depleteAbilities({ actorId: actor.id, abilities: [card] }));
                     } else {
                         dispatch(updateBattle({ hand: [...hand, card] }));
                     }

@@ -11,7 +11,7 @@ import Overlay from "../view/Overlay";
 import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
-import { drawCards } from "./actions/cardActions";
+import { depleteAbilities, drawCards } from "./actions/cardActions";
 
 const useStyles = createUseStyles({
     inner: {
@@ -108,14 +108,13 @@ const SelectCardOverlay = ({
     const [hide, setHide] = useState(false);
 
     const handleSelectClick = () => {
-        // Bug: No onDeplete event being triggered here
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            dispatch(
-                updateBattle({
-                    hand: hand.filter((ability: HandAbility) => !selectedAbilityIds.includes(ability.instanceId)),
-                })
-            );
-        } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities }));
+            onSelect();
+            return;
+        }
+
+        if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
             const updatedHand = [];
             const updatedDeck = [...deck];
             hand.forEach((ability: HandAbility) => {

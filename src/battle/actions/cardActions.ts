@@ -1,19 +1,17 @@
 import uuid from "uuid";
+import { aggregateAbilityEffects } from "../../Menu/utils";
 import { ACTION_TYPES, Ability, AbilityEffects, Action, EFFECT_EVENT_KEYS, HandAbility, SELECT_CARD_TYPES } from "../../ability/types";
-import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
-import { Event } from "../types";
+import { Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
-import { aggregateAbilityEffects } from "../../Menu/utils";
 
-const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
-const { updatePlayer } = playerStateSlice?.actions || {};
+const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
 export const drawCards = ({
     effects = {},
@@ -360,3 +358,40 @@ export const recalculateEffectsFromAbilities = () => {
         );
     };
 };
+
+/**
+ * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
+ */
+export const depleteAbilities =
+    ({ actorId, abilities = [] }: { actorId: string; abilities: HandAbility[] }) =>
+    (dispatch, getState) => {
+        const { hand, depleted = [] } = getState().battle;
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                id: uuid.v4(),
+                playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
+                newCards: abilities,
+                cardsAddedTo: "deplete",
+            } as Event)
+        );
+
+        dispatch(
+            updateBattle({
+                hand: hand.filter((ability: HandAbility) => {
+                    return abilities.every((card) => card.instanceId !== ability.instanceId);
+                }),
+                depleted: [...depleted, ...abilities],
+            })
+        );
+
+        abilities.forEach((card) => {
+            dispatch(
+                checkEventTrigger({
+                    combatantId: actorId,
+                    effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
+                    source: { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                })
+            );
+        });
+    };
