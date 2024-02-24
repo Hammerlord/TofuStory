@@ -356,12 +356,11 @@ export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
         return true;
     }
 
-    if (uptime === 0) {
+    if (uptime === 1) {
         return false;
     }
 
-    // Uptime starts at 0, so 'every 3 turns' should be 2 for turnsTriggerFrequency (n - 1)
-    return uptime % (turnsTriggerFrequency - 1) === 0;
+    return uptime % turnsTriggerFrequency === 0;
 };
 
 /**

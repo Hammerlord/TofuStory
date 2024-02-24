@@ -16,7 +16,7 @@ export const createCombatant = (combatant): Combatant => {
             ...aggregateItemEffects(combatant.items || []),
             ...(combatant.effects?.map((effect: Effect) => ({
                 ...cloneDeep(effect),
-                uptime: 0,
+                uptime: 1,
                 id: uuid.v4(),
             })) || []),
         ],

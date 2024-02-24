@@ -25,7 +25,7 @@ const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; i
         type: EFFECT_TYPES.NONE,
         class: EFFECT_CLASSES.NONE,
         id: uuid.v4(),
-        uptime: 0,
+        uptime: 1,
         canBeSilenced: false,
         onDeath: {
             usableWhileStunned: true,

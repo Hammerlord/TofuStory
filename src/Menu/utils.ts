@@ -8,7 +8,7 @@ import { AbilityUpgrade } from "./../ability/types";
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
     id: uuid.v4(),
-    uptime: 0,
+    uptime: 1,
 });
 
 export const aggregateItemEffects = (items: Item[]): Effect[] => {
