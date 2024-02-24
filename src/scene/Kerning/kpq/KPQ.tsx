@@ -4,7 +4,7 @@ import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../en
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
 import { KerningCityBGImage, SleepywoodRegionBGImage, SwampRegionBGImage } from "../../../images";
 import { REGIONS } from "../../../Map/regions";
-import { EventScene } from "../../types";
+import { EventScene, SceneEncounter } from "../../types";
 import Barrels from "./Barrels";
 import Barrels2 from "./Barrels2";
 import { bowman, bystander, kingSlime, lakelis, magician, thief } from "./characters";
@@ -19,8 +19,7 @@ import RopeQuest from "./RopeQuest";
 import SewerEntrance from "./SewerEntrance";
 import SewerEntrance2 from "./SewerEntrance2";
 
-const ligatorFight1 = {
-    characters: [],
+const ligatorFight1: SceneEncounter = {
     waves: [
         {
             enemies: [null, ligator, null, ligator, null],
@@ -31,17 +30,16 @@ const ligatorFight1 = {
     ],
 };
 
-const ligatorFight2 = {
-    characters: [],
+const ligatorFight2: SceneEncounter = {
     waves: [
         {
             enemies: [ligator, null, eliteLigator, null, ligator],
+            generateEliteAffixes: true,
         },
     ],
 };
 
-const mushroomFight = {
-    characters: [],
+const mushroomFight: SceneEncounter = {
     waves: [
         {
             enemies: [greenMushroom, hornyMushroom, greenMushroom, hornyMushroom, greenMushroom],
@@ -49,8 +47,7 @@ const mushroomFight = {
     ],
 };
 
-const kingSlimeFight = {
-    characters: [],
+const kingSlimeFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, kingSlimeEnemy, null, null],

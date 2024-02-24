@@ -1,10 +1,10 @@
 import uuid from "uuid";
-import { Ability, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
 import { Item } from "../../item/types";
-import { shuffle } from "../../utils";
+import { getRandomItem, shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLE_TYPES, Wave } from "../types";
@@ -12,6 +12,8 @@ import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/util
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
 import { calculateMesoGain } from "../utils";
+import { elite, eruptive, raging, shielding, thorns } from "../../ability/Effects";
+import { poisonous, sneaky } from "../../enemy/effect";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -107,10 +109,19 @@ export const startBattle = ({
             ...character.player,
             effects: aggregateItemEffects(character.player.items).concat(aggregateAbilityEffects(deck)),
         };
-        const { presetDeck, enemies } = waves[0];
+        const { presetDeck, enemies, generateEliteAffixes } = waves[0];
 
         const battleObj: BattleState = {
-            enemySide: enemies.map(createCombatant),
+            enemySide: enemies.map((enemy: Minion) => {
+                if (generateEliteAffixes && enemy?.isElite) {
+                    const affixes = [thorns, raging, shielding, eruptive, sneaky, poisonous];
+                    return createCombatant({
+                        ...enemy,
+                        effects: [elite, getRandomItem(affixes)],
+                    });
+                }
+                return createCombatant(enemy);
+            }),
             playerSide: [null, null, player, null, null],
             deck: shuffle([...(presetDeck || deck).slice(), ...addAbilities])
                 .sort((a, b) => {

@@ -933,10 +933,11 @@ export const ligator: Minion = {
 export const eliteLigator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 45,
+    isElite: true,
+    maxHP: 65,
     mesos: 25,
     resources: 1,
-    effects: [elite, raging],
+    effects: [],
     abilities: [
         {
             ...attack,

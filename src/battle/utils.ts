@@ -1,35 +1,31 @@
-import { CombatantInfo, TriggerSource } from "./types";
 /**
  * @file Helpers for various battle functions
  */
 import { Combatant, Player } from "../character/types";
-import { CrossedSwordsIcon } from "../images/icons";
 import { Item } from "../item/types";
+import { getRandomItem } from "../utils";
 import {
+    ACTION_TYPES,
     Ability,
     AbilityDamageReceived,
     Action,
-    ACTION_TYPES,
     Bonus,
-    CombatEffect,
     CONDITION_TARGETS,
-    Effect,
+    CombatEffect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     HandAbility,
-    Multiplier,
     MULTIPLIER_TYPES,
+    Multiplier,
     SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES } from "./types";
-import { getRandomItem } from "../utils";
-import { ATTACK_POWER_COEFF } from "./constants";
 import { findCombatantData } from "./actions/actions";
-import { getUpdatedStats } from "./actions/getUpdatedStats";
-import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import { ATTACK_POWER_COEFF } from "./constants";
+import { passesConditions, passesValueComparison } from "./passesConditions";
+import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -106,7 +102,6 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
 /**
  * Player conditional helpers
  */
-
 export const canUseAbility = (character, ability: HandAbility | undefined): boolean => {
     const { resourceCost = 0, effects = {} } = ability;
     const { resourceCost: temporaryResourceCost = 0 } = effects;

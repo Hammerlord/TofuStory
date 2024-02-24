@@ -306,7 +306,6 @@ const Main = () => {
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            const { backgroundImage = sceneRegion, ...other } = encounter;
             dispatch(startBattle({ ...encounter, backgroundImage: encounter.backgroundImage || BG_MAP[locationNode?.region] }));
             setEncounterVictoryCallback(() => onVictory);
         };

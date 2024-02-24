@@ -72,6 +72,7 @@ export interface Wave {
     description?: string | string[] | JSX.Element | JSX.Element[];
     enemies: Array<any>;
     presetDeck?: Ability[];
+    generateEliteAffixes?: boolean;
     winCondition?: {
         defeatBoss?: boolean;
         surviveRounds?: number;

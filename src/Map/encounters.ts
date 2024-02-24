@@ -53,7 +53,7 @@ const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
     const baseEnemy = getRandomItem(eliteMap.squad);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 15));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 10));
 
     const enemy = {
         ...baseEnemy,
@@ -78,7 +78,7 @@ const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 25));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 15));
 
     const enemy = {
         ...baseEnemy,
@@ -108,7 +108,7 @@ const generateEliteDuo = (eliteMap: EliteMap, numAffixes: number = 1): (Minion |
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 35));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 20));
 
     const enemy = {
         ...baseEnemy,
@@ -168,7 +168,7 @@ const generateElite = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | nu
     const baseEnemy = getRandomItem(eliteMap.single);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 40));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 25));
 
     const enemy = {
         ...baseEnemy,

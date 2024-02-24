@@ -217,6 +217,7 @@ const ScenePlayer = ({
             addAbilities?: Ability[];
             waves: {
                 enemies: Minion[];
+                generateEliteAffixes?: boolean;
             }[];
             backgroundImage?: string;
         },
@@ -412,6 +413,7 @@ const ScenePlayer = ({
                 dispatch(addInfamy(infamy));
             }
         };
+
         if (encounter) {
             //callback();
             // skip battles
