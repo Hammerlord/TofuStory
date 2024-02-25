@@ -1225,6 +1225,13 @@ export const aurora: Ability = {
     image: HighWisdomImage,
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
+    onAbilityUse: {
+        abilityEffects: [
+            {
+                resourceCost: -1,
+            },
+        ],
+    },
     actions: [
         {
             damage: 8,

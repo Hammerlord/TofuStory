@@ -30,6 +30,7 @@ import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
 import { passesConditions } from "./passesConditions";
+import { applyAbilityEventEffects } from "./actions/cardActions";
 
 const useStyles = createUseStyles({
     root: {
@@ -649,7 +650,7 @@ const BattlefieldContainer = () => {
         const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedAbilityId);
         const [card] = newHand.splice(cardIndex, 1);
         if (card) {
-            newDeck.unshift(card);
+            newDeck.unshift(applyAbilityEventEffects({ event: card.onLeaveHand, ability: card }));
         }
 
         dispatch(

@@ -351,6 +351,7 @@ export { default as RibbonPigIdleImage } from "./RibbonPigIdle.gif";
 export { default as RisingRageImage } from "./RisingRage.png";
 export { default as RisingStarImage } from "./RisingStar.png";
 export { default as RoastedTurkeyImage } from "./RoastedTurkey.png";
+export { default as RockImage } from "./Rock.gif";
 export { default as RopeQuestImage } from "./RopeQuest.png";
 export { default as RowenTheFairyImage } from "./RowenTheFairy.png";
 export { default as RoyalFairyImage } from "./RoyalFairy.gif";

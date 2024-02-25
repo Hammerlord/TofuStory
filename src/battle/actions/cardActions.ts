@@ -1,6 +1,15 @@
 import uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
-import { ACTION_TYPES, Ability, AbilityEffect, Action, EFFECT_EVENT_KEYS, CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    Ability,
+    AbilityEffect,
+    Action,
+    EFFECT_EVENT_KEYS,
+    CombatAbility,
+    SELECT_CARD_TYPES,
+    AbilityEvent,
+} from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
@@ -76,10 +85,9 @@ export const drawCards = ({
             }
 
             const existingEffects = card.effects || [];
-            const incomingEffects = effects || [];
             newHand.push({
                 ...card,
-                effects: [...existingEffects, ...incomingEffects],
+                effects: [...existingEffects, ...effects],
             });
         }
 
@@ -247,6 +255,7 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             dispatch(
                 updateBattle({
                     hand: getState().battle.hand.map((card: CombatAbility) => {
+                        // TODO reuse code from applyAbilityEventEffects
                         const cardEffects = card.effects || [];
                         const countMap = cardEffects.reduce((acc, e: AbilityEffect) => {
                             if (e.name) {
@@ -261,7 +270,6 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                         if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
                             effects.push(currentHandEffects);
                         }
-                        console.log("new effects", effects, "currentHandEffects", currentHandEffects);
                         return { ...card, effects };
                     }),
                 })
@@ -408,3 +416,30 @@ export const depleteAbilities =
             );
         });
     };
+
+export const applyAbilityEventEffects = ({ event, ability: ability }: { event: AbilityEvent; ability: CombatAbility }) => {
+    if (!event) {
+        return ability;
+    }
+
+    const { abilityEffects = [] } = event || {};
+
+    const effects = [...(ability.effects || [])];
+
+    abilityEffects.forEach((e: AbilityEffect) => {
+        const countMap = effects.reduce((acc, e: AbilityEffect) => {
+            if (e.name) {
+                acc[e.name] = (acc[e.name] || 0) + 1;
+            }
+
+            return acc;
+        }, {});
+
+        const { name, maxApplications } = e;
+        if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
+            effects.push(e);
+        }
+    });
+
+    return { ...ability, effects };
+};

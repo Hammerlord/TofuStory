@@ -610,6 +610,11 @@ export interface AbilityUpgrade {
     }[];
 }
 
+export interface AbilityEvent {
+    abilityEffects?: AbilityEffect[];
+    ability?: Ability;
+}
+
 export interface Ability {
     name: string;
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
@@ -626,10 +631,6 @@ export interface Ability {
     removeAfterTurn?: boolean;
     reusable?: boolean;
     depletedOnUse?: boolean;
-    /** An effect applied to this ability when another ability is used */
-    onAbilityUse?: {
-        resourceCost?: number;
-    };
     dialog?: string;
     // A map of properties to increment/decrement/add/remove on the ability object when upgraded.
     upgrades?: AbilityUpgrade[];
@@ -644,9 +645,12 @@ export interface Ability {
     /** Prerequisite to use the ability at all */
     conditions?: Condition[];
     effectsWhileOwned?: Effect[];
-    onDraw?: {
-        ability: Ability;
-    };
+    /** Something that happens when an ability is used (not necessarily this one) */
+    onAbilityUse?: AbilityEvent;
+    /** Something that happens when you draw this card. Currently does NOT apply abilityEffects */
+    onDraw?: AbilityEvent;
+    /** Something that happens when this card leaves your hand (not necessarily discarded) */
+    onLeaveHand?: AbilityEvent;
 }
 
 /**
@@ -698,9 +702,11 @@ export interface AbilityEffect {
     applierId?: string;
     resourceCost?: number;
     damage?: number;
-    removeParentCardAfterTurn?: boolean;
+    removeParentCardAfterTurn?: boolean; // Effectively adds the 'ephemeral' keyword on the parent ability
     upgradedByLevels?: number;
     maxApplications?: number;
+    // Whether this effect should be cleared if the card is discarded. True by default.
+    removeOnDiscard?: boolean;
 }
 
 export enum SELECT_CARD_TYPES {

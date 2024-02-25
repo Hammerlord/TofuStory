@@ -11,7 +11,7 @@ import Overlay from "../view/Overlay";
 import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
-import { depleteAbilities, drawCards } from "./actions/cardActions";
+import { depleteAbilities, drawCards, applyAbilityEventEffects } from "./actions/cardActions";
 
 const useStyles = createUseStyles({
     inner: {

@@ -42,6 +42,7 @@ import {
     RagingBlowImage,
     RedFistOfFuryImage,
     RisingRageImage,
+    RockImage,
     RushImage,
     SelfRecoveryImage,
     ShieldMasteryImage,
@@ -1974,6 +1975,43 @@ export const nightshadeExplosion: Ability = {
                     radiate: {
                         damage: 2,
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const hurlBoulder: Ability = {
+    name: "Hurl Boulder",
+    image: RockImage,
+    resourceCost: 5,
+    description: "Whenever this card leaves your hand, reduce its cost by 1.",
+    onLeaveHand: {
+        abilityEffects: [
+            {
+                removeOnDiscard: false,
+                resourceCost: -1,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 25,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            icon: RockImage,
+            animationOptions: {
+                width: 150,
+                height: 150,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },
