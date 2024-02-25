@@ -14,6 +14,7 @@ import {
     CloseCombatImage,
     CombatOrdersImage,
     ComboFuryImage,
+    ComboSynergyImage,
     DarkThirstImage,
     DivineChargeImage,
     DoubleTimeImage,
@@ -934,7 +935,7 @@ export const cross: Ability = {
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Search for an attack from your deck. It costs 1 less until used or discarded.",
+    description: "Search an attack from your deck. It costs 1 less until used or discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2026,6 +2027,46 @@ export const hurlBoulder: Ability = {
             actions: [
                 {
                     damage: 5,
+                },
+            ],
+        },
+    ],
+};
+
+export const reinforce: Ability = {
+    name: "Reinforce",
+    image: ComboSynergyImage,
+    description: "Search a support card from your deck and Upgrade it until it is used or discarded.",
+    resourceCost: 0,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.DISCOVER_FROM_DECK,
+                filters: [ACTION_TYPES.EFFECT],
+                effects: [
+                    {
+                        upgradedByLevels: 1,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            description: "Search a support card from your deck and Upgrade it for the rest of battle.",
+            actions: [
+                {
+                    selectCards: {
+                        effects: [
+                            {
+                                removeOnDiscard: false,
+                            },
+                        ],
+                    },
                 },
             ],
         },
