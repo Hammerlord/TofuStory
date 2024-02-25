@@ -390,6 +390,7 @@ export enum MULTIPLIER_TYPES {
     HP = "HP",
     MAX_HP = "maxHP",
     DEBUFFS = "debuffs",
+    BUFFS = "buffs",
     BLEEDS = "bleeds",
     /**
      * Number of characters affected by the current action
@@ -503,6 +504,7 @@ export interface Action {
         icon?: string;
         animation?: ANIMATION_TYPES;
         playbackTime?: number;
+        bonus?: Bonus;
     };
     /** Percentage of armor on the target to remove */
     destroyArmor?: number;

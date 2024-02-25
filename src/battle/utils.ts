@@ -337,11 +337,35 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.DEBUFFS) {
-        return (
-            getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
-                (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF
-            ).length || 1
+        let debuffs = getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
+            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF
         );
+
+        if (filters) {
+            debuffs = debuffs.filter((effect) => {
+                return filters.some(({ property, value, comparator }) =>
+                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
+                );
+            });
+        }
+
+        return debuffs.length;
+    }
+
+    if (type === MULTIPLIER_TYPES.BUFFS) {
+        let buffs = getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
+            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF
+        );
+
+        if (filters) {
+            buffs = buffs.filter((effect) => {
+                return filters.some(({ property, value, comparator }) =>
+                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
+                );
+            });
+        }
+
+        return buffs.length;
     }
 
     if (type === MULTIPLIER_TYPES.BLEEDS) {

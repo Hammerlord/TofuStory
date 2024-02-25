@@ -286,7 +286,7 @@ export const spikes: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
-            armor: 5,
+            armor: 3,
         },
     ],
     upgrades: [
@@ -322,8 +322,9 @@ const drumOfWar: Action = {
 
 export const warBanner: Ability = {
     name: "War Banner",
+    image: FlagImage,
     resourceCost: 2,
-    description: "Every turn, grants 2 armor and +1 attack to nearby allies.",
+    description: "Summon and Turn Start: Grants 2 armor and +1 ATT to nearby allies.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -479,6 +480,8 @@ export const ironWill: Ability = {
     image: IronWillImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    description: "+2 armor from armor sources",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -497,27 +500,24 @@ export const hyperBody: Ability = {
     name: "Hyper Body",
     resourceCost: 1,
     image: HyperBodyImage,
-    depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "+1 healing received",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Hyper Body",
-                    description: "+1 healing received",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    healingReceived: 1,
-                },
-            ],
+            armor: 7,
+            drawCards: {
+                amount: 1,
+            },
         },
     ],
     upgrades: [
         {
-            preemptive: true,
+            actions: [
+                {
+                    armor: 3,
+                },
+            ],
         },
     ],
 };
@@ -934,7 +934,7 @@ export const cross: Ability = {
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Discover an attack from your deck. It costs 1 less until used or discarded.",
+    description: "Search for an attack from your deck. It costs 1 less until used or discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1505,7 +1505,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals 1 damage for every attack you made this turn, hitting twice",
+    description: "Deals 1 damage for every attack you made this turn, hitting twice.",
     actions: [
         {
             damage: 1,
@@ -1532,7 +1532,7 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "Gain armor equal to the number of attacks made this turn",
+    description: "Gain armor equal to the number of attacks made this turn.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1552,31 +1552,28 @@ export const ragingBlow: Ability = {
     resourceCost: 1,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Hits twice",
+    description: "Gain immunity for the rest of your turn. Hits twice.",
+    overrideBodyText: true,
     actions: [
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            damage: 3,
-            type: ACTION_TYPES.ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-        },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Rage",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    icon: RagingBlowImage,
-                    disableDisplayIcon: true,
-                    skillBonus: [{ skill: "Raging Blow", damage: 2 }],
+                    ...immunity,
+                    duration: 1,
                 },
             ],
+        },
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            damage: 3,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
         },
     ],
     upgrades: [
@@ -1954,17 +1951,30 @@ export const nightshadeExplosion: Ability = {
     resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
+    description: "Damage increased by Thorns.",
     actions: [
         {
-            damage: 5,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             icon: NightShadeExplosionImage,
-            resources: 2,
             radiate: {
                 area: 2,
-                damage: 5,
+                damage: 3,
+                bonus: {
+                    damage: 1,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.BUFFS,
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        filters: [
+                            {
+                                property: "name",
+                                comparator: "eq",
+                                value: thorns.name,
+                            },
+                        ],
+                    },
+                },
             },
         },
     ],
