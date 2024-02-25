@@ -183,7 +183,7 @@ const throwFood: Ability = {
                     name: "Foodborne Projectile",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 2,
+                    attackPower: 3,
                     duration: 0,
                     onAttack: {
                         removeEffect: true,
@@ -260,13 +260,13 @@ export const miniBean: Minion = {
                 },
             ],
         },
+        picoDrop,
         suckIn,
         {
             name: "Big Suck",
             image: BigSuckImage,
             resourceCost: 3,
             channelDuration: 3,
-            castTime: 1,
             actions: [...suckIn.actions, ...suckIn.actions],
         },
     ],
