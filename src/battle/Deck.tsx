@@ -88,7 +88,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
-        top: "-10%",
+        top: "-20%",
     },
     "@keyframes highlightAnimation": {
         from: {
@@ -238,7 +238,6 @@ const Deck = ({
     return (
         <div className={classes.root}>
             <div className={classes.deckContainer}>
-                {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
                 <Tooltip title={deckTooltip} placement={"right"}>
                     <div
                         className={classNames(classes.deckContainerInner, {
@@ -263,6 +262,7 @@ const Deck = ({
                         </svg>
                     </div>
                 </Tooltip>
+                {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
             </div>
 
             <Tooltip title={discardTooltip} placement={"right"}>
