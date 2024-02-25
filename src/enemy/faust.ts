@@ -1,3 +1,4 @@
+import { attack } from "./abilities";
 import {
     CursedDollImage,
     FaustImage,
@@ -40,7 +41,17 @@ export const faust: Minion = {
                     icon: MonkeyBananaImage,
                     damage: 5,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    addCardsToDeck: [bananaPeelCard],
+                    addCardsToDiscard: [bananaPeelCard],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 7,
                 },
             ],
         },
