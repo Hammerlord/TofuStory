@@ -3,7 +3,7 @@ import { partition } from "ramda";
 import uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import { JOB_CARD_MAP } from "../../ability";
-import { isOffensiveAbility } from "../../ability/AbilityView/utils";
+import { getAbilityUpgradedFromEffects, isOffensiveAbility } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1780,7 +1780,7 @@ export const useAbility = ({
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
-        const { resourceCost = 0, actions = [], effects = [] } = ability as CombatAbility;
+        const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant } = findCombatantData(getState, actorId) || {};
         const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
             return acc + (e.resourceCost || 0);

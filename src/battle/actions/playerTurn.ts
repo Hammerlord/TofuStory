@@ -31,7 +31,7 @@ export const onUsePlayerAbility = ({
 
         dispatch(
             useAbility({
-                ability: getAbilityUpgradedFromEffects({ combatant: actor, ability }),
+                ability,
                 selectedIndex: selectedTargetIndex,
                 side: selectedTargetSide,
                 actorId: actor?.id,
