@@ -6,7 +6,7 @@ import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
-import { HourglassIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
+import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 
 const useStyles = createUseStyles({
@@ -91,7 +91,15 @@ const useStyles = createUseStyles({
         position: "absolute",
     },
     desaturated: {
-        filter: "saturate(0.4)",
+        filter: "saturate(0.1)",
+    },
+    cancelIcon: {
+        left: -5,
+        top: -5,
+        position: "absolute",
+    },
+    disabled: {
+        color: "#ff9b94",
     },
 });
 
@@ -103,7 +111,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { battle } = useAppSelector((state) => state);
     const { combatant } = combatantInfo || {};
 
-    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isTurnActionPrevented(combatantInfo)) {
+    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn) {
         return null;
     }
 
@@ -126,6 +134,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
 
     const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "" });
     const abilityHasYetToCast = typeof castingCastTime === "undefined" && castTime;
+    const isTurnPrevented = isTurnActionPrevented(combatantInfo);
 
     return (
         <div className={classes.root}>
@@ -134,7 +143,8 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                     <div className={classes.tooltipContents}>
                         <div className={classes.container}>
                             <div className={classes.tooltipTitle}>
-                                <Icon icon={image} size="sm" /> {name}
+                                <Icon icon={image} size="sm" /> {name}{" "}
+                                {isTurnPrevented && <span className={classes.disabled}>(Disabled)</span>}
                             </div>
                             <div>{interpolatedDescription}</div>
                             {abilityHasYetToCast && castTime > 0 && (
@@ -157,7 +167,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                     <span className={classes.telepathInner}>
                         <span
                             className={classNames({
-                                [classes.desaturated]: abilityHasYetToCast,
+                                [classes.desaturated]: abilityHasYetToCast || isTurnPrevented,
                             })}
                         >
                             {imageNode}
@@ -171,6 +181,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                                 <Icon icon={<HourglassIcon />} size="sm" />
                             </span>
                         )}
+                        {isTurnPrevented && <Icon icon={NoEntryIcon} size="sm" className={classes.cancelIcon} />}
                     </span>
                 </div>
             </Tooltip>

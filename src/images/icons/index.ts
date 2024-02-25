@@ -29,6 +29,7 @@ export { default as MoneyBagIcon } from "./MoneyBag.svg";
 export { default as MountainIcon } from "./Mountain.svg";
 export { default as MuscleIcon } from "./Muscle.svg";
 export { default as MusicIcon } from "./Music.svg";
+export { default as NoEntryIcon } from "./NoEntry.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
 export { default as PristineBlueBlackShieldIcon } from "./PristineBlueBlackShield.svg";
 export { default as PristineShieldIcon } from "./PristineShield.svg";
