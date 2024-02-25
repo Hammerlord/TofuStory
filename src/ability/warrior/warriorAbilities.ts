@@ -178,7 +178,7 @@ export const anger: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 7,
+            damage: 4,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -1532,7 +1532,7 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "(Armor multiplied by the number of attacks made this turn)",
+    description: "Gain armor equal to the number of attacks made this turn",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1676,7 +1676,7 @@ export const burningSoulBlade: Ability = {
             },
         ],
         effects: [
-            { ...immunity, duration: 3 },
+            { ...immunity, duration: 2 },
             {
                 name: "Burning Soul Blade",
                 icon: BurningSoulBladeMinionImage,
@@ -2011,7 +2011,7 @@ export const hurlBoulder: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
