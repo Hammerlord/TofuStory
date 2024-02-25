@@ -1786,15 +1786,7 @@ export const useAbility = ({
             return acc + (e.resourceCost || 0);
         }, 0);
         const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + resourceCostFromEffects);
-
-        // Append the final resource cost. This value may be used in calculations
-        ability = {
-            ...ability,
-            resourceCost: totalResourceCost,
-        };
-
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [] };
-
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
