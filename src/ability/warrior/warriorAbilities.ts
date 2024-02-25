@@ -995,9 +995,9 @@ export const bladestorm: Ability = {
 
 export const combatOrders: Ability = {
     name: "Combat Orders",
-    resourceCost: 0,
+    resourceCost: 1,
     image: CombatOrdersImage,
-    description: "Commands all targeted allies to attack",
+    description: "Grants targeted allies +1 ATT for the rest of the turn and commands them to attack",
     actions: [
         {
             area: 1,
@@ -1017,7 +1017,19 @@ export const combatOrders: Ability = {
             playbackTime: 1200,
         },
     ],
-    upgrades: [],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            attackPower: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const dustDevils: Ability = {
