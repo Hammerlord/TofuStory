@@ -27,8 +27,7 @@ export const effectEventKeyLabelMap = {
     onDrawCard: "When you draw cards",
 };
 
-const { ATTACKS_MADE_IN_TURN, ARMOR, ABILITIES_WITH_NAME, MAX_HP, DEBUFFS, BLEEDS, NUM_AFFECTED_TARGETS, NUM_SOURCE_TARGETS } =
-    MULTIPLIER_TYPES;
+const { ATTACKS_MADE_IN_TURN, ARMOR, ABILITIES_WITH_NAME, MAX_HP, DEBUFFS, NUM_AFFECTED_TARGETS, NUM_SOURCE_TARGETS } = MULTIPLIER_TYPES;
 
 export const multiplierTypeKeyLabelMap = {
     [ATTACKS_MADE_IN_TURN]: "times the number of attacks made this turn by {{ calculationTarget }}",
@@ -36,7 +35,6 @@ export const multiplierTypeKeyLabelMap = {
     [ABILITIES_WITH_NAME]: 'times the number of "{{ value }}" abilities',
     [MAX_HP]: "for {{ value }} of max health",
     [DEBUFFS]: "for each debuff on {{ calculationTarget }}",
-    [BLEEDS]: "for each bleed on {{ calculationTarget }}",
     [NUM_AFFECTED_TARGETS]: "for each affected target",
     [NUM_SOURCE_TARGETS]: "for each affected target",
 };

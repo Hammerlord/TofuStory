@@ -368,13 +368,6 @@ export const getMultiplier = ({
         return buffs.length;
     }
 
-    if (type === MULTIPLIER_TYPES.BLEEDS) {
-        return (
-            getEnabledEffects({ combatantInfo, getCalculationTarget }).filter((effect: CombatEffect) => effect.type === EFFECT_TYPES.BLEED)
-                .length || 1
-        );
-    }
-
     return 1;
 };
 

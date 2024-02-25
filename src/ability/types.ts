@@ -391,7 +391,6 @@ export enum MULTIPLIER_TYPES {
     MAX_HP = "maxHP",
     DEBUFFS = "debuffs",
     BUFFS = "buffs",
-    BLEEDS = "bleeds",
     /**
      * Number of characters affected by the current action
      */
