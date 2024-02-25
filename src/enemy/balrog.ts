@@ -179,6 +179,29 @@ export const balrog: Minion = {
                 removeEffect: true,
             },
         },
+        {
+            name: "Summon Flames - Turn Start",
+            icon: FlameImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 5,
+            onTurnStart: {
+                ability: {
+                    name: "Summon Flames",
+                    image: FlameImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.EFFECT,
+                            summon: [
+                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
+                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
+                            ],
+                        },
+                    ],
+                },
+            },
+        },
     ],
     abilities: [
         balrogAttack,
@@ -247,20 +270,6 @@ export const balrog: Minion = {
             ],
         },
         balrogAttack,
-        {
-            name: "Summon Flames",
-            image: FlameImage,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    summon: [
-                        { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
-                        { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
-                    ],
-                },
-            ],
-        },
         {
             name: "Pulverize",
             resourceCost: 3,
