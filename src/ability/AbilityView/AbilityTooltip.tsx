@@ -130,6 +130,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
     const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
+    const hasRadiate = ability.actions.some((action) => action.radiate);
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -167,6 +168,18 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
 
     if (isReusable) {
         tooltips.push(<AbilityTooltipSection title="Boomerang" description={"Ability returns to your hand after use."} key={"reusable"} />);
+    }
+
+    if (hasRadiate) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Radiate"
+                description={
+                    "Radiate causes you to emit an effect from your position. Damage dealt by Radiate is unaffected by ATT modifiers and damage reductions."
+                }
+                key={"radiate"}
+            />
+        );
     }
 
     return (
