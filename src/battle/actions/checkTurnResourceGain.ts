@@ -25,7 +25,7 @@ export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispat
 
 const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: number; resources: number } => {
     const { combatant } = combatantInfo;
-    if (isSilenced(combatant) || isStunnedOrFrozen(combatant)) {
+    if (isStunnedOrFrozen(combatant)) {
         return {
             rawResources: 0,
             resources: 0,

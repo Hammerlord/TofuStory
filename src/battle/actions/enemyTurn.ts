@@ -356,8 +356,9 @@ export const startEnemyTurn = () => {
 
             const { id, casting } = enemy;
             acted[id] = true;
-            const unableToAct = isTurnActionPrevented(enemy) || !enemy.abilities?.length;
-            const delay = unableToAct ? 500 : 1500;
+            const enemyInfo = findCombatantData(getState, id);
+            const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length;
+            const delay = unableToAct ? 300 : 1500;
 
             setTimeout(() => {
                 // Enemies who are unable to act still must lose a turn when casting an ability

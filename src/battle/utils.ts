@@ -27,6 +27,7 @@ import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
+import { getUseAbilityIndex } from "./actions/enemyTurn";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -719,8 +720,25 @@ export const getInducedAttack = (actor: Combatant): Action => {
 };
 
 // This is used to determine whether an enemy should act during its turn. It shouldn't prevent effect events from triggering.
-export const isTurnActionPrevented = (combatant: Combatant): boolean => {
-    return combatant?.effects.some((effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
+export const isTurnActionPrevented = (combatantInfo: CombatantInfo): boolean => {
+    if (!combatantInfo) {
+        return true;
+    }
+
+    const combatant = combatantInfo.combatant;
+    const turnPreventedFromEffects = combatant.effects.some(
+        (effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type)
+    );
+
+    if (turnPreventedFromEffects) {
+        return true;
+    }
+
+    const isSilenced = combatant.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+    const ability = combatant.abilities[getUseAbilityIndex(combatantInfo)];
+
+    // Silence prevents using abilities which are pure support/effects
+    return isSilenced && ability?.actions.every((action) => action.type === ACTION_TYPES.EFFECT);
 };
 
 export const isStunnedOrFrozen = (combatant: Combatant): boolean => {

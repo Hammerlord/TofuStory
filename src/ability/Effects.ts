@@ -452,8 +452,8 @@ export const healingOverTime: Effect = {
 
 export const silence: Effect = {
     name: "Silence",
-    duration: 2,
-    description: "Disables certain buffs and prevents resource generation.",
+    duration: 3,
+    description: "Disables effect abilities and certain buffs.",
     type: EFFECT_TYPES.SILENCE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: SpeechBubbleIcon,

@@ -668,8 +668,6 @@ export enum ACTION_TYPES {
     EFFECT = "effect",
     NONE = "none",
     MOVEMENT = "movement",
-    BLEED = "bleed",
-    BURN = "burn",
     SPECIAL = "special",
     HINDER = "hindrance",
 }

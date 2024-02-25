@@ -103,7 +103,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { battle } = useAppSelector((state) => state);
     const { combatant } = combatantInfo || {};
 
-    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isTurnActionPrevented(combatant)) {
+    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || isTurnActionPrevented(combatantInfo)) {
         return null;
     }
 

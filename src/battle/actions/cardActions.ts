@@ -417,7 +417,7 @@ export const depleteAbilities =
         });
     };
 
-export const applyAbilityEventEffects = ({ event, ability: ability }: { event: AbilityEvent; ability: CombatAbility }) => {
+export const applyAbilityEventEffects = ({ event, ability }: { event: AbilityEvent; ability: CombatAbility }) => {
     if (!event) {
         return ability;
     }
