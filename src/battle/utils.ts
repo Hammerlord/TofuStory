@@ -104,6 +104,10 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
  * Player conditional helpers
  */
 export const canUseAbility = (character, ability: CombatAbility | undefined): boolean => {
+    if (!character) {
+        return false;
+    }
+
     const { resourceCost = 0, effects = [] } = ability;
     if (resourceCost === "x") {
         return character.resources >= 1;
