@@ -270,6 +270,9 @@ export interface Effect {
     viewDeckInOrder?: boolean;
     minimumAttackDamage?: number;
     bypassImmunity?: boolean;
+    // Display stacks even if there is only one stack. Useful for temporary 1-stack effects which are not limited by duration.
+    /** @see ironBody */
+    alwaysDisplayStacks?: boolean;
 }
 
 export interface CombatEffect extends Effect {

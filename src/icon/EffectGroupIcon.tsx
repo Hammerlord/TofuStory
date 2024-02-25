@@ -175,13 +175,15 @@ const EffectGroupIcon = ({
     const silenced = isSilenced && canBeSilenced;
     const disabled = silenced || !passedConditions;
 
-    const stackCount = effects.reduce((acc, effect: CombatEffect) => {
-        if (effect.stacks) {
-            return acc + effect.stacks;
-        }
-
-        return acc + 1;
-    }, 0);
+    const { stackCount, displayStacks } = effects.reduce(
+        (acc, effect: CombatEffect) => {
+            return {
+                stackCount: acc.stackCount + (effect.stacks || 0),
+                displayStacks: acc.displayStacks || effect.alwaysDisplayStacks,
+            };
+        },
+        { stackCount: 0, displayStacks: false }
+    );
 
     const tooltipContent = (
         <div className={classes.tooltipContents}>
@@ -299,7 +301,9 @@ const EffectGroupIcon = ({
                                 <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                             </span>
                         )}
-                        {stackCount > 1 && <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>}
+                        {(displayStacks || stackCount > 1) && (
+                            <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
+                        )}
                     </>
                 </Icon>
                 {isSilenced && canBeSilenced && <Icon icon={<SpeechBubbleIcon />} className={classes.silenceIcon} />}

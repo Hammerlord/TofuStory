@@ -77,7 +77,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { preventArmorDecay } from "./../Effects";
+import { preventArmorDecayPlayer } from "./../Effects";
 import { MULTIPLIER_TYPES } from "./../types";
 
 import { attack } from "../../enemy/abilities";
@@ -819,6 +819,8 @@ export const ironBody: Ability = {
     resourceCost: 1,
     image: IronBodyImage,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "Prevent the next time your armor decays",
     actions: [
         {
             armor: 7,
@@ -826,8 +828,7 @@ export const ironBody: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    ...preventArmorDecay,
-                    duration: 2,
+                    ...preventArmorDecayPlayer,
                 },
             ],
         },

@@ -494,6 +494,18 @@ export const preventArmorDecay: Effect = {
     class: EFFECT_CLASSES.BUFF,
     preventArmorDecay: true,
     canBeSilenced: true,
+    maxApplications: 1,
+};
+
+// Player typically gets a limit on their armor decay prevention, as opposed to enemies
+export const preventArmorDecayPlayer: Effect = {
+    ...preventArmorDecay,
+    stacks: 1,
+    alwaysDisplayStacks: true,
+    // onTurnInProgress should suffice unless there is something that specifically triggers armor decay later on
+    onTurnInProgress: {
+        decrementStacks: 1,
+    },
 };
 
 export const defUp: Effect = {

@@ -1,4 +1,4 @@
-import { armorUp, burn } from "./../ability/Effects";
+import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
 import { chill, poison, thorns, bleed, preventArmorDecay } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -394,7 +394,7 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "On wave start, gain 10 armor and prevent armor decay for 2 turns.",
+    description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
@@ -406,12 +406,7 @@ export const panlid: Item = {
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 10,
-                effects: [
-                    {
-                        ...preventArmorDecay,
-                        duration: 2,
-                    },
-                ],
+                effects: [preventArmorDecayPlayer],
             },
         },
     ],
