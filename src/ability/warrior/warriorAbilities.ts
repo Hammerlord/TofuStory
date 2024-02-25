@@ -1946,8 +1946,8 @@ export const gungnir: Ability = {
     ],
 };
 
-export const nightshadeExplosion: Ability = {
-    name: "Nightshade Explosion",
+export const ironMaiden: Ability = {
+    name: "Iron Maiden",
     resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
@@ -1957,7 +1957,11 @@ export const nightshadeExplosion: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: NightShadeExplosionImage,
+            icon: SpikeBallImage,
+            animationOptions: {
+                width: 100,
+                height: 100,
+            },
             radiate: {
                 area: 2,
                 damage: 3,

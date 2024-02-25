@@ -85,7 +85,7 @@ import {
     ironWill,
     judgment,
     magicCrash,
-    nightshadeExplosion,
+    ironMaiden,
     overpower,
     parashockGuard,
     parry,
@@ -232,7 +232,7 @@ export const JOB_CARD_MAP = {
             bloodthirst,
             gungnir,
             battlelord,
-            nightshadeExplosion,
+            ironMaiden,
             hurlBoulder,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
