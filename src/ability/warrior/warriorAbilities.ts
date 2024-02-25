@@ -65,6 +65,7 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    AbilityEffect,
     Action,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
@@ -1865,19 +1866,26 @@ export const bloodthirst: Ability = {
     ],
 };
 
+const battlelordAbilityEffect: AbilityEffect = {
+    name: "Battle Lord",
+    upgradedByLevels: 1,
+    maxApplications: 1,
+};
+
 export const battlelord: Ability = {
     name: "Battle Lord",
     resourceCost: 2,
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "For 3 turns, your cards are Upgraded by 1 level.",
+    description: "For 3 turns, cards in your hand are Upgraded by 1 level.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.STOMP,
+            currentHandEffects: battlelordAbilityEffect,
             effects: [
                 {
                     name: "Battle Lord",
@@ -1889,7 +1897,12 @@ export const battlelord: Ability = {
                     },
                     duration: 3,
                     maxApplications: 1,
-                    upgradeCardsByLevels: 1,
+                    onTurnInProgress: {
+                        currentHandEffects: battlelordAbilityEffect,
+                    },
+                    onDrawCard: {
+                        currentHandEffects: battlelordAbilityEffect,
+                    },
                 },
             ],
         },

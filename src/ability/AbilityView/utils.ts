@@ -44,12 +44,7 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
         return ability;
     }
 
-    let totalUpgradeByLevels =
-        combatant?.effects.reduce((acc, effect: CombatEffect) => {
-            return acc + (effect.upgradeCardsByLevels || 0);
-        }, 0) || 0;
-
-    totalUpgradeByLevels += ability.effects?.reduce((acc, e: AbilityEffect) => acc + (e.upgradedByLevels || 0), 0) || 0;
+    const totalUpgradeByLevels = ability.effects?.reduce((acc, e: AbilityEffect) => acc + (e.upgradedByLevels || 0), 0) || 0;
 
     let card = ability;
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {

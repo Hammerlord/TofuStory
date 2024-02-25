@@ -607,6 +607,7 @@ const onEffectEventTrigger = ({
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
         dispatch(checkCardActions(other, source));
+
         const owner = findCombatantData(getState, ownerId);
         if (owner?.combatant?.isPlayer) {
             dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any }));

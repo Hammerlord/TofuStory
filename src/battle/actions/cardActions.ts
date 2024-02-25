@@ -246,7 +246,24 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         if (currentHandEffects) {
             dispatch(
                 updateBattle({
-                    hand: getState().battle.hand.map((card: CombatAbility) => ({ ...card, effects: [{ ...currentHandEffects }] })),
+                    hand: getState().battle.hand.map((card: CombatAbility) => {
+                        const cardEffects = card.effects || [];
+                        const countMap = cardEffects.reduce((acc, e: AbilityEffect) => {
+                            if (e.name) {
+                                acc[e.name] = (acc[e.name] || 0) + 1;
+                            }
+
+                            return acc;
+                        }, {});
+
+                        const effects = [...cardEffects];
+                        const { name, maxApplications } = currentHandEffects;
+                        if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
+                            effects.push(currentHandEffects);
+                        }
+                        console.log("new effects", effects, "currentHandEffects", currentHandEffects);
+                        return { ...card, effects };
+                    }),
                 })
             );
         }

@@ -109,6 +109,8 @@ export interface EffectEventTrigger {
     triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
+    /** Effects on the cards currently in the hand */
+    currentHandEffects?: AbilityEffect;
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -268,7 +270,6 @@ export interface Effect {
     viewDeckInOrder?: boolean;
     minimumAttackDamage?: number;
     bypassImmunity?: boolean;
-    upgradeCardsByLevels?: number;
 }
 
 export interface CombatEffect extends Effect {
@@ -552,6 +553,7 @@ export interface Action {
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
+    /** Combatant runs away (turns null) */
     retreat?: boolean;
 }
 
@@ -692,10 +694,13 @@ export enum ANIMATION_TYPES {
  * Effects modifying the ability
  */
 export interface AbilityEffect {
+    name?: string; // Doubles as an ID for maxApplications
+    applierId?: string;
     resourceCost?: number;
     damage?: number;
     removeParentCardAfterTurn?: boolean;
     upgradedByLevels?: number;
+    maxApplications?: number;
 }
 
 export enum SELECT_CARD_TYPES {
