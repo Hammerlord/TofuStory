@@ -232,9 +232,10 @@ export const boarStanceAbility: Ability = {
 
 const balrogStanceEffect: Effect = {
     name: "Balrog Stance - Overwhelming Power",
-    description: "Attack area increased. +1 resource per turn. Every 6 abilities, this character casts Meteors.",
+    description: "Every 3 abilities, this character casts Meteors.",
     attackAreaIncrease: 1,
     resourcesPerTurn: 1,
+    attackPower: 1,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BalrogIconImage,
@@ -243,7 +244,7 @@ const balrogStanceEffect: Effect = {
         conditions: [
             {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
-                numAbilitiesUsed: 5,
+                numAbilitiesUsed: 3,
                 comparator: "modulo",
             },
         ],
@@ -291,7 +292,7 @@ export const dancesWithBalrog: Minion = {
                     icon: MossySnailImage,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [snailStanceRedEffect, snailStanceBlueEffect],
-                    armor: 50,
+                    armor: 75,
                     removeEffects: [snailStanceEligible.name],
                 },
             ],
@@ -348,7 +349,7 @@ export const dancesWithBalrog: Minion = {
                     removeEffects: [balrogStanceEligible.name],
                 },
                 {
-                    damage: 3,
+                    damage: 5,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     icon: FireMarbleImage,
