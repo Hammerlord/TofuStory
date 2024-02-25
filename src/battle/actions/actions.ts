@@ -1558,11 +1558,19 @@ const performAction = ({
                 // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
                 const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
                 dispatch(deleteCard(ability.instanceId));
+                const cardCopy: CombatAbility = {
+                    ...ability,
+                    effects: ability?.effects.filter((e: AbilityEffect) => {
+                        // TODO retain upgrades, but look for a less hard-baked way to do this
+                        return e.upgradedByLevels;
+                    }),
+                };
+
                 dispatch(
                     checkCardActions(
                         {
                             type: ACTION_TYPES.EFFECT,
-                            addCards: [{ ...parentSource.source, effects: [] } as CombatAbility],
+                            addCards: [cardCopy],
                         },
                         parentSource
                     )
