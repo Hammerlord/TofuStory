@@ -1952,7 +1952,7 @@ export const gungnir: Ability = {
     depletedOnUse: true,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "Deal 30% of your HP in damage",
+    description: "Deal damage equal to 30% of your current HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1968,7 +1968,7 @@ export const gungnir: Ability = {
     ],
     upgrades: [
         {
-            description: "Deal 40% of your HP in damage",
+            description: "Deal damage equal to 40% of your current HP.",
             actions: [
                 {
                     multiplier: {
@@ -2139,7 +2139,7 @@ export const forgehammer: Ability = {
         {
             actions: [
                 {
-                    damage: 8,
+                    damage: 3,
                 },
             ],
         },
