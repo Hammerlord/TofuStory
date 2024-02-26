@@ -215,6 +215,9 @@ const useStyles = createUseStyles({
         animationDelay: "0.2s",
         opacity: 1,
     },
+    dead: {
+        opacity: 0,
+    },
     stasis: {
         filter: "brightness(0.25)",
         opacity: 1,
@@ -362,6 +365,7 @@ const CombatantView = forwardRef(
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
+                [classes.dead]: !action && oldState?.HP === 0 && !playDeathAnimation,
                 [classes.dying]: !action && playDeathAnimation,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
