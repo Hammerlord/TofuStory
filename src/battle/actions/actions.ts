@@ -1774,6 +1774,15 @@ const checkSummonMinion = ({
             }
 
             dispatch(updateBattle(newBattleProps));
+            // Give minions time to appear before triggering any minion-related effect events.
+            // Issue where enemies who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
+            dispatch(
+                pushEventQueue({
+                    ...getState().battle,
+                    id: uuid.v4(),
+                    playbackTime: 500,
+                } as Event)
+            );
             dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
         }
     };
