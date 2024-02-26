@@ -110,7 +110,16 @@ export const drawCards = ({
         });
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDrawCard, source }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
+                        source: {
+                            ...source,
+                            trackSumAmount: cardsToDraw.length,
+                        },
+                    })
+                );
             }
         });
         if (deckCycled) {

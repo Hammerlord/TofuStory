@@ -889,7 +889,7 @@ export const bouquet: Item = {
 export const starfallMagicSquare: Item = {
     name: "Starfall Magic Square",
     image: StarfallMagicSquareImage,
-    description: "When you Deplete a card, you Radiate 2 damage to enemies.",
+    description: "When you Deplete a card, you Radiate 3 damage to enemies.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -910,7 +910,7 @@ export const starfallMagicSquare: Item = {
                             animation: ANIMATION_TYPES.ACTION_EXPLODE,
                             radiate: {
                                 area: 2,
-                                damage: 2,
+                                damage: 3,
                                 icon: StarfallMagicSquareImage,
                                 animation: ANIMATION_TYPES.BEAM,
                                 playbackTime: 400,
@@ -1366,13 +1366,14 @@ export const steely: Item = {
     image: SteelyImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "When your deck cycles, fling knives that deal 3 damage and apply Bleed to all targets.",
+    description: "Every 12 cards you draw, fling knives that deal 3 damage and apply Bleed to all targets.",
     effects: [
         {
             name: "Steely",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onDeckCycle: {
+            onDrawCard: {
+                triggerFrequencyFromSum: 12,
                 ability: {
                     name: "Steely",
                     image: SteelyImage,
@@ -1383,7 +1384,7 @@ export const steely: Item = {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
-                            playbackTime: 500,
+                            playbackTime: 1000,
                             animationOptions: {
                                 rotate: 135,
                                 rotateToFaceTarget: true,
