@@ -163,135 +163,107 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
     };
 };
 
-const checkHitEffects = ({
+const getHitEffects = ({
     affectedTargets,
     actorId,
     action,
     source,
+    getState,
 }: {
     affectedTargets: string[];
     actorId: string;
     action: Action;
     source: TriggerSource;
-}) => {
-    return (dispatch, getState) => {
-        if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
-            return;
-        }
+    getState;
+}): [UpdatedCombatantStats, Action][][] => {
+    if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
+        return [];
+    }
 
-        const actorInfo = findCombatantData(getState, actorId);
-        const { combatant: actor, index } = actorInfo || {};
-        if (!actor || actor?.HP <= 0) {
-            return;
-        }
+    const actorInfo = findCombatantData(getState, actorId);
+    const { combatant: actor, index } = actorInfo || {};
+    if (!actor || actor?.HP <= 0) {
+        return [];
+    }
 
-        const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+    const results = [];
+    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
 
-        if (lifeOnHit) {
-            const updated = getUpdatedStats({
-                ...getState().battle,
-                actorId: actor.id,
-                targetIds: [actor.id],
-                selectedIndex: index,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    healing: lifeOnHit * affectedTargets.length,
-                },
-                source,
-                getCombatantById: (id) => findCombatantData(getState, id),
-            });
+    if (lifeOnHit) {
+        const updated = getUpdatedStats({
+            ...getState().battle,
+            actorId: actor.id,
+            targetIds: [actor.id],
+            selectedIndex: index,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                healing: lifeOnHit * affectedTargets.length,
+            },
+            source,
+            getCombatantById: (id) => findCombatantData(getState, id),
+        });
 
-            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
-            dispatch(
-                triggerStatChangeEvents(
-                    updated.map(([statUpdate, action]) => ({
-                        statUpdate,
-                        source: {
-                            source: action,
-                            type: TRIGGER_SOURCE_TYPES.EFFECT,
-                            actorId,
-                            targetId: actorId,
-                            statUpdate,
-                            triggerHistory: [],
-                        },
-                    }))
-                )
-            );
-        }
+        results.push(updated);
+    }
 
-        const totalThorns = affectedTargets.reduce((acc, id: string) => {
-            const combatantData = findCombatantData(getState, id);
-            getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0 }) => (acc += thorns));
-            return acc;
+    const totalThorns = affectedTargets.reduce((acc, id: string) => {
+        const combatantData = findCombatantData(getState, id);
+        getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0 }) => (acc += thorns));
+        return acc;
+    }, 0);
+
+    if (totalThorns) {
+        const updated = getUpdatedStats({
+            ...getState().battle,
+            targetIds: [actor.id],
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                damage: totalThorns,
+            },
+            source,
+            getCombatantById: (id) => findCombatantData(getState, id),
+        });
+
+        results.push(updated);
+    }
+
+    const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { mesoSteal = 0 }) => acc + mesoSteal, 0);
+
+    if (totalMesoSteal) {
+        const updatedTargets = getUpdatedStats({
+            ...getState().battle,
+            actorId: actor.id,
+            targetIds: affectedTargets,
+            selectedIndex: index,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                stealMesos: totalMesoSteal * affectedTargets.length,
+            },
+            source,
+            getCombatantById: (id) => findCombatantData(getState, id),
+        });
+
+        const totalMesosGained = updatedTargets.reduce((acc, [statUpdate]) => {
+            return acc + Math.abs(statUpdate.mesos);
         }, 0);
 
-        if (totalThorns) {
-            const updated = getUpdatedStats({
-                ...getState().battle,
-                targetIds: [actor.id],
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    damage: totalThorns,
-                },
-                source,
-                getCombatantById: (id) => findCombatantData(getState, id),
-            });
+        const updatedActor = getUpdatedStats({
+            ...getState().battle,
+            actorId: actor.id,
+            targetIds: [actor.id],
+            selectedIndex: index,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                mesos: totalMesosGained,
+            },
+            source,
+            getCombatantById: (id) => findCombatantData(getState, id),
+        });
 
-            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
-            dispatch(
-                triggerStatChangeEvents(
-                    updated.map(([statUpdate, action]) => ({
-                        statUpdate,
-                        source: {
-                            source: action,
-                            type: TRIGGER_SOURCE_TYPES.EFFECT,
-                            actorId,
-                            targetId: actorId,
-                            statUpdate,
-                            triggerHistory: [],
-                        },
-                    }))
-                )
-            );
-        }
+        results.push(updatedTargets, updatedActor);
+    }
 
-        const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { mesoSteal = 0 }) => acc + mesoSteal, 0);
-
-        if (totalMesoSteal) {
-            const updatedTargets = getUpdatedStats({
-                ...getState().battle,
-                actorId: actor.id,
-                targetIds: affectedTargets,
-                selectedIndex: index,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    stealMesos: totalMesoSteal * affectedTargets.length,
-                },
-                source,
-                getCombatantById: (id) => findCombatantData(getState, id),
-            });
-
-            dispatch(applyStatChanges(updatedTargets.map(([statUpdate]) => statUpdate)));
-            const totalMesosGained = updatedTargets.reduce((acc, [statUpdate]) => {
-                return acc + Math.abs(statUpdate.mesos);
-            }, 0);
-
-            const updatedActor = getUpdatedStats({
-                ...getState().battle,
-                actorId: actor.id,
-                targetIds: [actor.id],
-                selectedIndex: index,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    mesos: totalMesosGained,
-                },
-                source,
-                getCombatantById: (id) => findCombatantData(getState, id),
-            });
-
-            dispatch(applyStatChanges(updatedActor.map(([statUpdate]) => statUpdate)));
-        }
-    };
+    return results;
 };
 
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
@@ -1594,7 +1566,12 @@ const performAction = ({
             }
         }
 
-        dispatch(checkHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action } }));
+        // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
+        const hitEffects = getHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action }, getState });
+        hitEffects.forEach((statChanges) => {
+            dispatch(applyStatChanges(statChanges.map(([statUpdate]) => statUpdate)));
+        });
+
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
 
@@ -1618,6 +1595,25 @@ const performAction = ({
                 }))
             )
         );
+
+        // *But don't trigger the related effect events until after the action has resolved
+        hitEffects.forEach((statChanges) => {
+            dispatch(
+                triggerStatChangeEvents(
+                    statChanges.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: {
+                            source: action,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            actorId,
+                            targetId: actorId,
+                            statUpdate,
+                            triggerHistory: [],
+                        },
+                    }))
+                )
+            );
+        });
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
