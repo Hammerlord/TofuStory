@@ -7,6 +7,7 @@ import {
     Condition,
     CONDITION_TARGETS,
     Effect,
+    EffectEventTrigger,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
@@ -57,7 +58,7 @@ export const passesConditions = ({
     source,
 }: {
     getCalculationTarget: (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => CombatantInfo | CombatantInfo[] | undefined;
-    proc: Ability | Action | CombatEffect | Bonus; // The thing to activate conditionally--an action, an effect, a bonus
+    proc: Ability | Action | CombatEffect | Bonus | EffectEventTrigger; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
     const passesCondition = (condition: Condition) => {

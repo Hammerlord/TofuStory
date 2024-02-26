@@ -1,5 +1,3 @@
-import { ironBody } from "./warrior/warriorAbilities";
-import { onBattleEnd } from "./../battle/actions/phases";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 
@@ -54,29 +52,18 @@ export enum TRIGGER_TARGET_TYPES {
     ALL_TARGETS = "all-targets", // All targets affected by the trigger action
 }
 
-export interface EffectEventTrigger {
+/**
+ * What happens when an effect event triggers. It can perform a pseudo-Action, hence properties of Action are included here.
+ */
+export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
     removeEffect?: boolean; // Remove this effect from its owner after completion of the event
     conditionOperator?: "and" | "or"; // OR by default
-    conditions?: Condition[]; // OR if multiple conditions are present
     parentEffect?: {
         // Update the parent effect's stats
         damage?: number;
     };
 
     targetType?: TRIGGER_TARGET_TYPES;
-    mesos?: number;
-    // Stat changes that do not trigger an 'action'
-    effects?: Effect[];
-    armor?: number;
-    healing?: number;
-    drawCards?: {
-        amount: number;
-        effects?: AbilityEffect[];
-    };
-    addCards?: Ability[];
-    resurrect?: boolean;
-    resources?: number;
-    damage?: number;
     randomOptions?: {
         numTargets?: number;
         targetType: TARGET_TYPES.RANDOM_HOSTILE | TARGET_TYPES.RANDOM_FRIENDLY;
@@ -84,17 +71,10 @@ export interface EffectEventTrigger {
 
     usableWhileStunned?: boolean;
     usableWhileDead?: boolean;
-    // If you are providing an ability to be applied to a target, you probably don't want to do any of the other properties.
-    // (Ability actions already have their own targeting and effects and whatnot)
-    // If a string is supplied, it is a reference
+    // If you are providing an entire ability to be used when this effect event triggers, you probably don't want to use the pseudo-Action configurations.
+    // (Ability actions already have their own targeting and effects and whatnot).
+    // If a string is supplied, it is assumed to be a reference to an ability object.
     ability?: Ability | string;
-    multiplier?: Multiplier;
-    // Names of effects to remove from the combatant
-    removeEffects?: string[];
-    area?: number;
-    excludePrimaryTarget?: boolean;
-    /** Wild magic */
-    autoCastAbilities?: AutoCastAbility;
     chance?: number; // A percentage of occurrence, up to 1
     // Reduces a stack of the parent effect when this event triggers. If the parent effect has 1 or no stacks, this behaves like removeEffect.
     decrementStacks?: number;
@@ -110,14 +90,7 @@ export interface EffectEventTrigger {
     triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
-    applyAbilityEffects?: {
-        // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
-        // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
-        amount?: number;
-        pile: "hand" | "deck" | "discard" | "deplete";
-        abilityEffects: AbilityEffect[];
-    };
-}
+};
 
 export enum EFFECT_EVENT_KEYS {
     onAbility = "onAbility",
@@ -141,20 +114,22 @@ export enum EFFECT_EVENT_KEYS {
     onTurnInProgress = "onTurnInProgress",
     onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
-    onEnd = "onEnd",
+    onEnd = "onEnd", // When the effect ticks down and ends naturally, not when it is removed or dispelled
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
     onHostileAbility = "onHostileAbility",
-    onHostileSummon = "onHostileSummon",
-    onFriendlySummon = "onFriendlySummon",
-    onArmorLoss = "onArmorLoss",
+    onHostileSummon = "onHostileSummon", // When a minion hostile to the effect owner is summoned
+    onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned
+    onArmorLoss = "onArmorLoss", // Whenever character loses armor -- this includes armor decay
     onDrawCard = "onDrawCard", // Player drew a card
     onDeckCycle = "onDeckCycle", // Player's deck reset
     onBattleStart = "onBattleStart",
     onBattleEnd = "onBattleEnd",
     onMoveCardFromHandToDeck = "onMoveCardFromHandToDeck",
 }
+
+type effectEventKeys = keyof typeof EFFECT_EVENT_KEYS;
 
 export enum SCALING_VALUE_TYPES {
     FLAT = "flat",
@@ -167,7 +142,7 @@ export interface AbilityDamageReceived {
     type: SCALING_VALUE_TYPES;
 }
 
-export interface Effect {
+export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     name: string;
     type: EFFECT_TYPES;
     class: EFFECT_CLASSES;
@@ -212,45 +187,6 @@ export interface Effect {
     abilityDamageReceived?: AbilityDamageReceived[];
     allowMoveCardFromHandToDeck?: boolean;
     conditions?: Condition[];
-    onAbility?: EffectEventTrigger;
-    onOffensiveAbility?: EffectEventTrigger;
-    onDepleteAbility?: EffectEventTrigger;
-    onAttack?: EffectEventTrigger;
-    onDeath?: EffectEventTrigger;
-    onFriendlyDeath?: EffectEventTrigger;
-    onHostileAbility?: EffectEventTrigger;
-    onHostileDeath?: EffectEventTrigger;
-    onReceiveAttack?: EffectEventTrigger;
-    onReceiveDamage?: EffectEventTrigger;
-    onFriendlyReceiveAttack?: EffectEventTrigger;
-    onReceiveHealing?: EffectEventTrigger;
-    onReceiveArmor?: EffectEventTrigger;
-    onReceiveEffect?: EffectEventTrigger;
-    onApplyEffect?: EffectEventTrigger;
-    onResourcesSpent?: EffectEventTrigger;
-    onResourcesGained?: EffectEventTrigger;
-    onTurnStart?: EffectEventTrigger;
-    onTurnInProgress?: EffectEventTrigger;
-    onMoveCardFromHandToDeck?: EffectEventTrigger;
-    onTurnEnd?: EffectEventTrigger;
-    /** When the effect ticks down and ends naturally, not when it is removed or dispelled */
-    onEnd?: EffectEventTrigger;
-    onWaveStart?: EffectEventTrigger;
-    onWaveClear?: EffectEventTrigger;
-    onEffectRemoved?: EffectEventTrigger;
-    onReceiveOverhealing?: EffectEventTrigger;
-    /** When the effect owner is summoned */
-    onSummoned?: EffectEventTrigger;
-    /** When a minion friendly to the effect owner is summoned */
-    onFriendlySummon?: EffectEventTrigger;
-    /** When a minion hostile to the effect owner is summoned */
-    onHostileSummon?: EffectEventTrigger;
-    /** Whenever character loses armor -- this includes armor decay */
-    onArmorLoss?: EffectEventTrigger;
-    onDrawCard?: EffectEventTrigger;
-    onDeckCycle?: EffectEventTrigger;
-    onBattleStart?: EffectEventTrigger;
-    onBattleEnd?: EffectEventTrigger;
     canBeSilenced?: boolean;
     /** Character does not choose and play an ability during its turn */
     preventTurnAction?: boolean;
@@ -279,13 +215,13 @@ export interface Effect {
     // Display stacks even if there is only one stack. Useful for temporary 1-stack effects which are not limited by duration.
     /** @see ironBody */
     alwaysDisplayStacks?: boolean;
-}
+};
 
-export interface CombatEffect extends Effect {
+export type CombatEffect = Effect & {
     id: string;
     uptime: number;
     applierId?: string;
-}
+};
 
 export interface Minion {
     name: string;
@@ -454,7 +390,7 @@ export interface Morph {
     };
 }
 
-export interface Action {
+export type Action = {
     damage?: number;
     secondaryDamage?: number;
     flatDamage?: number; // Deal damage that is not affected by any modifiers
@@ -571,7 +507,7 @@ export interface Action {
     autoCastAbilities?: AutoCastAbility;
     /** Combatant runs away (turns null) */
     retreat?: boolean;
-}
+};
 
 export interface AddCardUpgradeOptions {
     // If true, the cards of addCards should be upgraded
