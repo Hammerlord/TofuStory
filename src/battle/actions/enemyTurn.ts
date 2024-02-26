@@ -200,14 +200,21 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
     return -1;
 };
 
-const requeueCurrentAbility = (combatantId: string) => (dispatch, getState) => {
-    const actorData = findCombatantData(getState, combatantId);
-    if (!actorData) {
+const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState) => {
+    const actorInfo = findCombatantData(getState, combatantId);
+    if (!actorInfo) {
         return;
     }
 
-    const actor = actorData.combatant;
-    const abilityIndex = getUseAbilityIndex(actorData);
+    const actor = actorInfo.combatant;
+    const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
+    let abilityIndex;
+    if (abilityUsed) {
+        abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
+    } else {
+        abilityIndex = getUseAbilityIndex(actorInfo);
+    }
+
     if (abilityIndex === -1) {
         return;
     }
@@ -347,7 +354,7 @@ export const startEnemyTurn = () => {
 
                     const combatant = combatantInfo.combatant;
                     if (combatant.HP > 0 && !combatant.casting?.channelDuration) {
-                        dispatch(requeueCurrentAbility(combatant.id));
+                        dispatch(requeueRecentlyUsedAbility(combatant.id));
                     }
                 });
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
