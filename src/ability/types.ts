@@ -100,6 +100,7 @@ export enum EFFECT_EVENT_KEYS {
     onDeath = "onDeath",
     onFriendlyDeath = "onFriendlyDeath",
     onHostileDeath = "onHostileDeath",
+    onKill = "onKill", // When the effect owner or a friendly unit kills something
     onReceiveAttack = "onReceiveAttack",
     onFriendlyReceiveAttack = "onFriendlyReceiveAttack",
     onReceiveDamage = "onReceiveDamage",

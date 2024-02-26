@@ -67,7 +67,6 @@ import {
     SapOfNependeathImage,
     SnowshoesImage,
     SpectrumGogglesImage,
-    SportyTShirtImage,
     StarEarringsImage,
     StarfallMagicSquareImage,
     SteelyImage,
@@ -1408,13 +1407,13 @@ export const taurospearHorn: Item = {
     image: TaurospearHornImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When an enemy dies, gain 1 resource and draw a card.",
+    description: "When you kill an enemy, gain 1 resource and draw a card.",
     effects: [
         {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Taurospear Horn",
-            onHostileDeath: {
+            onKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
                 drawCards: {

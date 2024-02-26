@@ -98,7 +98,7 @@ export const findCombatantData = (getState: Function, combatantId: string): Comb
     }
 };
 
-const handleLifeOnKill = (triggerSource?: TriggerSource) => {
+const handleOnKill = (triggerSource?: TriggerSource) => {
     return (dispatch, getState) => {
         if (!triggerSource) {
             return;
@@ -112,48 +112,54 @@ const handleLifeOnKill = (triggerSource?: TriggerSource) => {
             killedByInfo = findCombatantData(getState, actorId);
         }
 
-        const { combatant: killedBy, index } = killedByInfo || {};
+        const { combatant: killedBy, index, friendly } = killedByInfo || {};
         if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
         const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
 
-        if (lifeOnKill === 0) {
-            return;
+        if (lifeOnKill > 0) {
+            const updated = getUpdatedStats({
+                ...getState().battle,
+                actorId: killedBy.id,
+                targetIds: [killedBy.id],
+                selectedIndex: index,
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    healing: lifeOnKill,
+                },
+                source: {
+                    ...triggerSource,
+                },
+                getCombatantById: (id) => findCombatantData(getState, id),
+            });
+
+            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(
+                triggerStatChangeEvents(
+                    updated.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: {
+                            source: action,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                            actorId: killedBy.id,
+                            targetId: killedBy.id,
+                            statUpdate,
+                            triggerHistory: [],
+                        },
+                    }))
+                )
+            );
         }
 
-        const updated = getUpdatedStats({
-            ...getState().battle,
-            actorId: killedBy.id,
-            targetIds: [killedBy.id],
-            selectedIndex: index,
-            action: {
-                type: ACTION_TYPES.EFFECT,
-                healing: lifeOnKill,
-            },
-            source: {
-                ...triggerSource,
-            },
-            getCombatantById: (id) => findCombatantData(getState, id),
+        friendly.forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onKill, source: { ...triggerSource } })
+                );
+            }
         });
-
-        dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
-        dispatch(
-            triggerStatChangeEvents(
-                updated.map(([statUpdate, action]) => ({
-                    statUpdate,
-                    source: {
-                        source: action,
-                        type: TRIGGER_SOURCE_TYPES.EFFECT,
-                        actorId: killedBy.id,
-                        targetId: killedBy.id,
-                        statUpdate,
-                        triggerHistory: [],
-                    },
-                }))
-            )
-        );
     };
 };
 
@@ -329,7 +335,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
             }
         };
 
-        dispatch(handleLifeOnKill(triggerSource));
+        dispatch(handleOnKill(triggerSource));
         dispatch(
             updateBattle({
                 mesosAccumulated: getState().battle.mesosAccumulated + (combatant.mesos || 0),
