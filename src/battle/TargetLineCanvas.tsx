@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
 /**
  * Draws a targeting line from eg. a selected ally to the mouse position
  */
-const TargetLineCanvas = ({ children, originationRef, color = 'rgb(221, 46, 68)', ...other }) => {
+const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
     const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
     const [targetLineRef] = useState(createRef() as React.RefObject<SVGLineElement>);
     const [circleRef] = useState(createRef() as React.RefObject<SVGCircleElement>);
@@ -39,7 +39,8 @@ const TargetLineCanvas = ({ children, originationRef, color = 'rgb(221, 46, 68)'
         >
             {children}
             <div className={classes.canvas}>
-                {origination && (
+                {/** 0, 0 happens sometimes when you select cards too quickly */}
+                {origination && origination.x !== 0 && origination.y !== 0 && (
                     <svg width="100%" height="100%">
                         <line
                             ref={targetLineRef}
