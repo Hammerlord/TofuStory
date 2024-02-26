@@ -725,7 +725,7 @@ export const isTurnActionPrevented = (combatantInfo: CombatantInfo): boolean => 
         return true;
     }
 
-    const combatant = combatantInfo.combatant;
+    const combatant: Combatant | Player = combatantInfo.combatant;
     const turnPreventedFromEffects = combatant.effects.some(
         (effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type)
     );
@@ -735,7 +735,7 @@ export const isTurnActionPrevented = (combatantInfo: CombatantInfo): boolean => 
     }
 
     const isSilenced = combatant.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
-    const ability = combatant.abilities[getUseAbilityIndex(combatantInfo)];
+    const ability = combatant.abilities?.[getUseAbilityIndex(combatantInfo)];
 
     // Silence prevents using abilities which are pure support/effects
     return isSilenced && ability?.actions.every((action) => action.type === ACTION_TYPES.EFFECT);
