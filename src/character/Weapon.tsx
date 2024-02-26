@@ -10,6 +10,7 @@ const WEAPON_DEFAULT_ROTATION = 45; // This is a MapleStory thing where weapon s
 const useStyles = createUseStyles({
     root: {
         transformOrigin: "150% 150%",
+        pointerEvents: "none",
         "& img": {
             transform: (options: any) => options?.transform || "scale(4, 4) rotate(90deg)",
             imageRendering: "pixelated",
@@ -67,6 +68,7 @@ const useStyles = createUseStyles({
         top: 200,
         width: "100%",
         height: "100%",
+        pointerEvents: "none",
     },
 });
 
