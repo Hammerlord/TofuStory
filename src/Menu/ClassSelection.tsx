@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, WarMushImage, WizMushImage } from "../images";
+import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, LandImage, WarMushImage, WizMushImage } from "../images";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
 import { useAppSelector } from "../hooks";
@@ -17,8 +17,19 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: "rgba(0, 0, 0, 0.8)",
+        background: "rgba(0, 0, 0, 0.85)",
         color: "white",
+    },
+    bg: {
+        opacity: 0.05,
+        width: 1067,
+        height: 648,
+        background: `url(${LandImage})`,
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -71%)",
+        zIndex: -1,
     },
     inner: {
         textAlign: "center",
@@ -30,7 +41,7 @@ const useStyles = createUseStyles({
         fontSize: "1.2rem",
     },
     portraitContainer: {
-        margin: "32px 0",
+        margin: "64px 0",
         minHeight: "115px",
         position: "relative",
     },
@@ -111,6 +122,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
             <div className={classes.inner}>
                 <div>
                     <h1>You wake up without arms or legs.</h1>
+                    <div className={classes.bg} />
                     <div className={classes.portraitContainer}>
                         <img src={portraits[selectedClass] || AnonymushroomImage} className={classes.portrait} />
                     </div>
