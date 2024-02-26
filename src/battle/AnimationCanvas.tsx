@@ -36,6 +36,8 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             height: PROJECTILE_HEIGHT,
             position: "fixed",
             zIndex: 5,
+            // HACK: we only want projectiles to be visible for the duration of the animation (see opacity properties in animation.ts). So set projectiles to be invisible otherwise.
+            opacity: 0,
         },
         mirrorX: {
             transform: "scale(-1, 1)",
@@ -138,7 +140,6 @@ const AnimationCanvas = ({
     const projectileRefs = Array.from({ length: MAX_BEAM_PROJECTILES * 5 }).map(() => useRef() as any);
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
 
-    const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {
@@ -161,11 +162,6 @@ const AnimationCanvas = ({
         if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
             return;
         }
-
-        // HACK: If a one-way projectile animation finishes playing, there can be a flicker where it teleports back to the origination as we wait for the next event to occur.
-        // Make the projectile turn invisible when the animation is done in that case.
-        setIsAnimationPlaying(true);
-        setTimeout(() => setIsAnimationPlaying(false), playbackTime - 10);
 
         eventIdRef.current = eventId;
         const { type, animation, ricochet, icon } = action || {};
@@ -310,7 +306,6 @@ const AnimationCanvas = ({
             key: i,
             ref: projectileRefs[i],
             style: {
-                visibility: isAnimationPlaying ? "visible" : "hidden",
                 left: actorX - projectileDimensions.width / 2,
                 top: actorY - projectileDimensions.height / 2,
                 width,

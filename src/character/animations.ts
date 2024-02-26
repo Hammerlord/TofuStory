@@ -70,6 +70,7 @@ export const travel = ({
     }[] = [
         {
             transform: `unset`,
+            opacity: fadeIn ? 0 : 1,
         },
     ];
 
@@ -135,11 +136,9 @@ export const travel = ({
             .slice(0, i + 1)
             .reduce((acc, { xDiff, yDiff }) => acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)), 0);
 
-        const opacity = fadeIn && i === 0 ? 0 : 1;
-
         animationFrames.push({
             transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
-            opacity,
+            opacity: 1,
             offset: travelDist / totalTravelDistance || null,
         });
     });
@@ -174,14 +173,11 @@ export const explode = ({
 
     const animationFrames = [
         {
-            transform: "unset",
-        },
-        {
             transform: "scale(1)",
             filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
-            opacity: 0.8,
             easing: "ease-out",
             offset: 0.2,
+            opacity: 0.8,
         },
         {
             transform: "scale(7)",
