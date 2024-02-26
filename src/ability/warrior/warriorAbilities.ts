@@ -52,6 +52,7 @@ import {
     SlashBlastImage,
     SpikeBallImage,
     SpikedMaceImage,
+    SquareHammerImage,
     WarLeapImage,
     WarMushBattleLordImage,
     WarMushImage,
@@ -643,7 +644,7 @@ export const berserk2: Ability = {
     resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    description: "Cards in your current hand cost 3 less until they are discarded",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -656,8 +657,13 @@ export const berserk2: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            currentHandEffects: {
-                resourceCost: -3,
+            applyAbilityEffects: {
+                pile: "hand",
+                abilityEffects: [
+                    {
+                        resourceCost: -3,
+                    },
+                ],
             },
         },
     ],
@@ -668,7 +674,7 @@ export const berserk: Ability = {
     resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "Reduces the cost of cards in your current hand by 3 until they are used or discarded",
+    description: "Cards in your current hand cost 3 less until they are discarded",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -678,8 +684,13 @@ export const berserk: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            currentHandEffects: {
-                resourceCost: -3,
+            applyAbilityEffects: {
+                pile: "hand",
+                abilityEffects: [
+                    {
+                        resourceCost: -3,
+                    },
+                ],
             },
         },
     ],
@@ -1897,7 +1908,10 @@ export const battlelord: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.STOMP,
-            currentHandEffects: battlelordAbilityEffect,
+            applyAbilityEffects: {
+                pile: "hand",
+                abilityEffects: [battlelordAbilityEffect],
+            },
             effects: [
                 {
                     name: "Battle Lord",
@@ -1910,10 +1924,16 @@ export const battlelord: Ability = {
                     duration: 3,
                     maxApplications: 1,
                     onTurnInProgress: {
-                        currentHandEffects: battlelordAbilityEffect,
+                        applyAbilityEffects: {
+                            pile: "hand",
+                            abilityEffects: [battlelordAbilityEffect],
+                        },
                     },
                     onDrawCard: {
-                        currentHandEffects: battlelordAbilityEffect,
+                        applyAbilityEffects: {
+                            pile: "hand",
+                            abilityEffects: [battlelordAbilityEffect],
+                        },
                     },
                 },
             ],
@@ -2049,7 +2069,7 @@ export const hurlBoulder: Ability = {
 export const reinforce: Ability = {
     name: "Reinforce",
     image: ComboSynergyImage,
-    description: "Search a support card from your deck and Upgrade it until it is used or discarded.",
+    description: "Search a support card from your deck. It is Upgraded until used or discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
@@ -2080,6 +2100,46 @@ export const reinforce: Ability = {
                             },
                         ],
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const forgehammer: Ability = {
+    name: "Forge Hammer",
+    image: SquareHammerImage,
+    description: "Upgrade a random card in your hand.",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: SquareHammerImage,
+            applyAbilityEffects: {
+                pile: "hand",
+                amount: 1,
+                abilityEffects: [
+                    {
+                        upgradedByLevels: 1,
+                        removeOnDiscard: false,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 8,
                 },
             ],
         },

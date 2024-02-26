@@ -112,6 +112,7 @@ import {
     worldReaver,
     yell,
     reinforce,
+    forgehammer,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -236,6 +237,7 @@ export const JOB_CARD_MAP = {
             ironMaiden,
             hurlBoulder,
             reinforce,
+            forgehammer,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
         starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block].map((card) => {

@@ -149,7 +149,7 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             addCards,
             addCardsToDeck,
             addCardsToDiscard,
-            currentHandEffects,
+            applyAbilityEffects,
             selectCards,
             retrieveDepletedCards,
             moveCards,
@@ -251,26 +251,23 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
-        if (currentHandEffects) {
+        if (applyAbilityEffects) {
+            const { amount = Infinity, pile: pileKey } = applyAbilityEffects;
+            const pile = getState().battle[pileKey];
+            const affectedCards = shuffle(pile)
+                .slice(0, amount)
+                .reduce((acc, ability: CombatAbility) => {
+                    acc[ability.instanceId] = true;
+                    return acc;
+                }, {});
+
             dispatch(
                 updateBattle({
-                    hand: getState().battle.hand.map((card: CombatAbility) => {
-                        // TODO reuse code from applyAbilityEventEffects
-                        const cardEffects = card.effects || [];
-                        const countMap = cardEffects.reduce((acc, e: AbilityEffect) => {
-                            if (e.name) {
-                                acc[e.name] = (acc[e.name] || 0) + 1;
-                            }
-
-                            return acc;
-                        }, {});
-
-                        const effects = [...cardEffects];
-                        const { name, maxApplications } = currentHandEffects;
-                        if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
-                            effects.push(currentHandEffects);
+                    [pileKey]: pile.map((card: CombatAbility) => {
+                        if (affectedCards[card.instanceId]) {
+                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card });
                         }
-                        return { ...card, effects };
+                        return card;
                     }),
                 })
             );

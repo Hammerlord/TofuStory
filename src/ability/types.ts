@@ -1,3 +1,4 @@
+import { ironBody } from "./warrior/warriorAbilities";
 import { onBattleEnd } from "./../battle/actions/phases";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
@@ -109,8 +110,13 @@ export interface EffectEventTrigger {
     triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
-    /** Effects on the cards currently in the hand */
-    currentHandEffects?: AbilityEffect;
+    applyAbilityEffects?: {
+        // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
+        // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
+        amount?: number;
+        pile: "hand" | "deck" | "discard" | "deplete";
+        abilityEffects: AbilityEffect[];
+    };
 }
 
 export enum EFFECT_EVENT_KEYS {
@@ -471,8 +477,14 @@ export interface Action {
     resources?: number;
     /** Displaces characters toward the target index */
     vacuum?: number;
-    /** Effects on the cards currently in the hand */
-    currentHandEffects?: AbilityEffect;
+    /** Effects on the cards in a particular pile */
+    applyAbilityEffects?: {
+        // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
+        // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
+        amount?: number;
+        pile: "hand" | "deck" | "discard" | "deplete";
+        abilityEffects: AbilityEffect[];
+    };
     /** Adds cards to your current hand */
     addCards?: Ability[];
     addCardsToDeck?: Ability[];
