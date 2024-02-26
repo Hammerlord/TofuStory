@@ -15,6 +15,7 @@ import {
     BackpackImage,
     BallerCaneImage,
     BattleShieldImage,
+    BloodMaskImage,
     BlueJeanShortsImage,
     BluePotionImage,
     BlueSaunaRobeImage,
@@ -1902,6 +1903,48 @@ export const icarusCape: Item = {
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 3,
             drawCardsPerTurn: 1,
+        },
+    ],
+};
+
+export const bloodMask: Item = {
+    name: "Blood Mask",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: BloodMaskImage,
+    description: "Once per turn, when you apply a Bleed, Silence, or Stun, draw a card.",
+    effects: [
+        {
+            name: "Blood Mask Item",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Blood Mask",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        image: BloodMaskImage,
+                        description: "When you apply a Bleed, Silence, or Stun, draw a card.",
+                        duration: 1,
+                        onApplyEffect: {
+                            conditions: [
+                                {
+                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET, // This should be comparing the effect
+                                    hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.SILENCE],
+                                    comparator: "eq",
+                                },
+                            ],
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            drawCards: {
+                                amount: 1,
+                            },
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

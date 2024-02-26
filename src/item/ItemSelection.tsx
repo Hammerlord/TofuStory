@@ -5,7 +5,6 @@ import { createUseStyles } from "react-jss";
 import { getRandomItem, shuffle } from "../utils";
 import Overlay from "../view/Overlay";
 import { ITEM_TYPES, Item } from "./types";
-import { ITEMS } from "../Map/routes/eventList";
 import ItemView from "./ItemView";
 import { Player } from "../character/types";
 import { rollItemPool } from "./utils";

@@ -1,3 +1,4 @@
+import { PLAYER_CLASSES } from "../../Menu/types";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
@@ -71,6 +72,7 @@ import {
     wildKargoEye,
     workGloves,
     icarusCape,
+    bloodMask,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -133,7 +135,6 @@ export const ITEMS = [
     steely,
     tauromacisHorn,
     taurospearHorn,
-    starEarrings,
     brick,
     adamantiumPlate,
     wildKargoEye,
@@ -155,3 +156,8 @@ export const ITEMS = [
     theBackpack,
     icarusCape,
 ];
+
+export const CLASS_ITEMS = {
+    [PLAYER_CLASSES.WARRIOR]: [bloodMask],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings],
+};

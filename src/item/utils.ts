@@ -1,4 +1,4 @@
-import { ITEMS } from "../Map/routes/eventList";
+import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
 import { RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../constants";
 import { ITEM_TYPES, Item, RARITIES } from "./types";
 
@@ -50,7 +50,7 @@ export const rollItemPool = ({
     excludeItems.forEach((item) => (exclude[item.name] = true));
 
     const selectedRarity = rollRarity(player, bonuses);
-    let itemPool = ITEMS.filter((item: Item) => !exclude[item.name]);
+    let itemPool = ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name]);
     let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
     if (!filteredByRarity.length) {
         const changeRarity = {
