@@ -18,13 +18,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const Reticle = ({ color = "rgba(0, 0, 0, 0.25)", className, ...props }) => {
+const Reticle = ({ color = "rgba(0, 0, 0, 0.3)", className, ...props }) => {
     const classes = useStyles();
     return (
         <div className={classNames(classes.root, className)} {...props}>
             <svg width="100%" height="100%" viewBox="-1 -1 102 102">
                 {["m 0 10 Q 0 0 10 0", "m 90 0 Q 100 0 100 10", "M 0 90 Q 0 100 10 100", "M 100 90 Q 100 100 90 100"].map((d) => (
-                    <path key={d} d={d} stroke={color} fill="transparent" strokeWidth="2" strokeLinecap="round" />
+                    <path key={d} d={d} stroke={color} fill="transparent" strokeWidth="2.5" strokeLinecap="round" />
                 ))}
             </svg>
         </div>
