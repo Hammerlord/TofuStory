@@ -958,7 +958,7 @@ export const cross: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             selectCards: {
-                type: SELECT_CARD_TYPES.DISCOVER_FROM_DECK,
+                type: SELECT_CARD_TYPES.SEARCH_DECK,
                 filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
                 effects: [
                     {
@@ -1901,7 +1901,7 @@ export const battlelord: Ability = {
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "For 3 turns, cards in your hand are Upgraded by 1 level.",
+    description: "For 3 turns, cards in your hand are Upgraded.",
     overrideBodyText: true,
     actions: [
         {
@@ -1924,6 +1924,12 @@ export const battlelord: Ability = {
                     duration: 3,
                     maxApplications: 1,
                     onTurnInProgress: {
+                        applyAbilityEffects: {
+                            pile: "hand",
+                            abilityEffects: [battlelordAbilityEffect],
+                        },
+                    },
+                    onAddCardToHand: {
                         applyAbilityEffects: {
                             pile: "hand",
                             abilityEffects: [battlelordAbilityEffect],
@@ -2078,7 +2084,7 @@ export const reinforce: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             selectCards: {
-                type: SELECT_CARD_TYPES.DISCOVER_FROM_DECK,
+                type: SELECT_CARD_TYPES.SEARCH_DECK,
                 filters: [ACTION_TYPES.EFFECT],
                 effects: [
                     {

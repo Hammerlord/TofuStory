@@ -72,7 +72,7 @@ const getCardSelection = ({
         return applyFilters(hand);
     }
 
-    if (type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK) {
+    if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
         return applyFilters(deck.concat(discard))
             .slice(0, DEFAULT_NUM_OPTIONS)
             .map((card) => ({ ...card, effects }));

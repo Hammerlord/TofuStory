@@ -124,6 +124,7 @@ export enum EFFECT_EVENT_KEYS {
     onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned
     onArmorLoss = "onArmorLoss", // Whenever character loses armor -- this includes armor decay
     onDrawCard = "onDrawCard", // Player drew a card
+    onAddCardToHand = "onAddCardToHand", // Player added cards from the card selection overlay
     onDeckCycle = "onDeckCycle", // Player's deck reset
     onBattleStart = "onBattleStart",
     onBattleEnd = "onBattleEnd",
@@ -663,7 +664,7 @@ export interface AbilityEffect {
 export enum SELECT_CARD_TYPES {
     COPY_FROM_HAND = "copy",
     DISCOVER_FROM_CLASS = "discover-from-class",
-    DISCOVER_FROM_DECK = "discover-from-deck",
+    SEARCH_DECK = "search-deck",
     PRESET_CARDS = "preset-cards",
     DEPLETE_FROM_HAND = "deplete",
     HAND_TO_TOP_DECK = "hand-to-top-deck",

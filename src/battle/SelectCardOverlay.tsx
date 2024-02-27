@@ -8,10 +8,9 @@ import { useAppDispatch } from "../hooks";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { prepareForDiscard } from "./actions/playerTurn";
 import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import getCardSelection from "./selectCardUtils";
-import { depleteAbilities, drawCards, applyAbilityEventEffects } from "./actions/cardActions";
+import { selectCardsAction } from "./actions/cardActions";
 
 const useStyles = createUseStyles({
     inner: {
@@ -108,80 +107,7 @@ const SelectCardOverlay = ({
     const [hide, setHide] = useState(false);
 
     const handleSelectClick = () => {
-        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities }));
-            onSelect();
-            return;
-        }
-
-        if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-            const updatedHand = [];
-            const updatedDeck = [...deck];
-            hand.forEach((ability: CombatAbility) => {
-                if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDeck.unshift(ability);
-                } else {
-                    updatedHand.push(ability);
-                }
-            });
-
-            dispatch(
-                updateBattle({
-                    hand: updatedHand,
-                    deck: updatedDeck,
-                })
-            );
-        } else if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
-            const updatedHand = [];
-            const updatedDiscard = [...discard];
-            hand.forEach((ability: CombatAbility) => {
-                if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDiscard.unshift(...prepareForDiscard([ability]));
-                } else {
-                    updatedHand.push(ability);
-                }
-            });
-            dispatch(
-                updateBattle({
-                    hand: updatedHand,
-                    discard: updatedDiscard,
-                })
-            );
-            dispatch(drawCards({ amount: selectedAbilityIds.length }));
-        } else if (type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK) {
-            const updatedHand = [...hand];
-            const updatedDeck = [...deck];
-            const updatedDiscard = [...discard];
-            selectedAbilityIds.forEach((id) => {
-                const findAndAppendFrom = (pile: CombatAbility[]): boolean => {
-                    const index = pile.findIndex((ability) => ability.instanceId === id);
-                    if (index > -1) {
-                        const [card] = pile.splice(index, 1);
-                        updatedHand.push({ ...card, effects });
-                        return true;
-                    }
-                };
-
-                if (!findAndAppendFrom(updatedDeck)) {
-                    findAndAppendFrom(updatedDiscard);
-                }
-            });
-
-            dispatch(
-                updateBattle({
-                    hand: updatedHand,
-                    deck: updatedDeck,
-                    discard: updatedDiscard,
-                })
-            );
-        } else {
-            dispatch(
-                updateBattle({
-                    hand: [...hand, ...selectedAbilities],
-                })
-            );
-        }
-
+        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued }));
         onSelect();
     };
 
@@ -201,7 +127,7 @@ const SelectCardOverlay = ({
                             <h2>
                                 {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
                                 {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability for your class"}
-                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK && "Pick an ability from your deck"}
+                                {type === SELECT_CARD_TYPES.SEARCH_DECK && "Pick an ability from your deck"}
                                 {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                                 {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
@@ -244,7 +170,7 @@ const SelectCardOverlay = ({
                         <Button
                             variant={"contained"}
                             color="primary"
-                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities.length}
+                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilityIds.length}
                             onClick={handleSelectClick}
                         >
                             Confirm

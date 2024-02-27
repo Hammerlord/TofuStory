@@ -19,6 +19,7 @@ import { Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
+import { prepareForDiscard } from "./playerTurn";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -168,6 +169,24 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             dispatch(drawCards({ ...cardsToDraw, source }));
         }
 
+        const triggerAddCardsToHandEvent = (amount: number) => {
+            const { playerSide, enemySide } = getState().battle;
+            playerSide.concat(enemySide).forEach((combatant) => {
+                if (combatant) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
+                            source: {
+                                ...source,
+                                trackSumAmount: amount,
+                            },
+                        })
+                    );
+                }
+            });
+        };
+
         if (addCards) {
             let newHand = [
                 ...getState().battle.hand,
@@ -187,6 +206,8 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                     hand: newHand,
                 })
             );
+
+            triggerAddCardsToHandEvent(addCards.length);
         }
 
         if (addCardsToDeck) {
@@ -243,7 +264,7 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         if (retrieveDepletedCards?.amount) {
             const depleted = shuffle([...getState().battle.depleted]);
             const hand = [...getState().battle.hand];
-            Array.from({ length: retrieveDepletedCards?.amount }).forEach(() => {
+            Array.from({ length: retrieveDepletedCards.amount }).forEach(() => {
                 const retrieved = depleted.pop();
 
                 if (retrieved) {
@@ -257,6 +278,8 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                     depleted,
                 })
             );
+
+            triggerAddCardsToHandEvent(retrieveDepletedCards?.amount);
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
@@ -311,6 +334,7 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                         dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
                     } else {
                         dispatch(updateBattle({ hand: [...hand, ...cards] }));
+                        triggerAddCardsToHandEvent(cards.length);
                     }
                 }
                 return;
@@ -357,6 +381,10 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                     [to]: toPile,
                 })
             );
+
+            if (to === "hand") {
+                triggerAddCardsToHandEvent(cardsToMove.length);
+            }
         }
     };
 };
@@ -449,3 +477,116 @@ export const applyAbilityEventEffects = ({ event, ability }: { event: AbilityEve
 
     return { ...ability, effects };
 };
+
+export const selectCardsAction =
+    ({ type, selectedAbilities, player, effects, abilityQueued }) =>
+    (dispatch, getState) => {
+        const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities }));
+            return;
+        }
+
+        const selectedAbilityIds = selectedAbilities.map((ability) => ability.instanceId);
+
+        if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            const updatedHand = [];
+            const updatedDeck = [...deck];
+            hand.forEach((ability: CombatAbility) => {
+                if (selectedAbilityIds.includes(ability.instanceId)) {
+                    updatedDeck.unshift(ability);
+                } else {
+                    updatedHand.push(ability);
+                }
+            });
+
+            dispatch(
+                updateBattle({
+                    hand: updatedHand,
+                    deck: updatedDeck,
+                })
+            );
+
+            return;
+        }
+
+        if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
+            const updatedHand = [];
+            const updatedDiscard = [...discard];
+            hand.forEach((ability: CombatAbility) => {
+                if (selectedAbilityIds.includes(ability.instanceId)) {
+                    updatedDiscard.unshift(...prepareForDiscard([ability]));
+                } else {
+                    updatedHand.push(ability);
+                }
+            });
+            dispatch(
+                updateBattle({
+                    hand: updatedHand,
+                    discard: updatedDiscard,
+                })
+            );
+            dispatch(drawCards({ amount: selectedAbilityIds.length }));
+
+            return;
+        }
+
+        const triggerAddCardsToHandEvent = () => {
+            playerSide.concat(enemySide).forEach((combatant) => {
+                if (combatant) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
+                            source: {
+                                type: TRIGGER_SOURCE_TYPES.ABILITY,
+                                triggerHistory: [],
+                                source: abilityQueued,
+                                trackSumAmount: selectedAbilities.length,
+                            },
+                        })
+                    );
+                }
+            });
+        };
+
+        if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
+            const updatedDeck = [...deck];
+            const updatedDiscard = [...discard];
+            const cardsToAdd = [];
+
+            selectedAbilityIds.forEach((id) => {
+                const findAndAppendFrom = (pile: CombatAbility[]): boolean => {
+                    const index = pile.findIndex((ability) => ability.instanceId === id);
+                    if (index > -1) {
+                        const [card] = pile.splice(index, 1);
+                        cardsToAdd.push({ ...card, effects });
+                        return true;
+                    }
+                };
+
+                if (!findAndAppendFrom(updatedDeck)) {
+                    findAndAppendFrom(updatedDiscard);
+                }
+            });
+
+            dispatch(
+                updateBattle({
+                    hand: [...hand, ...cardsToAdd],
+                    deck: updatedDeck,
+                    discard: updatedDiscard,
+                })
+            );
+
+            triggerAddCardsToHandEvent();
+            return;
+        }
+
+        dispatch(
+            updateBattle({
+                hand: [...hand, ...selectedAbilities],
+            })
+        );
+
+        triggerAddCardsToHandEvent();
+    };
