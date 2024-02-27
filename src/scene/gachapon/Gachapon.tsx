@@ -55,6 +55,9 @@ export const gachaponEvents: EventScene = {
                     next: [
                         {
                             dialog: ["...!"],
+                        },
+                        {
+                            dialog: ["...!"], // This dialog is not displayed when there is conditionalNext
                             conditionalNext: [
                                 {
                                     conditions: [

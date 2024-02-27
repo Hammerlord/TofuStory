@@ -20,7 +20,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { calculateTargetIndices, checkEventTrigger, findCombatantData } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
-import { onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
+import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
@@ -474,10 +474,11 @@ const BattlefieldContainer = () => {
                 setShowWaveClear(false);
                 dispatch(onWaveClear());
                 if (waves[currentWaveIndex + 1]) {
+                    dispatch(nextWave());
                     dispatch(updateBattle({ isPlayerTurn: true }));
                     dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
                 } else {
-                    dispatch(updateBattleState(BATTLE_STATES.VICTORY));
+                    dispatch(onBattleEnd());
                 }
             }, TURN_ANNOUNCEMENT_TIME);
         } else if (battleState === BATTLE_STATES.TURN_ENDING) {

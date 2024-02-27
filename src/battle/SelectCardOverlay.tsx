@@ -201,7 +201,7 @@ const SelectCardOverlay = ({
                             <h2>
                                 {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
                                 {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability for your class"}
-                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK && "Discover an ability from your deck"}
+                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_DECK && "Pick an ability from your deck"}
                                 {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                                 {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&

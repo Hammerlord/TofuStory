@@ -54,17 +54,18 @@ export const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { waves, currentWaveIndex, deck, playerSide, hand, discard } = getState().battle;
-        const { presetDeck, enemies } = waves[currentWaveIndex + 1] || {};
+        const { waves, currentWaveIndex, playerSide } = getState().battle;
 
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
+    };
+};
 
-        if (!enemies) {
-            dispatch(onBattleEnd());
-            return;
-        }
+export const nextWave = () => {
+    return (dispatch, getState) => {
+        const { waves, currentWaveIndex, deck, hand, discard } = getState().battle;
+        const { presetDeck, enemies } = waves[currentWaveIndex + 1] || {};
 
         dispatch(
             updateBattle({

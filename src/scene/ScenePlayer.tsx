@@ -379,6 +379,7 @@ const ScenePlayer = ({
             if (chance) {
                 return Math.random() <= chance;
             }
+
             return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
         };
 
