@@ -9,10 +9,12 @@ import {
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
     DoubleStabImage,
+    EvilCupImage,
     FangImage,
     FireBoarImage,
     FireMarbleImage,
     FrownyMaskImage,
+    GiantCentipedeMarbleImage,
     GreenMushroomImage,
     HornyMushroomImage,
     InkSackImage,
@@ -22,6 +24,7 @@ import {
     LupinImage,
     MaladyImage,
     MarksmanshipImage,
+    MesoImage,
     MiniKargoImage,
     MonkeyBananaImage,
     MushroomOmokImage,
@@ -38,6 +41,7 @@ import {
     OwlTowerImage,
     PigIdleImage,
     PigsHeadImage,
+    PoisonImage,
     RedFistOfFuryImage,
     RedMeatImage,
     RedSnailImage,
@@ -52,7 +56,7 @@ import {
     SubiImage,
     TeleportImage,
     ThiefImage,
-    TriangularZamadarImage,
+    TreasureChestImage,
     WeaponMasteryImage,
     WildBoarImage,
     WildKargoImage,
@@ -62,31 +66,29 @@ import {
 import {
     BloodIcon,
     CactusIcon,
-    CloudyIcon,
     CrossedSwordsIcon,
     DizzyIcon,
     EyeIcon,
+    FireIcon,
     MountainIcon,
     MuscleIcon,
     ShieldIcon,
-    SweatDropsIcon,
     ZzzIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
 import {
+    avenger,
     bleed,
     burn,
     elite,
     hardy,
     poison,
-    raging,
+    preventArmorDecay,
+    pristineDefense,
+    sentry,
     stealth,
     stun,
     thorns,
-    pristineDefense,
-    sentry,
-    avenger,
-    preventArmorDecay,
 } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -964,6 +966,180 @@ export const eliteLigator: Minion = {
                             duration: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const mimic: Minion = {
+    name: "Mimic",
+    image: TreasureChestImage,
+    imageOptions: {
+        filter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
+    },
+    isElite: true,
+    maxHP: 100,
+    effects: [thorns],
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Cursed Artifact",
+            image: GiantCentipedeMarbleImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: GiantCentipedeMarbleImage,
+                    damage: 3,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    addCardsToDeck: [
+                        {
+                            name: "Cursed Artifact",
+                            description: "When drawn, Burns you for 1 turn.",
+                            image: GiantCentipedeMarbleImage,
+                            resourceCost: 1,
+                            depletedOnUse: true,
+                            onDraw: {
+                                ability: {
+                                    name: "Burn",
+                                    image: FireIcon,
+                                    actions: [
+                                        {
+                                            type: ACTION_TYPES.EFFECT,
+                                            target: TARGET_TYPES.SELF,
+                                            effects: [
+                                                {
+                                                    ...burn,
+                                                    duration: 1,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            },
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Cursed Chalice",
+            image: EvilCupImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: EvilCupImage,
+                    damage: 3,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    addCardsToDeck: [
+                        {
+                            name: "Cursed Chalice",
+                            description: "When drawn, Poisons you for 1 turn.",
+                            image: EvilCupImage,
+                            depletedOnUse: true,
+                            resourceCost: 1,
+                            onDraw: {
+                                ability: {
+                                    name: "Poison",
+                                    image: PoisonImage,
+                                    actions: [
+                                        {
+                                            type: ACTION_TYPES.EFFECT,
+                                            target: TARGET_TYPES.SELF,
+                                            effects: [
+                                                {
+                                                    ...poison,
+                                                    duration: 1,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            },
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Chomp",
+            image: BloodIcon,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 8,
+                    effects: [
+                        {
+                            ...bleed,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Meso Shot",
+            image: MesoImage,
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: MesoImage,
+                    animationOptions: { sidewinder: true },
+                    damage: 4,
+                },
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: MesoImage,
+                    animationOptions: { sidewinder: true },
+                    damage: 4,
+                },
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    icon: MesoImage,
+                    animationOptions: { sidewinder: true },
+                    damage: 4,
                 },
             ],
         },
