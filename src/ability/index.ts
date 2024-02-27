@@ -13,6 +13,7 @@ import {
     combust,
     conjureTreat,
     copySpell,
+    elquines,
     energyBolt,
     feedback,
     fireArrow,
@@ -24,6 +25,7 @@ import {
     hyperMetronome,
     icicles,
     icyDraft,
+    ifrit,
     ignite,
     leechingFlame,
     magicArmor,
@@ -169,6 +171,8 @@ export const JOB_CARD_MAP = {
             manaGem,
             wardBooster,
             icicles,
+            ifrit,
+            elquines,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(

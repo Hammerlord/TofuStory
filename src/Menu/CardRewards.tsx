@@ -97,7 +97,9 @@ const CardRewards = ({
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
             });
-            choices.push(filteredByRarity);
+            if (filteredByRarity) {
+                choices.push(filteredByRarity);
+            }
         });
 
         return choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));

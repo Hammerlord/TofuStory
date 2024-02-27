@@ -525,7 +525,7 @@ export interface AbilityUpgrade {
     preemptive?: boolean;
     resourceCost?: number;
     depletedOnUse?: boolean;
-
+    minion?;
     addActions?: {
         // If true, instead of .pushing to actions, the action will be prepended
         prepend?: boolean;

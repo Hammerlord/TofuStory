@@ -1763,6 +1763,8 @@ const checkSummonMinion = ({
     return (dispatch, getState) => {
         const { minion, removeAfterTurn, depletedOnUse } = ability;
         if (minion) {
+            const pickRandomSummonIndex = () => getRandomItem(getPossibleSummonIndices(getState().battle[side]));
+            const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
             const summonedMinion: Combatant = createCombatant(minion);
             const newBattleProps: {
                 playerSide?: (Combatant | null)[];
@@ -1770,7 +1772,7 @@ const checkSummonMinion = ({
                 playerSummonsInPlay?: { [id: string]: Ability };
             } = {
                 [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                    return i === selectedIndex ? summonedMinion : combatant;
+                    return i === index ? summonedMinion : combatant;
                 }),
             };
 
@@ -1810,7 +1812,7 @@ export const useAbility = ({
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
-        const { combatant } = findCombatantData(getState, actorId) || {};
+        const { combatant, friendlySide } = findCombatantData(getState, actorId) || {};
         const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
             return acc + (e.resourceCost || 0);
         }, 0);
@@ -1819,7 +1821,7 @@ export const useAbility = ({
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
-        dispatch(checkSummonMinion({ ability, selectedIndex, side: initialSide, actorId, parentSource: source }));
+        dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source }));
 
         const { target: initialTarget } = actions[0] || {};
         let prevSelection;

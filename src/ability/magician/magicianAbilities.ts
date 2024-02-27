@@ -14,6 +14,7 @@ import {
     ElementalAdaptationImage,
     EliteFirebrandImage,
     EliteFirebrandMoveImage,
+    ElquinesImage,
     EmptySackImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
@@ -27,6 +28,7 @@ import {
     IcicleImage,
     IcicleMinionImage,
     IciclesPortraitImage,
+    IfritImage,
     IgniteImage,
     InfinityImage,
     InkSackImage,
@@ -43,6 +45,7 @@ import {
     MagicGuardImage,
     ManaImage,
     MetalBucketSnowmanImage,
+    NimbleJewelCImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
     ParalyzeImage,
@@ -2222,17 +2225,176 @@ export const icicles: Ability = {
                                 },
                             ],
                         },
+                        conditionOperator: "and",
                         conditions: [
                             {
                                 comparator: "gt",
                                 resourceCost: 0,
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                             },
+                            {
+                                // Only summon if there is room to summon
+                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                comparator: "lt",
+                                numFriendly: 5,
+                            },
                         ],
                         decrementStacks: 1,
                     },
                 },
             ],
+        },
+    ],
+};
+
+const ifritEmberAbility = {
+    name: "Ember",
+    image: FireMarbleImage,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            icon: FireMarbleImage,
+            damage: 1,
+            effects: [
+                {
+                    ...burn,
+                    duration: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const ifrit: Ability = {
+    name: "Ifrit",
+    image: IfritImage,
+    resourceCost: 3,
+    description: "Summon: Burns enemies in front of this character. Attack: Inflict Burn.",
+    rarity: RARITIES.UNCOMMON,
+    minion: {
+        name: "Ifrit",
+        image: IfritImage,
+        maxHP: 10,
+        abilities: [ifritEmberAbility],
+        effects: [
+            {
+                name: "Radiant Ember Effect",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Radiant Ember",
+                        image: FireMarbleImage,
+                        actions: [
+                            {
+                                target: TARGET_TYPES.HOSTILE,
+                                type: ACTION_TYPES.EFFECT,
+                                icon: FireMarbleImage,
+                                animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                                radiate: {
+                                    area: 1,
+                                    effects: [
+                                        {
+                                            ...burn,
+                                            duration: 3,
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                HP: 1,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 2,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const elquines: Ability = {
+    name: "Elquines",
+    image: ElquinesImage,
+    resourceCost: 3,
+    rarity: RARITIES.UNCOMMON,
+    description: "Summon: Freezes enemies in front of this character. Attacks inflict Chill.",
+    minion: {
+        name: "Elquines",
+        image: ElquinesImage,
+        maxHP: 10,
+        abilities: [
+            {
+                name: "Ice Bolt",
+                image: NimbleJewelImage,
+                actions: [
+                    {
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        icon: NimbleJewelImage,
+                        damage: 2,
+                        effects: [chill],
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                name: "Radiant Ice Effect",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Radiant Ice",
+                        image: NimbleJewelCImage,
+                        actions: [
+                            {
+                                target: TARGET_TYPES.HOSTILE,
+                                type: ACTION_TYPES.EFFECT,
+                                icon: NimbleJewelCImage,
+                                animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                                radiate: {
+                                    area: 1,
+                                    effects: [freeze],
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                HP: 1,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
         },
     ],
 };

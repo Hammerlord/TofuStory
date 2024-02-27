@@ -44,7 +44,7 @@ export const grendelIfrit: Minion = {
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.EFFECT,
+                    type: ACTION_TYPES.RANGE_ATTACK,
                     icon: FireMarbleImage,
                     effects: [
                         {
