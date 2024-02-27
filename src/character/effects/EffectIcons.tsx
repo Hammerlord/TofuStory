@@ -5,6 +5,7 @@ import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import { Combatant, Player } from "../types";
 import { Event } from "../../battle/types";
 import { COLOR_RARITY_UNCOMMON } from "../../constants";
+import classNames from "classnames";
 
 const indicatorSize = 6;
 const useStyles = createUseStyles({
@@ -19,10 +20,10 @@ const useStyles = createUseStyles({
         },
     },
     buffs: {
-        minHeight: 24,
+        minHeight: 30,
     },
     debuffs: {
-        minHeight: 24,
+        minHeight: 30,
     },
     divider: {
         display: "flex",
@@ -50,11 +51,11 @@ const useStyles = createUseStyles({
  */
 const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Combatant | Player; isSilenced: boolean; event: Event }) => {
     const classes = useStyles();
-    if (!combatant) {
+    if (!combatant?.effects) {
         return null;
     }
 
-    const [buffs, debuffs] = partition((e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF, combatant?.effects || []);
+    const [buffs, debuffs] = partition((e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF, combatant.effects);
     const getEffectGroups = (effects: CombatEffect[]) => {
         const map = effects.reduce((acc, effect: Effect) => {
             const { name, type, disableDisplayIcon } = effect;
@@ -75,6 +76,9 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
         return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);
     };
 
+    const hasVisibleBuff = buffs.some((e) => e.icon && !e.disableDisplayIcon);
+    const hasVisibleDebuff = debuffs.some((e) => e.icon && !e.disableDisplayIcon);
+
     return (
         <div className={classes.root}>
             <div className={classes.buffs}>
@@ -88,14 +92,16 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
                     />
                 ))}
             </div>
-            <div className={classes.divider}>
-                <hr />
-                <div className={classes.dividerIndicator}>
-                    <span className={classes.up} />
-                    <span className={classes.down} />
+            {hasVisibleBuff && hasVisibleDebuff && (
+                <div className={classes.divider}>
+                    <hr />
+                    <div className={classes.dividerIndicator}>
+                        <span className={classes.up} />
+                        <span className={classes.down} />
+                    </div>
+                    <hr />
                 </div>
-                <hr />
-            </div>
+            )}
 
             <div className={classes.debuffs}>
                 {getEffectGroups(debuffs).map((effects: CombatEffect[], i) => (
