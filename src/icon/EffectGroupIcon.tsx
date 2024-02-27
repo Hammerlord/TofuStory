@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatEffect, EFFECT_CLASSES, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant, Player } from "../character/types";
 import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
@@ -11,6 +11,9 @@ import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { useAppSelector } from "../hooks";
 import { findCombatantData } from "../battle/actions/actions";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
+
+const indicatorSize = 8;
 
 const useStyles = createUseStyles({
     root: {
@@ -90,6 +93,20 @@ const useStyles = createUseStyles({
         animationName: "$glow",
         animationDuration: "1s",
     },
+    up: {
+        borderLeft: `${indicatorSize}px solid transparent`,
+        borderRight: `${indicatorSize}px solid transparent`,
+        borderBottom: `${indicatorSize}px solid ${BUFF_COLOUR}`,
+        display: "inline-block",
+        marginRight: 8,
+    },
+    down: {
+        borderLeft: `${indicatorSize}px solid transparent`,
+        borderRight: `${indicatorSize}px solid transparent`,
+        borderTop: `${indicatorSize}px solid ${DEBUFF_COLOUR}`,
+        display: "inline-block",
+        marginRight: 8,
+    },
 });
 
 const EffectGroupIcon = ({
@@ -128,6 +145,7 @@ const EffectGroupIcon = ({
         drawCardsPerTurn = 0,
         resourcesPerTurn = 0,
         preventArmorDecay,
+        class: effectClass,
     } = effects.reduce((acc, cur, i) => {
         if (i === 0) {
             return acc;
@@ -192,6 +210,8 @@ const EffectGroupIcon = ({
             </div>
             <div className={classes.container}>
                 <div className={classes.tooltipTitle}>
+                    {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.up} />}
+                    {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.down} />}
                     {name}
                     {effects.length > 1 ? ` x${effects.length}` : ""}{" "}
                     {

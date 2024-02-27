@@ -5,7 +5,7 @@ import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import { Combatant, Player } from "../types";
 import { Event } from "../../battle/types";
 import { COLOR_RARITY_UNCOMMON } from "../../constants";
-import classNames from "classnames";
+import { BUFF_COLOUR, DEBUFF_COLOUR } from "./constants";
 
 const indicatorSize = 6;
 const useStyles = createUseStyles({
@@ -31,13 +31,13 @@ const useStyles = createUseStyles({
     up: {
         borderLeft: `${indicatorSize}px solid transparent`,
         borderRight: `${indicatorSize}px solid transparent`,
-        borderBottom: `${indicatorSize}px solid ${COLOR_RARITY_UNCOMMON}`,
+        borderBottom: `${indicatorSize}px solid ${BUFF_COLOUR}`,
         marginBottom: 1,
     },
     down: {
         borderLeft: `${indicatorSize}px solid transparent`,
         borderRight: `${indicatorSize}px solid transparent`,
-        borderTop: `${indicatorSize}px solid #a74848`,
+        borderTop: `${indicatorSize}px solid ${DEBUFF_COLOUR}`,
     },
     dividerIndicator: {
         display: "flex",
