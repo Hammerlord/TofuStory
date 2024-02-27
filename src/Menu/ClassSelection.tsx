@@ -99,6 +99,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
         return (
             <div className={classes.root}>
                 <div className={classes.inner}>
+                    <div className={classes.bg} />
                     <h2>You gained abilities</h2>
                     <div className={classes.abilities}>
                         {[...JOB_CARD_MAP[selectedClass].starters]
