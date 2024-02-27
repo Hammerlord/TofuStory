@@ -189,7 +189,7 @@ export const startPlayerTurn = () => {
 
         dispatch(
             drawCards({
-                amount: Math.min(MAX_HAND_SIZE - battle.hand.length, drawCardsPerTurn - battle.hand.length),
+                amount: drawCardsPerTurn,
             })
         );
 
