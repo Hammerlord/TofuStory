@@ -1,4 +1,4 @@
-import { createRef, useState } from "react";
+import { createRef, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -17,9 +17,9 @@ const useStyles = createUseStyles({
  */
 const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
     const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
-    const [targetLineRef] = useState(createRef() as React.RefObject<SVGLineElement>);
-    const [circleRef] = useState(createRef() as React.RefObject<SVGCircleElement>);
-    const [bullseyeRef] = useState(createRef() as React.RefObject<SVGCircleElement>);
+    const targetLineRef: React.RefObject<SVGLineElement> = useRef();
+    const circleRef: React.RefObject<SVGCircleElement> = useRef();
+    const bullseyeRef: React.RefObject<SVGCircleElement> = useRef();
 
     const classes = useStyles();
 

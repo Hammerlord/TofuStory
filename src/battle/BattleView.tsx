@@ -631,7 +631,7 @@ const BattlefieldContainer = () => {
             return null;
         }
         return allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current;
-    }, [disableActions, selectedAllyIndex, selectedAbilityId]);
+    }, [disableActions, selectedAllyIndex, selectedAbilityId, allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current]);
 
     const targetLineColor = getAbilityColor(hand[abilityIndex]);
 
