@@ -178,7 +178,7 @@ const EffectGroupIcon = ({
     const { stackCount, displayStacks } = effects.reduce(
         (acc, effect: CombatEffect) => {
             return {
-                stackCount: acc.stackCount + (effect.stacks || 0),
+                stackCount: acc.stackCount + (effect.stacks || 1),
                 displayStacks: acc.displayStacks || effect.alwaysDisplayStacks,
             };
         },
