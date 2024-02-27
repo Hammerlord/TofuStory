@@ -14,7 +14,7 @@ const copyEffect = (e: Effect) => ({
 export const aggregateItemEffects = (items: Item[]): Effect[] => {
     const effects = [];
     items.forEach((item) => {
-        const itemEffects = item?.effects?.map(copyEffect) || [];
+        const itemEffects: Effect[] = item?.effects?.map((e: Effect) => ({ ...copyEffect(e), itemSource: item.name })) || [];
         effects.push(...itemEffects);
     });
     return effects;

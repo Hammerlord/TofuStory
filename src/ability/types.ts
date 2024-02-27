@@ -217,6 +217,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     // Display stacks even if there is only one stack. Useful for temporary 1-stack effects which are not limited by duration.
     /** @see ironBody */
     alwaysDisplayStacks?: boolean;
+    // If this effect came from an item, provide the item name here (doubles as the item ID)
+    itemSource?: string;
 };
 
 export type CombatEffect = Effect & {

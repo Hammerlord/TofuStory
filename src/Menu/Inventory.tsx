@@ -1,11 +1,13 @@
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Popper from "@material-ui/core/Popper";
 import classNames from "classnames";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Item, ITEM_TYPES, RARITIES } from "../item/types";
 import Button from "../view/Button";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
+import { useAppSelector } from "../hooks";
+import { CombatEffect } from "../ability/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -78,6 +80,18 @@ const useStyles = createUseStyles({
     rarity: {
         marginBottom: "8px",
     },
+    "@keyframes glow": {
+        "0%": {
+            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
+        },
+        "100%": {
+            filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 5px #45ff61)",
+        },
+    },
+    glow: {
+        animationName: "$glow",
+        animationDuration: "1s",
+    },
 });
 
 const ITEM_CLASS_NAME = "inventory-item";
@@ -85,6 +99,12 @@ const ITEM_CLASS_NAME = "inventory-item";
 const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (item: Item) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const { battle } = useAppSelector((state) => state);
+
+    const shouldGlow = (item) => {
+        const event = battle?.eventQueue?.[0];
+        return (event?.source?.source as CombatEffect)?.itemSource === item.name;
+    };
 
     const handleItemClick = (e, itemIndex: number) => {
         if (itemIndex === selectedItemIndex) {
@@ -127,6 +147,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                         onClick={(e) => handleItemClick(e, i)}
                         className={classNames(ITEM_CLASS_NAME, classes.item, {
                             [classes.selectedItem]: i === selectedItemIndex,
+                            [classes.glow]: shouldGlow(item),
                         })}
                     />
                     <span className={classes.stacks}>{item.stacks > 1 && item.stacks}</span>
