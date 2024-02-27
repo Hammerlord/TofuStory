@@ -111,7 +111,7 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         position: "absolute",
-        bottom: "16px",
+        bottom: "3.5vh",
         left: "50%",
         transform: "translateX(-50%)",
         textAlign: "center",

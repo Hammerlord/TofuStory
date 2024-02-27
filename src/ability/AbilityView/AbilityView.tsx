@@ -30,6 +30,15 @@ import { MapleLeavesImage } from "../../images";
 const useStyles = createUseStyles({
     root: {
         position: "relative",
+        transition: "transform 0.15s",
+        "&:hover": {
+            transform: "scale(1.1)",
+            zIndex: 5,
+        },
+        "&.-selected": {
+            transform: "scale(1.1)",
+            zIndex: 5,
+        },
     },
     inner: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
@@ -389,7 +398,12 @@ const AbilityView = forwardRef(
 
         return (
             <AbilityTooltip ability={ability}>
-                <div className={classNames(classes.root, className)}>
+                <div
+                    className={classNames(classes.root, className, {
+                        "-selected": isSelected,
+                        [classes.glow]: isAbilityUsable && !disableGlow && state.battle && hasBonus,
+                    })}
+                >
                     <div
                         className={classNames(classes.cardBack, {
                             "-flipped": flipped,
@@ -400,7 +414,6 @@ const AbilityView = forwardRef(
                         className={classNames(classes.inner, {
                             [classes.selectedAbility]: isSelected,
                             [classes.ephemeral]: removeAfterTurn,
-                            [classes.glow]: isAbilityUsable && !disableGlow && state.battle && hasBonus,
                             "-flipped": flipped,
                         })}
                         style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
