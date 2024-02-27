@@ -73,6 +73,7 @@ import {
     workGloves,
     icarusCape,
     bloodMask,
+    peach,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -155,6 +156,7 @@ export const ITEMS = [
     bigMesoItem,
     theBackpack,
     icarusCape,
+    peach,
 ];
 
 export const CLASS_ITEMS = {

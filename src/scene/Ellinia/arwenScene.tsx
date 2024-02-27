@@ -85,7 +85,6 @@ const eventZombieLupin: Minion = {
 };
 
 const zombieLupinsFight = {
-    characters: [],
     waves: [
         {
             enemies: [null, eventZombieLupin, eventZombieLupin, eventZombieLupin, null],
@@ -94,7 +93,6 @@ const zombieLupinsFight = {
 };
 
 const echoesFight = {
-    characters: [],
     waves: [
         {
             enemies: [lostEcho, lostGuardEcho, lostNobleEcho, lostGuardEcho, lostEcho],
@@ -103,7 +101,6 @@ const echoesFight = {
 };
 
 const maladysFight = {
-    characters: [],
     waves: [
         {
             enemies: [null, malady, null, malady, null],

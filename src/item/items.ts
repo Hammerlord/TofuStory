@@ -52,6 +52,7 @@ import {
     MesoImage,
     NewspaperImage,
     PanlidImage,
+    PeachImage,
     PieceOfIceImage,
     PigIllustratedImage,
     PigsRibbonImage,
@@ -1856,7 +1857,7 @@ export const bigMesoItem: Item = {
 
 export const theBackpack: Item = {
     name: "The Backpack",
-    description: "Once per turn, you may move a card from your hand to the top of your deck.",
+    description: "Once per turn, when you select a card in your hand, you may move it to the top of your deck.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: BackpackImage,
@@ -1945,6 +1946,22 @@ export const bloodMask: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const peach: Item = {
+    name: "Peach",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: PeachImage,
+    description: "+15 max HP.",
+    effects: [
+        {
+            name: "Peach",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 15,
         },
     ],
 };
