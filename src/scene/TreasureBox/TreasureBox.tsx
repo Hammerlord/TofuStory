@@ -233,7 +233,7 @@ const TreasureBox = ({
     curse?: "damage";
 }) => {
     const classes = useStyles();
-    const [completed, setCompleted] = useState(!Puzzle);
+    const [isChestUnlocked, setIsChestUnlocked] = useState(!Puzzle);
     const [isChestOpened, setIsChestOpened] = useState(false);
     const [items, setItems] = useState([]);
     const [selectedItemIndices, setSelectedItemIndices]: [number[], Function] = useState([]);
@@ -241,7 +241,7 @@ const TreasureBox = ({
     const dispatch = useAppDispatch();
 
     const handleClickChest = () => {
-        if (completed) {
+        if (isChestUnlocked) {
             setIsChestOpened(true);
         }
     };
@@ -317,9 +317,9 @@ const TreasureBox = ({
                     <img
                         src={TreasureChestImage}
                         className={classNames(classes.treasureChest, {
-                            [classes.open]: completed,
+                            [classes.open]: isChestUnlocked,
                             [classes.fadeOut]: isChestOpened,
-                            [classes.cursed]: !completed && !isChestOpened && curse,
+                            [classes.cursed]: !isChestUnlocked && !isChestOpened && curse,
                         })}
                         onClick={handleClickChest}
                     />
@@ -359,7 +359,7 @@ const TreasureBox = ({
                             )}
                         </div>
                     )}
-                    {!completed && (
+                    {!isChestUnlocked && (
                         <div className={classes.lockContainer}>
                             <LockIcon className={classes.lock} />
                         </div>
@@ -380,7 +380,11 @@ const TreasureBox = ({
                         )}
 
                         <div className={classes.puzzleContainer}>
-                            <Puzzle onComplete={() => setCompleted(true)} completed={completed} onInteraction={handlePuzzleInteraction} />
+                            <Puzzle
+                                onComplete={() => setIsChestUnlocked(true)}
+                                completed={isChestUnlocked}
+                                onInteraction={handlePuzzleInteraction}
+                            />
                         </div>
                     </div>
                 )}
@@ -389,7 +393,7 @@ const TreasureBox = ({
                     className={
                         (classes.buttonContainer,
                         classNames({
-                            [classes.disableButton]: isChestOpened,
+                            [classes.disableButton]: isChestOpened || isChestUnlocked,
                         }))
                     }
                 >
