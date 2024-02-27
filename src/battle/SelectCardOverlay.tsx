@@ -244,7 +244,7 @@ const SelectCardOverlay = ({
                         <Button
                             variant={"contained"}
                             color="primary"
-                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities}
+                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilities.length}
                             onClick={handleSelectClick}
                         >
                             Confirm
