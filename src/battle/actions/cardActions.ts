@@ -170,6 +170,10 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         }
 
         const triggerAddCardsToHandEvent = (amount: number) => {
+            if (amount === 0) {
+                return;
+            }
+
             const { playerSide, enemySide } = getState().battle;
             playerSide.concat(enemySide).forEach((combatant) => {
                 if (combatant) {
@@ -532,6 +536,10 @@ export const selectCardsAction =
         }
 
         const triggerAddCardsToHandEvent = () => {
+            if (selectedAbilities.length === 0) {
+                return;
+            }
+
             playerSide.concat(enemySide).forEach((combatant) => {
                 if (combatant) {
                     dispatch(

@@ -8,9 +8,9 @@ import { useAppDispatch } from "../hooks";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import getCardSelection from "./selectCardUtils";
 import { selectCardsAction } from "./actions/cardActions";
+import { PlayerSelectCardsPrompt } from "./reducer";
+import getCardSelection from "./selectCardUtils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -66,8 +66,6 @@ const useStyles = createUseStyles({
         opacity: 0.75,
     },
 });
-
-const { updateBattle } = battleStateSlice?.actions || {};
 
 const SelectCardOverlay = ({
     selectCardsPrompt,
@@ -170,7 +168,7 @@ const SelectCardOverlay = ({
                         <Button
                             variant={"contained"}
                             color="primary"
-                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilityIds.length}
+                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilityIds.length && abilityChoices.length > 0}
                             onClick={handleSelectClick}
                         >
                             Confirm
