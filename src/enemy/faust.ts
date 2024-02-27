@@ -177,6 +177,9 @@ const puppeteerRevive: EffectEventTrigger = {
 export const ghostlyPuppeteerL: Minion = {
     name: "Ghostly Puppeteer",
     image: HomecomingVictoryGlovesImage,
+    imageOptions: {
+        animation: "float",
+    },
     maxHP: 15,
     armor: 60,
     abilities: [

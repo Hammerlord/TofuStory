@@ -258,6 +258,20 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
         zIndex: -1,
     },
+    "@keyframes upAndDown": {
+        from: {
+            transform: "translateY(0)",
+        },
+        to: {
+            transform: "translateY(-4px)",
+        },
+    },
+    float: {
+        animationName: "$upAndDown",
+        animationDuration: "2s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+    },
 });
 
 interface CurrentEvent extends Event {
@@ -362,10 +376,12 @@ const CombatantView = forwardRef(
         const isApplyingEffect =
             ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
             (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
+        const { animation: portraitAnimation } = oldState?.imageOptions || {};
 
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
+                [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dead]: !action && oldState?.HP === 0 && !playDeathAnimation,
                 [classes.dying]: !action && playDeathAnimation,

@@ -231,7 +231,8 @@ export interface Minion {
     name: string;
     image: string;
     imageOptions?: {
-        filter: string;
+        filter?: string;
+        animation?: "float";
     };
     maxHP: number;
     HP?: number;

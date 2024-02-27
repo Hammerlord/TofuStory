@@ -2275,6 +2275,9 @@ export const ifrit: Ability = {
     minion: {
         name: "Ifrit",
         image: IfritImage,
+        imageOptions: {
+            animation: "float",
+        },
         maxHP: 10,
         abilities: [ifritEmberAbility],
         effects: [
@@ -2337,6 +2340,9 @@ export const elquines: Ability = {
     minion: {
         name: "Elquines",
         image: ElquinesImage,
+        imageOptions: {
+            animation: "float",
+        },
         maxHP: 10,
         abilities: [
             {

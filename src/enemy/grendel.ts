@@ -35,6 +35,9 @@ import { lifeLink } from "./effect";
 export const grendelIfrit: Minion = {
     name: "Ifrit",
     image: IfritImage,
+    imageOptions: {
+        animation: "float",
+    },
     HP: 100,
     maxHP: 100,
     abilities: [
@@ -84,6 +87,9 @@ export const grendelIfrit: Minion = {
 export const grendelElquines: Minion = {
     name: "Elquines",
     image: ElquinesImage,
+    imageOptions: {
+        animation: "float",
+    },
     HP: 100,
     maxHP: 100,
     abilities: [
