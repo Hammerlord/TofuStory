@@ -7,7 +7,7 @@ import { Item, ITEM_TYPES, RARITIES } from "../item/types";
 import Button from "../view/Button";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import { useAppSelector } from "../hooks";
-import { CombatEffect } from "../ability/types";
+import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -92,6 +92,16 @@ const useStyles = createUseStyles({
         animationName: "$glow",
         animationDuration: "1s",
     },
+    combatCounter: {
+        color: "white",
+        position: "absolute",
+        right: 5,
+        top: 3,
+        fontWeight: "bold",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 4px black")
+            .join(", "),
+    },
 });
 
 const ITEM_CLASS_NAME = "inventory-item";
@@ -101,9 +111,39 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
     const { battle } = useAppSelector((state) => state);
 
-    const shouldGlow = (item) => {
+    const shouldGlow = (item: Item): boolean => {
         const event = battle?.eventQueue?.[0];
         return (event?.source?.source as CombatEffect)?.itemSource === item.name;
+    };
+
+    // For example, if an item like Steely is tracking the number of cards that has been drawn before proccing, show how many cards have been drawn.
+    // Effects are copied over from the item onto the player during combat. So we need to do a lookup to find the effect instance.
+    const getCombatCounter = (item: Item): number | undefined => {
+        const combatPlayer = battle?.playerSide?.find((combatant) => combatant?.isPlayer);
+        if (!combatPlayer) {
+            return;
+        }
+
+        // Just take the first one for now; items don't often have more than 1 effect event
+        const effectEventKey = Object.values(EFFECT_EVENT_KEYS).find((key) => item.effects[0]?.[key]);
+        if (!effectEventKey) {
+            return;
+        }
+
+        const relatedEffect: CombatEffect | undefined = combatPlayer?.effects.find((e: CombatEffect) => e.itemSource === item.name);
+        const relatedEffectEvent = relatedEffect?.[effectEventKey];
+        if (!relatedEffectEvent) {
+            return;
+        }
+
+        const { triggerSum, triggerFrequencyFromSum, eventTriggeredTimes, eventTriggerFrequency } = relatedEffectEvent;
+        if (triggerSum && triggerFrequencyFromSum) {
+            return triggerSum % triggerFrequencyFromSum;
+        }
+
+        if (eventTriggeredTimes && eventTriggerFrequency) {
+            return eventTriggeredTimes % eventTriggerFrequency;
+        }
     };
 
     const handleItemClick = (e, itemIndex: number) => {
@@ -150,7 +190,8 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                             [classes.glow]: shouldGlow(item),
                         })}
                     />
-                    <span className={classes.stacks}>{item.stacks > 1 && item.stacks}</span>
+                    <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
+                    <span className={classes.combatCounter}>{getCombatCounter(item)}</span>
                 </div>
             ))}
             {menuAnchor && (
