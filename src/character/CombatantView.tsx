@@ -199,24 +199,6 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         zIndex: 0,
     },
-    "@keyframes deadAnimation": {
-        from: {
-            transform: "translateY(0)",
-            opacity: 1,
-        },
-        to: {
-            transform: "translateY(-100px)",
-            opacity: 0,
-            filter: "brightness(0.5)",
-        },
-    },
-    dying: {
-        animation: "$deadAnimation .75s forwards",
-        transitionTimingFunction: "ease-in-out",
-        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
-        animationDelay: "0.2s",
-        opacity: 1,
-    },
     dead: {
         opacity: 0,
     },
@@ -278,6 +260,26 @@ interface CurrentEvent extends Event {
     targetRef?: HTMLElement;
 }
 
+const playDyingAnimation = ({ object, playbackTime = 750 }) => {
+    const animationFrames = [
+        {
+            transform: "translateY(0)",
+            opacity: 1,
+            easing: "ease-out",
+        },
+        {
+            transform: "translateY(-100px)",
+            opacity: 0,
+            filter: "brightness(0.5)",
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay: 0.25,
+    });
+};
+
 const CombatantView = forwardRef(
     (
         {
@@ -311,7 +313,6 @@ const CombatantView = forwardRef(
         const state = useAppSelector((state) => state);
         const [statChanges, setStatChanges]: [any, Function] = useState({});
         const [oldState, setOldState] = useState(combatant);
-        const [playDeathAnimation, setPlayDeathAnimation] = useState(false);
 
         const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
@@ -320,13 +321,11 @@ const CombatantView = forwardRef(
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
         const weaponRef = useRef();
+        const characterImageRef = useRef();
 
         useEffect(() => {
             const isCombatantChanged = oldState?.id !== combatant?.id;
             const isDead = combatant?.HP <= 0 && !isLifeLinked;
-            if (!isDead || isCombatantChanged) {
-                setPlayDeathAnimation(false);
-            }
 
             const statChanges = getCharacterStatChanges({
                 oldCharacter: oldState,
@@ -339,8 +338,8 @@ const CombatantView = forwardRef(
 
                 const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
 
-                if (isKillingBlow && !willPerformActions) {
-                    setPlayDeathAnimation(true);
+                if (isKillingBlow && !willPerformActions && characterImageRef.current) {
+                    playDyingAnimation({ object: characterImageRef.current });
                 }
             };
 
@@ -383,8 +382,7 @@ const CombatantView = forwardRef(
             className: classNames("portrait", classes.portraitImage, {
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                [classes.dead]: !action && oldState?.HP === 0 && !playDeathAnimation,
-                [classes.dying]: !action && playDeathAnimation,
+                [classes.dead]: !action && oldState?.HP === 0,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting,
                 [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
@@ -392,6 +390,7 @@ const CombatantView = forwardRef(
             style: {
                 animationDuration: `${(event?.playbackTime || 1000) / 1000}s`,
             },
+            ref: characterImageRef,
         };
 
         const getImageNode = (props) => {
