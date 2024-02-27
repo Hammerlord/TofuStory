@@ -475,7 +475,6 @@ const BattlefieldContainer = () => {
                 dispatch(onWaveClear());
                 if (waves[currentWaveIndex + 1]) {
                     dispatch(nextWave());
-                    dispatch(updateBattle({ isPlayerTurn: true }));
                     dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
                 } else {
                     dispatch(onBattleEnd());
