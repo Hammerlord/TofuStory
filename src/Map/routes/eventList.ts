@@ -4,7 +4,7 @@ import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../..
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
-import { mesoThiefScene } from "../../scene/misc";
+import { cursedChestScene, mesoThiefScene } from "../../scene/misc";
 import { EventScene } from "../../scene/types";
 import {
     adamantiumPlate,
@@ -86,6 +86,7 @@ export const events: EventScene[] = [
     noobRivalWarrior,
     wantedPosterScene,
     mesoThiefScene,
+    cursedChestScene,
 ];
 
 /**

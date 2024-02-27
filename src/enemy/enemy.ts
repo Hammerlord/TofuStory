@@ -16,6 +16,7 @@ import {
     FrownyMaskImage,
     GiantCentipedeMarbleImage,
     GreenMushroomImage,
+    GuardBanditImage,
     HornyMushroomImage,
     InkSackImage,
     KumbiImage,
@@ -47,6 +48,7 @@ import {
     RedSnailImage,
     RedSnailShellImage,
     RibbonPigIdleImage,
+    SavageBlowImage,
     ShroomImage,
     SlimeIdleImage,
     SnailImage,
@@ -66,6 +68,7 @@ import {
 import {
     BloodIcon,
     CactusIcon,
+    CloudyIcon,
     CrossedSwordsIcon,
     DizzyIcon,
     EyeIcon,
@@ -104,7 +107,7 @@ import {
 } from "./../ability/types";
 import { bash, block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, pigHeaded, poisonous } from "./effect";
+import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1753,6 +1756,7 @@ export const mesoThief: Minion = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
+                    playbackTime: 2000,
                     effects: [
                         {
                             ...stealth,
@@ -1800,6 +1804,200 @@ export const mesoThief: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             mesoSteal: 10,
+        },
+    ],
+};
+
+export const eventBandit: Minion = {
+    name: "XSasukeX",
+    image: GuardBanditImage,
+    HP: 100,
+    maxHP: 100,
+    mesos: 100,
+    abilities: [
+        {
+            name: "Double Stab",
+            image: DoubleStabImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 4,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 4,
+                },
+            ],
+        },
+        {
+            name: "Dark Sight",
+            image: DarkSightImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    icon: DarkSightImage,
+                    effects: [
+                        {
+                            type: EFFECT_TYPES.STEALTH,
+                            class: EFFECT_CLASSES.BUFF,
+                            name: "Stealth",
+                            icon: CloudyIcon,
+                            canBeSilenced: true,
+                            duration: 3,
+                            onReceiveAttack: {
+                                removeEffect: true,
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 6,
+                },
+            ],
+        },
+        enemyHaste,
+        {
+            name: "Savage Blow",
+            image: SavageBlowImage,
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    icon: SavageBlowImage,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                    effects: [bleed],
+                },
+            ],
+        },
+    ],
+    effects: [
+        sneaky,
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onWaveStart: {
+                ability: {
+                    name: "",
+                    dialog: "Are you serious? Outta my way!",
+                    image: DarkSightImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            icon: DarkSightImage,
+                            effects: [
+                                {
+                                    type: EFFECT_TYPES.STEALTH,
+                                    class: EFFECT_CLASSES.BUFF,
+                                    name: "Stealth",
+                                    icon: CloudyIcon,
+                                    canBeSilenced: true,
+                                    duration: 3,
+                                    onReceiveAttack: {
+                                        removeEffect: true,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+                removeEffect: true,
+            },
+        },
+        {
+            name: "About To Flee",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    healthPercentage: 0.2,
+                    comparator: "lt",
+                },
+            ],
+            onReceiveDamage: {
+                removeEffect: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                usableWhileStunned: true,
+                ability: {
+                    name: "Dark Sight",
+                    image: DarkSightImage,
+                    dialog: "Screw this! I ain't dying here!",
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            icon: DarkSightImage,
+                            effects: [
+                                {
+                                    ...stealth,
+                                    description:
+                                        "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
+                                    preventTurnAction: true,
+                                    duration: 2,
+                                    onEnd: {
+                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                        ability: {
+                                            name: "Retreat",
+                                            actions: [
+                                                {
+                                                    type: ACTION_TYPES.EFFECT,
+                                                    target: TARGET_TYPES.SELF,
+                                                    retreat: true,
+                                                },
+                                            ],
+                                        },
+                                    },
+                                    onEffectRemoved: {
+                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                        ability: {
+                                            name: "",
+                                            dialog: "WTF?",
+                                            actions: [
+                                                {
+                                                    type: ACTION_TYPES.NONE,
+                                                    target: TARGET_TYPES.SELF,
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
         },
     ],
 };

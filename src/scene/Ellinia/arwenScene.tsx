@@ -480,7 +480,10 @@ const maladyDialog: ScriptNode[] = [
                                                                                         ],
                                                                                     },
                                                                                     {
-                                                                                        treasureBox: true,
+                                                                                        treasureBox: {
+                                                                                            isOpen: true,
+                                                                                            isCursed: true,
+                                                                                        },
                                                                                         dialog: [""],
                                                                                     },
                                                                                     {

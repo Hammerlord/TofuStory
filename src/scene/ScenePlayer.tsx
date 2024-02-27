@@ -11,16 +11,20 @@ import ItemSelection from "../item/ItemSelection";
 import { ITEM_TYPES, Item } from "../item/types";
 import Button from "../view/Button";
 import TreasureBox from "./TreasureBox/TreasureBox";
-import { EventScene, ScriptConditions, ScriptNode, ScriptResponse } from "./types";
+import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
 import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
-import { shuffle } from "../utils";
+import { getRandomItem, shuffle } from "../utils";
 import { mesoItem } from "../item/items";
 import { calculateMesoGain } from "../battle/utils";
 import { SkullPatchImage } from "../images";
 import Icon from "../icon/Icon";
+import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
+import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
+import SortingPuzzle from "./TreasureBox/SortingPuzzle";
+import RowPuzzle from "./TreasureBox/RowPuzzle";
 
 const useStyles = createUseStyles({
     root: {
@@ -239,7 +243,7 @@ const ScenePlayer = ({
     const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
     const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [showCamp, setShowCamp] = useState(false);
-    const [showTreasure, setShowTreasure] = useState(false);
+    const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
 
     const classes = useStyles();
@@ -255,7 +259,7 @@ const ScenePlayer = ({
         treasureBox,
         conditionalNext,
         infamy,
-    } = script[dialogIndex] || ({} as any);
+    }: ScriptNode = script[dialogIndex] || ({} as any);
 
     const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
         if (!items) {
@@ -315,7 +319,11 @@ const ScenePlayer = ({
         }
 
         if (treasureBox) {
-            setShowTreasure(true);
+            const { isOpen, isCursed }: ScriptNodeTreasure = treasureBox;
+            setTreasureBoxOptions({
+                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
+                curse: isCursed ? "damage" : undefined,
+            });
         }
 
         if (conditionalNext) {
@@ -329,7 +337,7 @@ const ScenePlayer = ({
         if (infamy) {
             dispatch(addInfamy(infamy));
         }
-    }, [dialogIndex]);
+    }, [script?.[dialogIndex]]);
 
     const onProceedDialog = () => {
         const newDialogIndex = dialogIndex + 1;
@@ -367,7 +375,10 @@ const ScenePlayer = ({
         const recentBattle = battleHistory[battleHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battleTotalDamage, comparator } = condition || {};
+            const { battleTotalDamage, comparator, chance } = condition || {};
+            if (chance) {
+                return Math.random() <= chance;
+            }
             return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
         };
 
@@ -432,7 +443,7 @@ const ScenePlayer = ({
     const handleClickItemsObtained = () => {
         dispatch(acquireItems(itemsObtainedFromScene));
 
-        if (dialogIndex < scene.script.length - 1) {
+        if (dialogIndex < script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {
             onExit();
@@ -442,7 +453,7 @@ const ScenePlayer = ({
     const handleSelectItemChoice = (item: Item) => {
         dispatch(acquireItems([item]));
 
-        if (dialogIndex <= scene.script.length - 1) {
+        if (dialogIndex < script.length - 1) {
             setDialogIndex(dialogIndex + 1);
         } else {
             onExit();
@@ -504,7 +515,7 @@ const ScenePlayer = ({
                 <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
                 <div className={classes.backgroundOverlay} />
                 <div className={classes.inner}>
-                    {!Puzzle && !showCamp && !isRemovingAbility && !showTreasure && (
+                    {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (
                         <>
                             <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
@@ -589,14 +600,15 @@ const ScenePlayer = ({
                 )}
                 {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
             </div>
-            {showTreasure && (
+            {treasureBoxOptions && (
                 <TreasureBox
                     onExit={() => {
-                        setShowTreasure(false);
+                        setTreasureBoxOptions(null);
                         setDialogIndex((prev) => prev + 1);
                     }}
                     onLoot={handleObtainLoot}
                     player={player}
+                    {...treasureBoxOptions}
                 />
             )}
         </>

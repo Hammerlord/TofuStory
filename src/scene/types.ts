@@ -44,8 +44,9 @@ export interface Shop {
 }
 
 export interface ScriptConditions {
-    battleTotalDamage: number;
-    comparator: "lt" | "eq" | "gt";
+    battleTotalDamage?: number;
+    comparator?: "lt" | "eq" | "gt";
+    chance?: number;
 }
 
 export interface ScriptResponse {
@@ -58,6 +59,11 @@ export interface ScriptResponse {
     camp?: boolean;
     removeAbility?: boolean;
     id?: string; // Scene ID to track which scenes you have visited
+}
+
+export interface ScriptNodeTreasure {
+    isOpen?: boolean;
+    isCursed?: boolean;
 }
 
 export interface ScriptNode {
@@ -78,7 +84,7 @@ export interface ScriptNode {
         onComplete: ({ success, infamy }?: { success?: boolean; infamy?: number }) => void;
         onExit: () => void;
     }) => JSX.Element;
-    treasureBox?: boolean;
+    treasureBox?: ScriptNodeTreasure;
     dialog: string[];
     responses?: ScriptResponse[];
     // Items given straight to the player. If amount < itemPool.length, that number of items will be selected randomly

@@ -367,6 +367,7 @@ export { default as RubberImage } from "./Rubber.png";
 export { default as RushImage } from "./Rush.png";
 export { default as SafetyCharmImage } from "./SafetyCharm.png";
 export { default as SapOfNependeathImage } from "./SapOfNependeath.png";
+export { default as SavageBlowImage } from "./SavageBlow.png";
 export { default as ScarfSnowmanImage } from "./ScarfSnowman.png";
 export { default as SelfRecoveryImage } from "./SelfRecovery.png";
 export { default as ShadowyForestImage } from "./ShadowyForest.png";
