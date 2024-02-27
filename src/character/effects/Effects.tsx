@@ -11,7 +11,7 @@ import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons"
 import { NimbleJewelCImage } from "../../images";
 
 const useStyles = createUseStyles({
-    root: {
+    effectsRoot: {
         height: "100%",
         width: "100%",
         position: "absolute",
@@ -208,14 +208,14 @@ const Effects = ({ combatantInfo, statChanges }) => {
     };
 
     return (
-        <div className={classes.root}>
+        <div className={classes.effectsRoot}>
             {
-                <span className={classes.center}>
+                <div className={classes.center}>
                     <Healing statChanges={statChanges} />
                     <Burn amount={burn} />
                     <Chill amount={chill} />
                     <Stealth isStealthed={isStealthed} />
-                </span>
+                </div>
             }
             {isSilenced && <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />}
             {isStunned && <Icon icon={<DizzyIcon />} size="xl" className={classes.stun} />}

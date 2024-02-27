@@ -22,6 +22,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
+        position: "absolute",
     },
     icon: {
         position: "absolute",

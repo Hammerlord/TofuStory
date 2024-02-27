@@ -94,6 +94,7 @@ const useStyles = createUseStyles({
         minWidth: "100px",
         height: " 80%",
         width: "80%",
+        zIndex: 1,
     },
     leftContainer: {
         position: "absolute",
@@ -196,6 +197,7 @@ const useStyles = createUseStyles({
         width: "90%",
         left: "50%",
         transform: "translateX(-50%)",
+        zIndex: 0,
     },
     "@keyframes deadAnimation": {
         from: {
