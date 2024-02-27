@@ -61,6 +61,10 @@ const useStyles = createUseStyles({
         maxWidth: 300,
         padding: "16px",
     },
+    playerHP: {
+        minWidth: 100,
+        display: "inline-block",
+    },
 });
 
 const Header = ({
@@ -81,7 +85,9 @@ const Header = ({
         <div className={classes.headerBar}>
             <img src={player.image} className={classes.playerPortrait} />{" "}
             <div className={classes.stats}>
-                {player.HP} / {getMaxHP(player)} HP{" "}
+                <span className={classes.playerHP}>
+                    {player.HP} / {getMaxHP(player)} HP
+                </span>
                 <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
                     {deck.length} abilities
                 </Button>
