@@ -410,8 +410,9 @@ export type Action = {
     area?: number;
     /** Only applicable to target type RANDOM or ricochet. If not supplied, all targets on one side are eligible. */
     targetArea?: number;
+    // Hits random extra targets within targetArea
     numTargets?: number;
-    // Bounces between numTargets within targetArea
+    // Bounces between numTargets within targetArea.
     ricochet?: boolean;
     effects?: (string | Effect)[]; // If a string (name of effect) is provided, attempt to look up the corresponding effect
     description?: string;

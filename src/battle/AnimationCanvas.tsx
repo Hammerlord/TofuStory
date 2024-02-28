@@ -228,7 +228,12 @@ const AnimationCanvas = ({
         } else if (animation === ANIMATION_TYPES.EXPLODE) {
             animationRefs.current = explode({ from: actorElement, playbackTime: playbackTime - 250 });
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            animationRefs.current = travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
+            animationRefs.current = travel({
+                from: actorElement,
+                to: ricochet ? allTargets : targetElement,
+                returnToOrigin: true,
+                ...options,
+            });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {

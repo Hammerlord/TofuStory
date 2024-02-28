@@ -1441,7 +1441,7 @@ export const calculateTargetIndices = ({
     battle: BattleState;
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
 }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0 } = action;
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = Infinity } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData });
     let extraTargetIndices = getValidTargetIndices(battle[side], {
@@ -1674,7 +1674,6 @@ const autoSelectActionTarget = ({
     action: Action;
     actorId: string;
     getState: Function;
-    numTargets?: number;
 }) => {
     const { friendly, hostile, friendlySide, hostileSide } = findCombatantData(getState, actorId);
     const { targetArea: area = 0, target, targetName } = action;
