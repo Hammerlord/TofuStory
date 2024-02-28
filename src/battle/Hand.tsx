@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
 
+const handPlaybackDuration = 300; // As much as I'd like it to be a bit slower, it causes cards to get stuck/some responsiveness problems
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
         from: {
@@ -18,7 +19,7 @@ const useStyles = createUseStyles({
     slideIn: {
         animation: "$slideIn",
         transitionTimingFunction: "ease-in",
-        animationDuration: 350,
+        animationDuration: handPlaybackDuration,
         animationIterationCount: 1,
     },
     "@keyframes slideOut": {
@@ -34,7 +35,7 @@ const useStyles = createUseStyles({
     slideOut: {
         animation: "$slideOut",
         transitionTimingFunction: "ease-out",
-        animationDuration: 350,
+        animationDuration: handPlaybackDuration,
         animationIterationCount: 1,
     },
 });
@@ -58,7 +59,8 @@ const Hand = ({
     useEffect(() => {
         const timeout = setTimeout(() => {
             setOldHand(hand);
-        }, 340);
+            // Bit faster so that the animation doesn't reset before eg. the card leaves
+        }, handPlaybackDuration - 10);
 
         return () => {
             clearTimeout(timeout);
