@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { Event } from "../battle/types";
@@ -384,8 +384,13 @@ const CombatantView = forwardRef(
                     const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
                     if (isKillingBlow && !willPerformActions) {
                         playDyingAnimation({ object: characterImageRef.current });
-                    } else if (statChanges?.damage > 0) {
-                        const delta = isEnemy ? statChanges.damage : -statChanges.damage;
+                    } else if (
+                        statChanges?.damage > 0 ||
+                        statChanges?.effects.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
+                    ) {
+                        const baseDelta = statChanges.damage || 1;
+                        // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
+                        const delta = isEnemy ? baseDelta : -baseDelta;
                         playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
                     }
                 }
