@@ -33,7 +33,10 @@ const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }) => {
     return totalTraveldistance;
 };
 
-export const travel = ({
+/**
+ * Move `object` elements from a location (HTMLElement) to another location (HTMLElement).
+ */
+export const playTravelAnimation = ({
     object,
     from,
     to,
@@ -160,7 +163,10 @@ export const travel = ({
     });
 };
 
-export const explode = ({
+/**
+ * Scale up an `object` at the `from` location rapidly to simulate an 'exploding' effect.
+ */
+export const playExplodeAnimation = ({
     from,
     object,
     playbackTime,
@@ -195,7 +201,10 @@ export const explode = ({
     });
 };
 
-export const tossUp = ({
+/**
+ * Throw an `object` up and down at a location. Usually used for consumables.
+ */
+export const playTossUpAnimation = ({
     from,
     object,
     playbackTime,
@@ -235,7 +244,10 @@ export const tossUp = ({
     });
 };
 
-export const shake = ({ object, delay, playbackTime }) => {
+/**
+ * Quickly shake `object` vertically.
+ */
+export const playShakeAnimation = ({ object, delay, playbackTime }) => {
     const animationFrames = [
         {
             transform: "translateY(0%)",
@@ -261,6 +273,9 @@ export const shake = ({ object, delay, playbackTime }) => {
     });
 };
 
+/**
+ * Animation when moving an `object` (almost certainly a card) to a card pile.
+ */
 export const sendToPile = ({
     object,
     playbackTime,
@@ -322,6 +337,9 @@ export const sendToPile = ({
     });
 };
 
+/**
+ * `object` plays a "stomping" animation. The element gets compressed and stretched.
+ */
 export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
     const animationFrames = [
         {
@@ -355,5 +373,68 @@ export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
 
     return object.animate(animationFrames, {
         duration: playbackTime,
+    });
+};
+
+export const playDyingAnimation = ({ object, playbackTime = 750 }) => {
+    const animationFrames = [
+        {
+            transform: "translateY(0)",
+            opacity: 1,
+            easing: "ease-out",
+        },
+        {
+            transform: "translateY(-100px)",
+            opacity: 0,
+            filter: "brightness(0.5)",
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay: 0.25,
+    });
+};
+
+export const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) => {
+    const inverse = (num) => -num;
+
+    const animationFrames = [
+        {
+            transform: `translateX(0%) translateY(0%)`,
+            filter: "unset",
+        },
+        {
+            transform: `translateX(0%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${delta / 3}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(0%) translateY(${inverse(delta / 2)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(0%) translateY(0%)`,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
     });
 };

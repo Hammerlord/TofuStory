@@ -2,7 +2,15 @@ import classNames from "classnames";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, CombatAbility } from "../ability/types";
-import { explode, getCenterCoords, playStompAnimation, sendToPile, shake, tossUp, travel } from "../character/animations";
+import {
+    playExplodeAnimation,
+    getCenterCoords,
+    playStompAnimation,
+    sendToPile,
+    playShakeAnimation,
+    playTossUpAnimation,
+    playTravelAnimation,
+} from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 import AbilityView from "../ability/AbilityView/AbilityView";
@@ -186,19 +194,19 @@ const AnimationCanvas = ({
                 const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
 
                 if (animation === ANIMATION_TYPES.CONSUMABLE) {
-                    animationRefs.current = tossUp({
+                    animationRefs.current = playTossUpAnimation({
                         from: actorElement,
                         object,
                         ...options,
                     });
                 } else if (animation === ANIMATION_TYPES.ACTION_EXPLODE) {
-                    animationRefs.current = explode({
+                    animationRefs.current = playExplodeAnimation({
                         from: actorElement,
                         object,
                         ...options,
                     });
                 } else {
-                    animationRefs.current = travel({
+                    animationRefs.current = playTravelAnimation({
                         from: actorElement,
                         to: target,
                         object,
@@ -219,16 +227,16 @@ const AnimationCanvas = ({
             const shakeDuration = 175;
             const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
             if (battlefieldRef.current) {
-                shake({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
+                playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
             }
 
             animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
         } else if (animation === ANIMATION_TYPES.SPIN) {
-            animationRefs.current = travel({ from: actorElement, to: targetElement, ...options });
+            animationRefs.current = playTravelAnimation({ from: actorElement, to: targetElement, ...options });
         } else if (animation === ANIMATION_TYPES.EXPLODE) {
-            animationRefs.current = explode({ from: actorElement, playbackTime: playbackTime - 250 });
+            animationRefs.current = playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            animationRefs.current = travel({
+            animationRefs.current = playTravelAnimation({
                 from: actorElement,
                 to: ricochet ? allTargets : targetElement,
                 returnToOrigin: true,
@@ -254,7 +262,7 @@ const AnimationCanvas = ({
             }
 
             const refs = side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
-            animationRefs.current = travel({
+            animationRefs.current = playTravelAnimation({
                 object: refs[currentIndex]?.current,
                 from: refs[prevIndex]?.current,
                 to: refs[currentIndex]?.current,

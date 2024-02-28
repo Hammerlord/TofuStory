@@ -25,6 +25,7 @@ import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import Effects from "./effects/Effects";
 import { Combatant, Player } from "./types";
+import { playDyingAnimation, playHitAnimation } from "./animations";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -260,69 +261,6 @@ const useStyles = createUseStyles({
 interface CurrentEvent extends Event {
     targetRef?: HTMLElement;
 }
-
-const playDyingAnimation = ({ object, playbackTime = 750 }) => {
-    const animationFrames = [
-        {
-            transform: "translateY(0)",
-            opacity: 1,
-            easing: "ease-out",
-        },
-        {
-            transform: "translateY(-100px)",
-            opacity: 0,
-            filter: "brightness(0.5)",
-        },
-    ];
-
-    return object.animate(animationFrames, {
-        duration: playbackTime,
-        delay: 0.25,
-    });
-};
-
-const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) => {
-    const inverse = (num) => -num;
-
-    const animationFrames = [
-        {
-            transform: `translateX(0%) translateY(0%)`,
-            filter: "unset",
-        },
-        {
-            transform: `translateX(0%) translateY(${inverse(delta)}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${inverse(delta)}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${delta / 3}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(0%) translateY(${inverse(delta / 2)}%)`,
-            filter: "sepia(0.1) brightness(0.8)",
-        },
-        {
-            transform: `translateX(0%) translateY(0%)`,
-        },
-    ];
-
-    return object.animate(animationFrames, {
-        duration: playbackTime,
-        delay,
-    });
-};
 
 const CombatantView = forwardRef(
     (
