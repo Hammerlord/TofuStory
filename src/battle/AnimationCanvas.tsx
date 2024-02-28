@@ -215,10 +215,6 @@ const AnimationCanvas = ({
             } else {
                 allTargets.forEach(animateProjectile);
             }
-        } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            animationRefs.current = travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
-        } else if (animation === ANIMATION_TYPES.SPIN) {
-            animationRefs.current = travel({ from: actorElement, to: targetElement, ...options });
         } else if (animation === ANIMATION_TYPES.STOMP) {
             const shakeDuration = 175;
             const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
@@ -227,8 +223,12 @@ const AnimationCanvas = ({
             }
 
             animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
+        } else if (animation === ANIMATION_TYPES.SPIN) {
+            animationRefs.current = travel({ from: actorElement, to: targetElement, ...options });
         } else if (animation === ANIMATION_TYPES.EXPLODE) {
             animationRefs.current = explode({ from: actorElement, playbackTime: playbackTime - 250 });
+        } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
+            animationRefs.current = travel({ from: actorElement, to: targetElement, returnToOrigin: true, ...options });
         }
 
         const checkHandleDisplacement = (combatantId: string) => {
