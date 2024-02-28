@@ -22,7 +22,7 @@ import { calculateTargetIndices, checkEventTrigger, findCombatantData } from "./
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
-import { MAX_HAND_SIZE } from "./constants";
+import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
 import { calculateActionArea, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
@@ -161,7 +161,6 @@ const useStyles = createUseStyles({
     },
 });
 
-const TURN_ANNOUNCEMENT_TIME = 2000; // MS
 const BATTLEFIELD_SIZE = 5;
 
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt, setNotification } =
@@ -514,14 +513,12 @@ const BattlefieldContainer = () => {
             setShowTurnAnnouncement(true);
             setTimeout(() => {
                 setShowTurnAnnouncement(false);
-                setTimeout(() => {
-                    if (isPlayerTurn) {
-                        dispatch(startPlayerTurn());
-                    } else {
-                        dispatch(startEnemyTurn());
-                    }
-                    dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
-                }, 250);
+                if (isPlayerTurn) {
+                    dispatch(startPlayerTurn());
+                } else {
+                    dispatch(startEnemyTurn());
+                }
+                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
             }, TURN_ANNOUNCEMENT_TIME);
             return;
         }

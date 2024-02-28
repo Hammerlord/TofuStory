@@ -3,6 +3,7 @@ import { Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/typ
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
+import { NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import {
@@ -365,7 +366,15 @@ export const startEnemyTurn = () => {
             acted[id] = true;
             const enemyInfo = findCombatantData(getState, id);
             const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length;
-            const delay = unableToAct ? 300 : 1500;
+            const nobodyHasActed = !Object.keys(acted).length;
+            let delay;
+            if (nobodyHasActed) {
+                delay = 0;
+            } else if (unableToAct) {
+                delay = 250;
+            } else {
+                delay = NORMAL_ACTION_PLAYBACK_SPEED + 250;
+            }
 
             setTimeout(() => {
                 // Enemies who are unable to act still must lose a turn when casting an ability
