@@ -230,6 +230,7 @@ export type CombatEffect = Effect & {
 export interface Minion {
     name: string;
     image: string;
+    description?: string;
     imageOptions?: {
         filter?: string;
         animation?: "float";

@@ -2165,6 +2165,7 @@ export const wardBooster: Ability = {
 const icicleMinion: Minion = {
     name: "Icicle",
     image: IcicleMinionImage,
+    description: "On attack: Inflicts Chill and hits itself for 1. Receive attack: Inflicts Chill.",
     maxHP: 1,
     abilities: [
         {
@@ -2191,6 +2192,25 @@ const icicleMinion: Minion = {
             ],
         },
     ],
+    effects: [
+        {
+            name: "Icicle",
+            icon: IcicleMinionImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            description: "On attack: Inflicts Chill and hits itself for 1. Receive attack: Inflicts Chill.",
+            onReceiveAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                usableWhileDead: true,
+                effects: [
+                    {
+                        ...chill,
+                        duration: 3,
+                    },
+                ],
+            },
+        },
+    ],
 };
 
 export const icicles: Ability = {
@@ -2198,7 +2218,7 @@ export const icicles: Ability = {
     image: IciclesPortraitImage,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "For your next 3 offense spells that cost 1+, summon a 3/1 Icicle.",
+    description: "For your next 3 spells that cost 1+, summon a (3/1) Icicle.",
     resourceCost: 1,
     actions: [
         {
@@ -2207,13 +2227,13 @@ export const icicles: Ability = {
             effects: [
                 {
                     name: "Icicles",
-                    description: "When you cast a 1+ cost offense spell, summon a 3/1 Icicle.",
+                    description: "When you cast a 1+ cost spell, summon a (3/1) Icicle.",
                     icon: IcicleMinionImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     maxApplications: 1,
                     stacks: 3,
-                    onOffensiveAbility: {
+                    onAbility: {
                         ability: {
                             name: "Icicle",
                             image: IcicleMinionImage,
