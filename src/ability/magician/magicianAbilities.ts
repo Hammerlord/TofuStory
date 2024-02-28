@@ -22,6 +22,7 @@ import {
     FireArrowProjectileImage,
     FireMarbleImage,
     FlameHazeImage,
+    GiantSnowmanImage,
     GlisteningStarImage,
     HighWisdomImage,
     HolyMagicShellImage,
@@ -899,7 +900,7 @@ export const avatarOfTheStars: Ability = {
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 2,
-    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
+    description: "When you use an offensive card that costs 1+, add Swift to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -915,7 +916,7 @@ export const avatarOfTheStars: Ability = {
                     override: {
                         portrait: StarfishIdleImage,
                     },
-                    description: "When you use an ability that costs 1 or more mana, add Swift to your hand.",
+                    description: "When you use an offensive card that costs 1+, add Swift to your hand.",
                     onOffensiveAbility: {
                         conditions: [
                             {
@@ -2425,6 +2426,74 @@ export const elquines: Ability = {
         {
             minion: {
                 HP: 1,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const abominableSnowman: Ability = {
+    name: "Abominable Snowman",
+    description: "Attacks strike adjacent targets. Grows when enemies are killed.",
+    image: GiantSnowmanImage,
+    resourceCost: 3,
+    rarity: RARITIES.RARE,
+    minion: {
+        name: "Abominable Snowman",
+        image: GiantSnowmanImage,
+        maxHP: 5,
+        armor: 15,
+        abilities: [
+            {
+                name: "Snowman Slam",
+                image: GiantSnowmanImage,
+                actions: [
+                    {
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.ATTACK,
+                        damage: 2,
+                        area: 1,
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                name: "Abomination",
+                description: "Gains +1 ATT and 3 Armor when enemies are killed.",
+                icon: GiantSnowmanImage,
+                type: EFFECT_TYPES.RAGE,
+                class: EFFECT_CLASSES.BUFF,
+                onKill: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    effects: [
+                        {
+                            name: "Abominable",
+                            icon: GiantSnowmanImage,
+                            disableDisplayIcon: true,
+                            type: EFFECT_TYPES.RAGE,
+                            class: EFFECT_CLASSES.BUFF,
+                            attackPower: 1,
+                        },
+                    ],
+                    armor: 5,
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
                 abilities: [
                     {
                         actions: [

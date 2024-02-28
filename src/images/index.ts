@@ -167,6 +167,7 @@ export { default as GachaponImage } from "./Gachapon.png";
 export { default as GarnetImage } from "./Garnet.png";
 export { default as GemHeartImage } from "./GemHeart.gif";
 export { default as GiantCentipedeMarbleImage } from "./GiantCentipedeMarble.png";
+export { default as GiantSnowmanImage } from "./GiantSnowman.gif";
 export { default as GiganticSledgeImage } from "./GiganticSledge.png";
 export { default as GlisteningStarImage } from "./GlisteningStar.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";

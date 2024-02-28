@@ -1,6 +1,7 @@
 import { PLAYER_CLASSES } from "../Menu/types";
 import { STARTER_MAX_LEVEL } from "./AbilityView/constants";
 import {
+    abominableSnowman,
     arcaneAim,
     arcaneChanneling,
     arcaneWard,
@@ -173,6 +174,7 @@ export const JOB_CARD_MAP = {
             icicles,
             ifrit,
             elquines,
+            abominableSnowman,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(
