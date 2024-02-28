@@ -70,6 +70,7 @@ const Hand = ({
 
     const handleAbilityClick = (event, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
+            setOldHand(hand);
             onAbilityClick(event, id);
         }
     };
