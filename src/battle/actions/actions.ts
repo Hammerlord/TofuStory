@@ -62,6 +62,7 @@ import { TriggerSource } from "./../types";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { checkCardActions, deleteCard, depleteAbilities } from "./cardActions";
+import { cloneDeep } from "lodash";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -1777,7 +1778,7 @@ const checkSummonMinion = ({
                 playerSummonsInPlay?: { [id: string]: Ability };
             } = {
                 [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                    return i === index ? summonedMinion : combatant;
+                    return i === index ? cloneDeep(summonedMinion) : combatant;
                 }),
             };
 
