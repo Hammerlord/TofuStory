@@ -75,7 +75,7 @@ const CardRewards = ({
         const potentialAbilities = [
             ...all.map((card) => {
                 if (starters.some(({ name }) => name === card.name)) {
-                    return getUpgradeCard(card);
+                    return getUpgradeCard(card) || card;
                 }
                 return card;
             }),

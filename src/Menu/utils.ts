@@ -34,7 +34,7 @@ export const aggregateAbilityEffects = (abilities: Ability[]): Effect[] => {
 };
 
 export const getUpgradeCard = (card: Ability, options?: { ignoreMaxLevel?: boolean }) => {
-    if (!card.upgrades || (card.level && card.level === card.maxLevel && !options?.ignoreMaxLevel)) {
+    if (!card.upgrades?.length || (card.level && card.level === card.maxLevel && !options?.ignoreMaxLevel)) {
         return;
     }
 
