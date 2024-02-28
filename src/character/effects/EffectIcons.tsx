@@ -1,10 +1,9 @@
 import { partition } from "ramda";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_CLASSES, Effect } from "../../ability/types";
+import { Event } from "../../battle/types";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import { Combatant, Player } from "../types";
-import { Event } from "../../battle/types";
-import { COLOR_RARITY_UNCOMMON } from "../../constants";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "./constants";
 
 const indicatorSize = 6;
@@ -27,6 +26,7 @@ const useStyles = createUseStyles({
     },
     divider: {
         display: "flex",
+        minHeight: 20,
     },
     up: {
         borderLeft: `${indicatorSize}px solid transparent`,
@@ -92,16 +92,19 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
                     />
                 ))}
             </div>
-            {hasVisibleBuff && hasVisibleDebuff && (
-                <div className={classes.divider}>
-                    <hr />
-                    <div className={classes.dividerIndicator}>
-                        <span className={classes.up} />
-                        <span className={classes.down} />
-                    </div>
-                    <hr />
-                </div>
-            )}
+
+            <div className={classes.divider}>
+                {hasVisibleBuff && hasVisibleDebuff && (
+                    <>
+                        <hr />
+                        <div className={classes.dividerIndicator}>
+                            <span className={classes.up} />
+                            <span className={classes.down} />
+                        </div>
+                        <hr />
+                    </>
+                )}
+            </div>
 
             <div className={classes.debuffs}>
                 {getEffectGroups(debuffs).map((effects: CombatEffect[], i) => (
