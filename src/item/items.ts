@@ -1415,7 +1415,7 @@ export const taurospearHorn: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Taurospear Horn",
-            onKill: {
+            onFriendlyKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
                 drawCards: {

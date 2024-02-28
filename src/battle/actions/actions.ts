@@ -160,10 +160,22 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
             );
         }
 
+        dispatch(
+            checkEventTrigger({
+                combatantId: killedBy.id,
+                effectEventKey: EFFECT_EVENT_KEYS.onKill,
+                source: { ...triggerSource },
+            })
+        );
+
         friendly.forEach((combatant) => {
             if (combatant) {
                 dispatch(
-                    checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onKill, source: { ...triggerSource } })
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onFriendlyKill,
+                        source: { ...triggerSource },
+                    })
                 );
             }
         });

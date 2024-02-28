@@ -2442,18 +2442,18 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Attacks cleave. Grows when it kills.",
+    description: "Attacks cleave. Gains +1 ATT and 3 Armor when it kills.",
     image: GiantSnowmanImage,
     resourceCost: 3,
     rarity: RARITIES.RARE,
     minion: {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
-        maxHP: 5,
+        maxHP: 3,
         armor: 15,
         abilities: [
             {
-                name: "Snowman Slam",
+                name: "Snow Cleave",
                 image: GiantSnowmanImage,
                 actions: [
                     {
@@ -2484,7 +2484,7 @@ export const abominableSnowman: Ability = {
                             attackPower: 1,
                         },
                     ],
-                    armor: 5,
+                    armor: 3,
                 },
             },
         ],
