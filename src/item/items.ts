@@ -40,6 +40,7 @@ import {
     GoldenHammerImage,
     GreenBambooHatImage,
     GuidebookImage,
+    HerbsImage,
     HotdogImage,
     HumilityStoneImage,
     IcarusCapeImage,
@@ -1964,4 +1965,15 @@ export const peach: Item = {
             maxHP: 15,
         },
     ],
+};
+
+export const incenseLeaves: Item = {
+    name: "Incense Leaves",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: HerbsImage,
+    description: "You can remove an ability from your deck when camping.",
+    camp: {
+        allowAbilityRemoval: true,
+    },
 };

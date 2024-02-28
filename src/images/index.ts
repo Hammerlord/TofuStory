@@ -190,6 +190,7 @@ export { default as HasteImage } from "./Haste.png";
 export { default as HeavenHammerImage } from "./HeavenHammer.png";
 export { default as HenesysRegionBGImage } from "./HenesysRegionBG.jpg";
 export { default as HenesysTownstreetStageImage } from "./HenesysTownstreetStage.png";
+export { default as HerbsImage } from "./Herbs.png";
 export { default as HighPaladinImage } from "./HighPaladin.png";
 export { default as HighWisdomImage } from "./HighWisdom.png";
 export { default as HolyMagicShellImage } from "./HolyMagicShell.png";

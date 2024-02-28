@@ -31,6 +31,8 @@ export interface Item {
         abilityChoices?: number;
         healing?: number;
         extraActivities?: number;
+        // If true, enables the Meditate option at the campsite.
+        allowAbilityRemoval?: boolean;
     };
     merchant?: {
         // Number of times you are allowed to refresh the items per visit

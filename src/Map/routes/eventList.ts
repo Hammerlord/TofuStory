@@ -74,6 +74,7 @@ import {
     icarusCape,
     bloodMask,
     peach,
+    incenseLeaves,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -158,6 +159,7 @@ export const ITEMS = [
     theBackpack,
     icarusCape,
     peach,
+    incenseLeaves,
 ];
 
 export const CLASS_ITEMS = {

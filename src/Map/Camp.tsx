@@ -9,9 +9,10 @@ import { JOB_CARD_MAP } from "../ability";
 import { Ability, CombatAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Player } from "../character/types";
-import { CampfireImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
+import { CampfireImage, GoldenHammerImage, HerbsImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
 import { Item } from "../item/types";
 import Button from "../view/Button";
+import { incenseLeaves } from "../item/items";
 
 const useStyles = createUseStyles({
     root: {
@@ -190,8 +191,9 @@ const Camp = ({
         );
     }
 
-    const canRemoveAbility = !hasRemovedAbility && numActivitiesRemaining > 0;
-    const canUpgradeAbility = !hasUpgradedAbility && numActivitiesRemaining > 0;
+    const hasMeditateItem = player.items.some((item) => item.camp?.allowAbilityRemoval);
+    const canRemoveAbility = !hasRemovedAbility && numActivitiesRemaining > 0 && hasMeditateItem;
+    const canUpgradeAbility = numActivitiesRemaining > 0;
 
     return (
         <div className={classes.root}>
@@ -204,22 +206,24 @@ const Camp = ({
                 </div>
                 <div className={classes.activitySection}>
                     <div className={classes.activityContainer}>
-                        <div
-                            className={classNames(classes.activity, {
-                                disabled: !canRemoveAbility,
-                            })}
-                            onClick={() => {
-                                if (canRemoveAbility) {
-                                    setIsRemovingAbility(true);
-                                }
-                            }}
-                        >
-                            <div className={classes.iconContainer}>
-                                <img src={SelfRecoveryImage} />
+                        {hasMeditateItem && (
+                            <div
+                                className={classNames(classes.activity, {
+                                    disabled: !canRemoveAbility,
+                                })}
+                                onClick={() => {
+                                    if (canRemoveAbility) {
+                                        setIsRemovingAbility(true);
+                                    }
+                                }}
+                            >
+                                <div className={classes.iconContainer}>
+                                    <img src={HerbsImage} />
+                                </div>
+                                <div className={classes.activityName}>MEDITATE</div>
+                                Remove an ability.
                             </div>
-                            <div className={classes.activityName}>MEDITATE</div>
-                            Remove one of your abilities.
-                        </div>
+                        )}
                         <div
                             className={classNames(classes.activity, {
                                 disabled: !canUpgradeAbility,
@@ -234,7 +238,7 @@ const Camp = ({
                                 <img src={WeaponMasteryImage} />
                             </div>
                             <div className={classes.activityName}>HONE</div>
-                            Upgrade one of your abilities.
+                            Upgrade an ability.
                         </div>
                     </div>
                     <p>Activities remaining: {numActivitiesRemaining}</p>
