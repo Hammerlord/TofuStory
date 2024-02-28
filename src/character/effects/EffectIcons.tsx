@@ -6,7 +6,7 @@ import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import { Combatant, Player } from "../types";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "./constants";
 
-const indicatorSize = 6;
+const indicatorSize = 4;
 const useStyles = createUseStyles({
     root: {
         "& hr": {
@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
     dividerIndicator: {
         display: "flex",
         flexDirection: "column",
-        margin: "2px 8px",
+        margin: "4px 8px",
     },
 });
 
