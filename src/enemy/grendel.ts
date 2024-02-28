@@ -3,7 +3,6 @@ import {
     ANIMATION_TYPES,
     Ability,
     Action,
-    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
@@ -13,6 +12,7 @@ import {
 import {
     ElquinesImage,
     EncroachingDarknessImage,
+    EnergyBoltImage,
     EnergyBoltProjectileImage,
     FireMarbleImage,
     GrendelIdleImage,
@@ -22,14 +22,12 @@ import {
     MagicClawProjectileImage,
     NimbleJewelCImage,
     NimbleJewelImage,
-    OldEnergyBoltImage,
     TeleportImage,
     TriboltImage,
     WeaponBoosterImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
 import { burn, hardy, raging } from "./../ability/Effects";
-import { tribolt } from "./../ability/magician/magicianAbilities";
 import { lifeLink } from "./effect";
 
 export const grendelIfrit: Minion = {
@@ -38,8 +36,7 @@ export const grendelIfrit: Minion = {
     imageOptions: {
         animation: "float",
     },
-    HP: 100,
-    maxHP: 100,
+    maxHP: 75,
     abilities: [
         {
             name: "Ember",
@@ -67,7 +64,8 @@ export const grendelIfrit: Minion = {
                 {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 3,
+                    damage: 5,
+                    area: 1,
                     animationOptions: {
                         flash: 200,
                     },
@@ -90,8 +88,7 @@ export const grendelElquines: Minion = {
     imageOptions: {
         animation: "float",
     },
-    HP: 100,
-    maxHP: 100,
+    maxHP: 75,
     abilities: [
         {
             name: "Ice Bolt",
@@ -298,7 +295,7 @@ const grendelMagicClaw: Ability = {
     level: 2,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -309,18 +306,9 @@ const grendelMagicClaw: Ability = {
             },
             icon: MagicClawProjectileImage,
             playbackTime: 400,
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-                damage: 2,
-            },
         },
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -332,38 +320,31 @@ const grendelMagicClaw: Ability = {
             },
             icon: MagicClawProjectileImage,
             playbackTime: 400,
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-                damage: 2,
-            },
         },
     ],
 };
 
 export const introGrendel: Minion = {
-    HP: 350,
-    maxHP: 350,
+    HP: 400,
+    maxHP: 400,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
     abilities: [
         {
-            name: "Energy Bolt",
-            image: OldEnergyBoltImage,
+            name: "Greater Bolt",
+            image: EnergyBoltImage,
             resourceCost: 0,
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: EnergyBoltProjectileImage,
                     playbackTime: 400,
                     animationOptions: {
+                        width: 100,
+                        height: 100,
                         rotate: 135,
                         rotateToFaceTarget: true,
                     },
@@ -468,8 +449,8 @@ export const grendel: Minion = {
     image: GrendelIdleImage,
     abilities: [
         {
-            name: "Energy Bolt",
-            image: OldEnergyBoltImage,
+            name: "Greater Bolt",
+            image: EnergyBoltImage,
             resourceCost: 0,
             actions: [
                 {
@@ -480,6 +461,8 @@ export const grendel: Minion = {
                     icon: EnergyBoltProjectileImage,
                     playbackTime: 400,
                     animationOptions: {
+                        width: 100,
+                        height: 100,
                         rotate: 135,
                         rotateToFaceTarget: true,
                     },

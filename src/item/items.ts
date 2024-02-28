@@ -407,7 +407,7 @@ export const panlid: Item = {
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 10,
-                effects: [preventArmorDecayPlayer],
+                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }], // Ticks down immediately
             },
         },
     ],
