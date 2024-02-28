@@ -43,6 +43,7 @@ export enum TRIGGER_SOURCE_TYPES {
     ABILITY = "ability",
     ITEM = "item",
     EFFECT = "effect",
+    NONE = "none",
 }
 
 /**
@@ -52,7 +53,7 @@ export enum TRIGGER_SOURCE_TYPES {
  * - Events like "on turn end" were not caused by any action in particular and do not have a source
  */
 export interface TriggerSource {
-    source: Action | CombatEffect | Ability | Item;
+    source?: Action | CombatEffect | Ability | Item;
     // The amount of, eg. block, healing, overhealing done by the source
     statUpdate?: UpdatedCombatantStats;
     type: TRIGGER_SOURCE_TYPES;

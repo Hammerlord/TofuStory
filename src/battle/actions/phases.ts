@@ -1,19 +1,20 @@
 import uuid from "uuid";
+import { elite, eruptive, raging, shielding, thorns } from "../../ability/Effects";
 import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
+import { poisonous, sneaky } from "../../enemy/effect";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
-import { BATTLE_TYPES, Wave } from "../types";
+import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
+import { calculateMesoGain } from "../utils";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
-import { calculateMesoGain } from "../utils";
-import { elite, eruptive, raging, shielding, thorns } from "../../ability/Effects";
-import { poisonous, sneaky } from "../../enemy/effect";
+import { checkCardActions } from "./cardActions";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -124,7 +125,7 @@ export const startBattle = ({
                 return createCombatant(enemy);
             }),
             playerSide: [null, null, player, null, null],
-            deck: shuffle([...(presetDeck || deck).slice(), ...addAbilities])
+            deck: shuffle([...(presetDeck || deck).slice()])
                 .sort((a, b) => {
                     const aSort = a.preemptive ? 1 : 0;
                     const bSort = b.preemptive ? 1 : 0;
@@ -164,6 +165,7 @@ export const startBattle = ({
             disableCardRewards,
             totalDamageDealt: 0,
             charactersAttackedThisTurn: [],
+            addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4() })),
         };
 
         dispatch(updateBattle(battleObj));
@@ -172,7 +174,24 @@ export const startBattle = ({
 
 export const onBattleStart = () => {
     return (dispatch, getState) => {
-        const { playerSide, enemySide } = getState().battle;
+        const { playerSide, enemySide, addAbilities = [] } = getState().battle;
+        if (addAbilities.length) {
+            dispatch(
+                checkCardActions(
+                    {
+                        addCardsToDeck: addAbilities.map((card) => ({
+                            ...card,
+                            instanceId: uuid.v4(),
+                        })),
+                    },
+                    {
+                        type: TRIGGER_SOURCE_TYPES.NONE,
+                        triggerHistory: [],
+                        targetId: playerSide.find((c) => c?.isPlayer)?.id,
+                    }
+                )
+            );
+        }
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
         });

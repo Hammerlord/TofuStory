@@ -42,6 +42,7 @@ export interface BattleState {
     notification?: Notification;
     totalDamageDealt: number; // Should include DoTs, etc.
     isTutorial?: boolean;
+    addAbilities: CombatAbility[];
 }
 
 export interface PlayerSelectCardsPrompt {
