@@ -100,7 +100,7 @@ export const getUpgradeCard = (card: Ability, options?: { ignoreMaxLevel?: boole
 
         if (selectCardOptions && equivalentObj.selectCards?.cards) {
             const { appendCards = 0, isUpgraded = false } = selectCardOptions;
-            const cards = equivalentObj.selectCards.slice(0, appendCards).map(cloneDeep);
+            const cards = equivalentObj.selectCards.cards.slice(0, appendCards).map(cloneDeep);
             equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map((card) => {
                 return (isUpgraded && getUpgradeCard(card)) || card;
             });
