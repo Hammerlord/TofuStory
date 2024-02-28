@@ -2199,7 +2199,7 @@ const icicleMinion: Minion = {
             icon: IcicleMinionImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            description: "On attack: Inflicts Chill and hits itself for 1. Receive attack: Inflicts Chill.",
+            description: "Attack: Inflicts Chill and self-inflicts 1 damage. Counter: Inflicts Chill.",
             onReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
                 usableWhileDead: true,

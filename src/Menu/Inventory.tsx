@@ -125,7 +125,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
         }
 
         // Just take the first one for now; items don't often have more than 1 effect event
-        const effectEventKey = Object.values(EFFECT_EVENT_KEYS).find((key) => item.effects[0]?.[key]);
+        const effectEventKey = Object.values(EFFECT_EVENT_KEYS).find((key) => item.effects?.[0]?.[key]);
         if (!effectEventKey) {
             return;
         }
