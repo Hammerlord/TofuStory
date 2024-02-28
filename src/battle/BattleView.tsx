@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
         bottom: 0,
     },
     battlefieldContainer: {
-        height: "69%",
+        height: "70%",
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
@@ -102,7 +102,7 @@ const useStyles = createUseStyles({
         height: "100%",
     },
     divider: {
-        maxHeight: "80",
+        maxHeight: "90",
         height: "8vh",
         borderBottom: "2px solid rgba(0, 0, 0, 0.1)",
         width: "95%",
