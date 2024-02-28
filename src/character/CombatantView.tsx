@@ -301,7 +301,11 @@ const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) => {
             filter: "sepia(0.1) brightness(0.8)",
         },
         {
-            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${delta / 3}%)`,
+            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${delta / 3}%)`,
             filter: "sepia(0.1) brightness(0.8)",
         },
         {
