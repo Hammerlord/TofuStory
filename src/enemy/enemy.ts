@@ -111,7 +111,7 @@ import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effec
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 9,
+    maxHP: 8,
     abilities: [loaf, attack, attack],
     image: SnailImage,
     mesos: 2,
@@ -1378,7 +1378,7 @@ export const curseEye: Minion = {
 
 export const snailFriend: Minion = {
     name: "Snail Friend",
-    maxHP: 9,
+    maxHP: 8,
     image: SnailImage,
     abilities: [attack],
     effects: [
