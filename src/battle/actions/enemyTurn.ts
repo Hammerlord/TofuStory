@@ -26,6 +26,33 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
+const pickIndex = ({ hostile, actor, actorIndex }) => {
+    const validTargetIndices = getValidTargetIndices(hostile, {
+        // TODO area attacks are still applicable to stealthed units
+        excludeStealth: !hasTruesight(actor.combatant),
+    });
+
+    let baseProbability = 1 / validTargetIndices.length;
+    // Enemies are more likely to attack targets closer to them. 0 proximity: +30%, 1 proximity: +15%; 2: +5%
+    if (validTargetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.3) {
+        return actorIndex;
+    }
+
+    const adjacent = validTargetIndices.filter((index) => Math.abs(index - actorIndex) === 1);
+    if (adjacent.length && Math.random() < baseProbability + 0.15) {
+        return getRandomItem(adjacent);
+    }
+
+    const outer = validTargetIndices.filter((index) => Math.abs(index - actorIndex) === 2);
+    if (outer.length && Math.random() < baseProbability + 0.05) {
+        return getRandomItem(outer);
+    }
+
+    const rest = validTargetIndices.filter((index) => Math.abs(index - actorIndex) > 2);
+    if (rest.length) {
+        return getRandomItem(rest);
+    }
+};
 /**
  * Given an ability, pick a target that makes sense.
  * Index may be undefined if there were no valid indices to choose from.
@@ -51,12 +78,7 @@ const autoPickTarget = ({
     if (isOffensiveAbility(ability)) {
         return {
             side: hostileSide,
-            index: getRandomItem(
-                getValidTargetIndices(hostile, {
-                    // TODO area attacks are still applicable to stealthed units
-                    excludeStealth: !hasTruesight(actor.combatant),
-                })
-            ),
+            index: pickIndex({ hostile, actor, actorIndex: index }),
         };
     }
 
