@@ -29,7 +29,13 @@ import { Combatant } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
+import {
+    CARD_ADDED_PLAYBACK_SPEED,
+    MAX_HAND_SIZE,
+    MULTI_ACTION_PLAYBACK_SPEED,
+    NORMAL_ACTION_PLAYBACK_SPEED,
+    SUMMON_DELAY,
+} from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
@@ -1134,7 +1140,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                 pushEventQueue({
                     ...getState().battle,
                     id: uuid.v4(),
-                    playbackTime: 200,
+                    playbackTime: SUMMON_DELAY,
                 } as Event)
             );
 
@@ -1788,7 +1794,7 @@ const checkSummonMinion = ({
                 pushEventQueue({
                     ...getState().battle,
                     id: uuid.v4(),
-                    playbackTime: 500,
+                    playbackTime: SUMMON_DELAY,
                 } as Event)
             );
             dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
