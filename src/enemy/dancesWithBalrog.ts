@@ -33,7 +33,7 @@ import {
     WarLeapImage,
     WildBoarImage,
 } from "../images";
-import { burn, hardy } from "./../ability/Effects";
+import { bleed, burn, hardy } from "./../ability/Effects";
 
 const golemStanceEligible: Effect = {
     name: "Stone Golem Stance Ready",
@@ -143,20 +143,10 @@ const dancesWithBalrogWarLeap: Ability = {
     image: WarLeapImage,
     actions: [
         {
-            damage: 1,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            // effects: [stun], -- bugs out player turn
-            bonus: {
-                damage: 2,
-                conditions: [
-                    {
-                        healthPercentage: 1,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        comparator: "eq",
-                    },
-                ],
-            },
+            effects: [bleed],
         },
     ],
 };
@@ -230,6 +220,26 @@ export const boarStanceAbility: Ability = {
     ],
 };
 
+const meteor = {
+    name: "Meteor",
+    image: FireMarbleImage,
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            icon: FireMarbleImage,
+            area: 3,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
 const balrogStanceEffect: Effect = {
     name: "Balrog Stance - Overwhelming Power",
     description: "Every 3 abilities, this character casts Meteors.",
@@ -248,32 +258,14 @@ const balrogStanceEffect: Effect = {
                 comparator: "modulo",
             },
         ],
-        ability: {
-            name: "Meteor",
-            image: FireMarbleImage,
-            actions: [
-                {
-                    damage: 3,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    icon: FireMarbleImage,
-                    area: 3,
-                    effects: [
-                        {
-                            ...burn,
-                            duration: 3,
-                        },
-                    ],
-                },
-            ],
-        },
+        ability: meteor,
     },
 };
 
 export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
-    maxHP: 300,
+    maxHP: 400,
     abilities: [
         {
             name: "Snail Stance",
@@ -357,7 +349,7 @@ export const dancesWithBalrog: Minion = {
                     effects: [
                         {
                             ...burn,
-                            duration: 2,
+                            duration: 3,
                         },
                     ],
                 },
@@ -423,19 +415,19 @@ export const dancesWithBalrog: Minion = {
             ],
             actions: [
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
                 },
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
                 },
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
