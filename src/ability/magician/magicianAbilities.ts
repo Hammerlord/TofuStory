@@ -2442,7 +2442,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Attacks cleave. Grows when enemies are killed.",
+    description: "Attacks cleave. Grows when it kills.",
     image: GiantSnowmanImage,
     resourceCost: 3,
     rarity: RARITIES.RARE,
@@ -2468,7 +2468,7 @@ export const abominableSnowman: Ability = {
         effects: [
             {
                 name: "Abomination",
-                description: "Gains +1 ATT and 3 Armor when enemies are killed.",
+                description: "Gains +1 ATT and 3 Armor when it kills.",
                 icon: GiantSnowmanImage,
                 type: EFFECT_TYPES.RAGE,
                 class: EFFECT_CLASSES.BUFF,
@@ -2516,7 +2516,7 @@ export const whelp: Ability = {
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
-        name: "Whelp",
+        name: "Star Whelp",
         image: BabyDragonImage,
         maxHP: 3,
         abilities: [
@@ -2527,6 +2527,7 @@ export const whelp: Ability = {
                     {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.RANGE_ATTACK,
+                        animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
                         damage: 1,
                     },
