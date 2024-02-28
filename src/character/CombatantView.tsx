@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
@@ -433,7 +433,6 @@ const CombatantView = forwardRef(
             style: {
                 animationDuration: `${(event?.playbackTime || 1000) / 1000}s`,
             },
-            ref: characterImageRef,
         };
 
         const getImageNode = (props) => {
@@ -441,10 +440,14 @@ const CombatantView = forwardRef(
             const { filter } = oldState?.imageOptions || {};
 
             if (typeof portrait === "string") {
-                return <img src={portrait} {...props} style={{ filter, ...props?.style }} draggable="false" />;
+                return <img src={portrait} {...props} style={{ filter, ...props?.style }} draggable="false" ref={characterImageRef} />;
             } else if (typeof portrait === "function") {
                 const ImageNode = portrait as Function;
-                return <ImageNode {...props} style={{ filter, ...props?.style }} />;
+                return (
+                    <div {...props} style={{ filter, ...props?.style }} ref={characterImageRef}>
+                        <ImageNode />
+                    </div>
+                );
             }
         };
 
