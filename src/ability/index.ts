@@ -53,6 +53,7 @@ import {
     tribolt,
     volatileMagic,
     wardBooster,
+    whelp,
     wishUponAStar,
     zap,
 } from "./magician/magicianAbilities";
@@ -175,6 +176,7 @@ export const JOB_CARD_MAP = {
             ifrit,
             elquines,
             abominableSnowman,
+            whelp,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
         starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(

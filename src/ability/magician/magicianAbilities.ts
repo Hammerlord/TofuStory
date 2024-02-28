@@ -1,6 +1,7 @@
 import {
     AdvancedChargeImage,
     ArcaneAimImage,
+    BabyDragonImage,
     BigSnowballImage,
     BlueRushImage,
     CakeTemptationImage,
@@ -9,7 +10,6 @@ import {
     ColdBeamImage,
     ColdBeamProjectileImage,
     DoTPunisherImage,
-    ElementalAdaptationEffectImage,
     ElementalAdaptationFPImage,
     ElementalAdaptationImage,
     EliteFirebrandImage,
@@ -77,7 +77,7 @@ import {
     TriboltImage,
     WizMushImage,
 } from "../../images";
-import { ShieldIcon, SnowflakeIcon } from "../../images/icons";
+import { SnowflakeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
@@ -95,7 +95,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, stun, preventArmorDecay } from "./../Effects";
+import { armorUp, burn, chill, freeze, preventArmorDecay, stun } from "./../Effects";
 
 export const energyBolt: Ability = {
     name: "Energy Bolt",
@@ -2442,7 +2442,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Attacks strike adjacent targets. Grows when enemies are killed.",
+    description: "Attacks cleave. Grows when enemies are killed.",
     image: GiantSnowmanImage,
     resourceCost: 3,
     rarity: RARITIES.RARE,
@@ -2485,6 +2485,70 @@ export const abominableSnowman: Ability = {
                         },
                     ],
                     armor: 5,
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const whelp: Ability = {
+    name: "Star Whelp",
+    resourceCost: 2,
+    image: BabyDragonImage,
+    description: "Summon and on death: Draw a card.",
+    overrideBodyText: true,
+    rarity: RARITIES.UNCOMMON,
+    minion: {
+        name: "Whelp",
+        image: BabyDragonImage,
+        maxHP: 3,
+        abilities: [
+            {
+                name: "Star Shot",
+                image: StarImage,
+                actions: [
+                    {
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        icon: StarImage,
+                        damage: 1,
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                name: "",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+                onDeath: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             },
         ],
