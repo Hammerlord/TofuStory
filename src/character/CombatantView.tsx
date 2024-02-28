@@ -280,6 +280,45 @@ const playDyingAnimation = ({ object, playbackTime = 750 }) => {
     });
 };
 
+const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) => {
+    const inverse = (num) => -num;
+
+    const animationFrames = [
+        {
+            transform: `translateX(0%) translateY(0%)`,
+            filter: "unset",
+        },
+        {
+            transform: `translateX(0%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${inverse(Math.ceil(delta / 10))}%) translateY(${inverse(delta)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(${Math.ceil(delta / 10)}%) translateY(${delta / 3}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(0%) translateY(${inverse(delta / 2)}%)`,
+            filter: "sepia(0.1) brightness(0.8)",
+        },
+        {
+            transform: `translateX(0%) translateY(0%)`,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
+    });
+};
+
 const CombatantView = forwardRef(
     (
         {
@@ -336,10 +375,14 @@ const CombatantView = forwardRef(
                 setStatChanges(statChanges);
                 setOldState(combatant);
 
-                const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
-
-                if (isKillingBlow && !willPerformActions && characterImageRef.current) {
-                    playDyingAnimation({ object: characterImageRef.current });
+                if (characterImageRef.current) {
+                    const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
+                    if (isKillingBlow && !willPerformActions) {
+                        playDyingAnimation({ object: characterImageRef.current });
+                    } else if (statChanges?.damage > 0) {
+                        const delta = isEnemy ? statChanges.damage : -statChanges.damage;
+                        playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
+                    }
                 }
             };
 
