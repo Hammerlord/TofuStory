@@ -2265,6 +2265,20 @@ export const icicles: Ability = {
             ],
         },
     ],
+    upgrades: [
+        {
+            description: "For your next 4 spells that cost 1+, summon a (3/1) Icicle.",
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 const ifritEmberAbility = {
