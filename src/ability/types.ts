@@ -1,3 +1,4 @@
+import { chessPiece } from "./../item/items";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 
@@ -8,6 +9,7 @@ export enum TARGET_TYPES {
     RANDOM_HOSTILE = "random-hostile",
     RANDOM_FRIENDLY = "random-friendly",
     FRIENDLY_CHARACTER = "friendly-character",
+    MOVE = "move",
 }
 
 export enum EFFECT_TYPES {
@@ -130,6 +132,7 @@ export enum EFFECT_EVENT_KEYS {
     onBattleStart = "onBattleStart",
     onBattleEnd = "onBattleEnd",
     onMoveCardFromHandToDeck = "onMoveCardFromHandToDeck",
+    onFriendlyMove = "onFriendlyMove",
 }
 
 type effectEventKeys = keyof typeof EFFECT_EVENT_KEYS;
@@ -220,6 +223,10 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     alwaysDisplayStacks?: boolean;
     // If this effect came from an item, provide the item name here (doubles as the item ID)
     itemSource?: string;
+    /**
+     * @see chessPiece
+     */
+    allowFriendlyMovement?: boolean;
 };
 
 export type CombatEffect = Effect & {

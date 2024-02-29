@@ -28,7 +28,7 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
         return RED;
     }
 
-    if (targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF) {
+    if (targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF || targetType === TARGET_TYPES.MOVE) {
         return BLUE;
     }
 };

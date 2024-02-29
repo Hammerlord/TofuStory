@@ -129,15 +129,17 @@ export const isValidTarget = ({
     getState,
     index,
     actorId,
-    actorIndex,
 }: {
     ability: Ability;
     side: BATTLEFIELD_SIDES;
     getState;
     index: number;
     actorId: string;
-    actorIndex: number;
 }): boolean => {
+    if (!ability) {
+        return false;
+    }
+
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion, minionOptions } = ability;
     const actorData = findCombatantData(getState, actorId);
@@ -171,6 +173,10 @@ export const isValidTarget = ({
             }
 
             return conditionsPassed;
+        }
+
+        if (target === TARGET_TYPES.MOVE) {
+            return true;
         }
     } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
         const targetedEnemy = enemySide[index];
@@ -689,15 +695,6 @@ export const applyVacuum = ({
     return newCharacters;
 };
 
-export const applyMovement = ({ characters, index, movement }: { characters: (Combatant | null)[]; index: number; movement: number }) => {
-    const moveIndices = getPossibleMoveIndices({ currentLocationIndex: index, friendly: characters, movement });
-    const moveTo = getRandomItem(moveIndices);
-    const newCharacters = characters.slice();
-    newCharacters[moveTo] = newCharacters[index];
-    newCharacters[index] = null;
-    return newCharacters;
-};
-
 export const getInducedAttack = (actor: Combatant): Action => {
     let basicAttackDamage = 0;
 
@@ -841,6 +838,9 @@ export const calculateBonus = ({
 };
 
 export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex }): boolean => {
+    if (!ability) {
+        return false;
+    }
     if ([selectedIndex, targetIndex].some((i) => typeof i !== "number")) {
         return false;
     }

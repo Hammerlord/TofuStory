@@ -2,11 +2,22 @@ import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "r
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
-import { Action, EFFECT_EVENT_KEYS, Effect, CombatAbility, SELECT_CARD_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    Action,
+    EFFECT_EVENT_KEYS,
+    Effect,
+    CombatAbility,
+    SELECT_CARD_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+    CombatEffect,
+    Ability,
+    ACTION_TYPES,
+} from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { LithRegionBGImage, MapleLeavesImage } from "../images";
+import { HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -18,7 +29,7 @@ import TurnAnnouncement from "./Notification/TurnNotification";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { calculateTargetIndices, checkEventTrigger, findCombatantData } from "./actions/actions";
+import { calculateTargetIndices, checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -166,6 +177,19 @@ const BATTLEFIELD_SIZE = 5;
 const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt, setNotification } =
     battleStateSlice.actions;
 
+const movementAbility: Ability = {
+    name: "Move",
+    image: HasteImage,
+    resourceCost: 0,
+    actions: [
+        {
+            target: TARGET_TYPES.MOVE,
+            type: ACTION_TYPES.MOVEMENT,
+            movement: 2,
+        },
+    ],
+};
+
 const BattlefieldContainer = () => {
     const dispatch = useAppDispatch();
     const state = useAppSelector((state) => state);
@@ -201,13 +225,27 @@ const BattlefieldContainer = () => {
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
-    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
-    const [hoveredCombatant, setHoveredCombatant] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState(null); // From the hand only
+    const [hoveredCombatant, setHoveredCombatant]: [{ side: BATTLEFIELD_SIDES; index: number; id: string }, Function] = useState(null);
     const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles({ backgroundImage } as any);
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
     const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
+
+    // Look up special effects that allow the player to do extra actions on the battlefield
+    const { allowMoveCardFromHandToDeck, allowFriendlyMovement } = useMemo(() => {
+        return player?.effects.reduce(
+            (acc, effect: CombatEffect) => {
+                return {
+                    ...acc,
+                    allowMoveCardFromHandToDeck: effect.allowMoveCardFromHandToDeck || acc.allowMoveCardFromHandToDeck,
+                    allowFriendlyMovement: effect.allowFriendlyMovement || acc.allowFriendlyMovement,
+                };
+            },
+            { allowMoveCardFromHandToDeck: false, allowFriendlyMovement: false }
+        );
+    }, [player]);
 
     const isWinConditionTriggered = (() => {
         if (winCondition.defeatBoss) {
@@ -224,7 +262,7 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbility = selectedMinion?.abilities?.[0] || hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const selectedAbilityFromHand = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
     const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
@@ -249,6 +287,7 @@ const BattlefieldContainer = () => {
         const totalDamage = allyAttackDamage + damageFromEffects;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
+
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
 
@@ -282,7 +321,7 @@ const BattlefieldContainer = () => {
 
         setSelectedAllyIndex(null);
         const ability = hand.find((card: CombatAbility) => card.instanceId === id);
-        if (!canUseAbility(player, ability) && !moveAbilityFromHandToDeckEffect) {
+        if (!canUseAbility(player, ability) && !allowMoveCardFromHandToDeck) {
             warnNeedMoreResources(ability);
             return;
         }
@@ -320,7 +359,7 @@ const BattlefieldContainer = () => {
     };
 
     const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        if (selectedAbility.selectCards.type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+        if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             if (hand.length <= 1) {
                 warn("That ability requires at least one other card in your hand to deplete");
                 return;
@@ -329,7 +368,7 @@ const BattlefieldContainer = () => {
 
         dispatch(
             promptPlayerSelectCards({
-                selectCards: selectedAbility.selectCards,
+                selectCards: selectedAbilityFromHand.selectCards,
                 abilityQueued: { selectedAbilityId, selectedTargetSide: side, selectedTargetIndex: selectedIndex },
             } as PlayerSelectCardsPrompt)
         );
@@ -345,9 +384,9 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (selectedAbility) {
+        if (selectedAbilityFromHand) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
-                if (selectedAbility.selectCards) {
+                if (selectedAbilityFromHand.selectCards) {
                     handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
                     return;
                 }
@@ -359,9 +398,23 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (typeof selectedAllyIndex === "number") {
-            setSelectedAllyIndex(null);
-        } else if (isEligibleToAttack(playerSide[index])) {
+        if (selectedMinion) {
+            if (playerSide[index] !== selectedMinion && allowFriendlyMovement) {
+                dispatch(
+                    useAbility({
+                        ability: movementAbility,
+                        selectedIndex: index,
+                        side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+                        actorId: selectedMinion?.id || player.id,
+                    })
+                );
+            } else {
+                setSelectedAllyIndex(null);
+            }
+            return;
+        }
+
+        if (isEligibleToAttack(playerSide[index]) || (allowFriendlyMovement && playerSide[index])) {
             setSelectedAllyIndex(index);
             e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         }
@@ -377,9 +430,9 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (selectedAbility) {
+        if (selectedAbilityFromHand) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
-                if (selectedAbility.selectCards) {
+                if (selectedAbilityFromHand.selectCards) {
                     handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
                     return;
                 }
@@ -571,54 +624,56 @@ const BattlefieldContainer = () => {
         const hoveredIndex = hoveredCombatant?.index;
 
         return (
-            selectedAbility &&
-            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, getState: () => state, actorId, actorIndex }) &&
-            isWithinAbilityArea({ ability: selectedAbility, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
+            isValidTarget({ ability: selectedAbilityFromHand, side, index: hoveredIndex, getState: () => state, actorId }) &&
+            isWithinAbilityArea({ ability: selectedAbilityFromHand, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
         );
     };
 
     const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
-        if (!selectedAbility) {
+        if (selectedAbilityFromHand && !canUseAbility(player, selectedAbilityFromHand)) {
             return false;
         }
 
-        if (selectedAbilityId && !canUseAbility(player, selectedAbility)) {
+        const selectedAbility = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
+        const moveAbility = allowFriendlyMovement && selectedMinion ? movementAbility : undefined;
+
+        if (!selectedAbility && !moveAbility) {
             return false;
         }
 
-        if (
-            isValidTarget({
-                ability: selectedAbility,
-                side: combatantSide,
-                index: combatantIndex,
-                getState: () => state,
-                actorId,
-                actorIndex,
-            })
-        ) {
+        const checkValidTargetForAbility = (ability) => {
             if (
-                !hoveredCombatant ||
-                !isValidTarget({
-                    ability: selectedAbility,
-                    side: hoveredCombatant.side,
-                    index: hoveredCombatant.index,
+                isValidTarget({
+                    ability,
+                    side: combatantSide,
+                    index: combatantIndex,
                     getState: () => state,
                     actorId,
-                    actorIndex,
                 })
             ) {
-                return true;
+                if (
+                    !hoveredCombatant ||
+                    !isValidTarget({
+                        ability,
+                        side: hoveredCombatant.side,
+                        index: hoveredCombatant.index,
+                        getState: () => state,
+                        actorId,
+                    })
+                ) {
+                    return true;
+                }
+
+                return isWithinAbilityArea({
+                    ability,
+                    actor: actorId,
+                    selectedIndex: hoveredCombatant?.index,
+                    targetIndex: combatantIndex,
+                });
             }
+        };
 
-            return isWithinAbilityArea({
-                ability: selectedAbility,
-                actor: actorId,
-                selectedIndex: hoveredCombatant?.index,
-                targetIndex: combatantIndex,
-            });
-        }
-
-        return false;
+        return checkValidTargetForAbility(selectedAbility) || checkValidTargetForAbility(moveAbility);
     };
 
     const abilityIndex = hand.findIndex(({ instanceId }) => selectedAbilityId === instanceId);
@@ -630,7 +685,11 @@ const BattlefieldContainer = () => {
         return allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current;
     }, [disableActions, selectedAllyIndex, selectedAbilityId, allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current]);
 
-    const targetLineColor = getAbilityColor(hand[abilityIndex]);
+    const showMovementAbility =
+        allowFriendlyMovement &&
+        selectedMinion &&
+        (hoveredCombatant?.side === BATTLEFIELD_SIDES.PLAYER_SIDE || !selectedMinion?.abilities?.length);
+    const targetLineColor = getAbilityColor(selectedAbilityFromHand || (showMovementAbility && movementAbility));
 
     const { targetSide, selectedIndex } = (events[0] as Event) || {};
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
@@ -641,10 +700,8 @@ const BattlefieldContainer = () => {
         targetRef: targets[selectedIndex]?.current,
     };
 
-    const moveAbilityFromHandToDeckEffect = player?.effects.find((effect) => effect.allowMoveCardFromHandToDeck);
-
     const handleClickDeck = () => {
-        if (!selectedAbilityId || !moveAbilityFromHandToDeckEffect) {
+        if (!selectedAbilityId || !allowMoveCardFromHandToDeck) {
             return;
         }
 
@@ -674,12 +731,12 @@ const BattlefieldContainer = () => {
     };
 
     const abilityUsePreviews = ((): { [combatantId: string]: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[] } => {
-        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
+        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbilityFromHand) {
             return {};
         }
         const result = {};
 
-        selectedAbility.actions.forEach((action: Action) => {
+        selectedAbilityFromHand.actions.forEach((action: Action) => {
             if (![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target)) {
                 return;
             }
@@ -701,7 +758,7 @@ const BattlefieldContainer = () => {
                 !passesConditions({
                     getCalculationTarget,
                     proc: action,
-                    source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                    source: { source: selectedAbilityFromHand, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
                 })
             ) {
                 return;
@@ -726,7 +783,7 @@ const BattlefieldContainer = () => {
                 selectedIndex: hoveredCombatant.index,
                 action,
                 getCombatantById: (id: string) => findCombatantData(() => state, id),
-                actionParent: selectedAbility,
+                actionParent: selectedAbilityFromHand,
                 hand,
                 deck,
                 discard,
@@ -805,7 +862,7 @@ const BattlefieldContainer = () => {
                                     depleted={depleted}
                                     viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
                                     onClickDeck={handleClickDeck}
-                                    highlightDeck={Boolean(selectedAbilityId && moveAbilityFromHandToDeckEffect)}
+                                    highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
                                     deckRef={deckRef}
                                     discardRef={discardRef}
                                     depleteRef={depleteRef}

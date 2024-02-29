@@ -41,13 +41,13 @@ import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
-    applyMovement,
     applyVacuum,
     calculateActionArea,
     canTargetIfStealthed,
     getEnabledEffects,
     getInducedAttack,
     getMultiplier,
+    getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
     isSilenced,
@@ -1299,20 +1299,42 @@ const checkHandleVacuum = ({
     };
 };
 
-const checkHandleMovement = ({ movement, side, selectedIndex }) => {
+const checkHandleMovement = ({ movement, side, selectedIndex: to, actorIndex: from, source }) => {
     return (dispatch, getState) => {
         if (!movement) {
             return;
         }
+
+        const characters = getState().battle[side];
+        // to === from: this is legacy from when enemies use a movement ability.
+        // It's classified as a "self" ability, so they target themselves when they cast it, hence `to` and `from` indices will be the same for them.
+        // Make them move randomly still, if that's the case.
+        if (isNaN(to) || to === from) {
+            const moveIndices = getPossibleMoveIndices({ currentLocationIndex: from, friendly: characters, movement });
+            to = getRandomItem(moveIndices);
+        }
+
+        if (isNaN(to)) {
+            return;
+        }
+
+        const newCharacters = characters.slice();
+        const temp = newCharacters[to];
+        newCharacters[to] = newCharacters[from];
+        newCharacters[from] = temp;
+
         dispatch(
             updateBattle({
-                [side]: applyMovement({
-                    characters: getState().battle[side],
-                    index: selectedIndex,
-                    movement,
-                }),
+                [side]: newCharacters,
             })
         );
+        // Triggering effect events before event queue push of the main ability may play events out of the intended order, especially
+        // if anything reacts to the movement.
+        newCharacters.forEach((combatant) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onFriendlyMove, source }));
+            }
+        });
     };
 };
 
@@ -1515,7 +1537,6 @@ const performAction = ({
 
         const { vacuum, movement, secondaryAction, autoCastAbilities, retreat } = action;
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        dispatch(checkHandleMovement({ movement, side, selectedIndex }));
         const combatants = getState().battle[side];
         const targetIndices = calculateTargetIndices({
             action,
@@ -1527,6 +1548,7 @@ const performAction = ({
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id || targetIds[0], allTargetIds: targetIds };
+        dispatch(checkHandleMovement({ movement, side, actorIndex: actorData.index, selectedIndex, source }));
 
         const updatedStatsProps = {
             ...getState().battle,

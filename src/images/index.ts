@@ -314,6 +314,7 @@ export { default as PanlidImage } from "./Panlid.png";
 export { default as ParalyzeImage } from "./Paralyze.png";
 export { default as ParashockGuardImage } from "./ParashockGuard.png";
 export { default as ParfaitCupcakeImage } from "./ParfaitCupcake.png";
+export { default as PawnChessPieceImage } from "./PawnChessPiece.png";
 export { default as PeachImage } from "./Peach.png";
 export { default as PepeRollingASnowballImage } from "./PepeRollingASnowball.gif";
 export { default as PerionCampImage } from "./PerionCamp.png";

@@ -47,6 +47,7 @@ import {
     MesoImage,
     NewspaperImage,
     PanlidImage,
+    PawnChessPieceImage,
     PeachImage,
     PicoPicoHammerImage,
     PieceOfIceImage,
@@ -1879,6 +1880,35 @@ export const toyHammer: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const chessPiece: Item = {
+    name: "Chess Piece",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: PawnChessPieceImage,
+    description: "Once per turn, you may change the position of a character you control.",
+    effects: [
+        {
+            name: "Chess Piece Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Chess Piece",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.NONE,
+                        allowFriendlyMovement: true,
+                        onFriendlyMove: {
+                            decrementStacks: 1,
+                        },
+                    },
+                ],
             },
         },
     ],
