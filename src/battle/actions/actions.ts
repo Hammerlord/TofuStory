@@ -1825,7 +1825,7 @@ const checkSummonMinion = ({
 
         // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
         if (findCombatantData(getState, actorId)?.combatant?.isPlayer && !removeAfterTurn && !depletedOnUse) {
-            newBattleProps.playerSummonsInPlay = { [summonedMinion.id]: ability };
+            newBattleProps.playerSummonsInPlay = { ...getState().battle?.playerSummonsInPlay, [summonedMinion.id]: ability };
         }
         dispatch(updateBattle(newBattleProps));
 
