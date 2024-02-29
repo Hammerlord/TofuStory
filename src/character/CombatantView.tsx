@@ -85,7 +85,7 @@ const useStyles = createUseStyles({
         minHeight: "40%",
         objectFit: "contain",
         maxHeight: "15vh",
-        maxWidth: "125%",
+        maxWidth: "100%",
     },
     combatantContainer: {
         display: "flex",
@@ -241,7 +241,7 @@ const useStyles = createUseStyles({
         animationIterationCount: 1,
         animationDuration: "0.5s",
         zIndex: -1,
-        maxWidth: "125%",
+        maxWidth: "100%",
     },
     "@keyframes upAndDown": {
         from: {
