@@ -10,8 +10,8 @@ import {
 } from "../images";
 import {
     AngerIcon,
+    BlackShieldIcon,
     BloodIcon,
-    BlueBlackShieldIcon,
     CactusIcon,
     CloudyIcon,
     DizzyIcon,
@@ -23,7 +23,7 @@ import {
     MedalIcon,
     MilitaryMedalIcon,
     NoStunIcon,
-    PristineBlueBlackShieldIcon,
+    PristineBlackShieldIcon,
     PristineShieldIcon,
     ShieldIcon,
     SnowflakeIcon,
@@ -510,7 +510,7 @@ export const preventArmorDecayPlayer: Effect = {
 
 export const defUp: Effect = {
     name: "Defense Up",
-    icon: BlueBlackShieldIcon,
+    icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
@@ -519,7 +519,7 @@ export const defUp: Effect = {
 
 export const pristineDefense: Effect = {
     name: "Pristine Defense Up",
-    icon: PristineBlueBlackShieldIcon,
+    icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
