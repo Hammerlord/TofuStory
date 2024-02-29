@@ -12,7 +12,8 @@ import {
     WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
-import { chargingStone, ragingStone, redHeadband } from "./../item/items";
+import { chargingStone, rageStone } from "../item/starterItems";
+import { redHeadband } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */
@@ -34,7 +35,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: OldGladiusImage,
     effects: [],
-    items: [ragingStone, redHeadband],
+    items: [rageStone, redHeadband],
     drawCardsPerTurn: 3,
     weaponSkins: [
         { name: "Old Gladius", image: OldGladiusImage },

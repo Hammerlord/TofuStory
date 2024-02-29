@@ -1,11 +1,8 @@
-import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
-import { JOB_CARD_MAP } from "../ability";
-import { chill, poison, thorns, bleed, preventArmorDecay } from "../ability/Effects";
+import { bleed, chill, poison, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
     AdventurerCapeImage,
-    AlchemistStoneImage,
     AlligatorTubeImage,
     AmethystImage,
     AncientTreeSapImage,
@@ -30,8 +27,6 @@ import {
     DiamondImage,
     DiamondOreImage,
     DrakeBloodImage,
-    EnergyBoltImage,
-    EnergyBoltProjectileImage,
     EstherShieldImage,
     FairyWingImage,
     FishSpearImage,
@@ -42,7 +37,6 @@ import {
     GuidebookImage,
     HerbsImage,
     HotdogImage,
-    HumilityStoneImage,
     IcarusCapeImage,
     IronMaceImage,
     KoreanFanImage,
@@ -84,6 +78,7 @@ import {
     WildKargoEyeImage,
     WorkGlovesImage,
 } from "../images";
+import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -306,38 +301,6 @@ export const leatherSandals: Item = {
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [sandalsEffect],
-            },
-        },
-    ],
-};
-
-export const ragingStone: Item = {
-    name: "Raging Stone",
-    description: "Every 2 Fury you spend, gain 1 Fury next turn.",
-    flavourText: "A mysterious keepsake you found on your person.",
-    image: HumilityStoneImage,
-    type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
-    effects: [
-        {
-            name: "Raging Stone",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onResourcesSpent: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 2,
-                effects: [
-                    {
-                        name: "Rage",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: HumilityStoneImage,
-                        resourcesPerTurn: 1,
-                        onTurnInProgress: {
-                            removeEffect: true,
-                        },
-                    },
-                ],
             },
         },
     ],
@@ -1061,86 +1024,6 @@ export const unsignedLetter: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             maxHP: 5,
-        },
-    ],
-};
-
-// Bit of grease to check charged abilities to avoid doing it manually anymore
-const chargedAbilityNames = JOB_CARD_MAP.Magician.all
-    .filter((ability) => {
-        if (JSON.stringify(ability.actions).includes('"hasEffect":"Charged"')) {
-            return true;
-        }
-    })
-    .map(({ name }) => name);
-
-export const chargingStone: Item = {
-    name: "Charging Stone",
-    description:
-        "Playing a card grants Charged, empowering the next cast of certain spells. If unused by end of turn, fire an Energy Bolt.",
-    flavourText: "A mysterious keepsake you found on your person.",
-    image: AlchemistStoneImage,
-    type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
-    effects: [
-        {
-            name: "Charging Stone",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onAbility: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                disableTriggerFromProcs: true,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        comparator: "not",
-                        hasEffect: "Charged",
-                    },
-                ],
-                effects: [
-                    {
-                        name: "Charged",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: AlchemistStoneImage,
-                        description: "Charged. If unused at the end of your turn, fire an Energy Bolt.",
-                        duration: 0,
-                        weaponAnimation: "glow",
-                        onAbility: {
-                            conditions: [
-                                {
-                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                    comparator: "eq",
-                                    name: chargedAbilityNames,
-                                },
-                            ],
-                            removeEffect: true,
-                        },
-                        onTurnEnd: {
-                            ability: {
-                                name: "Energy Bolt",
-                                image: EnergyBoltImage,
-                                resourceCost: 0,
-                                actions: [
-                                    {
-                                        damage: 2,
-                                        target: TARGET_TYPES.RANDOM_HOSTILE,
-                                        type: ACTION_TYPES.RANGE_ATTACK,
-                                        animation: ANIMATION_TYPES.ONE_WAY,
-                                        icon: EnergyBoltProjectileImage,
-                                        playbackTime: 400,
-                                        animationOptions: {
-                                            rotate: -45,
-                                            rotateToFaceTarget: true,
-                                        },
-                                    },
-                                ],
-                                upgrades: [],
-                            },
-                        },
-                    },
-                ],
-            },
         },
     ],
 };
