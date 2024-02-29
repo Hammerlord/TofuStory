@@ -2442,10 +2442,15 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Attacks cleave. Gains +1 ATT and 3 Armor when it kills.",
+    description: "Gains +1 ATT and 3 Armor when it kills.",
     image: GiantSnowmanImage,
     resourceCost: 3,
     rarity: RARITIES.RARE,
+    minionOptions: {
+        tributeSummon: {
+            resources: 1,
+        },
+    },
     minion: {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
@@ -2470,21 +2475,32 @@ export const abominableSnowman: Ability = {
                 name: "Abomination",
                 description: "Gains +1 ATT and 3 Armor when it kills.",
                 icon: GiantSnowmanImage,
-                type: EFFECT_TYPES.RAGE,
+                type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onKill: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    effects: [
-                        {
-                            name: "Abominable",
-                            icon: GiantSnowmanImage,
-                            disableDisplayIcon: true,
-                            type: EFFECT_TYPES.RAGE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                        },
-                    ],
-                    armor: 3,
+                    ability: {
+                        name: "Abominable",
+                        image: GiantSnowmanImage,
+                        actions: [
+                            {
+                                target: TARGET_TYPES.SELF,
+                                type: ACTION_TYPES.EFFECT,
+                                animation: ANIMATION_TYPES.SHOUT,
+                                effects: [
+                                    {
+                                        name: "Abominable",
+                                        icon: GiantSnowmanImage,
+                                        disableDisplayIcon: true,
+                                        type: EFFECT_TYPES.RAGE,
+                                        class: EFFECT_CLASSES.BUFF,
+                                        attackPower: 1,
+                                    },
+                                ],
+                                armor: 3,
+                            },
+                        ],
+                    },
                 },
             },
         ],

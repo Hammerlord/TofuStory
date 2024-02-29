@@ -1500,7 +1500,7 @@ const performAction = ({
     side: BATTLEFIELD_SIDES;
     actorId: string;
     parent?: Ability | Item | CombatAbility;
-    parentSource: TriggerSource;
+    parentSource?: TriggerSource;
     isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
@@ -1779,38 +1779,71 @@ const checkSummonMinion = ({
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { minion, removeAfterTurn, depletedOnUse } = ability;
-        if (minion) {
-            const pickRandomSummonIndex = () => getRandomItem(getPossibleSummonIndices(getState().battle[side]));
-            const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
-            const summonedMinion: Combatant = createCombatant(minion);
-            const newBattleProps: {
-                playerSide?: (Combatant | null)[];
-                enemySide?: (Combatant | null)[];
-                playerSummonsInPlay?: { [id: string]: Ability };
-            } = {
-                [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                    return i === index ? cloneDeep(summonedMinion) : combatant;
-                }),
-            };
-
-            // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
-            if (findCombatantData(getState, actorId)?.combatant?.isPlayer && !removeAfterTurn && !depletedOnUse) {
-                newBattleProps.playerSummonsInPlay = { [summonedMinion.id]: ability };
-            }
-
-            dispatch(updateBattle(newBattleProps));
-            // Give minions time to appear before triggering any minion-related effect events.
-            // Issue where enemies who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
-            dispatch(
-                pushEventQueue({
-                    ...getState().battle,
-                    id: uuid.v4(),
-                    playbackTime: SUMMON_DELAY,
-                } as Event)
-            );
-            dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
+        const { minion, minionOptions, removeAfterTurn, depletedOnUse } = ability;
+        if (!minion) {
+            return;
         }
+
+        const battlefieldSide = getState().battle[side];
+        const pickRandomSummonIndex = () => getRandomItem(getPossibleSummonIndices(battlefieldSide));
+        const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
+        const previousMinionInSlot = battlefieldSide[index];
+        const summonedMinion: Combatant = createCombatant(minion);
+
+        const { tributeSummon } = minionOptions || {};
+        const isTributeSummoned = tributeSummon && previousMinionInSlot?.HP > 0;
+        if (isTributeSummoned) {
+            const { resources = 0 } = tributeSummon;
+            // The replaced minion actually dies
+            dispatch(
+                performAction({
+                    action: {
+                        flatDamage: 1000,
+                        type: ACTION_TYPES.NONE,
+                        playbackTime: 500,
+                        secondaryAction: {
+                            target: "actor",
+                            resources,
+                        },
+                    },
+                    side,
+                    selectedIndex: index,
+                    actorId, // The actor is considered to have killed it
+                })
+            );
+        }
+
+        const newBattleProps: {
+            playerSide?: (Combatant | null)[];
+            enemySide?: (Combatant | null)[];
+            playerSummonsInPlay?: { [id: string]: Ability };
+        } = {
+            [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
+                return i === index ? cloneDeep(summonedMinion) : combatant;
+            }),
+        };
+
+        // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
+        if (findCombatantData(getState, actorId)?.combatant?.isPlayer && !removeAfterTurn && !depletedOnUse) {
+            newBattleProps.playerSummonsInPlay = { [summonedMinion.id]: ability };
+        }
+        dispatch(updateBattle(newBattleProps));
+
+        // Give minions time to appear before triggering any minion-related effect events.
+        // Issue where enemies who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                id: uuid.v4(),
+                playbackTime: SUMMON_DELAY,
+            } as Event)
+        );
+
+        // Tribute summons count as a kill for the new minion
+        if (isTributeSummoned) {
+            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill }));
+        }
+        dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
     };
 };
 

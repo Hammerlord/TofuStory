@@ -130,6 +130,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
     const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
+    const tributeSummon = ability.minionOptions?.tributeSummon;
     const hasRadiate = ability.actions.some((action) => action.radiate);
 
     if (cardsToAdd.length > 0) {
@@ -178,6 +179,16 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                     "Radiate causes you to emit an effect from your position. Damage dealt by Radiate is unaffected by ATT modifiers and damage reductions."
                 }
                 key={"radiate"}
+            />
+        );
+    }
+
+    if (tributeSummon) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Tribute"
+                description={"This minion may be played on top of another minion for an extra effect. The old minion is destroyed."}
+                key={"tribute"}
             />
         );
     }

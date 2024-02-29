@@ -225,7 +225,18 @@ const AbilityView = forwardRef(
         const classes = useStyles();
         const state = useAppSelector((state) => state);
         const { character, battle } = state;
-        const { actions = [], name, minion, image, description, overrideBodyText, removeAfterTurn, depletedOnUse, preemptive } = ability;
+        const {
+            actions = [],
+            name,
+            minion,
+            minionOptions,
+            image,
+            description,
+            overrideBodyText,
+            removeAfterTurn,
+            depletedOnUse,
+            preemptive,
+        } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
         let imageNode = null;
@@ -395,6 +406,7 @@ const AbilityView = forwardRef(
         }
 
         const isAbilityUsable = canUseAbility(player, ability);
+        const tributeSummon = minionOptions?.tributeSummon;
 
         return (
             <AbilityTooltip ability={ability}>
@@ -439,6 +451,16 @@ const AbilityView = forwardRef(
                         </span>
                         <div className={classes.portraitContainer}>{imageNode}</div>
                         <div className={classes.body}>
+                            {tributeSummon && (
+                                <div>
+                                    <span className={classes.bold}>Tribute:</span>{" "}
+                                    {tributeSummon.resources > 0 && (
+                                        <span>
+                                            Refund <ResourceIcon text={tributeSummon.resources} size={"sm"} playerClass={player?.class} />
+                                        </span>
+                                    )}
+                                </div>
+                            )}
                             {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}

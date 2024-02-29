@@ -580,6 +580,13 @@ export interface Ability {
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
     actions: Action[];
     minion?: Minion;
+    minionOptions?: {
+        // Enables playing a minion directly over top of another minion, killing the previous one.
+        tributeSummon?: {
+            // Resources gained if this is a tribute summon
+            resources: number;
+        };
+    };
     image?: string;
     channelDuration?: number;
     rarity?: RARITIES;
