@@ -119,6 +119,7 @@ export const stolenFence: Item = {
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 5,
+                effects: [{ ...preventArmorDecayPlayer, stacks: 1 }], // Don't want to lose the armor immediately. This does stack with Pan Lid though
             },
         },
     ],
