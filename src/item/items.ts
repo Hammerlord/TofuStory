@@ -48,6 +48,7 @@ import {
     NewspaperImage,
     PanlidImage,
     PeachImage,
+    PicoPicoHammerImage,
     PieceOfIceImage,
     PigIllustratedImage,
     PigsRibbonImage,
@@ -73,6 +74,7 @@ import {
     TaurospearHornImage,
     TopazImage,
     TortieShellImage,
+    ToyHammerImage,
     WeaponMasteryImage,
     WhiteUndershirtImage,
     WildKargoEyeImage,
@@ -1859,4 +1861,30 @@ export const incenseLeaves: Item = {
     camp: {
         allowAbilityRemoval: true,
     },
+};
+
+export const toyHammer: Item = {
+    name: "Toy Hammer",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: PicoPicoHammerImage,
+    description: "Every turn, a random card in your hand is Upgraded for the rest of combat.",
+    effects: [
+        {
+            name: "Toy Hammer",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onTurnInProgress: {
+                applyAbilityEffects: {
+                    pile: "hand",
+                    amount: 1,
+                    abilityEffects: [
+                        {
+                            upgradedByLevels: 1,
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };
