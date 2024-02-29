@@ -214,21 +214,15 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Heal 1 HP every 5 turns. Overhealing turns into armor for the overhealed amount.",
+    description: "Overhealing turns into armor for the overhealed amount.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
     effects: [
         {
             name: "Amethyst",
-            description: "Healing 1 HP every 5 turns.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 5,
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                healing: 1,
-            },
             onReceiveOverhealing: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 1,
