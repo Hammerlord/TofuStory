@@ -23,6 +23,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { attack } from "./abilities";
+import { weightedShell } from "./effect";
 import { blueSnail, redSnail, snail } from "./enemy";
 
 export const minionSnail: Minion = {
@@ -415,27 +416,6 @@ export const manoEnemy: Minion = {
             canBeSilenced: false,
         },
         preventArmorDecay,
-        {
-            name: "Weighted Shell",
-            icon: RedSnailShellImage,
-            canBeSilenced: false,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            description: "While this character has armor:",
-            attackPower: 1,
-            skillBonus: [
-                {
-                    skill: "Rollout",
-                    damage: 3,
-                },
-            ],
-            conditions: [
-                {
-                    comparator: "gt",
-                    armor: 0,
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
+        weightedShell,
     ],
 };

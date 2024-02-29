@@ -1,4 +1,3 @@
-import { defUp } from "./../ability/Effects";
 import { hardy, poison } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -18,7 +17,6 @@ import {
     PigsHeadImage,
     PigsRibbonImage,
     PurpleFairiesImage,
-    RedSnailShellImage,
     RespawnTokenImage,
     SapOfNependeathImage,
     ShiningFairyImage,
@@ -26,7 +24,8 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, SmilingImpIcon } from "../images/icons";
+import { CloudyIcon, LinkIcon, RedShieldIcon, SmilingImpIcon } from "../images/icons";
+import { defUp } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
 export const championsRibbon: Effect = {
@@ -259,7 +258,7 @@ export const agedShell: Effect = {
 
 export const weightedShell: Effect = {
     name: "Weighted Shell",
-    icon: RedSnailShellImage,
+    icon: RedShieldIcon,
     canBeSilenced: false,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,

@@ -75,6 +75,7 @@ import {
     FireIcon,
     MountainIcon,
     MuscleIcon,
+    PristineRedShieldIcon,
     ShieldIcon,
     ZzzIcon,
 } from "../images/icons";
@@ -107,7 +108,7 @@ import {
 } from "./../ability/types";
 import { bash, block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effect";
+import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky, weightedShell } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -206,13 +207,10 @@ export const redSnail: Minion = {
     effects: [
         {
             name: "Weighted Shell",
-            icon: RedSnailShellImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            preventArmorDecay: true,
             canBeSilenced: true,
             description: "While this character has armor:",
-            attackPower: 1,
             conditions: [
                 {
                     comparator: "gt",
@@ -220,6 +218,9 @@ export const redSnail: Minion = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
+            attackPower: 1,
+            preventArmorDecay: true,
+            icon: PristineRedShieldIcon,
         },
     ],
 };
