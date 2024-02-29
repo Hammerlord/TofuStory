@@ -1388,7 +1388,7 @@ export const brick: Item = {
 
 export const adamantiumPlate: Item = {
     name: "Adamantium Plate",
-    description: "Receive 1 less damage when attacked by enemies *not* directly in front of you.",
+    description: "Take 1 less damage when attacked by enemies 1 space away.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdamantiumPlateImage,
@@ -1400,8 +1400,8 @@ export const adamantiumPlate: Item = {
             attackDamageReceived: -1,
             conditions: [
                 {
-                    comparator: "not",
-                    proximity: 0,
+                    comparator: "eq",
+                    proximity: 1,
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
                 },
             ],
