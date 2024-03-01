@@ -106,7 +106,15 @@ const ItemRewards = ({
         const items = (overrideItems || []).filter((item: Item) => !alreadyObtained[item.name]);
         if (items.length < BASE_NUM_CHOICES) {
             Array.from({ length: BASE_NUM_CHOICES - items.length }).forEach(() => {
-                const rareBonus = rewardType === BATTLE_TYPES.BOSS ? BOSS_RARE_RATE : ELITE_RARE_RATE;
+                let rareBonus = 0;
+                let uncommonBonus = 0;
+                if (rewardType === BATTLE_TYPES.BOSS) {
+                    rareBonus = BOSS_RARE_RATE;
+                    uncommonBonus = ELITE_UNCOMMON_RATE;
+                } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
+                    rareBonus = ELITE_RARE_RATE;
+                    uncommonBonus = ELITE_UNCOMMON_RATE;
+                }
                 const itemPool = rollItemPool({ player, bonuses: { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE }, excludeItems: items });
                 const equipment = getRandomItem(itemPool);
                 if (equipment) {
@@ -119,7 +127,11 @@ const ItemRewards = ({
             items.push(mesoItem);
         }
 
-        const itemRewards = [goldenHammer];
+        const itemRewards = [];
+        if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType)) {
+            itemRewards.push(goldenHammer);
+        }
+
         setRewards(itemRewards);
         setItemChoices(items);
         onLoot({ items: itemRewards });
@@ -153,7 +165,7 @@ const ItemRewards = ({
                 </div>
                 <div className={classes.container}>
                     <div className={classes.containerInner}>
-                        <div>You obtain</div>
+                        {rewards.length > 0 && <div>You obtain</div>}
                         {rewards.map((item: Item, i) => (
                             <div className={classes.listItem} key={[item.name, i].join("-")}>
                                 <img src={item.image} /> <span>{item.name}</span>

@@ -9,3 +9,5 @@ export const RARE_ITEM_CHANCE = 0.1;
 export const BOSS_RARE_RATE = 0.3;
 export const ELITE_RARE_RATE = 0.2;
 export const ELITE_UNCOMMON_RATE = 0.25;
+
+export const REGULAR_BATTLE_LOOT_CHANCE = 0.2;

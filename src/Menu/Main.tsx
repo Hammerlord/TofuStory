@@ -37,6 +37,7 @@ import { getRandomItem } from "../utils";
 import { SCENE_CONDITION_TYPES, EventScene, SceneCondition } from "../scene/types";
 import { passesValueComparison } from "../battle/passesConditions";
 import TradingPost from "../scene/TradingPost";
+import { REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -262,7 +263,7 @@ const Main = () => {
 
     const handleCloseCardRewards = () => {
         setCardRewardsOpen(false);
-        if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type)) {
+        if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type) || Math.random() < REGULAR_BATTLE_LOOT_CHANCE) {
             setItemRewardsOpen(true);
         } else {
             handleExitBattle();
