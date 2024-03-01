@@ -1476,7 +1476,7 @@ export const calculateTargetIndices = ({
     battle: BattleState;
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
 }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = Infinity } = action;
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0 } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData });
     let extraTargetIndices = getValidTargetIndices(battle[side], {

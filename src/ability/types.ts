@@ -416,7 +416,7 @@ export type Action = {
     // Meant for enemies selecting a specific ally to support.
     targetName?: string;
     area?: number;
-    /** Only applicable to target type RANDOM or ricochet. If not supplied, all targets on one side are eligible. */
+    /** Only applicable to target type RANDOM or numTargets configured. If not supplied, it's 0. */
     targetArea?: number;
     // Hits random extra targets within targetArea
     numTargets?: number;
