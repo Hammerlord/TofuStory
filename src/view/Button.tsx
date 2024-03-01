@@ -34,7 +34,7 @@ const useStyles = createUseStyles({
             "&.disabled": {
                 color: "rgba(255, 255, 255) !important",
                 opacity: "0.7",
-                filter: "saturate(0.5)",
+                filter: "brightness(0.9) saturate(0.25)",
             },
         },
     },
