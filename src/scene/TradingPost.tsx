@@ -27,6 +27,20 @@ const useStyles = createUseStyles({
         background: "rgba(30, 30, 30, 0.95)",
         textAlign: "center",
     },
+    "@keyframes highlightAnimation": {
+        from: {
+            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
+        },
+        to: {
+            filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
+        },
+    },
+    highlightAnimation: {
+        animationName: "$highlightAnimation",
+        animationDuration: "2s",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate-reverse",
+    },
     doneContainer: {
         position: "absolute",
         right: "32px",
@@ -95,7 +109,7 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
     },
     tradesRemainingLabel: {
-        margin: 8,
+        margin: 16,
     },
 });
 
@@ -159,8 +173,8 @@ const TradingPost = ({
                         return "Change your mind? Hehe... it's no problem. Take your time.";
                     }
 
-                    dialogMemo.current.push("Hello, stranger. Got something to trade?");
-                    return "Hello, stranger. Got something to trade?";
+                    dialogMemo.current.push(greeting);
+                    return greeting;
                 }
 
                 if (tradesRemaining === 0) {
@@ -172,14 +186,18 @@ const TradingPost = ({
 
             if (!selectedVendorItem) {
                 if (selectedPlayerItem.rarity === RARITIES.STARTER) {
-                    return "Hmmm, have I got useful for you. As a... favour. How about it?";
+                    return "Hmmm, that item. It seems to be resonating with something of mine.";
                 }
 
                 if (selectedPlayerItem.rarity === RARITIES.RARE) {
                     return "Oh, what a fine item. I'll offer you my best wares. Or... something else, if you want.";
                 }
 
-                return "Yes, I'll take it. Here's what I'll offer.";
+                if (vendorItems.some(canVendorItemBeExchanged)) {
+                    return "Yes, I'll take it. Here's what I'll offer.";
+                }
+
+                return "Hmm... offer another item, perhaps.";
             }
 
             if (!selectedPlayerItem) {
@@ -196,9 +214,16 @@ const TradingPost = ({
                     return "You have a keen eye for quality. I'll require an equally fine ware, though...";
                 }
 
-                return "Here's what I'll accept for that.";
+                if (playerItems.some(canPlayerItemBeExchanged)) {
+                    return "Here's what I'll accept for that.";
+                }
+
+                return "I'm afraid there's nothing I'd like to trade for this item.";
             }
 
+            if (selectedPlayerItem.rarity === RARITIES.STARTER) {
+                return "Ah! Can you feel that magnetism?";
+            }
             return "Well then, shall we settle the deal?";
         };
         setVendorDialog(getDialog());
@@ -320,9 +345,15 @@ const TradingPost = ({
             </div>
             <span className={classes.tradesRemainingLabel}>Trades remaining: {tradesRemaining}</span>
             {tradesRemaining > 0 && (
-                <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
-                    Trade
-                </Button>
+                <span
+                    className={classNames({
+                        [classes.highlightAnimation]: selectedPlayerItem && selectedVendorItem,
+                    })}
+                >
+                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
+                        Trade
+                    </Button>
+                </span>
             )}
             <div className={classes.flex}>
                 <div className={classes.itemsColumn}>
