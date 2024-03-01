@@ -1,18 +1,20 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
 import {
+    ACTION_TYPES,
+    Ability,
     Action,
+    CombatAbility,
+    CombatEffect,
     EFFECT_EVENT_KEYS,
     Effect,
-    CombatAbility,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
-    CombatEffect,
-    Ability,
-    ACTION_TYPES,
 } from "../ability/types";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
@@ -21,6 +23,7 @@ import { HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
+import Discard from "./Discard";
 import EndTurnButton from "./EndTurnButton";
 import Hand from "./Hand";
 import AbilityNotification from "./Notification/AbilityNotification";
@@ -30,18 +33,16 @@ import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { calculateTargetIndices, checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
+import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
+import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME } from "./constants";
+import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
-import { calculateActionArea, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
-import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
-import { passesConditions } from "./passesConditions";
-import { applyAbilityEventEffects } from "./actions/cardActions";
+import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -142,11 +143,21 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "32px",
         top: "0",
+        height: "100%",
     },
     rightContainer: {
         position: "absolute",
         right: "32px",
         top: "0",
+        height: "100%",
+    },
+    deckContainer: {
+        position: "absolute",
+        bottom: 80,
+    },
+    discardContainer: {
+        position: "absolute",
+        bottom: 190,
     },
     arrowContainer: {
         width: "100%",
@@ -856,17 +867,15 @@ const BattlefieldContainer = () => {
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
-                                <Deck
-                                    deck={deck}
-                                    discard={discard}
-                                    depleted={depleted}
-                                    viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
-                                    onClickDeck={handleClickDeck}
-                                    highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
-                                    deckRef={deckRef}
-                                    discardRef={discardRef}
-                                    depleteRef={depleteRef}
-                                />
+                                <div className={classes.deckContainer}>
+                                    <Deck
+                                        deck={deck}
+                                        viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
+                                        onClickDeck={handleClickDeck}
+                                        highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
+                                        deckRef={deckRef}
+                                    />
+                                </div>
                             </div>
                             <div className={classes.combatantContainer}>
                                 <div className={classes.combatants}>
@@ -901,6 +910,9 @@ const BattlefieldContainer = () => {
                                         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                                     }}
                                 />
+                                <div className={classes.discardContainer}>
+                                    <Discard discard={discard} depleted={depleted} discardRef={discardRef} depleteRef={depleteRef} />
+                                </div>
                             </div>
                         </div>
                     </div>

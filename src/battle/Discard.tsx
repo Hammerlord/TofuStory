@@ -4,10 +4,9 @@ import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
-import { DownArrowImage } from "../images";
 
-const DECK_COLOR = "#176fbd";
-const DECK_SHADOW = "#125896";
+const COOLDOWN_COLOR = "#aaaaaa";
+const COOLDOWN_SHADOW = "#8a8a8a";
 
 const useStyles = createUseStyles({
     root: {
@@ -31,7 +30,7 @@ const useStyles = createUseStyles({
     },
     depleted: {
         position: "absolute",
-        bottom: "-72px",
+        bottom: "-175px",
         zIndex: 3,
         textAlign: "center",
         width: "100%",
@@ -68,59 +67,13 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         marginBottom: "4px",
     },
-    "@keyframes indicatorAnimation": {
-        "0%": {
-            transform: "translateX(-50%) translateY(50%)",
-        },
-        "100%": {
-            transform: "translateX(-50%) translateY(0)",
-        },
-    },
-    indicator: {
-        animationName: "$indicatorAnimation",
-        animationDuration: "1.5s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
-        position: "absolute",
-        left: "50%",
-        transform: "translateX(-50%)",
-        top: "-20%",
-    },
-    "@keyframes highlightAnimation": {
-        from: {
-            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
-        },
-        to: {
-            filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 5px #45ff61)",
-        },
-    },
-    highlight: {
-        animationName: "$highlightAnimation",
-        animationDuration: "2s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
+    hide: {
+        visibility: "hidden",
     },
 });
 
-const Deck = ({
-    deck = [],
-    viewDeckInOrder,
-    onClickDeck,
-    highlightDeck,
-    deckRef,
-}: {
-    deck: CombatAbility[];
-    viewDeckInOrder: boolean;
-    onClickDeck: (event: any) => void;
-    highlightDeck: boolean;
-    deckRef;
-}) => {
+const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
     const classes = useStyles();
-
-    const getCardColor = (i: number): string => {
-        const isLast = i === deck.length - 1;
-        return isLast ? DECK_COLOR : DECK_SHADOW;
-    };
 
     /** This doesn't take the ability effects into consideration */
     const getAbilityLevel = (ability) => {
@@ -128,22 +81,6 @@ const Deck = ({
         return Array.from({ length: numStars })
             .map(() => "⋆")
             .join("");
-    };
-
-    const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
-        return items
-            .slice()
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .reduce((acc, ability) => {
-                const abilityLevel = ability.level || 1;
-                const levelDisplay = getAbilityLevel(ability);
-                const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
-                acc[name] = {
-                    ability,
-                    count: (acc[name]?.count || 0) + 1,
-                };
-                return acc;
-            }, {});
     };
 
     const getImage = (ability: CombatAbility) => {
@@ -175,55 +112,57 @@ const Deck = ({
         );
     };
 
-    const getInOrderTooltip = (abilities: CombatAbility[]) => {
-        return (
-            <ul className={classes.abilityList}>
-                {abilities.map((ability, i) => {
-                    const imageNode = getImage(ability);
-                    return (
-                        <li key={ability.instanceId || i} className={classes.abilityItem}>
-                            {imageNode} {ability.name} {getAbilityLevel(ability)}
-                        </li>
-                    );
-                })}
-            </ul>
-        );
+    const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
+        return items
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .reduce((acc, ability) => {
+                const abilityLevel = ability.level || 1;
+                const levelDisplay = getAbilityLevel(ability);
+                const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
+                acc[name] = {
+                    ability,
+                    count: (acc[name]?.count || 0) + 1,
+                };
+                return acc;
+            }, {});
     };
 
-    const deckCount = useMemo(() => {
-        if (viewDeckInOrder) {
-            return getInOrderTooltip(deck);
-        }
+    const discardCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(discard), [discard]);
+    const depletedCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(depleted), [depleted]);
 
-        return compose(getAbilityMapTooltip, getAbilityMap)(deck);
-    }, [deck, viewDeckInOrder]);
+    const getCardColor = (i: number): string => {
+        const isLast = discard.length - 1;
+        return isLast ? COOLDOWN_COLOR : COOLDOWN_SHADOW;
+    };
 
-    const deckTooltip = (
+    const discardTooltip = (
         <div>
-            <div className={classes.tooltipTitle}>Deck</div>
-            {deckCount}
+            <div className={classes.tooltipTitle}>Discard</div>
+            {discardCount}
+        </div>
+    );
+
+    const depleteTooltip = (
+        <div>
+            <div className={classes.tooltipTitle}>Depleted</div>
+            {depletedCount}
         </div>
     );
 
     return (
         <div className={classes.root}>
             <div className={classes.deckContainer}>
-                <Tooltip title={deckTooltip} placement={"right"}>
-                    <div
-                        className={classNames(classes.deckContainerInner, {
-                            [classes.highlight]: highlightDeck,
-                        })}
-                        onClick={onClickDeck}
-                        ref={deckRef}
-                    >
+                <Tooltip title={discardTooltip} placement={"right"}>
+                    <div ref={discardRef}>
                         <svg viewBox="0 0 100 100" className={classes.svg}>
-                            {Array.from({ length: deck.length }).map((_, i) => {
+                            {Array.from({ length: discard.length }).map((_, i) => {
                                 return (
                                     <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
                                         <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
-                                        {i === deck.length - 1 && (
+                                        {i === discard.length - 1 && (
                                             <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                                {deck.length}
+                                                {discard.length}
                                             </text>
                                         )}
                                     </svg>
@@ -232,10 +171,20 @@ const Deck = ({
                         </svg>
                     </div>
                 </Tooltip>
-                {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
             </div>
+
+            <Tooltip title={depleteTooltip} placement={"right"}>
+                <div
+                    className={classNames(classes.depleted, {
+                        [classes.hide]: !depleted.length,
+                    })}
+                    ref={depleteRef}
+                >
+                    Depleted: {depleted.length}
+                </div>
+            </Tooltip>
         </div>
     );
 };
 
-export default Deck;
+export default Discard;
