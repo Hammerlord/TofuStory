@@ -44,6 +44,8 @@ const useStyles = createUseStyles({
     characterContainer: {
         height: "100px",
         position: "relative",
+        pointerEvents: "none",
+
         "& img": {
             position: "absolute",
             bottom: 0,
