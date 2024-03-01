@@ -278,6 +278,7 @@ export { default as MetalBucketSnowmanImage } from "./MetalBucketSnowman.png";
 export { default as MiniBeanImage } from "./MiniBean.gif";
 export { default as MiniKargoImage } from "./MiniKargo.gif";
 export { default as MonkeyBananaImage } from "./MonkeyBanana.png";
+export { default as MoonBunnyImage } from "./MoonBunny.png";
 export { default as MossyMushroomImage } from "./MossyMushroom.gif";
 export { default as MossySnailImage } from "./MossySnail.gif";
 export { default as MPEaterImage } from "./MPEater.png";

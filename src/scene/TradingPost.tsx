@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
 import { shuffle } from "../utils";
@@ -9,6 +9,8 @@ import Button from "../view/Button";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
 import { Player } from "../character/types";
+import { MoonBunnyImage } from "../images";
+import Tooltip from "../view/Tooltip";
 
 const HEADER_BAR = 72;
 
@@ -22,7 +24,7 @@ const useStyles = createUseStyles({
         paddingTop: HEADER_BAR,
         bottom: 0,
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
-        background: "rgba(20, 20, 20, 0.99)",
+        background: "rgba(30, 30, 30, 0.95)",
         textAlign: "center",
     },
     doneContainer: {
@@ -39,28 +41,40 @@ const useStyles = createUseStyles({
         marginBottom: "24px",
         minWidth: 400,
     },
+    characterContainer: {
+        height: "100px",
+        position: "relative",
+        "& img": {
+            position: "absolute",
+            bottom: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+        },
+    },
     flex: {
         display: "flex",
         justifyContent: "space-around",
+    },
+    offerSection: {
+        minHeight: 275,
     },
     offerContainer: {
         margin: 8,
         display: "inline-block",
     },
-    itemsContainer: {
+    itemsColumn: {
         width: "45%",
+        marginTop: -64,
+    },
+    itemsContainer: {
         overflowY: "scroll",
-        maxHeight: "60vh",
+        maxHeight: "55vh",
     },
     itemContainer: {
         display: "inline-block",
         margin: 8,
         minHeight: 200,
     },
-    candidate: {
-        filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
-    },
-
     itemPlaceholder: {
         display: "inline-block",
         borderRadius: "8px",
@@ -84,7 +98,7 @@ const useStyles = createUseStyles({
 });
 
 const BASE_VENDOR_ITEMS = 8;
-
+const BASE_NUM_TRADES = 2;
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
 // or exchange their starter equipment for an upgraded version of their starter equipment.
 const TradingPost = ({
@@ -97,10 +111,11 @@ const TradingPost = ({
     onExit: () => void;
 }) => {
     const [playerItems, setPlayerItems] = useState([]);
-    const [tradesRemaining, setTradesRemaining] = useState(2);
+    const [tradesRemaining, setTradesRemaining] = useState(BASE_NUM_TRADES);
     const [vendorItems, setVendorItems] = useState([]);
     const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
     const [selectedVendorItem, setSelectedVendorItem] = useState(null);
+    const [vendorDialog, setVendorDialog] = useState("");
     const classes = useStyles();
 
     useEffect(() => {
@@ -130,6 +145,67 @@ const TradingPost = ({
             )
         );
     }, [tradesRemaining]);
+
+    const dialogMemo = useRef([]);
+
+    useEffect(() => {
+        const getDialog = () => {
+            if (!selectedPlayerItem && !selectedVendorItem) {
+                if (tradesRemaining === BASE_NUM_TRADES) {
+                    const greeting = "Hello, stranger. Got something to trade?";
+                    if (dialogMemo.current.includes(greeting)) {
+                        return "Change your mind? Hehe... it's no problem. Take your time.";
+                    }
+
+                    dialogMemo.current.push("Hello, stranger. Got something to trade?");
+                    return "Hello, stranger. Got something to trade?";
+                }
+
+                if (tradesRemaining === 0) {
+                    return "Hehe, thank you for your business.";
+                }
+
+                return "Well struck. Anything else catch your eye?";
+            }
+
+            if (!selectedVendorItem) {
+                if (selectedPlayerItem.rarity === RARITIES.STARTER) {
+                    return "Hmmm, have I got useful for you. As a... favour. How about it?";
+                }
+
+                if (selectedPlayerItem.rarity === RARITIES.RARE) {
+                    return "Oh, what a fine item. I'll offer you my best wares. Or... something else, if you want.";
+                }
+
+                return "Yes, I'll take it. Here's what I'll offer.";
+            }
+
+            if (!selectedPlayerItem) {
+                if (selectedVendorItem.rarity === RARITIES.STARTER) {
+                    return "Oh, this? I've had it for a long time. It seems to be... resonating with something you own.";
+                }
+
+                // These are always mesos
+                if (selectedVendorItem.type === ITEM_TYPES.CONSUMABLE) {
+                    return "Yes, I've got coin! Now, have you wares?";
+                }
+
+                if (selectedVendorItem.rarity === RARITIES.RARE) {
+                    return "You have a keen eye for quality. I'll require an equally fine ware, though...";
+                }
+
+                return "Here's what I'll accept for that.";
+            }
+
+            return "Well then, shall we settle the deal?";
+        };
+        setVendorDialog(getDialog());
+
+        const timeout = setTimeout(() => {
+            setVendorDialog("");
+        }, 5000);
+        return () => clearTimeout(timeout);
+    }, [selectedPlayerItem, selectedVendorItem]);
 
     const handleTrade = () => {
         if (!selectedPlayerItem || !selectedVendorItem) {
@@ -230,7 +306,7 @@ const TradingPost = ({
                     Leave Shop
                 </Button>
             </div>
-            <div>
+            <div className={classes.offerSection}>
                 <div className={classes.offerContainer}>
                     <p>Your offer</p>
                     {offerElement(selectedPlayerItem, true)}
@@ -247,33 +323,46 @@ const TradingPost = ({
                 </Button>
             )}
             <div className={classes.flex}>
-                <div className={classes.itemsContainer}>
+                <div className={classes.itemsColumn}>
+                    <div className={classes.characterContainer}>
+                        <img src={player.image} alt="Player character" />
+                    </div>
                     <h4>Your Items</h4>
-                    {playerItems.map((item: Item) => (
-                        <div
-                            className={classNames(classes.itemContainer, {
-                                [classes.disable]: !canPlayerItemBeExchanged(item),
-                                [classes.highlight]: selectedPlayerItem?.name === item.name,
-                            })}
-                            key={item.name}
-                        >
-                            <ItemView item={item} onClick={() => onClickPlayerItem(item)} />
-                        </div>
-                    ))}
+                    <div className={classes.itemsContainer}>
+                        {playerItems.map((item: Item) => (
+                            <div
+                                className={classNames(classes.itemContainer, {
+                                    [classes.disable]: !canPlayerItemBeExchanged(item),
+                                    [classes.highlight]: selectedPlayerItem?.name === item.name,
+                                })}
+                                key={item.name}
+                            >
+                                <ItemView item={item} onClick={() => onClickPlayerItem(item)} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className={classes.itemsContainer}>
-                    <h4>Trading Post Items</h4>
-                    {vendorItems.map((item: Item) => (
-                        <div
-                            className={classNames(classes.itemContainer, {
-                                [classes.disable]: !canVendorItemBeExchanged(item),
-                                [classes.highlight]: selectedVendorItem?.name === item.name,
-                            })}
-                            key={item.name}
-                        >
-                            <ItemView item={item} onClick={() => onClickVendorItem(item)} />
+
+                <div className={classes.itemsColumn}>
+                    <Tooltip title={vendorDialog} open={Boolean(vendorDialog)} placement="top">
+                        <div className={classes.characterContainer}>
+                            <img src={MoonBunnyImage} alt="Trading Post Vendor" />
                         </div>
-                    ))}
+                    </Tooltip>
+                    <h4>Trading Post Items</h4>
+                    <div className={classes.itemsContainer}>
+                        {vendorItems.map((item: Item) => (
+                            <div
+                                className={classNames(classes.itemContainer, {
+                                    [classes.disable]: !canVendorItemBeExchanged(item),
+                                    [classes.highlight]: selectedVendorItem?.name === item.name,
+                                })}
+                                key={item.name}
+                            >
+                                <ItemView item={item} onClick={() => onClickVendorItem(item)} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
