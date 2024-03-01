@@ -15,6 +15,7 @@ const useStyles = createUseStyles({
         color: "white",
         cursor: "pointer",
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+        textAlign: "center",
         "& hr": {
             opacity: 0.6,
             width: "100%",
@@ -67,7 +68,7 @@ const ItemView = ({ item, highlight, className, onClick }: { item: Item; highlig
                 <div>
                     <span
                         className={classNames(classes.diamond, {
-                            [classes.common]: item.rarity === RARITIES.COMMON || !item.rarity,
+                            [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
                             [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
                             [classes.rare]: item.rarity === RARITIES.RARE,
                         })}

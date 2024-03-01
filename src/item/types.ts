@@ -6,6 +6,7 @@ export enum ITEM_TYPES {
 }
 
 export enum RARITIES {
+    STARTER = "Starter",
     COMMON = "Common",
     UNCOMMON = "Uncommon",
     RARE = "Rare",

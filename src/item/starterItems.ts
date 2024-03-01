@@ -11,7 +11,7 @@ export const rageStone: Item = {
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.STARTER,
     effects: [
         {
             name: "Rage Stone Effect",
@@ -43,7 +43,7 @@ export const rampageStone: Item = {
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.STARTER,
     effects: [
         {
             name: "Rage Stone Effect",
@@ -145,7 +145,7 @@ export const chargingStone: Item = {
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.STARTER,
     effects: [chargingStoneEffect],
 };
 
@@ -153,7 +153,7 @@ export const greaterChargingStone: Item = {
     ...chargingStone,
     description:
         "Playing a card grants Charged, empowering the next cast of certain spells. If unused by end of turn, fire a Greater Bolt.",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.STARTER,
     effects: [
         {
             ...chargingStoneEffect,
