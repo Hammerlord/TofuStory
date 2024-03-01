@@ -1,8 +1,12 @@
+import { AbilityEffect } from "./../ability/types";
 import { CombatAbility } from "../ability/types";
 
-/** This doesn't take the ability effects into consideration */
-export const getAbilityLevel = (ability) => {
-    const numStars = ability.level > 1 ? ability.level : 0;
+export const getAbilityLevel = (ability: CombatAbility) => {
+    const abilityLevel = ability?.effects?.reduce((acc, effect: AbilityEffect) => {
+        return acc + (effect.upgradedByLevels || 0);
+    }, ability?.level || 1);
+
+    const numStars = abilityLevel > 1 ? abilityLevel : 0;
     return Array.from({ length: numStars })
         .map(() => "⋆")
         .join("");

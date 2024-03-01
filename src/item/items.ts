@@ -1889,6 +1889,7 @@ export const toyHammer: Item = {
                     abilityEffects: [
                         {
                             upgradedByLevels: 1,
+                            removeOnDiscard: false,
                         },
                     ],
                 },
