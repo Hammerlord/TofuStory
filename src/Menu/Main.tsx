@@ -36,6 +36,7 @@ import { events } from "../Map/routes/eventList";
 import { getRandomItem } from "../utils";
 import { SCENE_CONDITION_TYPES, EventScene, SceneCondition } from "../scene/types";
 import { passesValueComparison } from "../battle/passesConditions";
+import TradingPost from "../scene/TradingPost";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -123,6 +124,7 @@ const Main = () => {
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const [upgradingAbility, setUpgradingAbility] = useState(null);
     const [removingAbility, setRemovingAbility] = useState(null);
+    const [tradingPost, setTradingPost] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown] = useState(null);
     const classes = useStyles();
@@ -349,6 +351,19 @@ const Main = () => {
         }
     };
 
+    const handleTrade = ({ playerItem, forItem }) => {
+        if (!playerItem || !forItem) {
+            return;
+        }
+        dispatch(
+            updatePlayer({
+                items: player.items.filter((item) => item.name !== playerItem.name),
+            })
+        );
+
+        dispatch(acquireItems([forItem]));
+    };
+
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         dispatch(updateMesos(mesos));
         dispatch(acquireItems(items));
@@ -377,6 +392,7 @@ const Main = () => {
                 onExit={() => setTown(null)}
                 onClickScene={setScene}
                 onClickShop={setShop}
+                onClickTradingPost={() => setTradingPost(true)}
                 onBattle={handleTownBattle}
             />
         );
@@ -400,7 +416,7 @@ const Main = () => {
     };
 
     const isActivityOpen =
-        battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility;
+        battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility || tradingPost;
 
     return (
         <>
@@ -501,6 +517,7 @@ const Main = () => {
                             />
                         </Overlay>
                     )}
+                    {tradingPost && <TradingPost player={player} onExit={() => setTradingPost(null)} onTrade={handleTrade} />}
                 </div>
             )}
             {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}

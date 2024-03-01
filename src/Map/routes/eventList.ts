@@ -76,6 +76,7 @@ import {
     peach,
     incenseLeaves,
     toyHammer,
+    hugeMesoItem,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -157,6 +158,7 @@ export const ITEMS = [
     redHeadband,
     mesoItem,
     bigMesoItem,
+    hugeMesoItem,
     theBackpack,
     icarusCape,
     peach,

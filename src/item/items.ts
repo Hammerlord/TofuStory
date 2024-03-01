@@ -45,6 +45,7 @@ import {
     LuckSackImage,
     MesoCoinImage,
     MesoImage,
+    MesoStackImage,
     NewspaperImage,
     PanlidImage,
     PawnChessPieceImage,
@@ -1718,22 +1719,33 @@ export const tShirt: Item = {
 
 export const mesoItem: Item = {
     name: "Mesos",
-    description: "Grants 85 mesos when you pick this up.",
+    description: "Grants 100 mesos when you pick this up.",
     type: ITEM_TYPES.CONSUMABLE,
     image: MesoImage,
     pickUp: {
-        mesos: 85,
+        mesos: 100,
     },
 };
 
 export const bigMesoItem: Item = {
     name: "More Mesos",
-    description: "Grants 175 mesos when you pick this up.",
+    description: "Grants 200 mesos when you pick this up.",
     type: ITEM_TYPES.CONSUMABLE,
     rarity: RARITIES.UNCOMMON,
     image: MesoCoinImage,
     pickUp: {
-        mesos: 175,
+        mesos: 200,
+    },
+};
+
+export const hugeMesoItem: Item = {
+    name: "Many Mesos",
+    description: "Grants 300 mesos when you pick this up.",
+    type: ITEM_TYPES.CONSUMABLE,
+    rarity: RARITIES.RARE,
+    image: MesoStackImage,
+    pickUp: {
+        mesos: 300,
     },
 };
 

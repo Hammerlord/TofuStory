@@ -26,6 +26,7 @@ import DevAbilityViewer from "./DevAbilityViewer";
 import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
 import TradingPost from "../scene/TradingPost";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -219,7 +220,9 @@ const DevToolButton = () => {
                     onExit={() => setIsShopOpen(false)}
                 />
             )}
-            {isTradingPostOpen && <TradingPost player={defaultCharacterProperties} onTrade={() => {}} />}
+            {isTradingPostOpen && (
+                <TradingPost player={defaultCharacterProperties as Player} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
+            )}
         </>
     );
 };

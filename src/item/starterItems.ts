@@ -1,3 +1,4 @@
+import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
 import { energyBolt, greaterBolt } from "./../ability/magician/magicianAbilities";
@@ -39,7 +40,7 @@ export const rageStone: Item = {
 
 export const rampageStone: Item = {
     name: "Rampage Stone",
-    description: "Every 2 Fury you spend, gain 1 next turn. +1 card draw while that effect is active.",
+    description: "Every 2 Fury you spend, gain 1 next turn. +1 card draw while active.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -140,8 +141,7 @@ const chargingStoneEffect: Effect = {
 
 export const chargingStone: Item = {
     name: "Charging Stone",
-    description:
-        "Playing a card grants Charged, empowering the next cast of certain spells. If unused by end of turn, fire an Energy Bolt.",
+    description: "Playing a card grants Charged. If unused by end of turn, fire an Energy Bolt.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -151,8 +151,8 @@ export const chargingStone: Item = {
 
 export const greaterChargingStone: Item = {
     ...chargingStone,
-    description:
-        "Playing a card grants Charged, empowering the next cast of certain spells. If unused by end of turn, fire a Greater Bolt.",
+    name: "Greater Charging Stone",
+    description: "Playing a card grants Charged. If unused by end of turn, fire a Greater Bolt.",
     rarity: RARITIES.STARTER,
     effects: [
         {
@@ -187,4 +187,9 @@ export const greaterChargingStone: Item = {
             },
         },
     ],
+};
+
+export const STARTER_ITEM_UPGRADE_MAP = {
+    [PLAYER_CLASSES.WARRIOR]: rampageStone,
+    [PLAYER_CLASSES.MAGICIAN]: greaterChargingStone,
 };

@@ -6,7 +6,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import { MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
 import ItemView from "../item/ItemView";
-import { bigMesoItem, goldenHammer, incense, mesoItem } from "../item/items";
+import { bigMesoItem, goldenHammer, hugeMesoItem, incense, mesoItem } from "../item/items";
 import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
@@ -199,7 +199,9 @@ const Shop = ({
         // Items
         const itemsRolledForSale = [];
         Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
-            const item = getRandomItem(rollItemPool({ player, excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem] }));
+            const item = getRandomItem(
+                rollItemPool({ player, excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem, hugeMesoItem] })
+            );
             itemsRolledForSale.push(item);
         });
 
@@ -302,8 +304,8 @@ const Shop = ({
         <div className={classes.root}>
             <div className={classes.inner}>
                 <div className={classes.doneContainer}>
-                    <Button color="primary" variant="contained" onClick={onExit}>
-                        Done
+                    <Button color="secondary" variant="contained" onClick={onExit}>
+                        Leave Shop
                     </Button>
                 </div>
                 <div className={classes.titleContainer}>

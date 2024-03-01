@@ -204,7 +204,10 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                             <div className={classes.rarity}>
                                 <span
                                     className={classNames(classes.diamond, {
-                                        [classes.common]: selectedItem.rarity === RARITIES.COMMON || !selectedItem.rarity,
+                                        [classes.common]:
+                                            selectedItem.rarity === RARITIES.COMMON ||
+                                            selectedItem.rarity === RARITIES.STARTER ||
+                                            !selectedItem.rarity,
                                         [classes.uncommon]: selectedItem.rarity === RARITIES.UNCOMMON,
                                         [classes.rare]: selectedItem.rarity === RARITIES.RARE,
                                     })}

@@ -6,6 +6,9 @@ import ItemView from "../item/ItemView";
 import { createUseStyles } from "react-jss";
 import classNames from "classnames";
 import Button from "../view/Button";
+import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
+import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
+import { Player } from "../character/types";
 
 const HEADER_BAR = 72;
 
@@ -19,8 +22,13 @@ const useStyles = createUseStyles({
         paddingTop: HEADER_BAR,
         bottom: 0,
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
-        background: "rgba(20, 20, 20, 0.95)",
+        background: "rgba(20, 20, 20, 0.99)",
         textAlign: "center",
+    },
+    doneContainer: {
+        position: "absolute",
+        right: "32px",
+        paddingTop: "32px",
     },
     titleContainer: {
         display: "inline-block",
@@ -29,6 +37,7 @@ const useStyles = createUseStyles({
         padding: "8px 96px",
         color: "white",
         marginBottom: "24px",
+        minWidth: 400,
     },
     flex: {
         display: "flex",
@@ -41,7 +50,7 @@ const useStyles = createUseStyles({
     itemsContainer: {
         width: "45%",
         overflowY: "scroll",
-        maxHeight: "65vh",
+        maxHeight: "60vh",
     },
     itemContainer: {
         display: "inline-block",
@@ -74,9 +83,20 @@ const useStyles = createUseStyles({
     },
 });
 
+const BASE_VENDOR_ITEMS = 8;
+
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
-// or exchange their starter equipment + 1 meso for an upgraded version of their starter equipment.
-const TradingPost = ({ player, onTrade }) => {
+// or exchange their starter equipment for an upgraded version of their starter equipment.
+const TradingPost = ({
+    player,
+    onTrade,
+    onExit,
+}: {
+    player: Player;
+    onTrade: (options: { playerItem: Item; forItem: Item }) => void;
+    onExit: () => void;
+}) => {
+    const [playerItems, setPlayerItems] = useState([]);
     const [tradesRemaining, setTradesRemaining] = useState(2);
     const [vendorItems, setVendorItems] = useState([]);
     const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
@@ -85,21 +105,41 @@ const TradingPost = ({ player, onTrade }) => {
 
     useEffect(() => {
         // Exclude already-obtained equipment
-        const exclude = player.items.reduce((acc, item: Item) => {
-            if (item.type === ITEM_TYPES.EQUIPMENT) {
-                acc[item.name] = true;
-            }
+        const exclude = playerItems.reduce((acc, item: Item) => {
+            acc[item.name] = true;
             return acc;
         }, {});
 
-        const itemPool = shuffle(ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name]));
-        setVendorItems(itemPool.slice(0, 9));
+        const itemPool = shuffle(
+            ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name] && item.type === ITEM_TYPES.EQUIPMENT)
+        );
+        const items = itemPool.slice(0, BASE_VENDOR_ITEMS);
+        const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
+        items.push(...[mesoItem, bigMesoItem, hugeMesoItem]);
+        if (upgradedStarterItem && playerItems.every((item) => item.name !== upgradedStarterItem.name)) {
+            items.push(upgradedStarterItem);
+        }
+        setVendorItems(items);
     }, []);
 
+    useEffect(() => {
+        // Only equipment is available to trade. Trading Post also does not want the upgraded version of the starter item.
+        setPlayerItems(
+            player.items.filter(
+                (item: Item) => item.type === ITEM_TYPES.EQUIPMENT && item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
+            )
+        );
+    }, [tradesRemaining]);
+
     const handleTrade = () => {
+        if (!selectedPlayerItem || !selectedVendorItem) {
+            return;
+        }
         setTradesRemaining((prev) => prev - 1);
+        setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
         setSelectedPlayerItem(null);
         setSelectedVendorItem(null);
+        onTrade({ playerItem: selectedPlayerItem, forItem: selectedVendorItem });
     };
 
     const onClickPlayerItem = (item: Item) => {
@@ -140,27 +180,56 @@ const TradingPost = ({ player, onTrade }) => {
     };
 
     // Items without a rarity specified are always common.
-    const getRarity = (item) => {
+    const getRarity = (item: Item): RARITIES => {
         return item?.rarity || RARITIES.COMMON;
     };
 
-    const canVendorItemBeExchanged = (item) => {
+    const RARITY_CHART = {
+        [RARITIES.RARE]: 3,
+        [RARITIES.UNCOMMON]: 2,
+        [RARITIES.COMMON]: 1,
+    };
+
+    const canVendorItemBeExchanged = (item: Item) => {
+        if (!tradesRemaining) {
+            return false;
+        }
         if (!selectedPlayerItem) {
             return true;
         }
-        return getRarity(item) === getRarity(selectedPlayerItem);
+
+        // You can trade for an equivalent rarity item or down one rarity.
+        return (
+            getRarity(item) === getRarity(selectedPlayerItem) ||
+            RARITY_CHART[getRarity(selectedPlayerItem)] - RARITY_CHART[getRarity(item)] === 1
+        );
     };
 
     const canPlayerItemBeExchanged = (item) => {
+        if (!tradesRemaining) {
+            return false;
+        }
         if (!selectedVendorItem) {
             return true;
         }
-        return getRarity(selectedVendorItem) === getRarity(item);
+
+        // You can trade for an equivalent rarity item or down one rarity.
+        return (
+            getRarity(item) === getRarity(selectedVendorItem) ||
+            RARITY_CHART[getRarity(item)] - RARITY_CHART[getRarity(selectedVendorItem)] === 1
+        );
     };
 
     return (
         <div className={classes.tradingPostRoot}>
-            <h2 className={classes.titleContainer}>Trading Post</h2>
+            <div className={classes.titleContainer}>
+                <h2>Trading Post</h2>
+            </div>
+            <div className={classes.doneContainer}>
+                <Button color="secondary" variant="contained" onClick={onExit}>
+                    Leave Shop
+                </Button>
+            </div>
             <div>
                 <div className={classes.offerContainer}>
                     <p>Your offer</p>
@@ -173,19 +242,20 @@ const TradingPost = ({ player, onTrade }) => {
             </div>
             <span className={classes.tradesRemainingLabel}>Trades remaining: {tradesRemaining}</span>
             {tradesRemaining > 0 && (
-                <Button color="secondary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
+                <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
                     Trade
                 </Button>
             )}
             <div className={classes.flex}>
                 <div className={classes.itemsContainer}>
                     <h4>Your Items</h4>
-                    {player.items.map((item) => (
+                    {playerItems.map((item: Item) => (
                         <div
                             className={classNames(classes.itemContainer, {
                                 [classes.disable]: !canPlayerItemBeExchanged(item),
                                 [classes.highlight]: selectedPlayerItem?.name === item.name,
                             })}
+                            key={item.name}
                         >
                             <ItemView item={item} onClick={() => onClickPlayerItem(item)} />
                         </div>
@@ -193,12 +263,13 @@ const TradingPost = ({ player, onTrade }) => {
                 </div>
                 <div className={classes.itemsContainer}>
                     <h4>Trading Post Items</h4>
-                    {vendorItems.map((item) => (
+                    {vendorItems.map((item: Item) => (
                         <div
                             className={classNames(classes.itemContainer, {
                                 [classes.disable]: !canVendorItemBeExchanged(item),
                                 [classes.highlight]: selectedVendorItem?.name === item.name,
                             })}
+                            key={item.name}
                         >
                             <ItemView item={item} onClick={() => onClickVendorItem(item)} />
                         </div>
