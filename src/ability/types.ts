@@ -560,7 +560,7 @@ export interface AbilityUpgrade {
             { attackPower?: number; stacks?: number; duration?: number }[];
         drawCards?: {
             amount?: number;
-            effects?: AbilityEffect;
+            effects?: AbilityEffect[];
             filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
         };
 

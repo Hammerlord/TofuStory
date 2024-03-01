@@ -1046,9 +1046,11 @@ export const magicBooster: Ability = {
             actions: [
                 {
                     drawCards: {
-                        effects: {
-                            resourceCost: -1,
-                        },
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
                     },
                 },
             ],
