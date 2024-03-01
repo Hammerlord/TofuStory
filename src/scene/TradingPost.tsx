@@ -105,8 +105,8 @@ const TradingPost = ({
 
     useEffect(() => {
         // Exclude already-obtained equipment
-        const exclude = playerItems.reduce((acc, item: Item) => {
-            acc[item.name] = true;
+        const exclude = player.items.reduce((acc, item: Item) => {
+            acc[item.name] = acc[item.name] || item.type === ITEM_TYPES.EQUIPMENT;
             return acc;
         }, {});
 
@@ -116,7 +116,7 @@ const TradingPost = ({
         const items = itemPool.slice(0, BASE_VENDOR_ITEMS);
         const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
         items.push(...[mesoItem, bigMesoItem, hugeMesoItem]);
-        if (upgradedStarterItem && playerItems.every((item) => item.name !== upgradedStarterItem.name)) {
+        if (upgradedStarterItem && player.items.every((item) => item.name !== upgradedStarterItem.name)) {
             items.push(upgradedStarterItem);
         }
         setVendorItems(items);
