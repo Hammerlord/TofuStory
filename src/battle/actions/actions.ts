@@ -1358,7 +1358,7 @@ const pushPlaybackQueue = ({
     return (dispatch, getState) => {
         let playbackTime = action.playbackTime;
         if (!playbackTime) {
-            if (action.ricochet) {
+            if (action.animationOptions?.ricochet) {
                 playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 3) * Math.max(3, allTargetIndices.length);
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;

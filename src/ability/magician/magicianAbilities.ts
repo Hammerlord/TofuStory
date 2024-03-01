@@ -581,7 +581,6 @@ export const chainLightning: Ability = {
             numTargets: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            ricochet: true,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             icon: LightningOrbProjectileImage,
             animationOptions: {
@@ -589,6 +588,7 @@ export const chainLightning: Ability = {
                 height: 70,
                 opacity: 0.8,
                 flash: 200,
+                ricochet: true,
             },
             bonus: {
                 damage: 3,
@@ -1957,13 +1957,13 @@ export const starBolt: Ability = {
             numTargets: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            ricochet: true,
             animation: ANIMATION_TYPES.YOYO,
             icon: GlisteningStarImage,
             animationOptions: {
                 width: 75,
                 height: 75,
                 flash: 500,
+                ricochet: true,
             },
             secondaryAction: {
                 target: "actor",

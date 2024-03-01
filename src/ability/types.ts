@@ -420,8 +420,6 @@ export type Action = {
     targetArea?: number;
     // Hits random extra targets within targetArea
     numTargets?: number;
-    // Bounces between numTargets within targetArea.
-    ricochet?: boolean;
     effects?: (string | Effect)[]; // If a string (name of effect) is provided, attempt to look up the corresponding effect
     description?: string;
     movement?: number;
@@ -504,6 +502,8 @@ export type Action = {
         fadeOut?: boolean;
         sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
         brightness?: number; // Value of 1 is normal brightness
+        // Bounces between numTargets within targetArea.
+        ricochet?: boolean;
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
@@ -652,7 +652,6 @@ export enum ANIMATION_TYPES {
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
     ONE_WAY = "one-way",
-    RICOCHET = "ricochet",
     DROP = "drop",
     // This is the same as ACTION_TYPES.EFFECT
     CAST = "cast",

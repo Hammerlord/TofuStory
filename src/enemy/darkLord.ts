@@ -192,7 +192,9 @@ export const darkLord: Minion = {
                     numTargets: 2,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    ricochet: true,
+                    animationOptions: {
+                        ricochet: true,
+                    },
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     icon: AvengerImage,
                 },

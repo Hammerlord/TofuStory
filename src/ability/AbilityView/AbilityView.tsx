@@ -237,7 +237,7 @@ const AbilityView = forwardRef(
             depletedOnUse,
             preemptive,
         } = ability;
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, ricochet, numTargets } = actions[0] || {};
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
         let imageNode = null;
 
@@ -467,7 +467,7 @@ const AbilityView = forwardRef(
                             {ability.reusable && <div className={classes.bold}>Boomerang</div>}
                             <DrawCards ability={ability} playerClass={player?.class} />
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
-                            {ricochet && (
+                            {numTargets > 0 && (
                                 <div>
                                     Bounces to {numTargets} other targets{" "}
                                     {secondaryDamage && (

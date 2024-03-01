@@ -157,8 +157,9 @@ const AnimationCanvas = ({
         return getCenterCoords(actorElement);
     }, [actorElement]);
 
-    const { icon, ricochet, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder, brightness } = animationOptions || {};
+    const { icon, animation, animationOptions } = action || {};
+    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder, brightness, ricochet } =
+        animationOptions || {};
     const classes = useStyles({ playbackTime, flash, brightness } as any)();
 
     // "Beam" animations shoot a bunch of projectile images
@@ -172,7 +173,7 @@ const AnimationCanvas = ({
         }
 
         eventIdRef.current = eventId;
-        const { type, animation, ricochet, icon } = action || {};
+        const { type, animation, icon } = action || {};
         let spin = 0;
         if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
             spin = 900;

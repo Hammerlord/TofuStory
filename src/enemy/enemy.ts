@@ -197,7 +197,9 @@ export const redSnail: Minion = {
                     damage: 3,
                     secondaryDamage: 2,
                     animation: ANIMATION_TYPES.YOYO,
-                    ricochet: true,
+                    animationOptions: {
+                        ricochet: true,
+                    },
                     numTargets: 2,
                     targetArea: 2,
                 },
