@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
+import { getAbilityMap } from "./deckDisplayUtils";
 
 const COOLDOWN_COLOR = "#aaaaaa";
 const COOLDOWN_SHADOW = "#8a8a8a";
@@ -30,7 +31,7 @@ const useStyles = createUseStyles({
     },
     depleted: {
         position: "absolute",
-        bottom: "-175px",
+        bottom: "-70px",
         zIndex: 3,
         textAlign: "center",
         width: "100%",
@@ -44,7 +45,6 @@ const useStyles = createUseStyles({
     },
     deckContainerInner: {
         height: "100px",
-        top: "16px",
     },
     svg: {
         overflow: "visible",
@@ -75,14 +75,6 @@ const useStyles = createUseStyles({
 const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
     const classes = useStyles();
 
-    /** This doesn't take the ability effects into consideration */
-    const getAbilityLevel = (ability) => {
-        const numStars = ability.level > 1 ? ability.level : 0;
-        return Array.from({ length: numStars })
-            .map(() => "⋆")
-            .join("");
-    };
-
     const getImage = (ability: CombatAbility) => {
         const image = ability.image;
         let imageNode;
@@ -112,27 +104,11 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
         );
     };
 
-    const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
-        return items
-            .slice()
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .reduce((acc, ability) => {
-                const abilityLevel = ability.level || 1;
-                const levelDisplay = getAbilityLevel(ability);
-                const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
-                acc[name] = {
-                    ability,
-                    count: (acc[name]?.count || 0) + 1,
-                };
-                return acc;
-            }, {});
-    };
-
     const discardCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(discard), [discard]);
     const depletedCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(depleted), [depleted]);
 
     const getCardColor = (i: number): string => {
-        const isLast = discard.length - 1;
+        const isLast = i === discard.length - 1;
         return isLast ? COOLDOWN_COLOR : COOLDOWN_SHADOW;
     };
 
@@ -154,7 +130,7 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
         <div className={classes.root}>
             <div className={classes.deckContainer}>
                 <Tooltip title={discardTooltip} placement={"right"}>
-                    <div ref={discardRef}>
+                    <div ref={discardRef} className={classes.deckContainerInner}>
                         <svg viewBox="0 0 100 100" className={classes.svg}>
                             {Array.from({ length: discard.length }).map((_, i) => {
                                 return (

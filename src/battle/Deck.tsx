@@ -5,6 +5,7 @@ import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
 import { DownArrowImage } from "../images";
+import { getAbilityLevel, getAbilityMap } from "./deckDisplayUtils";
 
 const DECK_COLOR = "#176fbd";
 const DECK_SHADOW = "#125896";
@@ -17,28 +18,6 @@ const useStyles = createUseStyles({
             left: 0,
             position: "absolute",
         },
-    },
-    onCooldown: {
-        position: "absolute",
-        bottom: "-36px",
-        zIndex: 3,
-        textAlign: "center",
-        width: "100%",
-        background: "#999999",
-        color: "white",
-        padding: "4px 0",
-        borderRadius: "4px",
-    },
-    depleted: {
-        position: "absolute",
-        bottom: "-72px",
-        zIndex: 3,
-        textAlign: "center",
-        width: "100%",
-        background: "rgba(0, 0, 0, 0.7)",
-        color: "rgba(255, 255, 255, 0.8)",
-        padding: "4px 0",
-        borderRadius: "4px",
     },
     deckContainer: {
         position: "relative",
@@ -120,30 +99,6 @@ const Deck = ({
     const getCardColor = (i: number): string => {
         const isLast = i === deck.length - 1;
         return isLast ? DECK_COLOR : DECK_SHADOW;
-    };
-
-    /** This doesn't take the ability effects into consideration */
-    const getAbilityLevel = (ability) => {
-        const numStars = ability.level > 1 ? ability.level : 0;
-        return Array.from({ length: numStars })
-            .map(() => "⋆")
-            .join("");
-    };
-
-    const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
-        return items
-            .slice()
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .reduce((acc, ability) => {
-                const abilityLevel = ability.level || 1;
-                const levelDisplay = getAbilityLevel(ability);
-                const name = abilityLevel === 1 ? ability.name : `${ability.name} ${levelDisplay}`;
-                acc[name] = {
-                    ability,
-                    count: (acc[name]?.count || 0) + 1,
-                };
-                return acc;
-            }, {});
     };
 
     const getImage = (ability: CombatAbility) => {

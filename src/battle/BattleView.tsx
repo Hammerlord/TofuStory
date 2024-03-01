@@ -153,11 +153,11 @@ const useStyles = createUseStyles({
     },
     deckContainer: {
         position: "absolute",
-        bottom: 80,
+        bottom: 90,
     },
     discardContainer: {
         position: "absolute",
-        bottom: 190,
+        bottom: 90,
     },
     arrowContainer: {
         width: "100%",
