@@ -443,8 +443,8 @@ const grendelTribolt = {
 };
 
 export const grendel: Minion = {
-    HP: 350,
-    maxHP: 350,
+    HP: 450,
+    maxHP: 450,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
     abilities: [

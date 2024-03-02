@@ -265,7 +265,7 @@ const balrogStanceEffect: Effect = {
 export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
-    maxHP: 400,
+    maxHP: 450,
     abilities: [
         {
             name: "Snail Stance",
@@ -284,7 +284,7 @@ export const dancesWithBalrog: Minion = {
                     icon: MossySnailImage,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [snailStanceRedEffect, snailStanceBlueEffect],
-                    armor: 75,
+                    armor: 100,
                     removeEffects: [snailStanceEligible.name],
                 },
             ],

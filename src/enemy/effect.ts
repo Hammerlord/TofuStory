@@ -322,7 +322,7 @@ export const sneaky: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: SmilingImpIcon,
-    turnsTriggerFrequency: 3,
+    turnsTriggerFrequency: 2,
     onWaveStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [

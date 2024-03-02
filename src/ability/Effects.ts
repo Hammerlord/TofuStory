@@ -136,7 +136,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     icon: FireIcon,
-    description: "Burned targets take 3 damage at the end of their turn.",
+    description: "Takes 3 damage at the end of its turn.",
 };
 
 export const chill: Effect = {
@@ -146,8 +146,8 @@ export const chill: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     attackPower: -1,
-    maxApplications: 3,
-    description: "Reduces attack power by 1. Max 3 stacks.",
+    maxApplications: 2,
+    description: "Reduces ATT by 1. Max 2 stacks.",
 };
 
 export const freeze: Effect = {
@@ -155,7 +155,7 @@ export const freeze: Effect = {
     icon: NimbleJewelCImage,
     type: EFFECT_TYPES.FREEZE,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Frozen targets are unable to act during their turn.",
+    description: "Frozen targets are unable to act.",
     duration: 1,
 };
 
@@ -166,7 +166,7 @@ export const cleave: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: WeaponBoosterImage,
-    description: "Area of this character's basic attacks increased by 1.",
+    description: "Area of basic attacks increased by 1.",
 };
 
 export const immunity: Effect = {
@@ -184,7 +184,7 @@ export const raging: Effect = {
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: AngerIcon,
-    description: "Periodically increasing the attack power of this character.",
+    description: "Periodically increasing ATT.",
     turnsTriggerFrequency: 2,
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
