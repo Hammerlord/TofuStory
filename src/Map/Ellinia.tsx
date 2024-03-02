@@ -1,12 +1,32 @@
 import classNames from "classnames";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { DiamondImage, ElliniaBGImage } from "../images";
-import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
-import { grendelScene } from "../scene/Ellinia/grendelScene";
+import {
+    DiamondImage,
+    ElliniaBGImage,
+    ElliniaCampaignImage,
+    ElliniaCenterImage,
+    ElliniaExitImage,
+    ElliniaMagicianHallImage,
+    ElliniaShopImage,
+    ElliniaTradingPostImage,
+} from "../images";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
-import Icon from "../icon/Icon";
+import { grendelScene } from "../scene/Ellinia/grendelScene";
+import Legend from "./Legend";
+import Pan from "./Pan";
+import TownNode from "./TownNode";
+import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 
 const useStyles = createUseStyles({
+    ...TOWN_STYLES,
+    player: {
+        position: "absolute",
+        top: 189,
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
     root: {
         width: "100%",
         height: "100%",
@@ -14,58 +34,6 @@ const useStyles = createUseStyles({
         color: "white",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-    },
-    bg: {
-        width: "100%",
-        height: "100%",
-        color: "white",
-        position: "fixed",
-        background: "rgba(50, 50, 50, 0.7)",
-    },
-    inner: {
-        textAlign: "center",
-        margin: "auto",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontSize: "1.2rem",
-    },
-    node: {
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        width: "350px",
-        height: "350px",
-        margin: "auto",
-        position: "relative",
-        cursor: "pointer",
-        "& > img": {
-            maxWidth: "100%",
-            maxHeight: "100%",
-        },
-    },
-    eventsContainer: {
-        display: "flex",
-    },
-    event: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        color: "white",
-        width: "48px",
-        height: "48px",
-        fontSize: "32px",
-        borderRadius: "48px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        position: "absolute",
-        left: "50%",
-        transform: "translateX(-50%)",
-        top: "10%",
-    },
-    eventInner: {
-        width: "32px",
-        height: "32px",
-        margin: "auto",
     },
 });
 
@@ -77,47 +45,112 @@ const store = {
 
 const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
+    const [visited, setVisited] = useState({});
+
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
+
+    /**
+     * Logs which places have been visited. If place hasn't been visited, returns true (can visit the place).
+     */
+    const checkVisitPlace = (key: string): boolean => {
+        if (visited[key]) {
+            return false;
+        }
+        setVisited((prev) => ({ ...prev, [key]: true }));
+        return true;
+    };
+
+    const handleClickTradingPost = () => {
+        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
+            onClickTradingPost && onClickTradingPost();
+        }
+    };
+
+    const handleClickShop = () => {
+        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
+            onClickShop && onClickShop(store);
+        }
+    };
+
+    const handleClickClassLeader = () => {
+        if (checkVisitPlace(TOWN_PLACES.CLASS_LEADER)) {
+            onClickScene(grendelScene);
+        }
+    };
+
+    const handleClickEvent = (eventKey, scene) => {
+        if (checkVisitPlace(eventKey)) {
+            onClickScene && onClickScene(scene);
+        }
+    };
+
+    const handleClickCampaign = () => {
+        if (checkVisitPlace(TOWN_PLACES.CAMPAIGN)) {
+            onClickScene && onClickScene(arwenScene);
+        }
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <div className={classes.inner}>
-                    <h2>Ellinia</h2>
-                    <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node)} onClick={() => onClickTradingPost()}>
-                            Trading Post
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <Icon icon={DiamondImage} size="lg" />
-                                </div>
+                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                    <div className={classes.inner}>
+                        <TownNode
+                            icon={DiamondImage}
+                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            label={"Trading Post"}
+                            nodeImage={ElliniaTradingPostImage}
+                            onClick={handleClickTradingPost}
+                        />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            visited={visited[TOWN_PLACES.SHOP]}
+                            label={"Shop"}
+                            nodeImage={ElliniaShopImage}
+                            onClick={handleClickShop}
+                        />
+                        <br />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={visited[TOWN_PLACES.CAMPAIGN]}
+                            label={"Campaign"}
+                            nodeImage={ElliniaCampaignImage}
+                            onClick={handleClickCampaign}
+                        />
+
+                        <div className={classNames(classes.townCenter)}>
+                            <div className={classes.townHeader}>
+                                <h2>Ellinia</h2>
                             </div>
+                            <img src={ElliniaCenterImage} alt="Ellinia Center" />
+                            <img src={player?.image} alt="You" className={classes.player} />
                         </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
-                            Shop
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <MoneyBagIcon />
-                                </div>
-                            </div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(arwenScene)}>
-                            Fairies WIP
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(grendelScene)}>
-                            Grendel - Test
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            Exit to World Map
-                            <img src={null} />
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <WorldMapIcon />
-                                </div>
-                            </div>
-                        </div>
+
+                        <TownNode
+                            icon={WorldMapIcon}
+                            visited={false}
+                            label={"Exit to World Map"}
+                            nodeImage={ElliniaExitImage}
+                            onClick={onExit}
+                        />
+                        <br />
+                        <TownNode
+                            icon={JapaneseOgreIcon}
+                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            label={"[Test] Grendel"}
+                            nodeImage={ElliniaMagicianHallImage}
+                            onClick={handleClickClassLeader}
+                        />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={true}
+                            label={"Placeholder"}
+                            nodeImage={ElliniaMagicianHallImage}
+                            onClick={() => {}}
+                        />
                     </div>
-                </div>
+                </Pan>
+                <Legend />
             </div>
         </div>
     );
