@@ -1,55 +1,42 @@
-import { snailMinion } from "../ability/minion";
-import { bash, block, slam, slashBlast, warLeap } from "../ability/warrior/warriorAbilities";
+import { block, slam, slashBlast } from "../ability/warrior/warriorAbilities";
 import { Wave } from "../battle/types";
-import { basicDummy, basicDummy2, ragingDummy, spikedDummy } from "../enemy/dummy";
+import { basicDummy, basicDummy2, spikedDummy } from "../enemy/dummy";
 import Icon from "../icon/Icon";
-import { BlockImage, BrickImage, SlashBlastImage, SpikedMaceImage, WarLeapImage } from "../images";
-import { CactusIcon } from "../images/icons";
+import { BlockImage, SlashBlastImage, SpikedMaceImage } from "../images";
+import { CactusIcon, ShieldIcon } from "../images/icons";
 import { Fury } from "../resource/ResourcesView";
 
-const tutorial = {
+const warriorTutorial = {
     isTutorial: true,
     waves: [
         {
             description: [
                 <>
-                    Select your <Icon icon={SpikedMaceImage} />
-                    <Icon icon={BrickImage} /> abilities, and use them to attack enemies.
+                    Select your <Icon icon={SpikedMaceImage} /> abilities, and attack the dummy.
                 </>,
-                "When you're out of moves, click End Turn to proceed.",
+                <>
+                    Cards often cost <Fury /> Fury, limiting how many you can play per turn.
+                </>,
             ],
-            enemies: [null, basicDummy, null, basicDummy, null],
-            presetDeck: [bash, slam, bash],
+            enemies: [null, { ...basicDummy, maxHP: 35 }, null],
+            presetDeck: [slam, slam, slam],
         },
         {
             description: [
                 <>
-                    Target multiple enemies with area attacks like <Icon icon={SlashBlastImage} /> Slash Blast.
+                    Target multiple enemies with <Icon icon={SlashBlastImage} /> Slash Blast.
                 </>,
             ],
-            enemies: [null, basicDummy, basicDummy, basicDummy, null],
+            enemies: [null, basicDummy, null, basicDummy, null],
             presetDeck: [slashBlast, slashBlast, slashBlast],
         },
         {
             description: [
                 <>
-                    Abilities can have extra effects. War Leap <Icon icon={WarLeapImage} /> will stun an enemy so that they can't act next
-                    turn.
-                </>,
-            ],
-            enemies: [null, null, basicDummy, null, null],
-            presetDeck: [warLeap, bash, bash],
-        },
-        {
-            description: [
-                <>
-                    Use <Icon icon={BlockImage} /> Block on yourself to defend against attacks.
+                    Use <Icon icon={BlockImage} /> Block to defend against attacks.
                 </>,
                 <>
-                    Abilities often cost <Fury /> resources, shown by the numbered <Fury /> icon on each card.
-                </>,
-                <>
-                    By default, you gain one <Fury /> per turn, so take care deciding how to spend your resources.
+                    Unused <Icon icon={ShieldIcon} /> Armor will decay by half every turn.
                 </>,
             ],
             enemies: [basicDummy2, basicDummy2, basicDummy2, basicDummy2, basicDummy2],
@@ -57,31 +44,15 @@ const tutorial = {
         },
         {
             description: [
-                "Occasionally, you may acquire minions that can assist you in battle.",
-                "Place the minion, then select it and use it to attack.",
-            ],
-            enemies: [null, null, basicDummy2, null, null],
-            presetDeck: [snailMinion, snailMinion, snailMinion],
-        },
-        {
-            description: [
                 <>
-                    This dummy has <Icon icon={CactusIcon} /> Thorns. Hover over the icon to see what it does.
+                    This dummy has <Icon icon={CactusIcon} /> Thorns. Hover over it for more info.
                 </>,
+                <>These effects can be dangerous, so try to pay attention to them.</>,
             ],
             enemies: [null, null, spikedDummy, null, null],
-            presetDeck: [bash, slam, snailMinion, snailMinion],
-        },
-        {
-            description: [
-                "Defeat the Raging Dummy and its minions!",
-                "Abilities are sent to your Cooldown pile after usage. They will be reusable after you draw all the cards in your deck.",
-                "Minions only go to your Cooldown pile when they are destroyed.",
-            ],
-            enemies: [null, basicDummy, ragingDummy, basicDummy, null],
-            presetDeck: [warLeap, slashBlast, slashBlast, slam, slam, block, block, block, bash, bash],
+            presetDeck: [slam, slam, block],
         },
     ] as Wave[],
 };
 
-export default tutorial;
+export default warriorTutorial;

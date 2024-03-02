@@ -1,3 +1,4 @@
+import { ACTION_TYPES, TARGET_TYPES } from "../ability/types";
 import { Puppetree2Image, Puppetree3Image, PuppetreeImage } from "../images";
 import { hardy, thorns } from "./../ability/Effects";
 import { attack, loaf, tantrum } from "./abilities";
@@ -6,12 +7,24 @@ export const basicDummy2 = {
     name: "Dummy",
     image: PuppetreeImage,
     maxHP: 5,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    ],
 };
 
 export const basicDummy = {
     name: "Dummy",
     image: PuppetreeImage,
-    maxHP: 12,
+    maxHP: 15,
     abilities: [loaf],
 };
 
@@ -25,7 +38,7 @@ export const devDummy = {
 export const spikedDummy = {
     name: "Spiked Dummy",
     image: Puppetree2Image,
-    maxHP: 14,
+    maxHP: 21,
     abilities: [loaf],
     effects: [thorns],
 };

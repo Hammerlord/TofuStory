@@ -11,6 +11,7 @@ const useStyles = createUseStyles({
         borderRadius: "4px",
         border: "2px solid rgba(0, 0, 0, 0.3)",
         boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)",
+        cursor: "pointer",
         "&.highlight": {
             background: "#25b814",
             color: "white",

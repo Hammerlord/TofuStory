@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import tutorial from "../Menu/tutorial";
+import warriorTutorial from "../Menu/tutorial";
 import {
     LithHarborCenterImage,
     LithHarborCityBGImage,
@@ -75,7 +75,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         onBattle &&
             onBattle(
                 {
-                    ...tutorial,
+                    ...warriorTutorial,
                     backgroundImage: LithHarborCityBGImage,
                 },
                 () => setPromptTutorial(false)
@@ -130,7 +130,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                                 if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
                                     onBattle(
                                         {
-                                            ...tutorial,
+                                            ...warriorTutorial,
                                             backgroundImage: LithHarborCityBGImage,
                                         },
                                         () => setPromptTutorial(false)

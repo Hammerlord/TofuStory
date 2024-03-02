@@ -19,7 +19,7 @@ import {
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
+import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -43,6 +43,7 @@ import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
+import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {
@@ -170,7 +171,7 @@ const useStyles = createUseStyles({
     notificationContainer: {
         position: "fixed",
         left: "50%",
-        top: "42.5%",
+        top: "42%",
         transform: "translateX(-50%)",
         zIndex: 4,
     },
@@ -180,6 +181,12 @@ const useStyles = createUseStyles({
         top: "12.5%",
         transform: "translateX(-50%)",
         zIndex: 4,
+    },
+    clickIndicator: {
+        top: -50,
+        transform: "translateX(-50%)",
+        left: "50%",
+        position: "absolute",
     },
 });
 
@@ -221,6 +228,7 @@ const BattlefieldContainer = () => {
         notification,
         backgroundImage,
         round,
+        isTutorial,
     }: BattleState = state.battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
@@ -903,6 +911,11 @@ const BattlefieldContainer = () => {
                                 </div>
                             </div>
                             <div className={classes.rightContainer}>
+                                {isTutorial && noMoreMoves && !disableActions && (
+                                    <div className={classes.clickIndicator}>
+                                        <Icon icon={ClickIndicatorImage} />
+                                    </div>
+                                )}
                                 <EndTurnButton
                                     disabled={disableActions}
                                     highlight={noMoreMoves}
@@ -927,6 +940,12 @@ const BattlefieldContainer = () => {
                         initialBattlefield={{ playerSide, enemySide }}
                     />
                     <div className={classes.abilityContainer}>
+                        {!selectedAbilityFromHand && !disableActions && isTutorial && hand.length > 0 && (
+                            <div className={classes.clickIndicator}>
+                                Click <br />
+                                <Icon icon={ClickIndicatorImage} />
+                            </div>
+                        )}
                         <Hand
                             className={classes.abilities}
                             hand={hand}
