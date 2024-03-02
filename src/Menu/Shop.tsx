@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
         paddingTop: HEADER_BAR,
         bottom: 0,
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
-        background: "rgba(40, 40, 40, 0.9)",
+        background: "rgba(40, 40, 40, 0.95)",
         overflowY: "scroll",
     },
     inner: {
@@ -307,11 +307,6 @@ const Shop = ({
                     <Button color="secondary" variant="contained" onClick={onExit}>
                         Leave Shop
                     </Button>
-                </div>
-                <div className={classes.titleContainer}>
-                    <h2>
-                        <img src={MesoBagImage} alt="Meso Bag" className={classes.mesoBag} /> {merchant?.name || "Merchant"}'s Shop
-                    </h2>
                 </div>
                 <div className={classes.refreshContainer}>
                     {numRefreshes > 0 && (

@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { DiamondImage, PerionRegionBGImage } from "../images";
-import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
+import {
+    DiamondImage,
+    PerionCenterImage,
+    PerionExitImage,
+    PerionRegionBGImage,
+    PerionShopImage,
+    PerionTradingPostImage,
+    PerionWarriorHallImage,
+} from "../images";
+import { CrossedSwordsIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Icon from "../icon/Icon";
 
@@ -19,7 +27,7 @@ const useStyles = createUseStyles({
         height: "100%",
         color: "white",
         position: "fixed",
-        background: "rgba(50, 50, 50, 0.7)",
+        background: "rgba(50, 50, 50, 0.8)",
     },
     inner: {
         textAlign: "center",
@@ -29,24 +37,45 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
+        width: "100%",
+    },
+    player: {
+        position: "absolute",
+        top: 216,
+        left: "50%",
     },
     node: {
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
-        width: "350px",
-        height: "350px",
         margin: "auto",
         position: "relative",
         cursor: "pointer",
-        "& > img": {
-            maxWidth: "100%",
-            maxHeight: "100%",
-        },
+        display: "inline-block",
+        padding: "0 64",
+        verticalAlign: "middle",
     },
-    eventsContainer: {
-        display: "flex",
+    nodeLabel: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        top: "50",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        padding: "6px 16px",
+        borderRadius: 4,
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+        whiteSpace: "nowrap",
     },
-    event: {
+    townHeader: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+    },
+    iconWrapper: {
         backgroundColor: "rgba(0, 0, 0, 0.7)",
         color: "white",
         width: "48px",
@@ -59,11 +88,9 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
-        top: "10%",
+        top: "0",
     },
-    eventInner: {
-        width: "32px",
-        height: "32px",
+    icon: {
         margin: "auto",
     },
 });
@@ -80,36 +107,69 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
         <div className={classes.root}>
             <div className={classes.bg}>
                 <div className={classes.inner}>
-                    <h2>Perion</h2>
-                    <div className={classes.eventsContainer}>
+                    <div>
                         <div className={classNames(classes.node)} onClick={() => onClickTradingPost()}>
-                            Trading Post
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <Icon icon={DiamondImage} size="lg" />
-                                </div>
-                            </div>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={DiamondImage} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+
+                            <span className={classes.nodeLabel}>Trading Post</span>
+                            <img src={PerionTradingPostImage} />
                         </div>
                         <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
-                            Shop
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <MoneyBagIcon />
-                                </div>
-                            </div>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={MoneyBagIcon} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+                            <span className={classes.nodeLabel}>Shop</span>
+                            <img src={PerionShopImage} />
                         </div>
+                        <br />
                         <div className={classNames(classes.node)} onClick={() => onClickScene(dancesWithBalrogScene)}>
-                            Dances With Balrog - Test
-                            <div className={classes.event}>?</div>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={JapaneseOgreIcon} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+                            <span className={classes.nodeLabel}>[Test] Dances With Balrog</span>
+                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
                         </div>
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            Exit to World Map
-                            <img src={null} />
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <WorldMapIcon />
-                                </div>
+                        <div className={classes.node}>
+                            <div className={classes.townHeader}>
+                                <h2>Perion</h2>
                             </div>
+                            <img src={PerionCenterImage} alt="Perion center" />
+                            <img src={player?.image} alt="You" className={classes.player} />
+                        </div>
+
+                        <div className={classNames(classes.node)} onClick={onExit}>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={WorldMapIcon} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+                            <span className={classes.nodeLabel}>
+                                Exit to World Map
+                                <br />
+                            </span>
+                            <img src={PerionExitImage} alt="Exit" />
+                        </div>
+
+                        <br />
+                        <div className={classes.node}>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+                            <span className={classes.nodeLabel}>Placeholder</span>
+                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
+                        </div>
+                        <div className={classes.node}>
+                            <span className={classes.iconWrapper}>
+                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                            </span>
+                            <br />
+                            <span className={classes.nodeLabel}>Placeholder</span>
+                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
                         </div>
                     </div>
                 </div>
