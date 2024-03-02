@@ -29,6 +29,10 @@ const useStyles = createUseStyles({
         "& ::-webkit-scrollbar-thumb:hover": {
             background: "rgba(0, 0, 0, 0.4)",
         },
+
+        "& img": {
+            userDrag: "none",
+        },
     },
     root: {
         position: "fixed",
