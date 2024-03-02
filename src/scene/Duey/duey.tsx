@@ -62,35 +62,35 @@ const introUseStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: "392px",
+        top: "262px",
         left: "700px",
         height: "65px",
     },
     duey: {
         left: "250px",
-        top: "440px",
+        top: "310px",
         transform: "scale(-1, 1)",
     },
     shroom1: {
         left: "200px",
-        top: "476px",
+        top: "349px",
         transform: "scale(-1, 1)",
     },
     shroom2: {
         left: "400px",
-        top: "476px",
+        top: "349px",
     },
     shroom3: {
         left: "450px",
-        top: "476px",
+        top: "349px",
     },
     redSnail: {
         left: "350px",
-        top: "478px",
+        top: "349px",
     },
     blueSnail: {
         left: "170px",
-        top: "478px",
+        top: "349px",
         transform: "scale(-1, 1)",
     },
 });

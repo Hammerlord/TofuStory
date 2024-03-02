@@ -60,7 +60,6 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
-        height: "700px",
     },
     wrapper: {
         position: "absolute",
@@ -68,7 +67,7 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         left: "50%",
         transform: "translateX(-50%)",
-        marginTop: "-100px",
+        marginTop: "-150px",
     },
     dialogContainer: {
         border: "1px solid rgba(255, 255, 255, 0.5)",
