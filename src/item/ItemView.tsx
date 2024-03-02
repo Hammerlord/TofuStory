@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
         minHeight: "150px",
         color: "white",
         cursor: "pointer",
-        boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+        boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.75)",
         textAlign: "center",
         "& hr": {
             opacity: 0.6,

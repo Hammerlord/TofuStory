@@ -9,7 +9,7 @@ import Button from "../view/Button";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
 import { Player } from "../character/types";
-import { MoonBunnyImage } from "../images";
+import { KerningTowerImage, MoonBunnyImage } from "../images";
 import Tooltip from "../view/Tooltip";
 
 const HEADER_BAR = 72;
@@ -24,8 +24,19 @@ const useStyles = createUseStyles({
         paddingTop: HEADER_BAR,
         bottom: 0,
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
-        background: "rgba(30, 30, 30, 0.95)",
+        background: "rgba(30, 30, 30, 0.99)",
         textAlign: "center",
+    },
+    tradingPostBackdrop: {
+        width: "100%",
+        minHeight: "300px",
+        background: `url(${KerningTowerImage})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        position: "fixed",
+        top: 528,
+        zIndex: -1,
+        opacity: 0.2,
     },
     "@keyframes highlightAnimation": {
         from: {
@@ -110,6 +121,11 @@ const useStyles = createUseStyles({
     },
     tradesRemainingLabel: {
         margin: 16,
+    },
+    columnLabel: {
+        textShadow: Array.from({ length: 5 })
+            .map(() => "0 0 3px black")
+            .join(", "),
     },
 });
 
@@ -325,6 +341,7 @@ const TradingPost = ({
 
     return (
         <div className={classes.tradingPostRoot}>
+            <div className={classes.tradingPostBackdrop} />
             <div className={classes.titleContainer}>
                 <h2>Trading Post</h2>
             </div>
@@ -360,7 +377,7 @@ const TradingPost = ({
                     <div className={classes.characterContainer}>
                         <img src={player.image} alt="Player character" />
                     </div>
-                    <h4>Your Items</h4>
+                    <h4 className={classes.columnLabel}>Your Items</h4>
                     <div className={classes.itemsContainer}>
                         {playerItems.map((item: Item) => (
                             <div
@@ -382,7 +399,7 @@ const TradingPost = ({
                             <img src={MoonBunnyImage} alt="Trading Post Vendor" />
                         </div>
                     </Tooltip>
-                    <h4>Trading Post Items</h4>
+                    <h4 className={classes.columnLabel}>Trading Post Items</h4>
                     <div className={classes.itemsContainer}>
                         {vendorItems.map((item: Item) => (
                             <div
