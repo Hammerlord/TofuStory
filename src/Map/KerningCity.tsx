@@ -145,14 +145,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            visited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={KerningShopImage}
                             onClick={handleClickShop}
@@ -160,7 +160,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={visited[TOWN_PLACES.CAMPAIGN]}
+                            isVisited={visited[TOWN_PLACES.CAMPAIGN]}
                             label={"Campaign"}
                             nodeImage={KerningSewerImage}
                             onClick={handleClickCampaign}
@@ -180,7 +180,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
 
                         <TownNode
                             icon={WorldMapIcon}
-                            visited={false}
+                            isVisited={false}
                             label={"Exit to World Map"}
                             nodeImage={KerningExitImage}
                             onClick={onExit}
@@ -189,14 +189,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={visited[KERNING_PLACES.MATCH_CARDS]}
+                            isVisited={visited[KERNING_PLACES.MATCH_CARDS]}
                             label={"Hmm?"}
                             nodeEl={caseyNodeEl}
                             onClick={() => handleClickEvent(KERNING_PLACES.MATCH_CARDS, kerningMatchingCards)}
                         />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
                             label={"[Test] Dark Lord"}
                             onClick={handleClickClassLeader}
                             nodeImage={KerningBarImage}

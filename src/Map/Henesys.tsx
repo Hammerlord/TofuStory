@@ -95,14 +95,14 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={HenesysTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            visited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={HenesysShopImage}
                             onClick={handleClickShop}
@@ -110,7 +110,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            visited={visited[HENESYS_PLACES.PANTRY]}
+                            isVisited={visited[HENESYS_PLACES.PANTRY]}
                             label={"HELP!"}
                             nodeImage={HenesysPantryImage}
                             onClick={() => handleClickEvent(HENESYS_PLACES.PANTRY, pantry)}
@@ -126,7 +126,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
 
                         <TownNode
                             icon={WorldMapIcon}
-                            visited={false}
+                            isVisited={false}
                             label={"Exit to World Map"}
                             nodeImage={HenesysExitImage}
                             onClick={onExit}
@@ -134,14 +134,14 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
                             label={"[Test] Athena Pierce"}
                             nodeImage={HenesysArcherHallImage}
                             onClick={handleClickClassLeader}
                         />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={true}
+                            isVisited={true}
                             label={"Placeholder"}
                             nodeImage={HenesysArcherHallImage}
                             onClick={() => {}}

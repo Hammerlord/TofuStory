@@ -38,12 +38,12 @@ const useStyles = createUseStyles({
     },
     dummyCharContainer: {
         bottom: "94px",
-        left: 240,
+        left: 175,
         position: "absolute",
     },
     dummyCharContainer2: {
         bottom: "94px",
-        left: 150,
+        left: 100,
         position: "absolute",
     },
     olafCharContainer: {
@@ -60,11 +60,16 @@ const LITH_PLACES = {
     SHARK: "shark",
 };
 
+const LITH_PREREQUISITES = {
+    [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC],
+};
+
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
     const [promptTutorial, setPromptTutorial] = useState(true);
     const [showAcquireAbility, setShowAcquireAbility] = useState(false);
     const [visited, setVisited] = useState({});
+    const exitRequirement = Object.values(LITH_PLACES).length;
 
     const handleTutorialConfirmation = () => {
         onBattle &&
@@ -99,6 +104,10 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         return true;
     };
 
+    const isLocked = (eventKey: string): boolean => {
+        return LITH_PREREQUISITES[eventKey]?.some((prereq: string) => !visited[prereq]);
+    };
+
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     return (
@@ -108,7 +117,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                     <div className={classes.inner}>
                         <TownNode
                             icon={CrossedSwordsIcon}
-                            visited={visited[LITH_PLACES.TUTORIAL_BASIC]}
+                            isVisited={visited[LITH_PLACES.TUTORIAL_BASIC]}
                             label={"[Tutorial] Basic Combat"}
                             nodeEl={
                                 <div>
@@ -132,8 +141,9 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         <br />
                         <TownNode
                             icon={MedalIcon}
-                            visited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
-                            label={"[Tutorial] Olaf the Viking"}
+                            isVisited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
+                            isLocked={isLocked(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER)}
+                            label={"[Tutorial] Showoff"}
                             nodeEl={
                                 <div>
                                     <img src={LithTutorial2Image} alt="Balcony" />
@@ -153,16 +163,17 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
 
                         <TownNode
                             icon={WorldMapIcon}
-                            visited={false}
+                            isVisited={false}
                             label={"Exit to World Map"}
                             nodeImage={LithHarborExitImage}
                             onClick={onExit}
+                            isLocked={Object.values(visited).length < exitRequirement}
                         />
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={visited[LITH_PLACES.SHARK]}
-                            label={"Down by the Dock"}
+                            isVisited={visited[LITH_PLACES.SHARK]}
+                            label={"By the Dock"}
                             onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
                             nodeImage={LithHarborSharkImage}
                         />

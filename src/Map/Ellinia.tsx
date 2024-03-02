@@ -97,14 +97,14 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={ElliniaTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            visited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={ElliniaShopImage}
                             onClick={handleClickShop}
@@ -112,7 +112,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={visited[TOWN_PLACES.CAMPAIGN]}
+                            isVisited={visited[TOWN_PLACES.CAMPAIGN]}
                             label={"Campaign"}
                             nodeImage={ElliniaCampaignImage}
                             onClick={handleClickCampaign}
@@ -128,7 +128,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
 
                         <TownNode
                             icon={WorldMapIcon}
-                            visited={false}
+                            isVisited={false}
                             label={"Exit to World Map"}
                             nodeImage={ElliniaExitImage}
                             onClick={onExit}
@@ -136,14 +136,14 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
                             label={"[Test] Grendel"}
                             nodeImage={ElliniaMagicianHallImage}
                             onClick={handleClickClassLeader}
                         />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={true}
+                            isVisited={true}
                             label={"Placeholder"}
                             nodeImage={ElliniaMagicianHallImage}
                             onClick={() => {}}

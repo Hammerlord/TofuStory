@@ -77,14 +77,14 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            visited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={PerionShopImage}
                             onClick={handleClickShop}
@@ -93,7 +93,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                         <br />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
                             label={"[Test] Dances With Balrog"}
                             onClick={handleClickClassLeader}
                             nodeImage={PerionWarriorHallImage}
@@ -109,7 +109,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <TownNode
                             icon={WorldMapIcon}
-                            visited={false}
+                            isVisited={false}
                             label={"Exit to World Map"}
                             nodeImage={PerionExitImage}
                             onClick={onExit}
@@ -119,7 +119,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={true}
+                            isVisited={true}
                             label={"Placeholder"}
                             onClick={() => {}}
                             nodeImage={PerionWarriorHallImage}
@@ -127,7 +127,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <TownNode
                             icon={QuestionMarkIcon}
-                            visited={true}
+                            isVisited={true}
                             label={"Placeholder"}
                             onClick={() => {}}
                             nodeImage={PerionWarriorHallImage}
