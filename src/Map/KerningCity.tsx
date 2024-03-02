@@ -46,6 +46,9 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         position: "absolute",
     },
+    caseyDialog: {
+        minWidth: 150,
+    },
 });
 
 const store = {
@@ -107,10 +110,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
 
     const caseyNodeEl = (
         <>
-            {" "}
             <img src={KerningCaseyImage} alt="Kerning City Crane" />
             <div className={classes.caseyCharContainer}>
-                <Tooltip title="Hey Mushie, over here!" open={true} PopperProps={{ disablePortal: true }}>
+                <Tooltip
+                    title="Hey Mushie, over here!"
+                    open={true}
+                    PopperProps={{ disablePortal: true }}
+                    classes={{ tooltip: classes.caseyDialog }}
+                >
                     <img src={CaseyImage} alt="Your friend?" />
                 </Tooltip>
             </div>
