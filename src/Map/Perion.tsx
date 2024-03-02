@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
+import Icon from "../icon/Icon";
 import {
     DiamondImage,
     PerionCenterImage,
@@ -9,9 +10,8 @@ import {
     PerionTradingPostImage,
     PerionWarriorHallImage,
 } from "../images";
-import { CrossedSwordsIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
-import Icon from "../icon/Icon";
 import Pan from "./Pan";
 
 const useStyles = createUseStyles({
@@ -61,7 +61,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
         top: "50",
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: "rgba(20, 20, 20, 0.85)",
         padding: "6px 16px",
         borderRadius: 4,
         textShadow: Array.from({ length: 10 })

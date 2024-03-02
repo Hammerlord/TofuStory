@@ -1,10 +1,24 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { KerningCityBGImage, KerningSewerImage } from "../images";
-import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
+import Icon from "../icon/Icon";
+import {
+    CaseyImage,
+    DiamondImage,
+    KerningBarImage,
+    KerningCaseyImage,
+    KerningCenterImage,
+    KerningCityBGImage,
+    KerningExitImage,
+    KerningSewerImage,
+    KerningShopImage,
+    KerningTradingPostImage,
+} from "../images";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLord";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
+import Tooltip from "../view/Tooltip";
+import Pan from "./Pan";
 
 const useStyles = createUseStyles({
     root: {
@@ -20,7 +34,7 @@ const useStyles = createUseStyles({
         height: "100%",
         color: "white",
         position: "fixed",
-        background: "rgba(50, 50, 50, 0.7)",
+        background: "rgba(50, 50, 50, 0.8)",
     },
     inner: {
         textAlign: "center",
@@ -30,24 +44,50 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
+        width: "100%",
+        minWidth: 1500,
+    },
+    player: {
+        position: "absolute",
+        top: 189,
+        left: "50%",
+        transform: "translateX(-50%)",
     },
     node: {
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
-        width: "350px",
-        height: "350px",
         margin: "auto",
         position: "relative",
         cursor: "pointer",
-        "& > img": {
-            maxWidth: "100%",
-            maxHeight: "100%",
-        },
+        display: "inline-block",
+        padding: "0 64",
+        verticalAlign: "middle",
     },
-    eventsContainer: {
-        display: "flex",
+    nodeLabel: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        top: "50",
+        backgroundColor: "rgba(20, 20, 20, 0.85)",
+        padding: "6px 16px",
+        borderRadius: 4,
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+        whiteSpace: "nowrap",
     },
-    event: {
+    townCenter: {
+        cursor: "grab",
+    },
+    townHeader: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+    },
+    iconWrapper: {
         backgroundColor: "rgba(0, 0, 0, 0.7)",
         color: "white",
         width: "48px",
@@ -60,12 +100,16 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
-        top: "10%",
+        top: "0",
     },
-    eventInner: {
-        width: "32px",
-        height: "32px",
+    icon: {
         margin: "auto",
+    },
+    caseyCharContainer: {
+        bottom: "80px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        position: "absolute",
     },
 });
 
@@ -75,46 +119,89 @@ const store = {
     },
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onClickShop }) => {
+const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
+
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <div className={classes.inner}>
-                    <h2>Kerning City</h2>
-                    <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(KPQ)}>
-                            Event
-                            <img src={KerningSewerImage} />
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(kerningMatchingCards)}>
-                            Event
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(barScene)}>
-                            Dark Lord - Test
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
-                            Shop
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <MoneyBagIcon />
+                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                    <div className={classes.inner}>
+                        <div>
+                            <div className={classNames(classes.node)} onClick={() => onClickTradingPost()}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={DiamondImage} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+
+                                <span className={classes.nodeLabel}>Trading Post</span>
+                                <img src={KerningTradingPostImage} />
+                            </div>
+                            <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={MoneyBagIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Shop</span>
+                                <img src={KerningShopImage} />
+                            </div>
+                            <br />
+
+                            <div className={classes.node} onClick={() => onClickScene(KPQ)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Campaign</span>
+                                <img src={KerningSewerImage} alt="Sewers" />
+                            </div>
+
+                            <div className={classNames(classes.node, classes.townCenter)}>
+                                <div className={classes.townHeader}>
+                                    <h2>Kerning City</h2>
+                                </div>
+                                <img src={KerningCenterImage} alt="Kerning Center" draggable={false} />
+                                <img src={player?.image} alt="You" className={classes.player} draggable={false} />
+                            </div>
+                            <div className={classNames(classes.node)} onClick={onExit}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={WorldMapIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>
+                                    Exit to World Map
+                                    <br />
+                                </span>
+                                <img src={KerningExitImage} alt="Exit" />
+                            </div>
+                            <br />
+
+                            <div className={classes.node} onClick={() => onClickScene(kerningMatchingCards)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Hmm?</span>
+                                <img src={KerningCaseyImage} alt="Kerning City Crane" />
+                                <div className={classes.caseyCharContainer}>
+                                    <Tooltip title="Hey Mushie, over here!" open={true} PopperProps={{ disablePortal: true }}>
+                                        <img src={CaseyImage} alt="Your friend?" />
+                                    </Tooltip>
                                 </div>
                             </div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            Exit to World Map
-                            <img src={null} />
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <WorldMapIcon />
-                                </div>
+                            <div className={classNames(classes.node)} onClick={() => onClickScene(barScene)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={JapaneseOgreIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>[Test] Dark Lord</span>
+                                <img src={KerningBarImage} alt="Kerning Bar" draggable={false} />
                             </div>
                         </div>
                     </div>
-                </div>
+                </Pan>
             </div>
         </div>
     );
