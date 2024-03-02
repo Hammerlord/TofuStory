@@ -21,6 +21,7 @@ import Tooltip from "../view/Tooltip";
 import Pan from "./Pan";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { useState } from "react";
+import TownNode from "./TownNode";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -103,95 +104,77 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
         }
     };
 
+    const caseyNodeEl = (
+        <>
+            {" "}
+            <img src={KerningCaseyImage} alt="Kerning City Crane" />
+            <div className={classes.caseyCharContainer}>
+                <Tooltip title="Hey Mushie, over here!" open={true} PopperProps={{ disablePortal: true }}>
+                    <img src={CaseyImage} alt="Your friend?" />
+                </Tooltip>
+            </div>
+        </>
+    );
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
                 <Pan userPosition={screenCentre} disableIntroAnimate={true}>
                     <div className={classes.inner}>
-                        <div
-                            className={classNames(classes.node, { [classes.visited]: visited[TOWN_PLACES.TRADING_POST] })}
+                        <TownNode
+                            icon={DiamondImage}
+                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            label={"Trading Post"}
+                            nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
-                        >
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={DiamondImage} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-
-                            <span className={classes.nodeLabel}>Trading Post</span>
-                            <img src={KerningTradingPostImage} />
-                        </div>
-                        <div
-                            className={classNames(classes.node, { [classes.visited]: visited[TOWN_PLACES.SHOP] })}
+                        />
+                        <TownNode
+                            icon={DiamondImage}
+                            visited={visited[TOWN_PLACES.SHOP]}
+                            label={"Shop"}
+                            nodeImage={KerningShopImage}
                             onClick={handleClickShop}
-                        >
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={MoneyBagIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>Shop</span>
-                            <img src={KerningShopImage} />
-                        </div>
+                        />
                         <br />
-
-                        <div
-                            className={classNames(classes.node, { [classes.visited]: visited[TOWN_PLACES.CAMPAIGN] })}
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={visited[TOWN_PLACES.CAMPAIGN]}
+                            label={"Campaign"}
+                            nodeImage={KerningSewerImage}
                             onClick={handleClickCampaign}
-                        >
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>Campaign</span>
-                            <img src={KerningSewerImage} alt="Sewers" />
-                        </div>
+                        />
 
-                        <div className={classNames(classes.node, classes.townCenter)}>
+                        <div className={classNames(classes.townCenter)}>
                             <div className={classes.townHeader}>
                                 <h2>Kerning City</h2>
                             </div>
-                            <img src={KerningCenterImage} alt="Kerning Center" draggable={false} />
-                            <img src={player?.image} alt="You" className={classes.player} draggable={false} />
+                            <img src={KerningCenterImage} alt="Kerning Center" />
+                            <img src={player?.image} alt="You" className={classes.player} />
                         </div>
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={WorldMapIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>
-                                Exit to World Map
-                                <br />
-                            </span>
-                            <img src={KerningExitImage} alt="Exit" />
-                        </div>
-                        <br />
 
-                        <div
-                            className={classNames(classes.node, { [classes.visited]: visited[KERNING_PLACES.MATCH_CARDS] })}
+                        <TownNode
+                            icon={WorldMapIcon}
+                            visited={false}
+                            label={"Exit to World Map"}
+                            nodeImage={KerningExitImage}
+                            onClick={onExit}
+                        />
+
+                        <br />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={visited[KERNING_PLACES.MATCH_CARDS]}
+                            label={"Hmm?"}
+                            nodeEl={caseyNodeEl}
                             onClick={() => handleClickEvent(KERNING_PLACES.MATCH_CARDS, kerningMatchingCards)}
-                        >
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>Hmm?</span>
-                            <img src={KerningCaseyImage} alt="Kerning City Crane" />
-                            <div className={classes.caseyCharContainer}>
-                                <Tooltip title="Hey Mushie, over here!" open={true} PopperProps={{ disablePortal: true }}>
-                                    <img src={CaseyImage} alt="Your friend?" />
-                                </Tooltip>
-                            </div>
-                        </div>
-                        <div
-                            className={classNames(classes.node, { [classes.visited]: visited[TOWN_PLACES.CLASS_LEADER] })}
+                        />
+                        <TownNode
+                            icon={JapaneseOgreIcon}
+                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            label={"[Test] Dark Lord"}
                             onClick={handleClickClassLeader}
-                        >
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={JapaneseOgreIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>[Test] Dark Lord</span>
-                            <img src={KerningBarImage} alt="Kerning Bar" draggable={false} />
-                        </div>
+                            nodeImage={KerningBarImage}
+                        />
                     </div>
                 </Pan>
             </div>
