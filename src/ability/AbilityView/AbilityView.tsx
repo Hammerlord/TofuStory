@@ -26,6 +26,7 @@ import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getAllEffects } from "./utils";
 import { Player } from "../../character/types";
 import { MapleLeavesImage } from "../../images";
+import SelectCards from "./SelectCards";
 
 const useStyles = createUseStyles({
     root: {
@@ -465,11 +466,12 @@ const AbilityView = forwardRef(
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                             {ability.reusable && <div className={classes.bold}>Boomerang</div>}
+                            <SelectCards ability={ability} />
                             <DrawCards ability={ability} playerClass={player?.class} />
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                             {numTargets > 0 && (
                                 <div>
-                                    Bounces to {numTargets} other targets{" "}
+                                    Hits up to {numTargets} more targets{" "}
                                     {secondaryDamage && (
                                         <>
                                             for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}

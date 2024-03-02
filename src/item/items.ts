@@ -673,7 +673,7 @@ export const fishSpear: Item = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, counter for 1 base damage when attacked.",
+    description: "Once per turn, counter for 1 dmg when attacked.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [

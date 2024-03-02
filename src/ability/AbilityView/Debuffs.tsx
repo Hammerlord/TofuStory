@@ -28,7 +28,7 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
 
     return (
         <div>
-            Inflict{" "}
+            Apply{" "}
             {debuffs.map((effect: Effect, i) => {
                 const { duration, attackPower, type, attackDamageReceived } = effect;
                 return (

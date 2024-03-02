@@ -28,7 +28,7 @@ const DrawCards = ({ ability, playerClass }: { ability: Ability | CombatAbility;
             Draw {amount} {attackCards && "offense"} card{amount > 1 ? "s" : ""}.{" "}
             {resourceCost < 0 && (
                 <>
-                    Each costs <ResourceIcon text={Math.abs(resourceCost)} size={"sm"} playerClass={playerClass} /> less until it is used or
+                    It costs <ResourceIcon text={Math.abs(resourceCost)} size={"sm"} playerClass={playerClass} /> less until used or
                     discarded.
                 </>
             )}

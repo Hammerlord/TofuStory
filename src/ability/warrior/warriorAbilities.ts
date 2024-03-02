@@ -1532,7 +1532,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals 1 damage for every attack you made this turn, hitting twice.",
+    description: "Deals 1 dmg for every attack you made this turn. Hits twice.",
     actions: [
         {
             damage: 1,

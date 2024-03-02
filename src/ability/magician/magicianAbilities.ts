@@ -136,7 +136,6 @@ export const magicFang: Ability = {
         {
             area: 1,
             damage: 3,
-            secondaryDamage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -448,7 +447,7 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "This turn only, gain +1 ATT power whenever you attack.",
+    description: "This turn only, gain +1 ATT whenever you attack.",
     overrideBodyText: true,
     actions: [
         {
@@ -685,8 +684,7 @@ export const wishUponAStar: Ability = {
     resourceCost: 1,
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
-    description: "Fling 2-damage stars on draw or deck cycle.",
-    depletedOnUse: true,
+    description: "Cast a 2 dmg star on draw or deck cycle.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -707,23 +705,27 @@ export const wishUponAStar: Ability = {
                     },
                     onDeckCycle: {
                         ability: {
-                            name: "Star Shower",
+                            name: "Falling Star",
                             image: StarImage,
-                            actions: [
-                                {
-                                    ...fallingStar,
-                                    area: 1,
-                                },
-                            ],
+                            actions: [fallingStar],
                         },
                     },
+                    duration: 5,
                 },
             ],
         },
     ],
     upgrades: [
         {
-            preemptive: true,
+            actions: [
+                {
+                    effects: [
+                        {
+                            duration: Infinity,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
@@ -753,8 +755,8 @@ export const fireArrow: Ability = {
                 {
                     conditions: [
                         {
-                            calculationTarget: CONDITION_TARGETS.TARGET,
-                            hasEffectType: [EFFECT_TYPES.BURN],
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: "Charged",
                         },
                     ],
                     damage: 3,
@@ -900,7 +902,7 @@ export const avatarOfTheStars: Ability = {
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 2,
-    description: "When you use an offensive card that costs 1+, add Swift to your hand.",
+    description: "When you use a 1+ cost offensive card, add Swift to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -916,7 +918,7 @@ export const avatarOfTheStars: Ability = {
                     override: {
                         portrait: StarfishIdleImage,
                     },
-                    description: "When you use an offensive card that costs 1+, add Swift to your hand.",
+                    description: "When you use a 1+ cost offensive card, add Swift to your hand.",
                     onOffensiveAbility: {
                         conditions: [
                             {
@@ -1120,7 +1122,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 8,
+            damage: 7,
         },
     ],
     upgrades: [
@@ -1142,7 +1144,7 @@ export const thunderBolt: Ability = {
     description: "Charged: Cast again for 2 damage",
     actions: [
         {
-            damage: 4,
+            damage: 3,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1191,7 +1193,6 @@ export const slimmingMuffin: Ability = {
     image: ChocolateMuffinImage,
     resourceCost: 0,
     rarity: RARITIES.COMMON,
-    description: "Deplete a card in your hand to use this.",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },
@@ -1229,6 +1230,7 @@ export const slimmingMuffin: Ability = {
 export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
+    description: "While this card is in hand, its cost reduces by 1 whenever you use another ability.",
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
     onAbilityUse: {
@@ -1264,7 +1266,7 @@ export const feedback: Ability = {
     image: TeleportMasteryFireImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain 1 Mana and self-inflict 1 damage per enemy struck.",
+    description: "Gain 1 Mana but self-inflict 1 dmg for each enemy targeted.",
     actions: [
         {
             damage: 0,
@@ -1586,7 +1588,7 @@ export const leechingFlame: Ability = {
     name: "Leeching Flame",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -1601,7 +1603,7 @@ export const leechingFlame: Ability = {
                 },
                 {
                     name: "Leeching Flame",
-                    description: "While the target is Burning, it heals you for 1 HP and grants you 1 Mana per turn.",
+                    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn.",
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -1645,7 +1647,7 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "The next 3 times you use a 2+ cost offense card, cast another 0-2 cost offense ability.",
+    description: "The next 3 times you use a 2+ cost offense card, cast another offense ability.",
     overrideBodyText: true,
     actions: [
         {
@@ -1654,7 +1656,7 @@ export const volatileMagic: Ability = {
             effects: [
                 {
                     name: "Volatile Magic",
-                    description: "When you use a 2+ cost offense card, cast another 0-2 cost offense ability.",
+                    description: "When you use a 2+ cost offense card, cast another offense ability.",
                     icon: StarfallMagicSquareImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
@@ -1671,7 +1673,6 @@ export const volatileMagic: Ability = {
                         ],
                         autoCastAbilities: {
                             type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
-                            filters: [{ property: "resourceCost", comparator: "lt", value: 3 }],
                             amount: 1,
                         },
                         decrementStacks: 1,
@@ -1702,7 +1703,7 @@ export const bagFromBeyond: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 1,
     depletedOnUse: true,
-    description: "Retrieve a random Depleted card and place it in your hand.",
+    description: "Return a random Depleted card to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1949,14 +1950,14 @@ export const starBolt: Ability = {
     name: "Star Bolt",
     resourceCost: 2,
     image: GlisteningStarImage,
-    description: "Heal 1 HP each hit.",
+    description: "Heal 1 each hit.",
     rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 6,
             secondaryDamage: 6,
             targetArea: 3,
-            numTargets: 4,
+            numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
@@ -2055,7 +2056,7 @@ export const zap: Ability = {
                 rotate: 135,
                 flash: 200,
             },
-            damage: 5,
+            damage: 3,
             bonus: {
                 damage: 3,
                 conditions: [
@@ -2073,7 +2074,7 @@ export const zap: Ability = {
                 {
                     damage: 2,
                     bonus: {
-                        damage: 2,
+                        damage: 1,
                     },
                 },
             ],
@@ -2221,7 +2222,7 @@ export const icicles: Ability = {
     image: IciclesPortraitImage,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "For your next 3 spells that cost 1+, summon a (3/1) Icicle.",
+    description: "When you play a 1+ cost card, summon an Icicle. 3 times.",
     resourceCost: 1,
     actions: [
         {
@@ -2307,7 +2308,7 @@ export const ifrit: Ability = {
     name: "Ifrit",
     image: IfritImage,
     resourceCost: 3,
-    description: "Summon: Burns enemies in front of this character. Attack: Inflict Burn.",
+    description: "Summon: Burns enemies in front of this character.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "Ifrit",
@@ -2373,7 +2374,7 @@ export const elquines: Ability = {
     image: ElquinesImage,
     resourceCost: 3,
     rarity: RARITIES.UNCOMMON,
-    description: "Summon: Freezes enemies in front of this character. Attacks inflict Chill.",
+    description: "Summon: Freezes enemies in front of this character.",
     minion: {
         name: "Elquines",
         image: ElquinesImage,

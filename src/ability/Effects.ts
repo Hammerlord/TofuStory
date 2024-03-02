@@ -127,7 +127,7 @@ export const bleed: Effect = {
     duration: 3,
     attackDamageReceived: 1,
     icon: BloodIcon,
-    description: "Bleeding targets take 1 damage at the end of their turn and receive 1 extra damage from attacks.",
+    description: "Target takes 1 damage at the end of its turn and receives +1 damage from attacks.",
 };
 
 export const burn: Effect = {
@@ -136,7 +136,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     icon: FireIcon,
-    description: "Takes 3 damage at the end of its turn.",
+    description: "Target takes 3 damage at the end of its turn.",
 };
 
 export const chill: Effect = {
