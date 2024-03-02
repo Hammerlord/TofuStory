@@ -107,13 +107,13 @@ const progressedUseStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: "452px",
+        top: "321px",
         left: "500px",
         height: "65px",
     },
     duey: {
         left: "250px",
-        top: "440px",
+        top: "308px",
         transform: "scale(-1, 1)",
     },
 });
@@ -415,12 +415,16 @@ export const dueyIntroScene: EventScene = {
                                             dialog: [
                                                 "Old Grendel had the wherewithal to forewarn these troubling times, yet I can't help but shake the feeling there's something off about it all.",
                                                 "I'm sorry. It's not that I want to doubt our wise friend--who we've known since we were babes. And of course I know how he is: eccentric to the core. (Don't tell him I said that, please.)",
-                                                "His zeal to protect Victoria Island is second to none, and in this I take comfort.",
                                             ],
                                         },
                                         {
                                             dialog: [
-                                                "Still, the... intensity of his methods frightens me more than I dare to let on. The incident with the Lupins... no, I'll not repeat it here.",
+                                                "His zeal to protect Victoria Island is second to none, and in this I take comfort.",
+                                                "Still, the... intensity of his methods frightens me more than I dare to let on. The incident with the fae... no, I'll not repeat it here.",
+                                            ],
+                                        },
+                                        {
+                                            dialog: [
                                                 "I'm aware he believes in its necessity. I would like to believe so, too.",
                                                 "Perhaps I've gone on long enough--the night is late here in Henesys, and I've not been sleeping much lately. I only hope my fears are unfounded.",
                                             ],
@@ -433,7 +437,7 @@ export const dueyIntroScene: EventScene = {
                                         },
                                         {
                                             dialog: [
-                                                "(Hmm... There was mention of something strange going on with the monsters. You can only guess that it's related to your own situation. Maybe you'll find more answers on your journey.)",
+                                                "[Hmm... There was mention of something strange going on with the monsters. You can only guess that it's related to your own situation. Maybe you'll find more answers on your journey.]",
                                             ],
                                             responses: [
                                                 {
