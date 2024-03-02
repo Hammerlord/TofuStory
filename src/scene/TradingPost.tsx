@@ -34,7 +34,7 @@ const useStyles = createUseStyles({
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         position: "fixed",
-        top: 528,
+        top: 519,
         zIndex: -1,
         opacity: 0.2,
     },
@@ -61,7 +61,8 @@ const useStyles = createUseStyles({
         display: "inline-block",
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
-        padding: "8px 96px",
+        padding: "0 96px",
+        margin: 8,
         color: "white",
         marginBottom: "24px",
         minWidth: 400,
