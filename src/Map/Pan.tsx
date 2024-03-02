@@ -31,7 +31,17 @@ const useStyles = createUseStyles({
 /**
  * Functionality for panning the overworld map around.
  */
-const Pan = ({ userPosition, children, style }) => {
+const Pan = ({
+    userPosition,
+    children,
+    style,
+    disableIntroAnimate,
+}: {
+    userPosition?: { x: number; y: number };
+    children;
+    style?;
+    disableIntroAnimate?: boolean;
+}) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [position, setLastInteractionPos] = useState([null, null]);
@@ -60,11 +70,18 @@ const Pan = ({ userPosition, children, style }) => {
             ],
             panTime
         );
+
         setX(userPosition.x);
         setY(userPosition.y);
     };
 
     useEffect(() => {
+        if (isIntroPan && disableIntroAnimate) {
+            setX(userPosition?.x);
+            setY(userPosition?.y);
+            setIsIntroPan(false);
+            return;
+        }
         const panTime = isIntroPan ? 2000 : 400;
         panToUserPosition(panTime);
         if (isIntroPan) {

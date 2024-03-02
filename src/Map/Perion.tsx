@@ -12,6 +12,7 @@ import {
 import { CrossedSwordsIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Icon from "../icon/Icon";
+import Pan from "./Pan";
 
 const useStyles = createUseStyles({
     root: {
@@ -38,6 +39,7 @@ const useStyles = createUseStyles({
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
         width: "100%",
+        minWidth: 1500,
     },
     player: {
         position: "absolute",
@@ -66,6 +68,9 @@ const useStyles = createUseStyles({
             .map(() => "0 0 3px black")
             .join(", "),
         whiteSpace: "nowrap",
+    },
+    townCenter: {
+        cursor: "grab",
     },
     townHeader: {
         position: "absolute",
@@ -103,76 +108,80 @@ const store = {
 
 const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
+
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <div className={classes.inner}>
-                    <div>
-                        <div className={classNames(classes.node)} onClick={() => onClickTradingPost()}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={DiamondImage} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-
-                            <span className={classes.nodeLabel}>Trading Post</span>
-                            <img src={PerionTradingPostImage} />
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={MoneyBagIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>Shop</span>
-                            <img src={PerionShopImage} />
-                        </div>
-                        <br />
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(dancesWithBalrogScene)}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={JapaneseOgreIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>[Test] Dances With Balrog</span>
-                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
-                        </div>
-                        <div className={classes.node}>
-                            <div className={classes.townHeader}>
-                                <h2>Perion</h2>
-                            </div>
-                            <img src={PerionCenterImage} alt="Perion center" />
-                            <img src={player?.image} alt="You" className={classes.player} />
-                        </div>
-
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={WorldMapIcon} size="md" className={classes.icon} />
-                            </span>
-                            <br />
-                            <span className={classes.nodeLabel}>
-                                Exit to World Map
+                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                    <div className={classes.inner}>
+                        <div>
+                            <div className={classNames(classes.node)} onClick={() => onClickTradingPost()}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={DiamondImage} size="md" className={classes.icon} />
+                                </span>
                                 <br />
-                            </span>
-                            <img src={PerionExitImage} alt="Exit" />
-                        </div>
 
-                        <br />
-                        <div className={classes.node}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
-                            </span>
+                                <span className={classes.nodeLabel}>Trading Post</span>
+                                <img src={PerionTradingPostImage} />
+                            </div>
+                            <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={MoneyBagIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Shop</span>
+                                <img src={PerionShopImage} />
+                            </div>
                             <br />
-                            <span className={classes.nodeLabel}>Placeholder</span>
-                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
-                        </div>
-                        <div className={classes.node}>
-                            <span className={classes.iconWrapper}>
-                                <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
-                            </span>
+                            <div className={classNames(classes.node)} onClick={() => onClickScene(dancesWithBalrogScene)}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={JapaneseOgreIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>[Test] Dances With Balrog</span>
+                                <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
+                            </div>
+                            <div className={classNames(classes.node, classes.townCenter)}>
+                                <div className={classes.townHeader}>
+                                    <h2>Perion</h2>
+                                </div>
+                                <img src={PerionCenterImage} alt="Perion center" draggable={false} />
+                                <img src={player?.image} alt="You" className={classes.player} draggable={false} />
+                            </div>
+
+                            <div className={classNames(classes.node)} onClick={onExit}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={WorldMapIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>
+                                    Exit to World Map
+                                    <br />
+                                </span>
+                                <img src={PerionExitImage} alt="Exit" />
+                            </div>
+
                             <br />
-                            <span className={classes.nodeLabel}>Placeholder</span>
-                            <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
+                            <div className={classes.node}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Placeholder</span>
+                                <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
+                            </div>
+                            <div className={classes.node}>
+                                <span className={classes.iconWrapper}>
+                                    <Icon icon={QuestionMarkIcon} size="md" className={classes.icon} />
+                                </span>
+                                <br />
+                                <span className={classes.nodeLabel}>Placeholder</span>
+                                <img src={PerionWarriorHallImage} alt="Perion warrior hall" />
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Pan>
             </div>
         </div>
     );
