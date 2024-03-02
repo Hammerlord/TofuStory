@@ -1,6 +1,6 @@
 import classNames from "classnames";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import Icon from "../icon/Icon";
 import {
     DiamondImage,
     PerionCenterImage,
@@ -12,11 +12,10 @@ import {
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
-import Pan from "./Pan";
-import { useState } from "react";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import TownNode from "./TownNode";
 import Legend from "./Legend";
+import Pan from "./Pan";
+import TownNode from "./TownNode";
+import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,

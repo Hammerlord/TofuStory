@@ -13,7 +13,7 @@ import {
     KerningShopImage,
     KerningTradingPostImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLord";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";

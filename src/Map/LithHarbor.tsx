@@ -1,17 +1,27 @@
-import Button from "../view/Button";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import CardRewards from "../Menu/CardRewards";
-import { LithHarborBalconyImage, LithHarborCityBGImage, LithHarborExitImage, LithHarborSharkImage } from "../images";
-import { HeavyCheckMarkIcon, WorldMapIcon } from "../images/icons";
 import tutorial from "../Menu/tutorial";
+import {
+    LithHarborCenterImage,
+    LithHarborCityBGImage,
+    LithHarborExitImage,
+    LithHarborSharkImage,
+    LithTutorial2Image,
+    LithTutorialImage,
+} from "../images";
+import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { lithEventsOlaf } from "../scene/olaf";
+import Legend from "./Legend";
+import Pan from "./Pan";
+import TownNode from "./TownNode";
+import { TOWN_STYLES } from "./constants";
+import { basicDummy } from "../enemy/dummy";
+import { olaf } from "../enemy/enemy";
 import { lithEventsTeoJohn } from "../scene/teojohn";
-import { PLAYER_CLASSES } from "../Menu/types";
-import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
+    ...TOWN_STYLES,
     root: {
         width: "100%",
         height: "100%",
@@ -20,80 +30,41 @@ const useStyles = createUseStyles({
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
     },
-    bg: {
-        width: "100%",
-        height: "100%",
-        color: "white",
-        position: "fixed",
-        background: "rgba(50, 50, 50, 0.7)",
-    },
-    inner: {
-        textAlign: "center",
-        margin: "auto",
+    player: {
         position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontSize: "1.2rem",
-    },
-    node: {
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        width: "350px",
-        height: "350px",
-        margin: "auto",
-        position: "relative",
-        cursor: "pointer",
-        "& > img": {
-            maxWidth: "100%",
-            maxHeight: "100%",
-        },
-    },
-    shark: {},
-    balcony: {},
-    exit: {},
-    eventsContainer: {
-        display: "flex",
-    },
-    event: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        color: "white",
-        width: "48px",
-        height: "48px",
-        fontSize: "32px",
-        borderRadius: "48px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        position: "absolute",
+        top: 175,
         left: "50%",
         transform: "translateX(-50%)",
-        top: "10%",
     },
-    eventInner: {
-        width: "32px",
-        height: "32px",
-        margin: "auto",
+    dummyCharContainer: {
+        bottom: "94px",
+        left: 240,
+        position: "absolute",
     },
-    tutorialContainer: {
-        background: "rgba(0, 0, 0, 0.7)",
-        padding: 24,
-        paddingBottom: 48,
-        borderRadius: 8,
+    dummyCharContainer2: {
+        bottom: "94px",
+        left: 150,
+        position: "absolute",
     },
-    icon: {
-        margin: "auto",
+    olafCharContainer: {
+        bottom: "107px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        position: "absolute",
     },
 });
 
-const OLAF = "olaf";
-const TEOJOHN = "teo-john";
+const LITH_PLACES = {
+    TUTORIAL_BASIC: "tutorial",
+    TUTORIAL_ELITE_ENCOUNTER: "tutorial2",
+    SHARK: "shark",
+};
 
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
     const [promptTutorial, setPromptTutorial] = useState(true);
     const [showAcquireAbility, setShowAcquireAbility] = useState(false);
-    const [visitedMap, setVisitedMap] = useState({});
+    const [visited, setVisited] = useState({});
 
     const handleTutorialConfirmation = () => {
         onBattle &&
@@ -111,80 +82,93 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         setShowAcquireAbility(true);
     };
 
+    const handleClickEvent = (eventKey: string, scene) => {
+        if (checkVisitPlace(eventKey)) {
+            onClickScene && onClickScene(scene);
+        }
+    };
+
+    /**
+     * Logs which places have been visited. If place hasn't been visited, returns true (can visit the place).
+     */
+    const checkVisitPlace = (key: string): boolean => {
+        if (visited[key]) {
+            return false;
+        }
+        setVisited((prev) => ({ ...prev, [key]: true }));
+        return true;
+    };
+
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <div className={classes.inner}>
-                    {!promptTutorial && !showAcquireAbility && (
-                        <>
-                            <h2>Lith Harbor</h2>
-                            <div className={classes.eventsContainer}>
-                                <div
-                                    className={classNames(classes.node, classes.balcony)}
-                                    onClick={() => {
-                                        if (!visitedMap[OLAF]) {
-                                            onClickScene(lithEventsOlaf);
-                                            setVisitedMap((prev) => ({ ...prev, [OLAF]: true }));
-                                        }
-                                    }}
-                                >
-                                    Event
-                                    <img src={LithHarborBalconyImage} />
-                                    <div className={classes.event}>{!visitedMap[OLAF] ? "?" : <Icon icon={HeavyCheckMarkIcon} />}</div>
+                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                    <div className={classes.inner}>
+                        <TownNode
+                            icon={CrossedSwordsIcon}
+                            visited={visited[LITH_PLACES.TUTORIAL_BASIC]}
+                            label={"[Tutorial] Basic Combat"}
+                            nodeEl={
+                                <div>
+                                    <img src={LithTutorialImage} alt="Balcony" />
+                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
+                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
                                 </div>
-                                <div
-                                    className={classNames(classes.node, classes.shark)}
-                                    onClick={() => {
-                                        if (!visitedMap[TEOJOHN]) {
-                                            onClickScene(lithEventsTeoJohn);
-                                            setVisitedMap((prev) => ({ ...prev, [TEOJOHN]: true }));
-                                        }
-                                    }}
-                                >
-                                    Event
-                                    <img src={LithHarborSharkImage} />
-                                    <div className={classes.event}>
-                                        {!visitedMap[TEOJOHN] ? "?" : <Icon icon={HeavyCheckMarkIcon} className={classes.icon} />}{" "}
-                                    </div>
+                            }
+                            onClick={() => {
+                                if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
+                                    onBattle(
+                                        {
+                                            ...tutorial,
+                                            backgroundImage: LithHarborCityBGImage,
+                                        },
+                                        () => setPromptTutorial(false)
+                                    );
+                                }
+                            }}
+                        />
+                        <br />
+                        <TownNode
+                            icon={MedalIcon}
+                            visited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
+                            label={"[Tutorial] Olaf the Viking"}
+                            nodeEl={
+                                <div>
+                                    <img src={LithTutorial2Image} alt="Balcony" />
+                                    <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
                                 </div>
-                                <div className={classNames(classes.node, classes.exit)} onClick={onExit}>
-                                    Exit to World Map
-                                    <img src={LithHarborExitImage} />
-                                    <div className={classes.event}>
-                                        <div className={classes.eventInner}>
-                                            <WorldMapIcon />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {promptTutorial && (
-                        <div className={classes.tutorialContainer}>
-                            <h3>Play the tutorial?</h3>
-                            {player?.class === PLAYER_CLASSES.WARRIOR && (
-                                <p>The tutorial is an optional introduction to the basics of combat.</p>
-                            )}
-                            {player?.class !== PLAYER_CLASSES.WARRIOR && (
-                                <p>(DEV NOTE: Tutorial is unavailable for your current class, but I'll be back!)</p>
-                            )}
-                            <Button
-                                color="primary"
-                                onClick={handleTutorialConfirmation}
-                                disabled={player?.class !== PLAYER_CLASSES.WARRIOR}
-                            >
-                                Yes
-                            </Button>{" "}
-                            <Button color="secondary" onClick={handleTutorialCancel}>
-                                Skip
-                            </Button>
-                        </div>
-                    )}
-                </div>
+                            }
+                            onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
+                        />
 
-                {showAcquireAbility && (
-                    <CardRewards deck={deck} player={player} updateDeck={updateDeck} onClose={() => setShowAcquireAbility(false)} />
-                )}
+                        <div className={classNames(classes.townCenter)}>
+                            <div className={classes.townHeader}>
+                                <h2>Lith Harbor</h2>
+                            </div>
+                            <img src={LithHarborCenterImage} alt="Lith Center" />
+                            <img src={player?.image} alt="You" className={classes.player} />
+                        </div>
+
+                        <TownNode
+                            icon={WorldMapIcon}
+                            visited={false}
+                            label={"Exit to World Map"}
+                            nodeImage={LithHarborExitImage}
+                            onClick={onExit}
+                        />
+                        <br />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={visited[LITH_PLACES.SHARK]}
+                            label={"Down by the Dock"}
+                            onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
+                            nodeImage={LithHarborSharkImage}
+                        />
+                    </div>
+                </Pan>
+                <Legend />
             </div>
         </div>
     );

@@ -15,8 +15,8 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${LithHarborBalconyFullImage}) no-repeat`,
-        width: "896px",
-        height: "520px",
+        width: "1000px",
+        height: "600px",
     },
     character: {
         position: "absolute",
@@ -24,26 +24,26 @@ const useStyles = createUseStyles({
     },
     player: {
         left: "250px",
-        top: "314px",
+        top: "299px",
         height: "65px",
     },
     olaf: {
         left: "600px",
-        top: "294px",
+        top: "280px",
     },
     puppetree1: {
         left: "500px",
-        top: "316px",
+        top: "300px",
         transform: "rotate(-90deg)",
     },
     puppetree2: {
         left: "700px",
-        top: "320px",
+        top: "300px",
         transform: "rotate(90deg)",
     },
     puppetree3: {
         left: "470px",
-        top: "316px",
+        top: "300px",
         transform: "rotate(90deg)",
     },
 });

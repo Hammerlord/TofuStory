@@ -17,27 +17,27 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${LithHarborSharkFullImage}) no-repeat`,
-        width: "700px",
-        height: "506px",
+        width: "1000px",
+        height: "600px",
     },
 
     player: {
         position: "absolute",
-        left: "75px",
-        top: "228px",
+        left: "200px",
+        top: "299px",
         height: "65px",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     character1: {
         position: "absolute",
-        left: "500px",
-        top: "213px",
+        left: "650px",
+        top: "288px",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     character2: {
         position: "absolute",
-        left: "550px",
-        top: "224px",
+        left: "700px",
+        top: "298px",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
 });
