@@ -22,6 +22,7 @@ import Pan from "./Pan";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { useState } from "react";
 import TownNode from "./TownNode";
+import Legend from "./Legend";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -129,7 +130,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
-                            icon={DiamondImage}
+                            icon={MoneyBagIcon}
                             visited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={KerningShopImage}
@@ -177,6 +178,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         />
                     </div>
                 </Pan>
+                <Legend />
             </div>
         </div>
     );

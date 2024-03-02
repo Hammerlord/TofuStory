@@ -16,6 +16,7 @@ import Pan from "./Pan";
 import { useState } from "react";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import TownNode from "./TownNode";
+import Legend from "./Legend";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -83,7 +84,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
-                            icon={DiamondImage}
+                            icon={MoneyBagIcon}
                             visited={visited[TOWN_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={PerionShopImage}
@@ -134,6 +135,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                         />
                     </div>
                 </Pan>
+                <Legend />
             </div>
         </div>
     );
