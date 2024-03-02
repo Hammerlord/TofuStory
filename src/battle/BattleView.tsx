@@ -77,7 +77,7 @@ const useStyles = createUseStyles({
         paddingTop: "10vh",
         borderRadius: "16px",
         border: "6px solid rgba(0, 0, 0, 0.25)",
-
+        filter: "drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.3))",
         "&:before": {
             content: "' '",
             backgroundImage: `url(${MapleLeavesImage})`,
