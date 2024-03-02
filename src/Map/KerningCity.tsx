@@ -99,7 +99,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
         }
     };
 
-    const handleClickEvent = (eventKey, scene) => {
+    const handleClickEvent = (eventKey: string, scene) => {
         if (checkVisitPlace(eventKey)) {
             onClickScene && onClickScene(scene);
         }

@@ -1,12 +1,26 @@
 import classNames from "classnames";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { HenesysRegionBGImage } from "../images";
-import { MoneyBagIcon, WorldMapIcon } from "../images/icons";
-import { gachaponEvents } from "../scene/gachapon/Gachapon";
-import pantry from "../scene/Henesys/pantry";
+import {
+    DiamondImage,
+    HenesysArcherHallImage,
+    HenesysCenterImage,
+    HenesysExitImage,
+    HenesysPantryImage,
+    HenesysRegionBGImage,
+    HenesysShopImage,
+    HenesysTradingPostImage,
+} from "../images";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
+import pantry from "../scene/Henesys/pantry";
+import TownNode from "./TownNode";
+import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import Pan from "./Pan";
+import Legend from "./Legend";
 
 const useStyles = createUseStyles({
+    ...TOWN_STYLES,
     root: {
         width: "100%",
         height: "100%",
@@ -15,60 +29,11 @@ const useStyles = createUseStyles({
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
     },
-    bg: {
-        width: "100%",
-        height: "100%",
-        color: "white",
-        position: "fixed",
-        background: "rgba(50, 50, 50, 0.7)",
-    },
-    inner: {
-        textAlign: "center",
-        margin: "auto",
+    player: {
         position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontSize: "1.2rem",
-    },
-    node: {
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        width: "350px",
-        height: "350px",
-        margin: "auto",
-        position: "relative",
-        cursor: "pointer",
-        "& > img": {
-            maxWidth: "100%",
-            maxHeight: "100%",
-        },
-    },
-    shark: {},
-    balcony: {},
-    exit: {},
-    eventsContainer: {
-        display: "flex",
-    },
-    event: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        color: "white",
-        width: "48px",
-        height: "48px",
-        fontSize: "32px",
-        borderRadius: "48px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        position: "absolute",
-        left: "50%",
+        top: 185,
+        left: "52%",
         transform: "translateX(-50%)",
-        top: "10%",
-    },
-    eventInner: {
-        width: "32px",
-        height: "32px",
-        margin: "auto",
     },
 });
 
@@ -78,45 +43,112 @@ const store = {
     },
 };
 
-const Henesys = ({ player, onExit, onClickScene, onClickShop }) => {
+const HENESYS_PLACES = {
+    PANTRY: "pantry",
+};
+
+const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
+    const [visited, setVisited] = useState({});
+
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
+
+    /**
+     * Logs which places have been visited. If place hasn't been visited, returns true (can visit the place).
+     */
+    const checkVisitPlace = (key: string): boolean => {
+        if (visited[key]) {
+            return false;
+        }
+        setVisited((prev) => ({ ...prev, [key]: true }));
+        return true;
+    };
+
+    const handleClickTradingPost = () => {
+        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
+            onClickTradingPost && onClickTradingPost();
+        }
+    };
+
+    const handleClickShop = () => {
+        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
+            onClickShop && onClickShop(store);
+        }
+    };
+
+    const handleClickClassLeader = () => {
+        if (checkVisitPlace(TOWN_PLACES.CLASS_LEADER)) {
+            onClickScene(athenaPierceScene);
+        }
+    };
+
+    const handleClickEvent = (eventKey, scene) => {
+        if (checkVisitPlace(eventKey)) {
+            onClickScene && onClickScene(scene);
+        }
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <div className={classes.inner}>
-                    <h2>Henesys</h2>
-                    <div className={classes.eventsContainer}>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(pantry)}>
-                            Event
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(gachaponEvents)}>
-                            Event
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickShop(store)}>
-                            Shop
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <MoneyBagIcon />
-                                </div>
+                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                    <div className={classes.inner}>
+                        <TownNode
+                            icon={DiamondImage}
+                            visited={visited[TOWN_PLACES.TRADING_POST]}
+                            label={"Trading Post"}
+                            nodeImage={HenesysTradingPostImage}
+                            onClick={handleClickTradingPost}
+                        />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            visited={visited[TOWN_PLACES.SHOP]}
+                            label={"Shop"}
+                            nodeImage={HenesysShopImage}
+                            onClick={handleClickShop}
+                        />
+                        <br />
+                        <TownNode
+                            icon={JapaneseOgreIcon}
+                            visited={visited[HENESYS_PLACES.PANTRY]}
+                            label={"HELP!"}
+                            nodeImage={HenesysPantryImage}
+                            onClick={() => handleClickEvent(HENESYS_PLACES.PANTRY, pantry)}
+                        />
+
+                        <div className={classNames(classes.townCenter)}>
+                            <div className={classes.townHeader}>
+                                <h2>Henesys</h2>
                             </div>
+                            <img src={HenesysCenterImage} alt="Henesys Center" />
+                            <img src={player?.image} alt="You" className={classes.player} />
                         </div>
-                        <div className={classNames(classes.node)} onClick={() => onClickScene(athenaPierceScene)}>
-                            Athena Pierce - Test
-                            <div className={classes.event}>?</div>
-                        </div>
-                        <div className={classNames(classes.node)} onClick={onExit}>
-                            Exit to World Map
-                            <img src={null} />
-                            <div className={classes.event}>
-                                <div className={classes.eventInner}>
-                                    <WorldMapIcon />
-                                </div>
-                            </div>
-                        </div>
+
+                        <TownNode
+                            icon={WorldMapIcon}
+                            visited={false}
+                            label={"Exit to World Map"}
+                            nodeImage={HenesysExitImage}
+                            onClick={onExit}
+                        />
+                        <br />
+                        <TownNode
+                            icon={JapaneseOgreIcon}
+                            visited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            label={"[Test] Athena Pierce"}
+                            nodeImage={HenesysArcherHallImage}
+                            onClick={handleClickClassLeader}
+                        />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            visited={true}
+                            label={"Placeholder"}
+                            nodeImage={HenesysArcherHallImage}
+                            onClick={() => {}}
+                        />
                     </div>
-                </div>
+                </Pan>
+                <Legend />
             </div>
         </div>
     );
