@@ -18,7 +18,6 @@ import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
 import { getRandomItem, shuffle } from "../utils";
 import { mesoItem } from "../item/items";
-import { calculateMesoGain } from "../battle/utils";
 import { SkullPatchImage } from "../images";
 import Icon from "../icon/Icon";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
