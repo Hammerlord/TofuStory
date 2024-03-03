@@ -371,7 +371,7 @@ const AbilityView = forwardRef(
 
         const cornerIcon = (() => {
             if (baseDamage > 0) {
-                return <DamageIcon ability={ability} player={player} deck={deck} hand={hand} discard={discard} />;
+                return <DamageIcon ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />;
             }
 
             if (armor > 0) {

@@ -3,9 +3,10 @@ import { createUseStyles } from "react-jss";
 import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Action } from "../types";
+import { ACTION_TYPES, Ability, Action } from "../types";
 import { useAppSelector } from "../../hooks";
 import { findCombatantData } from "../../battle/actions/actions";
+import { CombatantInfo } from "../../battle/types";
 
 export const getDamageStatistics = ({
     ability,
@@ -102,12 +103,22 @@ const useStyles = createUseStyles({
 /**
  * The damage icon that displays on the top left of an ability card
  */
-const DamageIcon = ({ ability, player, deck, hand, discard }) => {
-    const state = useAppSelector((state) => state);
-
+const DamageIcon = ({
+    ability,
+    playerInfo,
+    deck,
+    hand,
+    discard,
+}: {
+    ability: Ability;
+    playerInfo: CombatantInfo;
+    deck: Ability[];
+    hand: Ability[];
+    discard: Ability[];
+}) => {
     const { baseDamage, hasMultiplier, isAdditive, hasBonus } = getDamageStatistics({
         ability,
-        playerInfo: findCombatantData(() => state, player?.id),
+        playerInfo,
         deck,
         hand,
         discard,
