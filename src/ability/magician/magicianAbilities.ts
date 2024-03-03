@@ -2307,7 +2307,7 @@ const ifritEmberAbility = {
 export const ifrit: Ability = {
     name: "Ifrit",
     image: IfritImage,
-    resourceCost: 3,
+    resourceCost: 2,
     description: "Summon: Burns enemies in front of this character.",
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -2372,7 +2372,7 @@ export const ifrit: Ability = {
 export const elquines: Ability = {
     name: "Elquines",
     image: ElquinesImage,
-    resourceCost: 3,
+    resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     description: "Summon: Freezes enemies in front of this character.",
     minion: {
@@ -2447,7 +2447,7 @@ export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
     description: "Gains +1 ATT and 3 Armor when it kills.",
     image: GiantSnowmanImage,
-    resourceCost: 3,
+    resourceCost: 2,
     rarity: RARITIES.RARE,
     minionOptions: {
         tributeSummon: {
@@ -2529,7 +2529,7 @@ export const abominableSnowman: Ability = {
 
 export const whelp: Ability = {
     name: "Star Whelp",
-    resourceCost: 2,
+    resourceCost: 1,
     image: BabyDragonImage,
     description: "Summon and on death: Draw a card.",
     overrideBodyText: true,
