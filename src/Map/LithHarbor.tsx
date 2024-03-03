@@ -1,6 +1,14 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import CardRewards from "../Menu/CardRewards";
+import ItemRewards from "../Menu/ItemRewards";
+import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
+import { PLAYER_CLASSES } from "../Menu/types";
+import { playerStateSlice } from "../character/playerReducer";
+import { basicDummy } from "../enemy/dummy";
+import { olaf } from "../enemy/enemy";
+import { useAppDispatch } from "../hooks";
 import {
     LithHarborCenterImage,
     LithHarborCityBGImage,
@@ -10,23 +18,14 @@ import {
     LithTutorialImage,
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { halfEatenHotdog } from "../item/items";
+import { RARITIES } from "../item/types";
 import { lithEventsOlaf, olafRewards } from "../scene/olaf";
+import { lithEventsTeoJohn } from "../scene/teojohn";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
-import { basicDummy } from "../enemy/dummy";
-import { olaf } from "../enemy/enemy";
-import { lithEventsTeoJohn } from "../scene/teojohn";
-import { PLAYER_CLASSES } from "../Menu/types";
-import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
-import Button from "../view/Button";
-import { useAppDispatch } from "../hooks";
-import { halfEatenHotdog } from "../item/items";
-import { playerStateSlice } from "../character/playerReducer";
-import CardRewards from "../Menu/CardRewards";
-import ItemRewards from "../Menu/ItemRewards";
-import { RARITIES } from "../item/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -173,18 +172,13 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                                     }}
                                 />
                                 <br />
+
                                 <TownNode
-                                    icon={MedalIcon}
-                                    isVisited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
-                                    isLocked={isLocked(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER)}
-                                    label={"[Tutorial] Showoff"}
-                                    nodeEl={
-                                        <div>
-                                            <img src={LithTutorial2Image} alt="Balcony" />
-                                            <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
-                                        </div>
-                                    }
-                                    onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
+                                    icon={QuestionMarkIcon}
+                                    isVisited={visited[LITH_PLACES.SHARK]}
+                                    label={"By the Dock"}
+                                    onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
+                                    nodeImage={LithHarborSharkImage}
                                 />
 
                                 <div className={classNames(classes.townCenter)}>
@@ -209,11 +203,17 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
 
                                 <br />
                                 <TownNode
-                                    icon={QuestionMarkIcon}
-                                    isVisited={visited[LITH_PLACES.SHARK]}
-                                    label={"By the Dock"}
-                                    onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
-                                    nodeImage={LithHarborSharkImage}
+                                    icon={MedalIcon}
+                                    isVisited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
+                                    isLocked={isLocked(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER)}
+                                    label={"[Tutorial] Showoff"}
+                                    nodeEl={
+                                        <div>
+                                            <img src={LithTutorial2Image} alt="Balcony" />
+                                            <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
+                                        </div>
+                                    }
+                                    onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
                                 />
                             </div>
                         </Pan>
