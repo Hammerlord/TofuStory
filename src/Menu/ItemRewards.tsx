@@ -81,14 +81,16 @@ const ItemRewards = ({
     onClose,
     rewardType,
     overrideItems,
+    disableAttainConsumable,
 }: {
     player: Player;
     playerCurrentItems: Item[];
     onLoot: ({ items }: { items: Item[] }) => void;
     onClose: () => void;
-    rewardType: BATTLE_TYPES;
+    rewardType?: BATTLE_TYPES;
     // Eg. encounter-specific item(s); it takes the place of the auto-generated item from elites/bosses
     overrideItems: Item[];
+    disableAttainConsumable?: boolean;
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState([]);
@@ -128,7 +130,7 @@ const ItemRewards = ({
         }
 
         const itemRewards = [];
-        if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType)) {
+        if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType) && !disableAttainConsumable) {
             itemRewards.push(goldenHammer);
         }
 

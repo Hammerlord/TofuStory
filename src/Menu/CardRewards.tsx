@@ -61,6 +61,7 @@ const CardRewards = ({
     onClose,
     cardRewardOptions = [],
     rewardType,
+    maxAmount = 1,
 }: {
     deck: CombatAbility[];
     player: Player;
@@ -68,6 +69,7 @@ const CardRewards = ({
     onClose;
     cardRewardOptions?: Ability[];
     rewardType?: BATTLE_TYPES;
+    maxAmount?: number;
 }) => {
     const rolledAbilities = useMemo(() => {
         const { starters, all } = JOB_CARD_MAP[player.class];
@@ -105,19 +107,35 @@ const CardRewards = ({
         return choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
     }, []);
 
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [selectedAbilityIndices, setSelectedAbilityIndices] = useState([]);
     const classes = useStyles();
 
     const handleSelectClick = () => {
-        updateDeck([rolledAbilities[selectedAbilityIndex], ...deck]);
+        const cards = selectedAbilityIndices.map((index) => rolledAbilities[index]);
+        updateDeck([...cards, ...deck]);
         onClose();
+    };
+
+    const handleCardClick = (index) => {
+        if (maxAmount === 1) {
+            setSelectedAbilityIndices([index]);
+            return;
+        }
+        if (selectedAbilityIndices.includes(index)) {
+            // Deselect if selected
+            setSelectedAbilityIndices((prev) => prev.filter((i) => i !== index));
+            return;
+        }
+        if (selectedAbilityIndices.length < maxAmount) {
+            setSelectedAbilityIndices((prev) => [...prev, index]);
+        }
     };
 
     return (
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h2>Pick an ability</h2>
+                    <h2>Pick {maxAmount === 1 ? "an ability" : `up to ${maxAmount} abilities`}</h2>
                 </div>
                 <div className={classes.abilitySectionContainer}>
                     {rolledAbilities.map((ability: CombatAbility, i) => (
@@ -125,9 +143,9 @@ const CardRewards = ({
                             <AbilityRarityTag ability={ability} />
                             <div
                                 className={classNames(classes.ability, {
-                                    selected: i === selectedAbilityIndex,
+                                    selected: selectedAbilityIndices.includes(i),
                                 })}
-                                onClick={() => setSelectedAbilityIndex(i)}
+                                onClick={() => handleCardClick(i)}
                             >
                                 <AbilityView ability={ability} disableGlow={true} disableBattleBonuses={true} />
                             </div>
@@ -135,7 +153,7 @@ const CardRewards = ({
                     ))}
                 </div>
                 <div className={classes.selectContainer}>
-                    <Button color="primary" disabled={!rolledAbilities[selectedAbilityIndex]} onClick={handleSelectClick}>
+                    <Button color="primary" disabled={!selectedAbilityIndices.length} onClick={handleSelectClick}>
                         Select!
                     </Button>
                 </div>

@@ -10,7 +10,7 @@ import {
     LithTutorialImage,
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
-import { lithEventsOlaf } from "../scene/olaf";
+import { lithEventsOlaf, olafRewards } from "../scene/olaf";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
@@ -20,6 +20,12 @@ import { olaf } from "../enemy/enemy";
 import { lithEventsTeoJohn } from "../scene/teojohn";
 import { PLAYER_CLASSES } from "../Menu/types";
 import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
+import Button from "../view/Button";
+import { useAppDispatch } from "../hooks";
+import { halfEatenHotdog } from "../item/items";
+import { playerStateSlice } from "../character/playerReducer";
+import CardRewards from "../Menu/CardRewards";
+import ItemRewards from "../Menu/ItemRewards";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -65,28 +71,15 @@ const LITH_PREREQUISITES = {
     [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC],
 };
 
+const { acquireItems } = playerStateSlice.actions;
+
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
-    const [promptTutorial, setPromptTutorial] = useState(true);
-    const [showAcquireAbility, setShowAcquireAbility] = useState(false);
+    const [showAcquireAbility, setShowAcquireAbility] = useState(0);
+    const [showAcquireItem, setShowAcquireItem] = useState(false);
     const [visited, setVisited] = useState({});
-    const exitRequirement = Object.values(LITH_PLACES).length;
-
-    const handleTutorialConfirmation = () => {
-        onBattle &&
-            onBattle(
-                {
-                    ...warriorTutorial,
-                    backgroundImage: LithHarborCityBGImage,
-                },
-                () => setPromptTutorial(false)
-            );
-    };
-
-    const handleTutorialCancel = () => {
-        setPromptTutorial(false);
-        setShowAcquireAbility(true);
-    };
+    const isFulfilledExitRequirement = Object.values(visited).length >= Object.values(LITH_PLACES).length;
+    const dispatch = useAppDispatch();
 
     const handleClickEvent = (eventKey: string, scene) => {
         if (checkVisitPlace(eventKey)) {
@@ -109,82 +102,128 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         return LITH_PREREQUISITES[eventKey]?.some((prereq: string) => !visited[prereq]);
     };
 
+    const handleExitClick = () => {
+        if (isFulfilledExitRequirement) {
+            onExit();
+            return;
+        }
+
+        if (!visited[LITH_PLACES.SHARK]) {
+            dispatch(acquireItems([halfEatenHotdog]));
+        }
+
+        const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
+            (v) => !v
+        ).length;
+        setShowAcquireAbility(combatsNotVisited);
+        setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
+    };
+
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                <Pan userPosition={screenCentre} disableIntroAnimate={true}>
-                    <div className={classes.inner}>
-                        <TownNode
-                            icon={CrossedSwordsIcon}
-                            isVisited={visited[LITH_PLACES.TUTORIAL_BASIC]}
-                            label={"[Tutorial] Basic Combat"}
-                            nodeEl={
-                                <div>
-                                    <img src={LithTutorialImage} alt="Balcony" />
-                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
-                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
-                                </div>
-                            }
-                            onClick={() => {
-                                if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
-                                    const tutorialMap = {
-                                        [PLAYER_CLASSES.WARRIOR]: warriorTutorial,
-                                        [PLAYER_CLASSES.MAGICIAN]: magicianTutorial,
-                                    };
-                                    onBattle(
-                                        {
-                                            ...tutorialMap[player.class],
-                                            backgroundImage: LithHarborCityBGImage,
-                                        },
-                                        () => setPromptTutorial(false)
-                                    );
-                                }
-                            }}
-                        />
-                        <br />
-                        <TownNode
-                            icon={MedalIcon}
-                            isVisited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
-                            isLocked={isLocked(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER)}
-                            label={"[Tutorial] Showoff"}
-                            nodeEl={
-                                <div>
-                                    <img src={LithTutorial2Image} alt="Balcony" />
-                                    <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
-                                </div>
-                            }
-                            onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
-                        />
+                {!showAcquireItem && !showAcquireAbility && (
+                    <>
+                        <Pan userPosition={screenCentre} disableIntroAnimate={true}>
+                            <div className={classes.inner}>
+                                <TownNode
+                                    icon={CrossedSwordsIcon}
+                                    isVisited={visited[LITH_PLACES.TUTORIAL_BASIC]}
+                                    label={"[Tutorial] Basic Combat"}
+                                    nodeEl={
+                                        <div>
+                                            <img src={LithTutorialImage} alt="Balcony" />
+                                            <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
+                                            <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
+                                        </div>
+                                    }
+                                    onClick={() => {
+                                        if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
+                                            const tutorialMap = {
+                                                [PLAYER_CLASSES.WARRIOR]: warriorTutorial,
+                                                [PLAYER_CLASSES.MAGICIAN]: magicianTutorial,
+                                            };
+                                            onBattle(
+                                                {
+                                                    ...tutorialMap[player.class],
+                                                    backgroundImage: LithHarborCityBGImage,
+                                                },
+                                                () => {}
+                                            );
+                                        }
+                                    }}
+                                />
+                                <br />
+                                <TownNode
+                                    icon={MedalIcon}
+                                    isVisited={visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]}
+                                    isLocked={isLocked(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER)}
+                                    label={"[Tutorial] Showoff"}
+                                    nodeEl={
+                                        <div>
+                                            <img src={LithTutorial2Image} alt="Balcony" />
+                                            <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
+                                        </div>
+                                    }
+                                    onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
+                                />
 
-                        <div className={classNames(classes.townCenter)}>
-                            <div className={classes.townHeader}>
-                                <h2>Lith Harbor</h2>
+                                <div className={classNames(classes.townCenter)}>
+                                    <div className={classes.townHeader}>
+                                        <h2>Lith Harbor</h2>
+                                    </div>
+                                    <img src={LithHarborCenterImage} alt="Lith Center" />
+                                    <img src={player?.image} alt="You" className={classes.player} />
+                                </div>
+
+                                <TownNode
+                                    icon={WorldMapIcon}
+                                    isVisited={false}
+                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "Skip Tutorials and Exit"}
+                                    nodeImage={LithHarborExitImage}
+                                    onClick={handleExitClick}
+                                />
+
+                                <br />
+                                <TownNode
+                                    icon={QuestionMarkIcon}
+                                    isVisited={visited[LITH_PLACES.SHARK]}
+                                    label={"By the Dock"}
+                                    onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
+                                    nodeImage={LithHarborSharkImage}
+                                />
                             </div>
-                            <img src={LithHarborCenterImage} alt="Lith Center" />
-                            <img src={player?.image} alt="You" className={classes.player} />
-                        </div>
-
-                        <TownNode
-                            icon={WorldMapIcon}
-                            isVisited={false}
-                            label={"Exit to World Map"}
-                            nodeImage={LithHarborExitImage}
-                            onClick={onExit}
-                            isLocked={Object.values(visited).length < exitRequirement}
-                        />
-                        <br />
-                        <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={visited[LITH_PLACES.SHARK]}
-                            label={"By the Dock"}
-                            onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
-                            nodeImage={LithHarborSharkImage}
-                        />
-                    </div>
-                </Pan>
-                <Legend />
+                        </Pan>
+                        <Legend />
+                    </>
+                )}
+                {showAcquireItem && !showAcquireAbility && (
+                    <ItemRewards
+                        player={player}
+                        playerCurrentItems={player.items}
+                        overrideItems={olafRewards}
+                        onLoot={({ items }) => {
+                            dispatch(acquireItems(items));
+                        }}
+                        onClose={() => {
+                            setShowAcquireItem(false);
+                            if (!showAcquireAbility) {
+                                onExit();
+                            }
+                        }}
+                    />
+                )}
+                {showAcquireAbility > 0 && (
+                    <CardRewards
+                        player={player}
+                        deck={deck}
+                        updateDeck={updateDeck}
+                        onClose={() => setShowAcquireAbility(0)}
+                        maxAmount={showAcquireAbility}
+                    />
+                )}
             </div>
         </div>
     );

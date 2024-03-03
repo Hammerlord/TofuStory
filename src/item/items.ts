@@ -281,13 +281,13 @@ const sandalsEffect: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: LeatherSandalsImage,
-    drawCardsPerTurn: 1,
+    drawCardsPerTurn: 2,
     duration: 1,
 };
 
 export const leatherSandals: Item = {
     name: "Leather Sandals",
-    description: "On wave start, draw an extra card.",
+    description: "On wave start, draw 2 extra cards.",
     flavourText: "The quintessential footwear of aspiring adventurers.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,

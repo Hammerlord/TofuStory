@@ -3,8 +3,8 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
 import { LithHarborBalconyFullImage, OlafImage, PuppetreeImage } from "../images";
-import { redHeadband } from "../item/items";
-import { EventScene } from "./types";
+import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt } from "../item/items";
+import { EventScene, SceneEncounter } from "./types";
 
 const olafNPC = {
     name: "Olaf",
@@ -61,18 +61,20 @@ const Olaf = ({ player }) => {
     );
 };
 
-const olafFight = {
-    characters: [olafNPC.name],
+export const olafRewards = [redHeadband, leatherSandals, mesoItem];
+
+const olafFight: SceneEncounter = {
+    isTutorial: true,
     waves: [
         {
             enemies: [null, null, olaf, null, null],
             description: [
                 "You've encountered an elite opponent.",
-                " Elites typically have increased health, damage, and a few special abilities up their sleeve.",
+                "Elites typically have increased health, damage, and a few special abilities up their sleeve.",
             ],
         },
     ],
-    itemRewards: [redHeadband],
+    itemRewards: olafRewards,
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
 };
 

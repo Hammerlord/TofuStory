@@ -473,6 +473,7 @@ const Main = () => {
                             onClose={handleCloseItemRewards}
                             rewardType={battle.type}
                             player={player}
+                            disableAttainConsumable={battle.isTutorial}
                         />
                     )}
 

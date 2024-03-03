@@ -34,6 +34,7 @@ export interface SceneEncounter {
     itemRewards?: Item[];
     type?: BATTLE_TYPES;
     backgroundMusic?: string;
+    isTutorial?: boolean;
 }
 
 export interface Shop {
