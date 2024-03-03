@@ -50,6 +50,9 @@ const useStyles = createUseStyles({
     selectContainer: {
         marginBottom: 64,
     },
+    moreThanOne: {
+        color: "#45ff61",
+    },
 });
 
 const BASE_NUM_CHOICES = 3;
@@ -135,7 +138,16 @@ const CardRewards = ({
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h2>Pick {maxAmount === 1 ? "an ability" : `up to ${maxAmount} abilities`}</h2>
+                    <h2>
+                        Pick{" "}
+                        {maxAmount === 1 ? (
+                            "an ability"
+                        ) : (
+                            <>
+                                up to <span className={classes.moreThanOne}>{maxAmount} abilities</span>
+                            </>
+                        )}
+                    </h2>
                 </div>
                 <div className={classes.abilitySectionContainer}>
                     {rolledAbilities.map((ability: CombatAbility, i) => (
