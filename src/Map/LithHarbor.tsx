@@ -26,6 +26,7 @@ import { halfEatenHotdog } from "../item/items";
 import { playerStateSlice } from "../character/playerReducer";
 import CardRewards from "../Menu/CardRewards";
 import ItemRewards from "../Menu/ItemRewards";
+import { RARITIES } from "../item/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -235,6 +236,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         updateDeck={updateDeck}
                         onClose={handleCloseCardRewards}
                         maxAmount={showAcquireAbility}
+                        disableRarities={[RARITIES.RARE]}
                     />
                 )}
             </div>

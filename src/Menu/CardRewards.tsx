@@ -65,6 +65,7 @@ const CardRewards = ({
     cardRewardOptions = [],
     rewardType,
     maxAmount = 1,
+    disableRarities,
 }: {
     deck: CombatAbility[];
     player: Player;
@@ -73,6 +74,7 @@ const CardRewards = ({
     cardRewardOptions?: Ability[];
     rewardType?: BATTLE_TYPES;
     maxAmount?: number;
+    disableRarities?: RARITIES[];
 }) => {
     const rolledAbilities = useMemo(() => {
         const { starters, all } = JOB_CARD_MAP[player.class];
@@ -89,15 +91,15 @@ const CardRewards = ({
         const choices = [...cardRewardOptions];
         const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
 
-        let bonus = { rare: 0, uncommon: 0 };
+        let bonuses = { rare: 0, uncommon: 0 };
         if (rewardType === BATTLE_TYPES.BOSS) {
-            bonus = { rare: BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = { rare: BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-            bonus = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         }
 
         Array.from({ length: numChoices - cardRewardOptions.length }).forEach(() => {
-            const selectedRarity = rollRarity(player, bonus);
+            const selectedRarity = rollRarity({ player, bonuses, disableRarities });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;

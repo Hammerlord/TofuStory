@@ -1,8 +1,17 @@
 import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
+import { Player } from "../character/types";
 import { RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../constants";
 import { ITEM_TYPES, Item, RARITIES } from "./types";
 
-export const rollRarity = (player, bonuses = { uncommon: 0, rare: 0 }): RARITIES => {
+export const rollRarity = ({
+    player,
+    bonuses = { uncommon: 0, rare: 0 },
+    disableRarities = [],
+}: {
+    player: Player;
+    bonuses?: { uncommon: number; rare: number };
+    disableRarities?: RARITIES[]; // Only works for rare and uncommon
+}): RARITIES => {
     const roll = Math.random();
     const { bonusUncommonChance, bonusRareChance } = player.items.reduce(
         (acc, item: Item) => {
@@ -16,8 +25,8 @@ export const rollRarity = (player, bonuses = { uncommon: 0, rare: 0 }): RARITIES
         { bonusUncommonChance: bonuses.uncommon || 0, bonusRareChance: bonuses.rare || 0 }
     );
 
-    const uncommonChance = UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
-    const rareChance = RARE_ITEM_CHANCE + bonusRareChance;
+    const uncommonChance = disableRarities.includes(RARITIES.UNCOMMON) ? 0 : UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
+    const rareChance = disableRarities.includes(RARITIES.RARE) ? 0 : RARE_ITEM_CHANCE + bonusRareChance;
 
     if (roll <= rareChance) {
         return RARITIES.RARE;
@@ -49,7 +58,7 @@ export const rollItemPool = ({
 
     excludeItems.forEach((item) => (exclude[item.name] = true));
 
-    const selectedRarity = rollRarity(player, bonuses);
+    const selectedRarity = rollRarity({ player, bonuses });
     let itemPool = ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name]);
     let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
     if (!filteredByRarity.length) {

@@ -180,7 +180,7 @@ const Shop = ({
 
         const rolledAbilities = [];
         Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
-            const selectedRarity = rollRarity(player);
+            const selectedRarity = rollRarity({ player });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = rolledAbilities.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
