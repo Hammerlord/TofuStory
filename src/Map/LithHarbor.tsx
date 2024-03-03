@@ -9,7 +9,7 @@ import {
     LithTutorial2Image,
     LithTutorialImage,
 } from "../images";
-import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { lithEventsOlaf, olafRewards } from "../scene/olaf";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -39,10 +39,8 @@ const useStyles = createUseStyles({
         backgroundSize: "cover",
     },
     player: {
-        position: "absolute",
-        top: 175,
-        left: "50%",
-        transform: "translateX(-50%)",
+        ...TOWN_STYLES.player,
+        top: 187,
     },
     dummyCharContainer: {
         bottom: "94px",
@@ -194,13 +192,17 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                                         <h2>Lith Harbor</h2>
                                     </div>
                                     <img src={LithHarborCenterImage} alt="Lith Center" />
+                                    <div className={classes.thoughtBubbleContainer}>
+                                        <ThoughtBubbleIcon />
+                                        <span className={classes.thought}>Where to go?</span>
+                                    </div>
                                     <img src={player?.image} alt="You" className={classes.player} />
                                 </div>
 
                                 <TownNode
                                     icon={WorldMapIcon}
                                     isVisited={false}
-                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "Skip Intro and Exit"}
+                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "[Exit] Skip Intro"}
                                     nodeImage={LithHarborExitImage}
                                     onClick={handleExitClick}
                                 />

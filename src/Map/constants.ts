@@ -39,4 +39,24 @@ export const TOWN_STYLES = {
             .map(() => "0 0 3px black")
             .join(", "),
     },
+    thoughtBubbleContainer: {
+        width: 100,
+        position: "absolute",
+        top: "20%",
+        left: "50%",
+        filter: "drop-shadow(0 0 3px black) drop-shadow(0 0 5px black)",
+    },
+    thought: {
+        position: "absolute",
+        top: "40%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        fontSize: "16px",
+    },
+    player: {
+        height: 65,
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
 };

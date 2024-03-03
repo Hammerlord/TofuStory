@@ -49,20 +49,6 @@ const useStyles = createUseStyles({
     caseyDialog: {
         minWidth: 150,
     },
-    thoughtBubbleContainer: {
-        width: 100,
-        position: "absolute",
-        top: "20%",
-        left: "50%",
-        filter: "drop-shadow(0 0 5px black)",
-    },
-    thought: {
-        position: "absolute",
-        top: "40%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontSize: "16px",
-    },
 });
 
 const store = {
