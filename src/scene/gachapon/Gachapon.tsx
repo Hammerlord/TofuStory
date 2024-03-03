@@ -42,7 +42,7 @@ export const gachaponEvents: EventScene = {
     id: "gachapon",
     script: [
         {
-            scene: () => <GachaponScene />,
+            scene: GachaponScene,
             dialog: ["[There is some kind of prize-dispensing machine here...]"],
         },
         {

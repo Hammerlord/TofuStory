@@ -197,6 +197,8 @@ export { default as HeavenHammerImage } from "./HeavenHammer.png";
 export { default as HenesysArcherHallImage } from "./HenesysArcherHall.png";
 export { default as HenesysCenterImage } from "./HenesysCenter.png";
 export { default as HenesysExitImage } from "./HenesysExit.png";
+export { default as HenesysGachaponImage } from "./HenesysGachapon.png";
+export { default as HenesysGachaponFullImage } from "./HenesysGachaponFull.png";
 export { default as HenesysPantryImage } from "./HenesysPantry.png";
 export { default as HenesysRegionBGImage } from "./HenesysRegionBG.jpg";
 export { default as HenesysShopImage } from "./HenesysShop.png";

@@ -3,9 +3,11 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     DiamondImage,
+    GachaponImage,
     HenesysArcherHallImage,
     HenesysCenterImage,
     HenesysExitImage,
+    HenesysGachaponImage,
     HenesysPantryImage,
     HenesysRegionBGImage,
     HenesysShopImage,
@@ -18,6 +20,7 @@ import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import Pan from "./Pan";
 import Legend from "./Legend";
+import { gachaponEvents } from "../scene/gachapon/Gachapon";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -35,6 +38,11 @@ const useStyles = createUseStyles({
         left: "52%",
         transform: "translateX(-50%)",
     },
+    gachaponMachine: {
+        position: "absolute",
+        left: 100,
+        top: 59,
+    },
 });
 
 const store = {
@@ -45,6 +53,7 @@ const store = {
 
 const HENESYS_PLACES = {
     PANTRY: "pantry",
+    GACHAPON: "gachapon",
 };
 
 const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
@@ -133,18 +142,23 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         />
                         <br />
                         <TownNode
+                            icon={QuestionMarkIcon}
+                            isVisited={visited[HENESYS_PLACES.GACHAPON]}
+                            label={"Gachapon Machine"}
+                            nodeEl={
+                                <div>
+                                    <img src={HenesysGachaponImage} alt="Gachapon Preview" />
+                                    <img src={GachaponImage} className={classes.gachaponMachine} />
+                                </div>
+                            }
+                            onClick={() => handleClickEvent(HENESYS_PLACES.GACHAPON, gachaponEvents)}
+                        />
+                        <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
                             label={"[Test] Athena Pierce"}
                             nodeImage={HenesysArcherHallImage}
                             onClick={handleClickClassLeader}
-                        />
-                        <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={true}
-                            label={"Placeholder"}
-                            nodeImage={HenesysArcherHallImage}
-                            onClick={() => {}}
                         />
                     </div>
                 </Pan>
