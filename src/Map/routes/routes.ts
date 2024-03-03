@@ -478,15 +478,6 @@ export const toHenesysForest: Route = {
             x: 0.3333333333333333,
             y: 0.7680094089973537,
             region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.363668430335097,
-            y: 0.7907521393184207,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.37178130511463847,
-            y: 0.6970725116348897,
             type: NODE_TYPES.BOSS,
             encounter: [
                 {
@@ -497,6 +488,15 @@ export const toHenesysForest: Route = {
                 },
             ],
             cardRewards: [shellThrow],
+        },
+        {
+            x: 0.363668430335097,
+            y: 0.7907521393184207,
+            region: REGIONS.HENESYS,
+        },
+        {
+            x: 0.37178130511463847,
+            y: 0.6970725116348897,
             region: REGIONS.HENESYS,
         },
     ],
