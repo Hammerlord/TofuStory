@@ -442,10 +442,16 @@ const BattlefieldContainer = () => {
         }
     };
 
+    const warnStealth = () => {
+        warn("That character is stealthed and cannot be targeted directly.");
+    };
+
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
+            } else if (!canTargetIfStealthed(selectedMinion, enemySide[index])) {
+                warnStealth();
             } else {
                 setSelectedAllyIndex(null);
             }
@@ -461,7 +467,7 @@ const BattlefieldContainer = () => {
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
             } else if (!canTargetIfStealthed(player, enemySide[index])) {
-                warn("That character is stealthed and cannot be targeted directly.");
+                warnStealth();
             } else {
                 if (!canUseAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
