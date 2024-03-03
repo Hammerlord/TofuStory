@@ -7,6 +7,7 @@ import {
     CoveringFireImage,
     FelineBerserkImage,
     HurricaneImage,
+    MortalBlowImage,
     SoaringHawkImage,
     VitalHunterImage,
     WolfImage,
@@ -132,6 +133,7 @@ export const athena: Minion = {
         {
             name: "Pierce",
             description: "Destroys the target's armor and deals 3 damage. If the target has no armor, deals +3 more damage.",
+            image: MortalBlowImage,
             resourceCost: 3,
             castTime: 1,
             actions: [
