@@ -234,6 +234,7 @@ const lastStage = {
                             ],
                         },
                         {
+                            scene: Barrels,
                             speaker: thief,
                             dialog: [
                                 "Whoa whoa. I almost didn't think we were gonna make it out of that one, but...",
@@ -256,6 +257,68 @@ const lastStage = {
                         {
                             speaker: magician,
                             dialog: ["About time."],
+                        },
+                        {
+                            background: KerningCityBGImage,
+                            scene: SewerEntrance,
+                            speaker: thief,
+                            dialog: ["I'm not too happy about this, either. We got caught with our pants down and could've died."],
+                        },
+                        {
+                            speaker: magician,
+                            dialog: ["Yeah, so we just risked our lives for what? That Cloto lady wasn't in there."],
+                        },
+                        {
+                            speaker: bowman,
+                            dialog: [
+                                "Not for nothing at least. The {{ class }} here stopped the King Slime's early resurrection.",
+                                "But... yeah. It does bother me.",
+                            ],
+                        },
+                        {
+                            speaker: bowman,
+                            dialog: ["The test proctor wasn't in there at all."],
+                        },
+                        {
+                            speaker: bowman,
+                            dialog: ["Then who was I talking to?"],
+                        },
+                        {
+                            dialog: ["[There's an uncomfortable silence.]"],
+                        },
+                        {
+                            speaker: bowman,
+                            dialog: [
+                                "[The bowman looks at you.] Well, we owe you one, and at least I don't want you getting into trouble... whatever you actually are.",
+                            ],
+                        },
+                        {
+                            speaker: thief,
+                            dialog: ["[The thief shrugs.] Seconded."],
+                        },
+                        {
+                            speaker: magician,
+                            dialog: ["Sure, whatever."],
+                        },
+                        {
+                            speaker: thief,
+                            dialog: ["That's Sho's way of showing gratitude, by the way."],
+                        },
+                        {
+                            speaker: magician,
+                            dialog: ["Ugh."],
+                        },
+                        {
+                            speaker: bowman,
+                            dialog: [
+                                "I bet you've got places to be. Maybe we'll see you around. You seemed to be looking for something, so I hope you find it.",
+                            ],
+                            responses: [
+                                {
+                                    text: "They can't hear you, but goodbye anyway.",
+                                    isExit: true,
+                                },
+                            ],
                         },
                     ],
                 },
