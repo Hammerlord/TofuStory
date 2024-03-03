@@ -701,15 +701,19 @@ export const octopus: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    effects: [
+                    addCardsToDiscard: [
                         {
-                            name: "Constricted!",
-                            description: "Resources per turn reduced by 1.",
-                            icon: OctopusLegImage,
-                            resourcesPerTurn: -1,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            duration: 1,
+                            name: "Constrict",
+                            image: OctopusLegImage,
+                            depletedOnUse: true,
+                            resourceCost: 1,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
+                                    animation: ANIMATION_TYPES.SPIN,
+                                },
+                            ],
                         },
                     ],
                 },
