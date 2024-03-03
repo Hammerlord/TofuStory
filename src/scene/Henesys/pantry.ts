@@ -279,7 +279,7 @@ const pantry: EventScene = {
         },
         {
             speaker: mayaCharacter,
-            dialog: ["Oh no, don't eat the food I made for the festival! Help! Please, somebody!"],
+            dialog: ["Oh no, those are for the festival! Help! Please, somebody!"],
         },
         {
             speaker: miniBeanCharacter,

@@ -377,6 +377,13 @@ const Main = () => {
         });
     };
 
+    const handleClickScene = (scene: EventScene, callback?: Function) => {
+        handleTransition(() => {
+            setScene(scene);
+            callback && callback();
+        });
+    };
+
     const getTown = () => {
         const Town = TOWN_MAP[town];
         if (!Town) {
@@ -391,7 +398,7 @@ const Main = () => {
                 updateDeck={handleUpdateDeck}
                 updatePlayer={updatePlayer}
                 onExit={() => handleTransition(() => setTown(null))}
-                onClickScene={setScene}
+                onClickScene={handleClickScene}
                 onClickShop={setShop}
                 onClickTradingPost={() => setTradingPost(true)}
                 onBattle={handleTownBattle}
