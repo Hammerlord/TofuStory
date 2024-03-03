@@ -1124,7 +1124,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
             const availableMinions = minion.filter((minion: Minion | string) => {
                 if (noDuplicateMinions) {
                     const minionName = typeof minion === "string" ? minion : minion?.name;
-                    return friendly.every((m: Combatant | null) => m?.name !== minionName);
+                    return friendly.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
                 }
 
                 return true;

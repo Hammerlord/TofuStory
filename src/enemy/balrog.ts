@@ -12,7 +12,7 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { AngerIcon, BloodIcon } from "../images/icons";
-import { bleed, burn, explosive, poison, raging, sentry, shielding } from "./../ability/Effects";
+import { bleed, burn, explosive, hardy, poison, raging, sentry, shielding } from "./../ability/Effects";
 import { attack } from "./abilities";
 import { poisonous } from "./effect";
 
@@ -156,11 +156,13 @@ export const balrog: Minion = {
     image: JrBalrogImage,
     isBoss: true,
     effects: [
+        hardy,
         {
             name: "Summon Flames",
             icon: FlameImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            disableDisplayIcon: true,
             onBattleStart: {
                 ability: {
                     name: "Summon Flames",
@@ -185,6 +187,7 @@ export const balrog: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 5,
+            disableDisplayIcon: true,
             onTurnStart: {
                 ability: {
                     name: "Summon Flames",
@@ -276,7 +279,7 @@ export const balrog: Minion = {
             image: BrutalClawImage,
             actions: [
                 {
-                    damage: 10,
+                    damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     destroyArmor: 1,
