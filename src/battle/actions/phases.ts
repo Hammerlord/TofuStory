@@ -15,6 +15,7 @@ import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/util
 import { BATTLE_STATES } from "./../reducer";
 import { checkEventTrigger } from "./actions";
 import { checkCardActions } from "./cardActions";
+import { prepareForDiscard } from "./playerTurn";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -55,11 +56,18 @@ export const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { playerSide } = getState().battle;
+        const { playerSide, hand, discard } = getState().battle;
 
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
+
+        dispatch(
+            updateBattle({
+                discard: [...prepareForDiscard(hand), ...discard],
+                hand: [],
+            })
+        );
     };
 };
 
