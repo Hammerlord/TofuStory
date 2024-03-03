@@ -38,6 +38,7 @@ import { SCENE_CONDITION_TYPES, EventScene, SceneCondition } from "../scene/type
 import { passesValueComparison } from "../battle/passesConditions";
 import TradingPost from "../scene/TradingPost";
 import { REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
+import { VictoriaIslandImage } from "../images";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -146,6 +147,11 @@ const Main = () => {
 
     useEffect(() => {
         resetTravels();
+        // Preload the overworld map
+        const mapImage: string = VictoriaIslandImage;
+        const newImage = new Image();
+        newImage.src = mapImage;
+        window[mapImage] = newImage;
     }, []);
 
     useEffect(() => {
