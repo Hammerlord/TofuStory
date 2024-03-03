@@ -29,7 +29,7 @@ export const warriorTutorial = {
                     Cards often cost <Fury /> Fury, limiting how many you can play per turn.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 35 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 28 }, null],
             presetDeck: [slam, slam, slam],
         },
         {
@@ -38,7 +38,7 @@ export const warriorTutorial = {
                     Target multiple enemies with <Icon icon={SlashBlastImage} /> Slash Blast.
                 </>,
             ],
-            enemies: [null, basicDummy, null, basicDummy, null],
+            enemies: [null, { ...basicDummy, maxHP: 10 }, null, { ...basicDummy, maxHP: 10 }, null],
             presetDeck: [slashBlast, slashBlast, slashBlast],
         },
         {

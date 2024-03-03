@@ -17,7 +17,7 @@ import { BATTLE_TYPES } from "../battle/types";
 import { getMaxHP } from "../battle/utils";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { Item } from "../item/types";
+import { Item, RARITIES } from "../item/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import Overlay from "../view/Overlay";
@@ -464,6 +464,7 @@ const Main = () => {
                             onClose={handleCloseCardRewards}
                             cardRewardOptions={battle.cardRewards}
                             rewardType={battle.type}
+                            disableRarities={(battle.isTutorial && [RARITIES.RARE]) || undefined}
                         />
                     )}
                     {itemRewardsOpen && (
