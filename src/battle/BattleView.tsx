@@ -412,6 +412,9 @@ const BattlefieldContainer = () => {
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
+                if (!canUseAbility(player, selectedAbilityFromHand)) {
+                    warnNeedMoreResources(selectedAbilityFromHand);
+                }
                 setSelectedAbilityId(null);
             }
             return;
@@ -460,6 +463,9 @@ const BattlefieldContainer = () => {
             } else if (!canTargetIfStealthed(player, enemySide[index])) {
                 warn("That character is stealthed and cannot be targeted directly.");
             } else {
+                if (!canUseAbility(player, selectedAbilityFromHand)) {
+                    warnNeedMoreResources(selectedAbilityFromHand);
+                }
                 setSelectedAbilityId(null);
             }
             return;
