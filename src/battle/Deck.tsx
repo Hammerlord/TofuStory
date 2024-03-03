@@ -184,6 +184,14 @@ const Deck = ({
                                     </svg>
                                 );
                             })}
+                            {deck.length === 0 && (
+                                <svg y={75} viewBox="0 0 100 100">
+                                    <path fill={DECK_SHADOW} d="M 50 0 100 25 50 50 0 25 Z" opacity={0.5} />
+                                    <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
+                                        {deck.length}
+                                    </text>
+                                </svg>
+                            )}
                         </svg>
                     </div>
                 </Tooltip>
