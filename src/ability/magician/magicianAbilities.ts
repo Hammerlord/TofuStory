@@ -2,6 +2,7 @@ import {
     AdvancedChargeImage,
     ArcaneAimImage,
     BabyDragonImage,
+    BackpackImage,
     BigSnowballImage,
     BlueRushImage,
     CakeTemptationImage,
@@ -95,7 +96,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, preventArmorDecay, stun } from "./../Effects";
+import { armorUp, burn, chill, freeze, preventArmorDecay, stun, stashCardEffect } from "./../Effects";
 
 export const energyBolt: Ability = {
     name: "Energy Bolt",
@@ -1430,27 +1431,32 @@ export const goutOfFlame: Ability = {
 
 export const temporalBag: Ability = {
     name: "Temporal Bag",
-    resourceCost: 0,
-    rarity: RARITIES.COMMON,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
     image: EmptySackImage,
-    description: "Place up to 2 cards from your hand on top of your deck.",
+    description: "You may place 2 abilities from your hand back into your deck.",
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
-                maxAmount: 2,
-            },
+            effects: [
+                {
+                    ...stashCardEffect,
+                    stacks: 2,
+                },
+            ],
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    selectCards: {
-                        maxAmount: 1,
-                    },
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },

@@ -1,4 +1,4 @@
-import { bleed, chill, poison, thorns } from "../ability/Effects";
+import { bleed, chill, poison, stashCardEffect, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -1757,28 +1757,19 @@ export const theBackpack: Item = {
     image: BackpackImage,
     effects: [
         {
-            name: "The Backpack",
+            name: "The Backpack Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
+                conditions: [
                     {
-                        name: "Stash Card",
-                        description: "You may move one card from your hand to the top of your deck.",
-                        icon: BackpackImage,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.NONE,
-                        maxApplications: 1,
-                        allowMoveCardFromHandToDeck: true,
-                        onMoveCardFromHandToDeck: {
-                            decrementStacks: 1,
-                        },
-                        onTurnEnd: {
-                            removeEffect: true,
-                        },
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        hasEffect: stashCardEffect.name,
+                        comparator: "not",
                     },
                 ],
+                effects: [stashCardEffect],
             },
         },
     ],

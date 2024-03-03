@@ -1,4 +1,5 @@
 import {
+    BackpackImage,
     BombImage,
     FireMarbleImage,
     GemHeartImage,
@@ -555,5 +556,19 @@ export const sentry: Effect = {
                 },
             ],
         },
+    },
+};
+
+export const stashCardEffect: Effect = {
+    name: "Stash Card",
+    description: "You may move one card from your hand to the top of your deck.",
+    icon: BackpackImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    allowMoveCardFromHandToDeck: true,
+    maxApplications: 1,
+    stacks: 1,
+    onMoveCardFromHandToDeck: {
+        decrementStacks: 1,
     },
 };
