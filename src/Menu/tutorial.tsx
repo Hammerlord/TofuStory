@@ -1,4 +1,4 @@
-import { energyBolt, magicArmor, magicClaw, magicFang } from "../ability/magician/magicianAbilities";
+import { energyBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
 import { block, slam, slashBlast } from "../ability/warrior/warriorAbilities";
 import { Wave } from "../battle/types";
 import { basicAoeDummyMagician, basicDummy, basicDummy2, spikedDummy } from "../enemy/dummy";
@@ -78,7 +78,7 @@ export const magicianTutorial = {
                     Cards often cost <Mana /> Mana, limiting how many you can play per turn.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 18 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 22 }, null],
             presetDeck: [magicClaw, magicClaw],
         },
         {
@@ -87,7 +87,7 @@ export const magicianTutorial = {
                     Target multiple enemies with <Icon icon={BlueRushImage} /> Magic Fang.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 8 }, null, { ...basicDummy, maxHP: 8 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 11 }, null, { ...basicDummy, maxHP: 11 }, null],
             presetDeck: [magicFang, magicFang, magicFang],
         },
         {
@@ -110,7 +110,7 @@ export const magicianTutorial = {
                 <>These effects can be dangerous, so try to pay attention to them.</>,
             ],
             enemies: [null, null, spikedDummy, null, null],
-            presetDeck: [energyBolt, magicClaw, magicArmor],
+            presetDeck: [magicClaw, magicArmor, manaGem],
         },
         {
             description: [
@@ -125,8 +125,9 @@ export const magicianTutorial = {
                     If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot <Icon icon={OldEnergyBoltImage} /> Energy
                     Bolt at a random enemy.
                 </>,
+                <>Try playing a combination of cards to see how this works.</>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 8 }, { ...basicDummy, maxHP: 20 }, { ...basicDummy, maxHP: 8 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 7 }, { ...basicDummy, maxHP: 24 }, { ...basicDummy, maxHP: 7 }, null],
             presetDeck: [magicClaw, magicFang, energyBolt],
         },
     ] as Wave[],

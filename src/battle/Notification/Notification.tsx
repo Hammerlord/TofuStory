@@ -21,7 +21,6 @@ const useStyles = createUseStyles({
         },
         "&.info": {
             color: "white",
-            padding: "8px 64px",
             background:
                 "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.9) 85%, rgba(0,212,255,0) 100%)",
         },

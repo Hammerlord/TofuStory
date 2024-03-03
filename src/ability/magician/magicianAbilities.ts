@@ -171,7 +171,7 @@ export const magicFang: Ability = {
 };
 
 const magicClawAction: Action = {
-    damage: 4,
+    damage: 5,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
