@@ -1345,6 +1345,7 @@ export const starEarrings: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: StarEarringsImage,
                         description: "When you Stun, Freeze or Silence an enemy, draw a card.",
+                        disableDisplayIcon: true,
                         duration: 1,
                         onApplyEffect: {
                             conditions: [
@@ -1811,7 +1812,8 @@ export const bloodMask: Item = {
                         name: "Blood Mask",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        image: BloodMaskImage,
+                        icon: BloodMaskImage,
+                        disableDisplayIcon: true,
                         description: "When you apply a Bleed, Silence, or Stun, draw a card.",
                         duration: 1,
                         onApplyEffect: {

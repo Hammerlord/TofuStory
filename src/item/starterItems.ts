@@ -71,6 +71,7 @@ export const rampageStone: Item = {
                         icon: HumilityStoneImage,
                         drawCardsPerTurn: 1,
                         maxApplications: 1,
+                        disableDisplayIcon: true,
                         onTurnInProgress: {
                             removeEffect: true,
                         },
