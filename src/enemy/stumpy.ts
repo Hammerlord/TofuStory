@@ -50,7 +50,7 @@ export const stumpy: Minion = {
     name: "Stumpy",
     image: StumpyImage,
     isBoss: true,
-    maxHP: 250,
+    maxHP: 350,
     abilities: [
         {
             ...attack,
@@ -58,7 +58,7 @@ export const stumpy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 5,
                 },
             ],
         },
@@ -87,7 +87,7 @@ export const stumpy: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.STOMP,
-                    damage: 4,
+                    damage: 7,
                     area: 2,
                 },
             ],

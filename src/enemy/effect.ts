@@ -145,11 +145,11 @@ export const bats: Effect = {
     healingReceived: -1,
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
-        healing: 2,
+        healing: 3,
     },
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        damage: 2,
+        damage: 3,
     },
 };
 
