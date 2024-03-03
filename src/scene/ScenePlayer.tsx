@@ -59,6 +59,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
+        cursor: "pointer",
     },
     wrapper: {
         position: "absolute",
@@ -80,7 +81,6 @@ const useStyles = createUseStyles({
         letterSpacing: "0.015rem",
         lineHeight: "26px",
         background: "rgba(25, 25, 25, 0.9)",
-        cursor: "pointer",
         marginBottom: "8px",
 
         "& p": {
@@ -477,7 +477,7 @@ const ScenePlayer = ({
         }
     };
 
-    const handleSkip = () => {
+    const handleSkip = (e) => {
         const newDialogIndex = script.findIndex((scriptNode: ScriptNode, i) => {
             const { responses, items, itemChoices, puzzle, scene } = scriptNode || {};
             return i > dialogIndex && (responses || items || itemChoices || puzzle || scene);
@@ -487,6 +487,8 @@ const ScenePlayer = ({
         } else {
             setDialogIndex(script.length - 1);
         }
+
+        e.stopPropagation(); // Prevent the click from going to the scene background, which will advance the dialog by 1 instead of skip
     };
 
     const interpolateDialog = (text: string) => {
@@ -513,7 +515,8 @@ const ScenePlayer = ({
             <div className={classes.root}>
                 <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
                 <div className={classes.backgroundOverlay} />
-                <div className={classes.inner}>
+
+                <div className={classes.inner} onClick={handleClickDialog}>
                     {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (
                         <>
                             <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
@@ -535,7 +538,7 @@ const ScenePlayer = ({
                                             </>
                                         )}
                                     </div>
-                                    <div className={classes.dialog} onClick={handleClickDialog}>
+                                    <div className={classes.dialog}>
                                         <div>
                                             {dialog.map((line: string, i: number) => (
                                                 <p key={i}>{interpolateDialog(line)}</p>
