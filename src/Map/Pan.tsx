@@ -2,8 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { AnonymushroomImage } from "../images";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
+    panContainer: {
+        cursor: "grab",
+        "&.-grabbing": {
+            cursor: "grabbing",
+        },
+    },
     userPositionContainer: {
         position: "fixed",
         zIndex: 100,
@@ -130,6 +137,9 @@ const Pan = ({
                 onTouchMove={handlePan}
                 onTouchEnd={handleStopPan}
                 ref={containerRef}
+                className={classNames(classes.panContainer, {
+                    ["-grabbing"]: isPanning,
+                })}
                 style={{
                     ...style,
                     transform: `translate(${x}px, ${y}px)`,

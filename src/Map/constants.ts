@@ -24,7 +24,6 @@ export const TOWN_STYLES = {
         minWidth: 1500,
     },
     townCenter: {
-        cursor: "grab",
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         margin: "auto",
