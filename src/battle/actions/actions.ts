@@ -1810,7 +1810,7 @@ const checkSummonMinion = ({
         const pickRandomSummonIndex = () => getRandomItem(getPossibleSummonIndices(battlefieldSide));
         const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
         const previousMinionInSlot = battlefieldSide[index];
-        const summonedMinion: Combatant = createCombatant(minion);
+        const summonedMinion: Combatant = createCombatant(cloneDeep(minion));
 
         const { tributeSummon } = minionOptions || {};
         const isTributeSummoned = tributeSummon && previousMinionInSlot?.HP > 0;
