@@ -234,7 +234,7 @@ const picoDrop: Ability = {
 export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: MiniBeanImage,
-    maxHP: 250,
+    maxHP: 300,
     resources: 0,
     isBoss: true,
     abilities: [

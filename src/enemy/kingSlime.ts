@@ -76,7 +76,7 @@ export const kingSlimeEnemy: Minion = {
     image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
-    armor: 25,
+    armor: 30,
     effects: [
         hardy,
         // TODO use stacks
