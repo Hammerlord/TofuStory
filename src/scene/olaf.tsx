@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
-import { LithHarborBalconyFullImage, OlafImage, PuppetreeImage } from "../images";
+import { LithHarborBalconyFullImage, LithHarborCityBGImage, OlafImage, PuppetreeImage } from "../images";
 import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt } from "../item/items";
 import { EventScene, SceneEncounter } from "./types";
 
@@ -94,6 +94,7 @@ export const lithEventsOlaf: EventScene = {
     id: "Olaf",
     script: [
         {
+            background: LithHarborCityBGImage,
             scene: Olaf,
             speaker: olafNPC,
             dialog: ["Wha? Who destroyed all the training dummies!?", "They were supposed to last for the next batch of islanders!"],

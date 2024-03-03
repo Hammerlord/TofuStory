@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { JohnImage, LithHarborSharkFullImage, TeoImage } from "../images";
+import { JohnImage, LithHarborCityBGImage, LithHarborSharkFullImage, TeoImage } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { EventScene } from "./types";
 
@@ -57,6 +57,7 @@ export const lithEventsTeoJohn: EventScene = {
     id: "teo-john",
     script: [
         {
+            background: LithHarborCityBGImage,
             scene: TeoJohn,
             speaker: teo,
             dialog: ["Oh hey, John, wouldja look over there."],

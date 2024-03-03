@@ -118,16 +118,16 @@ export const magicianTutorial = {
                     Magicians gain <Icon icon={AlchemistStoneImage} /> Charged when they play a card.
                 </>,
                 <>
-                    <Icon icon={MagicClawImage} /> Magic Claw and <Icon icon={BlueRushImage} /> Magic Fang can consume{" "}
+                    <Icon icon={MagicClawImage} /> Magic Claw and <Icon icon={BlueRushImage} /> Magic Fang consume{" "}
                     <Icon icon={AlchemistStoneImage} /> to do bonus damage.
                 </>,
                 <>
                     If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot <Icon icon={OldEnergyBoltImage} /> Energy
-                    Bolt at a random enemy.
+                    Bolt.
                 </>,
                 <>Try playing a combination of cards to see how this works.</>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 7 }, { ...basicDummy, maxHP: 24 }, { ...basicDummy, maxHP: 7 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 7 }, { ...basicDummy, maxHP: 23 }, { ...basicDummy, maxHP: 7 }, null],
             presetDeck: [magicClaw, magicFang, energyBolt],
         },
     ] as Wave[],

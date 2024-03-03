@@ -75,6 +75,7 @@ const { acquireItems } = playerStateSlice.actions;
 
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
+    const [isExiting, setIsExiting] = useState(false);
     const [showAcquireAbility, setShowAcquireAbility] = useState(0);
     const [showAcquireItem, setShowAcquireItem] = useState(false);
     const [visited, setVisited] = useState({});
@@ -108,6 +109,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
             return;
         }
 
+        setIsExiting(true);
         if (!visited[LITH_PLACES.SHARK]) {
             dispatch(acquireItems([halfEatenHotdog]));
         }
@@ -119,12 +121,28 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
     };
 
+    const handleCloseAcquireItems = () => {
+        setShowAcquireItem(false);
+
+        if (!showAcquireAbility) {
+            onExit();
+        }
+    };
+
+    const handleCloseCardRewards = () => {
+        setShowAcquireAbility(0);
+
+        if (!showAcquireItem) {
+            onExit();
+        }
+    };
+
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
-                {!showAcquireItem && !showAcquireAbility && (
+                {!isExiting && (
                     <>
                         <Pan userPosition={screenCentre} disableIntroAnimate={true}>
                             <div className={classes.inner}>
@@ -181,7 +199,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                                 <TownNode
                                     icon={WorldMapIcon}
                                     isVisited={false}
-                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "Skip Tutorials and Exit"}
+                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "Skip Intro and Exit"}
                                     nodeImage={LithHarborExitImage}
                                     onClick={handleExitClick}
                                 />
@@ -207,12 +225,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         onLoot={({ items }) => {
                             dispatch(acquireItems(items));
                         }}
-                        onClose={() => {
-                            setShowAcquireItem(false);
-                            if (!showAcquireAbility) {
-                                onExit();
-                            }
-                        }}
+                        onClose={handleCloseAcquireItems}
                     />
                 )}
                 {showAcquireAbility > 0 && (
@@ -220,7 +233,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         player={player}
                         deck={deck}
                         updateDeck={updateDeck}
-                        onClose={() => setShowAcquireAbility(0)}
+                        onClose={handleCloseCardRewards}
                         maxAmount={showAcquireAbility}
                     />
                 )}

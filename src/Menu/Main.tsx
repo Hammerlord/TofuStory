@@ -390,11 +390,12 @@ const Main = () => {
                 deck={deck}
                 updateDeck={handleUpdateDeck}
                 updatePlayer={updatePlayer}
-                onExit={() => setTown(null)}
+                onExit={() => handleTransition(() => setTown(null))}
                 onClickScene={setScene}
                 onClickShop={setShop}
                 onClickTradingPost={() => setTradingPost(true)}
                 onBattle={handleTownBattle}
+                onTransition={handleTransition}
             />
         );
     };
