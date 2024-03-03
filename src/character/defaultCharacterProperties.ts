@@ -35,7 +35,7 @@ const defaultCharacterProperties = {
     isPlayer: true,
     weapon: OldGladiusImage,
     effects: [],
-    items: [rageStone, redHeadband],
+    items: [rageStone],
     drawCardsPerTurn: 3,
     weaponSkins: [
         { name: "Old Gladius", image: OldGladiusImage },
@@ -56,7 +56,7 @@ export const wizardProperties = {
     maxResources: 10,
     resources: 0,
     weapon: OldWoodenStaffImage,
-    items: [chargingStone, redHeadband],
+    items: [chargingStone],
     weaponSkins: [
         { name: "Old Wooden Staff", image: OldWoodenStaffImage },
         { name: "Wooden Staff", image: WoodenStaffImage },

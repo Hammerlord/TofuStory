@@ -21,6 +21,24 @@ export const basicDummy2 = {
     ],
 };
 
+export const basicAoeDummyMagician = {
+    name: "Dummy",
+    image: PuppetreeImage,
+    maxHP: 3,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                },
+            ],
+        },
+    ],
+};
+
 export const basicDummy = {
     name: "Dummy",
     image: PuppetreeImage,

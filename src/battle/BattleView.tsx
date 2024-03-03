@@ -940,7 +940,7 @@ const BattlefieldContainer = () => {
                         initialBattlefield={{ playerSide, enemySide }}
                     />
                     <div className={classes.abilityContainer}>
-                        {!selectedAbilityFromHand && !disableActions && isTutorial && hand.length > 0 && (
+                        {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && (
                             <div className={classes.clickIndicator}>
                                 Click <br />
                                 <Icon icon={ClickIndicatorImage} />

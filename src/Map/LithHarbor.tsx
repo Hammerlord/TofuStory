@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import warriorTutorial from "../Menu/tutorial";
 import {
     LithHarborCenterImage,
     LithHarborCityBGImage,
@@ -19,6 +18,8 @@ import { TOWN_STYLES } from "./constants";
 import { basicDummy } from "../enemy/dummy";
 import { olaf } from "../enemy/enemy";
 import { lithEventsTeoJohn } from "../scene/teojohn";
+import { PLAYER_CLASSES } from "../Menu/types";
+import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -128,9 +129,13 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                             }
                             onClick={() => {
                                 if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
+                                    const tutorialMap = {
+                                        [PLAYER_CLASSES.WARRIOR]: warriorTutorial,
+                                        [PLAYER_CLASSES.MAGICIAN]: magicianTutorial,
+                                    };
                                     onBattle(
                                         {
-                                            ...warriorTutorial,
+                                            ...tutorialMap[player.class],
                                             backgroundImage: LithHarborCityBGImage,
                                         },
                                         () => setPromptTutorial(false)
