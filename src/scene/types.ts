@@ -1,5 +1,6 @@
 import { Ability } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
+import { ActivityHistoryLog } from "../character/playerReducer";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
@@ -45,7 +46,8 @@ export interface Shop {
 }
 
 export interface ScriptConditions {
-    battleTotalDamage?: number;
+    battleTotalDamage?: number; // How much damage was dealt in the most recent battle. See Gachapon for an example of how this is used.
+    activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
     comparator?: "lt" | "eq" | "gt";
     chance?: number;
 }
@@ -82,7 +84,7 @@ export interface ScriptNode {
         onExit,
     }: {
         player: Combatant;
-        onComplete: ({ success, infamy }?: { success?: boolean; infamy?: number }) => void;
+        onComplete: ({ success, infamy }?: ActivityHistoryLog) => void;
         onExit: () => void;
     }) => JSX.Element;
     treasureBox?: ScriptNodeTreasure;

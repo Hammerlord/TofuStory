@@ -23,6 +23,7 @@ import {
     WraithCardImage,
 } from "../images";
 import { getRandomItem, shuffle } from "../utils";
+import { ActivityHistoryLog } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     root: {
@@ -122,7 +123,14 @@ const getRandomizedDeck = (difficulty: "easy" | "medium" | "hard") => {
 const CARD_RANGE_TO_FLIP = 3;
 const TURN_ANNOUNCEMENT_TIME = 1500;
 
-const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "medium" | "hard" }) => {
+const CardMatchingGame = ({
+    difficulty,
+    onComplete,
+}: {
+    onExit?: Function;
+    onComplete?: (log: ActivityHistoryLog) => void;
+    difficulty: "easy" | "medium" | "hard";
+}) => {
     const [cardLayout] = useState(getRandomizedDeck(difficulty));
     const [flippedCardIndex, setFlippedCardIndex] = useState(null);
     const [selectedCardIndices, setSelectedCardIndices] = useState([null, null]);
@@ -269,6 +277,10 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
         return isInitialReveal || isSelected;
     };
 
+    const handleClickExit = () => {
+        onComplete && onComplete({ success: playerScore > opponentScore, score: playerScore, type: "card-matching" });
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
@@ -300,7 +312,7 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
                         {playerScore < opponentScore && "You lose"}
                         {playerScore === opponentScore && "Draw"}
                         <br />
-                        <Button variant="contained" color="primary" onClick={() => onExit(playerScore > opponentScore)}>
+                        <Button variant="contained" color="primary" onClick={handleClickExit}>
                             Exit
                         </Button>
                     </div>
@@ -311,4 +323,4 @@ const CardGame = ({ onExit, difficulty }: { onExit: any; difficulty: "easy" | "m
     );
 };
 
-export default CardGame;
+export default CardMatchingGame;

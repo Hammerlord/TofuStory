@@ -18,9 +18,17 @@ const INITIAL_STATE = {
         [BATTLE_TYPES.ELITE_ENCOUNTER]: 0,
         [BATTLE_TYPES.BOSS]: 0,
     },
-    battleHistory: [],
+    battleHistory: [], // Logs configs of battles encountered
+    activityHistory: [], // Logs the result of minigames etc. encountered
     visitedEvents: {}, // { [eventId: string]: number } - value is number of times visited
     infamy: 0,
+};
+
+export type ActivityHistoryLog = {
+    score?: number;
+    success?: boolean;
+    infamy?: number;
+    type?: "card-matching";
 };
 
 export const playerStateSlice = createSlice({
@@ -185,6 +193,12 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 battleHistory: [...(state?.battleHistory || []), action.payload],
+            };
+        },
+        pushActivityHistory: (state, action: PayloadAction<ActivityHistoryLog>) => {
+            return {
+                ...state,
+                activityHistory: [...(state.activityHistory || []), action.payload],
             };
         },
         logVisitedEvent: (state, action: PayloadAction<string>) => {

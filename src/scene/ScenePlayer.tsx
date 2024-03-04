@@ -197,7 +197,7 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
-const { logVisitedEvent, addInfamy, acquireItems, updateMesos } = playerStateSlice.actions;
+const { logVisitedEvent, addInfamy, acquireItems, updateMesos, pushActivityHistory } = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -232,7 +232,7 @@ const ScenePlayer = ({
     updateDeck: (newDeck: CombatAbility[]) => void;
     onChangeRegion: (region: REGIONS) => void;
 }) => {
-    const { battleHistory = [] } = useAppSelector((state) => state)?.character || {};
+    const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state)?.character || {};
     const dispatch = useAppDispatch();
 
     const [dialogIndex, setDialogIndex] = useState(0);
@@ -359,9 +359,10 @@ const ScenePlayer = ({
         }
     };
 
-    const onCompletePuzzle = (completionPayload: { success?: boolean; infamy?: number }) => {
+    const onCompletePuzzle = (completionPayload: { success?: boolean; infamy?: number; score?: number; type? }) => {
         const { infamy = 0 } = completionPayload || {};
         dispatch(addInfamy(infamy));
+        dispatch(pushActivityHistory(completionPayload));
         handleClickDialog();
     };
 
@@ -371,14 +372,21 @@ const ScenePlayer = ({
         }
 
         const recentBattle = battleHistory[battleHistory.length - 1];
+        const recentActivity = activityHistory[activityHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battleTotalDamage, comparator, chance } = condition || {};
+            const { battleTotalDamage, comparator, chance, activityScore } = condition || {};
             if (chance) {
                 return Math.random() <= chance;
             }
 
-            return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
+            if (typeof battleTotalDamage === "number") {
+                return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
+            }
+
+            if (typeof activityScore === "number") {
+                return passesValueComparison({ val: recentActivity?.score, otherVal: activityScore, comparator });
+            }
         };
 
         return conditions.some(passesCondition);

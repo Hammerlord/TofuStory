@@ -9,7 +9,7 @@ import { createUseStyles } from "react-jss";
 import Map from "../Map/Map";
 import Shop from "../Menu/Shop";
 import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
-import CardGame from "../scene/CardGame";
+import CardMatchingGame from "../scene/CardMatchingGame";
 import DimPath from "../scene/Ellinia/DimPath";
 import FollowFairies from "../scene/Ellinia/FollowFairies";
 import Tombstones from "../scene/Ellinia/Tombstones";
@@ -150,7 +150,7 @@ const DevToolButton = () => {
             )}
             {cardGameDifficulty && (
                 <div className={classes.overlay}>
-                    <CardGame difficulty={cardGameDifficulty} onExit={() => setCardGameDifficulty(null)} />
+                    <CardMatchingGame difficulty={cardGameDifficulty} onExit={() => setCardGameDifficulty(null)} />
                 </div>
             )}
             {isAbilityViewerOpen && (
