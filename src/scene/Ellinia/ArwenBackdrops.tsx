@@ -28,8 +28,8 @@ const introUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${ElliniaLibraryOutsideImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -97,8 +97,8 @@ const lupinForestUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${DeepeningForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -121,8 +121,8 @@ const lupinForest2UseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${DeepeningForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -150,8 +150,8 @@ const lupinForest3UseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${DeepeningForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -179,8 +179,8 @@ const lupinForest4UseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${DeepeningForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -218,8 +218,8 @@ const darkForestUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${ShadowyForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -278,8 +278,8 @@ export const twilitForestUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${TwilitForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
         filter: "brightness(0.4)",
     },
     character,
@@ -303,8 +303,8 @@ export const twilitForestUseStyles2 = createUseStyles({
     root: {
         position: "relative",
         background: `url(${TwilitForest2Image}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
         filter: "brightness(0.2)",
     },
     character,
@@ -328,8 +328,8 @@ export const twilitForestUseStyles3 = createUseStyles({
     root: {
         position: "relative",
         background: `url(${TwilitForest2Image}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -389,8 +389,8 @@ export const tombstonesTwilitForestUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${TwilitForest3Image}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {
@@ -467,8 +467,8 @@ const lupinForestMaladiesUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${DeepeningForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character,
     player: {

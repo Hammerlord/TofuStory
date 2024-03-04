@@ -55,7 +55,7 @@ const useStyles = createUseStyles({
         textAlign: "center",
         margin: "auto",
         position: "absolute",
-        top: "50%",
+        top: "45%",
         left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
@@ -90,6 +90,10 @@ const useStyles = createUseStyles({
                 marginBottom: 0,
             },
         },
+    },
+    backdropContainer: {
+        width: 1000,
+        height: 650,
     },
     portraitContainer: {
         minHeight: "100px",
@@ -527,7 +531,9 @@ const ScenePlayer = ({
                 <div className={classes.inner}>
                     {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (
                         <>
-                            <div onClick={handleClickDialog}>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
+                            <div className={classes.backdropContainer} onClick={handleClickDialog}>
+                                {typeof Backdrop === "function" && <Backdrop player={player} />}
+                            </div>
 
                             <div className={classes.wrapper}>
                                 <div className={classes.dialogContainer} onClick={handleClickDialog}>

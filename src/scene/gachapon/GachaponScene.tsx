@@ -6,8 +6,8 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${HenesysGachaponFullImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",

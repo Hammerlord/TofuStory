@@ -54,8 +54,8 @@ const introUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${BlueMushroomForestImage}) no-repeat`,
-        width: "1000px",
-        height: "600px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",
@@ -99,8 +99,8 @@ const progressedUseStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${BlueMushroomForestImage}) no-repeat`,
-        width: "1000px",
-        height: "750px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",
