@@ -60,6 +60,11 @@ const useStyles = createUseStyles({
             color: "#42f57b",
         },
     },
+    negative: {
+        "& .text": {
+            color: "#ff9b94",
+        },
+    },
 });
 
 /**
@@ -90,6 +95,7 @@ const ArmorIcon = ({ ability, playerInfo }: { ability: Ability; playerInfo: Comb
             text={`${base}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames({
                 [classes.highlightText]: bonusFromEffects > 0 || bonusFromConditions > 0,
+                [classes.negative]: bonusFromEffects < 0 || bonusFromConditions < 0,
             })}
         />
     );
