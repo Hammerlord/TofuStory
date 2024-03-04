@@ -7,6 +7,7 @@ import { Ability, AbilityUpgrade, CombatAbility } from "../ability/types";
 import Button from "../view/Button";
 import { cloneDeep } from "lodash";
 import { getUpgradeCard } from "./utils";
+import { Checkbox } from "@material-ui/core";
 
 const useStyles = createUseStyles({
     root: {
@@ -77,6 +78,10 @@ const useGridStyles = createUseStyles({
         height: "70vh",
         overflow: "auto",
     },
+    tileContainer: {
+        display: "inline-block",
+        verticalAlign: "top",
+    },
 });
 
 const CardUpgradeGrid = ({
@@ -90,6 +95,7 @@ const CardUpgradeGrid = ({
     onConfirm?: (updatedDeck: CombatAbility[]) => void;
 }) => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
+    const [isHideDuplicates, setIsHideDuplicates] = useState(true);
     const classes = useGridStyles();
 
     /** There is no need to show more than one of a kind for a card */
@@ -98,43 +104,52 @@ const CardUpgradeGrid = ({
         return acc;
     }, {});
 
+    const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
                 <h3>Select an ability to upgrade</h3>
-
+                <label>
+                    <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide Duplicate Cards
+                </label>
                 <div className={classes.abilitySection}>
-                    {Object.values(uniqueCardsMap).map((card: CombatAbility, i) => (
-                        <UpgradeTile
-                            card={card}
-                            onClick={() => setSelectedAbilityId(card.instanceId)}
-                            key={card.instanceId}
-                            isSelected={selectedAbilityId === card.instanceId}
-                        />
+                    {cardsList.map((card: CombatAbility) => (
+                        <div className={classes.tileContainer}>
+                            <UpgradeTile
+                                card={card}
+                                onClick={() => setSelectedAbilityId(card.instanceId)}
+                                key={card.instanceId}
+                                isSelected={selectedAbilityId === card.instanceId}
+                            />
+                            {selectedAbilityId === card.instanceId && (
+                                <div>
+                                    <Button
+                                        variant={"contained"}
+                                        color={"primary"}
+                                        onClick={() => {
+                                            const cardToUpgrade = cards.find(({ instanceId }) => instanceId === selectedAbilityId);
+                                            if (!cardToUpgrade) {
+                                                return;
+                                            }
+
+                                            const upgrade = getUpgradeCard(cardToUpgrade);
+                                            const updatedCards = [
+                                                ...cards.filter((card) => card.instanceId !== selectedAbilityId),
+                                                upgrade,
+                                            ];
+                                            onConfirm && onConfirm(updatedCards);
+                                        }}
+                                        disabled={!selectedAbilityId}
+                                    >
+                                        Confirm
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
                     ))}
                 </div>
                 <div>
-                    {onConfirm && (
-                        <>
-                            <Button
-                                variant={"contained"}
-                                color={"primary"}
-                                onClick={() => {
-                                    const cardToUpgrade = cards.find(({ instanceId }) => instanceId === selectedAbilityId);
-                                    if (!cardToUpgrade) {
-                                        return;
-                                    }
-
-                                    const upgrade = getUpgradeCard(cardToUpgrade);
-                                    const updatedCards = [...cards.filter((card) => card.instanceId !== selectedAbilityId), upgrade];
-                                    onConfirm(updatedCards);
-                                }}
-                                disabled={!selectedAbilityId}
-                            >
-                                Select!
-                            </Button>{" "}
-                        </>
-                    )}
                     {onCancel && (
                         <Button variant={"contained"} onClick={onCancel as any}>
                             Cancel
