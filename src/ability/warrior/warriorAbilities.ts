@@ -325,13 +325,13 @@ const drumOfWar: Action = {
 export const warBanner: Ability = {
     name: "War Banner",
     image: FlagImage,
-    resourceCost: 2,
-    description: "Summon and Turn Start: Grants 2 armor and +1 ATT to nearby allies.",
+    resourceCost: 1,
+    description: "Summon and Turn Start: 2 Armor and +1 ATT to nearby allies.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
         image: FlagImage,
-        maxHP: 5,
+        maxHP: 3,
         abilities: [],
         effects: [
             {
@@ -340,7 +340,7 @@ export const warBanner: Ability = {
             },
             {
                 name: "War Banner - Drumbeat of War",
-                description: "Granting 2 armor and +1 attack to nearby allies every turn.",
+                description: "Granting 2 Armor and +1 ATT to nearby allies every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
@@ -375,7 +375,33 @@ export const warBanner: Ability = {
     actions: [],
     upgrades: [
         {
-            resourceCost: -1,
+            minion: {
+                effects: [
+                    {
+                        duration: 2,
+                    },
+                    {
+                        onTurnStart: {
+                            ability: {
+                                actions: [
+                                    {
+                                        armor: 1,
+                                    },
+                                ],
+                            },
+                        },
+                        onSummoned: {
+                            ability: {
+                                actions: [
+                                    {
+                                        armor: 1,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
         },
     ],
 };
@@ -640,43 +666,12 @@ export const rush: Ability = {
     ],
 };
 
-export const berserk2: Ability = {
-    name: "Berserk",
-    level: 2,
-    resourceCost: 0,
-    image: PowerStanceImage,
-    depletedOnUse: true,
-    description: "Cards in your current hand cost 3 less until they are discarded",
-    rarity: RARITIES.RARE,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            drawCards: {
-                amount: 1,
-            },
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            applyAbilityEffects: {
-                pile: "hand",
-                abilityEffects: [
-                    {
-                        resourceCost: -3,
-                    },
-                ],
-            },
-        },
-    ],
-};
-
 export const berserk: Ability = {
     name: "Berserk",
     resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "Cards in your current hand cost 3 less until they are discarded",
+    description: "5 random cards in your hand cost 3 less, until they are discarded",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -688,6 +683,7 @@ export const berserk: Ability = {
             target: TARGET_TYPES.SELF,
             applyAbilityEffects: {
                 pile: "hand",
+                amount: 5,
                 abilityEffects: [
                     {
                         resourceCost: -3,
@@ -1156,6 +1152,7 @@ export const arsenal: Ability = {
     image: AdvancedWeaponMasteryImage,
     description: "Discover an offensive ability available to your class. It costs 1 less and is Ephemeral",
     rarity: RARITIES.RARE,
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1174,13 +1171,15 @@ export const arsenal: Ability = {
     ],
     upgrades: [
         {
-            description: "Discover an offensive ability available to your class. It costs 2 less and is Ephemeral",
+            description: "Discover an Upgraded offensive ability available to your class. It costs 1 less and is Ephemeral",
             actions: [
                 {
                     selectCards: {
-                        effects: {
-                            resourceCost: -1,
-                        },
+                        effects: [
+                            {
+                                upgradedByLevels: 1,
+                            },
+                        ],
                     },
                 },
             ],
@@ -1266,7 +1265,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 10,
+            damage: 11,
             secondaryAction: {
                 target: "actor",
                 returnParentCardToHand: true,
@@ -1298,7 +1297,7 @@ export const counterattack: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Next turn, when you are attacked, counter for 5 damage and inflict Bleed.",
+    description: "For 1 turn, when you are attacked, counter for 4 damage and inflict Bleed.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1320,7 +1319,7 @@ export const counterattack: Ability = {
                                 {
                                     type: ACTION_TYPES.ATTACK,
                                     target: TARGET_TYPES.HOSTILE,
-                                    damage: 5,
+                                    damage: 4,
                                     effects: [
                                         {
                                             ...bleed,
@@ -1339,7 +1338,7 @@ export const counterattack: Ability = {
     ],
     upgrades: [
         {
-            description: "Next turn, when you are attacked, counter for 7 damage and inflict Bleed.",
+            description: "For 1 turn, when you are attacked, counter for 6 damage and inflict Bleed.",
             actions: [
                 {
                     effects: [
@@ -1504,12 +1503,12 @@ export const brandish: Ability = {
     description: "Hits twice",
     actions: [
         {
-            damage: 5,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
         {
-            damage: 5,
+            damage: 4,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -1864,7 +1863,8 @@ export const bloodthirst: Ability = {
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain +1 Leech, +3 life on kill, and +1 ATT, but self-inflict Bleed. 3 turns.",
+    description: "Gain +1 Leech and +1 ATT, but self-inflict Bleed. 3 turns.",
+    depletedOnUse: true,
     overrideBodyText: true,
     actions: [
         {
@@ -1878,7 +1878,6 @@ export const bloodthirst: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
                     lifeOnHit: 1,
-                    lifeOnKill: 3,
                     duration: 3,
                     maxApplications: 1,
                 },
