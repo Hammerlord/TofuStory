@@ -165,11 +165,6 @@ const toKerning: Route = {
     },
     nodes: [
         {
-            x: 0.19591836734693877,
-            y: 0.609017912291538,
-            region: REGIONS.HENESYS,
-        },
-        {
             x: 0.17551020408163265,
             y: 0.5558987029030266,
             region: REGIONS.KERNING,
@@ -227,14 +222,8 @@ const toKerningForest: Route = {
             region: REGIONS.LITH_HARBOR,
         },
         {
-            x: 0.23139329805996472,
-            y: 0.5596757243657109,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.2324514991181658,
-            y: 0.5092328479207326,
-            type: NODE_TYPES.BOSS,
+            x: 0.19591836734693877,
+            y: 0.609017912291538,
             encounter: [
                 {
                     enemies: [null, minionSnail, mutantSnailEnemy, minionSnail, null],
@@ -243,8 +232,9 @@ const toKerningForest: Route = {
                     },
                 },
             ],
+            type: NODE_TYPES.BOSS,
             cardRewards: [shellThrow],
-            region: REGIONS.HENESYS,
+            region: REGIONS.LITH_HARBOR,
         },
     ],
     next: [toKerning],
@@ -419,8 +409,13 @@ export const toHenesys: Route = {
     },
     nodes: [
         {
-            x: 0.38765432098765434,
-            y: 0.7446329379972977,
+            x: 0.3333333333333333,
+            y: 0.7680094089973537,
+            region: REGIONS.HENESYS,
+        },
+        {
+            x: 0.363668430335097,
+            y: 0.7907521393184207,
             region: REGIONS.HENESYS,
         },
         {
@@ -473,11 +468,6 @@ export const toHenesysForest: Route = {
             x: 0.3143350604490501,
             y: 0.7221405468979711,
             region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.3333333333333333,
-            y: 0.7680094089973537,
-            region: REGIONS.HENESYS,
             type: NODE_TYPES.BOSS,
             encounter: [
                 {
@@ -488,16 +478,6 @@ export const toHenesysForest: Route = {
                 },
             ],
             cardRewards: [shellThrow],
-        },
-        {
-            x: 0.363668430335097,
-            y: 0.7907521393184207,
-            region: REGIONS.HENESYS,
-        },
-        {
-            x: 0.37178130511463847,
-            y: 0.6970725116348897,
-            region: REGIONS.HENESYS,
         },
     ],
     next: [toHenesys],
@@ -524,7 +504,6 @@ export const routeLith: Route = {
     ],
     multiWaveEnemies: [
         [snail, snail, null, snail, snail],
-        [snail, null, snail, null, snail],
         [null, blueSnail, snail, blueSnail, null],
         [snail, null, shroom, null, snail],
         [null, blueSnail, shroom, blueSnail, null],
