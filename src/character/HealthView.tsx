@@ -6,7 +6,7 @@ import { CrossedSwordsIcon, HeartIcon } from "../images/icons";
 import { getEnabledEffects, getMaxHP } from "../battle/utils";
 import { Combatant } from "./types";
 import { passesConditions } from "../battle/passesConditions";
-import { TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { CombatantInfo } from "../battle/types";
 
 const useStyles = createUseStyles({
@@ -25,10 +25,9 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
 
     const HP = combatant?.HP;
     const maxHP = getMaxHP(combatant);
-    const toOneDecimal = (num) => Math.round(num * 10) / 10;
     const classes = useStyles();
     const effects = getEnabledEffects({ combatantInfo });
-    const damageModifiers = effects.filter((effect) => {
+    const damageModifiers: Effect[] = effects.filter((effect) => {
         return (
             effect.attackDamageReceived &&
             passesConditions({
@@ -40,24 +39,38 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const damageModifierTotal = damageModifiers.reduce((acc, effect) => {
         return (acc += effect.attackDamageReceived);
     }, 0);
+    const modifierMap = damageModifiers.reduce((acc, effect) => {
+        if (!acc[effect.name]) {
+            acc[effect.name] = {
+                count: 0,
+                effect,
+            };
+        }
+
+        acc[effect.name].count += effect.attackDamageReceived;
+
+        return acc;
+    }, {});
 
     const tooltipContents = (
         <div>
-            {HP} / {maxHP} HP ({toOneDecimal(HP / maxHP) * 100}%)
+            {HP} / {maxHP} HP
             {damageModifierTotal !== 0 && (
                 <>
                     <hr />
                     <div>
-                        Receiving{" "}
+                        Receiving
                         <Icon
                             icon={CrossedSwordsIcon}
+                            size="sm"
                             text={damageModifierTotal < 0 ? `-${damageModifierTotal}` : `+${damageModifierTotal}`}
                         />{" "}
                         from attacks. <br /> Modifiers:
-                        {damageModifiers.map(({ name, attackDamageReceived, icon }, i) => (
-                            <div key={[name, i].join("-")}>
-                                <Icon icon={icon} /> {name} {attackDamageReceived < 0 ? "-" : "+"}
-                                {attackDamageReceived}
+                        {/** @ts-ignore */}
+                        {Object.values(modifierMap).map(({ count, effect }) => (
+                            <div key={[effect.name].join("-")}>
+                                <Icon icon={effect.icon} size="sm" /> {effect.name} {count < 0 ? "-" : "+"}
+                                {count}
                             </div>
                         ))}
                     </div>
