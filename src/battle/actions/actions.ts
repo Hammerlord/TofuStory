@@ -24,7 +24,7 @@ import {
     TARGET_TYPES,
 } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
-import { Combatant } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
@@ -853,40 +853,43 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
     return updatedEffects;
 };
 
+export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: Combatant | Player) => {
+    const { healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0, removedEffects = [] } = statUpdate;
+
+    const combatantEffects = combatant.effects.filter((effect: CombatEffect) => removedEffects.every(({ id }) => id !== effect.id));
+
+    return {
+        ...combatant,
+        HP: Math.max(0, combatant.HP - healthDamage + healing),
+        armor: combatant.armor + armor,
+        resources: Math.max(0, combatant.resources + resources),
+        effects: calculateEffectChanges(effects, combatantEffects),
+        mesos: Math.max(0, combatant.mesos + mesos),
+    };
+};
+
 export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
     // Apply the stat updates first before triggering any related events
-    statUpdates.forEach(
-        ({ combatantId, healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0, removedEffects = [] }) => {
-            const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
-            // Due to morph, the combatant may no longer exist
-            if (!oldCombatant) {
-                return;
-            }
-
-            dispatch(
-                updateBattle({
-                    [friendlySide]: friendly.map((combatant: Combatant | null) => {
-                        if (combatant?.id !== combatantId) {
-                            return combatant;
-                        }
-
-                        const combatantEffects = oldCombatant.effects.filter((effect: CombatEffect) =>
-                            removedEffects.every(({ id }) => id !== effect.id)
-                        );
-
-                        return {
-                            ...oldCombatant,
-                            HP: Math.max(0, oldCombatant.HP - healthDamage + healing),
-                            armor: oldCombatant.armor + armor,
-                            resources: Math.max(0, oldCombatant.resources + resources),
-                            effects: calculateEffectChanges(effects, combatantEffects),
-                            mesos: Math.max(0, oldCombatant.mesos + mesos),
-                        };
-                    }),
-                })
-            );
+    statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
+        const combatantId = statUpdate.combatantId;
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
+        // Due to morph, the combatant may no longer exist
+        if (!oldCombatant) {
+            return;
         }
-    );
+
+        dispatch(
+            updateBattle({
+                [friendlySide]: friendly.map((combatant: Combatant | null) => {
+                    if (combatant?.id !== combatantId) {
+                        return combatant;
+                    }
+
+                    return stageStatChanges(statUpdate, oldCombatant);
+                }),
+            })
+        );
+    });
 };
 
 const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {

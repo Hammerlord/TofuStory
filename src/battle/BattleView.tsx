@@ -32,7 +32,7 @@ import TurnAnnouncement from "./Notification/TurnNotification";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { calculateTargetIndices, checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
+import { calculateTargetIndices, checkEventTrigger, findCombatantData, stageStatChanges, useAbility } from "./actions/actions";
 import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
@@ -767,13 +767,20 @@ const BattlefieldContainer = () => {
         }
         const result = {};
 
+        const previousCombatantStates = {
+            battle: {
+                playerSide: [...playerSide],
+                enemySide: [...enemySide],
+            },
+        };
+
         selectedAbilityFromHand.actions.forEach((action: Action) => {
             if (![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target)) {
                 return;
             }
 
-            const actorData = findCombatantData(() => state, actorId);
-            const targetData = findCombatantData(() => state, hoveredCombatant.id);
+            const actorData = findCombatantData(() => previousCombatantStates, actorId);
+            const targetData = findCombatantData(() => previousCombatantStates, hoveredCombatant.id);
 
             const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
                 if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
@@ -807,13 +814,12 @@ const BattlefieldContainer = () => {
 
             const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
 
-            // Subsequent action previews can be inaccurate due to procs
             const updatedStatsProperties = {
                 actorId,
                 targetIds,
                 selectedIndex: hoveredCombatant.index,
                 action,
-                getCombatantById: (id: string) => findCombatantData(() => state, id),
+                getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
                 actionParent: selectedAbilityFromHand,
                 hand,
                 deck,
@@ -826,8 +832,17 @@ const BattlefieldContainer = () => {
                     result[combatantId] = [];
                 }
 
-                const hasRandomSecondaryTargets =
-                    action.numTargets && hoveredCombatant.index !== findCombatantData(() => state, combatantId)?.index;
+                const combatantInfo = findCombatantData(() => previousCombatantStates, combatantId);
+                if (!combatantInfo?.combatant) {
+                    return;
+                }
+
+                const { index, combatant } = combatantInfo;
+                const hasRandomSecondaryTargets = action.numTargets && hoveredCombatant.index !== index;
+
+                const staging = stageStatChanges(statUpdate, combatant);
+                // If it's a multi-hit attack being previewed, we want to update the previous combatant state so we can get a more accurate preview of the proceeding hits
+                previousCombatantStates.battle[index] = staging;
                 const targetsRandomly = action.target === TARGET_TYPES.RANDOM_HOSTILE;
 
                 result[combatantId].push({
@@ -835,6 +850,14 @@ const BattlefieldContainer = () => {
                     nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
                 });
             });
+
+            // For abilities like Combo Fury which gain damage when you attack
+            if (previousCombatantStates.battle?.[actorData.friendlySide]?.[actorData.index]) {
+                previousCombatantStates.battle[actorData.friendlySide][actorData.index] = {
+                    ...actorData.combatant,
+                    turnHistory: [...(actorData.combatant.turnHistory || []), action],
+                };
+            }
         });
 
         return result;

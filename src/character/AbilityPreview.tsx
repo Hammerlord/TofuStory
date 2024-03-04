@@ -44,6 +44,10 @@ const useStyles = createUseStyles({
     },
 });
 
+/**
+ * The damage preview that shows up when you hover over an enemy with an offensive card selected.
+ * May be expanded to include buffs, debuffs, armor...
+ */
 const AbilityPreview = ({ previewStatUpdate }) => {
     const classes = useStyles();
 
