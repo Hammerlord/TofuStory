@@ -80,7 +80,7 @@ const useGridStyles = createUseStyles({
 });
 
 const CardUpgradeGrid = ({
-    cards,
+    cards = [],
     onCancel,
     onConfirm,
 }: {
@@ -89,8 +89,14 @@ const CardUpgradeGrid = ({
     onCancel?: () => void;
     onConfirm?: (updatedDeck: CombatAbility[]) => void;
 }) => {
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const classes = useGridStyles();
+
+    /** There is no need to show more than one of a kind for a card */
+    const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
+        acc[`${card.name}-${card.level || 1}`] = card;
+        return acc;
+    }, {});
 
     return (
         <div className={classes.root}>
@@ -98,12 +104,12 @@ const CardUpgradeGrid = ({
                 <h3>Select an ability to upgrade</h3>
 
                 <div className={classes.abilitySection}>
-                    {cards.map((card: CombatAbility, i) => (
+                    {Object.values(uniqueCardsMap).map((card: CombatAbility, i) => (
                         <UpgradeTile
                             card={card}
-                            onClick={() => setSelectedAbilityIndex(i)}
+                            onClick={() => setSelectedAbilityId(card.instanceId)}
                             key={card.instanceId}
-                            isSelected={i === selectedAbilityIndex}
+                            isSelected={selectedAbilityId === card.instanceId}
                         />
                     ))}
                 </div>
@@ -114,15 +120,16 @@ const CardUpgradeGrid = ({
                                 variant={"contained"}
                                 color={"primary"}
                                 onClick={() => {
-                                    if (!cards[selectedAbilityIndex]) {
+                                    const cardToUpgrade = cards.find(({ instanceId }) => instanceId === selectedAbilityId);
+                                    if (!cardToUpgrade) {
                                         return;
                                     }
 
-                                    const upgrade = getUpgradeCard(cards[selectedAbilityIndex]);
-                                    const updatedCards = [...cards.filter((_, i) => i !== selectedAbilityIndex), upgrade];
+                                    const upgrade = getUpgradeCard(cardToUpgrade);
+                                    const updatedCards = [...cards.filter((card) => card.instanceId !== selectedAbilityId), upgrade];
                                     onConfirm(updatedCards);
                                 }}
-                                disabled={!cards[selectedAbilityIndex]}
+                                disabled={!selectedAbilityId}
                             >
                                 Select!
                             </Button>{" "}
