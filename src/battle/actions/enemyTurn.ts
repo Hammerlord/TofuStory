@@ -223,6 +223,7 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
     return -1;
 };
 
+// FIX ME: The recently used ability log also contains proc abilities, when we want just the ability the enemy used for its main turn
 const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState) => {
     const actorInfo = findCombatantData(getState, combatantId);
     if (!actorInfo) {

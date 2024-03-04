@@ -1789,7 +1789,7 @@ export const mesoThief: Minion = {
                                     ],
                                 },
                             },
-                            onEffectRemoved: {
+                            onRemoved: {
                                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                 ability: {
                                     name: "",
@@ -1991,7 +1991,7 @@ export const eventBandit: Minion = {
                                             ],
                                         },
                                     },
-                                    onEffectRemoved: {
+                                    onRemoved: {
                                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                         ability: {
                                             name: "",

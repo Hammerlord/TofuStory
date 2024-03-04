@@ -991,8 +991,7 @@ export const triggerStatChangeEvents =
             });
 
             removedEffects.forEach((e: CombatEffect) => {
-                // TODO probably include effects in the event trigger payload?
-                dispatchEvent(EFFECT_EVENT_KEYS.onEffectRemoved);
+                dispatch(onEffectEventTrigger({ ownerId: combatantId, effectEvent: e.onRemoved, effect: e }));
             });
 
             if (isDeathBlow) {
@@ -1574,15 +1573,22 @@ const performAction = ({
             }
         };
 
+        // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
+        const hitEffects = getHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action }, getState });
+        hitEffects.forEach((statChanges) => {
+            dispatch(applyStatChanges(statChanges.map(([statUpdate]) => statUpdate)));
+        });
+
+        let updatedSecondary;
         if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
-            const updatedSecondary = getUpdatedStats({
+            updatedSecondary = getUpdatedStats({
                 ...updatedStatsProps,
                 // Based on secondaryAction.target, but only actor recipient is supported for now
                 recipientIds: [actorId],
                 selectedIndex: undefined,
                 action: secondaryAction,
             });
-            dispatch(applyStatChanges(updatedSecondary.map((update) => update[0])));
+            dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
             if (secondaryAction.returnParentCardToHand) {
                 // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
                 const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
@@ -1606,12 +1612,6 @@ const performAction = ({
                 );
             }
         }
-
-        // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
-        const hitEffects = getHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action }, getState });
-        hitEffects.forEach((statChanges) => {
-            dispatch(applyStatChanges(statChanges.map(([statUpdate]) => statUpdate)));
-        });
 
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
@@ -1655,6 +1655,18 @@ const performAction = ({
                 )
             );
         });
+
+        // Same reasoning as hitEffects
+        if (updatedSecondary) {
+            dispatch(
+                triggerStatChangeEvents(
+                    updatedSecondary.map(([statUpdate, action]) => ({
+                        statUpdate,
+                        source: { ...source, source: action },
+                    }))
+                )
+            );
+        }
 
         dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));

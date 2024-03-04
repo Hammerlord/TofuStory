@@ -111,7 +111,6 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveArmor = "onReceiveArmor",
     onReceiveEffect = "onReceiveEffect",
     onApplyEffect = "onApplyEffect",
-    onEffectRemoved = "onEffectRemoved",
     onResourcesSpent = "onResourcesSpent",
     onResourcesGained = "onResourcesGained",
     onTurnStart = "onTurnStart",
@@ -119,6 +118,7 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
     onEnd = "onEnd", // When the effect ticks down and ends naturally, not when it is removed or dispelled
+    onRemoved = "onRemoved", // When the effect is removed or dispelled
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
@@ -517,6 +517,7 @@ export type Action = {
         effects?: Effect[];
         returnParentCardToHand?: boolean;
         armor?: number;
+        removeEffects?: string[];
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
