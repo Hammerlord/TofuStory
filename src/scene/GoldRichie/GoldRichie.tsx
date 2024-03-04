@@ -84,11 +84,7 @@ export const goldRichieMercenaries: EventScene = {
         {
             speaker: goldRichie,
             dialog: ["Guards!"],
-            responses: [
-                { text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, infamy: 5 },
-                { text: "Give up all your mesos", isExit: true },
-                { text: "Give up a random item", isExit: true },
-            ],
+            responses: [{ text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, infamy: 5 }],
         },
     ],
 };

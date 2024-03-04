@@ -55,7 +55,7 @@ const introUseStyles = createUseStyles({
         position: "relative",
         background: `url(${BlueMushroomForestImage}) no-repeat`,
         width: "1000px",
-        height: "750px",
+        height: "600px",
     },
     character: {
         position: "absolute",
