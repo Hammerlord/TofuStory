@@ -31,9 +31,14 @@ export const TOWN_STYLES = {
         display: "inline-block",
         verticalAlign: "middle",
     },
+    townCenterImage: {
+        filter: "saturate(0.5)",
+        opacity: 0.8,
+    },
     townHeader: {
         position: "absolute",
         left: "50%",
+        top: 0,
         transform: "translateX(-50%)",
         textShadow: Array.from({ length: 10 })
             .map(() => "0 0 3px black")

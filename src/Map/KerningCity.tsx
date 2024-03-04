@@ -35,8 +35,9 @@ const useStyles = createUseStyles({
         backgroundSize: "cover",
     },
     player: {
+        ...TOWN_STYLES.player,
         position: "absolute",
-        top: 189,
+        bottom: 184,
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -153,14 +154,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         />
 
                         <div className={classNames(classes.townCenter)}>
+                            <img src={KerningCenterImage} alt="Kerning Center" className={classes.townCenterImage} />
                             <div className={classes.townHeader}>
                                 <h2>Kerning City</h2>
                             </div>
-                            <img src={KerningCenterImage} alt="Kerning Center" />
-                            {/** <div className={classes.thoughtBubbleContainer}>
+                            <div className={classes.thoughtBubbleContainer}>
                                 <ThoughtBubbleIcon />
                                 <span className={classes.thought}>Where to go?</span>
-                            </div> **/}
+                            </div>
                             <img src={player?.image} alt="You" className={classes.player} />
                         </div>
 

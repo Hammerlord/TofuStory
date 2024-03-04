@@ -13,7 +13,7 @@ import {
     HenesysShopImage,
     HenesysTradingPostImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
 import pantry from "../scene/Henesys/pantry";
 import TownNode from "./TownNode";
@@ -33,10 +33,9 @@ const useStyles = createUseStyles({
         backgroundSize: "cover",
     },
     player: {
-        position: "absolute",
-        top: 185,
+        ...TOWN_STYLES.player,
+        bottom: 185,
         left: "52%",
-        transform: "translateX(-50%)",
     },
     gachaponMachine: {
         position: "absolute",
@@ -126,10 +125,14 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         />
 
                         <div className={classNames(classes.townCenter)}>
+                            <img src={HenesysCenterImage} alt="Henesys Center" className={classes.townCenterImage} />
                             <div className={classes.townHeader}>
                                 <h2>Henesys</h2>
                             </div>
-                            <img src={HenesysCenterImage} alt="Henesys Center" />
+                            <div className={classes.thoughtBubbleContainer}>
+                                <ThoughtBubbleIcon />
+                                <span className={classes.thought}>Where to go?</span>
+                            </div>
                             <img src={player?.image} alt="You" className={classes.player} />
                         </div>
 

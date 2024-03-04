@@ -11,7 +11,7 @@ import {
     ElliniaShopImage,
     ElliniaTradingPostImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
 import { grendelScene } from "../scene/Ellinia/grendelScene";
 import Legend from "./Legend";
@@ -22,10 +22,8 @@ import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
     player: {
-        position: "absolute",
-        top: 189,
-        left: "50%",
-        transform: "translateX(-50%)",
+        ...TOWN_STYLES.player,
+        bottom: 175,
     },
     root: {
         width: "100%",
@@ -119,10 +117,14 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         />
 
                         <div className={classNames(classes.townCenter)}>
+                            <img src={ElliniaCenterImage} alt="Ellinia Center" className={classes.townCenterImage} />
                             <div className={classes.townHeader}>
                                 <h2>Ellinia</h2>
                             </div>
-                            <img src={ElliniaCenterImage} alt="Ellinia Center" />
+                            <div className={classes.thoughtBubbleContainer}>
+                                <ThoughtBubbleIcon />
+                                <span className={classes.thought}>Where to go?</span>
+                            </div>
                             <img src={player?.image} alt="You" className={classes.player} />
                         </div>
 

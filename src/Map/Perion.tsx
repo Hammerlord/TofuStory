@@ -10,7 +10,7 @@ import {
     PerionTradingPostImage,
     PerionWarriorHallImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -28,9 +28,8 @@ const useStyles = createUseStyles({
         backgroundSize: "cover",
     },
     player: {
-        position: "absolute",
-        top: 216,
-        left: "50%",
+        ...TOWN_STYLES.player,
+        bottom: 155,
     },
 });
 
@@ -100,11 +99,15 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                         />
 
                         <div className={classNames(classes.townCenter)}>
+                            <img src={PerionCenterImage} alt="Perion center" className={classes.townCenterImage} />
                             <div className={classes.townHeader}>
                                 <h2>Perion</h2>
                             </div>
-                            <img src={PerionCenterImage} alt="Perion center" draggable={false} />
-                            <img src={player?.image} alt="You" className={classes.player} draggable={false} />
+                            <div className={classes.thoughtBubbleContainer}>
+                                <ThoughtBubbleIcon />
+                                <span className={classes.thought}>Where to go?</span>
+                            </div>
+                            <img src={player?.image} alt="You" className={classes.player} />
                         </div>
 
                         <TownNode
