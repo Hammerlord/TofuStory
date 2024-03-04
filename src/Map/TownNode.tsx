@@ -14,6 +14,13 @@ const useStyles = createUseStyles({
         padding: "0 64",
         verticalAlign: "middle",
     },
+    hoverHighlight: {
+        transition: "0.1s",
+
+        "&:hover": {
+            filter: "drop-shadow(0 0 1px #45ff61)",
+        },
+    },
     nodeLabel: {
         position: "absolute",
         left: "50%",
@@ -92,7 +99,10 @@ const TownNode = ({
         }
     };
     return (
-        <div className={classNames(classes.node, { [classes.visited]: isVisited })} onClick={handleClick}>
+        <div
+            className={classNames(classes.node, { [classes.visited]: isVisited, [classes.hoverHighlight]: !isVisited && !isLocked })}
+            onClick={handleClick}
+        >
             <div className={classNames(classes.backgroundContainer, { [classes.locked]: isLocked })}>
                 {nodeImage && <img src={nodeImage} alt={label} />}
                 {nodeEl && nodeEl}
