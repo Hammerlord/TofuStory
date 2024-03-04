@@ -165,7 +165,7 @@ export const mutantRibbonPig: Minion = {
     name: "Mutant Ribbon Pig",
     image: MutantRibbonPigImage,
     isBoss: true,
-    maxHP: 250,
+    maxHP: 300,
     abilities: [
         {
             name: "Stomp",
@@ -203,17 +203,17 @@ export const mutantRibbonPig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -239,7 +239,7 @@ export const mutantRibbonPig: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.STOMP,
-                    summon: [{ minion: [stalagmite] }],
+                    summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
                 },
                 ...throwRocks,
             ],
