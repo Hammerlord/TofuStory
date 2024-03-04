@@ -33,6 +33,11 @@ const useStyles = createUseStyles({
         "& img": {
             userDrag: "none",
         },
+        "& hr": {
+            borderTop: 0,
+            borderLeft: 0,
+            borderRight: 0,
+        },
     },
     root: {
         position: "fixed",

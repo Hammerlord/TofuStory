@@ -102,7 +102,6 @@ const CardUpgradeGrid = ({
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
     const classes = useGridStyles();
 
-    /** There is no need to show more than one of a kind for a card */
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
         return acc;
@@ -113,7 +112,7 @@ const CardUpgradeGrid = ({
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
-                <h3>Select an ability to upgrade</h3>
+                <h3>Upgrade an Ability</h3>
                 <label>
                     <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide duplicates
                 </label>
