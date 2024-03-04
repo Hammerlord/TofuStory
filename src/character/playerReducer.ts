@@ -6,9 +6,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { aggregateItemEffects } from "../Menu/utils";
 import { calculateMesoGain, getMaxHP } from "../battle/utils";
-import { Item, ITEM_TYPES } from "../item/types";
+import { Item, ITEM_TYPES, RARITIES } from "../item/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 
 const INITIAL_STATE = {
     player: null,
@@ -116,6 +117,11 @@ export const playerStateSlice = createSlice({
                     stacks: (newItems[existingIndex].stacks || 1) + 1,
                 };
             });
+
+            if (regularItems.some((item) => item.name === STARTER_ITEM_UPGRADE_MAP[state.player?.class]?.name)) {
+                // This is the upgraded starter item. The starter item will be replaced.
+                newItems = newItems.filter((item) => item.rarity !== RARITIES.STARTER);
+            }
 
             newItems.sort((a: Item, b: Item) => {
                 return order.findIndex((type) => type === a.type) - order.findIndex((type) => type === b.type);

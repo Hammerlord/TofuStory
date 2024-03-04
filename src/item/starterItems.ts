@@ -41,10 +41,9 @@ export const rageStone: Item = {
 export const rampageStone: Item = {
     name: "Rampage Stone",
     description: "Every 2 Fury you spend, gain 1 next turn. +1 card draw while active.",
-    flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.STARTER,
+    rarity: RARITIES.UNCOMMON,
     effects: [
         {
             name: "Rage Stone Effect",
@@ -154,7 +153,7 @@ export const greaterChargingStone: Item = {
     ...chargingStone,
     name: "Greater Charging Stone",
     description: "Playing a card grants Charged. If unused by end of turn, fire a Greater Bolt.",
-    rarity: RARITIES.STARTER,
+    rarity: RARITIES.UNCOMMON,
     effects: [
         {
             ...chargingStoneEffect,

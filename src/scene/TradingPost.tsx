@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { ITEM_TYPES, Item, RARITIES } from "../item/types";
-import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
-import { shuffle } from "../utils";
-import ItemView from "../item/ItemView";
-import { createUseStyles } from "react-jss";
 import classNames from "classnames";
-import Button from "../view/Button";
-import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
-import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
+import { useEffect, useRef, useState } from "react";
+import { createUseStyles } from "react-jss";
+import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
 import { Player } from "../character/types";
+import Icon from "../icon/Icon";
 import { KerningTowerImage, MoonBunnyImage } from "../images";
+import ItemView from "../item/ItemView";
+import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
+import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
+import { ITEM_TYPES, Item, RARITIES } from "../item/types";
+import { shuffle } from "../utils";
+import Button from "../view/Button";
 import Tooltip from "../view/Tooltip";
 
 const HEADER_BAR = 72;
@@ -130,7 +131,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const BASE_VENDOR_ITEMS = 8;
+const BASE_VENDOR_ITEMS = 11;
 const BASE_NUM_TRADES = 2;
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
 // or exchange their starter equipment for an upgraded version of their starter equipment.
@@ -150,6 +151,8 @@ const TradingPost = ({
     const [selectedVendorItem, setSelectedVendorItem] = useState(null);
     const [vendorDialog, setVendorDialog] = useState("");
     const classes = useStyles();
+    const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
+    const starterItem = player.items.find((item) => item.rarity === RARITIES.STARTER);
 
     useEffect(() => {
         // Exclude already-obtained equipment
@@ -159,25 +162,31 @@ const TradingPost = ({
         }, {});
 
         const itemPool = shuffle(
-            ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name] && item.type === ITEM_TYPES.EQUIPMENT)
+            ITEMS.concat(CLASS_ITEMS[player.class] || [])
+                .filter((item: Item) => !exclude[item.name] && item.type === ITEM_TYPES.EQUIPMENT)
+                .concat([mesoItem, bigMesoItem, hugeMesoItem])
         );
         const items = itemPool.slice(0, BASE_VENDOR_ITEMS);
-        const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
-        items.push(...[mesoItem, bigMesoItem, hugeMesoItem]);
-        if (upgradedStarterItem && player.items.every((item) => item.name !== upgradedStarterItem.name)) {
+
+        if (upgradedStarterItem && !exclude[upgradedStarterItem.name]) {
             items.push(upgradedStarterItem);
         }
         setVendorItems(items);
     }, []);
 
     useEffect(() => {
-        // Only equipment is available to trade. Trading Post also does not want the upgraded version of the starter item.
+        // Only equipment is available to trade. Trading Post also does not want the starter item or its upgraded version.
         setPlayerItems(
             player.items.filter(
-                (item: Item) => item.type === ITEM_TYPES.EQUIPMENT && item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
+                (item: Item) =>
+                    item.type === ITEM_TYPES.EQUIPMENT &&
+                    item.rarity !== RARITIES.STARTER &&
+                    item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
             )
         );
     }, [tradesRemaining]);
+
+    const isSelectedUpgradedStarter = selectedVendorItem?.name === upgradedStarterItem?.name;
 
     const dialogMemo = useRef([]);
 
@@ -218,7 +227,7 @@ const TradingPost = ({
             }
 
             if (!selectedPlayerItem) {
-                if (selectedVendorItem.rarity === RARITIES.STARTER) {
+                if (isSelectedUpgradedStarter) {
                     return "Oh, this? I've had it for a long time. It seems to be... resonating with something you own.";
                 }
 
@@ -286,7 +295,7 @@ const TradingPost = ({
 
     const offerElement = (item: Item, isPlayerItem: boolean) => {
         if (!item) {
-            return <div className={classes.itemPlaceholder}>None yet</div>;
+            return <div className={classes.itemPlaceholder}>{isPlayerItem ? "Your offer" : "Trading Post offer"}</div>;
         }
 
         const onClick = () => {
@@ -352,14 +361,13 @@ const TradingPost = ({
                 </Button>
             </div>
             <div className={classes.offerSection}>
-                <div className={classes.offerContainer}>
-                    <p>Your offer</p>
-                    {offerElement(selectedPlayerItem, true)}
-                </div>
-                <div className={classes.offerContainer}>
-                    <p>To be exchanged for</p>
-                    {offerElement(selectedVendorItem, false)}
-                </div>
+                <div className={classes.offerContainer}>{offerElement(selectedPlayerItem, true)}</div>
+                <div className={classes.offerContainer}>{offerElement(selectedVendorItem, false)}</div>
+                {isSelectedUpgradedStarter && (
+                    <div>
+                        {selectedVendorItem?.name} replaces {<Icon icon={starterItem.image} size="sm" />} {starterItem?.name}.
+                    </div>
+                )}
             </div>
             <span className={classes.tradesRemainingLabel}>Trades remaining: {tradesRemaining}</span>
             {tradesRemaining > 0 && (
