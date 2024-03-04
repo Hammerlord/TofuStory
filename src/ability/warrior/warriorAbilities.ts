@@ -1193,7 +1193,6 @@ export const sledge: Ability = {
     image: GiganticSledgeImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Deplete another card in your hand to use this ability",
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },

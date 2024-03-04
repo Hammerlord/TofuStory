@@ -465,7 +465,7 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Healing received reduced by 1. Taking 2 damage at the end of the turn.",
+    description: "Healing received reduced by 1. Taking 2 damage at end of turn.",
     icon: PoisonImage,
     duration: 3,
     healingReceived: -1,
@@ -483,7 +483,6 @@ export const attackPower: Effect = {
 export const armorUp: Effect = {
     name: "Armor Up",
     icon: ShieldIcon,
-    description: "Receiving +1 armor from armor sources",
     class: EFFECT_CLASSES.BUFF,
     type: EFFECT_TYPES.NONE,
     armorReceived: 1,
