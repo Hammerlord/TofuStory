@@ -2,6 +2,8 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
+import { Ability, Action, CombatAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -20,7 +22,7 @@ const useStyles = createUseStyles({
         zIndex: 5,
         fontSize: "18px",
         fontWeight: "bold",
-        background: "rgba(100, 15, 15, 0.9)",
+        background: "rgba(100, 40, 40, 0.9)",
         padding: "8px",
         position: "absolute",
         left: "50%",
@@ -42,13 +44,22 @@ const useStyles = createUseStyles({
         whiteSpace: "nowrap",
         filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
     },
+    negative: {
+        color: "#ff9b94",
+    },
 });
+
+export interface PreviewStatUpdate {
+    nondeterministic: boolean;
+    statUpdate: UpdatedCombatantStats;
+    action: Action;
+}
 
 /**
  * The damage preview that shows up when you hover over an enemy with an offensive card selected.
  * May be expanded to include buffs, debuffs, armor...
  */
-const AbilityPreview = ({ previewStatUpdate }) => {
+const AbilityPreview = ({ previewStatUpdate }: { previewStatUpdate: PreviewStatUpdate[] }) => {
     const classes = useStyles();
 
     if (!previewStatUpdate) {
@@ -71,7 +82,12 @@ const AbilityPreview = ({ previewStatUpdate }) => {
                 <Icon icon={CrossedSwordsIcon} size="sm" />
             </div>
             {previewStatUpdate.map((preview, i) => (
-                <div className={classes.statUpdate} key={["statUpdate", i].join("-")}>
+                <div
+                    className={classNames(classes.statUpdate, {
+                        [classes.negative]: preview.statUpdate.rawDamage < preview.action?.damage,
+                    })}
+                    key={["statUpdate", i].join("-")}
+                >
                     {preview.statUpdate.rawDamage || 0}
                     {preview.nondeterministic && "?"}
                 </div>

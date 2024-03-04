@@ -13,7 +13,7 @@ import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
 import { ZzzIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
-import AbilityPreview from "./AbilityPreview";
+import AbilityPreview, { PreviewStatUpdate } from "./AbilityPreview";
 import AttackPower from "./AttackPower";
 import CombatantTooltip from "./CombatantTooltip";
 import Health from "./HealthView";
@@ -287,7 +287,7 @@ const CombatantView = forwardRef(
             isSelected: boolean;
             isHighlighted: boolean;
             showReticle: boolean;
-            previewStatUpdate?: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[];
+            previewStatUpdate?: PreviewStatUpdate[];
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },

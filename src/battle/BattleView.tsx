@@ -44,6 +44,7 @@ import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice }
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 import Icon from "../icon/Icon";
+import { PreviewStatUpdate } from "../character/AbilityPreview";
 
 const useStyles = createUseStyles({
     root: {
@@ -761,7 +762,7 @@ const BattlefieldContainer = () => {
         );
     };
 
-    const abilityUsePreviews = ((): { [combatantId: string]: { statUpdate: UpdatedCombatantStats; nondeterministic: boolean }[] } => {
+    const abilityUsePreviews = ((): { [combatantId: string]: PreviewStatUpdate[] } => {
         if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbilityFromHand) {
             return {};
         }
@@ -848,6 +849,7 @@ const BattlefieldContainer = () => {
                 result[combatantId].push({
                     statUpdate,
                     nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
+                    action,
                 });
             });
 
