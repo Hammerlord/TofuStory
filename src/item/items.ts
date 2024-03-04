@@ -1277,7 +1277,7 @@ export const taurospearHorn: Item = {
     image: TaurospearHornImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When you kill an enemy, gain 1 resource and draw a card.",
+    description: "When you kill an enemy, gain 1 resource.",
     effects: [
         {
             type: EFFECT_TYPES.NONE,
@@ -1286,9 +1286,6 @@ export const taurospearHorn: Item = {
             onFriendlyKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
-                drawCards: {
-                    amount: 1,
-                },
             },
         },
     ],
