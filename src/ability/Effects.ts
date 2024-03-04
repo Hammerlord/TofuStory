@@ -127,8 +127,9 @@ export const bleed: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     attackDamageReceived: 1,
+    maxApplications: 5,
     icon: BloodIcon,
-    description: "Target takes 1 damage at the end of its turn and receives +1 damage from attacks.",
+    description: "Target takes 1 damage at end of turn and receives +1 damage from attacks. Max 5.",
 };
 
 export const burn: Effect = {
