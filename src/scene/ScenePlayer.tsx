@@ -516,13 +516,13 @@ const ScenePlayer = ({
                 <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
                 <div className={classes.backgroundOverlay} />
 
-                <div className={classes.inner} onClick={handleClickDialog}>
+                <div className={classes.inner}>
                     {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (
                         <>
-                            <div>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
+                            <div onClick={handleClickDialog}>{typeof Backdrop === "function" && <Backdrop player={player} />}</div>
 
                             <div className={classes.wrapper}>
-                                <div className={classes.dialogContainer}>
+                                <div className={classes.dialogContainer} onClick={handleClickDialog}>
                                     {canSkip && (
                                         <div className={classes.skipButton}>
                                             <Button onClick={handleSkip}>Skip</Button>
