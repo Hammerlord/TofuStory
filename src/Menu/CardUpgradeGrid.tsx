@@ -82,6 +82,10 @@ const useGridStyles = createUseStyles({
         display: "inline-block",
         verticalAlign: "top",
     },
+    confirmContainer: {
+        minHeight: 38,
+        marginBottom: 16,
+    },
 });
 
 const CardUpgradeGrid = ({
@@ -111,7 +115,7 @@ const CardUpgradeGrid = ({
             <div className={classes.inner}>
                 <h3>Select an ability to upgrade</h3>
                 <label>
-                    <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide Duplicate Cards
+                    <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide duplicates
                 </label>
                 <div className={classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
@@ -122,8 +126,8 @@ const CardUpgradeGrid = ({
                                 key={card.instanceId}
                                 isSelected={selectedAbilityId === card.instanceId}
                             />
-                            {selectedAbilityId === card.instanceId && (
-                                <div>
+                            <div className={classes.confirmContainer}>
+                                {selectedAbilityId === card.instanceId && (
                                     <Button
                                         variant={"contained"}
                                         color={"primary"}
@@ -144,8 +148,8 @@ const CardUpgradeGrid = ({
                                     >
                                         Confirm
                                     </Button>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>
