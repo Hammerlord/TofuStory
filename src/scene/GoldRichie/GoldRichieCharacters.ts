@@ -1,15 +1,26 @@
 import { bash, slashBlast } from "./../../ability/warrior/warriorAbilities";
 import { energyBolt, magicFang, magicClaw } from "./../../ability/magician/magicianAbilities";
 import { attack } from "./../../enemy/abilities";
-import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../../ability/types";
 import { rally } from "../../enemy/abilities";
 import {
+    EnergyBoltProjectileImage,
     FrownyMaskImage,
     GoldRichieImage,
     GuardWarriorImage,
     GuardWizardImage,
     MesoCoinImage,
     MesoImage,
+    OldEnergyBoltImage,
     WeaponMasteryImage,
 } from "../../images";
 
@@ -143,7 +154,24 @@ export const adventurerIceWizard = {
     image: GuardWizardImage,
     maxHP: 60,
     abilities: [
-        { ...energyBolt },
+        {
+            name: "Energy Bolt",
+            image: OldEnergyBoltImage,
+            actions: [
+                {
+                    damage: 2,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: EnergyBoltProjectileImage,
+                    playbackTime: 400,
+                    animationOptions: {
+                        rotate: 135,
+                        rotateToFaceTarget: true,
+                    },
+                },
+            ],
+        },
         { ...magicFang, resourceCost: 3 },
         { ...magicClaw, resourceCost: 3, actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })) },
     ],
