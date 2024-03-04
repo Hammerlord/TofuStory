@@ -307,7 +307,7 @@ export const leatherSandals: Item = {
 
 export const adventurerCape: Item = {
     name: "Adventurer Cape",
-    description: "Once per turn, when you are attacked, gain 1 resource.",
+    description: "Every 5 times you are attacked, gain 1 resource.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdventurerCapeImage,
@@ -316,25 +316,10 @@ export const adventurerCape: Item = {
             name: "Adventurer Cape Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onTurnEnd: {
+            onReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Adventurer Cape",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: AdventurerCapeImage,
-                        duration: 2, // Ticks down immediately due to turn end
-                        onReceiveAttack: {
-                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                            removeEffect: true,
-                            resources: 1,
-                        },
-                        onTurnStart: {
-                            removeEffect: true,
-                        },
-                    },
-                ],
+                eventTriggerFrequency: 5,
+                resources: 1,
             },
         },
     ],
