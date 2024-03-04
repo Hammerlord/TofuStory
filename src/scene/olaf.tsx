@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
 import { LithHarborBalconyFullImage, LithHarborCityBGImage, OlafImage, PuppetreeImage } from "../images";
-import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt } from "../item/items";
+import { bigMesoItem, blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt } from "../item/items";
 import { EventScene, SceneEncounter } from "./types";
 
 const olafNPC = {
@@ -61,7 +61,7 @@ const Olaf = ({ player }) => {
     );
 };
 
-export const olafRewards = [redHeadband, leatherSandals, mesoItem];
+export const olafRewards = [redHeadband, leatherSandals, bigMesoItem];
 
 const olafFight: SceneEncounter = {
     isTutorial: true,
