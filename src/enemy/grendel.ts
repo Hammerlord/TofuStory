@@ -295,7 +295,7 @@ const grendelMagicClaw: Ability = {
     level: 2,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -308,7 +308,7 @@ const grendelMagicClaw: Ability = {
             playbackTime: 400,
         },
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -422,7 +422,7 @@ export const introGrendel: Minion = {
 };
 
 const triboltAction: Action = {
-    damage: 3,
+    damage: 4,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
