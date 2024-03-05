@@ -389,7 +389,6 @@ const ScenePlayer = ({
             }
 
             if (typeof battle.totalKills === "number") {
-                console.log("???", battle.totalKills);
                 return passesValueComparison({ val: recentBattle?.totalKills, otherVal: battle.totalKills, comparator });
             }
 

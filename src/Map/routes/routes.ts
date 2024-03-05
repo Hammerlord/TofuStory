@@ -1,6 +1,7 @@
 import { shellThrow } from "./../../ability/neutralAbilities";
 import {
     axeStump,
+    blueMushroom,
     blueSnail,
     darkStoneGolem,
     fireBoar,
@@ -389,6 +390,7 @@ export const routeHenesysEllinia: Route = {
         [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
         [null, null, curseEye, null, null],
         [null, null, ironHog, null, null],
+        [null, ribbonPig, null, ribbonPig, null],
         [null, axeStump, stump, axeStump, null],
         [null, lupin, null, lupin, null],
         [elliniaGreenMushroom, elliniaHornyMushroom, redSnail, elliniaHornyMushroom, elliniaGreenMushroom],
@@ -398,10 +400,12 @@ export const routeHenesysEllinia: Route = {
         [blueSnail, slime, pig, slime, blueSnail],
         [elliniaGreenMushroom, elliniaGreenMushroom, slime, elliniaGreenMushroom, elliniaGreenMushroom],
         [stump, redSnail, stump, redSnail, stump],
+        [blueMushroom, blueSnail, orangeMushroom, blueSnail, blueMushroom],
     ],
     multiWaveEnemies: [
         [null, elliniaHornyMushroom, null, elliniaHornyMushroom, null],
         [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
+        [blueSnail, blueSnail, blueMushroom, blueSnail, blueSnail],
         [null, stump, stump, stump, null],
         [null, null, lupin, null, null],
         [null, axeStump, null, stump, null],
@@ -414,7 +418,7 @@ export const routeHenesysEllinia: Route = {
         minions: [redSnail, elliniaGreenMushroom, stump],
         single: [lupin, curseEye],
         duo: [axeStump, orangeMushroom, slime, elliniaHornyMushroom],
-        trio: [elliniaGreenMushroom, pig],
+        trio: [elliniaGreenMushroom, pig, blueMushroom],
         squad: [stump, elliniaGreenMushroom],
         special: [[null, null, darkStoneGolem, null, null]],
     },
@@ -455,9 +459,10 @@ export const toHenesys: Route = {
     elites: {
         minions: [snail, blueSnail],
         single: [orangeMushroom, ribbonPig],
-        duo: [pig, slime],
+        duo: [pig, slime, blueMushroom],
         trio: [redSnail, shroom],
         squad: [snail, blueSnail],
+        special: [[blueMushroom, stump, blueMushroom, stump, blueMushroom]],
     },
     nodes: [
         {
@@ -499,6 +504,7 @@ export const toHenesysForest: Route = {
         [snail, redSnail, blueSnail, redSnail, snail],
         [null, redSnail, redSnail, redSnail, null],
         [snail, shroom, blueSnail, shroom, snail],
+        [blueSnail, blueSnail, blueMushroom, blueSnail, blueSnail],
     ],
     multiWaveEnemies: [
         [null, null, orangeMushroom, null, null],

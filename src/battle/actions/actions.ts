@@ -1249,7 +1249,7 @@ const checkHandleMorph = ({
 /**
  * Handle the induceCombatantAttack property of an action (tells minions to attack randomly)
  */
-const checkInduceAttack = ({
+const checkInduce = ({
     action,
     affectedTargetIds,
     selectedIndex,
@@ -1261,25 +1261,60 @@ const checkInduceAttack = ({
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        if (!action.induceCombatantAttack) {
-            return;
-        }
-        shuffle(affectedTargetIds).forEach((id) => {
-            const { hostileSide, combatant } = findCombatantData(getState, id) || {};
-            if (!combatant.HP || isStunnedOrFrozen(combatant)) {
-                return;
-            }
+        const { induceCombatant, induceCombatantAttack } = action;
+        if (induceCombatant) {
+            const { mode, action } = induceCombatant;
+            if (action) {
+                if (mode === "random") {
+                    affectedTargetIds = shuffle(affectedTargetIds);
+                } else if (mode === "right-to-left") {
+                    affectedTargetIds = affectedTargetIds.slice().reverse();
+                }
 
-            dispatch(
-                performAction({
-                    action: getInducedAttack(combatant),
-                    selectedIndex,
-                    side: hostileSide,
-                    actorId: id,
-                    parentSource,
-                })
-            );
-        });
+                affectedTargetIds.forEach((id) => {
+                    const { combatant } = findCombatantData(getState, id) || {};
+
+                    if (!combatant.HP || isStunnedOrFrozen(combatant)) {
+                        return;
+                    }
+
+                    const { index, side } = autoSelectActionTarget({
+                        action,
+                        actorId: id,
+                        getState,
+                    });
+
+                    dispatch(
+                        performAction({
+                            action,
+                            actorId: id,
+                            parentSource,
+                            selectedIndex: index,
+                            side,
+                        })
+                    );
+                });
+            }
+        }
+
+        if (induceCombatantAttack) {
+            shuffle(affectedTargetIds).forEach((id) => {
+                const { hostileSide, combatant } = findCombatantData(getState, id) || {};
+                if (!combatant.HP || isStunnedOrFrozen(combatant)) {
+                    return;
+                }
+
+                dispatch(
+                    performAction({
+                        action: getInducedAttack(combatant),
+                        selectedIndex,
+                        side: hostileSide,
+                        actorId: id,
+                        parentSource,
+                    })
+                );
+            });
+        }
     };
 };
 
@@ -1681,7 +1716,7 @@ const performAction = ({
             );
         }
 
-        dispatch(checkInduceAttack({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
+        dispatch(checkInduce({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
         dispatch(checkCardActions(action, parentSource, isAutoCast));
         dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));

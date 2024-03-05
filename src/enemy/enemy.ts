@@ -2,6 +2,8 @@ import {
     AxeStumpImage,
     BananaPeelImage,
     BlackManualImage,
+    BlueMushroomImage,
+    BlueMushroomJumpImage,
     BlueSnailImage,
     BombImage,
     CurseEyeImage,
@@ -83,6 +85,7 @@ import {
 } from "../images/icons";
 import { redPotion } from "../item/items";
 import {
+    attackPower,
     avenger,
     bleed,
     burn,
@@ -1720,7 +1723,7 @@ export const darkStoneGolem: Minion = {
             image: DarkStoneGolemRubbleImage,
             actions: [
                 {
-                    damage: 15,
+                    damage: 20,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
@@ -2383,4 +2386,42 @@ export const ironHog: Minion = {
             ...championsRibbon,
         },
     ],
+};
+
+export const blueMushroom: Minion = {
+    name: "Blue Mushroom",
+    image: BlueMushroomImage,
+    maxHP: 70,
+    abilities: [
+        {
+            ...attack,
+        },
+        {
+            name: "Do the Wave!",
+            resourceCost: 3,
+            image: BlueMushroomJumpImage,
+            actions: [
+                {
+                    induceCombatant: {
+                        mode: "left-to-right",
+                        action: {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            effects: [
+                                {
+                                    ...attackPower,
+                                    duration: 3,
+                                },
+                            ],
+                            playbackTime: 300,
+                        },
+                    },
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    area: 5,
+                },
+            ],
+        },
+    ],
+    effects: [hardy],
 };

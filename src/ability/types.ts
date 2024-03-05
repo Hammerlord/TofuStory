@@ -488,6 +488,10 @@ export type Action = {
     morph?: Morph;
     // When cast on a combatant that has attack power, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
+    induceCombatant?: {
+        mode: "random" | "left-to-right" | "right-to-left";
+        action: Action;
+    };
     mesos?: number;
     stealMesos?: number;
     // Dispels all debuffs currently on the character
