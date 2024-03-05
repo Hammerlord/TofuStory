@@ -5,6 +5,7 @@ import {
     darkStoneGolem,
     fireBoar,
     greenMushroom,
+    ironHog,
     lupin,
     miniKargo,
     octopus,
@@ -247,7 +248,7 @@ export const routeElliniaSleepywood = {
     },
     elites: {
         minions: [elliniaGreenMushroom, stump],
-        single: [lupin, curseEye, fireBoar],
+        single: [lupin, curseEye, ironHog],
         duo: [axeStump, wildBoar],
         trio: [elliniaHornyMushroom, orangeMushroom],
         squad: [stump, elliniaGreenMushroom],
@@ -387,6 +388,7 @@ export const routeHenesysEllinia: Route = {
     enemies: [
         [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
         [null, null, curseEye, null, null],
+        [null, null, ironHog, null, null],
         [null, axeStump, stump, axeStump, null],
         [null, lupin, null, lupin, null],
         [elliniaGreenMushroom, elliniaHornyMushroom, redSnail, elliniaHornyMushroom, elliniaGreenMushroom],

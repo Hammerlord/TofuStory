@@ -19,6 +19,8 @@ import {
     GuardBanditImage,
     HornyMushroomImage,
     InkSackImage,
+    IronHogHitImage,
+    IronHogImage,
     KumbiImage,
     LeetSinImage,
     LigatorImage,
@@ -100,6 +102,8 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    MORPH_MINION_MODIFIERS,
+    MORPH_TYPES,
     MULTIPLIER_TYPES,
     Minion,
     SCALING_VALUE_TYPES,
@@ -2236,5 +2240,147 @@ export const wildKargo: Minion = {
             ],
         },
         avenger,
+    ],
+};
+
+const vulnerablePig: Minion = {
+    name: "Ironless Hog",
+    maxHP: 100,
+    image: PigIdleImage,
+    mesos: 25,
+    abilities: [
+        {
+            name: "Panic",
+            image: IronHogHitImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    movement: 2,
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            resourceCost: 3,
+            name: "Armor Up!",
+            image: ShieldIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    morph: {
+                        type: MORPH_TYPES.MERGE,
+                        modifiers: {
+                            HP: MORPH_MINION_MODIFIERS.SUM,
+                        },
+                        minions: [
+                            {
+                                minion: "Iron Hog",
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Vulnerable",
+            icon: IronHogHitImage,
+            type: EFFECT_TYPES.FEAR,
+            class: EFFECT_CLASSES.DEBUFF,
+            attackDamageReceived: 3,
+        },
+    ],
+};
+
+export const ironHog: Minion = {
+    name: "Iron Hog",
+    maxHP: 80,
+    armor: 40,
+    image: IronHogImage,
+    mesos: 25,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 7,
+                },
+            ],
+        },
+        {
+            name: "Armored Charge",
+            resourceCost: 3,
+            image: IronHogImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 10,
+                    secondaryAction: {
+                        target: "actor",
+                        armor: 5,
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [
+        preventArmorDecay,
+        {
+            name: "Armored",
+            description: "When this character receives direct damage, it will become vulnerable.",
+            canBeSilenced: false,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onReceiveDamage: {
+                usableWhileStunned: true,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        armor: 0,
+                        comparator: "eq",
+                    },
+                ],
+                ability: {
+                    name: "Armor Broken",
+                    image: IronHogHitImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            morph: {
+                                type: MORPH_TYPES.MERGE,
+                                modifiers: {
+                                    HP: MORPH_MINION_MODIFIERS.SUM,
+                                },
+                                minions: [
+                                    {
+                                        minion: { ...vulnerablePig },
+                                        storeSummoner: true,
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            ...championsRibbon,
+        },
     ],
 };
