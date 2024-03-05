@@ -93,6 +93,8 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
         }, 0); // Default is sum
         if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
             value = Math.ceil(value / minions.length);
+        } else if (modifierType === MORPH_MINION_MODIFIERS.MULTIPLY) {
+            value = Math.ceil(value * 1.5);
         }
         acc[property] = value;
         return acc;
@@ -108,8 +110,10 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
 
         if (typeof pos === "number") {
             combatants[pos] = {
-                ...createCombatant(minionToSummon),
-                ...modifierValues,
+                ...createCombatant({
+                    ...minionToSummon,
+                    ...modifierValues,
+                }),
             };
 
             if (storeSummoner && summoner) {

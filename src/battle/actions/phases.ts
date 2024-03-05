@@ -22,7 +22,7 @@ const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.action
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
-        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt } = getState().battle;
+        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills } = getState().battle;
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
@@ -34,6 +34,7 @@ export const onBattleEnd = () => {
         dispatch(
             pushBattleHistory({
                 totalDamageDealt,
+                totalKills,
             })
         );
 
@@ -172,6 +173,7 @@ export const startBattle = ({
             cardRewards,
             disableCardRewards,
             totalDamageDealt: 0,
+            totalKills: 0,
             charactersAttackedThisTurn: [],
             addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4() })),
         };

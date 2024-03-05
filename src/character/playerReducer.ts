@@ -195,7 +195,7 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        pushBattleHistory: (state, action: PayloadAction<{ totalDamageDealt: number }>) => {
+        pushBattleHistory: (state, action: PayloadAction<{ totalDamageDealt: number; totalKills: number }>) => {
             return {
                 ...state,
                 battleHistory: [...(state?.battleHistory || []), action.payload],

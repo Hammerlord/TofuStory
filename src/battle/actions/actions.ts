@@ -279,6 +279,13 @@ const getHitEffects = ({
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
         const { friendly, hostile, combatant, friendlySide } = findCombatantData(getState, combatantId) || {};
+        if (isActorPlayerSide({ side: getState().battle.playerSide, source: triggerSource })) {
+            dispatch(
+                updateBattle({
+                    totalKills: getState().battle.totalKills + 1,
+                })
+            );
+        }
 
         if (friendly) {
             // Remove all effects that have durations on them, reset resources and casting
@@ -892,9 +899,8 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
     });
 };
 
-const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
-    const battle: BattleState = getState().battle;
-    const isActorFriendly = battle.playerSide.some((combatant) => {
+const isActorPlayerSide = ({ side, source }: { side: (Combatant | Player | null)[]; source?: TriggerSource }) => {
+    return side.some((combatant) => {
         if (!combatant) {
             return false;
         }
@@ -909,8 +915,11 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
 
         return false;
     });
+};
 
-    if (isActorFriendly) {
+const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
+    const battle: BattleState = getState().battle;
+    if (isActorPlayerSide({ side: battle.playerSide, source })) {
         dispatch(
             updateBattle({
                 totalDamageDealt: (battle.totalDamageDealt || 0) + (damage || 0),
@@ -1182,7 +1191,7 @@ const checkHandleMorph = ({
 
         const targets = morphTargetIds
             .map((id: string) => findCombatantData(getState, id))
-            .filter((combatantInfo) => combatantInfo.combatant?.HP >= 0);
+            .filter((combatantInfo) => action.morph.resurrect || combatantInfo.combatant?.HP > 0);
 
         if (!targets.length) {
             return;

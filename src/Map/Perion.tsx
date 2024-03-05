@@ -16,6 +16,7 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import { dummiesScene } from "../scene/Perion/perionDummies";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -37,6 +38,10 @@ const store = {
     merchant: {
         name: "River and Harry",
     },
+};
+
+const PERION_PLACES = {
+    DUMMIES: "perion-training-dummies",
 };
 
 const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
@@ -67,6 +72,14 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
         setVisited((prev) => ({ ...prev, [TOWN_PLACES.CLASS_LEADER]: true }));
         onClickScene(dancesWithBalrogScene);
+    };
+
+    const handleClickEvent = (eventKey: string, scene) => {
+        if (visited[eventKey]) {
+            return;
+        }
+        setVisited((prev) => ({ ...prev, [eventKey]: true }));
+        onClickScene && onClickScene(scene);
     };
 
     return (
@@ -122,9 +135,9 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <TownNode
                             icon={QuestionMarkIcon}
-                            isVisited={true}
-                            label={"Placeholder"}
-                            onClick={() => {}}
+                            isVisited={visited[PERION_PLACES.DUMMIES]}
+                            label={"Training Grounds"}
+                            onClick={() => handleClickEvent(PERION_PLACES.DUMMIES, dummiesScene)}
                             nodeImage={PerionWarriorHallImage}
                         />
 

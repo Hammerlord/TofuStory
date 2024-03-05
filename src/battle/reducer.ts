@@ -41,6 +41,7 @@ export interface BattleState {
     disableCardRewards: boolean;
     notification?: Notification;
     totalDamageDealt: number; // Should include DoTs, etc.
+    totalKills?: number;
     isTutorial?: boolean;
     addAbilities: CombatAbility[];
 }

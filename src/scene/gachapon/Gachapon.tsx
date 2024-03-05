@@ -62,7 +62,9 @@ export const gachaponEvents: EventScene = {
                                 {
                                     conditions: [
                                         {
-                                            battleTotalDamage: 200,
+                                            battle: {
+                                                totalDamage: 200,
+                                            },
                                             comparator: "gt",
                                         },
                                     ],
@@ -98,7 +100,9 @@ export const gachaponEvents: EventScene = {
                                 {
                                     conditions: [
                                         {
-                                            battleTotalDamage: 100,
+                                            battle: {
+                                                totalDamage: 100,
+                                            },
                                             comparator: "gt",
                                         },
                                     ],
@@ -134,7 +138,9 @@ export const gachaponEvents: EventScene = {
                                 {
                                     conditions: [
                                         {
-                                            battleTotalDamage: 49,
+                                            battle: {
+                                                totalDamage: 49,
+                                            },
                                             comparator: "gt",
                                         },
                                     ],

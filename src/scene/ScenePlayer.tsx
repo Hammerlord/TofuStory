@@ -370,22 +370,27 @@ const ScenePlayer = ({
         handleClickDialog();
     };
 
+    const recentBattle = battleHistory[battleHistory.length - 1];
     const passesScriptConditions = (conditions: ScriptConditions[]): boolean => {
         if (!conditions?.length) {
             return true;
         }
 
-        const recentBattle = battleHistory[battleHistory.length - 1];
         const recentActivity = activityHistory[activityHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battleTotalDamage, comparator, chance, activityScore } = condition || {};
+            const { battle = {}, comparator, chance, activityScore } = condition || {};
             if (chance) {
                 return Math.random() <= chance;
             }
 
-            if (typeof battleTotalDamage === "number") {
-                return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battleTotalDamage, comparator });
+            if (typeof battle.totalDamage === "number") {
+                return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battle.totalDamage, comparator });
+            }
+
+            if (typeof battle.totalKills === "number") {
+                console.log("???", battle.totalKills);
+                return passesValueComparison({ val: recentBattle?.totalKills, otherVal: battle.totalKills, comparator });
             }
 
             if (typeof activityScore === "number") {
@@ -507,6 +512,7 @@ const ScenePlayer = ({
         return Handlebars.compile(text)({
             class: classesInterpolation[player.class],
             classPlural: classesPluralInterpolation[player.class],
+            totalKills: recentBattle?.totalKills || 0,
         });
     };
 

@@ -46,7 +46,10 @@ export interface Shop {
 }
 
 export interface ScriptConditions {
-    battleTotalDamage?: number; // How much damage was dealt in the most recent battle. See Gachapon for an example of how this is used.
+    battle?: {
+        totalDamage?: number; // How much damage was dealt in the most recent battle. See Gachapon for an example of how this is used.
+        totalKills?: number; // How many enemies were killed in the most recent battle. See perionDummies for an example of how this is used.
+    };
     activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
     comparator?: "lt" | "eq" | "gt";
     chance?: number;
