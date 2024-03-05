@@ -298,7 +298,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                                 ...combatant,
                                 effects: combatant.effects.filter((e) => {
                                     const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
-                                    return !hasDuration;
+                                    return !hasDuration || e[EFFECT_EVENT_KEYS.onDeath]; // Still allow onDeath effects to play out
                                 }),
                                 casting: null,
                                 resources: 0,

@@ -4,6 +4,7 @@ import {
     blueMushroom,
     blueSnail,
     darkStoneGolem,
+    egg,
     fireBoar,
     greenMushroom,
     ironHog,
@@ -58,6 +59,7 @@ const routePerionSleepywood: Route = {
         special: [
             [null, owlTower, null, owlTower, null],
             [null, miniKargo, wildKargo, miniKargo, null],
+            [null, egg, egg, egg, null],
         ],
     },
     nodes: [
@@ -94,6 +96,7 @@ export const routeKerningToPerion: Route = {
         duo: [wildBoar, axeStump],
         trio: [orangeMushroom, octopus],
         squad: [redSnail, stump],
+        special: [[null, egg, null, egg, null]],
     },
     enemies: [
         [stump, stump, axeStump, stump, stump],

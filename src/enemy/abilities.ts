@@ -19,7 +19,6 @@ export const loaf: Ability = {
     image: ZzzIcon,
     actions: [
         {
-            description: "{{caster}} is loafing around.",
             type: ACTION_TYPES.NONE,
             animation: ANIMATION_TYPES.SNOOZE,
         },

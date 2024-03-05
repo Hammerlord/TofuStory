@@ -6,11 +6,15 @@ import {
     BlueMushroomJumpImage,
     BlueSnailImage,
     BombImage,
+    CopperDrakeImage,
+    CopperScreechImage,
     CurseEyeImage,
     DarkSightImage,
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
     DoubleStabImage,
+    DragonEggImage,
+    EggImage,
     EvilCupImage,
     FangImage,
     FireBoarImage,
@@ -2119,6 +2123,7 @@ export const wildKargo: Minion = {
     name: "Wild Kargo",
     image: WildKargoImage,
     maxHP: 150,
+    mesos: 25,
     isElite: true,
     abilities: [
         {
@@ -2250,7 +2255,7 @@ const vulnerablePig: Minion = {
     name: "Ironless Hog",
     maxHP: 100,
     image: PigIdleImage,
-    mesos: 25,
+    mesos: 20,
     abilities: [
         {
             name: "Panic",
@@ -2312,7 +2317,7 @@ export const ironHog: Minion = {
     maxHP: 80,
     armor: 40,
     image: IronHogImage,
-    mesos: 25,
+    mesos: 20,
     abilities: [
         {
             ...attack,
@@ -2392,6 +2397,7 @@ export const blueMushroom: Minion = {
     name: "Blue Mushroom",
     image: BlueMushroomImage,
     maxHP: 70,
+    mesos: 12,
     abilities: [
         {
             ...attack,
@@ -2424,4 +2430,115 @@ export const blueMushroom: Minion = {
         },
     ],
     effects: [hardy],
+};
+
+const copperDrake: Minion = {
+    name: "Copper Drake",
+    image: CopperDrakeImage,
+    maxHP: 100,
+    HP: 100,
+    mesos: 20,
+    abilities: [
+        {
+            name: "Screech",
+            image: CopperScreechImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    area: 2,
+                    effects: [
+                        {
+                            ...attackPower,
+                            type: EFFECT_TYPES.RAGE,
+                            duration: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                },
+            ],
+        },
+    ],
+    effects: [hardy],
+};
+
+export const egg: Minion = {
+    name: "Mysterious Egg",
+    maxHP: 15,
+    mesos: 20,
+    image: EggImage,
+    abilities: [{ ...loaf, name: "Zzz" }],
+    effects: [
+        {
+            name: "Hatching...",
+            icon: DragonEggImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            duration: 3,
+            onEnd: {
+                target: TARGET_TYPES.SELF,
+                ability: {
+                    name: "Hatch",
+                    image: DragonEggImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            morph: {
+                                type: MORPH_TYPES.MERGE,
+                                minions: [
+                                    {
+                                        minion: { ...copperDrake },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+            onDeath: {
+                target: TARGET_TYPES.SELF,
+                ability: {
+                    name: "Hatch",
+                    image: DragonEggImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            resurrect: true,
+                            morph: {
+                                type: MORPH_TYPES.MERGE,
+                                resurrect: true,
+                                minions: [
+                                    {
+                                        minion: { ...copperDrake, effects: [...copperDrake.effects, stun] },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };
