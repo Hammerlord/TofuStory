@@ -5,7 +5,7 @@ import Notification from "./Notification";
 
 const useStyles = makeStyles({
     abilityIcon: {
-        width: "24px",
+        maxWidth: "24px",
         maxHeight: "24px",
         verticalAlign: "bottom",
     },
