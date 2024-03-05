@@ -136,7 +136,7 @@ const Main = () => {
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
-        const route = generateTravelRoute({ startingRoute: toLith, infamy: 0, numRoutesComplete: 0 });
+        const route = generateTravelRoute({ startingRoute: toLith });
         setRoute(route);
         setLocationNode(route);
         setSceneRegion(null);

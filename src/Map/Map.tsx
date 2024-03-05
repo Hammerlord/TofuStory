@@ -96,6 +96,9 @@ const Map = ({
         }
     };
 
+    // Since we have two routes pointing to Sleepywood, we only want to render the Sleepywood node once
+    const nodeMemo = {};
+
     // prev and current are the output of generateTravelRoute
     const drawRouteNode = ({ prev, current, routeNodes, lines }: any) => {
         if (!current) {
@@ -127,21 +130,27 @@ const Map = ({
             y: y - NODE_ICON_SIZE / 2,
         };
 
-        routeNodes.push(
-            <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
-                <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
-                {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
-                {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
-                {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
-                {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
-                {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
-                {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
-                {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
-                {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
+        if (!nodeMemo[current.id]) {
+            nodeMemo[current.id] = true;
+            routeNodes.push(
+                <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
+                    <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
+                    {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
+                    {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
 
-                {currentNode && current.id === currentNode.id && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
-            </g>
-        );
+                    {currentNode && current.id === currentNode.id && (
+                        <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />
+                    )}
+                </g>
+            );
+        }
+
         if (current.next) {
             current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines }));
         }

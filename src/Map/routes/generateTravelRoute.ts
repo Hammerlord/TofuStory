@@ -13,15 +13,7 @@ import { events } from "./eventList";
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
  */
-const generateTravelRoute = ({
-    startingRoute,
-    infamy,
-    numRoutesComplete,
-}: {
-    startingRoute: Route;
-    infamy: number;
-    numRoutesComplete: number;
-}) => {
+const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
@@ -57,7 +49,7 @@ const generateTravelRoute = ({
         const generateTreeNode = (baseNode) => {
             const transformedNode: RouteNode = {
                 ...baseNode,
-                id: uuid.v4(),
+                id: baseNode.id || uuid.v4(),
                 type: baseNode.type || generateNodeType(),
             };
 
@@ -88,14 +80,17 @@ const generateTravelRoute = ({
 
         const generateInitialNode = (baseNode) => {
             if (baseNode.type) {
-                return baseNode;
+                return {
+                    ...baseNode,
+                    id: baseNode.id || uuid.v4(),
+                };
             }
             if (numEncountersSinceRestPoint >= 2) {
                 numEncountersSinceRestPoint = 0;
 
                 return {
                     ...baseNode,
-                    id: uuid.v4(),
+                    id: baseNode.id || uuid.v4(),
                     type: NODE_TYPES.RESTING_ZONE,
                 };
             }
@@ -103,7 +98,7 @@ const generateTravelRoute = ({
             ++numEncountersSinceRestPoint;
             return {
                 ...baseNode,
-                id: uuid.v4(),
+                id: baseNode.id || uuid.v4(),
                 type: NODE_TYPES.ENCOUNTER,
                 encounter: generateWaves(baseRoute, prevRoute),
             };

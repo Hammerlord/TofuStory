@@ -29,6 +29,19 @@ import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
 import { balrog } from "../../enemy/balrog";
 
+const sleepywood: Route = {
+    nodes: [
+        {
+            x: 0.4294642857142857,
+            y: 0.5364215446440023,
+            region: REGIONS.SLEEPYWOOD,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.SLEEPYWOOD,
+            id: "Sleepywood",
+        },
+    ],
+};
+
 const routePerionSleepywood: Route = {
     eliteOptions: {
         numElites: 3,
@@ -68,14 +81,8 @@ const routePerionSleepywood: Route = {
             y: 0.481034989708909,
             region: REGIONS.SLEEPYWOOD,
         },
-        {
-            x: 0.42714210486722337,
-            y: 0.5546989062780154,
-            region: REGIONS.SLEEPYWOOD,
-            type: NODE_TYPES.TOWN,
-            town: TOWNS.SLEEPYWOOD,
-        },
     ],
+    next: [sleepywood],
 };
 
 export const routeKerningToPerion: Route = {
@@ -233,6 +240,56 @@ const toKerningForest: Route = {
     next: [toKerning],
 };
 
+export const routeElliniaSleepywood = {
+    eliteOptions: {
+        numElites: 3,
+        numAffixes: 2,
+    },
+    elites: {
+        minions: [elliniaGreenMushroom, stump],
+        single: [lupin, curseEye, fireBoar],
+        duo: [axeStump, wildBoar],
+        trio: [elliniaHornyMushroom, orangeMushroom],
+        squad: [stump, elliniaGreenMushroom],
+        special: [[null, mossyMushroom, null, mossySnail, null]],
+    },
+    enemies: [
+        [stump, stump, axeStump, stump, stump],
+        [stump, orangeMushroom, stump, orangeMushroom, stump],
+        [orangeMushroom, null, elliniaGreenMushroom, null, orangeMushroom],
+        [elliniaGreenMushroom, null, elliniaHornyMushroom, null, elliniaGreenMushroom],
+        [elliniaGreenMushroom, stump, orangeMushroom, stump, elliniaGreenMushroom],
+        [elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom],
+        [null, elliniaHornyMushroom, stump, elliniaHornyMushroom, null],
+        [null, elliniaHornyMushroom, orangeMushroom, elliniaHornyMushroom, null],
+        [null, elliniaHornyMushroom, greenMushroom, elliniaHornyMushroom, null],
+        [null, lupin, null, lupin, null],
+        [null, stump, curseEye, stump, null],
+        [null, axeStump, stump, axeStump, null],
+    ],
+    multiWaveEnemies: [
+        [null, null, curseEye, null, null],
+        [null, redSnail, lupin, redSnail, null],
+        [null, stump, axeStump, stump, null],
+        [elliniaGreenMushroom, null, elliniaGreenMushroom, null, elliniaGreenMushroom],
+        [null, stump, orangeMushroom, stump, null],
+        [null, elliniaHornyMushroom, null, elliniaHornyMushroom, null],
+        [null, stump, stump, stump, null],
+        [null, stump, elliniaGreenMushroom, stump, null],
+        [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
+        [null, axeStump, null, axeStump, null],
+    ],
+    nodes: [
+        { x: 0.6580357142857143, y: 0.5479738363393676, region: REGIONS.ELLINIA },
+        { x: 0.6176339285714286, y: 0.5573980743013761, region: REGIONS.ELLINIA },
+        { x: 0.5810267857142857, y: 0.5485818516917552, region: REGIONS.SLEEPYWOOD },
+        { x: 0.5537946428571429, y: 0.5814146807206882, region: REGIONS.SLEEPYWOOD },
+        { x: 0.5129464285714286, y: 0.57837460395875, region: REGIONS.SLEEPYWOOD },
+        { x: 0.47544642857142855, y: 0.5710784197300982, region: REGIONS.SLEEPYWOOD },
+    ],
+    next: [sleepywood],
+};
+
 export const routeElliniaPerion = {
     eliteOptions: {
         numElites: 3,
@@ -265,7 +322,7 @@ export const routeElliniaPerion = {
     multiWaveEnemies: [
         [null, null, fireBoar, null, null],
         [null, null, curseEye, null, null],
-        [null, blueSnail, lupin, blueSnail, null],
+        [null, redSnail, lupin, redSnail, null],
         [null, stump, axeStump, stump, null],
         [elliniaGreenMushroom, null, elliniaGreenMushroom, null, elliniaGreenMushroom],
         [null, stump, orangeMushroom, stump, null],
@@ -388,7 +445,7 @@ export const routeHenesysEllinia: Route = {
             type: NODE_TYPES.TOWN,
         },
     ],
-    next: [routeElliniaPerion],
+    next: [routeElliniaSleepywood],
     cursedTreasureChance: 0.25,
 };
 
@@ -588,14 +645,4 @@ const routeSewer = {
             y: 0.5551308438694501,
         },
     ],
-};
-
-const perionCoordinates = {
-    x: 0.38385146804835923,
-    y: 0.18406351073213761,
-};
-
-const elliniaCoordinates = {
-    x: 0.6968911917098446,
-    y: 0.5492502205233755,
 };
