@@ -12,6 +12,7 @@ import { useAppSelector } from "../hooks";
 import { findCombatantData } from "../battle/actions/actions";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
+import { isTurnToTrigger } from "../battle/utils";
 
 const indicatorSize = 8;
 
@@ -115,7 +116,7 @@ const EffectGroupIcon = ({
     owner,
     glow,
 }: {
-    effects: Effect[];
+    effects: CombatEffect[];
     isSilenced?: boolean;
     owner: Combatant | Player;
     glow: boolean;
@@ -145,6 +146,8 @@ const EffectGroupIcon = ({
         drawCardsPerTurn = 0,
         resourcesPerTurn = 0,
         preventArmorDecay,
+        turnsTriggerFrequency,
+        uptime,
         class: effectClass,
     } = effects.reduce((acc, cur, i) => {
         if (i === 0) {
@@ -191,7 +194,7 @@ const EffectGroupIcon = ({
     }
 
     const silenced = isSilenced && canBeSilenced;
-    const disabled = silenced || !passedConditions;
+    const disabled = silenced || !passedConditions || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
 
     const { stackCount, displayStacks } = effects.reduce(
         (acc, effect: CombatEffect) => {

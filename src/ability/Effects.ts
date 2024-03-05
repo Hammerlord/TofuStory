@@ -56,6 +56,12 @@ export const thorns: Effect = {
     thorns: 1,
 };
 
+export const eliteThorns: Effect = {
+    ...thorns,
+    description: "Deals 1 damage to attackers. Activates every 2 turns.",
+    turnsTriggerFrequency: 2,
+};
+
 export const controlImmune: Effect = {
     name: "Control Immunity",
     description: "Target cannot be stunned or frozen.",

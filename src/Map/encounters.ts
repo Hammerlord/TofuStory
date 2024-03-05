@@ -1,7 +1,7 @@
 import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
 import { sneaky, lifeLink, poisonous } from "../enemy/effect";
-import { avenger, elite, eliteSquad, eliteTrio, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
+import { avenger, elite, eliteSquad, eliteThorns, eliteTrio, eruptive, explosive, raging, shielding, thorns } from "./../ability/Effects";
 import { attack, tantrum } from "./../enemy/abilities";
 import { getRandomItem, shuffle } from "./../utils";
 import { EliteMap, Route } from "./types";
@@ -49,7 +49,7 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
 };
 
 const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
-    const affixes = shuffle([thorns, raging, avenger, shielding, explosive, lifeLink, sneaky]).slice(0, numAffixes);
+    const affixes = shuffle([eliteThorns, raging, avenger, shielding, explosive, lifeLink, sneaky]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.squad);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
@@ -73,7 +73,7 @@ const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
 };
 
 const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
-    const affixes = shuffle([thorns, raging, avenger, shielding, explosive, lifeLink, sneaky]).slice(0, numAffixes);
+    const affixes = shuffle([eliteThorns, raging, avenger, shielding, explosive, lifeLink, sneaky]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -103,7 +103,7 @@ const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
 };
 
 const generateEliteDuo = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
-    const affixes = shuffle([thorns, raging, shielding, explosive, lifeLink, sneaky, poisonous]).slice(0, numAffixes);
+    const affixes = shuffle([eliteThorns, raging, shielding, explosive, lifeLink, sneaky, poisonous]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -164,7 +164,7 @@ const generateElite = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | nu
             },
         },
     };
-    const affixes = shuffle([thorns, raging, shielding, eruptive, swarming, sneaky, poisonous]).slice(0, numAffixes);
+    const affixes = shuffle([eliteThorns, raging, shielding, eruptive, swarming, sneaky, poisonous]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.single);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
