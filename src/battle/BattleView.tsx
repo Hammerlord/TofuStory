@@ -598,12 +598,15 @@ const BattlefieldContainer = () => {
             setShowTurnAnnouncement(true);
             setTimeout(() => {
                 setShowTurnAnnouncement(false);
+                // Brittle: "Turn in progress" state can interfere with ending enemy turns that are too short, causing their turn to get stuck.
+                // So move it up here before turn happens. The "turn in progress" event itself happens in the startPlayer/EnemyTurn function anyway.
+                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
+
                 if (isPlayerTurn) {
                     dispatch(startPlayerTurn());
                 } else {
                     dispatch(startEnemyTurn());
                 }
-                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
             }, TURN_ANNOUNCEMENT_TIME);
             return;
         }
