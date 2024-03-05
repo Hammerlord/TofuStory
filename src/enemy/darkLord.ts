@@ -63,7 +63,7 @@ const realShadow: Minion = {
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 1,
                     icon: KumbiImage,
-                    effects: [{ ...poison, duration: 2 }],
+                    effects: [{ ...poison, duration: 1 }],
                 },
             ],
         },
@@ -311,13 +311,13 @@ export const darkLord: Minion = {
         hardy,
         {
             name: "Venom",
-            description: "This character's attacks apply poison for 2 turns.",
+            description: "This character's attacks apply poison for 1 turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SapOfNependeathImage,
             onAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [{ ...poison, duration: 2 }],
+                effects: [{ ...poison, duration: 1 }],
             },
         },
         {
@@ -337,6 +337,7 @@ export const darkLord: Minion = {
                             type: ACTION_TYPES.EFFECT,
                             resources: 3,
                             armor: 15,
+                            movement: 2,
                         },
                     ],
                 },
