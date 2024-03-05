@@ -19,6 +19,7 @@ export const guardWolf: Minion = {
     name: "Wolf",
     isBoss: true,
     maxHP: 100,
+    mesos: 10,
     image: WolfImage,
     abilities: [
         attack,
@@ -71,6 +72,7 @@ export const athena: Minion = {
     name: "Athena Pierce",
     isBoss: true,
     maxHP: 200,
+    mesos: 40,
     image: AthenaAttackStanceImage,
     resources: 0,
     abilities: [
@@ -253,6 +255,7 @@ export const guardHawk: Minion = {
     name: "Hawk",
     isBoss: true,
     maxHP: 100,
+    mesos: 10,
     image: SoaringHawkImage,
     abilities: [
         attack,

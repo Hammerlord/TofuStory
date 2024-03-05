@@ -16,6 +16,7 @@ import { EventScene } from "../types";
 export const balsaDummy: Minion = {
     name: "Balsa Dummy",
     image: PuppetreeImage,
+    mesos: 1,
     maxHP: 3,
     abilities: [],
     effects: [
@@ -57,6 +58,7 @@ export const balsaDummy: Minion = {
 export const mapleDummy: Minion = {
     image: Puppetree2Image,
     name: "Maple Dummy",
+    mesos: 1,
     maxHP: 3,
     abilities: [],
     effects: [

@@ -30,6 +30,7 @@ export const faust: Minion = {
     maxHP: 300,
     image: FaustImage,
     isBoss: true,
+    mesos: 50,
     abilities: [
         {
             name: "Throw Banana",

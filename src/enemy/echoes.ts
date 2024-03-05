@@ -10,6 +10,7 @@ export const lostEcho: Minion = {
         filter: "brightness(0.25) saturate(0.25) drop-shadow(0 0 5px rgba(0, 0, 0, 0.25))",
     },
     maxHP: 50,
+    mesos: 10,
     abilities: [
         {
             name: "Lost Fae Bolt",
@@ -74,6 +75,7 @@ export const lostGuardEcho: Minion = {
 export const lostNobleEcho: Minion = {
     ...lostEcho,
     name: "Lost Echo",
+    mesos: 15,
     image: RoyalFairyImage,
     imageOptions: {
         filter: "brightness(0.3) saturate(0.4) drop-shadow(0 0 5px rgba(0, 0, 0, 0.25))",

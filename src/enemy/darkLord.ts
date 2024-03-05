@@ -148,6 +148,7 @@ export const darkLord: Minion = {
     isBoss: true,
     maxHP: 200,
     image: DarkLordImage,
+    mesos: 60,
     abilities: [
         {
             name: "Throw Star",

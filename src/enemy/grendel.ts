@@ -447,6 +447,7 @@ export const grendel: Minion = {
     maxHP: 450,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
+    mesos: 75,
     abilities: [
         {
             name: "Greater Bolt",

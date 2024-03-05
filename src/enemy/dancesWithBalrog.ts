@@ -248,6 +248,7 @@ export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
     maxHP: 450,
+    mesos: 75,
     resources: 3,
     abilities: [
         {

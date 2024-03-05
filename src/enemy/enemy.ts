@@ -1288,6 +1288,7 @@ export const elliniaHornyMushroom: Minion = {
     name: "Horny Mushroom",
     image: HornyMushroomImage,
     maxHP: 50,
+    mesos: 13,
     abilities: [
         {
             name: "Attack",
@@ -1314,13 +1315,13 @@ export const elliniaHornyMushroom: Minion = {
         },
     ],
     effects: [thorns],
-    mesos: 10,
 };
 
 export const curseEye: Minion = {
     name: "Curse Eye",
     maxHP: 100,
     image: CurseEyeImage,
+    mesos: 20,
     abilities: [
         {
             name: "Attack",
@@ -1441,6 +1442,7 @@ export const bob: Minion = {
     maxHP: 30,
     image: SnailImage,
     isElite: true,
+    mesos: 30,
     abilities: [
         {
             name: "Attack",
@@ -1578,6 +1580,7 @@ export const malady: Minion = {
     maxHP: 150,
     image: MaladyImage,
     isElite: true,
+    mesos: 30,
     abilities: [
         {
             name: "Dark Bolt",
@@ -2031,6 +2034,7 @@ export const owlTower: Minion = {
     maxHP: 100,
     isElite: true,
     effects: [sentry],
+    mesos: 40,
     abilities: [
         {
             ...loaf,
@@ -2060,6 +2064,7 @@ export const miniKargo: Minion = {
     name: "Mini Kargo",
     image: MiniKargoImage,
     maxHP: 30,
+    mesos: 20,
     abilities: [
         {
             ...attack,
@@ -2122,8 +2127,8 @@ export const miniKargo: Minion = {
 export const wildKargo: Minion = {
     name: "Wild Kargo",
     image: WildKargoImage,
-    maxHP: 150,
-    mesos: 25,
+    maxHP: 200,
+    mesos: 30,
     isElite: true,
     abilities: [
         {
