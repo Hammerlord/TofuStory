@@ -237,6 +237,7 @@ const AbilityView = forwardRef(
             removeAfterTurn,
             depletedOnUse,
             preemptive,
+            unplayable,
         } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
@@ -466,6 +467,7 @@ const AbilityView = forwardRef(
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                             {ability.reusable && <div className={classes.bold}>Boomerang</div>}
+                            {unplayable && <div className={classes.bold}>Unplayable</div>}
                             <SelectCards ability={ability} />
                             <DrawCards ability={ability} playerClass={player?.class} />
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}

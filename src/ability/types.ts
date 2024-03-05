@@ -611,6 +611,8 @@ export interface Ability {
     overrideBodyText?: boolean;
     /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
+    // If true, this card cannot be played.
+    unplayable?: boolean;
     reusable?: boolean;
     depletedOnUse?: boolean;
     dialog?: string;

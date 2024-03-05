@@ -329,6 +329,10 @@ const BattlefieldContainer = () => {
         );
     };
 
+    const warnUnplayable = () => {
+        warn("That card cannot be played.");
+    };
+
     const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
         if (selectCardsPrompt) {
             warn(`Finish selecting cards in the overlay prompt first.`);
@@ -341,9 +345,16 @@ const BattlefieldContainer = () => {
 
         setSelectedAllyIndex(null);
         const ability = hand.find((card: CombatAbility) => card.instanceId === id);
-        if (!canUseAbility(player, ability) && !allowMoveCardFromHandToDeck) {
-            warnNeedMoreResources(ability);
-            return;
+        if (!allowMoveCardFromHandToDeck) {
+            if (!canUseAbility(player, ability)) {
+                warnNeedMoreResources(ability);
+                return;
+            }
+
+            if (ability.unplayable) {
+                warnUnplayable();
+                return;
+            }
         }
 
         if (isPlayerTurn) {
