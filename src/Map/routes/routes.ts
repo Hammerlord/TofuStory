@@ -72,15 +72,8 @@ const routePerionSleepywood: Route = {
             x: 0.42714210486722337,
             y: 0.5546989062780154,
             region: REGIONS.SLEEPYWOOD,
-            type: NODE_TYPES.BOSS,
-            encounter: [
-                {
-                    enemies: [null, null, balrog, null, null],
-                    winCondition: {
-                        defeatBoss: true,
-                    },
-                },
-            ],
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.SLEEPYWOOD,
         },
     ],
 };

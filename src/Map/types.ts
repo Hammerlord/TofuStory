@@ -16,6 +16,7 @@ import LithHarbor from "./LithHarbor";
 import Perion from "./Perion";
 import Ellinia from "./Ellinia";
 import { REGIONS } from "./regions";
+import Sleepywood from "./Sleepywood";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
@@ -88,6 +89,7 @@ export enum TOWNS {
     LITH_HARBOR = "Lith Harbor",
     PERION = "Perion",
     ELLINIA = "Ellinia",
+    SLEEPYWOOD = "Sleepywood",
 }
 
 export const TOWN_MAP = {
@@ -96,6 +98,7 @@ export const TOWN_MAP = {
     [TOWNS.HENESYS]: Henesys,
     [TOWNS.PERION]: Perion,
     [TOWNS.ELLINIA]: Ellinia,
+    [TOWNS.SLEEPYWOOD]: Sleepywood,
 };
 
 export const BG_MAP = {

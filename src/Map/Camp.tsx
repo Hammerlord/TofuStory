@@ -9,16 +9,15 @@ import { JOB_CARD_MAP } from "../ability";
 import { Ability, CombatAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Player } from "../character/types";
-import { CampfireImage, GoldenHammerImage, HerbsImage, PerionCampImage, SelfRecoveryImage, WeaponMasteryImage } from "../images";
+import { CampfireImage, HerbsImage, PerionCampImage, WeaponMasteryImage } from "../images";
 import { Item } from "../item/types";
 import Button from "../view/Button";
-import { incenseLeaves } from "../item/items";
 
 const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: "rgba(25, 25, 25, 0.9)",
+        background: "rgba(25, 25, 25, 0.95)",
         color: "white",
     },
     inner: {

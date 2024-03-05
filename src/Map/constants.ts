@@ -3,6 +3,7 @@ export const TOWN_PLACES = {
     TRADING_POST: "trading-post",
     CLASS_LEADER: "class-leader",
     CAMPAIGN: "campaign",
+    REST: "resting-spot",
 };
 
 export const TOWN_STYLES = {

@@ -151,7 +151,7 @@ const balrogAttack = {
 };
 
 export const balrog: Minion = {
-    name: "Balrog",
+    name: "Avatar of Balrog",
     maxHP: 666,
     image: JrBalrogImage,
     isBoss: true,

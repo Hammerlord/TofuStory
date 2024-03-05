@@ -2115,7 +2115,7 @@ export const reinforce: Ability = {
 export const forgehammer: Ability = {
     name: "Forge Hammer",
     image: SquareHammerImage,
-    description: "Upgrade a random card in your hand.",
+    description: "Upgrade a random card in hand for the rest of battle.",
     rarity: RARITIES.UNCOMMON,
     resourceCost: 1,
     actions: [

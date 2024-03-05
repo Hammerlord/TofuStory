@@ -409,6 +409,7 @@ const Main = () => {
                 onClickTradingPost={() => setTradingPost(true)}
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
+                onCamp={() => setIsResting(true)}
             />
         );
     };
@@ -431,17 +432,16 @@ const Main = () => {
     };
 
     const isActivityOpen =
-        battle || isResting || scene || shop || cardRewardsOpen || treasure || town || upgradingAbility || removingAbility || tradingPost;
+        battle || isResting || scene || shop || cardRewardsOpen || treasure || upgradingAbility || removingAbility || tradingPost;
 
     return (
         <>
             <div className={classes.mapContainer}>
                 <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
             </div>
+            {town && <div className={classes.activityContainer}>{getTown()}</div>}
             {isActivityOpen && (
                 <div className={classes.activityContainer}>
-                    {town && getTown()}
-
                     {scene && (
                         <ScenePlayer
                             deck={deck}
