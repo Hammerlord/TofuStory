@@ -79,6 +79,23 @@ const useStyles = createUseStyles({
         left: 0,
         borderRadius: "4px",
     },
+    scoreContainer: {
+        margin: 8,
+        background: "rgba(0, 0, 0, 0.7)",
+        padding: "8 16",
+        borderRadius: 8,
+        minWidth: 175,
+        display: "inline-block",
+    },
+    score: {
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    resultContainer: {
+        margin: 24,
+        fontSize: 20,
+        fontWeight: "bold",
+    },
 });
 
 const DIFFICULTY_SIZE_MAP = {
@@ -304,14 +321,23 @@ const CardMatchingGame = ({
                         {(i + 1) % DIFFICULTY_ROW_MAP[difficulty] === 0 && <br />}
                     </React.Fragment>
                 ))}
-                Your Score: {playerScore} <br />
-                Opponent Score: {opponentScore}
+                <div className={classes.scoreContainer}>
+                    Your Score
+                    <br />
+                    <span className={classes.score}>{playerScore}</span>
+                </div>
+                <div className={classes.scoreContainer}>
+                    Opponent Score
+                    <br />
+                    <span className={classes.score}>{opponentScore}</span>
+                </div>
                 {cardsRemaining === 0 && (
                     <div>
-                        {playerScore > opponentScore && "You win"}
-                        {playerScore < opponentScore && "You lose"}
-                        {playerScore === opponentScore && "Draw"}
-                        <br />
+                        <div className={classes.resultContainer}>
+                            - {playerScore > opponentScore && "You win"}
+                            {playerScore < opponentScore && "You lose"}
+                            {playerScore === opponentScore && "Draw"} -
+                        </div>
                         <Button variant="contained" color="primary" onClick={handleClickExit}>
                             Exit
                         </Button>
