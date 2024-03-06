@@ -1,7 +1,7 @@
 import { Ability } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ActivityHistoryLog } from "../character/playerReducer";
-import { Combatant } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
 import { REGIONS } from "../Map/regions";
 
@@ -52,6 +52,7 @@ export interface ScriptConditions {
     };
     activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
     comparator?: "lt" | "eq" | "gt";
+    items?: string[];
     chance?: number;
 }
 
@@ -77,7 +78,7 @@ export interface ScriptNode {
         name: string;
         image: string;
     };
-    scene?: ({ player }: { player: Combatant }) => JSX.Element;
+    scene?: ({ player }: { player: Player }) => JSX.Element;
     // Do not fade to black if scene changes
     disableTransition?: boolean;
     background?: string;
@@ -86,7 +87,7 @@ export interface ScriptNode {
         onComplete,
         onExit,
     }: {
-        player: Combatant;
+        player: Player;
         onComplete: ({ success, infamy }?: ActivityHistoryLog) => void;
         onExit: () => void;
     }) => JSX.Element;
@@ -120,6 +121,6 @@ export interface ScriptNode {
 }
 
 export interface SceneProps {
-    player?: Combatant;
+    player?: Player;
     onComplete?: ({ success, infamy }?: { success?: boolean; infamy?: number }) => void;
 }

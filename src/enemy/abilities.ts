@@ -42,7 +42,6 @@ export const rally: Ability = {
 export const tantrum: Ability = {
     name: "Tantrum",
     image: JapaneseOgreIcon,
-    description: "{{ caster }} will tantrum, dealing 3 hits per move.",
     resourceCost: 3,
     channelDuration: 1,
     castTime: 1,

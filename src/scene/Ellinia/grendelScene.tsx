@@ -4,7 +4,6 @@ import { grendel, introGrendel } from "../../enemy/grendel";
 import { EventScene } from "../types";
 
 const grendelFight = {
-    characters: [],
     waves: [
         {
             enemies: [null, null, introGrendel, null, null],

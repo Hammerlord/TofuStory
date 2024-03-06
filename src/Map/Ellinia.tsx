@@ -10,6 +10,7 @@ import {
     ElliniaMagicianHallImage,
     ElliniaShopImage,
     ElliniaTradingPostImage,
+    MarrsForestPreviewImage,
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
@@ -18,6 +19,7 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import { secretGardenScene } from "../scene/Ellinia/secretGarden";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -39,6 +41,10 @@ const store = {
     merchant: {
         name: "Flora and Serabi",
     },
+};
+
+const ELLINIA_PLACES = {
+    SECRET_GARDEN: "secret-garden",
 };
 
 const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
@@ -144,11 +150,11 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                             onClick={handleClickClassLeader}
                         />
                         <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={true}
-                            label={"Placeholder"}
-                            nodeImage={ElliniaMagicianHallImage}
-                            onClick={() => {}}
+                            icon={JapaneseOgreIcon}
+                            isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}
+                            label={"Secret Garden"}
+                            nodeImage={MarrsForestPreviewImage}
+                            onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
                         />
                     </div>
                 </Pan>

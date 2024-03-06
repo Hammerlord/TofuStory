@@ -11,7 +11,7 @@ import {
 } from "../ability/types";
 import { BlueManonImage, DragonScreechImage, EncroachingDarknessImage, FireMarbleImage, RedMagicClawImage } from "../images";
 import { CrossedSwordsIcon, JapaneseOgreIcon } from "../images/icons";
-import { bleed, burn, poison, raging } from "./../ability/Effects";
+import { bleed, burn, hardy, poison, raging } from "./../ability/Effects";
 import { loaf } from "./abilities";
 
 const soulPain: Ability = {
@@ -67,10 +67,11 @@ const reawakening: Effect = {
     },
 };
 
-export const basementDragon: Minion = {
+export const lostDragon: Minion = {
     name: "Lost Dragon",
     maxHP: 500,
     image: BlueManonImage,
+    isBoss: true,
     abilities: [
         {
             name: "Blazing Flame",
@@ -88,14 +89,14 @@ export const basementDragon: Minion = {
         },
         {
             name: "Screech of Pain",
-            description: "Destroys Armor on all targets.",
+            description: "Destroys all enemy Armor.",
             image: DragonScreechImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.SHOUT,
-                    area: 3,
+                    area: 5,
                     destroyArmor: 1,
                 },
             ],
@@ -211,5 +212,5 @@ export const basementDragon: Minion = {
             ],
         },
     ],
-    effects: [reawakening],
+    effects: [hardy, reawakening],
 };

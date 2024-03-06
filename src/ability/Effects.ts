@@ -202,7 +202,7 @@ export const raging: Effect = {
                 type: EFFECT_TYPES.RAGE,
                 class: EFFECT_CLASSES.BUFF,
                 icon: WeaponMasteryImage,
-                description: "Growing angry. Effect is removed if the character is stunned.",
+                description: "Effect is removed if the character is stunned.",
                 attackPower: 1,
                 onReceiveEffect: {
                     conditions: [

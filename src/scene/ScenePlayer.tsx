@@ -379,7 +379,7 @@ const ScenePlayer = ({
         const recentActivity = activityHistory[activityHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battle = {}, comparator, chance, activityScore } = condition || {};
+            const { battle = {}, comparator, chance, activityScore, items = [] } = condition || {};
             if (chance) {
                 return Math.random() <= chance;
             }
@@ -394,6 +394,10 @@ const ScenePlayer = ({
 
             if (typeof activityScore === "number") {
                 return passesValueComparison({ val: recentActivity?.score, otherVal: activityScore, comparator });
+            }
+
+            if (items.length) {
+                return items.every((itemName: string) => player.items.some((i) => i.name === itemName));
             }
         };
 
