@@ -1,16 +1,12 @@
-import {
-    ACTION_TYPES,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    MORPH_MINION_MODIFIERS,
-    MORPH_TYPES,
-    Minion,
-    TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
-} from "../../ability/types";
+import classNames from "classnames";
+import { useMemo } from "react";
+import { createUseStyles } from "react-jss";
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_MINION_MODIFIERS, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
+import { Player } from "../../character/types";
 import { basicDummy } from "../../enemy/dummy";
-import { Puppetree2Image, PuppetreeImage } from "../../images";
+import { PerionGroundsImage, Puppetree2Image, PuppetreeImage } from "../../images";
+import { shuffle } from "../../utils";
 import { EventScene } from "../types";
 
 export const balsaDummy: Minion = {
@@ -112,13 +108,70 @@ const dummiesFight = {
     backgroundMusic: "https://vgmsite.com/soundtracks/maplestory-music/iajhmyhndt/52.%20Time%20Attack.mp3",
 };
 
+const useStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 328,
+        left: 220,
+        height: "65px",
+    },
+    broken: {
+        transform: "rotate(90deg)",
+    },
+});
+
+const DummiesBackdrop = ({ player, dummiesBroken }: { player: Player; dummiesBroken?: number }) => {
+    const classes = useStyles();
+    const totalDummies = 6;
+    const brokenDummyIndices = useMemo(
+        () => shuffle(Array.from({ length: totalDummies }).map((_, i) => i)).slice(0, dummiesBroken || 0),
+        [dummiesBroken]
+    );
+
+    const isBroken = (i) => {
+        return brokenDummyIndices.some((index) => index === i);
+    };
+    return (
+        <div className={classes.root}>
+            <img src={PerionGroundsImage} alt="Training Grounds" className={classes.backdrop} />
+            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            {Array.from({ length: totalDummies }).map((_, i) => (
+                <img
+                    src={i % 2 === 0 ? PuppetreeImage : Puppetree2Image}
+                    alt="Dummy"
+                    className={classNames(classes.character, {
+                        [classes.broken]: isBroken(i),
+                    })}
+                    style={{
+                        top: isBroken(i) ? 330 : 310,
+                        left: 400 + i * 50,
+                    }}
+                />
+            ))}
+        </div>
+    );
+};
+
 export const dummiesScene: EventScene = {
     id: "perion-dummies",
     script: [
         {
             speaker: basicDummy,
+            scene: DummiesBackdrop,
             dialog: [
-                "[In an open field before you, straw dummies sit in army-like rows. Some are made of flimsy wood, some look more sturdy. This appears to be the warrior training grounds.]",
+                "[In an open field, you encounter rows and rows of straw dummies. Some of the dummies are made of flimsy wood, some look more sturdy.]",
             ],
         },
         {
@@ -126,9 +179,13 @@ export const dummiesScene: EventScene = {
             dialog: ["[You feel an inexplicable urge to knock all the dummies down.]"],
             responses: [
                 {
-                    text: "Fight.",
+                    text: "Attack the dummies.",
                     infamy: 3,
                     encounter: dummiesFight,
+                },
+                {
+                    text: "Resist the urge.",
+                    isExit: true,
                 },
             ],
         },
@@ -151,9 +208,11 @@ export const dummiesScene: EventScene = {
                     ],
                     next: [
                         {
+                            scene: (other) => <DummiesBackdrop dummiesBroken={6} {...other} />,
                             dialog: [
                                 "[You destroyed {{ totalKills }} dummies. Hunks of wood lie strewn everywhere. You find something in the wreckage...]",
                             ],
+                            infamy: 2,
                         },
                         {
                             dialog: ["..."],
@@ -189,6 +248,7 @@ export const dummiesScene: EventScene = {
                     ],
                     next: [
                         {
+                            scene: (other) => <DummiesBackdrop dummiesBroken={4} {...other} />,
                             dialog: ["[You destroyed {{ totalKills }} dummies. Not bad! You find something in the wreckage...]"],
                         },
                         {
@@ -223,6 +283,7 @@ export const dummiesScene: EventScene = {
                     ],
                     next: [
                         {
+                            scene: (other) => <DummiesBackdrop dummiesBroken={2} {...other} />,
                             dialog: ["[You destroyed {{ totalKills }} dummies. There's something left behind in the wreckage...]"],
                         },
                         {
