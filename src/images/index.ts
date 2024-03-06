@@ -279,6 +279,7 @@ export { default as LigatorImage } from "./Ligator.gif";
 export { default as LightningChargeImage } from "./LightningCharge.png";
 export { default as LightningOrbImage } from "./LightningOrb.png";
 export { default as LightningOrbProjectileImage } from "./LightningOrbProjectile.png";
+export { default as LithCornerImage } from "./LithCorner.png";
 export { default as LithHarborBalconyFullImage } from "./LithHarborBalconyFull.png";
 export { default as LithHarborCenterImage } from "./LithHarborCenter.png";
 export { default as LithHarborCityBGImage } from "./LithHarborCityBG.jpg";
