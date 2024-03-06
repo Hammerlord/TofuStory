@@ -1,9 +1,12 @@
+import { createUseStyles } from "react-jss";
 import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { darkLord } from "../../enemy/darkLord";
 import { thiefAssassin } from "../../enemy/enemy";
-import { DarkLordImage } from "../../images";
+import { DarkLordImage, KerningBarFullImage, KerningBarUndergroundImage, LeetSinImage } from "../../images";
 import { EventScene, ScriptNode } from "../types";
+import classNames from "classnames";
+import { Player } from "../../character/types";
 
 const darkLordCharacter = {
     name: "Dark Lord",
@@ -35,6 +38,79 @@ const darkLordFight = {
     backgroundMusic: CLASS_LEADER_MUSIC,
 };
 
+const useBarStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 315,
+        left: 600,
+        height: "65px",
+    },
+    assassin: {
+        left: 300,
+        top: 220,
+        transform: "scaleX(-1)",
+    },
+});
+
+const BarBackdrop = ({ player, showThief }: { player: Player; showThief?: boolean }) => {
+    const classes = useBarStyles();
+    return (
+        <div className={classes.root}>
+            <img src={KerningBarFullImage} alt="Bar" className={classes.backdrop} />
+            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
+            {showThief && <img src={LeetSinImage} alt="Assassin" className={classNames(classes.character, classes.assassin)} />}
+        </div>
+    );
+};
+
+const useBarUndergroundStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 360,
+        left: 300,
+        height: "65px",
+    },
+    assassin: {
+        left: 294,
+        top: 260,
+    },
+});
+
+const BasementBackdrop = ({ player }: { player: Player }) => {
+    const classes = useBarUndergroundStyles();
+    return (
+        <div className={classes.root}>
+            <img src={KerningBarUndergroundImage} alt="Bar Underground" className={classes.backdrop} />
+            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
+            <img src={DarkLordImage} alt="Dark Lord" className={classNames(classes.assassin, classes.character)} />
+        </div>
+    );
+};
+
 export const toilet: ScriptNode[] = [
     {
         speaker: thiefAssassin,
@@ -48,6 +124,7 @@ export const toilet: ScriptNode[] = [
         dialog: ["[With a final cry of outrage, the ghost of the defeated assassin promptly vanishes.]"],
     },
     {
+        scene: BarBackdrop,
         speaker: aVoice,
         dialog: ["So you've defeated one of my disciples.", "[The voice seems to be coming from the toilet in the back.]"],
         responses: [
@@ -78,6 +155,7 @@ export const toilet: ScriptNode[] = [
                                 next: [
                                     {
                                         speaker: darkLordCharacter,
+                                        scene: BasementBackdrop,
                                         dialog: [
                                             "There you are.",
                                             "Mmm. I did not expect to see a mushroom, of all creatures.",
@@ -149,7 +227,8 @@ export const barScene: EventScene = {
     id: "rogue-class-leader-event",
     script: [
         {
-            dialog: ["[It seems all dark in the club house. Is the place abandoned?]"],
+            scene: BarBackdrop,
+            dialog: ["[It seems all empty in the club house. Is the place abandoned?]"],
         },
         {
             dialog: ["[You take a step (or a hop) farther in...]"],
@@ -158,6 +237,7 @@ export const barScene: EventScene = {
             dialog: ["[A ninja star comes flying out of nowhere. It bounces off the floor and goes clattering.", "A warning shot.]"],
         },
         {
+            scene: (other) => <BarBackdrop showThief={true} {...other} />,
             speaker: thiefAssassin,
             dialog: [
                 "Stop right there. This place is for pros like me only... peeps with ugly NX costumes aren't allowed. Go away before I kick your ass.",
@@ -165,6 +245,7 @@ export const barScene: EventScene = {
             responses: [
                 {
                     text: "Uh huh...",
+                    infamy: 3,
                     next: [
                         {
                             speaker: thiefAssassin,

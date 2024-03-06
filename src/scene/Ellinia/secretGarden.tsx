@@ -74,6 +74,7 @@ const useStyles = createUseStyles({
 
 export const SecretGardenBackdrop = ({ player, showLen, awakenDragon }: { player: Player; showLen?: boolean; awakenDragon?: boolean }) => {
     const classes = useStyles();
+
     return (
         <div className={classes.root}>
             <img src={MarrsForestImage} alt="Secret Garden Backdrop" className={classes.backdrop} />

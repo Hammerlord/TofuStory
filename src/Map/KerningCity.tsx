@@ -14,7 +14,7 @@ import {
     KerningTradingPostImage,
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
-import { barScene } from "../scene/Kerning/darkLord";
+import { barScene } from "../scene/Kerning/darkLordScene";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 import Tooltip from "../view/Tooltip";

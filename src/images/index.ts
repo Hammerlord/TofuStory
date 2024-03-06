@@ -252,6 +252,8 @@ export { default as JohnImage } from "./John.png";
 export { default as JrBalrogImage } from "./JrBalrog.gif";
 export { default as KargoCardImage } from "./KargoCard.png";
 export { default as KerningBarImage } from "./KerningBar.png";
+export { default as KerningBarFullImage } from "./KerningBarFull.png";
+export { default as KerningBarUndergroundImage } from "./KerningBarUnderground.png";
 export { default as KerningCaseyImage } from "./KerningCasey.png";
 export { default as KerningCenterImage } from "./KerningCenter.png";
 export { default as KerningCityBGImage } from "./KerningCityBG.jpg";
