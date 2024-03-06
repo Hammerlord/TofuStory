@@ -11,35 +11,35 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${KerningSewerFullImage}) no-repeat`,
-        width: "1200px",
-        height: "616px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        left: "200px",
-        top: "306px",
-        height: "70px",
+        left: 200,
+        top: 323,
+        height: "65px",
     },
     sho: {
         left: "470px",
-        top: "297px",
+        top: 308,
     },
     stefa: {
         left: "430px",
-        top: "308px",
+        top: "317px",
     },
     wess: {
         left: "380px",
-        top: "300px",
+        top: 310,
     },
     flip: {
         transform: "scale(-1, 1)",
     },
     bystander: {
-        top: 310,
+        top: 313,
         width: 48,
     },
     speechBubble: {
@@ -52,9 +52,9 @@ const useStyles = createUseStyles({
 const SewerEntrance = ({ player }: SceneProps) => {
     const classes = useStyles();
     const [bystanders] = useState(
-        Array.from({ length: 10 }).map((_, i: number) => ({
+        Array.from({ length: 7 }).map((_, i: number) => ({
             flip: Math.random() < 0.5,
-            left: 800 + i * getRandomArbitrary(20, 40),
+            left: 700 + i * getRandomArbitrary(20, 40),
             text: getBystanderDialogue(),
         }))
     );

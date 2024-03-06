@@ -36,8 +36,8 @@ const useStyles = createUseStyles({
     scene: {
         position: "relative",
         background: `url(${KerningSewerFullImage}) no-repeat`, // placeholder...
-        width: "1200px",
-        height: "616px",
+        width: "1000",
+        height: "600",
     },
     character: {
         position: "absolute",
@@ -45,14 +45,14 @@ const useStyles = createUseStyles({
         cursor: "pointer",
     },
     lakelis: {
-        top: 303,
+        top: 313,
         left: lakelisX,
     },
     flip: {
         transform: "scale(-1, 1)",
     },
     bystander: {
-        top: 303,
+        top: 313,
         width: 48,
     },
     speechBubble: {
@@ -75,7 +75,6 @@ const useStyles = createUseStyles({
             transform: "rotate(360deg)",
         },
     },
-    progressContainer: {},
 });
 
 const MAX_BYSTANDERS = 8;
@@ -93,7 +92,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
             text: Math.random() < 0.7 ? getBystanderDialogue() : "",
             clicked: null,
             trajectory: [0, 0],
-            top: 303,
+            top: 313,
         };
     };
     const [bystanders, setBystanders] = useState(
@@ -224,7 +223,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                             return bystanderImg;
                         })}
 
-                        <div className={classes.progressContainer}>
+                        <div>
                             <LinearProgress
                                 color="secondary"
                                 value={(clickedLakelisTimes / CLICKS_TO_COMPLETE) * 100}

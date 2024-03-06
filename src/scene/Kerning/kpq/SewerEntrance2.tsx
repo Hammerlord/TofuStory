@@ -11,42 +11,42 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${KerningSewerFull2Image}) no-repeat`,
-        width: "1200px",
-        height: "616px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        left: "300px",
-        top: "306px",
-        height: "70px",
+        left: 190,
+        top: "325px",
+        height: "65px",
     },
     sho: {
-        left: "380px",
-        top: "297px",
+        left: 240,
+        top: 308,
         transform: "scale(-1, 1)",
     },
     stefa: {
-        left: "450px",
-        top: "308px",
+        left: 300,
+        top: "317px",
         transform: "scale(-1, 1)",
     },
     wess: {
-        left: "480px",
-        top: "300px",
+        left: 338,
+        top: 310,
         transform: "scale(-1, 1)",
     },
     lakelis: {
         top: 255,
-        left: 972,
+        left: 768,
     },
     flip: {
         transform: "scale(-1, 1)",
     },
     bystander: {
-        top: 303,
+        top: 313,
         width: 48,
     },
     speechBubble: {
@@ -59,9 +59,9 @@ const useStyles = createUseStyles({
 const SewerEntrance2 = ({ player }: SceneProps) => {
     const classes = useStyles();
     const [bystanders] = useState(
-        Array.from({ length: 12 }).map((_, i: number) => ({
+        Array.from({ length: 10 }).map((_, i: number) => ({
             flip: Math.random() < 0.5,
-            left: 600 + i * getRandomArbitrary(20, 30),
+            left: 400 + i * getRandomArbitrary(20, 30),
             text: getBystanderDialogue(),
         }))
     );
