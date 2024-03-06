@@ -152,6 +152,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}
+                            isLocked={!visited[TOWN_PLACES.CAMPAIGN]}
                             label={"Secret Garden"}
                             nodeImage={MarrsForestPreviewImage}
                             onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
