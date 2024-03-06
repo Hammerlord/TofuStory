@@ -1,11 +1,50 @@
-import { CaseyImage } from "../../images";
+import { createUseStyles } from "react-jss";
+import { CaseyImage, KerningCraneImage } from "../../images";
 import { alligatorTube, amethyst, blueJeanShorts, cactus, leatherSandals, mesoItem, redHeadband, sword, tShirt } from "../../item/items";
 import CardMatchingGame from "../CardMatchingGame";
 import { EventScene } from "../types";
+import classNames from "classnames";
 
 const caseyCharacter = {
     name: "Casey",
     image: CaseyImage,
+};
+
+const useStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 220,
+        left: 550,
+        height: "65px",
+    },
+    casey: {
+        top: 208,
+        left: 420,
+        transform: "scaleX(-1)",
+    },
+});
+
+const KerningCaseyBackdrop = ({ player }) => {
+    const classes = useStyles();
+    return (
+        <div className={classes.root}>
+            <img src={KerningCraneImage} alt="Crane" />
+            <img src={player.image} className={classNames(classes.player, classes.character)} alt="Player" />
+            <img src={CaseyImage} className={classNames(classes.casey, classes.character)} alt="Casey" />
+        </div>
+    );
 };
 
 const kerningMatchingCards: EventScene = {
@@ -13,6 +52,7 @@ const kerningMatchingCards: EventScene = {
     script: [
         {
             speaker: caseyCharacter,
+            scene: KerningCaseyBackdrop,
             dialog: ["Hi there, Mushie!", "Wanna play a game?"],
         },
         {
