@@ -64,13 +64,19 @@ import {
     StealImage,
     StumpImage,
     SubiImage,
+    TauromacisHornImage,
+    TauromacisImage,
+    TauromacisStampedeImage,
+    TauromacisThunderCrashImage,
     TeleportImage,
     ThiefImage,
     TreasureChestImage,
+    WeaponBoosterImage,
     WeaponMasteryImage,
     WildBoarImage,
     WildKargoImage,
     WoodenClubImage,
+    YellowThunderBoltProjectileImage,
     ZombieLupinJumpImage,
 } from "../images";
 import {
@@ -81,6 +87,7 @@ import {
     DizzyIcon,
     EyeIcon,
     FireIcon,
+    JapaneseOgreIcon,
     MountainIcon,
     MuscleIcon,
     PristineRedShieldIcon,
@@ -2546,4 +2553,130 @@ export const egg: Minion = {
             },
         },
     ],
+};
+
+export const tauromacis: Minion = {
+    name: "Tauromacis",
+    maxHP: 150,
+    image: TauromacisImage,
+    isElite: true,
+    abilities: [
+        {
+            name: "Stampede",
+            image: TauromacisStampedeImage,
+            description: "Hits up to 2 extra targets for 3.",
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 6,
+                    secondaryDamage: 3,
+                    animationOptions: {
+                        ricochet: true,
+                    },
+                    numTargets: 2,
+                    targetArea: 2,
+                },
+            ],
+        },
+        {
+            name: "Bolster Allies",
+            image: WeaponBoosterImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    area: 1,
+                    armor: 10,
+                    excludePrimaryTarget: true,
+                    effects: [attackPower],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Gore",
+            image: TauromacisHornImage,
+            description: "Inflicts Bleed. Tauromacis becomes Enraged, dealing enhanced damage.",
+            castTime: 1,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 8,
+                    effects: [bleed],
+                    secondaryAction: {
+                        target: "actor",
+                        effects: [
+                            {
+                                name: "Enraged",
+                                canBeSilenced: true,
+                                duration: 3,
+                                attackPower: 1,
+                                icon: JapaneseOgreIcon,
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+        {
+            name: "Thunder Crash",
+            image: TauromacisThunderCrashImage,
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    damage: 5,
+                    secondaryDamage: 3,
+                    area: 2,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: YellowThunderBoltProjectileImage,
+                    animationOptions: {
+                        height: 250,
+                        width: 60,
+                        flash: 200,
+                    },
+                },
+                {
+                    damage: 5,
+                    secondaryDamage: 3,
+                    area: 2,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    icon: YellowThunderBoltProjectileImage,
+                    animationOptions: {
+                        height: 250,
+                        width: 60,
+                        flash: 200,
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [avenger, hardy],
 };
