@@ -474,13 +474,13 @@ export const toHenesys: Route = {
             region: REGIONS.HENESYS,
         },
         {
-            x: 0.363668430335097,
-            y: 0.7907521393184207,
+            x: 0.37120535714285713,
+            y: 0.7960441001135279,
             region: REGIONS.HENESYS,
         },
         {
-            x: 0.3950617283950617,
-            y: 0.8070860231196517,
+            x: 0.4107142857142857,
+            y: 0.8085084148374746,
             region: REGIONS.HENESYS,
         },
         {
