@@ -38,13 +38,7 @@ export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?:
         return;
     }
 
-    const newCard = {
-        ...cloneDeep(card),
-        level: (card.level || 1) + 1,
-        maxLevel: card.maxLevel || CARD_MAX_LEVEL,
-        // Why not always retain ID if there is one?
-        instanceId: (options?.retainId && card.instanceId) || uuid.v4(),
-    };
+    const newCard = cloneDeep(card);
 
     const traverseAndApplyUpgradeStats = (upgradeObj: AbilityUpgrade | any, equivalentObj: any) => {
         if (!upgradeObj || !equivalentObj) {
@@ -119,5 +113,19 @@ export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?:
 
     traverseAndApplyUpgradeStats(card.upgrades[0], newCard);
 
-    return newCard;
+    const isFunctionallySameCard = JSON.stringify(newCard) === JSON.stringify(card);
+    if (isFunctionallySameCard) {
+        // It is misleading to show a card as "leveled up" if it doesn't actually have any property increases since the last level.
+        // Eg. some cards lose their 'Deplete' tag and that's it, there are no further upgrades beyond that.
+        // In the future there may be extra upgrades beyond level 2.
+        return;
+    }
+
+    return {
+        ...newCard,
+        level: (card.level || 1) + 1,
+        maxLevel: card.maxLevel || CARD_MAX_LEVEL,
+        // Why not always retain ID if there is one?
+        instanceId: (options?.retainId && card.instanceId) || uuid.v4(),
+    };
 };
