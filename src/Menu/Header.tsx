@@ -91,10 +91,18 @@ const Header = ({
                 <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
                     {deck.length} abilities
                 </Button>
-                <div className={classes.tallyDisplay}>
-                    <img src={MesoCoinImage} className={classes.tallyImage} />
-                    {player.mesos}
-                </div>
+                <Tooltip
+                    title={
+                        <div>
+                            Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
+                        </div>
+                    }
+                >
+                    <div className={classes.tallyDisplay}>
+                        <img src={MesoCoinImage} className={classes.tallyImage} />
+                        {player.mesos}
+                    </div>
+                </Tooltip>
                 <Tooltip
                     title={
                         <div>
