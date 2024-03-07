@@ -74,14 +74,10 @@ const useStyles = createUseStyles({
         whiteSpace: "nowrap",
     },
     abilitiesButton: {
-        cursor: "pointer",
-        border: 0,
-        background: "none",
-        fontFamily: "Barlow, Arial",
         color: "white",
-        fontWeight: "bold",
-        fontSize: 14,
+        border: 0,
         margin: 0,
+        fontSize: 14,
         padding: 16,
         "&:hover": {
             filter: "drop-shadow(0 0 5px #45ff61)",

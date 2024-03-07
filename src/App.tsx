@@ -38,6 +38,12 @@ const useStyles = createUseStyles({
             borderLeft: 0,
             borderRight: 0,
         },
+
+        "& button": {
+            cursor: "pointer",
+            background: "none",
+            fontFamily: "Barlow, Arial",
+        },
     },
     root: {
         position: "fixed",
