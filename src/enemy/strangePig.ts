@@ -13,7 +13,7 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
-import { championsRibbon, pigHeaded } from "./effect";
+import { championsRibbon, pigHeaded, earthen } from "./effect";
 
 export const strangePig: Minion = {
     name: "Strange Pig",
@@ -94,6 +94,7 @@ const stalagmite: Minion = {
     abilities: [],
     effects: [
         {
+            ...earthen,
             name: "Heavy",
             description: "Immune to most debuff types. Targets struck by Stalagmite will receive -1 armor from armor sources.",
             icon: MountainIcon,
@@ -112,15 +113,6 @@ const stalagmite: Minion = {
                         class: EFFECT_CLASSES.DEBUFF,
                     },
                 ],
-            },
-        },
-        {
-            name: "Earthen",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            immunities: {
-                type: "effect-type",
-                value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
             },
         },
     ],

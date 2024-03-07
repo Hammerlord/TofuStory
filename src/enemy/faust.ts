@@ -7,6 +7,7 @@ import {
     MonkeyBananaImage,
     PoisonImage,
     RespawnTokenImage,
+    ShackledHandImage,
 } from "../images";
 import { CloudyIcon, SmilingImpIcon } from "../images/icons";
 import { hardy, poison, preventArmorDecay, stun } from "./../ability/Effects";
@@ -99,7 +100,7 @@ export const faust: Minion = {
         hardy,
         {
             name: "Puppet Link",
-            icon: CursedDollImage,
+            icon: ShackledHandImage,
             description: "Becomes vulnerable if both Puppeteers die.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,

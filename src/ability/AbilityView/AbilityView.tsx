@@ -32,6 +32,7 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         transition: "transform 0.15s",
+        display: "inline-block",
         "&:hover": {
             transform: "scale(1.1)",
             zIndex: 5,
@@ -304,6 +305,7 @@ const AbilityView = forwardRef(
                     return;
                 }
 
+                // FIX ME: This is passing for targets that are dead
                 if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
                     return battle?.enemySide.some((combatant) => {
                         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {

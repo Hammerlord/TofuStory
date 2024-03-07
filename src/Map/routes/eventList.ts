@@ -6,6 +6,7 @@ import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
 import { cursedChestScene, mesoThiefScene } from "../../scene/misc";
 import { EventScene } from "../../scene/types";
+import { wanderingSmithScene } from "../../scene/wanderingBlacksmithScene";
 import {
     adamantiumPlate,
     adventurerCape,
@@ -90,6 +91,7 @@ export const events: EventScene[] = [
     wantedPosterScene,
     mesoThiefScene,
     cursedChestScene,
+    wanderingSmithScene,
 ];
 
 /**

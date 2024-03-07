@@ -25,6 +25,9 @@ import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import SortingPuzzle from "./TreasureBox/SortingPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
 import { BG_MAP } from "../Map/types";
+import { getUpgradeCard } from "../Menu/utils";
+import Overlay from "../view/Overlay";
+import AbilityView from "../ability/AbilityView/AbilityView";
 
 const useStyles = createUseStyles({
     root: {
@@ -194,6 +197,13 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 2px #ff3a3a) drop-shadow(0 0 2px #ff3a3a)",
         marginRight: 8,
     },
+    abilityContainer: {
+        display: "inline-block",
+        margin: 8,
+    },
+    abilityUpgradeSection: {
+        marginBottom: 64,
+    },
 });
 
 const classesInterpolation = {
@@ -254,6 +264,7 @@ const ScenePlayer = ({
     const [showCamp, setShowCamp] = useState(false);
     const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
+    const [upgradedCards, setUpgradedCards] = useState(null);
 
     const classes = useStyles();
 
@@ -419,7 +430,21 @@ const ScenePlayer = ({
         return conditions.some(passesCondition);
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id, infamy }: ScriptResponse) => {
+    const handleUpgradeCards = (numCards: number) => {
+        const eligibleCards = deck.filter((card: CombatAbility) => !card.level || card.level === 1);
+        const upgraded = shuffle(eligibleCards)
+            .slice(0, numCards)
+            .map((card) => getUpgradeCard(card, { retainId: true }));
+
+        const updatedDeck = deck.map((card: CombatAbility) => {
+            return upgraded.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
+        });
+
+        updateDeck(updatedDeck);
+        setUpgradedCards(upgraded);
+    };
+
+    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id, infamy, upgradeCards }: ScriptResponse) => {
         const callback = () => {
             if (id) {
                 dispatch(logVisitedEvent(id));
@@ -447,6 +472,10 @@ const ScenePlayer = ({
 
             if (removeAbility) {
                 setIsRemovingAbility(true);
+            }
+
+            if (upgradeCards) {
+                handleUpgradeCards(upgradeCards);
             }
 
             if (!next && !shop && !isExit) {
@@ -509,6 +538,10 @@ const ScenePlayer = ({
 
         if (response.removeAbility) {
             return "[Remove ability from deck]";
+        }
+
+        if (response.upgradeCards) {
+            return `[Upgrade ${response.upgradeCards} random abilities]`;
         }
     };
 
@@ -641,6 +674,25 @@ const ScenePlayer = ({
                     <ItemSelection {...itemChoices} player={player} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />
                 )}
                 {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
+                {upgradedCards && (
+                    <Overlay>
+                        <div className={classes.inner}>
+                            <h3>The following cards were upgraded</h3>
+                            <div className={classes.abilityUpgradeSection}>
+                                {upgradedCards
+                                    .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
+                                    .map((ability) => (
+                                        <div className={classes.abilityContainer}>
+                                            <AbilityView ability={ability} key={ability.instanceId} />
+                                        </div>
+                                    ))}
+                            </div>
+                            <Button color="secondary" onClick={() => setUpgradedCards(null)}>
+                                Continue
+                            </Button>
+                        </div>
+                    </Overlay>
+                )}
             </div>
             {treasureBoxOptions && (
                 <TreasureBox

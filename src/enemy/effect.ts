@@ -24,7 +24,7 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, RedShieldIcon, SmilingImpIcon } from "../images/icons";
+import { CloudyIcon, LinkIcon, MountainIcon, RedShieldIcon, SmilingImpIcon } from "../images/icons";
 import { defUp } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
@@ -383,6 +383,18 @@ export const poisonous = {
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
         effects: [{ ...poison, duration: 1 }],
+    },
+};
+
+export const earthen: Effect = {
+    name: "Earthen",
+    description: "Immune to most debuff types.",
+    icon: MountainIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    immunities: {
+        type: "effect-type",
+        value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
     },
 };
 

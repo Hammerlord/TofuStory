@@ -66,6 +66,7 @@ export interface ScriptResponse {
     shop?: Shop;
     camp?: boolean;
     removeAbility?: boolean;
+    upgradeCards?: number; // Number of cards to upgrade. Eligible cards will be chosen randomly.
     id?: string; // Scene ID to track which scenes you have visited
 }
 

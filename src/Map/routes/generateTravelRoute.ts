@@ -1,5 +1,4 @@
 import uuid from "uuid";
-import ComboPuzzle from "../../scene/TreasureBox/ComboPuzzle";
 import OnOffPuzzle from "../../scene/TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
@@ -8,7 +7,6 @@ import { NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
 import { generateElites, generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
-import { events } from "./eventList";
 
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
