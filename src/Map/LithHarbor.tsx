@@ -7,7 +7,7 @@ import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { basicDummy } from "../enemy/dummy";
-import { olaf } from "../enemy/enemy";
+import { casey, olaf } from "../enemy/enemy";
 import { useAppDispatch } from "../hooks";
 import {
     LithHarborCenterImage,
@@ -16,6 +16,7 @@ import {
     LithHarborSharkImage,
     LithTutorial2Image,
     LithTutorialImage,
+    SkipLithBackdropImage,
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { halfEatenHotdog } from "../item/items";
@@ -26,6 +27,7 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
+import { EventScene } from "../scene/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -71,6 +73,57 @@ const LITH_PREREQUISITES = {
 
 const { acquireItems } = playerStateSlice.actions;
 
+const useCaseyStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 240,
+        left: 550,
+        height: "65px",
+    },
+    casey: {
+        top: 227,
+        left: 399,
+        transform: "scaleX(-1)",
+    },
+});
+
+const CaseyBackdrop = ({ player }) => {
+    const classes = useCaseyStyles();
+    return (
+        <div className={classes.root}>
+            <img src={SkipLithBackdropImage} alt="Background" className={classes.backdrop} />
+            <img src={player.image} className={classNames(classes.player, classes.character)} alt="Player" />
+            <img src={casey.image} className={classNames(classes.casey, classes.character)} alt="Casey" />
+        </div>
+    );
+};
+
+const skipScript: EventScene = {
+    id: "lith-skip",
+    script: [
+        {
+            speaker: casey,
+            background: LithHarborCityBGImage,
+            scene: CaseyBackdrop,
+            dialog: [
+                "Hey Mushie! Not your first rodeo, huh? Here's the stuff you would've gotten from the events in town. Good luck out there!",
+            ],
+        },
+    ],
+};
+
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
     const classes = useStyles();
     const [isExiting, setIsExiting] = useState(false);
@@ -107,16 +160,20 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
             return;
         }
 
-        setIsExiting(true);
-        if (!visited[LITH_PLACES.SHARK]) {
-            dispatch(acquireItems([halfEatenHotdog]));
-        }
+        onClickScene &&
+            onClickScene(skipScript, () => {
+                setIsExiting(true);
 
-        const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
-            (v) => !v
-        ).length;
-        setShowAcquireAbility(combatsNotVisited);
-        setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
+                if (!visited[LITH_PLACES.SHARK]) {
+                    dispatch(acquireItems([halfEatenHotdog]));
+                }
+
+                const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
+                    (v) => !v
+                ).length;
+                setShowAcquireAbility(combatsNotVisited);
+                setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
+            });
     };
 
     const handleCloseAcquireItems = () => {

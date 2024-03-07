@@ -6,6 +6,7 @@ import {
     BlueMushroomJumpImage,
     BlueSnailImage,
     BombImage,
+    CaseyImage,
     CopperDrakeImage,
     CopperScreechImage,
     CurseEyeImage,
@@ -2680,4 +2681,11 @@ export const tauromacis: Minion = {
         },
     ],
     effects: [avenger, hardy],
+};
+
+export const casey: Minion = {
+    name: "Casey",
+    image: CaseyImage,
+    maxHP: 300,
+    abilities: [],
 };
