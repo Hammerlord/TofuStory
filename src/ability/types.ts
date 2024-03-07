@@ -123,6 +123,7 @@ export enum EFFECT_EVENT_KEYS {
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
     onHostileAbility = "onHostileAbility",
+    onHostileSupportAbility = "onHostileSupportAbility",
     onHostileSummon = "onHostileSummon", // When a minion hostile to the effect owner is summoned
     onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned
     onArmorLoss = "onArmorLoss", // Whenever character loses armor -- this includes armor decay
@@ -247,7 +248,7 @@ export interface Minion {
     HP?: number;
     armor?: number;
     abilities?: Ability[];
-    effects?: Effect[];
+    effects?: (Effect | CombatEffect)[];
     resources?: number;
     isBoss?: boolean;
     isElite?: boolean;

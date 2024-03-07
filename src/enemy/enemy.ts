@@ -126,7 +126,7 @@ import {
 } from "./../ability/types";
 import { bash, block, slashBlast } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky, weightedShell } from "./effect";
+import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -2560,6 +2560,7 @@ export const tauromacis: Minion = {
     maxHP: 150,
     image: TauromacisImage,
     isElite: true,
+    mesos: 50,
     abilities: [
         {
             name: "Stampede",

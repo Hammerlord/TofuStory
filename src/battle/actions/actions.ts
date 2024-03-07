@@ -2104,6 +2104,17 @@ const onUseAbility =
                         source: source,
                     })
                 );
+
+                if (!isOffensiveAbility(ability)) {
+                    console.log("trigger hostile support");
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onHostileSupportAbility,
+                            source: source,
+                        })
+                    );
+                }
             }
         });
     };

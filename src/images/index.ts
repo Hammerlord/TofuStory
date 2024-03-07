@@ -307,6 +307,7 @@ export { default as MagicGuardImage } from "./MagicGuard.png";
 export { default as MagicLibraryImage } from "./MagicLibrary.png";
 export { default as MaladyImage } from "./Malady.gif";
 export { default as ManaImage } from "./Mana.png";
+export { default as ManjiImage } from "./Manji.png";
 export { default as ManoImage } from "./Mano.gif";
 export { default as MapleAdminImage } from "./MapleAdmin.png";
 export { default as MapleLeavesImage } from "./MapleLeaves.png";

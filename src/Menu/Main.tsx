@@ -267,8 +267,14 @@ const Main = () => {
         }
     };
 
+    // Opens item rewards if applicable.
     const handleCloseCardRewards = () => {
         setCardRewardsOpen(false);
+        if (battle?.disableItemRewards) {
+            handleExitBattle();
+            return;
+        }
+
         if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type) || Math.random() < REGULAR_BATTLE_LOOT_CHANCE) {
             setItemRewardsOpen(true);
         } else {

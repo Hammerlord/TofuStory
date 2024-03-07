@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { aggregateItemEffects } from "../Menu/utils";
-import { Ability, Effect } from "../ability/types";
+import { Ability, CombatEffect, Effect } from "../ability/types";
 import { Combatant } from "../character/types";
 
 export const createCombatant = (combatant): Combatant => {
@@ -14,9 +14,10 @@ export const createCombatant = (combatant): Combatant => {
         HP: combatant.HP || combatant.maxHP,
         effects: [
             ...aggregateItemEffects(combatant.items || []),
-            ...(combatant.effects?.map((effect: Effect) => ({
+            ...(combatant.effects?.map((effect: Effect | CombatEffect) => ({
                 ...cloneDeep(effect),
-                uptime: 1,
+                // @ts-ignore
+                uptime: effect.uptime || 1,
                 id: uuid.v4(),
             })) || []),
         ],

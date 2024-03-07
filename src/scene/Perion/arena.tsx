@@ -1,7 +1,8 @@
 import { BATTLE_TYPES } from "../../battle/types";
+import { manji } from "../../enemy/Manji";
 import { tauromacis } from "../../enemy/enemy";
 import { ArturoImage, BystanderImage } from "../../images";
-import { EventScene } from "../types";
+import { EventScene, SceneEncounter } from "../types";
 
 const announcer = {
     name: "Announcer",
@@ -13,13 +14,24 @@ const crowd = {
     image: BystanderImage,
 };
 
-const tauromacisFight = {
+const tauromacisFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, tauromacis, null, null],
         },
     ],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
+    disableItemRewards: true,
+};
+
+const manjiFight: SceneEncounter = {
+    waves: [
+        {
+            enemies: [null, null, manji, null, null],
+        },
+    ],
+    type: BATTLE_TYPES.ELITE_ENCOUNTER,
+    disableItemRewards: true,
 };
 
 export const arenaScene: EventScene = {
@@ -86,13 +98,13 @@ export const arenaScene: EventScene = {
                         {
                             speaker: announcer,
                             dialog: [
-                                "Next up! Heralding from the peaks of the eastern rocky mountains, our next contestant is the distinguished swordsman Manji!",
+                                "Next up! Heralding from the peaks of the eastern rocky mountains, our next contestant is the distinguished swordsman Manji, two-time champion of the arena!",
                             ],
                         },
                         {
                             speaker: announcer,
                             dialog: [
-                                "He's here on a quest to be known as the strongest swordsman in all of Victoria. Some say he's already earned the title!",
+                                "He's on a relentless quest to be known as the strongest swordsman in all of Victoria. Some say he's already earned the title!",
                             ],
                         },
                         {
@@ -100,7 +112,57 @@ export const arenaScene: EventScene = {
                             dialog: ["Our brave mushroom challenger is in for a match!"],
                         },
                         {
-                            dialog: ["[Work in progress.]"],
+                            speaker: manji,
+                            dialog: ["I see you, Seeker. You are but a stepping stone on my path."],
+                        },
+                        {
+                            speaker: manji,
+                            dialog: ["Prepare yourself."],
+                            responses: [
+                                {
+                                    text: "Prepare.",
+                                    encounter: manjiFight,
+                                },
+                            ],
+                        },
+                        {
+                            speaker: manji,
+                            dialog: ["Impossible.", "I've struck down so many of your kind, but here I find myself bested."],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: [
+                                "Manji has been defeated!!",
+                                "The champion today is a mushroom that came from nowhere. What an incredible show!",
+                            ],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["To the winner goes the spoils!"],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["To the winner goes the spoils!"],
+                            treasureBox: {
+                                isOpen: true,
+                                isCursed: true,
+                            },
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: [
+                                "That's it, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
+                            ],
+                        },
+                        {
+                            speaker: crowd,
+                            dialog: ["[The crowd roars.]"],
+                            responses: [
+                                {
+                                    text: "Time to go.",
+                                    isExit: true,
+                                },
+                            ],
                         },
                     ],
                 },

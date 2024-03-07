@@ -32,6 +32,7 @@ export interface SceneEncounter {
     addAbilities?: Ability[];
     waves: Wave[];
     disableCardRewards?: boolean;
+    disableItemRewards?: boolean;
     itemRewards?: Item[];
     type?: BATTLE_TYPES;
     backgroundMusic?: string;

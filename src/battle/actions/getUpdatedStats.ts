@@ -147,10 +147,10 @@ export const getUpdatedStats = ({
                     };
                 }
 
-                return effect as Effect;
+                return effect as Effect | CombatEffect;
             })
             .filter((effect) => !isImmuneTo(effect))
-            .map((effect: Effect) => {
+            .map((effect: Effect | CombatEffect) => {
                 let overrideObj;
                 if (effect.override) {
                     const portrait = effect.override.portrait;
@@ -162,7 +162,8 @@ export const getUpdatedStats = ({
                 return {
                     ...cloneDeep(effect),
                     override: overrideObj,
-                    uptime: 1,
+                    // @ts-ignore
+                    uptime: effect.uptime || 1,
                     id: uuid.v4(),
                     applierId: actorId,
                 };
