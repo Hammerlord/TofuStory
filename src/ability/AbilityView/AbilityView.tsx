@@ -1,13 +1,14 @@
 import classNames from "classnames";
-import Handlebars from "handlebars";
 import { forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { canUseAbility, getMultiplier } from "../../battle/utils";
+import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
+import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import { Ability, Action, CONDITION_TARGETS, CombatAbility, TARGET_TYPES } from "../types";
@@ -23,10 +24,8 @@ import Debuffs from "./Debuffs";
 import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
-import { getAbilityColor, getAllEffects } from "./utils";
-import { Player } from "../../character/types";
-import { MapleLeavesImage } from "../../images";
 import SelectCards from "./SelectCards";
+import { getAbilityColor, getAllEffects, interpolateAbilityDescription } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -340,7 +339,7 @@ const AbilityView = forwardRef(
 
         const armorStatistics = getArmorStatistics({ ability, playerInfo });
         const { bonusFromConditions: armorBonusFromConditions, total: armorTotal } = armorStatistics;
-        const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
+        const interpolatedDescription = interpolateAbilityDescription({ ability });
 
         let hasMultiplier = false;
         let armorCornerIcon = false;

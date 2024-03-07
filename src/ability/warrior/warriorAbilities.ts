@@ -1045,7 +1045,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoIcon,
-    description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
+    description: "When you attack, cast tornadoes that deal {{ damage }} damage and hit up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1058,7 +1058,7 @@ export const dustDevils: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 5,
                     icon: TornadoIcon,
-                    description: "When you attack, summon tornadoes that deal 1 damage and hit up to 3 enemies",
+                    description: "When you attack, cast tornadoes that hit up to 3 enemies",
                     onAttack: {
                         ability: {
                             name: "Dust Devils",
@@ -1073,7 +1073,7 @@ export const dustDevils: Ability = {
                                     damage: 1,
                                     icon: TornadoIcon,
                                     playbackTime: 350,
-                                    numTargets: 2, // Bug: 1 more target is hit than stated in this property
+                                    numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
                                     targetArea: 5,
                                 },
                             ],
@@ -1089,7 +1089,6 @@ export const dustDevils: Ability = {
                 {
                     effects: [
                         {
-                            description: "When you attack, summon tornadoes that deal 2 damage and hit up to 3 enemies",
                             onAttack: {
                                 ability: {
                                     actions: [
@@ -1218,7 +1217,7 @@ export const bladedArmor: Ability = {
     name: "Bladed Armor",
     resourceCost: 1,
     image: MetalAxeImage,
-    description: "When you lose armor, hurl a sidearm at a random enemy for 2 damage",
+    description: "When you lose armor, hurl a sidearm at a random enemy for {{ damage }} damage",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1556,7 +1555,7 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "Gain armor equal to the number of attacks made this turn.",
+    description: "Gain Armor equal to the number of attacks made this turn.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1957,7 +1956,7 @@ export const gungnir: Ability = {
     depletedOnUse: true,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "Deal damage equal to 30% of your current HP.",
+    description: "Deal damage equal to {{ multiplier.value }}x your current HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1973,7 +1972,6 @@ export const gungnir: Ability = {
     ],
     upgrades: [
         {
-            description: "Deal damage equal to 40% of your current HP.",
             actions: [
                 {
                     multiplier: {

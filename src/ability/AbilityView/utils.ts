@@ -1,7 +1,9 @@
+import Handlebars from "handlebars";
 import { getUpgradeCard } from "../../Menu/utils";
-import { Combatant, Player } from "../../character/types";
-import { Ability, ACTION_TYPES, CombatEffect, Effect, CombatAbility, TARGET_TYPES, AbilityEffect } from "./../types";
-import { GREEN, GREY, BLUE, RED } from "./constants";
+import { Combatant } from "../../character/types";
+import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility, Effect, TARGET_TYPES } from "./../types";
+import { getDamageStatistics } from "./DamageIcon";
+import { BLUE, GREEN, GREY, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -55,4 +57,43 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
     });
 
     return card;
+};
+
+export const interpolateAbilityDescription = ({ ability }) => {
+    // Some abilities apply an effect, where the "main" point of the ability is a proc from that effect, eg. Dust Devils.
+    // Do a lookup to find the statistics that allow us to interpolate the description, in those cases.
+    const traverseForNestedAbility = (obj: any): Ability | undefined => {
+        if (Array.isArray(obj)) {
+            for (const val of obj) {
+                const result = traverseForNestedAbility(val);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+
+        if (!obj || typeof obj !== "object") {
+            return;
+        }
+
+        if (obj.ability) {
+            return obj.ability;
+        }
+
+        for (const val of Object.values(obj)) {
+            if (typeof val === "object") {
+                const ability = traverseForNestedAbility(val);
+                if (ability) {
+                    return ability;
+                }
+            }
+        }
+    };
+
+    const embeddedAbility = traverseForNestedAbility(ability);
+    if (embeddedAbility) {
+        return Handlebars.compile(ability.description || "")(embeddedAbility.actions[0]);
+    }
+
+    return Handlebars.compile(ability.description || "")(ability.actions[0]);
 };
