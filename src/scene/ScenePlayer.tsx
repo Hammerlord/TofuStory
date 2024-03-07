@@ -24,6 +24,7 @@ import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
 import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import SortingPuzzle from "./TreasureBox/SortingPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
+import { BG_MAP } from "../Map/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -218,6 +219,7 @@ const ScenePlayer = ({
     deck,
     updateDeck,
     onChangeRegion,
+    region,
 }: {
     scene: EventScene;
     player: Player;
@@ -239,6 +241,7 @@ const ScenePlayer = ({
     deck: CombatAbility[];
     updateDeck: (newDeck: CombatAbility[]) => void;
     onChangeRegion: (region: REGIONS) => void;
+    region: REGIONS;
 }) => {
     const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state)?.character || {};
     const dispatch = useAppDispatch();
@@ -298,9 +301,9 @@ const ScenePlayer = ({
             return;
         }
 
-        const { scene: newScene, background, region }: ScriptNode = script[dialogIndex];
-        if (region) {
-            onChangeRegion(region);
+        const { scene: newScene, background: scriptBackground, region: scriptRegion }: ScriptNode = script[dialogIndex];
+        if (scriptRegion) {
+            onChangeRegion(scriptRegion);
         }
         if (newScene && newScene !== Backdrop) {
             setBackdrop(() => newScene || null);
@@ -311,11 +314,19 @@ const ScenePlayer = ({
             onTransition &&
                 onTransition(() => {
                     setPuzzle(null);
-                    background && setBackground(background);
+                    if (scriptBackground) {
+                        setBackground(scriptBackground);
+                    } else if (!background) {
+                        setBackground(BG_MAP[region]);
+                    }
                 });
         } else {
             setPuzzle(() => puzzle);
-            background && setBackground(background);
+            if (scriptBackground) {
+                setBackground(scriptBackground);
+            } else if (!background) {
+                setBackground(BG_MAP[region]);
+            }
         }
 
         if (loseItems.length) {

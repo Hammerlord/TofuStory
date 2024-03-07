@@ -463,6 +463,7 @@ const Main = () => {
                             onShop={setShop}
                             onTransition={handleTransition}
                             onChangeRegion={setSceneRegion}
+                            region={sceneRegion || locationNode?.region}
                         />
                     )}
                     {isResting && (
