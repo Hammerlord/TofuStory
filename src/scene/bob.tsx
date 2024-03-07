@@ -1,11 +1,38 @@
+import { createUseStyles } from "react-jss";
 import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { bob } from "../enemy/enemy";
 import { EventScene } from "./types";
+import { SCENE_STYLES } from "./constants";
+import { LithCorner2Image } from "../images";
+import classNames from "classnames";
 
 const bobEncounter = {
     characters: [bob.name],
     waves: [{ enemies: [null, null, bob, null, null] }],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
+};
+const useStyles = createUseStyles({
+    ...SCENE_STYLES,
+    player: {
+        ...SCENE_STYLES.player,
+        top: 286,
+        left: 355,
+    },
+    bob: {
+        top: 323,
+        left: 550,
+    },
+});
+
+const BobBackdrop = ({ player }) => {
+    const classes = useStyles();
+    return (
+        <div>
+            <img src={LithCorner2Image} alt="Right around Lith Harbor" className={classes.backdrop} />
+            <img src={bob.image} alt="Bob" className={classNames(classes.character, classes.bob)} />
+            <img src={player.image} alt="Bob" className={classNames(classes.character, classes.player)} />
+        </div>
+    );
 };
 
 export const bobSnailScene: EventScene = {
@@ -13,7 +40,8 @@ export const bobSnailScene: EventScene = {
     script: [
         {
             speaker: bob,
-            dialog: ["[On the road ahead sits a regular snail... or is it?]"],
+            scene: BobBackdrop,
+            dialog: ["[On the path ahead sits a regular snail... or is it?]"],
             responses: [
                 {
                     text: "Attack the snail.",
@@ -52,7 +80,7 @@ export const bobSnailScene: EventScene = {
                                         {
                                             speaker: bob,
                                             dialog: [
-                                                "Oh, yea, nobody's supposed to be what they are. I'm not SUPPOSED to be a green snail. If I had a choice, do you think I'd be a green snail? No arms and legs? But you go with it till you get used to it. At least that's what I did.",
+                                                "Oh, yea, nobody's supposed to be what they are. I'm not SUPPOSED to be a green snail. If I had a choice, do you think I'd be a green snail? No opposable thumbs, no arms and legs? But you go with it till you get used to it. At least that's what I did.",
                                             ],
                                         },
                                         {
