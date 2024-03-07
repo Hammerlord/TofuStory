@@ -228,6 +228,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
      * @see chessPiece
      */
     allowFriendlyMovement?: boolean;
+    // Brick vs. Steel Ore effect: Brick wins
+    maxDamageTaken?: number;
 };
 
 export type CombatEffect = Effect & {

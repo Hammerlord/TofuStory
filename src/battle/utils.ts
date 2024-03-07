@@ -514,6 +514,8 @@ export const calculateDamage = ({
     let totalAttackPower = 0;
     let totalSkillBonus = 0;
     let minimumDamage = 0;
+    let maximumDamage;
+
     if (isAttack) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget }).forEach(
             ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage }) => {
@@ -528,6 +530,17 @@ export const calculateDamage = ({
                 }
             }
         );
+
+        getEnabledEffects({ combatantInfo: target, getCalculationTarget }).forEach((effect: CombatEffect) => {
+            const { maxDamageTaken, excludeEffectOwner } = effect;
+            if (excludeEffectOwner) {
+                return;
+            }
+
+            if ((maxDamageTaken && isNaN(maximumDamage)) || maximumDamage < maxDamageTaken) {
+                maximumDamage = maxDamageTaken;
+            }
+        });
     }
 
     const applyAbilityDamageReceived = (damage: number): number => {
@@ -556,7 +569,11 @@ export const calculateDamage = ({
     const damage = baseDamage * multiplier + totalSkillBonus;
     const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
     const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
-    const total = Math.ceil(withAttackPower);
+    let total = Math.ceil(withAttackPower);
+    // Between minimum and maximum damage, minimum damage wins. There aren't that many effects that use this atm, just Brick and Steel Ore
+    if (typeof maximumDamage === "number") {
+        total = Math.min(total, maximumDamage);
+    }
     return Math.max(minimumDamage, total);
 };
 
