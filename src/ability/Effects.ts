@@ -479,7 +479,6 @@ export const poison: Effect = {
 
 export const attackPower: Effect = {
     name: "Attack Power",
-    description: "Attack power increased.",
     icon: WeaponMasteryImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,

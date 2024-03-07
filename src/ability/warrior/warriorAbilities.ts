@@ -303,8 +303,7 @@ export const spikes: Ability = {
 };
 
 const drumOfWarAttackPower: Effect = {
-    name: "Drums of War",
-    description: "Attack power increased.",
+    name: "War Banner - Attack Power",
     icon: WeaponMasteryImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
