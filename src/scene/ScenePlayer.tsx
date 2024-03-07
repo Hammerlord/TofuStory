@@ -93,7 +93,11 @@ const useStyles = createUseStyles({
     },
     backdropContainer: {
         width: 1000,
-        height: 650,
+        height: 675,
+    },
+    backdropInner: {
+        width: "100%",
+        height: 600,
     },
     portraitContainer: {
         minHeight: "100px",
@@ -541,7 +545,9 @@ const ScenePlayer = ({
                     {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (
                         <>
                             <div className={classes.backdropContainer} onClick={handleClickDialog}>
-                                {typeof Backdrop === "function" && <Backdrop player={player} />}
+                                <div className={classes.backdropInner}>
+                                    {typeof Backdrop === "function" && <Backdrop player={player} />}
+                                </div>
                             </div>
 
                             <div className={classes.wrapper}>

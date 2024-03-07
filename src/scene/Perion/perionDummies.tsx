@@ -123,7 +123,7 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 328,
+        top: 297,
         left: 220,
         height: "65px",
     },
@@ -155,7 +155,7 @@ const DummiesBackdrop = ({ player, dummiesBroken }: { player: Player; dummiesBro
                         [classes.broken]: isBroken(i),
                     })}
                     style={{
-                        top: isBroken(i) ? 330 : 310,
+                        top: isBroken(i) ? 298 : 278,
                         left: 400 + i * 50,
                     }}
                 />

@@ -366,6 +366,7 @@ export { default as ParfaitCupcakeImage } from "./ParfaitCupcake.png";
 export { default as PawnChessPieceImage } from "./PawnChessPiece.png";
 export { default as PeachImage } from "./Peach.png";
 export { default as PepeRollingASnowballImage } from "./PepeRollingASnowball.gif";
+export { default as PerionArenaFullImage } from "./PerionArenaFull.png";
 export { default as PerionArenaPreviewImage } from "./PerionArenaPreview.png";
 export { default as PerionCampImage } from "./PerionCamp.png";
 export { default as PerionCenterImage } from "./PerionCenter.png";

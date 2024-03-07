@@ -46,12 +46,12 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     goldRichie: {
-        top: 334,
+        top: 302,
         left: 575,
     },
     player: {
         maxHeight: 65,
-        top: 367,
+        bottom: 200,
         left: 385,
     },
 });

@@ -80,10 +80,10 @@ const useStyles = createUseStyles({
     player: {
         position: "absolute",
         left: 657,
-        top: 447,
+        top: 467,
     },
     playerImage: {
-        maxHeight: 80,
+        maxHeight: 65,
     },
     sho: {
         left: 150,

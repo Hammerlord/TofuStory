@@ -53,13 +53,13 @@ const useBarStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 315,
+        top: 285,
         left: 600,
         height: "65px",
     },
     assassin: {
         left: 300,
-        top: 220,
+        top: 196,
         transform: "scaleX(-1)",
     },
 });
@@ -90,13 +90,13 @@ const useBarUndergroundStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 360,
+        top: 323,
         left: 300,
         height: "65px",
     },
     assassin: {
-        left: 294,
-        top: 260,
+        top: 236,
+        left: 695,
     },
 });
 
