@@ -154,6 +154,7 @@ const DummiesBackdrop = ({ player, dummiesBroken }: { player: Player; dummiesBro
                     className={classNames(classes.character, {
                         [classes.broken]: isBroken(i),
                     })}
+                    key={i}
                     style={{
                         top: isBroken(i) ? 298 : 278,
                         left: 400 + i * 50,

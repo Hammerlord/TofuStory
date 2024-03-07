@@ -2106,7 +2106,6 @@ const onUseAbility =
                 );
 
                 if (!isOffensiveAbility(ability)) {
-                    console.log("trigger hostile support");
                     dispatch(
                         checkEventTrigger({
                             combatantId: combatant.id,

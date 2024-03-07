@@ -285,7 +285,6 @@ const BattlefieldContainer = () => {
     const selectedAbilityFromHand = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
-    const actorIndex = playerSide.findIndex((combatant) => combatant?.id === actorId);
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0) {
@@ -657,7 +656,7 @@ const BattlefieldContainer = () => {
             }, playbackTime + 250);
         }
         eventQueueRef.current = events;
-    }, [events, battleState]);
+    }, [events, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
         const isValidIndex = (index: any) => typeof index === "number";
