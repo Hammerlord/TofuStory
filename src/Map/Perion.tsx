@@ -3,20 +3,24 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     DiamondImage,
+    PerionArenaPreviewImage,
     PerionCenterImage,
+    PerionDummiesPreviewImage,
     PerionExitImage,
     PerionRegionBGImage,
     PerionShopImage,
     PerionTradingPostImage,
     PerionWarriorHallImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import { dummiesScene } from "../scene/Perion/perionDummies";
+import { dummiesScene, mapleDummy } from "../scene/Perion/perionDummies";
+import { arenaScene } from "../scene/Perion/arena";
+import { basicDummy } from "../enemy/dummy";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -32,6 +36,21 @@ const useStyles = createUseStyles({
         ...TOWN_STYLES.player,
         bottom: 155,
     },
+    dummyCharContainer: {
+        bottom: 106,
+        left: 175,
+        position: "absolute",
+    },
+    dummyCharContainer2: {
+        bottom: 106,
+        left: 125,
+        position: "absolute",
+    },
+    dummyCharContainer3: {
+        bottom: 106,
+        left: 75,
+        position: "absolute",
+    },
 });
 
 const store = {
@@ -42,6 +61,7 @@ const store = {
 
 const PERION_PLACES = {
     DUMMIES: "perion-training-dummies",
+    ARENA: "perion-arena",
 };
 
 const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
@@ -104,11 +124,11 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <br />
                         <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
-                            label={"[Test] Dances With Balrog"}
-                            onClick={handleClickClassLeader}
-                            nodeImage={PerionWarriorHallImage}
+                            icon={MedalIcon}
+                            isVisited={visited[PERION_PLACES.ARENA]}
+                            label={"Arena"}
+                            onClick={() => handleClickEvent(PERION_PLACES.ARENA, arenaScene)}
+                            nodeImage={PerionArenaPreviewImage}
                         />
 
                         <div className={classNames(classes.townCenter)}>
@@ -138,14 +158,21 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                             isVisited={visited[PERION_PLACES.DUMMIES]}
                             label={"Training Grounds"}
                             onClick={() => handleClickEvent(PERION_PLACES.DUMMIES, dummiesScene)}
-                            nodeImage={PerionWarriorHallImage}
+                            nodeEl={
+                                <div>
+                                    <img src={PerionDummiesPreviewImage} />
+                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
+                                    <img src={mapleDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
+                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer3} />
+                                </div>
+                            }
                         />
 
                         <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={true}
-                            label={"Placeholder"}
-                            onClick={() => {}}
+                            icon={JapaneseOgreIcon}
+                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            label={"[Test] Dances With Balrog"}
+                            onClick={handleClickClassLeader}
                             nodeImage={PerionWarriorHallImage}
                         />
                     </div>
