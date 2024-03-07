@@ -118,11 +118,10 @@ const CardUpgradeGrid = ({
                 </label>
                 <div className={classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
-                        <div className={classes.tileContainer}>
+                        <div className={classes.tileContainer} key={card.instanceId}>
                             <UpgradeTile
                                 card={card}
                                 onClick={() => setSelectedAbilityId(card.instanceId)}
-                                key={card.instanceId}
                                 isSelected={selectedAbilityId === card.instanceId}
                             />
                             <div className={classes.confirmContainer}>

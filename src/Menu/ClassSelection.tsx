@@ -72,7 +72,7 @@ const useStyles = createUseStyles({
         "&.selected": {
             filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
-        transition: "0.2s",
+        transition: "0.1s",
     },
     iconContainer: {
         marginBottom: "8px",

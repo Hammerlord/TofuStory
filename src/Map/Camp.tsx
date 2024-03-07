@@ -57,7 +57,11 @@ const useStyles = createUseStyles({
         fontSize: "1rem",
         cursor: "pointer",
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+        transition: "0.1s",
 
+        "&:hover:not(.disabled)": {
+            filter: "drop-shadow(0 0 4px #45ff61)",
+        },
         "&.disabled": {
             opacity: 0.5,
             cursor: "default",
