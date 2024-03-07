@@ -139,35 +139,41 @@ export const getUpdatedStats = ({
             });
         };
 
-        const effects: CombatEffect[] = actionEffects
-            .map((effect: String | Effect) => {
-                if (typeof effect === "string") {
-                    return {
-                        ...enemyEffectNameMap[effect],
-                    };
-                }
+        const effects: CombatEffect[] = [];
 
-                return effect as Effect | CombatEffect;
-            })
-            .filter((effect) => !isImmuneTo(effect))
-            .map((effect: Effect | CombatEffect) => {
-                let overrideObj;
-                if (effect.override) {
-                    const portrait = effect.override.portrait;
-                    overrideObj = {
-                        ...effect.override,
-                        portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
+        Array.from({ length: multiplier }).forEach(() => {
+            const effectsToAdd = actionEffects
+                .map((effect: String | Effect) => {
+                    if (typeof effect === "string") {
+                        return {
+                            ...enemyEffectNameMap[effect],
+                        };
+                    }
+
+                    return effect as Effect | CombatEffect;
+                })
+                .filter((effect) => !isImmuneTo(effect))
+                .map((effect: Effect | CombatEffect) => {
+                    let overrideObj;
+                    if (effect.override) {
+                        const portrait = effect.override.portrait;
+                        overrideObj = {
+                            ...effect.override,
+                            portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
+                        };
+                    }
+                    return {
+                        ...cloneDeep(effect),
+                        override: overrideObj,
+                        // @ts-ignore
+                        uptime: effect.uptime || 1,
+                        id: uuid.v4(),
+                        applierId: actorId,
                     };
-                }
-                return {
-                    ...cloneDeep(effect),
-                    override: overrideObj,
-                    // @ts-ignore
-                    uptime: effect.uptime || 1,
-                    id: uuid.v4(),
-                    applierId: actorId,
-                };
-            });
+                });
+
+            effects.push(...effectsToAdd);
+        });
 
         const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources * multiplier);
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
