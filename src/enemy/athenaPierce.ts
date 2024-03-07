@@ -122,6 +122,13 @@ export const athena: Minion = {
             name: "Combined Assault",
             image: FelineBerserkImage,
             description: "Commands all targeted allies to attack",
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    comparator: "gt",
+                    numFriendly: 1,
+                },
+            ],
             actions: [
                 {
                     area: 1,
