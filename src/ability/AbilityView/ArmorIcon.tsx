@@ -4,13 +4,19 @@ import { passesConditions } from "../../battle/passesConditions";
 import { getEnabledEffects } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
-import { Ability, CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
-import { CombatantInfo } from "../../battle/types";
+import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
 
 export const getArmorStatistics = ({
     ability,
     playerInfo,
-}): { base: number; total: number; hasMultiplier: boolean; bonusFromEffects: number; bonusFromConditions } => {
+}): {
+    base: number;
+    total: number;
+    hasMultiplier: boolean;
+    bonusFromEffects: number;
+    hasBonusPotential: boolean;
+    bonusFromConditions: number;
+} => {
     const { actions = [] } = ability;
     const armorActions = actions.filter((action) => action.armor > 0).map(({ armor }) => armor);
     if (armorActions.length === 0) {
@@ -18,6 +24,7 @@ export const getArmorStatistics = ({
             base: 0,
             total: 0,
             hasMultiplier: false,
+            hasBonusPotential: false,
             bonusFromEffects: 0,
             bonusFromConditions: 0,
         };
@@ -44,11 +51,15 @@ export const getArmorStatistics = ({
 
     const bonusFromConditions: number = bonusFromConditionsArr.reduce((a: number, c: number) => a + c, 0);
     const total = armorActions.reduce((acc: number, cur: number) => acc + cur, 0) + bonusFromEffects + bonusFromConditions;
-    const base = armorActions[0] + bonusFromEffects + (bonusFromConditionsArr[0] || 0);
+    const base = armorActions[0];
     return {
-        base: base,
-        total: total,
+        base,
+        total,
         hasMultiplier: armorActions.length > 1,
+        hasBonusPotential: actions.find(({ bonus = [] }) => {
+            const bonuses = Array.isArray(bonus) ? bonus : [bonus];
+            return bonuses.some((b) => b.armor > 0);
+        }),
         bonusFromEffects: bonusFromEffects,
         bonusFromConditions: bonusFromConditions,
     };
@@ -70,24 +81,15 @@ const useStyles = createUseStyles({
 /**
  * The armor icon that displays on the top left of an ability card
  */
-const ArmorIcon = ({ ability, playerInfo }: { ability: Ability; playerInfo: CombatantInfo }) => {
-    const { actions } = ability;
-    const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions } = getArmorStatistics({
-        ability,
-        playerInfo,
-    });
+const ArmorIcon = ({ armorStatistics }) => {
+    const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions, hasBonusPotential } = armorStatistics;
     const classes = useStyles();
 
     if (!total) {
         return null;
     }
 
-    const hasUnfulfilledBonus =
-        actions.find(({ bonus = [] }) => {
-            const bonuses = Array.isArray(bonus) ? bonus : [bonus];
-            return bonuses.some((b) => b.armor > 0);
-        }) && !bonusFromConditions;
-    const isAdditive = hasUnfulfilledBonus;
+    const isAdditive = hasBonusPotential && !bonusFromConditions;
 
     return (
         <Icon

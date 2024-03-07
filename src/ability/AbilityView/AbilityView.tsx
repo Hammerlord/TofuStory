@@ -338,7 +338,8 @@ const AbilityView = forwardRef(
             });
         }, [ability, battle?.enemySide, battle?.playerSide]);
 
-        const { bonusFromConditions: armorBonusFromConditions } = getArmorStatistics({ ability, playerInfo });
+        const armorStatistics = getArmorStatistics({ ability, playerInfo });
+        const { bonusFromConditions: armorBonusFromConditions, total: armorTotal } = armorStatistics;
         const interpolatedDescription = Handlebars.compile(description || "")({ damage: baseDamage });
 
         let hasMultiplier = false;
@@ -347,7 +348,6 @@ const AbilityView = forwardRef(
 
         const {
             healing,
-            armor,
             damage: selfDamage,
             resourceGain,
         } = actions
@@ -377,9 +377,9 @@ const AbilityView = forwardRef(
                 return <DamageIcon ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />;
             }
 
-            if (armor > 0) {
+            if (armorTotal > 0) {
                 armorCornerIcon = true;
-                return <ArmorIcon ability={ability} playerInfo={playerInfo} />;
+                return <ArmorIcon armorStatistics={armorStatistics} />;
             }
 
             if (healing > 0) {
@@ -411,6 +411,16 @@ const AbilityView = forwardRef(
 
         const isAbilityUsable = canUseAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
+
+        const getTextHighlight = (total: number, expected: number) => {
+            if (total < expected) {
+                return "negative";
+            }
+
+            if (total > expected) {
+                return "positive";
+            }
+        };
 
         return (
             <AbilityTooltip ability={ability}>
@@ -488,9 +498,15 @@ const AbilityView = forwardRef(
                                     Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
                                 </div>
                             )}
-                            {!armorCornerIcon && armor > 0 && (
+                            {!armorCornerIcon && armorTotal > 0 && (
                                 <div>
-                                    Gain <Icon icon={<ShieldIcon />} text={armor} size={"sm"} />
+                                    Gain{" "}
+                                    <Icon
+                                        icon={<ShieldIcon />}
+                                        text={armorTotal}
+                                        size={"sm"}
+                                        highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
+                                    />
                                 </div>
                             )}
                             {resourceGain > 0 && (

@@ -68,6 +68,12 @@ const useStyles = createUseStyles({
         color: "white",
         whiteSpace: "nowrap",
     },
+    positive: {
+        color: "#42f57b",
+    },
+    negative: {
+        color: "#ff9b94",
+    },
 });
 
 interface IconInterface {
@@ -78,35 +84,49 @@ interface IconInterface {
     className?: string;
     style?: any;
     children?: JSX.Element;
+    highlightText?: "positive" | "negative";
     [x: string]: any;
 }
 
-const Icon = forwardRef(({ text, icon, background, size = "md", className, style, children, ...other }: IconInterface, ref: any) => {
-    const classes = useStyles();
-    size = ["sm", "md", "lg", "xl"].includes(size) ? size : undefined;
-    let iconNode;
+const Icon = forwardRef(
+    ({ text, icon, background, size = "md", className, style, children, highlightText, ...other }: IconInterface, ref: any) => {
+        const classes = useStyles();
+        size = ["sm", "md", "lg", "xl"].includes(size) ? size : undefined;
+        let iconNode;
 
-    if (typeof icon === "string") {
-        iconNode = <img src={icon} className={classNames(classes.icon, "icon")} />;
-    } else if (typeof icon === "function") {
-        const Icon = icon;
-        iconNode = (
-            <span className={classNames(classes.icon, "icon")}>
-                <Icon />
+        if (typeof icon === "string") {
+            iconNode = <img src={icon} className={classNames(classes.icon, "icon")} />;
+        } else if (typeof icon === "function") {
+            const Icon = icon;
+            iconNode = (
+                <span className={classNames(classes.icon, "icon")}>
+                    <Icon />
+                </span>
+            );
+        } else {
+            iconNode = <span className={classNames(classes.icon, "icon")}>{icon}</span>;
+        }
+
+        return (
+            <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other} ref={ref}>
+                <span className={classNames(classes.inner)}>
+                    {iconNode}
+                    {children ? (
+                        children
+                    ) : (
+                        <span
+                            className={classNames("text", classes.text, {
+                                [classes.positive]: highlightText === "positive",
+                                [classes.negative]: highlightText === "negative",
+                            })}
+                        >
+                            {text}
+                        </span>
+                    )}
+                </span>
             </span>
         );
-    } else {
-        iconNode = <span className={classNames(classes.icon, "icon")}>{icon}</span>;
     }
-
-    return (
-        <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other} ref={ref}>
-            <span className={classNames(classes.inner)}>
-                {iconNode}
-                {children ? children : <span className={classNames("text", classes.text)}>{text}</span>}
-            </span>
-        </span>
-    );
-});
+);
 
 export default Icon;
