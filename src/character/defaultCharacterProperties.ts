@@ -13,7 +13,6 @@ import {
     YellowUmbrellaImage,
 } from "../images";
 import { chargingStone, rageStone } from "../item/starterItems";
-import { redHeadband } from "./../item/items";
 import { Combatant } from "./types";
 
 /** Default character stats */

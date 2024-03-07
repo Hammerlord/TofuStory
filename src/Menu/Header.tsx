@@ -1,14 +1,14 @@
+import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { getMaxHP } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import { MesoCoinImage, SkullPatchImage } from "../images";
-import Button from "../view/Button";
+import { Item } from "../item/types";
+import Tooltip from "../view/Tooltip";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
-import Tooltip from "../view/Tooltip";
-import { Item } from "../item/types";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -73,6 +73,31 @@ const useStyles = createUseStyles({
         display: "flex",
         whiteSpace: "nowrap",
     },
+    abilitiesButton: {
+        cursor: "pointer",
+        border: 0,
+        background: "none",
+        fontFamily: "Barlow, Arial",
+        color: "white",
+        fontWeight: "bold",
+        fontSize: 14,
+        margin: 0,
+        padding: 16,
+        "&:hover": {
+            filter: "drop-shadow(0 0 5px #45ff61)",
+        },
+    },
+    abilityView: {
+        height: 25,
+        width: 15,
+        background: "#176fbd",
+        borderRadius: "2px",
+        border: "1px solid white",
+        boxSizing: "content-box",
+        display: "inline-block",
+        verticalAlign: "middle",
+        marginRight: 8,
+    },
 });
 
 const Header = ({
@@ -90,50 +115,65 @@ const Header = ({
     const player = playerCombatant || playerCharacter;
 
     return (
-        <div className={classes.headerBar}>
-            <div className={classes.profile}>
-                <div className={classes.profileInner}>
-                    <div>
-                        <img src={player.image} className={classes.playerPortrait} />{" "}
-                    </div>
-                    <div className={classes.stats}>
-                        <span className={classes.playerHP}>
-                            {player.HP} / {getMaxHP(player)} HP
-                        </span>
-                        <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
-                            {deck.length} abilities
-                        </Button>
-                        <Tooltip
-                            title={
-                                <div>
-                                    Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
+        <>
+            <div className={classes.headerBar}>
+                <div className={classes.profile}>
+                    <div className={classes.profileInner}>
+                        <div>
+                            <img src={player.image} className={classes.playerPortrait} />{" "}
+                        </div>
+                        <div className={classes.stats}>
+                            <span className={classes.playerHP}>
+                                {player.HP} / {getMaxHP(player)} HP
+                            </span>
+                            <Tooltip
+                                title={
+                                    <div>
+                                        Deck <hr /> You enter battle with these ability cards. Click to see your full deck.
+                                    </div>
+                                }
+                            >
+                                <button
+                                    className={classNames(classes.tallyDisplay, classes.abilitiesButton)}
+                                    onClick={() => setIsAbilitiesOpen((prev) => !prev)}
+                                    tabIndex={0}
+                                >
+                                    <span className={classes.abilityView}></span>
+                                    <span>{deck.length}</span>
+                                </button>
+                            </Tooltip>
+                            <Tooltip
+                                title={
+                                    <div>
+                                        Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
+                                    </div>
+                                }
+                            >
+                                <div className={classes.tallyDisplay}>
+                                    <img src={MesoCoinImage} className={classes.tallyImage} />
+                                    {player.mesos}
                                 </div>
-                            }
-                        >
-                            <div className={classes.tallyDisplay}>
-                                <img src={MesoCoinImage} className={classes.tallyImage} />
-                                {player.mesos}
-                            </div>
-                        </Tooltip>
-                        <Tooltip
-                            title={
-                                <div>
-                                    Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
+                            </Tooltip>
+                            <Tooltip
+                                title={
+                                    <div>
+                                        Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
+                                    </div>
+                                }
+                            >
+                                <div className={classes.tallyDisplay}>
+                                    <img src={SkullPatchImage} className={classes.tallyImage} />
+                                    {infamy || 0}
                                 </div>
-                            }
-                        >
-                            <div className={classes.tallyDisplay}>
-                                <img src={SkullPatchImage} className={classes.tallyImage} />
-                                {infamy || 0}
-                            </div>
-                        </Tooltip>
+                            </Tooltip>
+                        </div>
+                        <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                     </div>
-                    {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
-                    <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                 </div>
+                <Inventory inventory={player.items} onUseItem={onUseItem} />
             </div>
-            <Inventory inventory={player.items} onUseItem={onUseItem} />
-        </div>
+            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
+        </>
     );
 };
 
