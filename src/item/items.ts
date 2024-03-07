@@ -725,7 +725,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect from an ability, gain 1 armor.",
+    description: "When you receive a status effect from an ability, gain 2 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -734,15 +734,9 @@ export const greenBambooHat: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onReceiveEffect: {
+                disableTriggerFromProcs: true,
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 1,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        comparator: "eq",
-                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                    },
-                ],
+                armor: 2,
             },
         },
     ],
