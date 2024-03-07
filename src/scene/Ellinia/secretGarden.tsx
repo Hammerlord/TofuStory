@@ -3,7 +3,14 @@ import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { lostDragon } from "../../enemy/dragon";
 import { grendel, introGrendel } from "../../enemy/grendel";
-import { BlueManonDormantImage, BlueManonImage, ElliniaLibraryOutsideImage, LenImage, MarrsForestImage } from "../../images";
+import {
+    BlueManonDormantImage,
+    BlueManonImage,
+    ElliniaBGImage,
+    ElliniaLibraryOutsideImage,
+    LenImage,
+    MarrsForestImage,
+} from "../../images";
 import { EventScene } from "../types";
 import classNames from "classnames";
 import { glassShoe } from "../../item/items";
@@ -34,7 +41,7 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 310,
+        top: 289,
         left: 220,
         height: "65px",
     },
@@ -103,7 +110,7 @@ const useBackToElliniaStyles = createUseStyles({
         filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
     },
     player: {
-        top: 375,
+        top: 343,
         left: 500,
         height: "65px",
     },
