@@ -1,8 +1,13 @@
+import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../../battle/types";
+import { Player } from "../../character/types";
 import { manji } from "../../enemy/Manji";
 import { tauromacis } from "../../enemy/enemy";
-import { ArturoImage, BystanderImage } from "../../images";
+import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
 import { EventScene, SceneEncounter } from "../types";
+import classNames from "classnames";
+import { dancesWithBalrog } from "../../enemy/dancesWithBalrog";
+import Tooltip from "../../view/Tooltip";
 
 const announcer = {
     name: "Announcer",
@@ -34,24 +39,123 @@ const manjiFight: SceneEncounter = {
     disableItemRewards: true,
 };
 
+const useStyles = createUseStyles({
+    root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+    },
+    backdrop: {
+        width: "100%",
+        height: "100%",
+    },
+    character: {
+        position: "absolute",
+        filter: "drop-shadow(0 0 3px #fffee8) drop-shadow(0 0 3px #fffee8)",
+    },
+    player: {
+        top: 345,
+        left: 700,
+        height: "65px",
+    },
+    announcer: {
+        top: 36,
+        left: 300,
+    },
+    opponent: {
+        left: 250,
+        bottom: 194,
+        transform: "scaleX(-1)",
+    },
+    bystander1: {
+        right: 100,
+        bottom: 410,
+    },
+    bystander2: {
+        right: 200,
+        bottom: 345,
+    },
+    bystander3: {
+        transform: "scaleX(-1)",
+        top: 108,
+        left: 100,
+    },
+    bystander4: {
+        transform: "scaleX(-1)",
+        top: 105,
+        left: 200,
+    },
+    bystander5: {
+        transform: "scaleX(-1)",
+        top: 107,
+        left: 130,
+    },
+    bystander6: {
+        transform: "scaleX(-1)",
+        top: 101,
+        left: 264,
+    },
+    bystander7: {
+        transform: "scaleX(-1)",
+        top: 98,
+        left: 360,
+    },
+    dancesWithBalrog: {
+        right: 275,
+        bottom: 345,
+    },
+});
+
+const ArenaBackdrop = ({ player, showTauromacis, showManji }: { player: Player; showTauromacis?: boolean; showManji?: boolean }) => {
+    const classes = useStyles();
+
+    return (
+        <div className={classes.root}>
+            <img src={PerionArenaFullImage} alt="Arena" className={classes.backdrop} />
+            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander1, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander2, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander3, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander4, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander5, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander6, classes.character)} />
+            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander7, classes.character)} />
+            <img src={announcer.image} alt="Announcer" className={classNames(classes.announcer, classes.character)} />
+            <Tooltip placement="top" title="..." open={true}>
+                <img
+                    src={DancesWithBalrogSittingImage}
+                    alt="Dances With Balrog"
+                    className={classNames(classes.dancesWithBalrog, classes.character)}
+                />
+            </Tooltip>
+            {showTauromacis && <img src={tauromacis.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
+            {showManji && <img src={manji.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
+        </div>
+    );
+};
+
 export const arenaScene: EventScene = {
     id: "perion-arena",
     script: [
         {
-            speaker: announcer,
-            dialog: ["[A voice blares from a megaphone.] Hang onto your seats folks, or the coming match will knock you clean out of it!"],
-        },
-        {
+            scene: (other) => <ArenaBackdrop showTauromacis={true} {...other} />,
             speaker: announcer,
             dialog: [
-                "Are you ready?",
-                "From the depths of the Ant Tunnel, a creature cursed by Balrog itself, we have the fearsome Tauromacis!",
+                "[The announcer's voice blares from a megaphone.] Hang onto your seats folks, or the coming match will knock you clean out of it!",
             ],
         },
         {
             speaker: announcer,
             dialog: [
-                "It's weaker without its brother-in-arms the Taurospear, but not to be underestimated! Countless over-arrogant opponents have been gored by its horns and trampled by its hooves. That pronged staff has laid low many a would-be champion in this arena!",
+                "Are you ready?",
+                "On the left, from the depths of the Ant Tunnel, a creature cursed by Balrog itself, we have the fearsome Tauromacis!",
+            ],
+        },
+        {
+            speaker: announcer,
+            dialog: [
+                "It's weaker without its brother-in-arms the Taurospear, but not to be underestimated!",
+                "Countless over-arrogant opponents have been gored by its horns and trampled by its hooves. That pronged staff has laid low many a would-be champion in this arena!",
             ],
         },
         {
@@ -60,7 +164,7 @@ export const arenaScene: EventScene = {
         },
         {
             speaker: announcer,
-            dialog: ["And the Tauromacis' challenger today is the equally-fierce and mighty...", "..."],
+            dialog: ["And on the right, the Tauromacis' challenger today is the equally-fierce and mighty...", "..."],
         },
         {
             speaker: announcer,
@@ -87,6 +191,7 @@ export const arenaScene: EventScene = {
                     next: [
                         {
                             speaker: announcer,
+                            scene: ArenaBackdrop,
                             dialog: [
                                 "Wha--what an upset! The monster king of the arena has lost its crown to a mushroom! Have you ever seen a mushroom do anything besides run and jump!?",
                             ],
@@ -96,6 +201,7 @@ export const arenaScene: EventScene = {
                             dialog: ["[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]"],
                         },
                         {
+                            scene: (other) => <ArenaBackdrop showManji={true} {...other} />,
                             speaker: announcer,
                             dialog: [
                                 "Next up! Heralding from the peaks of the eastern rocky mountains, our next contestant is the distinguished swordsman Manji, two-time champion of the arena!",
@@ -149,9 +255,10 @@ export const arenaScene: EventScene = {
                             },
                         },
                         {
+                            scene: ArenaBackdrop,
                             speaker: announcer,
                             dialog: [
-                                "That's it, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
+                                "That's it for today, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
                             ],
                         },
                         {

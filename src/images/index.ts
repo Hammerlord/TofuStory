@@ -106,6 +106,7 @@ export { default as CursedDollImage } from "./CursedDoll.png";
 export { default as CurseEyeImage } from "./CurseEye.gif";
 export { default as CurseEyeCardImage } from "./CurseEyeCard.png";
 export { default as DancesWithBalrogImage } from "./DancesWithBalrog.gif";
+export { default as DancesWithBalrogSittingImage } from "./DancesWithBalrogSitting.png";
 export { default as DarkImpaleImage } from "./DarkImpale.png";
 export { default as DarkLordImage } from "./DarkLord.gif";
 export { default as DarkMarbleImage } from "./DarkMarble.png";
