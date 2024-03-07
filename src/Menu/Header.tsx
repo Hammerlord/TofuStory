@@ -18,15 +18,13 @@ const useStyles = createUseStyles({
         right: 0,
         zIndex: "1000",
         background: "rgba(15, 15, 15, 0.9)",
-        padding: "8px 32px",
-        height: "56px",
         color: "white",
         fontWeight: 500,
-        display: "flex",
+        padding: "8",
     },
     playerPortrait: {
-        maxHeight: "100%",
-        marginRight: "32px",
+        height: 50,
+        marginRight: "24px",
     },
     stats: {
         lineHeight: "56px",
@@ -65,6 +63,16 @@ const useStyles = createUseStyles({
         minWidth: 100,
         display: "inline-block",
     },
+    profile: {
+        display: "inline-block",
+        margin: "0 16px",
+        verticalAlign: "top",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.4)",
+    },
+    profileInner: {
+        display: "flex",
+        whiteSpace: "nowrap",
+    },
 });
 
 const Header = ({
@@ -83,41 +91,47 @@ const Header = ({
 
     return (
         <div className={classes.headerBar}>
-            <img src={player.image} className={classes.playerPortrait} />{" "}
-            <div className={classes.stats}>
-                <span className={classes.playerHP}>
-                    {player.HP} / {getMaxHP(player)} HP
-                </span>
-                <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
-                    {deck.length} abilities
-                </Button>
-                <Tooltip
-                    title={
-                        <div>
-                            Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
-                        </div>
-                    }
-                >
-                    <div className={classes.tallyDisplay}>
-                        <img src={MesoCoinImage} className={classes.tallyImage} />
-                        {player.mesos}
+            <div className={classes.profile}>
+                <div className={classes.profileInner}>
+                    <div>
+                        <img src={player.image} className={classes.playerPortrait} />{" "}
                     </div>
-                </Tooltip>
-                <Tooltip
-                    title={
-                        <div>
-                            Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
-                        </div>
-                    }
-                >
-                    <div className={classes.tallyDisplay}>
-                        <img src={SkullPatchImage} className={classes.tallyImage} />
-                        {infamy || 0}
+                    <div className={classes.stats}>
+                        <span className={classes.playerHP}>
+                            {player.HP} / {getMaxHP(player)} HP
+                        </span>
+                        <Button variant="contained" color="primary" onClick={() => setIsAbilitiesOpen((prev) => !prev)}>
+                            {deck.length} abilities
+                        </Button>
+                        <Tooltip
+                            title={
+                                <div>
+                                    Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
+                                </div>
+                            }
+                        >
+                            <div className={classes.tallyDisplay}>
+                                <img src={MesoCoinImage} className={classes.tallyImage} />
+                                {player.mesos}
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            title={
+                                <div>
+                                    Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
+                                </div>
+                            }
+                        >
+                            <div className={classes.tallyDisplay}>
+                                <img src={SkullPatchImage} className={classes.tallyImage} />
+                                {infamy || 0}
+                            </div>
+                        </Tooltip>
                     </div>
-                </Tooltip>
+                    {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
+                    <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
+                </div>
             </div>
-            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
-            <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
             <Inventory inventory={player.items} onUseItem={onUseItem} />
         </div>
     );

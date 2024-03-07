@@ -8,7 +8,6 @@ const useStyles = createUseStyles({
     root: {
         borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
         borderRight: "1px solid rgba(255, 255, 255, 0.3)",
-        margin: "0 4px",
     },
     itemContainer: {
         display: "inline-flex",

@@ -178,7 +178,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
     const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
 
     return (
-        <div className={classes.root}>
+        <>
             {inventory.map((item: Item, i: number) => (
                 <div className={classes.itemContainer} key={i}>
                     <img
@@ -227,7 +227,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                     </ClickAwayListener>
                 </Popper>
             )}
-        </div>
+        </>
     );
 };
 
