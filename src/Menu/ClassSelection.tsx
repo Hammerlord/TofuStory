@@ -57,16 +57,22 @@ const useStyles = createUseStyles({
         justifyContent: "space-evenly",
     },
     classCard: {
-        width: "175px",
+        width: "250px",
         margin: "16px",
         background: "#666",
         padding: "24px",
         borderRadius: "8px",
-        fontSize: "1rem",
+        fontSize: "1.1rem",
         cursor: "pointer",
-        "&.selected": {
-            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        border: 0,
+        color: "white",
+        "&:hover": {
+            filter: "drop-shadow(0 0 4px #45ff61)",
         },
+        "&.selected": {
+            filter: "drop-shadow(0 0 5px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        },
+        transition: "0.2s",
     },
     iconContainer: {
         marginBottom: "8px",
@@ -80,6 +86,10 @@ const useStyles = createUseStyles({
     abilities: {
         width: "70rem",
         marginBottom: "24px",
+    },
+    classTitle: {
+        display: "block",
+        marginTop: 4,
     },
 });
 
@@ -131,28 +141,32 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                     <p>You don't remember much, but you do remember you were a...</p>
                 </div>
                 <div className={classes.classContainer}>
-                    <div
+                    <button
                         onClick={() => setSelectedClass(PLAYER_CLASSES.WARRIOR)}
                         className={classNames(classes.classCard, {
                             selected: selectedClass === PLAYER_CLASSES.WARRIOR,
                         })}
                     >
-                        <div className={classes.iconContainer}>
+                        <span className={classes.iconContainer}>
                             <img src={ClassWarriorImage} />
-                        </div>
-                        <div>WARRIOR</div> <hr />A close-quarters fighter specializing in defenses and focused area attacks
-                    </div>
-                    <div
+                        </span>
+                        <br />
+                        <span className={classes.classTitle}>WARRIOR</span> <hr />A close-quarters fighter specializing in defenses and
+                        focused area attacks
+                    </button>
+                    <button
                         onClick={() => setSelectedClass(PLAYER_CLASSES.MAGICIAN)}
                         className={classNames(classes.classCard, {
                             selected: selectedClass === PLAYER_CLASSES.MAGICIAN,
                         })}
                     >
-                        <div className={classes.iconContainer}>
+                        <span className={classes.iconContainer}>
                             <img src={ClassMagicianImage} />
-                        </div>
-                        <div>MAGICIAN</div> <hr />A ranged caster capable of bombarding enemies with magic spells
-                    </div>
+                        </span>
+                        <br />
+                        <span className={classes.classTitle}>MAGICIAN</span> <hr />A ranged caster capable of bombarding enemies with magic
+                        spells
+                    </button>
                 </div>
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
                     Select!

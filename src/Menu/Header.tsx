@@ -77,8 +77,10 @@ const useStyles = createUseStyles({
         color: "white",
         border: 0,
         margin: 0,
-        fontSize: 14,
+        fontSize: 16,
+        fontWeight: "bold",
         padding: 16,
+        background: 0,
         "&:hover": {
             filter: "drop-shadow(0 0 5px #45ff61)",
         },

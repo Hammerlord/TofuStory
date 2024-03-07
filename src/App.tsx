@@ -41,7 +41,6 @@ const useStyles = createUseStyles({
 
         "& button": {
             cursor: "pointer",
-            background: "none",
             fontFamily: "Barlow, Arial",
         },
     },
