@@ -1033,7 +1033,7 @@ export const magicBooster: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Draw {{ drawCards.amount }} {{{ _offense_ }}} cards.",
+    description: "Draw {{ actions.0.drawCards.amount }} {{{ _offense_ }}} cards.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1144,7 +1144,7 @@ export const thunderBolt: Ability = {
     image: ThunderBoltImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    description: "Charged: Cast again for 2 damage",
+    description: "Charged: Cast again for {{ actions.1.damage }} damage",
     actions: [
         {
             damage: 3,
@@ -1270,7 +1270,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ secondaryAction.resources }} Mana but self-inflict {{ secondaryAction.flatDamage }} damage for each enemy targeted.",
+        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} damage for each enemy targeted.",
     actions: [
         {
             damage: 0,
@@ -1656,7 +1656,8 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "The next {{ effects.0.stacks }} times you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
+    description:
+        "The next {{ actions.0.effects.0.stacks }} times you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
     overrideBodyText: true,
     actions: [
         {

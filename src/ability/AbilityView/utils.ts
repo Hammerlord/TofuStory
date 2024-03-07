@@ -100,7 +100,6 @@ export const interpolateAbilityDescription = ({ ability }) => {
             background: color,
         };
 
-        console.log(color);
         const styleStr = Object.entries(properties).reduce((acc, entry) => {
             return acc + entry.join(":") + ";";
         }, "");
@@ -115,13 +114,13 @@ export const interpolateAbilityDescription = ({ ability }) => {
     const embeddedAbility = traverseForNestedAbility(ability);
     if (embeddedAbility) {
         return Handlebars.compile(ability.description || "")({
-            ...embeddedAbility.actions[0],
+            ...embeddedAbility,
             ...elementMapping,
         });
     }
 
     return Handlebars.compile(ability.description || "")({
-        ...ability.actions[0],
+        ...ability,
         ...elementMapping,
     });
 };

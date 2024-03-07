@@ -580,7 +580,7 @@ export const sweepingReach: Ability = {
     ],
     upgrades: [
         {
-            description: "Your next {{ effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
+            description: "Your next {{ actions.0.effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
             actions: [
                 {
                     effects: [
@@ -1045,7 +1045,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoIcon,
-    description: "When you attack, cast tornadoes that deal {{ damage }} damage and hit up to 3 enemies",
+    description: "When you attack, cast tornadoes that deal {{ actions.0.damage }} damage and hit up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1217,7 +1217,7 @@ export const bladedArmor: Ability = {
     name: "Bladed Armor",
     resourceCost: 1,
     image: MetalAxeImage,
-    description: "When you lose armor, hurl a sidearm at a random enemy for {{ damage }} damage",
+    description: "When you lose armor, hurl a sidearm at a random enemy for {{ actions.0.damage }} damage",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1645,7 +1645,7 @@ export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
     image: RisingRageImage,
-    description: "Expend the rest of your Fury to deal {{ damage }} damage for each Fury spent.",
+    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} damage for each Fury spent.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1956,7 +1956,7 @@ export const gungnir: Ability = {
     depletedOnUse: true,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "Deal damage equal to {{ multiplier.value }}x your current HP.",
+    description: "Deal damage equal to {{ actions.0.multiplier.value }}x your current HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
