@@ -1,4 +1,4 @@
-import { ManjiImage, NamelessSwordImage } from "../images";
+import { ManjiImage, NamelessSwordImage, SwordImage } from "../images";
 import { EyeIcon } from "../images/icons";
 import { attackPower } from "./../ability/Effects";
 import {
@@ -14,8 +14,8 @@ import {
 } from "./../ability/types";
 import { attack } from "./abilities";
 
-const perfectCounterEffect: Effect = {
-    name: "Perfect Counter",
+const counterEffect: Effect = {
+    name: "Counter",
     description: "Countering for 3 damage when attacked.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -39,8 +39,8 @@ const perfectCounterEffect: Effect = {
     },
 };
 
-const perfectCounter: Ability = {
-    name: "Perfect Counter",
+const counter: Ability = {
+    name: "Counter",
     image: NamelessSwordImage,
     actions: [
         {
@@ -48,7 +48,7 @@ const perfectCounter: Ability = {
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...perfectCounterEffect, onTurnStart: { removeEffect: true } }],
+            effects: [{ ...counterEffect, onTurnStart: { removeEffect: true } }],
         },
     ],
 };
@@ -87,7 +87,7 @@ export const manjiMirrorCounter: Minion = {
             ],
         },
     ],
-    effects: [{ ...perfectCounterEffect }],
+    effects: [{ ...counterEffect }],
 };
 
 export const manjiMirrorSpotWeakness: Minion = {
@@ -143,6 +143,7 @@ export const manji: Minion = {
         },
         {
             name: "Mirror Images",
+            image: ManjiImage,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
@@ -156,6 +157,7 @@ export const manji: Minion = {
         },
         {
             ...attack,
+            image: SwordImage,
             name: "Double Slash",
             actions: [
                 {
@@ -179,7 +181,7 @@ export const manji: Minion = {
             turnsTriggerFrequency: 2,
             uptime: 2,
             onTurnEnd: {
-                ability: perfectCounter,
+                ability: counter,
             },
         },
         {
