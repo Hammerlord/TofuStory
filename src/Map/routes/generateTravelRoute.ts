@@ -17,7 +17,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
-        let numEvents = Math.floor(baseRoute.nodes.length / 4);
+        let numEvents = 1;
         let numTreasures = 1;
         let numEliteEncounters = 0;
         if (baseRoute.elites) {
@@ -27,16 +27,19 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
 
         const generateNodeType = () => {
             const types = [];
-            if (numEvents > 0 && currentNode?.type !== NODE_TYPES.EVENT) {
-                types.push(NODE_TYPES.EVENT);
+            if (!initialNode) {
+                return NODE_TYPES.ENCOUNTER;
             }
+
             if (numTreasures > 0 && currentNode?.type !== NODE_TYPES.TREASURE) {
                 types.push(NODE_TYPES.TREASURE);
             }
             if (numEncountersSinceRestPoint >= 2) {
                 types.push(NODE_TYPES.RESTING_ZONE);
             } else {
-                if (numEliteEncounters) {
+                if (numEvents > 0 && currentNode?.type !== NODE_TYPES.EVENT) {
+                    types.push(NODE_TYPES.EVENT);
+                } else if (numEliteEncounters) {
                     types.push(NODE_TYPES.ELITE_ENCOUNTER);
                 } else {
                     types.push(NODE_TYPES.ENCOUNTER);
@@ -71,6 +74,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
                 --numTreasures;
             } else if (type === NODE_TYPES.EVENT) {
                 // No op, event generation is handled live
+                ++numEncountersSinceRestPoint;
                 --numEvents;
             } else if (type === NODE_TYPES.RESTING_ZONE) {
                 numEncountersSinceRestPoint = 0;
