@@ -480,7 +480,7 @@ const AbilityView = forwardRef(
                             {ability.reusable && <div className={classes.bold}>Boomerang</div>}
                             {unplayable && <div className={classes.bold}>Unplayable</div>}
                             <SelectCards ability={ability} />
-                            <DrawCards ability={ability} playerClass={player?.class} />
+                            {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                             {numTargets > 0 && (
                                 <div>
@@ -523,7 +523,7 @@ const AbilityView = forwardRef(
                             {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
                             <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
                             {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
-                            {interpolatedDescription && <div>{interpolatedDescription}</div>}
+                            {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
                         </div>
                         <div className={classes.footer}>
                             {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}

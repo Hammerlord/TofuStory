@@ -16,7 +16,7 @@ import { attack } from "./abilities";
 
 const counterEffect: Effect = {
     name: "Counter",
-    description: "Countering for 3 damage when attacked.",
+    description: "Countering for {{ damage }} damage when attacked.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: NamelessSwordImage,

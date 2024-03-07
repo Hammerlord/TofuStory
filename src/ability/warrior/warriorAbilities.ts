@@ -555,7 +555,7 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
     image: WeaponBoosterImage,
-    description: "+1 area for your next offensive ability",
+    description: "Your next {{{ _offense_ }}} ability gains +1 Area",
     overrideBodyText: true,
     actions: [
         {
@@ -580,7 +580,7 @@ export const sweepingReach: Ability = {
     ],
     upgrades: [
         {
-            description: "+1 area for your next 2 offensive abilities",
+            description: "Your next {{ effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
             actions: [
                 {
                     effects: [
@@ -944,7 +944,7 @@ export const cross: Ability = {
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Search an attack from your deck. It costs 1 less until used or discarded.",
+    description: "Search for an attack from your deck. It costs 1 less until used or discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2072,7 +2072,7 @@ export const hurlBoulder: Ability = {
 export const reinforce: Ability = {
     name: "Reinforce",
     image: ComboSynergyImage,
-    description: "Search a support card from your deck. It is Upgraded until used or discarded.",
+    description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded until used or discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
@@ -2093,7 +2093,7 @@ export const reinforce: Ability = {
     ],
     upgrades: [
         {
-            description: "Search a support card from your deck and Upgrade it for the rest of battle.",
+            description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded for the rest of battle.",
             actions: [
                 {
                     selectCards: {

@@ -90,10 +90,38 @@ export const interpolateAbilityDescription = ({ ability }) => {
         }
     };
 
+    const cardTypeString = (color) => {
+        const properties = {
+            width: 7,
+            height: 7,
+            display: "inline-block",
+            margin: "2px",
+            transform: "rotate(45deg)",
+            background: color,
+        };
+
+        console.log(color);
+        const styleStr = Object.entries(properties).reduce((acc, entry) => {
+            return acc + entry.join(":") + ";";
+        }, "");
+
+        return `<span style="${styleStr}"></span>`;
+    };
+    const elementMapping = {
+        _offense_: cardTypeString(RED),
+        _support_: cardTypeString(BLUE),
+    };
+
     const embeddedAbility = traverseForNestedAbility(ability);
     if (embeddedAbility) {
-        return Handlebars.compile(ability.description || "")(embeddedAbility.actions[0]);
+        return Handlebars.compile(ability.description || "")({
+            ...embeddedAbility.actions[0],
+            ...elementMapping,
+        });
     }
 
-    return Handlebars.compile(ability.description || "")(ability.actions[0]);
+    return Handlebars.compile(ability.description || "")({
+        ...ability.actions[0],
+        ...elementMapping,
+    });
 };

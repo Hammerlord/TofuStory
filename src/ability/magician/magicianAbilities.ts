@@ -903,7 +903,7 @@ export const avatarOfTheStars: Ability = {
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 2,
-    description: "When you use a 1+ cost offensive card, add Swift to your hand.",
+    description: "When you play a 1+ cost {{{ _offense_ }}} card, add Swift to your hand.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -919,7 +919,7 @@ export const avatarOfTheStars: Ability = {
                     override: {
                         portrait: StarfishIdleImage,
                     },
-                    description: "When you use a 1+ cost offensive card, add Swift to your hand.",
+                    description: "When you play a 1+ cost offense card, add Swift to your hand.",
                     onOffensiveAbility: {
                         conditions: [
                             {
@@ -1032,6 +1032,8 @@ export const magicBooster: Ability = {
     image: MagicBoosterImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description: "Draw {{ drawCards.amount }} {{{ _offense_ }}} cards.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1267,7 +1269,8 @@ export const feedback: Ability = {
     image: TeleportMasteryFireImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain 1 Mana but self-inflict 1 dmg for each enemy targeted.",
+    description:
+        "Gain {{ secondaryAction.resources }} Mana but self-inflict {{ secondaryAction.flatDamage }} damage for each enemy targeted.",
     actions: [
         {
             damage: 0,
@@ -1653,7 +1656,7 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "The next 3 times you use a 2+ cost offense card, cast another offense ability.",
+    description: "The next {{ effects.0.stacks }} times you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
     overrideBodyText: true,
     actions: [
         {
@@ -1662,7 +1665,7 @@ export const volatileMagic: Ability = {
             effects: [
                 {
                     name: "Volatile Magic",
-                    description: "When you use a 2+ cost offense card, cast another offense ability.",
+                    description: "When you use a 2+ cost offense card, cast a random offense spell.",
                     icon: StarfallMagicSquareImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
@@ -1689,7 +1692,6 @@ export const volatileMagic: Ability = {
     ],
     upgrades: [
         {
-            description: "The next 4 times you use a 2+ cost offense card, cast another 0-2 cost offense ability.",
             actions: [
                 {
                     effects: [
