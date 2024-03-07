@@ -681,9 +681,9 @@ const ScenePlayer = ({
                             <div className={classes.abilityUpgradeSection}>
                                 {upgradedCards
                                     .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
-                                    .map((ability) => (
-                                        <div className={classes.abilityContainer}>
-                                            <AbilityView ability={ability} key={ability.instanceId} />
+                                    .map((ability: CombatAbility) => (
+                                        <div className={classes.abilityContainer} key={ability.instanceId}>
+                                            <AbilityView ability={ability} />
                                         </div>
                                     ))}
                             </div>
