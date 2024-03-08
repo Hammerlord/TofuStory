@@ -11,7 +11,7 @@ const dueyEffect: Effect = {
     name: "Package",
     description: "Holding a package.",
     type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
+    class: EFFECT_CLASSES.NONE,
     canBeSilenced: false,
     onReceiveAttack: {
         removeEffect: true,
@@ -23,6 +23,27 @@ const dueyEffect: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     playbackTime: 2000,
+                    movement: 1,
+                    effects: [
+                        {
+                            name: "Yikes!",
+                            type: EFFECT_TYPES.FEAR,
+                            class: EFFECT_CLASSES.NONE,
+                            onReceiveAttack: {
+                                ability: {
+                                    name: "Yikes!",
+                                    image: FrownyMaskImage,
+                                    actions: [
+                                        {
+                                            type: ACTION_TYPES.EFFECT,
+                                            target: TARGET_TYPES.SELF,
+                                            movement: 1,
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
                 },
             ],
         },
