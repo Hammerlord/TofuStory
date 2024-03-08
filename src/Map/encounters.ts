@@ -64,12 +64,18 @@ const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
         effects: [...effects, eliteSquad, ...affixes],
     };
 
-    const alternateResource = {
+    // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
+    const alternateAbilities: Ability[] = enemy.abilities.slice();
+    if (alternateAbilities.length) {
+        alternateAbilities.push(alternateAbilities.shift());
+    }
+    const alternate = {
         ...enemy,
         resources: 2,
+        abilities: alternateAbilities,
     };
 
-    return [enemy, alternateResource, enemy, alternateResource, enemy];
+    return [enemy, alternate, enemy, alternate, enemy];
 };
 
 const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
@@ -89,16 +95,22 @@ const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
         effects: [...effects, eliteTrio, ...affixes],
     };
 
-    const alternateResource = {
+    // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
+    const alternateAbilities: Ability[] = enemy.abilities.slice();
+    if (alternateAbilities.length) {
+        alternateAbilities.push(alternateAbilities.shift());
+    }
+    const alternate = {
         ...enemy,
         resources: 2,
+        abilities: alternateAbilities,
     };
 
     return getRandomItem([
-        [null, enemy, alternateResource, enemy, null],
-        [enemy, null, alternateResource, null, enemy],
-        [enemy, null, alternateResource, enemy, null],
-        [null, enemy, alternateResource, null, enemy],
+        [null, enemy, alternate, enemy, null],
+        [enemy, null, alternate, null, enemy],
+        [enemy, null, alternate, enemy, null],
+        [null, enemy, alternate, null, enemy],
     ]);
 };
 
