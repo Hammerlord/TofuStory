@@ -178,6 +178,13 @@ const throwFood: Ability = {
             target: TARGET_TYPES.SELF,
             excludePrimaryTarget: true,
             area: 5,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    comparator: "gt",
+                    numFriendly: 2,
+                },
+            ],
             effects: [
                 {
                     name: "Foodborne Projectile",
@@ -248,7 +255,6 @@ export const miniBean: Minion = {
                 },
             ],
         },
-        throwFood,
         picoDrop,
         {
             ...attack,
@@ -269,6 +275,7 @@ export const miniBean: Minion = {
             channelDuration: 3,
             actions: [...suckIn.actions, ...suckIn.actions],
         },
+        throwFood,
     ],
     effects: [
         hardy,
