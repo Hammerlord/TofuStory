@@ -752,7 +752,7 @@ const BattlefieldContainer = () => {
 
         setSelectedAbilityId(null);
 
-        const newHand = hand.slice();
+        const newHand = baseHand.slice();
         const newDeck = deck.slice();
         const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedAbilityId);
         const [card] = newHand.splice(cardIndex, 1);
