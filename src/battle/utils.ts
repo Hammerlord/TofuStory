@@ -435,7 +435,7 @@ export const getEnabledEffects = ({
 };
 
 export const getSkillBonusDamage = ({ ability, skillBonus }) => {
-    if (!skillBonus) {
+    if (!skillBonus || !ability) {
         return 0;
     }
 

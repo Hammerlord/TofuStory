@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect, TARGET_TYPES } from "../ability/types";
-import { calculateAttackPowerDamage, getEnabledEffects, isTurnActionPrevented } from "../battle/utils";
+import { calculateAttackPowerDamage, getEnabledEffects, getSkillBonusDamage, isTurnActionPrevented } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
@@ -70,8 +70,9 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
         return !excludeEffectOwner && attackPower !== 0;
     });
-    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower }) => {
-        return acc + attackPower;
+    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower, skillBonus }) => {
+        const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus });
+        return acc + attackPower + skillBonusDamage;
     }, 0);
 
     const totalDamage = (() => {
@@ -99,7 +100,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                 </>
             )}
             {Object.entries(
-                attackPowerEffects.reduce((acc, { icon, name, attackPower }) => {
+                attackPowerEffects.reduce((acc, { icon, name, attackPower, skillBonus }) => {
                     if (!acc[name]) {
                         acc[name] = {
                             icon,
@@ -107,9 +108,11 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         };
                     }
 
+                    const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus });
+
                     acc[name] = {
                         ...acc[name],
-                        attackPower: acc[name].attackPower + attackPower,
+                        attackPower: acc[name].attackPower + attackPower + skillBonusDamage,
                     };
 
                     return acc;
