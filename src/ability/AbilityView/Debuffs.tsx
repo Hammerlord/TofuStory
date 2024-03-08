@@ -52,7 +52,7 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
                                 damage received from attacks
                             </>
                         )}
-                        <Icon icon={<HourglassIcon />} size={"sm"} text={duration === Infinity ? "∞" : duration} />
+                        {duration && duration !== Infinity && <Icon icon={<HourglassIcon />} size={"sm"} text={duration} />}
                     </span>
                 );
             })}

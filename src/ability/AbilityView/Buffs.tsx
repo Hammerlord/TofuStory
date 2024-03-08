@@ -239,8 +239,8 @@ const Buffs = ({ ability, player }) => {
 
                 if (duration === 0) {
                     effectComponents.push(<> this turn</>);
-                } else if (duration !== Infinity) {
-                    effectComponents.push(<Icon icon={<HourglassIcon />} size={"sm"} text={duration === Infinity ? "∞" : duration} />);
+                } else if (duration && duration !== Infinity) {
+                    effectComponents.push(<Icon icon={<HourglassIcon />} size={"sm"} text={duration} />);
                 }
 
                 return <span key={i}>{effectComponents.map((component, j) => cloneElement(component, { key: j }))}</span>;

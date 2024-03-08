@@ -1620,7 +1620,7 @@ export const leechingFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 4,
+                    duration: 3,
                 },
                 {
                     name: "Leeching Flame",
@@ -1628,7 +1628,6 @@ export const leechingFlame: Ability = {
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
-                    duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         resources: 1,
@@ -1649,9 +1648,6 @@ export const leechingFlame: Ability = {
             actions: [
                 {
                     effects: [
-                        {
-                            duration: 1,
-                        },
                         {
                             duration: 1,
                         },
