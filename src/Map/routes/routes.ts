@@ -580,6 +580,7 @@ export const routeLith: Route = {
             x: 0.16,
             y: 0.7301997386596976,
             region: REGIONS.LITH_HARBOR,
+            type: NODE_TYPES.ENCOUNTER,
         },
         {
             x: 0.1887719298245614,

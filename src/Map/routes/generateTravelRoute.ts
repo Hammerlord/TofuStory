@@ -15,7 +15,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
-        let numEvents = 1;
+        let numEvents = baseRoute.nodes.length < 3 ? 0 : 1;
         let numTreasures = 1;
         let numEliteEncounters = 0;
         if (baseRoute.elites) {
@@ -25,10 +25,6 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
 
         const generateNodeType = () => {
             const types = [];
-            if (!initialNode) {
-                return NODE_TYPES.ENCOUNTER;
-            }
-
             if (numTreasures > 0 && currentNode?.type !== NODE_TYPES.TREASURE) {
                 types.push(NODE_TYPES.TREASURE);
             }
@@ -82,11 +78,9 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
 
         const generateInitialNode = (baseNode) => {
             if (baseNode.type) {
-                return {
-                    ...baseNode,
-                    id: baseNode.id || uuid.v4(),
-                };
+                return generateTreeNode(baseNode);
             }
+
             if (numEncountersSinceRestPoint >= 2) {
                 numEncountersSinceRestPoint = 0;
 
@@ -97,13 +91,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
                 };
             }
 
-            ++numEncountersSinceRestPoint;
-            return {
-                ...baseNode,
-                id: baseNode.id || uuid.v4(),
-                type: NODE_TYPES.ENCOUNTER,
-                encounter: generateWaves(baseRoute, prevRoute),
-            };
+            return generateTreeNode(baseNode);
         };
 
         baseRoute.nodes.forEach((node) => {
