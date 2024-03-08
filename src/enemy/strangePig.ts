@@ -13,7 +13,7 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
-import { championsRibbon, pigHeaded, earthen } from "./effect";
+import { championsRibbon, pigHeaded, earthen, counterEffect } from "./effect";
 
 export const strangePig: Minion = {
     name: "Strange Pig",
@@ -245,11 +245,10 @@ export const mutantRibbonPig: Minion = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
-                        name: "Retaliation",
-                        description: "Countering on the next attack",
+                        ...counterEffect,
+                        description: "Countering for 5 damage when next attacked.",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: OmokPigImage,
                         canBeSilenced: true,
                         duration: 2,
                         onReceiveAttack: {
@@ -268,6 +267,9 @@ export const mutantRibbonPig: Minion = {
                                     },
                                 ],
                             },
+                        },
+                        onTurnStart: {
+                            removeEffect: true,
                         },
                     },
                 ],

@@ -1,3 +1,4 @@
+import { counterEffect } from "./../enemy/effect";
 import { bleed, chill, poison, stashCardEffect, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
@@ -672,6 +673,7 @@ export const pigsRibbonItem: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
+                        ...counterEffect,
                         name: "Retaliation",
                         description: "Countering on the next attack",
                         type: EFFECT_TYPES.NONE,

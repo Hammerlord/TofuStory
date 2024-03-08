@@ -13,6 +13,7 @@ import {
     BatsEffectImage,
     FirewoodImage,
     GreenFairiesImage,
+    NamelessSwordImage,
     OmokPigImage,
     PigsHeadImage,
     PigsRibbonImage,
@@ -27,45 +28,6 @@ import {
 import { CloudyIcon, LinkIcon, MountainIcon, RedShieldIcon, SmilingImpIcon } from "../images/icons";
 import { defUp } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
-
-export const championsRibbon: Effect = {
-    name: "Champion's Ribbon",
-    description: "Counters when attacked, once per turn.",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    icon: PigsRibbonImage,
-    canBeSilenced: true,
-    onTurnEnd: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [
-            {
-                name: "Retaliation",
-                description: "Countering on the next attack",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                icon: OmokPigImage,
-                canBeSilenced: true,
-                duration: 2,
-                onReceiveAttack: {
-                    disableTriggerFromProcs: true,
-                    usableWhileStunned: false,
-                    removeEffect: true,
-                    targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                    ability: {
-                        name: "Retaliate",
-                        actions: [
-                            {
-                                type: ACTION_TYPES.ATTACK,
-                                target: TARGET_TYPES.HOSTILE,
-                                damage: 3,
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-    },
-};
 
 export const pigHeaded: Effect = {
     name: "Pig-Headed",
@@ -398,6 +360,77 @@ export const earthen: Effect = {
     },
 };
 
+export const counterEffect: Effect = {
+    name: "Counter",
+    description: "Countering for 3 damage when attacked.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: NamelessSwordImage,
+    image: NamelessSwordImage,
+    canBeSilenced: true,
+    onReceiveAttack: {
+        disableTriggerFromProcs: true,
+        usableWhileStunned: false,
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        ability: {
+            name: "Counter",
+            image: NamelessSwordImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    },
+};
+
+export const championsRibbon: Effect = {
+    name: "Champion's Ribbon",
+    description: "Counters when attacked, once per turn.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: PigsRibbonImage,
+    canBeSilenced: true,
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                ...counterEffect,
+                description: "Countering for 3 damage when next attacked.",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                canBeSilenced: true,
+                duration: 2,
+                onReceiveAttack: {
+                    disableTriggerFromProcs: true,
+                    usableWhileStunned: false,
+                    removeEffect: true,
+                    targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                    ability: {
+                        name: "Retaliate",
+                        image: OmokPigImage,
+                        actions: [
+                            {
+                                type: ACTION_TYPES.ATTACK,
+                                target: TARGET_TYPES.HOSTILE,
+                                damage: 3,
+                            },
+                        ],
+                    },
+                },
+                onTurnStart: {
+                    removeEffect: true,
+                },
+            },
+        ],
+    },
+};
+
+/**
+ * Lookups used when there are circular references
+ */
 export const enemyEffectNameMap = {
     [bats.name]: bats,
     [fairySwarm.name]: fairySwarm,

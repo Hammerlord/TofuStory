@@ -1,3 +1,4 @@
+import { counterEffect } from "./effect";
 import { ManjiImage, NamelessSwordImage, SwordImage } from "../images";
 import { EyeIcon } from "../images/icons";
 import { attackPower } from "./../ability/Effects";
@@ -13,31 +14,6 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { attack } from "./abilities";
-
-const counterEffect: Effect = {
-    name: "Counter",
-    description: "Countering for {{ damage }} damage when attacked.",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    icon: NamelessSwordImage,
-    canBeSilenced: true,
-    onReceiveAttack: {
-        disableTriggerFromProcs: true,
-        usableWhileStunned: false,
-        targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        ability: {
-            name: "Counter",
-            image: NamelessSwordImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
-                },
-            ],
-        },
-    },
-};
 
 const counter: Ability = {
     name: "Counter",

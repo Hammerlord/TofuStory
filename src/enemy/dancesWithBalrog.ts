@@ -1,3 +1,5 @@
+import { counterEffect } from "./effect";
+import { counterattack } from "./../ability/warrior/warriorAbilities";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -145,11 +147,10 @@ const boarStanceEffect: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {
-                name: "Retaliation",
-                description: "Countering on the next attack",
+                ...counterEffect,
+                description: "Countering for 5 damage when next attacked.",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                icon: OmokPigImage,
                 canBeSilenced: true,
                 duration: 2,
                 onReceiveAttack: {
@@ -167,6 +168,9 @@ const boarStanceEffect: Effect = {
                             },
                         ],
                     },
+                },
+                onTurnStart: {
+                    removeEffect: true,
                 },
             },
         ],
