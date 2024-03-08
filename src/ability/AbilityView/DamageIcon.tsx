@@ -73,7 +73,9 @@ export const getDamageStatistics = ({
             secondaryDamage,
         };
     });
-    const hasAttackMultiplier = attackActions.some((action) => action.multiplier);
+
+    // This is the potential to have a multiplier; false when a bonus is being applied
+    const hasAttackMultiplier = attackActions.some((action) => action.multiplier) && attackActions[0].damage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
     const hasUnfulfilledBonus = withBonus[0].damage === attackActions[0].damage && attackActions.some(({ bonus }) => bonus);
