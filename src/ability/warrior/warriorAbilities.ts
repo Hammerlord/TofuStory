@@ -671,7 +671,7 @@ export const berserk: Ability = {
     resourceCost: 0,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "5 random cards in your hand cost 3 less, until they are discarded",
+    description: "5 random cards in your hand cost 3 less, until they are discarded.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -724,7 +724,7 @@ export const closeCombat: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -945,7 +945,7 @@ export const cross: Ability = {
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Search for an attack from your deck. It costs 1 less until used or discarded.",
+    description: "Search for an attack from your deck. It costs 1 less until discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1276,7 +1276,7 @@ export const guillotine: Ability = {
     name: "Guillotine",
     resourceCost: 1,
     image: InstinctualComboImage,
-    description: "On kill: Refund cost and return to hand",
+    description: "On kill: Refund cost and return to hand.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -1844,7 +1844,7 @@ export const parashockGuard: Ability = {
     name: "Parashock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
-    description: "Double your current armor",
+    description: "Double your current Armor.",
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     actions: [
@@ -1888,7 +1888,7 @@ export const bloodthirst: Ability = {
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain +1 Leech and +1 ATT, but self-inflict Bleed. 3 turns.",
+    description: "Gain {{ actions.0.effects.0.lifeOnHit }} Leech for {{ actions.0.effects.0.duration }} turns.",
     depletedOnUse: true,
     overrideBodyText: true,
     actions: [
@@ -1901,14 +1901,22 @@ export const bloodthirst: Ability = {
                     icon: DarkThirstImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
                     lifeOnHit: 1,
-                    duration: 3,
+                    duration: 2,
                     maxApplications: 1,
                 },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
                 {
-                    ...bleed,
-                    duration: 3,
+                    effects: [
+                        {
+                            duration: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -2016,8 +2024,13 @@ export const ironMaiden: Ability = {
     resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Damage increased by Thorns.",
+    description: "(Damage increased by Thorns.)",
     actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            effects: [{ ...thorns, duration: 1 }],
+            type: ACTION_TYPES.EFFECT,
+        },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
