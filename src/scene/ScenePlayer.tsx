@@ -158,6 +158,11 @@ const useStyles = createUseStyles({
         "& *": {
             verticalAlign: "bottom",
         },
+
+        "& img": {
+            maxWidth: 32,
+            maxHeight: 32,
+        },
     },
     response: {
         marginBottom: "8px",
