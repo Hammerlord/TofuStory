@@ -889,7 +889,7 @@ export const conjureTreat: Ability = {
             actions: [
                 {
                     selectCardOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
@@ -1350,7 +1350,7 @@ export const arcaneChanneling: Ability = {
             actions: [
                 {
                     addCardOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
@@ -1926,7 +1926,7 @@ const snowBoulder: Ability = {
                 {
                     damage: 2,
                     addCardsToDeckOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
@@ -1966,7 +1966,7 @@ export const snowball: Ability = {
                 {
                     damage: 3,
                     addCardsToDeckOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],

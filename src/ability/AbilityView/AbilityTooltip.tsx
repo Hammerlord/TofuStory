@@ -162,9 +162,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     }
 
     if (isDeplete) {
-        tooltips.push(
-            <AbilityTooltipSection title="Deplete" description={"'Deplete' abilities can only be used once per battle."} key={"deplete"} />
-        );
+        tooltips.push(<AbilityTooltipSection title="Deplete" description={"Ability can only be used once per battle."} key={"deplete"} />);
     }
 
     if (isReusable) {

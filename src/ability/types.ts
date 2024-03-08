@@ -537,7 +537,7 @@ export type Action = {
 
 export interface AddCardUpgradeOptions {
     // If true, the cards of addCards should be upgraded
-    isUpgraded?: boolean;
+    upgradeLevels?: number;
     // The add cards array should have n extra cards added to it
     appendCards?: number;
 }

@@ -78,26 +78,38 @@ export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?:
         });
 
         if (addCardOptions && equivalentObj.addCards) {
-            const { appendCards = 0, isUpgraded = false } = addCardOptions;
+            const { appendCards = 0, upgradeLevels = 0 } = addCardOptions;
             const cards = equivalentObj.addCards.slice(0, appendCards).map(cloneDeep);
             equivalentObj.addCards = [...equivalentObj.addCards, ...cards].map((card) => {
-                return (isUpgraded && getUpgradeCard(card)) || card;
+                for (let i = 0; i < upgradeLevels; ++i) {
+                    card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
+                }
+
+                return card;
             });
         }
 
         if (addCardsToDeckOptions && equivalentObj.addCardsToDeck) {
-            const { appendCards = 0, isUpgraded = false } = addCardsToDeckOptions;
+            const { appendCards = 0, upgradeLevels = 0 } = addCardsToDeckOptions;
             const cards = equivalentObj.addCardsToDeck.slice(0, appendCards).map(cloneDeep);
             equivalentObj.addCardsToDeck = [...equivalentObj.addCardsToDeck, ...cards].map((card) => {
-                return (isUpgraded && getUpgradeCard(card)) || card;
+                for (let i = 0; i < upgradeLevels; ++i) {
+                    card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
+                }
+
+                return card;
             });
         }
 
         if (selectCardOptions && equivalentObj.selectCards?.cards) {
-            const { appendCards = 0, isUpgraded = false } = selectCardOptions;
+            const { appendCards = 0, upgradeLevels = 0 } = selectCardOptions;
             const cards = equivalentObj.selectCards.cards.slice(0, appendCards).map(cloneDeep);
             equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map((card) => {
-                return (isUpgraded && getUpgradeCard(card)) || card;
+                for (let i = 0; i < upgradeLevels; ++i) {
+                    card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
+                }
+
+                return card;
             });
         }
 

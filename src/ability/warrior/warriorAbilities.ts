@@ -1,3 +1,4 @@
+import { getUpgradeCard } from "./../../Menu/utils";
 import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
@@ -994,7 +995,7 @@ export const bladestorm: Ability = {
             actions: [
                 {
                     addCardOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
@@ -1283,7 +1284,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 11,
+            damage: 10,
             secondaryAction: {
                 target: "actor",
                 returnParentCardToHand: true,
@@ -1337,7 +1338,7 @@ export const counterattack: Ability = {
                                 {
                                     type: ACTION_TYPES.ATTACK,
                                     target: TARGET_TYPES.HOSTILE,
-                                    damage: 4,
+                                    damage: 5,
                                     effects: [
                                         {
                                             ...bleed,
@@ -1792,17 +1793,7 @@ export const shieldMastery: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    name: "Shield Mastery",
-                    icon: ShieldMasteryImage,
-                    class: EFFECT_CLASSES.BUFF,
-                    type: EFFECT_TYPES.NONE,
-                    armorReceived: 2,
-                    duration: 2,
-                },
-            ],
-            addCards: [block, block].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [block, block, block].map((card) => ({ ...getUpgradeCard(card), removeAfterTurn: true })),
         },
     ],
     upgrades: [
@@ -1810,7 +1801,7 @@ export const shieldMastery: Ability = {
             actions: [
                 {
                     addCardOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],

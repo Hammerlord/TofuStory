@@ -47,7 +47,7 @@ const shellThrowBlue: Ability = {
                 {
                     damage: 3,
                     addCardsToDeckOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
@@ -76,7 +76,7 @@ export const shellThrow: Ability = {
                 {
                     damage: 3,
                     addCardsToDeckOptions: {
-                        isUpgraded: true,
+                        upgradeLevels: 1,
                     },
                 },
             ],
