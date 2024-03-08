@@ -111,16 +111,11 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _support_: cardTypeString(BLUE),
     };
 
-    const embeddedAbility = traverseForNestedAbility(ability);
-    if (embeddedAbility) {
-        return Handlebars.compile(ability.description || "")({
-            ...embeddedAbility,
-            ...elementMapping,
-        });
-    }
+    const nestedAbility = traverseForNestedAbility(ability);
 
     return Handlebars.compile(ability.description || "")({
         ...ability,
         ...elementMapping,
+        nestedAbility,
     });
 };

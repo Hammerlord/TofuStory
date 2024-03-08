@@ -2231,7 +2231,7 @@ export const icicles: Ability = {
     image: IciclesPortraitImage,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "When you play a 1+ cost card, summon an Icicle. 3 times.",
+    description: "The next {{ actions.0.effects.0.stacks }} times you play a 1+ cost card, summon an Icicle.",
     resourceCost: 1,
     actions: [
         {
@@ -2280,7 +2280,6 @@ export const icicles: Ability = {
     ],
     upgrades: [
         {
-            description: "For your next 4 spells that cost 1+, summon a (3/1) Icicle.",
             actions: [
                 {
                     effects: [

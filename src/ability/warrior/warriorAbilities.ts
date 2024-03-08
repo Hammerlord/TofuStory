@@ -1045,7 +1045,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoIcon,
-    description: "When you attack, cast tornadoes that deal {{ actions.0.damage }} damage and hit up to 3 enemies",
+    description: "When you attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} damage and hit up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1148,7 +1148,7 @@ export const arsenal: Ability = {
     name: "Arsenal",
     resourceCost: 1,
     image: AdvancedWeaponMasteryImage,
-    description: "Discover an offensive ability available to your class. It costs 1 less and is Ephemeral",
+    description: "Discover a {{{ _offense_ }}} card for your class. It costs 1 less and is Ephemeral",
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     actions: [
@@ -1169,7 +1169,7 @@ export const arsenal: Ability = {
     ],
     upgrades: [
         {
-            description: "Discover an Upgraded offensive ability available to your class. It costs 1 less and is Ephemeral",
+            description: "Discover an Upgraded {{{ _offense_ }}} card for your class. It costs 1 less and is Ephemeral",
             actions: [
                 {
                     selectCards: {
@@ -1217,7 +1217,7 @@ export const bladedArmor: Ability = {
     name: "Bladed Armor",
     resourceCost: 1,
     image: MetalAxeImage,
-    description: "When you lose armor, hurl a sidearm at a random enemy for {{ actions.0.damage }} damage",
+    description: "When you lose armor, hurl a sidearm at a random enemy for {{ nestedAbility.actions.0.damage }} damage",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1294,7 +1294,7 @@ export const counterattack: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "For 1 turn, when you are attacked, counter for 4 damage and inflict Bleed.",
+    description: "Until your next turn, you counter attackers for {{ nestedAbility.actions.0.damage }} damage and inflict Bleed.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1335,7 +1335,6 @@ export const counterattack: Ability = {
     ],
     upgrades: [
         {
-            description: "For 1 turn, when you are attacked, counter for 6 damage and inflict Bleed.",
             actions: [
                 {
                     effects: [
@@ -1382,7 +1381,7 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "+4 damage to targets with less HP than you",
+    description: "+{{ actions.0.bonus.damage }} damage to targets with less HP than you",
     overrideBodyText: true,
     actions: [
         {
@@ -1407,7 +1406,6 @@ export const overpower: Ability = {
     ],
     upgrades: [
         {
-            description: "+5 damage to targets with less HP than you",
             actions: [
                 {
                     damage: 2,
@@ -2072,7 +2070,7 @@ export const hurlBoulder: Ability = {
 export const reinforce: Ability = {
     name: "Reinforce",
     image: ComboSynergyImage,
-    description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded until used or discarded.",
+    description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded until discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
