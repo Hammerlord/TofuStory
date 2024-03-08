@@ -1116,6 +1116,7 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
             return;
         }
 
+        const minionsSummoned: Combatant[] = [];
         for (const summon of action.summon) {
             const { friendly, friendlySide } = findCombatantData(getState, actorId);
             const { minion, positionIndex, noDuplicateMinions = false } = summon;
@@ -1134,8 +1135,8 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
             });
             const minionToSummon = getRandomItem(availableMinions);
             const summonedMinion = createCombatant(typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon);
-            if (!summonedMinion) {
-                break;
+            if (summonedMinion) {
+                minionsSummoned.push(summonedMinion);
             }
 
             dispatch(
@@ -1149,7 +1150,9 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                     }),
                 })
             );
+        }
 
+        if (minionsSummoned.length) {
             // Give minions time to appear before triggering any minion-related effect events (or the next action).
             // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
             dispatch(
@@ -1159,15 +1162,17 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
                     playbackTime: SUMMON_DELAY,
                 } as Event)
             );
+        }
 
+        minionsSummoned.forEach((minion) => {
             dispatch(
                 onSummonTriggers({
-                    summonedId: summonedMinion.id,
+                    summonedId: minion.id,
                     summonerId: actorId,
                     parentSource,
                 })
             );
-        }
+        });
     };
 };
 
