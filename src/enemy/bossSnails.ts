@@ -274,17 +274,17 @@ export const mutantSnailEnemy: Minion = {
             castTime: 1,
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
-                    damage: 2,
+                    damage: 3,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
-                    damage: 2,
+                    damage: 3,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
@@ -385,9 +385,9 @@ export const manoEnemy: Minion = {
                         ricochet: true,
                     },
                     playbackTime: 600,
-                    description: "Bounces to 2 other targets for 4 damage.",
-                    damage: 7,
-                    secondaryDamage: 4,
+                    description: "Bounces to 2 other targets for 3 damage.",
+                    damage: 6,
+                    secondaryDamage: 3,
                     numTargets: 2,
                     targetArea: 2,
                 },
