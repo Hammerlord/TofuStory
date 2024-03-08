@@ -552,9 +552,10 @@ const ScenePlayer = ({
 
     const handleSkip = (e) => {
         const newDialogIndex = script.findIndex((scriptNode: ScriptNode, i) => {
-            const { responses, items, itemChoices, puzzle, scene } = scriptNode || {};
-            return i > dialogIndex && (responses || items || itemChoices || puzzle || scene);
+            const { responses, items, itemChoices, puzzle, scene, treasureBox } = scriptNode || {};
+            return i > dialogIndex && (responses || items || itemChoices || puzzle || scene || treasureBox);
         });
+
         if (newDialogIndex > -1) {
             setDialogIndex(newDialogIndex);
         } else {
