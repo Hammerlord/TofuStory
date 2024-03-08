@@ -530,6 +530,7 @@ export type Action = {
         returnParentCardToHand?: boolean;
         armor?: number;
         removeEffects?: string[];
+        isPriority?: boolean; // If true, play this before the main ability
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
@@ -588,6 +589,7 @@ export interface AbilityUpgrade {
         addCardsToDeckOptions?: AddCardUpgradeOptions;
         selectCardOptions?: AddCardUpgradeOptions; // Only applicable if the card has selectCards.cards
         autoCastAbilities?;
+        secondaryAction?;
     }[];
 }
 

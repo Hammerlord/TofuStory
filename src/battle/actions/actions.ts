@@ -1595,7 +1595,6 @@ const performAction = ({
         const area = calculateActionArea({ action, actor: actorData, target });
 
         const { vacuum, movement, secondaryAction, autoCastAbilities, retreat } = action;
-        dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         const combatants = getState().battle[side];
         const targetIndices = calculateTargetIndices({
             action,
@@ -1607,7 +1606,15 @@ const performAction = ({
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id || targetIds[0], allTargetIds: targetIds };
-        dispatch(checkHandleMovement({ movement, side, actorIndex: actorData.index, selectedIndex, source }));
+
+        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
+            if (targetType === CONDITION_TARGETS.TARGET) {
+                // This is the primary target only
+                return findCombatantData(getState, combatants[selectedIndex]?.id);
+            } else if (targetType === CONDITION_TARGETS.ACTOR) {
+                return findCombatantData(getState, actorId);
+            }
+        };
 
         const updatedStatsProps = {
             ...getState().battle,
@@ -1620,57 +1627,64 @@ const performAction = ({
             getCombatantById: (id: string) => findCombatantData(getState, id),
         };
 
-        const updated = getUpdatedStats(updatedStatsProps);
+        let updatedSecondary;
+        const triggerSecondaryAction = () => {
+            if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+                updatedSecondary = getUpdatedStats({
+                    ...updatedStatsProps,
+                    // Based on secondaryAction.target, but only actor recipient is supported for now
+                    recipientIds: [actorId],
+                    selectedIndex: undefined,
+                    action: secondaryAction,
+                });
+                dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
+                if (secondaryAction.returnParentCardToHand) {
+                    // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
+                    const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
+                    dispatch(deleteCard(ability.instanceId));
+                    const cardCopy: CombatAbility = {
+                        ...ability,
+                        effects: ability?.effects.filter((e: AbilityEffect) => {
+                            // TODO retain upgrades, but look for a less hard-baked way to do this
+                            return e.upgradedByLevels;
+                        }),
+                    };
 
-        dispatch(applyStatChanges(updated.map((update) => update[0])));
-
-        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
-            if (targetType === CONDITION_TARGETS.TARGET) {
-                // This is the primary target only
-                return findCombatantData(getState, combatants[selectedIndex]?.id);
-            } else if (targetType === CONDITION_TARGETS.ACTOR) {
-                return findCombatantData(getState, actorId);
+                    dispatch(
+                        checkCardActions(
+                            {
+                                type: ACTION_TYPES.EFFECT,
+                                addCards: [cardCopy],
+                            },
+                            parentSource
+                        )
+                    );
+                }
             }
         };
 
+        if (secondaryAction?.isPriority) {
+            triggerSecondaryAction();
+        }
+
+        dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
+        dispatch(checkHandleMovement({ movement, side, actorIndex: actorData.index, selectedIndex, source }));
+        const updated = getUpdatedStats(updatedStatsProps);
+        dispatch(applyStatChanges(updated.map((update) => update[0])));
         // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
-        const hitEffects = getHitEffects({ actorId, action, affectedTargets: targetIds, source: { ...source, source: action }, getState });
+        const hitEffects = getHitEffects({
+            actorId,
+            action,
+            affectedTargets: targetIds,
+            source: { ...source, source: action },
+            getState,
+        });
         hitEffects.forEach((statChanges) => {
             dispatch(applyStatChanges(statChanges.map(([statUpdate]) => statUpdate)));
         });
 
-        let updatedSecondary;
-        if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
-            updatedSecondary = getUpdatedStats({
-                ...updatedStatsProps,
-                // Based on secondaryAction.target, but only actor recipient is supported for now
-                recipientIds: [actorId],
-                selectedIndex: undefined,
-                action: secondaryAction,
-            });
-            dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
-            if (secondaryAction.returnParentCardToHand) {
-                // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
-                const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
-                dispatch(deleteCard(ability.instanceId));
-                const cardCopy: CombatAbility = {
-                    ...ability,
-                    effects: ability?.effects.filter((e: AbilityEffect) => {
-                        // TODO retain upgrades, but look for a less hard-baked way to do this
-                        return e.upgradedByLevels;
-                    }),
-                };
-
-                dispatch(
-                    checkCardActions(
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            addCards: [cardCopy],
-                        },
-                        parentSource
-                    )
-                );
-            }
+        if (!secondaryAction?.isPriority) {
+            triggerSecondaryAction();
         }
 
         // HACK: ensure that the selected index is hit first in playback

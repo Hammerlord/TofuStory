@@ -1599,19 +1599,18 @@ export const ragingBlow: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    ...immunity,
-                    duration: 1,
-                },
-            ],
-        },
-        {
             damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            secondaryAction: {
+                target: "actor",
+                effects: [
+                    {
+                        ...immunity,
+                        duration: 1,
+                    },
+                ],
+            },
         },
         {
             damage: 3,
@@ -1814,7 +1813,7 @@ export const judgment: Ability = {
     resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to your armor",
+    description: "Deals damage equal to your Armor.",
     actions: [
         {
             damage: 1,
@@ -1828,16 +1827,17 @@ export const judgment: Ability = {
     ],
     upgrades: [
         {
-            addActions: {
-                prepend: true,
-                actions: [
-                    {
+            description: "Gain {{ actions.0.secondaryAction.armor }} Armor. Deals damage equal to your Armor.",
+            actions: [
+                {
+                    secondaryAction: {
                         armor: 3,
                         target: TARGET_TYPES.SELF,
                         type: ACTION_TYPES.EFFECT,
+                        isPriority: true,
                     },
-                ],
-            },
+                },
+            ],
         },
     ],
 };
