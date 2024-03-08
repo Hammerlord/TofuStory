@@ -1250,6 +1250,27 @@ export const bladedArmor: Ability = {
             ],
         },
     ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            onArmorLoss: {
+                                ability: {
+                                    actions: [
+                                        {
+                                            damage: 1,
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 export const guillotine: Ability = {
@@ -1708,6 +1729,21 @@ export const burningSoulBlade: Ability = {
             },
         ],
     },
+    upgrades: [
+        {
+            minion: {
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 2,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
 };
 
 export const divineCharge: Ability = {
