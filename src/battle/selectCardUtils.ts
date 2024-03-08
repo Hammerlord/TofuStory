@@ -31,7 +31,7 @@ const getCardSelection = ({
             ...ability,
             instanceId: uuid.v4(),
             removeAfterTurn: removeParentCardAfterTurn,
-            effects,
+            effects: [...ability.effects, ...effects],
         };
     };
 
