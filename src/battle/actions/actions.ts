@@ -1861,7 +1861,7 @@ const checkSummonMinion = ({
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { minion, minionOptions, removeAfterTurn, depletedOnUse } = ability;
+        const { minion, minionOptions, removeAfterTurn, depletedOnUse, resourceCost = 0 } = ability;
         if (!minion) {
             return;
         }
@@ -1871,11 +1871,12 @@ const checkSummonMinion = ({
         const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
         const previousMinionInSlot = battlefieldSide[index];
         const summonedMinion: Combatant = createCombatant(cloneDeep(minion));
+        const actor = findCombatantData(getState, actorId)?.combatant;
+        const actorResources = actor?.resources || 0;
 
         const { tributeSummon } = minionOptions || {};
         const isTributeSummoned = tributeSummon && previousMinionInSlot?.HP > 0;
         if (isTributeSummoned) {
-            const { resources = 0 } = tributeSummon;
             // The replaced minion actually dies
             dispatch(
                 performAction({
@@ -1885,7 +1886,7 @@ const checkSummonMinion = ({
                         playbackTime: 500,
                         secondaryAction: {
                             target: "actor",
-                            resources,
+                            resources: resourceCost === "x" ? actorResources : resourceCost,
                         },
                     },
                     side,
@@ -1906,7 +1907,7 @@ const checkSummonMinion = ({
         };
 
         // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
-        if (findCombatantData(getState, actorId)?.combatant?.isPlayer && !removeAfterTurn && !depletedOnUse) {
+        if (actor?.isPlayer && !removeAfterTurn && !depletedOnUse) {
             newBattleProps.playerSummonsInPlay = { ...getState().battle?.playerSummonsInPlay, [summonedMinion.id]: ability };
         }
         dispatch(updateBattle(newBattleProps));

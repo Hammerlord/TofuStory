@@ -2458,9 +2458,7 @@ export const abominableSnowman: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     minionOptions: {
-        tributeSummon: {
-            resources: 1,
-        },
+        tributeSummon: true,
     },
     minion: {
         name: "Abominable Snowman",

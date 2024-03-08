@@ -600,10 +600,8 @@ export interface Ability {
     minion?: Minion;
     minionOptions?: {
         // Enables playing a minion directly over top of another minion, killing the previous one.
-        tributeSummon?: {
-            // Resources gained if this is a tribute summon
-            resources: number;
-        };
+        // The minion can be played for free in this manner.
+        tributeSummon?: boolean;
     };
     image?: string;
     channelDuration?: number;

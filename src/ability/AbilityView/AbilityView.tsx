@@ -103,7 +103,7 @@ const useStyles = createUseStyles({
     },
     minionStats: {
         position: "absolute",
-        bottom: 24,
+        bottom: 32,
         width: "100%",
     },
     minionHP: {
@@ -466,12 +466,7 @@ const AbilityView = forwardRef(
                         <div className={classes.body}>
                             {tributeSummon && (
                                 <div>
-                                    <span className={classes.bold}>Tribute:</span>{" "}
-                                    {tributeSummon.resources > 0 && (
-                                        <span>
-                                            Refund <ResourceIcon text={tributeSummon.resources} size={"sm"} playerClass={player?.class} />
-                                        </span>
-                                    )}
+                                    <span className={classes.bold}>Tribute</span>
                                 </div>
                             )}
                             {preemptive && <div className={classes.bold}>Pre-emptive</div>}
