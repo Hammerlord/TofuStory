@@ -52,7 +52,6 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {
         card = {
             ...(getUpgradeCard(card, { ignoreMaxLevel: true }) || card),
-            instanceId: card.instanceId,
         };
     });
 

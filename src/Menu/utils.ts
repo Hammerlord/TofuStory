@@ -33,7 +33,7 @@ export const aggregateAbilityEffects = (abilities: Ability[]): Effect[] => {
     return effects;
 };
 
-export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?: boolean; retainId?: boolean }) => {
+export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?: boolean }) => {
     if (!card.upgrades?.length || (card.level && card.level === card.maxLevel && !options?.ignoreMaxLevel)) {
         return;
     }
@@ -137,7 +137,6 @@ export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?:
         ...newCard,
         level: (card.level || 1) + 1,
         maxLevel: card.maxLevel || CARD_MAX_LEVEL,
-        // Why not always retain ID if there is one?
-        instanceId: (options?.retainId && card.instanceId) || uuid.v4(),
+        instanceId: card.instanceId || uuid.v4(),
     };
 };
