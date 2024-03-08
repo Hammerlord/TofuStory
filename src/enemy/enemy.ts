@@ -2268,7 +2268,7 @@ export const wildKargo: Minion = {
 
 const vulnerablePig: Minion = {
     name: "Ironless Hog",
-    maxHP: 100,
+    maxHP: 80,
     image: PigIdleImage,
     mesos: 20,
     abilities: [
@@ -2393,7 +2393,6 @@ export const ironHog: Minion = {
                                 minions: [
                                     {
                                         minion: { ...vulnerablePig },
-                                        storeSummoner: true,
                                     },
                                 ],
                             },
