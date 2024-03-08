@@ -314,7 +314,7 @@ const EffectGroupIcon = ({
                 <Icon
                     icon={icon}
                     className={classNames({
-                        [classes.disabled]: disabled,
+                        [classes.disabled]: disabled || isSilenced,
                         [classes.glow]: glow,
                     })}
                 >
@@ -329,7 +329,6 @@ const EffectGroupIcon = ({
                         )}
                     </>
                 </Icon>
-                {isSilenced && canBeSilenced && <Icon icon={<SpeechBubbleIcon />} className={classes.silenceIcon} />}
             </span>
         </Tooltip>
     );

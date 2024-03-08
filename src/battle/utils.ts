@@ -746,15 +746,14 @@ export const isTurnActionPrevented = (combatantInfo: CombatantInfo): boolean => 
         (effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type)
     );
 
-    if (turnPreventedFromEffects) {
-        return true;
-    }
+    return turnPreventedFromEffects;
 
-    const isSilenced = combatant.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+    /**
     const ability = combatant.abilities?.[getUseAbilityIndex(combatantInfo)];
-
     // Silence prevents using abilities which are pure support/effects
+    const isSilenced = combatant.effects.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
     return isSilenced && ability?.actions.every((action) => action.type === ACTION_TYPES.EFFECT);
+    */
 };
 
 export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
