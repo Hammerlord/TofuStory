@@ -744,7 +744,6 @@ export const octopus: Minion = {
     effects: [
         {
             name: "Tentacular",
-            description: "Recovering 3 life on hit.",
             icon: OctopusLegImage,
             lifeOnHit: 3,
             type: EFFECT_TYPES.NONE,
@@ -2410,7 +2409,7 @@ export const ironHog: Minion = {
 export const blueMushroom: Minion = {
     name: "Blue Mushroom",
     image: BlueMushroomImage,
-    maxHP: 70,
+    maxHP: 65,
     mesos: 12,
     abilities: [
         {
