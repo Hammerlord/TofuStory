@@ -1554,12 +1554,11 @@ export const moltenLaser: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.BEAM,
             icon: FireMarbleImage,
-            damage: 7,
             destroyArmor: 1,
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    duration: 6,
                 },
             ],
         },
