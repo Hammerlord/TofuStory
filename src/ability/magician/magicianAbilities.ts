@@ -190,7 +190,7 @@ const magicClawAction: Action = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 2,
+        damage: 3,
     },
 };
 
