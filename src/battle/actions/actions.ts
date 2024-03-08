@@ -54,6 +54,7 @@ import { TriggerSource } from "./../types";
 import { checkCardActions, deleteCard, depleteAbilities } from "./cardActions";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
+import { getUpgradeCard } from "../../Menu/utils";
 
 const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -1446,7 +1447,7 @@ const checkHandleAutoCast = ({
             return;
         }
 
-        const { type, amount, presetCards = [], filters } = autoCastAbilities;
+        const { type, amount, presetCards = [], filters, upgradeLevels = 0 } = autoCastAbilities;
         let cards = [];
         if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
             cards = JOB_CARD_MAP[actor.class]?.all || [];
@@ -1469,7 +1470,13 @@ const checkHandleAutoCast = ({
         }
 
         Array.from({ length: amount }).forEach(() => {
-            const abilityToCast: CombatAbility = getRandomItem(cards);
+            let abilityToCast: CombatAbility = getRandomItem(cards);
+            Array.from({ length: upgradeLevels }).forEach(() => {
+                const upgrade = getUpgradeCard(abilityToCast, { ignoreMaxLevel: true });
+                if (upgrade) {
+                    abilityToCast = upgrade;
+                }
+            });
             const { resourceCost: abilityCost, selectCards } = abilityToCast;
 
             // selectCards on ability is currently always deplete as a prerequisite to using the ability. So deplete an ability here.

@@ -1318,6 +1318,18 @@ export const metronome: Ability = {
             },
         },
     ],
+    upgrades: [
+        {
+            description: "Cast 2 random Upgraded spells.",
+            actions: [
+                {
+                    autoCastAbilities: {
+                        upgradeLevels: 1,
+                    },
+                },
+            ],
+        },
+    ],
 };
 
 export const arcaneChanneling: Ability = {
@@ -1833,6 +1845,18 @@ export const hyperMetronome: Ability = {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 3,
             },
+        },
+    ],
+    upgrades: [
+        {
+            description: "Cast 3 random Upgraded spells.",
+            actions: [
+                {
+                    autoCastAbilities: {
+                        upgradeLevels: 1,
+                    },
+                },
+            ],
         },
     ],
 };

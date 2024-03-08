@@ -585,6 +585,7 @@ export interface AbilityUpgrade {
         addCardOptions?: AddCardUpgradeOptions;
         addCardsToDeckOptions?: AddCardUpgradeOptions;
         selectCardOptions?: AddCardUpgradeOptions; // Only applicable if the card has selectCards.cards
+        autoCastAbilities?;
     }[];
 }
 
@@ -712,4 +713,5 @@ export interface AutoCastAbility {
     amount: number;
     presetCards?: Ability[];
     filters?: { property: string; comparator: "includes" | "eq" | "lt" | "gt"; value: any }[];
+    upgradeLevels?: number;
 }
