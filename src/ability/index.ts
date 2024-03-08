@@ -179,10 +179,12 @@ export const JOB_CARD_MAP = {
             whelp,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
-        starters: [metronome].map((card) => {
-            card.maxLevel = STARTER_MAX_LEVEL;
-            return card;
-        }),
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(
+            (card) => {
+                card.maxLevel = STARTER_MAX_LEVEL;
+                return card;
+            }
+        ),
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
