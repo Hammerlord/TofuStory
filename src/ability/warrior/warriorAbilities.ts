@@ -420,7 +420,7 @@ export const yell: Ability = {
             effects: [
                 {
                     name: "Admonished",
-                    attackPower: -2,
+                    attackPower: -1,
                     duration: 2,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -435,7 +435,7 @@ export const yell: Ability = {
                 {
                     effects: [
                         {
-                            attackPower: -1,
+                            duration: 1,
                         },
                     ],
                 },
