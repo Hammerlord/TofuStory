@@ -520,6 +520,7 @@ export type Action = {
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {
         target: "actor";
+        area?: number;
         damage?: number;
         resources?: number;
         healing?: number;

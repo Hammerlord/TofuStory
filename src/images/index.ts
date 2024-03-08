@@ -191,6 +191,7 @@ export { default as GiantCentipedeMarbleImage } from "./GiantCentipedeMarble.png
 export { default as GiantSnowmanImage } from "./GiantSnowman.gif";
 export { default as GiganticSledgeImage } from "./GiganticSledge.png";
 export { default as GlisteningStarImage } from "./GlisteningStar.png";
+export { default as GoldBarImage } from "./GoldBar.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";
 export { default as GoldRichieImage } from "./GoldRichie.png";
 export { default as GreenBambooHatImage } from "./GreenBambooHat.png";
@@ -391,6 +392,7 @@ export { default as PigIdleImage } from "./PigIdle.gif";
 export { default as PigIllustratedImage } from "./PigIllustrated.png";
 export { default as PigsHeadImage } from "./PigsHead.png";
 export { default as PigsRibbonImage } from "./PigsRibbon.png";
+export { default as PinkBeanStatueImage } from "./PinkBeanStatue.png";
 export { default as PlungerImage } from "./Plunger.png";
 export { default as PoisonImage } from "./Poison.png";
 export { default as PoisonBreathImage } from "./PoisonBreath.png";

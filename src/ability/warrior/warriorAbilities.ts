@@ -23,6 +23,7 @@ import {
     EnrageImage,
     FlagImage,
     GiganticSledgeImage,
+    GoldBarImage,
     GungnirImage,
     HammerImage,
     HighPaladinImage,
@@ -38,6 +39,7 @@ import {
     NightShadeExplosionImage,
     PanicImage,
     ParashockGuardImage,
+    PinkBeanStatueImage,
     PowerStanceImage,
     PunctureImage,
     RageImage,
@@ -332,7 +334,18 @@ export const warBanner: Ability = {
         name: "War Banner",
         image: FlagImage,
         maxHP: 3,
-        abilities: [],
+        abilities: [
+            {
+                ...attack,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 0,
+                    },
+                ],
+            },
+        ],
         effects: [
             {
                 ...stealth,
@@ -2186,6 +2199,129 @@ export const forgehammer: Ability = {
                     damage: 3,
                 },
             ],
+        },
+    ],
+};
+
+export const guardian: Ability = {
+    name: "Guardian Statue",
+    image: PinkBeanStatueImage,
+    overrideBodyText: true,
+    description:
+        "Every turn, Radiates {{ nestedAbility.actions.0.radiate.damage }} damage to enemies / {{ nestedAbility.actions.0.secondaryAction.healing }} healing to allies within 2 spaces.",
+    rarity: RARITIES.RARE,
+    resourceCost: 2,
+    minion: {
+        name: "Guardian Statue",
+        image: PinkBeanStatueImage,
+        maxHP: 9,
+        abilities: [
+            {
+                ...attack,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 0,
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                name: "Golden",
+                description: "Character cannot take more than 3 damage in a single hit.",
+                icon: GoldBarImage,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                maxDamageTaken: 3,
+                onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Guardian",
+                        image: PinkBeanStatueImage,
+                        actions: [
+                            {
+                                type: ACTION_TYPES.EFFECT,
+                                target: TARGET_TYPES.SELF,
+                                animation: ANIMATION_TYPES.SHOUT,
+                                radiate: {
+                                    area: 2,
+                                    damage: 5,
+                                },
+                                secondaryAction: {
+                                    target: "actor",
+                                    area: 2,
+                                    healing: 2,
+                                },
+                            },
+                        ],
+                    },
+                },
+                onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    ability: {
+                        name: "Guardian",
+                        image: PinkBeanStatueImage,
+                        actions: [
+                            {
+                                type: ACTION_TYPES.EFFECT,
+                                target: TARGET_TYPES.SELF,
+                                animation: ANIMATION_TYPES.SHOUT,
+                                radiate: {
+                                    area: 2,
+                                    damage: 5,
+                                },
+                                secondaryAction: {
+                                    target: "actor",
+                                    area: 2,
+                                    healing: 2,
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                effects: [
+                    {},
+                    {
+                        onTurnStart: {
+                            ability: {
+                                actions: [
+                                    {
+                                        radiate: {
+                                            damage: 2,
+                                        },
+                                        secondaryAction: {
+                                            healing: 1,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        onSummoned: {
+                            ability: {
+                                actions: [
+                                    {
+                                        radiate: {
+                                            damage: 2,
+                                        },
+                                        secondaryAction: {
+                                            healing: 1,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
         },
     ],
 };
