@@ -17,8 +17,8 @@ const useStyles = createUseStyles({
     root: {
         position: "relative",
         background: `url(${HenesysTownstreetStageImage}) no-repeat`,
-        width: "900px",
-        height: "700px",
+        width: "100%",
+        height: "100%",
     },
     character: {
         position: "absolute",
