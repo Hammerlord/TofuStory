@@ -3,6 +3,7 @@ import {
     Ability,
     Action,
     Bonus,
+    CombatAbility,
     CombatEffect,
     Condition,
     CONDITION_TARGETS,
@@ -57,7 +58,9 @@ export const passesConditions = ({
     proc,
     source,
 }: {
-    getCalculationTarget: (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => CombatantInfo | CombatantInfo[] | undefined;
+    getCalculationTarget: (
+        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+    ) => CombatantInfo | CombatantInfo[] | CombatAbility | undefined;
     proc: Ability | Action | CombatEffect | Bonus | EffectEventTrigger; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
@@ -126,12 +129,15 @@ export const passesConditions = ({
             }
         }
 
-        const calcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(calculationTarget);
+        // TRIGGER_SOURCE already handled above
+        const calcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(calculationTarget) as CombatantInfo | CombatantInfo[];
         if (!calcTargets) {
             return false;
         }
 
-        let effectOwner: CombatantInfo | CombatantInfo[] = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER);
+        let effectOwner: CombatantInfo | CombatantInfo[] = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as
+            | CombatantInfo
+            | CombatantInfo[];
         if (Array.isArray(effectOwner)) {
             effectOwner = effectOwner[0];
         }
@@ -143,7 +149,9 @@ export const passesConditions = ({
             }
 
             if (otherCalculationTarget) {
-                let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType);
+                let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType) as
+                    | CombatantInfo
+                    | CombatantInfo[];
                 if (!otherCalcTargets) {
                     return false;
                 }

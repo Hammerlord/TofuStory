@@ -337,8 +337,8 @@ const AbilityView = forwardRef(
             });
         }, [ability, battle?.enemySide, battle?.playerSide]);
 
-        const armorStatistics = getArmorStatistics({ ability, playerInfo });
-        const { bonusFromConditions: armorBonusFromConditions, total: armorTotal } = armorStatistics;
+        const armorStatistics = getArmorStatistics({ ability, playerInfo, deck, hand, discard });
+        const { base: armorTotal, hasConditionFulfilled: hasArmorConditionFulfilled } = armorStatistics;
         const interpolatedDescription = interpolateAbilityDescription({ ability });
 
         let hasMultiplier = false;
@@ -397,7 +397,7 @@ const AbilityView = forwardRef(
             return <div className={classes.iconPlaceholder} />;
         })();
 
-        const hasBonus = hasDamageConditionFulfilled || armorBonusFromConditions || hasConditionFulfilled;
+        const hasBonus = hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
         let attackDamage = 0;
         for (const ability of minion?.abilities || []) {
             for (const action of ability.actions) {

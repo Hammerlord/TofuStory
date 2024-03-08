@@ -577,13 +577,14 @@ export const calculateDamage = ({
     return Math.max(minimumDamage, total);
 };
 
-export const calculateArmor = ({ target, action }: { target?: CombatantInfo; action: Action }): number => {
+export const calculateArmor = ({ target, action, multiplier = 1 }: { target?: CombatantInfo; action: Action; multiplier }): number => {
     if (!action.armor) {
         return 0;
     }
+
     const targetArmorReceived =
         getEnabledEffects({ combatantInfo: target }).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
-    const armor = targetArmorReceived + action.armor;
+    const armor = targetArmorReceived + action.armor * multiplier;
     return Math.max(0, armor);
 };
 

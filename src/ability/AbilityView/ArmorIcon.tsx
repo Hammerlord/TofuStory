@@ -1,67 +1,86 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { passesConditions } from "../../battle/passesConditions";
-import { getEnabledEffects } from "../../battle/utils";
+import { calculateArmor, calculateBonus, getEnabledEffects, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
-import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES } from "../types";
+import { Action, CONDITION_TARGETS, CombatAbility, TRIGGER_TARGET_TYPES } from "../types";
+import { CombatantInfo } from "../../battle/types";
 
 export const getArmorStatistics = ({
     ability,
     playerInfo,
+    deck,
+    hand,
+    discard,
+}: {
+    ability: CombatAbility;
+    playerInfo: CombatantInfo;
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
 }): {
     base: number;
-    total: number;
     hasMultiplier: boolean;
-    bonusFromEffects: number;
-    hasBonusPotential: boolean;
-    bonusFromConditions: number;
+    hasConditionFulfilled: boolean;
+    hasBonus: boolean;
+    hasPenalty: boolean;
+    isAdditive: boolean;
 } => {
     const { actions = [] } = ability;
-    const armorActions = actions.filter((action) => action.armor > 0).map(({ armor }) => armor);
+    const armorActions = actions.filter((action) => action.armor > 0);
     if (armorActions.length === 0) {
         return {
             base: 0,
-            total: 0,
             hasMultiplier: false,
-            hasBonusPotential: false,
-            bonusFromEffects: 0,
-            bonusFromConditions: 0,
+            hasBonus: false,
+            hasConditionFulfilled: false,
+            isAdditive: false,
+            hasPenalty: false,
         };
     }
-    const bonusFromEffects =
-        getEnabledEffects({ combatantInfo: playerInfo }).reduce((acc, { armorReceived = 0 }) => {
-            return acc + armorReceived;
-        }, 0) || 0;
-    const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
-        if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-            return playerInfo;
-        }
 
-        if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            return ability;
-        }
-    };
-    const bonusFromConditionsArr: number[] = ability.actions.map((action) => {
-        if (action.bonus?.armor && passesConditions({ getCalculationTarget, proc: action.bonus })) {
-            return action.bonus.armor;
-        }
-        return 0;
+    const withBonus: Action[] = armorActions.map((action) => {
+        return calculateBonus({
+            action,
+            actor: playerInfo,
+            target: playerInfo, // Fix me: This is only if the ability targets SELF
+            allTargets: [playerInfo],
+            isTargetSelected: false,
+            actionParent: ability,
+            deck,
+            hand,
+            discard,
+        });
     });
 
-    const bonusFromConditions: number = bonusFromConditionsArr.reduce((a: number, c: number) => a + c, 0);
-    const total = armorActions.reduce((acc: number, cur: number) => acc + cur, 0) + bonusFromEffects + bonusFromConditions;
-    const base = armorActions[0];
+    const withArmorReceived = withBonus.map((action) => {
+        const multiplier = getMultiplier({
+            actor: playerInfo,
+            multiplier: action.multiplier,
+            deck,
+            hand,
+            discard,
+        });
+
+        return { ...action, armor: calculateArmor({ target: playerInfo, action, multiplier }) };
+    });
+
+    const hasUnfulfilledBonus = withArmorReceived[0].armor === armorActions[0].armor && armorActions.some(({ bonus }) => bonus);
+    // This is the potential to have a multiplier; false when a bonus is being applied
+    const hasMultiplier = armorActions.some((action) => action.multiplier) && armorActions[0].armor === withArmorReceived[0].armor;
+    const hasAdditiveArmor = withArmorReceived.some(({ armor }) => {
+        return armor && armor !== withArmorReceived[0].armor;
+    });
+    const isAdditive = hasAdditiveArmor || hasUnfulfilledBonus;
+
     return {
-        base,
-        total,
-        hasMultiplier: armorActions.length > 1,
-        hasBonusPotential: actions.find(({ bonus = [] }) => {
-            const bonuses = Array.isArray(bonus) ? bonus : [bonus];
-            return bonuses.some((b) => b.armor > 0);
-        }),
-        bonusFromEffects: bonusFromEffects,
-        bonusFromConditions: bonusFromConditions,
+        base: withArmorReceived[0].armor,
+        hasMultiplier,
+        hasConditionFulfilled: withBonus[0].armor > armorActions[0].armor,
+        hasBonus: withArmorReceived[0].armor > armorActions[0].armor,
+        hasPenalty: withArmorReceived[0].armor < armorActions[0].armor,
+        isAdditive,
     };
 };
 
@@ -82,22 +101,20 @@ const useStyles = createUseStyles({
  * The armor icon that displays on the top left of an ability card
  */
 const ArmorIcon = ({ armorStatistics }) => {
-    const { base, total, hasMultiplier, bonusFromEffects, bonusFromConditions, hasBonusPotential } = armorStatistics;
+    const { base, hasMultiplier, isAdditive, hasBonus, hasPenalty } = armorStatistics;
     const classes = useStyles();
 
-    if (!total) {
+    if (!base) {
         return null;
     }
-
-    const isAdditive = hasBonusPotential && !bonusFromConditions;
 
     return (
         <Icon
             icon={<ShieldIcon />}
             text={`${base}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames({
-                [classes.highlightText]: bonusFromEffects > 0 || bonusFromConditions > 0,
-                [classes.negative]: bonusFromEffects < 0 || bonusFromConditions < 0,
+                [classes.highlightText]: hasBonus,
+                [classes.negative]: hasPenalty,
             })}
         />
     );
