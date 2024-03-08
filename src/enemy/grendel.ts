@@ -162,6 +162,7 @@ export const grendelVolcano: Minion = {
             },
             onReceiveEffect: {
                 usableWhileStunned: true,
+                removeEffect: true, // onDeath removeEffect is insufficient for some reason
                 damage: 100,
                 conditions: [
                     {
