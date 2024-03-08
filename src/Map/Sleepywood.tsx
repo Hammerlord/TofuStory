@@ -133,7 +133,8 @@ const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingP
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
-                            label={"Exit to World Map"}
+                            isLocked={true}
+                            label={"[Placeholder]"}
                             nodeImage={SleepywoodAntTunnelImage}
                             onClick={onExit}
                         />

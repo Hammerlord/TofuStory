@@ -58,6 +58,7 @@ const HENESYS_PLACES = {
 const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
+    const activitiesRequiredToLeave = 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
@@ -139,6 +140,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
+                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
                             label={"Exit to World Map"}
                             nodeImage={HenesysExitImage}
                             onClick={onExit}

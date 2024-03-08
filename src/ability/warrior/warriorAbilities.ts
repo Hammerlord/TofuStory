@@ -1110,10 +1110,9 @@ export const dustDevils: Ability = {
 export const doubleTime: Ability = {
     name: "Double Time",
     image: DoubleTimeImage,
-    resourceCost: 0,
-    description: "Create a copy of a card in your hand. It costs 1 less and is Ephemeral",
-    depletedOnUse: true,
-    rarity: RARITIES.RARE,
+    resourceCost: 1,
+    description: "Copy a card in your hand. It is Ephemeral.",
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1122,7 +1121,6 @@ export const doubleTime: Ability = {
                 type: SELECT_CARD_TYPES.COPY_FROM_HAND,
                 effects: [
                     {
-                        resourceCost: -1,
                         removeParentCardAfterTurn: true,
                     },
                 ],
@@ -1131,12 +1129,12 @@ export const doubleTime: Ability = {
     ],
     upgrades: [
         {
-            description: "Create a copy of a card in your hand. It costs 2 less and is Ephemeral",
+            description: "Copy a card in your hand. It is Ephemeral and costs {{ actions.0.selectCards.effects.resourceCost }} less.",
             actions: [
                 {
                     selectCards: {
                         effects: {
-                            resourceCost: -2,
+                            resourceCost: -1,
                         },
                     },
                 },

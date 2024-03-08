@@ -65,6 +65,7 @@ const KERNING_PLACES = {
 const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
+    const activitiesRequiredToLeave = 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
@@ -168,6 +169,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
+                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
                             label={"Exit to World Map"}
                             nodeImage={KerningExitImage}
                             onClick={onExit}

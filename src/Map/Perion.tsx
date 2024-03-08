@@ -67,6 +67,7 @@ const PERION_PLACES = {
 const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const [visited, setVisited] = useState({});
     const classes = useStyles();
+    const activitiesRequiredToLeave = 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
     const handleClickTradingPost = () => {
@@ -146,6 +147,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
+                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
                             label={"Exit to World Map"}
                             nodeImage={PerionExitImage}
                             onClick={onExit}
