@@ -246,7 +246,7 @@ export const athena: Minion = {
                             target: TARGET_TYPES.HOSTILE,
                             icon: AvengersArrowImage,
                             playbackTime: 400,
-                            damage: 5,
+                            damage: 1,
                             animationOptions: {
                                 rotate: -45,
                             },
@@ -286,7 +286,7 @@ export const guardHawk: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 3,
+                            duration: 2,
                         },
                     ],
                 },

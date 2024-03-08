@@ -113,7 +113,7 @@ const iceAge: Ability = {
     image: NimbleJewelCImage,
     actions: [
         {
-            damage: 25,
+            damage: 30,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             icon: NimbleJewelCImage,
@@ -236,7 +236,7 @@ const stormBarrier: Ability = {
                                 {
                                     target: TARGET_TYPES.HOSTILE,
                                     type: ACTION_TYPES.RANGE_ATTACK,
-                                    damage: 3,
+                                    damage: 7,
                                     area: 5,
                                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                                     icon: EncroachingDarknessImage,
@@ -422,7 +422,7 @@ export const introGrendel: Minion = {
 };
 
 const triboltAction: Action = {
-    damage: 4,
+    damage: 5,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -455,7 +455,7 @@ export const grendel: Minion = {
             resourceCost: 0,
             actions: [
                 {
-                    damage: 5,
+                    damage: 7,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
