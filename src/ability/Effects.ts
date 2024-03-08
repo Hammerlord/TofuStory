@@ -179,6 +179,7 @@ export const cleave: Effect = {
 
 export const immunity: Effect = {
     name: "Immunity",
+    description: "Impervious to harm.",
     icon: UpMATTImage,
     type: EFFECT_TYPES.IMMUNITY,
     class: EFFECT_CLASSES.BUFF,

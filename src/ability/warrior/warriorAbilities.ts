@@ -1547,7 +1547,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals 1 dmg for every attack you made this turn. Hits twice.",
+    description: "Deals 1 damage for every attack you made this turn. Hits twice.",
     actions: [
         {
             damage: 1,
@@ -1626,27 +1626,32 @@ export const ragingBlow: Ability = {
 };
 
 export const worldReaver: Ability = {
-    name: "World Reaver",
+    name: "Reaver",
     resourceCost: 2,
     depletedOnUse: true,
     image: WorldReaverImage,
     rarity: RARITIES.RARE,
+    description: "You become Immune until your next turn.",
+    overrideBodyText: true,
     actions: [
         {
             area: 1,
-            damage: 13,
+            damage: 12,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            effects: [
-                {
-                    ...immunity,
-                    duration: 2, // Ticks down on turn end
-                },
-            ],
+            secondaryAction: {
+                target: "actor",
+                effects: [
+                    {
+                        ...immunity,
+                        duration: undefined,
+                        stacks: 1,
+                        onTurnStart: {
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
     upgrades: [

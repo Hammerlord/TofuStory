@@ -685,7 +685,7 @@ export const wishUponAStar: Ability = {
     resourceCost: 1,
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
-    description: "Cast a 2 dmg star on draw or deck cycle.",
+    description: "On draw / deck cycle: Cast a 2 damage star at a random enemy.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1750,7 +1750,7 @@ export const arcaneWard: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             armor: 15,
             effects: [
                 {
@@ -1764,7 +1764,7 @@ export const arcaneWard: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 5,
                 },
             ],
         },
