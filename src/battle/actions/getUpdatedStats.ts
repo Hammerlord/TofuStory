@@ -94,6 +94,7 @@ export const getUpdatedStats = ({
             target,
             allTargets: targets,
             actor,
+            actionParent,
             source,
             deck,
             hand,
