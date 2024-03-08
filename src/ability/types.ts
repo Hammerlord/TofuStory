@@ -230,6 +230,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     allowFriendlyMovement?: boolean;
     // Brick vs. Steel Ore effect: Brick wins
     maxDamageTaken?: number;
+    // Effect owner cannot use abilities with these action types. Eg. Whip causes Snails to be unable to Loaf.
+    disableAbilities?: ACTION_TYPES[];
 };
 
 export type CombatEffect = Effect & {

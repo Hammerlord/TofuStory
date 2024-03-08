@@ -67,7 +67,7 @@ const blueMinionSnail: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             image: BlueSnailShellImage,
-            icon: SnailShellImage,
+            icon: BlueSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
                 addCards: [
@@ -101,7 +101,7 @@ const redMinionSnail: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             image: RedSnailShellImage,
-            icon: SnailShellImage,
+            icon: RedSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
                 addCards: [
@@ -122,6 +122,33 @@ const redMinionSnail: Minion = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+const whip = {
+    name: "Whip",
+    image: RedWhipImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            area: 2,
+            excludePrimaryTarget: true,
+            damage: 3,
+            icon: RedWhipImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            effects: [
+                {
+                    name: "Whipped",
+                    description: "Whipped into a frenzy!",
+                    icon: WeaponMasteryImage,
+                    type: EFFECT_TYPES.FEAR,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 1,
+                    disableAbilities: [ACTION_TYPES.EFFECT, ACTION_TYPES.NONE],
+                },
+            ],
         },
     ],
 };
@@ -166,6 +193,7 @@ export const mutantSnailEnemy: Minion = {
                 },
             ],
         },
+        whip,
         {
             ...attack,
             actions: [
@@ -188,31 +216,7 @@ export const mutantSnailEnemy: Minion = {
                 },
             ],
         },
-        {
-            name: "Whip",
-            image: RedWhipImage,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    area: 2,
-                    excludePrimaryTarget: true,
-                    damage: 3,
-                    icon: RedWhipImage,
-                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    effects: [
-                        {
-                            name: "Whipped",
-                            description: "Whipped into a frenzy!",
-                            icon: WeaponMasteryImage,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                        },
-                    ],
-                },
-            ],
-        },
+        whip,
         {
             ...attack,
             actions: [
