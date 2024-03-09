@@ -426,6 +426,8 @@ export { default as RespawnTokenImage } from "./RespawnToken.png";
 export { default as ReturningRockImage } from "./ReturningRock.png";
 export { default as RibbonPigCardImage } from "./RibbonPigCard.png";
 export { default as RibbonPigIdleImage } from "./RibbonPigIdle.gif";
+export { default as RightAroundLithImage } from "./RightAroundLith.png";
+export { default as RightAroundLith2Image } from "./RightAroundLith2.png";
 export { default as RisingRageImage } from "./RisingRage.png";
 export { default as RisingStarImage } from "./RisingStar.png";
 export { default as RoastedTurkeyImage } from "./RoastedTurkey.png";

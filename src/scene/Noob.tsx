@@ -1,8 +1,12 @@
+import { createUseStyles } from "react-jss";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
 import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt, sword } from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
+import { SCENE_STYLES } from "./constants";
+import { RightAroundLith2Image, RightAroundLithImage } from "../images";
+import classNames from "classnames";
 
 const noobEncounter1 = {
     characters: [noobA.name, noobB.name],
@@ -21,11 +25,69 @@ enum NOOB_EVENT_IDS {
     FOUGHT_WARRIOR = "noob-event-fight-warrior",
 }
 
+const useIntroStyles = createUseStyles({
+    ...SCENE_STYLES,
+    player: {
+        ...SCENE_STYLES.player,
+        top: 293,
+        left: 355,
+    },
+    noobA: {
+        top: 292,
+        left: 550,
+    },
+    noobB: {
+        top: 292,
+        left: 600,
+    },
+});
+
+const NoobIntroBackdrop = ({ player, hideBeginners }) => {
+    const classes = useIntroStyles();
+    return (
+        <div>
+            <img src={RightAroundLithImage} alt="Right around Lith Harbor" className={classes.backdrop} />
+            {!hideBeginners && <img src={noobA.image} alt="Noob A" className={classNames(classes.character, classes.noobA)} />}
+            {!hideBeginners && <img src={noobB.image} alt="Noob B" className={classNames(classes.character, classes.noobB)} />}
+            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+        </div>
+    );
+};
+
+const useChaseStyles = createUseStyles({
+    ...SCENE_STYLES,
+    player: {
+        ...SCENE_STYLES.player,
+        top: 255,
+        left: 500,
+    },
+    noobA: {
+        top: 256,
+        left: 720,
+    },
+    noobB: {
+        top: 256,
+        left: 650,
+    },
+});
+
+const NoobChaseBackdrop = ({ player, hideBeginners }) => {
+    const classes = useChaseStyles();
+    return (
+        <div>
+            <img src={RightAroundLith2Image} alt="Right around Lith Harbor" className={classes.backdrop} />
+            {!hideBeginners && <img src={noobA.image} alt="Noob A" className={classNames(classes.character, classes.noobA)} />}
+            {!hideBeginners && <img src={noobB.image} alt="Noob B" className={classNames(classes.character, classes.noobB)} />}
+            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+        </div>
+    );
+};
+
 export const noobIntro: EventScene = {
     id: NOOB_EVENT_IDS.INTRO,
     script: [
         {
-            scene: () => <div />,
+            scene: NoobIntroBackdrop,
             speaker: noobA,
             dialog: ["Hey, hey, hey! Look at that mushroom with the weird cap. It's gotta be a rare mob, right?"],
         },
@@ -51,13 +113,23 @@ export const noobIntro: EventScene = {
                     next: [
                         {
                             speaker: noobA,
-                            dialog: ["Uh oh... It's too strong. Run!", "[The beginners flee.]"],
+                            dialog: ["Uh oh... It's too strong. Run!"],
+                        },
+                        {
+                            speaker: noobA,
+                            dialog: ["[The beginners flee.]"],
+                            disableTransition: true,
+                            scene: (other) => <NoobIntroBackdrop hideBeginners={true} {...other} />,
                             responses: [
                                 {
                                     text: "Chase them!",
                                     infamy: 3,
                                     next: [
                                         {
+                                            dialog: ["[You give chase.]"],
+                                        },
+                                        {
+                                            scene: NoobChaseBackdrop,
                                             speaker: noobB,
                                             dialog: ["WTF? It chased us through the portal!"],
                                         },
@@ -85,6 +157,7 @@ export const noobIntro: EventScene = {
                                             },
                                         },
                                         {
+                                            scene: (other) => <NoobIntroBackdrop hideBeginners={true} {...other} />,
                                             dialog: ["[While you picked up the item, the beginners made their escape.]"],
                                             responses: [
                                                 {

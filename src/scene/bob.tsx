@@ -28,9 +28,9 @@ const BobBackdrop = ({ player }) => {
     const classes = useStyles();
     return (
         <div>
-            <img src={LithCorner2Image} alt="Right around Lith Harbor" className={classes.backdrop} />
+            <img src={LithCorner2Image} alt="Lith Corner" className={classes.backdrop} />
             <img src={bob.image} alt="Bob" className={classNames(classes.character, classes.bob)} />
-            <img src={player.image} alt="Bob" className={classNames(classes.character, classes.player)} />
+            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
         </div>
     );
 };
