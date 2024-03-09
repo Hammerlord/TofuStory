@@ -303,7 +303,7 @@ export interface Bonus {
 
 export interface Condition {
     /** Equals | Less than | Greater than | Not equals/has -- Only used in pass/fail check */
-    comparator?: "eq" | "lt" | "gt" | "not" | "modulo";
+    comparator?: "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
     calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
     // Comparing properties on another target, eg. HP between actor and target
     otherCalculationTarget?: {

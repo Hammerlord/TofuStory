@@ -1328,9 +1328,9 @@ export const starEarrings: Item = {
                         onApplyEffect: {
                             conditions: [
                                 {
-                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET, // This should be comparing the effect
+                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                     hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
-                                    comparator: "eq",
+                                    comparator: "includes",
                                 },
                             ],
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -1797,9 +1797,9 @@ export const bloodMask: Item = {
                         onApplyEffect: {
                             conditions: [
                                 {
-                                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET, // This should be comparing the effect
+                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                     hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.SILENCE],
-                                    comparator: "eq",
+                                    comparator: "includes",
                                 },
                             ],
                             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
