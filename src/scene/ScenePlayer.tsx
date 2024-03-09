@@ -601,35 +601,37 @@ const ScenePlayer = ({
                             </div>
 
                             <div className={classes.wrapper}>
-                                <div className={classes.dialogContainer} onClick={handleClickDialog}>
-                                    {canSkip && (
-                                        <div className={classes.skipButton}>
-                                            <Button onClick={handleSkip}>Skip</Button>
-                                        </div>
-                                    )}
-                                    <div className={classes.portraitContainer}>
-                                        {speaker && (
-                                            <>
-                                                <div className={classes.portrait}>
-                                                    <img src={speaker.image} key={speaker.name} />
-                                                </div>{" "}
-                                                <div className={classes.speakerName}>{speaker?.name}</div>
-                                            </>
-                                        )}
-                                    </div>
-                                    <div className={classes.dialog}>
-                                        <div>
-                                            {dialog.map((line: string, i: number) => (
-                                                <p key={i}>{interpolateDialog(line)}</p>
-                                            ))}
-                                        </div>
-                                        {!responses && !items && (
-                                            <div className={classes.dialogArrow}>
-                                                <span>❯</span>
+                                {dialog?.length > 0 && (
+                                    <div className={classes.dialogContainer} onClick={handleClickDialog}>
+                                        {canSkip && (
+                                            <div className={classes.skipButton}>
+                                                <Button onClick={handleSkip}>Skip</Button>
                                             </div>
                                         )}
+                                        <div className={classes.portraitContainer}>
+                                            {speaker && (
+                                                <>
+                                                    <div className={classes.portrait}>
+                                                        <img src={speaker.image} key={speaker.name} />
+                                                    </div>{" "}
+                                                    <div className={classes.speakerName}>{speaker?.name}</div>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className={classes.dialog}>
+                                            <div>
+                                                {dialog.map((line: string, i: number) => (
+                                                    <p key={i}>{interpolateDialog(line)}</p>
+                                                ))}
+                                            </div>
+                                            {!responses && !items && (
+                                                <div className={classes.dialogArrow}>
+                                                    <span>❯</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                                 {responses && (
                                     <div className={classes.feedbackContainer}>
                                         {responses.map((response, i: number) => (
