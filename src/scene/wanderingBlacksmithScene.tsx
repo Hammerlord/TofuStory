@@ -1,8 +1,12 @@
+import classNames from "classnames";
 import { BATTLE_TYPES } from "../battle/types";
 import { cake, unagi } from "../enemy/miniBean";
 import { wanderingBlacksmith } from "../enemy/wanderingBlacksmith";
+import { HenesysHuntingGroundImage } from "../images";
 import { halfEatenHotdog } from "../item/items";
 import { EventScene, SceneEncounter, ScriptNode } from "./types";
+import { SCENE_STYLES } from "./constants";
+import { createUseStyles } from "react-jss";
 
 const wanderingBlacksmithFight: SceneEncounter = {
     waves: [
@@ -12,6 +16,30 @@ const wanderingBlacksmithFight: SceneEncounter = {
     ],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
     backgroundMusic: "https://vgmsite.com/soundtracks/maplestory-music/wtklubxzfw/136.%20Mu%20Lung%20Dojo%202.mp3",
+};
+
+const useStyles = createUseStyles({
+    ...SCENE_STYLES,
+    player: {
+        ...SCENE_STYLES.player,
+        top: 298,
+        left: 377,
+    },
+    smith: {
+        top: 253,
+        left: 500,
+    },
+});
+
+const WanderingBlacksmithIntroBackdrop = ({ player }) => {
+    const classes = useStyles();
+    return (
+        <div>
+            <img src={HenesysHuntingGroundImage} alt="Henesys Hunting Ground" className={classes.backdrop} />
+            <img src={wanderingBlacksmith.image} alt="Blacksmith" className={classNames(classes.character, classes.smith)} />
+            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+        </div>
+    );
 };
 
 const fedPath: ScriptNode[] = [
@@ -126,6 +154,7 @@ export const wanderingSmithScene: EventScene = {
     id: "wandering-smith",
     script: [
         {
+            scene: WanderingBlacksmithIntroBackdrop,
             speaker: wanderingBlacksmith,
             dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
         },
