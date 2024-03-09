@@ -1,6 +1,6 @@
 import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
-import { enrageEffect } from "../ability/Effects";
+import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
 import { energyBolt, greaterBolt } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
@@ -22,7 +22,7 @@ export const rageStone: Item = {
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 triggerFrequencyFromSum: 2,
-                effects: [enrageEffect],
+                effects: [infuriateEffect],
             },
         },
     ],
@@ -43,9 +43,9 @@ export const rampageStone: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 triggerFrequencyFromSum: 2,
                 effects: [
-                    enrageEffect,
+                    infuriateEffect,
                     {
-                        name: "Enrage - Card Draw",
+                        name: "Rage Stone - Card Draw",
                         type: EFFECT_TYPES.RAGE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: HumilityStoneImage,
@@ -58,7 +58,7 @@ export const rampageStone: Item = {
                         conditions: [
                             {
                                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                hasEffect: "Enrage",
+                                hasEffect: infuriateEffect.name,
                             },
                         ],
                     },

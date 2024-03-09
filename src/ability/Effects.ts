@@ -580,8 +580,8 @@ export const stashCardEffect: Effect = {
     },
 };
 
-export const enrageEffect = {
-    name: "Enrage",
+export const infuriateEffect = {
+    name: "Infuriate",
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: HumilityStoneImage,

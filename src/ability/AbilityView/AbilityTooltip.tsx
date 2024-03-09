@@ -156,10 +156,15 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
-    const enrage = stringified.includes("enrage");
-    if (enrage) {
+    const infuriate = stringified.includes("infuriate");
+    if (infuriate) {
         tooltips.push(
-            <AbilityTooltipSection title="Enrage" icon={rageStone.image} description={<>Gain 1 resource next turn.</>} key={"enrage"} />
+            <AbilityTooltipSection
+                title="Infuriate"
+                icon={rageStone.image}
+                description={<>Gain 1 resource next turn.</>}
+                key={"infuriate"}
+            />
         );
     }
 

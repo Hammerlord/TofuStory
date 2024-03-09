@@ -67,7 +67,7 @@ import {
 } from "../../images";
 import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, enrageEffect } from "../Effects";
+import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, infuriateEffect } from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -2399,8 +2399,7 @@ export const bide: Ability = {
     name: "Bide",
     resourceCost: 1,
     overrideBodyText: true,
-    description:
-        "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Enrage.",
+    description: "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain Infuriate.",
     image: WarriorThroneImage,
     actions: [
         {
@@ -2412,7 +2411,7 @@ export const bide: Ability = {
                 type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
                 maxAmount: 2,
             },
-            effects: [enrageEffect],
+            effects: [infuriateEffect],
         },
     ],
     upgrades: [
