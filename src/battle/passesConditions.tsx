@@ -113,7 +113,7 @@ export const passesConditions = ({
             }
 
             if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
-                const { type: effectType }: Effect = sourcePayload as Effect;
+                const { type: effectType, class: effectClass }: Effect = sourcePayload as Effect;
 
                 if (hasEffectType !== undefined) {
                     if (comparator === "not") {
@@ -121,6 +121,16 @@ export const passesConditions = ({
                             return false;
                         }
                     } else if (!hasEffectType.includes(effectType)) {
+                        return false;
+                    }
+                }
+
+                if (hasEffectClass !== undefined) {
+                    if (comparator === "not") {
+                        if (effectClass === hasEffectClass) {
+                            return false;
+                        }
+                    } else if (effectClass !== hasEffectClass) {
                         return false;
                     }
                 }

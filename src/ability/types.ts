@@ -65,6 +65,7 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
         damage?: number;
     };
 
+    // Who receives the effects of this event or the ability configured.
     targetType?: TRIGGER_TARGET_TYPES;
     randomOptions?: {
         numTargets?: number;

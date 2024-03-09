@@ -2325,3 +2325,72 @@ export const guardian: Ability = {
         },
     ],
 };
+
+export const chanceAttack: Ability = {
+    name: "Chance Attack",
+    image: ChanceAttackImage,
+    description: "When you apply a debuff, attack the target for {{ nestedAbility.actions.0.damage }} damage.",
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Chance Attack Effect",
+                    icon: ChanceAttackImage,
+                    duration: 5,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onApplyEffect: {
+                        targetType: TRIGGER_TARGET_TYPES.TARGET,
+                        ability: {
+                            name: "Chance Attack",
+                            image: ChanceAttackImage,
+                            actions: [
+                                {
+                                    // On AOEs, this hits the same target multiple times.
+                                    type: ACTION_TYPES.ATTACK,
+                                    target: TARGET_TYPES.HOSTILE,
+                                    damage: 3,
+                                    playbackTime: 500,
+                                },
+                            ],
+                        },
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                                comparator: "eq",
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            onApplyEffect: [
+                                {
+                                    ability: {
+                                        actions: [
+                                            {
+                                                damage: 1,
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
