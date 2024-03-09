@@ -45,6 +45,26 @@ const useStyles = createUseStyles({
         color: "rgba(0, 0, 0, 0.5)",
         border: "none",
         outline: "none",
+        height: 50,
+    },
+    reel: {
+        display: "flex",
+        position: "relative",
+        flexDirection: "column",
+    },
+    shaderTop: {
+        background: "linear-gradient(rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
+        position: "absolute",
+        top: 0,
+        height: 50,
+        width: "100%",
+    },
+    shaderBottom: {
+        background: "linear-gradient(360deg, rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
+        position: "absolute",
+        bottom: 0,
+        height: 50,
+        width: "100%",
     },
 });
 
@@ -91,6 +111,12 @@ const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =
     };
 
     const classes = useStyles();
+    const modulo = (number, column) => {
+        if (number < 0) {
+            return column.length - 1;
+        }
+        return number % column.length;
+    };
 
     return (
         <div className={classes.root}>
@@ -99,8 +125,18 @@ const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =
                     <button className={classes.arrow} onClick={() => onClickTurnReel(j, -1)}>
                         ▲
                     </button>
-                    <div className={classes.iconContainer}>
-                        <img src={columns[j][i]} className={classes.icon} key={columns[j][i]} />
+                    <div className={classes.reel}>
+                        <div className={classes.iconContainer}>
+                            <img src={columns[j][modulo(i + 1, columns[j])]} className={classes.icon} key={[j, i + 1].join("")} />
+                        </div>
+                        <div className={classes.iconContainer}>
+                            <img src={columns[j][i]} className={classes.icon} key={[j, i].join("")} />
+                        </div>
+                        <div className={classes.iconContainer}>
+                            <img src={columns[j][modulo(i - 1, columns[j])]} className={classes.icon} key={[j, i - 1].join("")} />
+                        </div>
+                        <div className={classes.shaderBottom} />
+                        <div className={classes.shaderTop} />
                     </div>
                     <button className={classes.arrow} onClick={() => onClickTurnReel(j, 1)}>
                         ▼
