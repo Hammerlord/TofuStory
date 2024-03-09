@@ -34,7 +34,7 @@ export const pigHeaded: Effect = {
     description: "While stunned or frozen:",
     icon: PigsHeadImage,
     type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
+    class: EFFECT_CLASSES.DEBUFF,
     attackDamageReceived: 2,
     conditions: [
         {

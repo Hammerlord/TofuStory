@@ -793,22 +793,7 @@ export const wildBoar: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "Pig-Headed",
-            description: "While stunned:",
-            icon: PigsHeadImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: 2,
-            conditions: [
-                {
-                    hasEffectType: [EFFECT_TYPES.STUN],
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-    ],
+    effects: [pigHeaded],
 };
 
 export const stump: Minion = {
@@ -911,23 +896,7 @@ export const fireBoar: Minion = {
             ],
         },
     ],
-    effects: [
-        hardy,
-        {
-            name: "Pig-Headed",
-            description: "While stunned:",
-            icon: PigsHeadImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: 2,
-            conditions: [
-                {
-                    hasEffectType: [EFFECT_TYPES.STUN],
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                },
-            ],
-        },
-    ],
+    effects: [hardy, pigHeaded],
 };
 
 export const ligator: Minion = {
