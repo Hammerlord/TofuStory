@@ -14,11 +14,13 @@ import {
     LithHarborCityBGImage,
     LithHarborExitImage,
     LithHarborSharkImage,
+    LithHarborShopImage,
     LithTutorial2Image,
     LithTutorialImage,
+    NatashaImage,
     SkipLithBackdropImage,
 } from "../images";
-import { CrossedSwordsIcon, MedalIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { halfEatenHotdog } from "../item/items";
 import { RARITIES } from "../item/types";
 import { lithEventsOlaf, olafRewards } from "../scene/olaf";
@@ -26,8 +28,12 @@ import { lithEventsTeoJohn } from "../scene/teojohn";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
-import { TOWN_STYLES } from "./constants";
+import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { EventScene } from "../scene/types";
+import Shop from "../Menu/Shop";
+import ScenePlayer from "../scene/ScenePlayer";
+import { REGIONS } from "./regions";
+import Overlay from "../view/Overlay";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -68,7 +74,7 @@ const LITH_PLACES = {
 };
 
 const LITH_PREREQUISITES = {
-    [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC],
+    [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC, TOWN_PLACES.SHOP],
 };
 
 const { acquireItems } = playerStateSlice.actions;
@@ -125,12 +131,48 @@ const skipScript: EventScene = {
     ],
 };
 
-const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }) => {
+const shopScript: EventScene = {
+    id: "lith-shop",
+    script: [
+        {
+            disableTransition: true,
+            disableBackground: true,
+            speaker: { name: "Natasha", image: NatashaImage },
+            dialog: ["Ahhh! Out, you pest!"],
+        },
+        {
+            disableBackground: true,
+            speaker: { name: "Natasha", image: NatashaImage },
+            dialog: ["How dare your penniless mushroom self barge into my shop??"],
+        },
+        {
+            disableBackground: true,
+            speaker: { name: "Natasha", image: NatashaImage },
+            dialog: [
+                "Leave, now! [Natasha waves the brush-end of a broom menacingly.]",
+                "And if you really want to buy something, come back with some mesos!",
+            ],
+            responses: [
+                {
+                    text: "",
+                    isExit: true,
+                },
+            ],
+        },
+    ],
+};
+
+const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, onTransition }) => {
     const classes = useStyles();
     const [isExiting, setIsExiting] = useState(false);
     const [showAcquireAbility, setShowAcquireAbility] = useState(0);
     const [showAcquireItem, setShowAcquireItem] = useState(false);
     const [visited, setVisited] = useState({});
+    // You're not supposed to be able to buy anything from the Lith Harbor shop. It's just there as a narrative segment.
+    // Due to the special combination of scene/shop background, use custom logic here.
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const [isShopScriptOpen, setIsShopScriptOpen] = useState(false);
+
     const isFulfilledExitRequirement = Object.values(visited).length >= Object.values(LITH_PLACES).length;
     const dispatch = useAppDispatch();
 
@@ -193,6 +235,15 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
         }
     };
 
+    const handleClickShop = () => {
+        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
+            setIsShopOpen(true);
+            setTimeout(() => {
+                setIsShopScriptOpen(true);
+            }, 5000); // 5 seconds
+        }
+    };
+
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     return (
@@ -228,6 +279,13 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                                             );
                                         }
                                     }}
+                                />
+                                <TownNode
+                                    icon={MoneyBagIcon}
+                                    isVisited={visited[TOWN_PLACES.SHOP]}
+                                    label={"Shop"}
+                                    nodeImage={LithHarborShopImage}
+                                    onClick={handleClickShop}
                                 />
                                 <br />
 
@@ -277,6 +335,23 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         </Pan>
                         <Legend />
                     </>
+                )}
+                {isShopOpen && <Shop player={player} onBuyItem={() => {}} />}
+                {isShopScriptOpen && (
+                    <Overlay>
+                        <ScenePlayer
+                            scene={shopScript}
+                            player={player}
+                            updatePlayer={() => {}}
+                            deck={deck}
+                            onTransition={onTransition}
+                            region={REGIONS.LITH_HARBOR}
+                            onExit={() => {
+                                setIsShopOpen(false);
+                                setIsShopScriptOpen(false);
+                            }}
+                        />
+                    </Overlay>
                 )}
                 {showAcquireItem && !showAcquireAbility && (
                     <ItemRewards

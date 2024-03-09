@@ -182,7 +182,7 @@ const Shop = ({
         statChanges?: { maxHP?: number; HP?: number };
     }) => void;
     merchant?: { name: string };
-    onExit: () => void;
+    onExit?: () => void; // MUST be provided to get the button to leave the shop
 }) => {
     const [abilities, setAbilities] = useState([]);
     const [items, setItems] = useState([]);
@@ -494,9 +494,11 @@ const Shop = ({
         <div className={classes.root}>
             <div className={classes.inner}>
                 <div className={classes.doneContainer}>
-                    <Button color="secondary" variant="contained" onClick={onExit}>
-                        Leave Shop
-                    </Button>
+                    {onExit && (
+                        <Button color="secondary" variant="contained" onClick={onExit}>
+                            Leave Shop
+                        </Button>
+                    )}
                 </div>
                 <div className={classes.refreshContainer}>
                     {numRefreshes > 0 && (

@@ -14,7 +14,6 @@ const useStyles = createUseStyles({
     },
     userPositionContainer: {
         position: "fixed",
-        zIndex: 100,
         right: "16px",
         bottom: "372px",
     },

@@ -239,8 +239,8 @@ const ScenePlayer = ({
 }: {
     scene: EventScene;
     player: Player;
-    updatePlayer: (updated: any) => void;
-    onBattle: (
+    updatePlayer?: (updated: any) => void;
+    onBattle?: (
         props: {
             addAbilities?: Ability[];
             waves: {
@@ -252,11 +252,11 @@ const ScenePlayer = ({
         callback: () => void
     ) => void;
     onExit: Function;
-    onShop: Function;
+    onShop?: Function;
     onTransition?: Function;
     deck: CombatAbility[];
-    updateDeck: (newDeck: CombatAbility[]) => void;
-    onChangeRegion: (region: REGIONS) => void;
+    updateDeck?: (newDeck: CombatAbility[]) => void;
+    onChangeRegion?: (region: REGIONS) => void;
     region: REGIONS;
 }) => {
     const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state)?.character || {};
