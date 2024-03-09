@@ -32,7 +32,6 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        background: "rgba(25, 25, 25, 0.9)",
         color: "white",
         position: "absolute",
         top: 0,
@@ -83,7 +82,7 @@ const useStyles = createUseStyles({
         textAlign: "left",
         letterSpacing: "0.015rem",
         lineHeight: "26px",
-        background: "rgba(25, 25, 25, 0.9)",
+        background: "rgba(25, 25, 25, 0.95)",
         marginBottom: "8px",
 
         "& p": {
@@ -208,6 +207,9 @@ const useStyles = createUseStyles({
     abilityUpgradeSection: {
         marginBottom: 64,
     },
+    hide: {
+        visibility: "hidden",
+    },
 });
 
 const classesInterpolation = {
@@ -283,6 +285,7 @@ const ScenePlayer = ({
         treasureBox,
         conditionalNext,
         infamy,
+        disableBackground,
     }: ScriptNode = script[dialogIndex] || ({} as any);
 
     const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
@@ -325,17 +328,25 @@ const ScenePlayer = ({
 
         const transitioningPuzzle = (Puzzle && !puzzle) || (!puzzle && Puzzle);
         if (transitioningPuzzle) {
-            onTransition &&
+            if (onTransition) {
                 onTransition(() => {
                     setPuzzle(null);
+
+                    if (disableBackground) {
+                        return;
+                    }
                     if (scriptBackground) {
                         setBackground(scriptBackground);
                     } else if (!background) {
                         setBackground(BG_MAP[region]);
                     }
                 });
+            }
         } else {
             setPuzzle(() => puzzle);
+            if (disableBackground) {
+                return;
+            }
             if (scriptBackground) {
                 setBackground(scriptBackground);
             } else if (!background) {
@@ -597,8 +608,17 @@ const ScenePlayer = ({
     return (
         <>
             <div className={classes.root}>
+                <div
+                    className={classNames(classes.backgroundOverlay, {
+                        [classes.hide]: disableBackground,
+                    })}
+                />
                 <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
-                <div className={classes.backgroundOverlay} />
+                <div
+                    className={classNames(classes.backgroundOverlay, {
+                        [classes.hide]: disableBackground,
+                    })}
+                />
 
                 <div className={classes.inner}>
                     {!Puzzle && !showCamp && !isRemovingAbility && !treasureBoxOptions && (

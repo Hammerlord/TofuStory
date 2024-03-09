@@ -18,7 +18,7 @@ import { BATTLE_STATES, battleStateSlice } from "../battle/reducer";
 import { BATTLE_TYPES } from "../battle/types";
 import { getMaxHP } from "../battle/utils";
 import { playerStateSlice } from "../character/playerReducer";
-import { REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
+import { INTRO_PAN_TIME, REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { VictoriaIslandImage } from "../images";
 import { Item, RARITIES } from "../item/types";
@@ -39,6 +39,7 @@ import Shop from "./Shop";
 import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
+import { introScene, startJourneyScene } from "../scene/misc";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -114,7 +115,7 @@ const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.act
 
 const Main = () => {
     const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
-    const [scene, setScene] = useState(null);
+    const [scene, setScene]: [EventScene | null, Function] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
     const [route, setRoute]: [Route, Function] = useState(null);
@@ -332,8 +333,15 @@ const Main = () => {
         handleTransition(callback);
     };
 
+    const handleCloseClassSelection = () => {
+        setOpenClassSelection(false);
+        setTimeout(() => {
+            setScene(introScene);
+        }, INTRO_PAN_TIME);
+    };
+
     if (openClassSelection) {
-        return <ClassSelection onSelectClass={handleSelectClass} onClose={() => setOpenClassSelection(false)} />;
+        return <ClassSelection onSelectClass={handleSelectClass} onClose={handleCloseClassSelection} />;
     }
 
     const handleBuyItem = ({
@@ -401,13 +409,17 @@ const Main = () => {
     };
 
     const handleExitTown = () => {
+        handleTransition(() => setTown(null));
+
         if (town === TOWNS.LITH_HARBOR) {
             // We completed the intro. Load the rest of the route.
             const route = generateTravelRoute({ startingRoute: toLith });
             setRoute(route);
             setLocationNode(route);
+            setTimeout(() => {
+                setScene(startJourneyScene);
+            }, 1500);
         }
-        handleTransition(() => setTown(null));
     };
 
     const getTown = () => {

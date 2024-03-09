@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { AnonymushroomImage } from "../images";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import classNames from "classnames";
+import { INTRO_PAN_TIME, RE_PAN_TIME } from "../constants";
 
 const useStyles = createUseStyles({
     panContainer: {
@@ -49,7 +50,7 @@ const Pan = ({
     style?;
     disableIntroAnimate?: boolean;
 }) => {
-    const [x, setX] = useState(0);
+    const [x, setX] = useState(-500); // Start farther to the right
     const [y, setY] = useState(0);
     const [position, setLastInteractionPos] = useState([null, null]);
     const [isInteracting, setIsInteracting] = useState(false);
@@ -58,7 +59,7 @@ const Pan = ({
     const [isIntroPan, setIsIntroPan] = useState(true);
     const classes = useStyles();
 
-    const panToUserPosition = (panTime = 400) => {
+    const panToUserPosition = (panTime = RE_PAN_TIME) => {
         if ([x, y, userPosition?.x, userPosition?.y].some((coords) => isNaN(coords) || coords === null)) {
             return;
         }
@@ -89,7 +90,7 @@ const Pan = ({
             setIsIntroPan(false);
             return;
         }
-        const panTime = isIntroPan ? 2000 : 400;
+        const panTime = isIntroPan ? INTRO_PAN_TIME : RE_PAN_TIME;
         panToUserPosition(panTime);
         if (isIntroPan) {
             setTimeout(() => {

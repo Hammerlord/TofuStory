@@ -23,7 +23,7 @@ export interface SceneCondition {
 export interface EventScene {
     id: string; // Scene ID to track which scenes you have visited
     script: ScriptNode[];
-    repeatable?: boolean;
+    repeatable?: boolean; // Does nothing right now
     // Array of conditions resolves with AND operator by default
     conditions?: SceneCondition[];
 }
@@ -83,6 +83,7 @@ export interface ScriptNode {
     scene?: ({ player }: { player: Player }) => JSX.Element;
     // Do not fade to black if scene changes
     disableTransition?: boolean;
+    disableBackground?: boolean;
     background?: string;
     puzzle?: ({
         player,
