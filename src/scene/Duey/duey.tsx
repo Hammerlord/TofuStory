@@ -54,7 +54,7 @@ export const duey: Minion = {
     name: "Duey",
     image: DueyImage,
     maxHP: 15,
-    mesos: 0,
+    mesos: 25,
     abilities: [
         {
             name: "Curl Up in Fetal Position",

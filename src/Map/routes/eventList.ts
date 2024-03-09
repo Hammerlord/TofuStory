@@ -1,10 +1,11 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
+import { cursedChestScene } from "../../scene/CursedTreasureScene";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
-import { cursedChestScene, mesoThiefScene } from "../../scene/misc";
+import { mesoThiefScene } from "../../scene/misc";
 import { EventScene } from "../../scene/types";
 import { wanderingSmithScene } from "../../scene/wanderingBlacksmithScene";
 import {
