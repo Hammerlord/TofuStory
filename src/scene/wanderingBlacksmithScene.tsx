@@ -17,7 +17,7 @@ const wanderingBlacksmithFight: SceneEncounter = {
 const fedPath: ScriptNode[] = [
     {
         speaker: wanderingBlacksmith,
-        dialog: ["Mmmm. Omnomnom nom."],
+        dialog: ["Mmmm! Omnomnom nom. Excuse my language."],
     },
     {
         speaker: wanderingBlacksmith,
@@ -25,14 +25,16 @@ const fedPath: ScriptNode[] = [
     },
     {
         speaker: wanderingBlacksmith,
-        dialog: ["I am the Wandering Blacksmith. I travel across the island, offering my skills for the glory of the Maple gods."],
+        dialog: [
+            "I am the Wandering Blacksmith. I travel across the island, offering my particular set of skills for the glory of the Maple gods.",
+        ],
     },
     {
         speaker: wanderingBlacksmith,
         dialog: ["Have you need of my services?"],
         responses: [
             {
-                text: "Yes.",
+                text: "Nod.",
                 upgradeCards: 3,
                 next: [
                     {
@@ -50,7 +52,31 @@ const fedPath: ScriptNode[] = [
                     },
                 ],
             },
-            { text: "No thank you." },
+            {
+                text: "Decline.",
+                next: [
+                    {
+                        speaker: wanderingBlacksmith,
+                        dialog: [
+                            "Most of your kind I encounter are ravenous for power, as ravenous as I am for tofu! Either that, or they want to bring me to harm.",
+                        ],
+                    },
+                    {
+                        speaker: wanderingBlacksmith,
+                        dialog: ["It is unusual to be turned down, but I shall not press, of course."],
+                    },
+                    {
+                        speaker: wanderingBlacksmith,
+                        dialog: ["Thank you for the food. Perhaps we will meet again."],
+                        responses: [
+                            {
+                                text: "Goodbye.",
+                                isExit: true,
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     },
 ];
@@ -62,7 +88,7 @@ const noFedPath: ScriptNode[] = [
     },
     {
         speaker: wanderingBlacksmith,
-        dialog: ["I am the Wandering Blacksmith. I travel across the island, offering my skills for the glory of the Maple gods."],
+        dialog: ["I am the Wandering Blacksmith. I travel across the island, exalting the maple gods by offering my skills to the people."],
     },
     {
         speaker: wanderingBlacksmith,
@@ -190,7 +216,7 @@ export const wanderingSmithScene: EventScene = {
                             dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
                             responses: [
                                 {
-                                    text: "I have nothing.",
+                                    text: "You have nothing...",
                                     next: noFedPath,
                                 },
                             ],
