@@ -313,7 +313,6 @@ const ScenePlayer = ({
 
     useEffect(() => {
         if (!script[dialogIndex]) {
-            onExit();
             return;
         }
 
@@ -372,9 +371,19 @@ const ScenePlayer = ({
         }
     }, [script?.[dialogIndex]]);
 
+    const handleExit = (disableTransition?: boolean) => {
+        if (disableTransition) {
+            onExit();
+            return;
+        }
+        onTransition(() => {
+            onExit();
+        });
+    };
+
     const onProceedDialog = () => {
         const newDialogIndex = dialogIndex + 1;
-        if (newDialogIndex <= script.length) {
+        if (script[newDialogIndex]) {
             const { scene: newScene, disableTransition } = script[newDialogIndex] || {};
             if (newScene && newScene !== Backdrop && !disableTransition) {
                 onTransition(() => {
@@ -384,7 +393,8 @@ const ScenePlayer = ({
                 setDialogIndex(newDialogIndex);
             }
         } else {
-            onExit();
+            const { disableTransition } = script[dialogIndex] || {};
+            handleExit(disableTransition);
         }
     };
 
@@ -463,12 +473,12 @@ const ScenePlayer = ({
             if (shop) {
                 onShop(shop);
                 if (!next) {
-                    onExit();
+                    handleExit(true);
                 }
             }
 
             if (isExit) {
-                onExit();
+                handleExit();
             }
 
             if (camp) {

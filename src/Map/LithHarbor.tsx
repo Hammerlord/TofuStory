@@ -117,6 +117,7 @@ const skipScript: EventScene = {
             speaker: casey,
             background: LithHarborCityBGImage,
             scene: CaseyBackdrop,
+            disableTransition: true,
             dialog: [
                 "Hey Mushie! Not your first rodeo, huh? Here's the stuff you would've gotten from the events in town. Good luck out there!",
             ],
