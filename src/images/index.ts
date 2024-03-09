@@ -162,6 +162,8 @@ export { default as EvilEyeCardImage } from "./EvilEyeCard.png";
 export { default as EvilEyeMinionImage } from "./EvilEyeMinion.png";
 export { default as EvilEyeShockImage } from "./EvilEyeShock.png";
 export { default as FairyImage } from "./Fairy.gif";
+export { default as FairyShadeImage } from "./FairyShade.gif";
+export { default as FairyShade2Image } from "./FairyShade2.gif";
 export { default as FairyWingImage } from "./FairyWing.png";
 export { default as FangImage } from "./Fang.png";
 export { default as FaustImage } from "./Faust.gif";

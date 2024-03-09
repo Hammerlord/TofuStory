@@ -5,7 +5,15 @@ import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
 import { lifeLink } from "../../enemy/effect";
 import { lupin, malady, zombieLupin } from "../../enemy/enemy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../../enemy/faust";
-import { AltForestBG2Image, AltForestBGImage, ArwenTheFairyImage, ElliniaBGImage, RowenTheFairyImage } from "../../images";
+import {
+    AltForestBG2Image,
+    AltForestBGImage,
+    ArwenTheFairyImage,
+    ElliniaBGImage,
+    FairyShade2Image,
+    FairyShadeImage,
+    RowenTheFairyImage,
+} from "../../images";
 import { glassShoe } from "../../item/items";
 import { EventScene, ScriptNode } from "../types";
 import {
@@ -362,12 +370,61 @@ const maladyDialog: ScriptNode[] = [
                                         scene: TwilitForest2,
                                         disableTransition: true,
                                         dialog: [
-                                            "[As you venture forward, the path grows unnaturally darker and darker... You won't be able to find your way like this.",
+                                            "[As you venture forward, the path grows darker and darker in a way that has nothing to do with the forest canopy... You won't be able to find your way like this.]",
                                         ],
                                     },
                                     {
                                         dialog: [
-                                            "[In front of you, something glimmers feebly with old magic, so feebly you almost missed it. Maybe you can restore the light somehow.]",
+                                            "[Voices call out unnaturally near and far. Something tells you that whoever is speaking, they're not in the present.]",
+                                        ],
+                                    },
+                                    {
+                                        speaker: {
+                                            name: "Bronwen",
+                                            image: FairyShadeImage,
+                                        },
+                                        dialog: ["A vision, Merusa? Another one? Is one certain it was not a dream?"],
+                                    },
+                                    {
+                                        speaker: {
+                                            name: "Merusa",
+                                            image: FairyShade2Image,
+                                        },
+                                        dialog: [
+                                            "Oneself knows it. It was no dream! A great shadow fell over the Six Path Tree and consumed everything in sight. One was there, Bronwen, and, and--",
+                                        ],
+                                    },
+                                    {
+                                        speaker: {
+                                            name: "Bronwen",
+                                            image: FairyShadeImage,
+                                        },
+                                        dialog: [
+                                            "Oh, Merusa. Do not fret. The forests have been peaceful since the old ones made them, wove magic into their roots.",
+                                            "With their protection, how could something so dreadful come to be?",
+                                        ],
+                                    },
+                                    {
+                                        speaker: {
+                                            name: "Bronwen",
+                                            image: FairyShadeImage,
+                                        },
+                                        dialog: [
+                                            "And should something happen, oneself, Queen Erylen, and Princess Ephenia will always protect one.",
+                                        ],
+                                    },
+                                    {
+                                        speaker: {
+                                            name: "Merusa",
+                                            image: FairyShade2Image,
+                                        },
+                                        dialog: [
+                                            "One does not understand. Bronwen, be a listening one--in the end, oneselves were fighting oneselves. Oneselves were no longer oneselves...",
+                                        ],
+                                    },
+                                    {
+                                        dialog: [
+                                            "[The voices fade away. In front of you, something glimmers feebly with old magic, so feebly you almost missed it. Maybe you can restore the light somehow.]",
                                         ],
                                         responses: [
                                             {
