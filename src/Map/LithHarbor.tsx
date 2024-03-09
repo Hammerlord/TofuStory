@@ -179,7 +179,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
 
     const handleCloseAcquireItems = () => {
         if (!showAcquireAbility) {
-            onExit();
+            onExit({ eventsSkipped: true });
         } else {
             setShowAcquireItem(false);
         }
@@ -187,7 +187,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
 
     const handleCloseCardRewards = () => {
         if (!showAcquireItem) {
-            onExit();
+            onExit({ eventsSkipped: true });
         } else {
             setShowAcquireAbility(0);
         }

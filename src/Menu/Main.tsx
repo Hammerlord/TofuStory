@@ -413,7 +413,7 @@ const Main = () => {
         });
     };
 
-    const handleExitTown = () => {
+    const handleExitTown = (options: { eventsSkipped?: boolean } = {}) => {
         handleTransition(() => setTown(null));
 
         if (town === TOWNS.LITH_HARBOR) {
@@ -425,7 +425,9 @@ const Main = () => {
             setRoute(route);
             setLocationNode(route);
             setTimeout(() => {
-                setScene(startJourneyScene);
+                if (!options?.eventsSkipped) {
+                    setScene(startJourneyScene);
+                }
                 setHideMapClickIndicator(false);
             }, 1500);
         }
