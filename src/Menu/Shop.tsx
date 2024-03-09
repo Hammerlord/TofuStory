@@ -140,6 +140,13 @@ const useStyles = createUseStyles({
         padding: "0 24",
         fontSize: 18,
     },
+    abilityPlaceholder: {
+        width: 168,
+    },
+    itemPlaceholder: {
+        width: 232,
+        height: 150,
+    },
 });
 
 const NUM_SHOP_ABILITIES = 8;
@@ -340,7 +347,7 @@ const Shop = ({
             if (player.mesos >= price) {
                 onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
                 const updatedAbilities = abilities.slice();
-                updatedAbilities.splice(selectedAbilityIndex, 1);
+                updatedAbilities[selectedAbilityIndex] = null;
                 setAbilities(updatedAbilities);
                 setSelectedAbilityIndex(null);
             }
@@ -370,7 +377,7 @@ const Shop = ({
                 // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
                 onBuyItem({ items: [item], mesosSpent: price, type: "item" });
                 const updatedItems = items.map((other) => {
-                    if (other.item.name === item.name) {
+                    if (other?.item?.name === item.name) {
                         return {
                             ...other,
                             price: Math.floor(price * 1.2),
@@ -386,11 +393,101 @@ const Shop = ({
 
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
             const updatedItems = items.slice();
-            updatedItems.splice(selectedItemIndex, 1);
+            updatedItems[selectedItemIndex] = null;
             checkItemAffectsShop(item);
             setItems(updatedItems);
             setSelectedItemIndex(null);
         }
+    };
+
+    const getShopAbility = (shopItem, i: number) => {
+        if (!shopItem) {
+            return <div className={classNames(classes.abilityContainer, classes.abilityPlaceholder)} key={i} />;
+        }
+
+        const { item, price } = shopItem;
+        return (
+            <div className={classes.abilityContainer} key={[item.name, i].join("-")}>
+                <AbilityRarityTag ability={item} />
+                <div
+                    className={classNames(classes.ability, {
+                        selected: i === selectedAbilityIndex,
+                    })}
+                    onClick={() => {
+                        if (player.mesos >= price) {
+                            setSelectedAbilityIndex(i);
+                            setSelectedItemIndex(null);
+                        }
+                    }}
+                >
+                    <AbilityView ability={item} />
+                </div>
+                <div className={classes.priceContainer}>
+                    <div
+                        className={classNames(classes.priceContainerInner, {
+                            [classes.cannotAfford]: player.mesos < price,
+                        })}
+                    >
+                        <img src={MesoCoinImage} alt={"Mesos"} />
+                        <span className={classes.priceLabel}>{price}</span>
+                    </div>
+                </div>
+                {i === selectedAbilityIndex && (
+                    <div>
+                        <Button color={"primary"} onClick={handleBuyClick}>
+                            Buy
+                        </Button>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const getShopItem = (shopItem, i: number) => {
+        if (!shopItem) {
+            return <div className={classNames(classes.itemContainer, classes.itemPlaceholder)} key={i} />;
+        }
+
+        const { item, price, isFood } = shopItem;
+        return (
+            <div className={classes.itemContainer} key={[item.name, i].join("-")}>
+                <div
+                    className={classNames(classes.item, {
+                        selected: i === selectedItemIndex,
+                    })}
+                    onClick={() => {
+                        if (player.mesos >= price) {
+                            setSelectedAbilityIndex(null);
+                            setSelectedItemIndex(i);
+                        }
+                    }}
+                >
+                    <ItemView item={item} />
+                </div>
+                <div className={classes.priceContainer}>
+                    <div
+                        className={classNames(classes.priceContainerInner, {
+                            [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
+                        })}
+                    >
+                        {isFood && freeFood && <span className={classes.free}>FREE</span>}
+                        {(!isFood || !freeFood) && (
+                            <>
+                                <img src={MesoCoinImage} alt={"Mesos"} />
+                                <span className={classes.priceLabel}>{price}</span>
+                            </>
+                        )}
+                    </div>
+                </div>
+                {i === selectedItemIndex && (
+                    <div>
+                        <Button color={"primary"} onClick={handleBuyClick}>
+                            Buy
+                        </Button>
+                    </div>
+                )}
+            </div>
+        );
     };
 
     return (
@@ -425,43 +522,7 @@ const Shop = ({
                             <span className={classes.headerText}>Abilities</span>
                             <hr />
                         </div>
-                        <div className={classes.abilitiesSection}>
-                            {abilities.map(({ item, price }, i) => (
-                                <div className={classes.abilityContainer} key={i}>
-                                    <AbilityRarityTag ability={item} />
-                                    <div
-                                        className={classNames(classes.ability, {
-                                            selected: i === selectedAbilityIndex,
-                                        })}
-                                        onClick={() => {
-                                            if (player.mesos >= price) {
-                                                setSelectedAbilityIndex(i);
-                                                setSelectedItemIndex(null);
-                                            }
-                                        }}
-                                    >
-                                        <AbilityView ability={item} />
-                                    </div>
-                                    <div className={classes.priceContainer}>
-                                        <div
-                                            className={classNames(classes.priceContainerInner, {
-                                                [classes.cannotAfford]: player.mesos < price,
-                                            })}
-                                        >
-                                            <img src={MesoCoinImage} alt={"Mesos"} />
-                                            <span className={classes.priceLabel}>{price}</span>
-                                        </div>
-                                    </div>
-                                    {i === selectedAbilityIndex && (
-                                        <div>
-                                            <Button color={"primary"} onClick={handleBuyClick}>
-                                                Buy
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                        <div className={classes.abilitiesSection}>{abilities.map(getShopAbility)}</div>
                     </div>
                     <div className={classes.column}>
                         <div className={classes.sectionHeader}>
@@ -469,45 +530,7 @@ const Shop = ({
                             <span className={classes.headerText}>Items</span>
                             <hr />
                         </div>
-                        {items.map(({ item, price, isFood }, i) => (
-                            <div className={classes.itemContainer} key={i}>
-                                <div
-                                    className={classNames(classes.item, {
-                                        selected: i === selectedItemIndex,
-                                    })}
-                                    onClick={() => {
-                                        if (player.mesos >= price) {
-                                            setSelectedAbilityIndex(null);
-                                            setSelectedItemIndex(i);
-                                        }
-                                    }}
-                                >
-                                    <ItemView item={item} />
-                                </div>
-                                <div className={classes.priceContainer}>
-                                    <div
-                                        className={classNames(classes.priceContainerInner, {
-                                            [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
-                                        })}
-                                    >
-                                        {isFood && freeFood && <span className={classes.free}>FREE</span>}
-                                        {(!isFood || !freeFood) && (
-                                            <>
-                                                <img src={MesoCoinImage} alt={"Mesos"} />
-                                                <span className={classes.priceLabel}>{price}</span>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-                                {i === selectedItemIndex && (
-                                    <div>
-                                        <Button color={"primary"} onClick={handleBuyClick}>
-                                            Buy
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                        {items.map(getShopItem)}
                     </div>
                 </div>
             </div>
