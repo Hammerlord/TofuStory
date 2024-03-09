@@ -616,6 +616,7 @@ export const toLith: Route = {
             type: NODE_TYPES.TOWN,
             town: TOWNS.LITH_HARBOR,
             region: REGIONS.LITH_HARBOR,
+            id: "lith-harbor",
         },
     ],
     next: [routeLith],

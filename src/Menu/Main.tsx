@@ -8,7 +8,7 @@ import { REGIONS } from "../Map/regions";
 import { events } from "../Map/routes/eventList";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { toLith } from "../Map/routes/routes";
-import { BG_MAP, NODE_TYPES, RouteNode, TOWN_MAP } from "../Map/types";
+import { BG_MAP, NODE_TYPES, Route, RouteNode, TOWNS, TOWN_MAP } from "../Map/types";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
@@ -117,8 +117,9 @@ const Main = () => {
     const [scene, setScene] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [route, setRoute] = useState(null);
+    const [route, setRoute]: [Route, Function] = useState(null);
     const [locationNode, setLocationNode] = useState(null);
+    const [nodesVisitedMap, setNodesVisitedMap] = useState({});
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [shop, setShop] = useState(null);
@@ -128,7 +129,7 @@ const Main = () => {
     const [removingAbility, setRemovingAbility] = useState(null);
     const [tradingPost, setTradingPost] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
-    const [town, setTown] = useState(null);
+    const [town, setTown]: [TOWNS | null, Function] = useState(null);
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
@@ -136,7 +137,9 @@ const Main = () => {
     const [openClassSelection, setOpenClassSelection] = useState(true);
 
     const resetTravels = () => {
-        const route = generateTravelRoute({ startingRoute: toLith });
+        const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
+        //const route = generateTravelRoute({ startingRoute: { ...toLith } });
+
         setRoute(route);
         setLocationNode(route);
         setSceneRegion(null);
@@ -226,6 +229,7 @@ const Main = () => {
 
     const handleSelectNode = (node: RouteNode) => {
         setLocationNode(node);
+        setNodesVisitedMap((prev) => ({ ...prev, [node.id]: true }));
 
         const callback = () => {
             if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
@@ -396,10 +400,19 @@ const Main = () => {
         });
     };
 
+    const handleExitTown = () => {
+        if (town === TOWNS.LITH_HARBOR) {
+            // We completed the intro. Load the rest of the route.
+            const route = generateTravelRoute({ startingRoute: toLith });
+            setRoute(route);
+            setLocationNode(route);
+        }
+        handleTransition(() => setTown(null));
+    };
+
     const getTown = () => {
-        const Town = TOWN_MAP[town];
+        const Town: any = TOWN_MAP[town];
         if (!Town) {
-            // Towns are a WIP
             setTown(null);
             return null;
         }
@@ -409,7 +422,7 @@ const Main = () => {
                 deck={deck}
                 updateDeck={handleUpdateDeck}
                 updatePlayer={updatePlayer}
-                onExit={() => handleTransition(() => setTown(null))}
+                onExit={handleExitTown}
                 onClickScene={handleClickScene}
                 onClickShop={setShop}
                 onClickTradingPost={() => setTradingPost(true)}
@@ -443,7 +456,13 @@ const Main = () => {
     return (
         <>
             <div className={classes.mapContainer}>
-                <Map onSelectNode={handleSelectNode} generatedRoute={route} currentNode={locationNode} playerImage={player.image} />
+                <Map
+                    onSelectNode={handleSelectNode}
+                    generatedRoute={route}
+                    playerLocationNode={locationNode}
+                    playerImage={player.image}
+                    visited={nodesVisitedMap}
+                />
             </div>
             {town && <div className={classes.activityContainer}>{getTown()}</div>}
             {isActivityOpen && (

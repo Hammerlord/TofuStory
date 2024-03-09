@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { TreasureChestImage, VictoriaIslandImage } from "../images";
-import { CampingIcon, CrossedSwordsIcon, HouseIcon, JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon } from "../images/icons";
+import {
+    CampingIcon,
+    CrossedSwordsIcon,
+    HouseIcon,
+    JapaneseOgreIcon,
+    MedalIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+    XIcon,
+} from "../images/icons";
 import Overlay from "../view/Overlay";
 import Legend from "./Legend";
 import Pan from "./Pan";
-import { NODE_TYPES, RouteNode } from "./types";
+import { NODE_TYPES, Route, RouteNode } from "./types";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -37,22 +47,28 @@ const useStyles = createUseStyles({
         cursor: "pointer",
         zIndex: 3,
     },
+    visited: {
+        filter: "saturate(0)",
+    },
 });
 
 const NODE_ICON_SIZE = 24;
+const X_SIZE = 32;
 
 const Map = ({
     onSelectNode,
-    currentNode,
+    playerLocationNode,
     generatedRoute,
     playerImage,
     enableDraw = false,
+    visited = {},
 }: {
     onSelectNode?: (node: RouteNode) => void;
-    currentNode?: RouteNode;
-    generatedRoute?: RouteNode;
+    playerLocationNode?: RouteNode;
+    generatedRoute?: Route;
     playerImage?: string;
     enableDraw?: boolean;
+    visited?: { [nodeId: string]: true };
 }) => {
     const classes = useStyles();
     const containerRef = useRef() as any;
@@ -123,29 +139,55 @@ const Map = ({
             );
         }
 
-        const iconProps = {
-            width: NODE_ICON_SIZE,
-            height: NODE_ICON_SIZE,
-            x: x - NODE_ICON_SIZE / 2,
-            y: y - NODE_ICON_SIZE / 2,
-        };
-
         if (!nodeMemo[current.id]) {
             nodeMemo[current.id] = true;
-            routeNodes.push(
-                <g x={x - 8} y={y - 8} onClick={() => handleClickNode(current)} className={classes.routeNode} key={`${current.id}-node`}>
-                    <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
-                    {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
-                    {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
+            const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
 
-                    {currentNode && current.id === currentNode.id && (
-                        <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />
+            let handleClickNodeCallback;
+            if (prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id])) {
+                handleClickNodeCallback = () => handleClickNode(current);
+            }
+
+            const iconProps = {
+                width: NODE_ICON_SIZE,
+                height: NODE_ICON_SIZE,
+                x: x - NODE_ICON_SIZE / 2,
+                y: y - NODE_ICON_SIZE / 2,
+            };
+
+            routeNodes.push(
+                <g
+                    x={x - 8}
+                    y={y - 8}
+                    onClick={handleClickNodeCallback}
+                    className={classNames(classes.routeNode)}
+                    key={`${current.id}-node`}
+                >
+                    <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
+                    <g
+                        className={classNames({
+                            [classes.visited]: visited[current.id],
+                        })}
+                    >
+                        {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
+                        {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
+                        {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
+                    </g>
+                    {isPlayerPosition && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
+                    {visited[current.id] && !isPlayerPosition && (
+                        <XIcon
+                            {...{
+                                width: X_SIZE,
+                                height: X_SIZE,
+                                x: x - X_SIZE / 2,
+                                y: y - X_SIZE / 2,
+                            }}
+                        />
                     )}
                 </g>
             );
@@ -162,7 +204,7 @@ const Map = ({
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
     const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
-    const absoluteNodeLocation = { x: (currentNode?.x || 0) * -mapWidth, y: (currentNode?.y || 0) * -mapHeight };
+    const absoluteNodeLocation = { x: (playerLocationNode?.x || 0) * -mapWidth, y: (playerLocationNode?.y || 0) * -mapHeight };
     const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
 
     return (
