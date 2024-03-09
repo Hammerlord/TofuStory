@@ -2002,8 +2002,7 @@ export const battlelord: Ability = {
 
 export const gungnir: Ability = {
     name: "Gungnir",
-    resourceCost: 3,
-    depletedOnUse: true,
+    resourceCost: 2,
     image: GungnirImage,
     rarity: RARITIES.RARE,
     description: "Deal damage equal to {{ actions.0.multiplier.value }}x your current HP.",
@@ -2015,7 +2014,7 @@ export const gungnir: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.3,
+                value: 0.25,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
@@ -2025,7 +2024,7 @@ export const gungnir: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.1,
+                        value: 0.05,
                     },
                 },
             ],
@@ -2400,7 +2399,8 @@ export const bide: Ability = {
     name: "Bide",
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Place up to 2 cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Enrage.",
+    description:
+        "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Enrage.",
     image: WarriorThroneImage,
     actions: [
         {
@@ -2422,7 +2422,6 @@ export const bide: Ability = {
                     selectCards: {
                         maxAmount: 1,
                     },
-                    effects: [enrageEffect],
                 },
             ],
         },
