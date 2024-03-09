@@ -141,7 +141,7 @@ export const athena: Minion = {
         },
         {
             name: "Pierce",
-            description: "Destroys the target's armor and deals 3 damage. If the target has no armor, deals +3 more damage.",
+            description: "Destroys the target's armor. If the target has no armor, deals 3 damage.",
             image: MortalBlowImage,
             resourceCost: 3,
             castTime: 1,
@@ -153,7 +153,6 @@ export const athena: Minion = {
                     playbackTime: 400,
                     icon: AvengersArrowImage,
                     destroyArmor: 1,
-                    damage: 3,
                     bonus: {
                         damage: 3,
                         conditions: [
