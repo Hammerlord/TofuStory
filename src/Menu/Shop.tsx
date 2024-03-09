@@ -80,7 +80,7 @@ const useStyles = createUseStyles({
         display: "inline-block",
         minHeight: "300px",
         verticalAlign: "bottom",
-        margin: 16,
+        margin: "4 8",
     },
     priceContainer: {
         textAlign: "center",
@@ -115,11 +115,32 @@ const useStyles = createUseStyles({
     refreshContainer: {
         height: "40px",
     },
+    abilityColumn: {
+        maxWidth: 850,
+    },
+    column: {
+        width: "45%",
+        display: "inline-block",
+        verticalAlign: "top",
+    },
+    sectionHeader: {
+        display: "flex",
+        color: "white",
+        padding: "16 200",
+        "& hr": {
+            borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
+            width: "50%",
+        },
+    },
+
+    headerText: {
+        padding: "0 24",
+        fontSize: 18,
+    },
 });
 
-const NUM_SHOP_ABILITIES = 6;
-const NUM_SHOP_ITEMS = 4;
-const NUM_SHOP_CONSUMABLES = 2;
+const NUM_SHOP_ABILITIES = 8;
+const NUM_SHOP_ITEMS = 8;
 
 const ABILITIES_PRICE_RARITY_MAP = {
     [RARITIES.COMMON]: [50, 65],
@@ -155,20 +176,14 @@ const Shop = ({
 }) => {
     const [abilities, setAbilities] = useState([]);
     const [items, setItems] = useState([]);
-    const [food, setFood] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const [selectedFoodIndex, setSelectedFoodIndex] = useState(null);
     const [freeFood, setFreeFood] = useState(false);
     const [numRefreshes, setNumRefreshes] = useState(0);
     const [discount, setDiscount] = useState(0);
     const classes = useStyles();
 
-    const applyDiscount = (price) => {
-        return Math.max(0, price - Math.floor(discount * price));
-    };
-
-    const refreshItems = () => {
+    const refreshItems = (initDiscount) => {
         // Abilities
         const potentialAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
             if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
@@ -205,42 +220,67 @@ const Shop = ({
             itemsRolledForSale.push(item);
         });
 
-        itemsRolledForSale.push(...shuffle([incense, incense, goldenHammer, goldenHammer, goldenHammer]).slice(0, NUM_SHOP_CONSUMABLES));
-
         const itemsForSale = itemsRolledForSale.map((item) => {
             const priceRangeForRarity: [number, number] = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON];
             const price = getRandomInt(...priceRangeForRarity);
-            return { price, item };
+            return { price, item, isConsumable: false, isFood: false };
         });
 
-        setItems(itemsForSale);
+        const applyDiscount = (price) => {
+            return Math.max(0, price - Math.floor(initDiscount * price));
+        };
+
+        const consumables = [
+            {
+                item: goldenHammer,
+                price: applyDiscount(40),
+                isConsumable: true,
+                isFood: false,
+            },
+            {
+                item: incense,
+                price: applyDiscount(60),
+                isConsumable: true,
+                isFood: false,
+            },
+        ];
+
+        itemsForSale.push(...consumables);
 
         const food = [
             {
-                name: "Tofu",
-                image: TofuImage,
+                item: {
+                    name: "Tofu",
+                    image: TofuImage,
+                    description: "Permanently increase max HP by 3.",
+                },
                 price: applyDiscount(50),
-                description: "Permanently increase max HP by 3.",
+                isConsumable: true,
+                isFood: true,
                 statChanges: {
                     maxHP: 3,
                 },
             },
             {
-                name: "Tofu Soup",
-                image: NewYearRiceSoupImage,
+                item: {
+                    name: "Tofu Soup",
+                    image: NewYearRiceSoupImage,
+                    description: "Restore 15 HP.",
+                },
                 price: applyDiscount(50),
-                description: "Restore 15 HP.",
+                isConsumable: true,
+                isFood: true,
                 statChanges: {
                     HP: 15,
                 },
             },
         ];
 
-        setFood(food);
+        itemsForSale.push(...food);
+        setItems(itemsForSale);
     };
 
     useEffect(() => {
-        refreshItems();
         // Set refreshes/discount from item effects
         const { totalRefreshes, totalDiscount, freeFood } = player.items.reduce(
             (acc, item: Item) => {
@@ -254,8 +294,10 @@ const Shop = ({
             },
             { totalRefreshes: 0, totalDiscount: 0, freeFood: false }
         );
+        const cappedDiscount = Math.min(1, totalDiscount);
+        refreshItems(cappedDiscount);
+        setDiscount(cappedDiscount);
         setNumRefreshes(totalRefreshes);
-        setDiscount(Math.min(1, totalDiscount));
         setFreeFood(freeFood);
     }, []);
 
@@ -273,30 +315,47 @@ const Shop = ({
         }
 
         if (items[selectedItemIndex]) {
-            const { price, item } = items[selectedItemIndex];
-            if (player.mesos >= price) {
-                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-                const updatedItems = items.slice();
-                updatedItems.splice(selectedItemIndex, 1);
-                setItems(updatedItems);
-                setSelectedItemIndex(null);
-            }
-            return;
-        }
-
-        if (food[selectedFoodIndex]) {
-            const { price, statChanges } = food[selectedFoodIndex];
-            if (freeFood) {
-                setFreeFood(false);
-                setSelectedFoodIndex(null);
-                onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
+            const { price, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
+            const canAfford = player.mesos >= price;
+            if (!canAfford) {
                 return;
             }
-            if (player.mesos >= price) {
-                onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
-                setSelectedFoodIndex(null);
+
+            if (isConsumable) {
+                if (isFood) {
+                    if (freeFood) {
+                        setFreeFood(false);
+                        onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
+                    } else {
+                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                    }
+
+                    setSelectedItemIndex(null);
+                    return;
+                }
+
+                // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
+                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+                const updatedItems = items.map((other) => {
+                    if (other.item.name === item.name) {
+                        return {
+                            ...other,
+                            price: Math.floor(price * 1.2),
+                        };
+                    }
+
+                    return other;
+                });
+                setItems(updatedItems);
+                setSelectedItemIndex(null);
+                return;
             }
-            return;
+
+            onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+            const updatedItems = items.slice();
+            updatedItems.splice(selectedItemIndex, 1);
+            setItems(updatedItems);
+            setSelectedItemIndex(null);
         }
     };
 
@@ -315,57 +374,68 @@ const Shop = ({
                             <Button
                                 color={"secondary"}
                                 onClick={() => {
-                                    refreshItems();
+                                    refreshItems(discount);
                                     setNumRefreshes((prev) => prev - 1);
                                 }}
                             >
-                                Refresh Items
+                                Refresh Shop
                             </Button>
                         </>
                     )}
                 </div>
 
                 <div className={classes.container}>
-                    <div className={classes.abilitiesSection}>
-                        {abilities.map(({ item, price }, i) => (
-                            <div className={classes.abilityContainer} key={i}>
-                                <AbilityRarityTag ability={item} />
-                                <div
-                                    className={classNames(classes.ability, {
-                                        selected: i === selectedAbilityIndex,
-                                    })}
-                                    onClick={() => {
-                                        if (player.mesos >= price) {
-                                            setSelectedAbilityIndex(i);
-                                            setSelectedFoodIndex(null);
-                                            setSelectedItemIndex(null);
-                                        }
-                                    }}
-                                >
-                                    <AbilityView ability={item} />
-                                </div>
-                                <div className={classes.priceContainer}>
+                    <div className={classNames(classes.column, classes.abilityColumn)}>
+                        <div className={classes.sectionHeader}>
+                            <hr />
+                            <span className={classes.headerText}>Abilities</span>
+                            <hr />
+                        </div>
+                        <div className={classes.abilitiesSection}>
+                            {abilities.map(({ item, price }, i) => (
+                                <div className={classes.abilityContainer} key={i}>
+                                    <AbilityRarityTag ability={item} />
                                     <div
-                                        className={classNames(classes.priceContainerInner, {
-                                            [classes.cannotAfford]: player.mesos < price,
+                                        className={classNames(classes.ability, {
+                                            selected: i === selectedAbilityIndex,
                                         })}
+                                        onClick={() => {
+                                            if (player.mesos >= price) {
+                                                setSelectedAbilityIndex(i);
+                                                setSelectedItemIndex(null);
+                                            }
+                                        }}
                                     >
-                                        <img src={MesoCoinImage} alt={"Mesos"} />
-                                        <span className={classes.priceLabel}>{price}</span>
+                                        <AbilityView ability={item} />
                                     </div>
+                                    <div className={classes.priceContainer}>
+                                        <div
+                                            className={classNames(classes.priceContainerInner, {
+                                                [classes.cannotAfford]: player.mesos < price,
+                                            })}
+                                        >
+                                            <img src={MesoCoinImage} alt={"Mesos"} />
+                                            <span className={classes.priceLabel}>{price}</span>
+                                        </div>
+                                    </div>
+                                    {i === selectedAbilityIndex && (
+                                        <div>
+                                            <Button color={"primary"} onClick={handleBuyClick}>
+                                                Buy
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-                                {i === selectedAbilityIndex && (
-                                    <div>
-                                        <Button color={"primary"} onClick={handleBuyClick}>
-                                            Buy
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                    <div>
-                        {items.map(({ item, price }, i) => (
+                    <div className={classes.column}>
+                        <div className={classes.sectionHeader}>
+                            <hr />
+                            <span className={classes.headerText}>Items</span>
+                            <hr />
+                        </div>
+                        {items.map(({ item, price, isFood }, i) => (
                             <div className={classes.itemContainer} key={i}>
                                 <div
                                     className={classNames(classes.item, {
@@ -374,7 +444,6 @@ const Shop = ({
                                     onClick={() => {
                                         if (player.mesos >= price) {
                                             setSelectedAbilityIndex(null);
-                                            setSelectedFoodIndex(null);
                                             setSelectedItemIndex(i);
                                         }
                                     }}
@@ -384,54 +453,22 @@ const Shop = ({
                                 <div className={classes.priceContainer}>
                                     <div
                                         className={classNames(classes.priceContainerInner, {
-                                            [classes.cannotAfford]: player.mesos < price,
+                                            [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
                                         })}
                                     >
-                                        <img src={MesoCoinImage} alt={"Mesos"} />
-                                        <span className={classes.priceLabel}>{price}</span>
+                                        {isFood && freeFood && <span>FREE</span>}
+                                        {(!isFood || !freeFood) && (
+                                            <>
+                                                <img src={MesoCoinImage} alt={"Mesos"} />
+                                                <span className={classes.priceLabel}>{price}</span>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 {i === selectedItemIndex && (
                                     <div>
                                         <Button color={"primary"} onClick={handleBuyClick}>
                                             Buy
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <div>
-                        {food.map(({ price, ...other }, i) => (
-                            <div className={classes.itemContainer} key={i}>
-                                <div
-                                    className={classNames(classes.item, {
-                                        selected: i === selectedFoodIndex,
-                                    })}
-                                    onClick={() => {
-                                        if (freeFood || player.mesos >= price) {
-                                            setSelectedAbilityIndex(null);
-                                            setSelectedItemIndex(null);
-                                            setSelectedFoodIndex(i);
-                                        }
-                                    }}
-                                >
-                                    <ItemView item={other} />
-                                </div>
-                                <div className={classes.priceContainer}>
-                                    <div
-                                        className={classNames(classes.priceContainerInner, {
-                                            [classes.cannotAfford]: !freeFood && player.mesos < price,
-                                        })}
-                                    >
-                                        <img src={MesoCoinImage} alt={"Mesos"} />
-                                        <span className={classes.priceLabel}>{freeFood ? "FREE (1)" : price}</span>
-                                    </div>
-                                </div>
-                                {i === selectedFoodIndex && (
-                                    <div>
-                                        <Button color={"primary"} onClick={handleBuyClick}>
-                                            Buy & Eat
                                         </Button>
                                     </div>
                                 )}
