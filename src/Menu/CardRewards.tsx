@@ -53,6 +53,13 @@ const useStyles = createUseStyles({
     moreThanOne: {
         color: "#45ff61",
     },
+    selectionsRemainingContainer: {
+        marginBottom: 16,
+        fontSize: 18,
+    },
+    selectionsRemainingCount: {
+        fontWeight: "bold",
+    },
 });
 
 const BASE_NUM_CHOICES = 3;
@@ -166,9 +173,21 @@ const CardRewards = ({
                         </div>
                     ))}
                 </div>
+                {maxAmount > 1 && (
+                    <div className={classes.selectionsRemainingContainer}>
+                        Selections remaining:{" "}
+                        <span
+                            className={classNames(classes.selectionsRemainingCount, {
+                                [classes.moreThanOne]: selectedAbilityIndices.length < maxAmount,
+                            })}
+                        >
+                            {maxAmount - selectedAbilityIndices.length}
+                        </span>
+                    </div>
+                )}
                 <div className={classes.selectContainer}>
                     <Button color="primary" disabled={!selectedAbilityIndices.length} onClick={handleSelectClick}>
-                        Select!
+                        Confirm
                     </Button>
                 </div>
                 <div>
