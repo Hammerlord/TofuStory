@@ -108,7 +108,7 @@ export const halfEatenHotdog: Item = {
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "On wave start, gain 5 armor.",
+    description: "On wave start, gain 7 armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: StolenFenceImage,
@@ -121,8 +121,8 @@ export const stolenFence: Item = {
             disableDisplayIcon: true,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 5,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 1 }], // Don't want to lose the armor immediately. This does stack with Pan Lid though
+                armor: 7,
+                effects: [{ ...preventArmorDecayPlayer, stacks: 1 }], // Don't want to lose the armor immediately. This does stack with Battle Shield though
             },
         },
     ],
@@ -130,26 +130,21 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "Block 1 damage from attacks when your health is less than half.",
+    description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
     effects: [
         {
             name: "Battle Shield",
-            description: "Reducing damage taken from attacks by 1.",
+            description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            icon: BattleShieldImage,
-            attackDamageReceived: -1,
-            onlyVisibleWhenProcced: true,
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    healthPercentage: 0.5,
-                    comparator: "lt",
-                },
-            ],
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 10,
+                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }], // Ticks down immediately
+            },
         },
     ],
 };
@@ -344,22 +339,11 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
+    description: "+2 armor from armor sources.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    effects: [
-        {
-            name: "Pan Lid Effect",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 10,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }], // Ticks down immediately
-            },
-        },
-    ],
+    effects: [armorUp, armorUp],
 };
 
 export const alligatorTube: Item = {
@@ -527,7 +511,7 @@ export const aquamarine: Item = {
     name: "Aquamarine",
     description: "+1 armor from armor sources.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     image: AquamarineImage,
     effects: [armorUp],
 };
@@ -1099,7 +1083,7 @@ export const estherShield: Item = {
     image: EstherShieldImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When your deck cycles, gain 7 armor.",
+    description: "When your deck cycles, gain 9 armor.",
     effects: [
         {
             name: "Esther Shield",
@@ -1107,7 +1091,7 @@ export const estherShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 7,
+                armor: 9,
             },
         },
     ],
@@ -1133,7 +1117,7 @@ export const redHeartedEarrings: Item = {
     name: "Red-Hearted Earrings",
     image: RedHeartedEarringsImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     description: "When you deplete a card, heal 1 HP.",
     effects: [
         {
@@ -1756,17 +1740,17 @@ export const theBackpack: Item = {
 
 export const icarusCape: Item = {
     name: "Icarus Cape",
-    description: "Every 3 turns, draw an extra card.",
+    description: "Every 2 turns, draw an extra card.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: IcarusCapeImage,
     effects: [
         {
             name: "Icarus Cape",
-            description: "Every 3 turns, draw an extra card.",
+            description: "Every 2 turns, draw an extra card.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 3,
+            turnsTriggerFrequency: 2,
             drawCardsPerTurn: 1,
         },
     ],
