@@ -505,6 +505,7 @@ export { default as StolenFenceImage } from "./StolenFence.png";
 export { default as StoneGolemImage } from "./StoneGolem.gif";
 export { default as StoneGolemIconImage } from "./StoneGolemIcon.png";
 export { default as StoneGolemRubbleImage } from "./StoneGolemRubble.png";
+export { default as StoneShieldImage } from "./StoneShield.png";
 export { default as StrangePigImage } from "./StrangePig.gif";
 export { default as StrawHatSnowmanImage } from "./StrawHatSnowman.png";
 export { default as StumpImage } from "./Stump.png";

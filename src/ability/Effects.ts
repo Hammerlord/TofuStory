@@ -6,6 +6,7 @@ import {
     HumilityStoneImage,
     NimbleJewelCImage,
     PoisonImage,
+    StoneShieldImage,
     UpMATTImage,
     WeaponBoosterImage,
     WeaponMasteryImage,
@@ -289,6 +290,34 @@ export const shielding: Effect = {
                 onReceiveAttack: { removeEffect: true },
             },
         ],
+    },
+};
+
+export const stoneSkin: Effect = {
+    name: "Stoneskin",
+    canBeSilenced: true,
+    duration: Infinity,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Gaining Armor every turn.",
+    icon: StoneShieldImage,
+    onBattleStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        armor: 1,
+        multiplier: {
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+            type: MULTIPLIER_TYPES.MAX_HP,
+            value: 0.05,
+        },
+    },
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        armor: 1,
+        multiplier: {
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+            type: MULTIPLIER_TYPES.MAX_HP,
+            value: 0.05,
+        },
     },
 };
 
