@@ -76,7 +76,7 @@ const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =
             const [validAnswer] = column.splice(answerIndex, 1);
             const cols = Array.from({ length: 4 }).map((_, i) => {
                 const wrappedIndex = (val: number) => (((val + i) % column.length) + column.length) % column.length;
-                const extras = Array.from({ length: Math.max(2, i) }).map((_, j) => column[wrappedIndex(j)]);
+                const extras = Array.from({ length: Math.max(4, i + 1) }).map((_, j) => column[wrappedIndex(j)]);
                 return [validAnswer, ...extras];
             });
             return shuffle(cols);
