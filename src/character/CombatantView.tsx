@@ -81,7 +81,7 @@ const useStyles = createUseStyles({
         position: "relative",
     },
     portraitImage: {
-        minWidth: "50%",
+        minWidth: "40%",
         minHeight: "40%",
         objectFit: "contain",
         maxHeight: "15vh",
