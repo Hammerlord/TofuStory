@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import AbilityRarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
-import { MesoBagImage, MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
+import { Player } from "../character/types";
+import { MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
 import ItemView from "../item/ItemView";
 import { bigMesoItem, goldenHammer, hugeMesoItem, incense, mesoItem } from "../item/items";
 import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
-import AbilityRarityTag from "../ability/AbilityView/RarityTag";
-import { Player } from "../character/types";
 import { getUpgradeCard } from "./utils";
 
 const HEADER_BAR = 72;
@@ -178,12 +178,35 @@ const Shop = ({
     const [items, setItems] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const [freeFood, setFreeFood] = useState(false);
-    const [numRefreshes, setNumRefreshes] = useState(0);
-    const [discount, setDiscount] = useState(0);
+    const [{ discount, numRefreshes, freeFood }, setShopOptions] = useState(() => {
+        // Set refreshes/discount from item effects
+        const { totalRefreshes, totalDiscount, freeFood } = player.items.reduce(
+            (acc, item: Item) => {
+                const { refreshTimes = 0, discount = 0, freeFood } = item?.merchant || {};
+                acc.totalRefreshes += refreshTimes;
+                acc.totalDiscount += discount;
+                if (freeFood) {
+                    acc.freeFood = true;
+                }
+                return acc;
+            },
+            { totalRefreshes: 0, totalDiscount: 0, freeFood: false }
+        );
+        const cappedDiscount = Math.min(1, totalDiscount);
+        return {
+            discount: cappedDiscount,
+            numRefreshes: totalRefreshes,
+            freeFood,
+        };
+    });
+
     const classes = useStyles();
 
-    const refreshItems = (initDiscount) => {
+    const applyDiscount = (price: number, overrideDiscount?: number) => {
+        return Math.max(0, price - Math.floor((overrideDiscount || discount) * price));
+    };
+
+    const refreshItems = () => {
         // Abilities
         const potentialAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
             if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
@@ -225,10 +248,6 @@ const Shop = ({
             const price = getRandomInt(...priceRangeForRarity);
             return { price, item, isConsumable: false, isFood: false };
         });
-
-        const applyDiscount = (price) => {
-            return Math.max(0, price - Math.floor(initDiscount * price));
-        };
 
         const consumables = [
             {
@@ -281,25 +300,36 @@ const Shop = ({
     };
 
     useEffect(() => {
-        // Set refreshes/discount from item effects
-        const { totalRefreshes, totalDiscount, freeFood } = player.items.reduce(
-            (acc, item: Item) => {
-                const { refreshTimes = 0, discount = 0, freeFood } = item?.merchant || {};
-                acc.totalRefreshes += refreshTimes;
-                acc.totalDiscount += discount;
-                if (freeFood) {
-                    acc.freeFood = true;
-                }
-                return acc;
-            },
-            { totalRefreshes: 0, totalDiscount: 0, freeFood: false }
-        );
-        const cappedDiscount = Math.min(1, totalDiscount);
-        refreshItems(cappedDiscount);
-        setDiscount(cappedDiscount);
-        setNumRefreshes(totalRefreshes);
-        setFreeFood(freeFood);
+        refreshItems();
     }, []);
+
+    // Tofu Special and Shopper's Club Membership should take effect immediately if they were bought.
+    const checkItemAffectsShop = (item: Item) => {
+        const { refreshTimes = 0, discount: purchasedItemDiscount = 0, freeFood = false } = item?.merchant || {};
+        const updatedShopOptions = {
+            numRefreshes: numRefreshes + refreshTimes,
+            freeFood,
+            discount: discount + purchasedItemDiscount,
+        };
+
+        setShopOptions(updatedShopOptions);
+
+        if (purchasedItemDiscount) {
+            const updatedAbilities = abilities.map((ability) => ({
+                ...ability,
+                price: applyDiscount(ability.price, purchasedItemDiscount),
+            }));
+
+            setAbilities(updatedAbilities);
+
+            const updatedItems = items.map((item) => ({
+                ...item,
+                price: applyDiscount(item.price, purchasedItemDiscount),
+            }));
+
+            setItems(updatedItems);
+        }
+    };
 
     const handleBuyClick = () => {
         if (abilities[selectedAbilityIndex]) {
@@ -324,7 +354,7 @@ const Shop = ({
             if (isConsumable) {
                 if (isFood) {
                     if (freeFood) {
-                        setFreeFood(false);
+                        setShopOptions((prev) => ({ ...prev, freeFood: false }));
                         onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
                     } else {
                         onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
@@ -354,6 +384,7 @@ const Shop = ({
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
             const updatedItems = items.slice();
             updatedItems.splice(selectedItemIndex, 1);
+            checkItemAffectsShop(item);
             setItems(updatedItems);
             setSelectedItemIndex(null);
         }
@@ -374,8 +405,8 @@ const Shop = ({
                             <Button
                                 color={"secondary"}
                                 onClick={() => {
-                                    refreshItems(discount);
-                                    setNumRefreshes((prev) => prev - 1);
+                                    refreshItems();
+                                    setShopOptions((prev) => ({ ...prev, numRefreshes: prev.numRefreshes - 1 }));
                                 }}
                             >
                                 Refresh Shop
