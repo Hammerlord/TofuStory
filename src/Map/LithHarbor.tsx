@@ -296,6 +296,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle }
                         onClose={handleCloseCardRewards}
                         maxAmount={showAcquireAbility}
                         disableRarities={[RARITIES.RARE]}
+                        disableIgnoreButton={true}
                     />
                 )}
             </div>

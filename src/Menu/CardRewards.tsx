@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
         },
     },
     selectContainer: {
-        marginBottom: 64,
+        marginBottom: 72,
     },
     moreThanOne: {
         color: "#45ff61",
@@ -73,6 +73,7 @@ const CardRewards = ({
     rewardType,
     maxAmount = 1,
     disableRarities,
+    disableIgnoreButton,
 }: {
     deck: CombatAbility[];
     player: Player;
@@ -82,6 +83,7 @@ const CardRewards = ({
     rewardType?: BATTLE_TYPES;
     maxAmount?: number;
     disableRarities?: RARITIES[];
+    disableIgnoreButton?: boolean;
 }) => {
     const rolledAbilities = useMemo(() => {
         const { starters, all } = JOB_CARD_MAP[player.class];
@@ -190,9 +192,11 @@ const CardRewards = ({
                         Confirm
                     </Button>
                 </div>
-                <div>
-                    <Button onClick={onClose}>Ignore and Exit</Button>
-                </div>
+                {!disableIgnoreButton && (
+                    <div>
+                        <Button onClick={onClose}>Ignore and Exit</Button>
+                    </div>
+                )}
             </div>
         </Overlay>
     );

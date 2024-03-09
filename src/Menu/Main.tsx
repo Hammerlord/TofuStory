@@ -485,6 +485,7 @@ const Main = () => {
                             cardRewardOptions={battle.cardRewards}
                             rewardType={battle.type}
                             disableRarities={(battle.isTutorial && [RARITIES.RARE]) || undefined}
+                            disableIgnoreButton={battle.isTutorial}
                         />
                     )}
                     {itemRewardsOpen && (
