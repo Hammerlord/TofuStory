@@ -1608,7 +1608,7 @@ export const leechingFlame: Ability = {
     name: "Leeching Flame",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn.",
+    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn. Max 1 per target.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -1627,6 +1627,7 @@ export const leechingFlame: Ability = {
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
+                    maxApplications: 1,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         resources: 1,
