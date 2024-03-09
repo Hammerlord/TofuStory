@@ -1847,7 +1847,7 @@ export const toyHammer: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PicoPicoHammerImage,
-    description: "Every turn, a random card in your hand is Upgraded for the rest of combat.",
+    description: "Every turn, a random card in your hand is Upgraded until discarded.",
     effects: [
         {
             name: "Toy Hammer",
@@ -1860,7 +1860,6 @@ export const toyHammer: Item = {
                     abilityEffects: [
                         {
                             upgradedByLevels: 1,
-                            removeOnDiscard: false,
                         },
                     ],
                 },
