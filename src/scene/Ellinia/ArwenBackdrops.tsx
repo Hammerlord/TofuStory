@@ -202,6 +202,7 @@ const lupinForest4UseStyles = createUseStyles({
     },
 });
 
+// No longer used because this encounter has been rolled into the initial one
 export const LupinForest4 = ({ player }) => {
     const classes = lupinForest4UseStyles();
     return (

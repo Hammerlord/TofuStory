@@ -39,6 +39,12 @@ const rowen = {
     image: RowenTheFairyImage,
 };
 
+const eventZombieLupin: Minion = {
+    ...zombieLupin,
+    isElite: true,
+    effects: [...zombieLupin.effects, lifeLink],
+};
+
 const sickLupin: Minion = {
     ...lupin,
     effects: [
@@ -57,7 +63,39 @@ const sickLupin: Minion = {
                                 type: MORPH_TYPES.MAP,
                                 minions: [
                                     {
-                                        minion: zombieLupin,
+                                        minion: {
+                                            ...eventZombieLupin,
+                                            effects: [
+                                                ...eventZombieLupin.effects,
+                                                {
+                                                    name: "Being Chased",
+                                                    icon: eventZombieLupin.image,
+                                                    type: EFFECT_TYPES.NONE,
+                                                    class: EFFECT_CLASSES.NONE,
+                                                    canBeSilenced: false,
+                                                    onEnd: {
+                                                        usableWhileStunned: true,
+                                                        ability: {
+                                                            name: "More Zombies!",
+                                                            image: eventZombieLupin.image,
+                                                            actions: [
+                                                                {
+                                                                    target: TARGET_TYPES.SELF,
+                                                                    type: ACTION_TYPES.EFFECT,
+                                                                    summon: [
+                                                                        { minion: [eventZombieLupin], positionIndex: 1 },
+                                                                        { minion: [eventZombieLupin], positionIndex: 3 },
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+
+                                                        removeEffect: true,
+                                                    },
+                                                    duration: 3,
+                                                },
+                                            ],
+                                        },
                                     },
                                 ],
                             },
@@ -74,20 +112,6 @@ const lupinFight = {
     waves: [
         {
             enemies: [null, null, sickLupin, null, null],
-        },
-    ],
-};
-
-const eventZombieLupin: Minion = {
-    ...zombieLupin,
-    isElite: true,
-    effects: [...zombieLupin.effects, lifeLink],
-};
-
-const zombieLupinsFight = {
-    waves: [
-        {
-            enemies: [null, eventZombieLupin, eventZombieLupin, eventZombieLupin, null],
         },
     ],
 };
@@ -590,52 +614,32 @@ const maladyDialog: ScriptNode[] = [
 const lupinsDialog = [
     {
         scene: LupinForest3,
-        speaker: zombieLupin,
-        dialog: ["[The infected Lupin makes more gargling sounds, but none are discernible.]"],
-    },
-    {
-        scene: LupinForest4,
-        disableTransition: true,
         dialog: [
-            "[As the creature crumples to the grass, you realize you're being flanked by a group of infected Lupins. These Zombie Lupins seem even more aggressive than the one you just fought.]",
+            "[That seems to be the last of them... for now. The forest is eerily quiet, but you can feel an unsettling aura emanate from beyond the trees.",
+            "First, a quick break before moving forward.]",
         ],
         responses: [
             {
-                text: "Prepare for a fight.",
-                encounter: zombieLupinsFight,
+                text: "[Camp]",
+                camp: true,
                 next: [
                     {
-                        scene: LupinForest,
+                        dialog: ["[You continue on.]"],
+                    },
+                    {
+                        scene: DarkForest1,
                         dialog: [
-                            "[That seems to be the last of them... for now. The forest is eerily quiet, but you can feel an unsettling aura emanate from beyond the trees.",
-                            "First, a quick break before moving forward.]",
-                        ],
-                        responses: [
-                            {
-                                text: "[Camp]",
-                                camp: true,
-                                next: [
-                                    {
-                                        dialog: ["[You continue on.]"],
-                                    },
-                                    {
-                                        scene: DarkForest1,
-                                        dialog: [
-                                            "[If you could figure out who, or what, is behind this so-called curse, maybe you could stop it at its source.",
-                                            "Meanwhile, you get this sense that you're being watched...]",
-                                        ],
-                                    },
-                                    {
-                                        dialog: [
-                                            "[There's a rumbling in the distance. It feels like footsteps, very large ones. Something tells you that whatever it is, it's far worse than the zombified Lupins from earlier.",
-                                            "Before you can investigate, however, a voice calls out.]",
-                                        ],
-                                    },
-                                    ...maladyDialog,
-                                ],
-                            },
+                            "[If you could figure out who, or what, is behind this so-called curse, maybe you could stop it at its source.",
+                            "Meanwhile, you get this sense that you're being watched...]",
                         ],
                     },
+                    {
+                        dialog: [
+                            "[There's a rumbling in the distance. It feels like footsteps, very large ones. Something tells you that whatever it is, it's far worse than the zombified Lupins from earlier.",
+                            "Before you can investigate, however, a voice calls out.]",
+                        ],
+                    },
+                    ...maladyDialog,
                 ],
             },
         ],
