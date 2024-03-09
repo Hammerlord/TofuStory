@@ -118,6 +118,7 @@ import {
     reinforce,
     forgehammer,
     guardian,
+    bide,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -248,6 +249,7 @@ export const JOB_CARD_MAP = {
             reinforce,
             forgehammer,
             guardian,
+            bide,
         ],
         // !!! mutation !!! -- starter cards specified here have a custom max level
         starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block].map((card) => {

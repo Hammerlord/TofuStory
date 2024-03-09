@@ -60,13 +60,14 @@ import {
     WarMushBattleLordImage,
     WarMushImage,
     WarriorMasteryImage,
+    WarriorThroneImage,
     WeaponBoosterImage,
     WeaponMasteryImage,
     WorldReaverImage,
 } from "../../images";
 import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp } from "../Effects";
+import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, enrageEffect } from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -2389,6 +2390,39 @@ export const chanceAttack: Ability = {
                             ],
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const bide: Ability = {
+    name: "Bide",
+    resourceCost: 1,
+    overrideBodyText: true,
+    description: "Place up to 2 cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Enrage.",
+    image: WarriorThroneImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            icon: WarriorThroneImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            selectCards: {
+                type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+                maxAmount: 2,
+            },
+            effects: [enrageEffect],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    selectCards: {
+                        maxAmount: 1,
+                    },
+                    effects: [enrageEffect],
                 },
             ],
         },

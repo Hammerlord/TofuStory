@@ -3,6 +3,7 @@ import {
     BombImage,
     FireMarbleImage,
     GemHeartImage,
+    HumilityStoneImage,
     NimbleJewelCImage,
     PoisonImage,
     UpMATTImage,
@@ -576,5 +577,16 @@ export const stashCardEffect: Effect = {
     stacks: 1,
     onMoveCardFromHandToDeck: {
         decrementStacks: 1,
+    },
+};
+
+export const enrageEffect = {
+    name: "Enrage",
+    type: EFFECT_TYPES.RAGE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: HumilityStoneImage,
+    resourcesPerTurn: 1,
+    onTurnInProgress: {
+        removeEffect: true,
     },
 };
