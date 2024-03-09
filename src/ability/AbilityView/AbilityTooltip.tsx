@@ -2,6 +2,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
+import { chargingStone, rageStone } from "../../item/starterItems";
 import { Ability, Effect, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
 
@@ -127,11 +128,9 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     });
 
     const cardsToAdd = Object.values(cardsToAddMap);
-    const isEphemeral = cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn;
-    const isDeplete = cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse;
+    const stringified = JSON.stringify(ability).toLowerCase();
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
     const tributeSummon = ability.minionOptions?.tributeSummon;
-    const hasRadiate = ability.actions.some((action) => action.radiate);
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -145,13 +144,34 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
+    const isShowCharged = stringified.includes("charged");
+    if (isShowCharged) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Charged Ability"
+                icon={chargingStone.image}
+                description={<>Consumes Charged for an extra bonus.</>}
+                key={"charged"}
+            />
+        );
+    }
+
+    const enrage = stringified.includes("enrage");
+    if (enrage) {
+        tooltips.push(
+            <AbilityTooltipSection title="Enrage" icon={rageStone.image} description={<>Gain 1 resource next turn.</>} key={"enrage"} />
+        );
+    }
+
     if (ability.preemptive) {
         tooltips.push(
             <AbilityTooltipSection title="Pre-Emptive" description={"Start battle with this ability in hand."} key={"preemptive"} />
         );
     }
 
-    if (isEphemeral) {
+    const ephemeral =
+        cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn || stringified.includes("ephemeral");
+    if (ephemeral) {
         tooltips.push(
             <AbilityTooltipSection
                 title="Ephemeral"
@@ -161,7 +181,9 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
-    if (isDeplete) {
+    const deplete =
+        cardsToAdd.some((ability: Ability) => ability.depletedOnUse) || ability.depletedOnUse || stringified.includes("deplete");
+    if (deplete) {
         tooltips.push(<AbilityTooltipSection title="Deplete" description={"Ability can only be used once per battle."} key={"deplete"} />);
     }
 
@@ -169,13 +191,12 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         tooltips.push(<AbilityTooltipSection title="Boomerang" description={"Ability returns to your hand after use."} key={"reusable"} />);
     }
 
+    const hasRadiate = ability.actions.some((action) => action.radiate) || stringified.includes("radiate");
     if (hasRadiate) {
         tooltips.push(
             <AbilityTooltipSection
                 title="Radiate"
-                description={
-                    "Radiate causes you to emit an effect from your position. Damage dealt by Radiate is unaffected by ATT modifiers and damage reductions."
-                }
+                description={"Character emits an effect from its position. Radiated damage is unaffected by attack modifiers."}
                 key={"radiate"}
             />
         );
@@ -189,6 +210,11 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 key={"tribute"}
             />
         );
+    }
+
+    const discover = stringified.includes("discover");
+    if (discover) {
+        tooltips.push(<AbilityTooltipSection title="Discover" description={"Pick one of three card options."} key={"discover"} />);
     }
 
     return (
