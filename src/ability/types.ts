@@ -643,6 +643,7 @@ export interface Ability {
     onDraw?: AbilityEvent;
     /** Something that happens when this card leaves your hand (not necessarily discarded) */
     onLeaveHand?: AbilityEvent;
+    hideResourceCostIcon?: boolean;
 }
 
 /**

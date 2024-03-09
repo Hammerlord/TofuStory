@@ -17,10 +17,17 @@ const useStyles = createUseStyles({
     },
 });
 
+/**
+ * Resource (Fury, Mana, etc.) cost icon that shows on the top right of a card.
+ */
 const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
     const classes = useStyles();
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
-    const { resourceCost, effects = [] } = ability;
+    const { resourceCost = 0, effects = [], hideResourceCostIcon } = ability;
+
+    if (hideResourceCostIcon) {
+        return null;
+    }
 
     const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
         return acc + (e.resourceCost || 0);

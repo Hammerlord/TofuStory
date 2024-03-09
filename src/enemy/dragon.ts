@@ -17,6 +17,8 @@ import { loaf } from "./abilities";
 const soulPain: Ability = {
     name: "Soul Pain",
     image: EncroachingDarknessImage,
+    resourceCost: 1,
+    hideResourceCostIcon: true,
     unplayable: true,
     onDraw: {
         ability: {
