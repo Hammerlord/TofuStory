@@ -132,7 +132,10 @@ const useStyles = createUseStyles({
             width: "50%",
         },
     },
-
+    free: {
+        color: "#25b814",
+        fontWeight: "bold",
+    },
     headerText: {
         padding: "0 24",
         fontSize: 18,
@@ -487,7 +490,7 @@ const Shop = ({
                                             [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
                                         })}
                                     >
-                                        {isFood && freeFood && <span>FREE</span>}
+                                        {isFood && freeFood && <span className={classes.free}>FREE</span>}
                                         {(!isFood || !freeFood) && (
                                             <>
                                                 <img src={MesoCoinImage} alt={"Mesos"} />
