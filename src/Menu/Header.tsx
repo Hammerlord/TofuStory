@@ -125,9 +125,10 @@ const Header = ({
                                 {player.HP} / {getMaxHP(player)} HP
                             </span>
                             <Tooltip
+                                enterNextDelay={1000}
                                 title={
                                     <div>
-                                        Deck <hr /> You enter battle with these ability cards. Click to see your full deck.
+                                        Deck <hr /> You enter battle with {deck.length} ability cards. Click to see them.
                                     </div>
                                 }
                             >

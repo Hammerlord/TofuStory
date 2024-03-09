@@ -17,6 +17,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
         overflow: "auto",
+        textAlign: "center",
     },
     abilityContainer: {
         margin: "16px",
