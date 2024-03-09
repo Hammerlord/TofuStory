@@ -104,7 +104,7 @@ export const ITEMS = [
     drakeBlood,
     nependeathSap,
     coffeePot,
-    respawnToken,
+    // respawnToken, does this item get consumed or did I nix it again?
     sunshinePan,
     stolenFence,
     panlid,
