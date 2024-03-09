@@ -23,7 +23,7 @@ import Reticle from "./Reticle";
 import Telegraph from "./Telegraph";
 import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
-import Effects from "./effects/Effects";
+import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import { Combatant, Player } from "./types";
 import { playDyingAnimation, playHitAnimation } from "./animations";
 
@@ -454,7 +454,7 @@ const CombatantView = forwardRef(
                                         </div>
                                     )}
                                     {(oldState.HP > 0 || isLifeLinked) && (
-                                        <Effects combatantInfo={combatantInfo} statChanges={statChanges} />
+                                        <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />

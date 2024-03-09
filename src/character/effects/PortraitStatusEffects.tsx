@@ -166,7 +166,7 @@ const useStyles = createUseStyles({
 /**
  * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
  */
-const Effects = ({ combatantInfo, statChanges }) => {
+const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
     const classes = useStyles();
 
     if (!combatantInfo?.combatant) {
@@ -239,4 +239,4 @@ const Effects = ({ combatantInfo, statChanges }) => {
     );
 };
 
-export default Effects;
+export default PortraitStatusEffects;
