@@ -79,6 +79,7 @@ import {
     incenseLeaves,
     toyHammer,
     hugeMesoItem,
+    ironBall,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -167,6 +168,7 @@ export const ITEMS = [
     peach,
     incenseLeaves,
     toyHammer,
+    ironBall,
 ];
 
 export const CLASS_ITEMS = {

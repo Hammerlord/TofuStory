@@ -248,6 +248,7 @@ export { default as InfinityImage } from "./Infinity.png";
 export { default as InkSackImage } from "./InkSack.png";
 export { default as InstinctualComboImage } from "./InstinctualCombo.png";
 export { default as IntrepidSlashImage } from "./IntrepidSlash.png";
+export { default as IronBallImage } from "./IronBall.png";
 export { default as IronBodyImage } from "./IronBody.png";
 export { default as IronHogImage } from "./IronHog.gif";
 export { default as IronHogHitImage } from "./IronHogHit.gif";

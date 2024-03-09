@@ -39,6 +39,7 @@ import {
     HerbsImage,
     HotdogImage,
     IcarusCapeImage,
+    IronBallImage,
     IronMaceImage,
     KoreanFanImage,
     LeatherSandalsImage,
@@ -1877,6 +1878,29 @@ export const chessPiece: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const ironBall: Item = {
+    name: "Iron Ball",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: IronBallImage,
+    description: "Gain 1 attack power against Armored targets.",
+    effects: [
+        {
+            name: "Iron Ball",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackPower: 1,
+            conditions: [
+                {
+                    armor: 0,
+                    comparator: "gt",
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                },
+            ],
         },
     ],
 };
