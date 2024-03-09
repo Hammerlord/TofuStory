@@ -1653,6 +1653,7 @@ export const worldReaver: Ability = {
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
                 target: "actor",
+                isPriority: true,
                 effects: [
                     {
                         ...immunity,
@@ -1686,7 +1687,7 @@ export const risingRage: Ability = {
     actions: [
         {
             area: 1,
-            damage: 6,
+            damage: 7,
             multiplier: {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 type: MULTIPLIER_TYPES.RESOURCES_SPENT,
@@ -2069,6 +2070,12 @@ export const ironMaiden: Ability = {
                             },
                         ],
                     },
+                    conditions: [
+                        {
+                            hasEffect: "Thorns",
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                        },
+                    ],
                 },
             },
         },
@@ -2076,6 +2083,7 @@ export const ironMaiden: Ability = {
     upgrades: [
         {
             actions: [
+                {},
                 {
                     radiate: {
                         damage: 2,
