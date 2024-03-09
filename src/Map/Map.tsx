@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { TreasureChestImage, VictoriaIslandImage } from "../images";
+import { ClickIndicatorImage, TreasureChestImage, VictoriaIslandImage } from "../images";
 import {
     CampingIcon,
     CrossedSwordsIcon,
@@ -142,9 +142,9 @@ const Map = ({
         if (!nodeMemo[current.id]) {
             nodeMemo[current.id] = true;
             const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
-
+            const isNext = prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id]);
             let handleClickNodeCallback;
-            if (prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id])) {
+            if (isNext) {
                 handleClickNodeCallback = () => handleClickNode(current);
             }
 
@@ -189,6 +189,7 @@ const Map = ({
                             }}
                         />
                     )}
+                    {isNext && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
                 </g>
             );
         }
