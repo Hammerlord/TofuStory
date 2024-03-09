@@ -1,5 +1,3 @@
-import { counterEffect } from "./effect";
-import { counterattack } from "./../ability/warrior/warriorAbilities";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -23,12 +21,11 @@ import {
     GiganticSledgeImage,
     HighPaladinImage,
     IntrepidSlashImage,
-    IronMaceImage,
     JrBalrogImage,
     MossySnailImage,
-    OmokPigImage,
     RedSnailShellImage,
     SlashBlastImage,
+    SpikedMaceImage,
     StoneGolemIconImage,
     StoneGolemImage,
     StoneGolemRubbleImage,
@@ -36,6 +33,7 @@ import {
     WildBoarImage,
 } from "../images";
 import { bleed, burn, hardy } from "./../ability/Effects";
+import { counterEffect } from "./effect";
 
 const golemStanceEligible: Effect = {
     name: "Stone Golem Stance Ready",
@@ -195,6 +193,10 @@ export const boarStanceAbility: Ability = {
             type: ACTION_TYPES.EFFECT,
             effects: [boarStanceEffect],
             icon: WildBoarImage,
+            animationOptions: {
+                width: 71,
+                height: 47,
+            },
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             removeEffects: [boarStanceEligible.name],
         },
@@ -345,7 +347,7 @@ export const dancesWithBalrog: Minion = {
         },
         {
             name: "Slam",
-            image: IronMaceImage,
+            image: SpikedMaceImage,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
