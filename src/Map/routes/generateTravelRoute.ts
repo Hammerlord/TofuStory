@@ -2,7 +2,6 @@ import uuid from "uuid";
 import OnOffPuzzle from "../../scene/TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
-import SortingPuzzle from "../../scene/TreasureBox/SortingPuzzle";
 import { NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
 import { generateElites, generateWaves } from "./../encounters";
@@ -61,7 +60,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             } else if (type === NODE_TYPES.TREASURE) {
                 const isCursedTreasure = baseRoute?.cursedTreasureChance && Math.random() <= baseRoute?.cursedTreasureChance;
                 transformedNode.treasure = {
-                    puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
+                    puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
                     mesos: [20, 40],
                     curse: isCursedTreasure ? "damage" : undefined,
                 };

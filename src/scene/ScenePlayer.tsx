@@ -4,30 +4,29 @@ import { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Camp from "../Map/Camp";
 import { REGIONS } from "../Map/regions";
+import { BG_MAP } from "../Map/types";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { getUpgradeCard } from "../Menu/utils";
+import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, CombatAbility, Minion } from "../ability/types";
-import ItemSelection from "../item/ItemSelection";
-import { ITEM_TYPES, Item } from "../item/types";
-import Button from "../view/Button";
-import TreasureBox from "./TreasureBox/TreasureBox";
-import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
-import { Player } from "../character/types";
-import { useAppDispatch, useAppSelector } from "../hooks";
 import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
-import { getRandomItem, shuffle } from "../utils";
-import { mesoItem } from "../item/items";
-import { SkullPatchImage } from "../images";
+import { Player } from "../character/types";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
-import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
-import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
-import SortingPuzzle from "./TreasureBox/SortingPuzzle";
-import RowPuzzle from "./TreasureBox/RowPuzzle";
-import { BG_MAP } from "../Map/types";
-import { getUpgradeCard } from "../Menu/utils";
+import { SkullPatchImage } from "../images";
+import ItemSelection from "../item/ItemSelection";
+import { mesoItem } from "../item/items";
+import { ITEM_TYPES, Item } from "../item/types";
+import { getRandomItem, shuffle } from "../utils";
+import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import AbilityView from "../ability/AbilityView/AbilityView";
+import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
+import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
+import RowPuzzle from "./TreasureBox/RowPuzzle";
+import TreasureBox from "./TreasureBox/TreasureBox";
+import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -353,7 +352,7 @@ const ScenePlayer = ({
         if (treasureBox) {
             const { isOpen, isCursed }: ScriptNodeTreasure = treasureBox;
             setTreasureBoxOptions({
-                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, SortingPuzzle, RowPuzzle]),
+                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
                 curse: isCursed ? "damage" : undefined,
             });
         }
