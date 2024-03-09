@@ -62,6 +62,7 @@ const Map = ({
     playerImage,
     enableDraw = false,
     visited = {},
+    disableClick,
 }: {
     onSelectNode?: (node: RouteNode) => void;
     playerLocationNode?: RouteNode;
@@ -69,6 +70,7 @@ const Map = ({
     playerImage?: string;
     enableDraw?: boolean;
     visited?: { [nodeId: string]: true };
+    disableClick?: boolean;
 }) => {
     const classes = useStyles();
     const containerRef = useRef() as any;
@@ -88,6 +90,9 @@ const Map = ({
     }, [containerRef.current]);
 
     const handleClickNode = (node: RouteNode) => {
+        if (disableClick) {
+            return;
+        }
         onSelectNode(node);
     };
 
@@ -189,7 +194,7 @@ const Map = ({
                             }}
                         />
                     )}
-                    {isNext && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
+                    {isNext && !disableClick && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
                 </g>
             );
         }

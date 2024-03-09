@@ -136,6 +136,7 @@ const Main = () => {
     const { character, battle } = useAppSelector((state) => state);
     const { player, deck, visitedEvents, infamy } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
+    const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
 
     const resetTravels = () => {
         const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
@@ -335,9 +336,13 @@ const Main = () => {
 
     const handleCloseClassSelection = () => {
         setOpenClassSelection(false);
+        // Don't want distracting clicky when there is about to be dialog on the overworld map
+        setHideMapClickIndicator(true);
+
         setTimeout(() => {
             setScene(introScene);
-        }, INTRO_PAN_TIME);
+            setHideMapClickIndicator(false);
+        }, INTRO_PAN_TIME + 500);
     };
 
     if (openClassSelection) {
@@ -414,10 +419,14 @@ const Main = () => {
         if (town === TOWNS.LITH_HARBOR) {
             // We completed the intro. Load the rest of the route.
             const route = generateTravelRoute({ startingRoute: toLith });
+            // Don't want distracting clicky when there is about to be dialog on the overworld map
+            setHideMapClickIndicator(true);
+
             setRoute(route);
             setLocationNode(route);
             setTimeout(() => {
                 setScene(startJourneyScene);
+                setHideMapClickIndicator(false);
             }, 1500);
         }
     };
@@ -474,6 +483,7 @@ const Main = () => {
                     playerLocationNode={locationNode}
                     playerImage={player.image}
                     visited={nodesVisitedMap}
+                    disableClick={Boolean(scene) || hideMapClickIndicator || showTransitionOverlay}
                 />
             </div>
             {town && <div className={classes.activityContainer}>{getTown()}</div>}
