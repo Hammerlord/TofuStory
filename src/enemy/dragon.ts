@@ -112,7 +112,6 @@ export const lostDragon: Minion = {
                     damage: 6,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    icon: FireMarbleImage,
                     effects: [{ ...poison }],
                 },
                 {
@@ -120,7 +119,6 @@ export const lostDragon: Minion = {
                     damage: 6,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    icon: FireMarbleImage,
                     effects: [{ ...bleed }],
                 },
             ],
@@ -143,6 +141,7 @@ export const lostDragon: Minion = {
         },
         {
             name: "Soul Pain",
+            image: EncroachingDarknessImage,
             resourceCost: 3,
             actions: [
                 {
@@ -159,12 +158,13 @@ export const lostDragon: Minion = {
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: terriblePower.name,
+                    hasEffect: reawakening.name,
                 },
             ],
         },
         {
             name: "Soul Anguish",
+            image: EncroachingDarknessImage,
             resourceCost: 3,
             actions: [
                 {
@@ -181,7 +181,7 @@ export const lostDragon: Minion = {
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    hasEffect: reawakening.name,
+                    hasEffect: terriblePower.name,
                 },
             ],
         },
