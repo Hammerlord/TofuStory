@@ -193,7 +193,7 @@ const EffectGroupIcon = ({
         durationDisplay = duration;
     }
 
-    const silenced = isSilenced && canBeSilenced;
+    const silenced = isSilenced && canBeSilenced && effectClass === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
     const disabled = silenced || !passedConditions || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
 
     const { stackCount, displayStacks } = effects.reduce(
