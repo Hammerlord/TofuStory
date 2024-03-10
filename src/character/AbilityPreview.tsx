@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import Icon from "../icon/Icon";
-import { CrossedSwordsIcon } from "../images/icons";
+import { Action } from "../ability/types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import { Ability, Action, CombatAbility } from "../ability/types";
+import Icon from "../icon/Icon";
+import { CrossbonesIcon, CrossedSwordsIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -59,7 +59,7 @@ export interface PreviewStatUpdate {
  * The damage preview that shows up when you hover over an enemy with an offensive card selected.
  * May be expanded to include buffs, debuffs, armor...
  */
-const AbilityPreview = ({ previewStatUpdate }: { previewStatUpdate: PreviewStatUpdate[] }) => {
+const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatUpdate: PreviewStatUpdate[]; HP: number; armor }) => {
     const classes = useStyles();
 
     if (!previewStatUpdate) {
@@ -72,6 +72,8 @@ const AbilityPreview = ({ previewStatUpdate }: { previewStatUpdate: PreviewStatU
         previewStatUpdate = previewStatUpdate.slice(0, 1);
     }
 
+    let effectiveHP = HP + armor;
+
     return (
         <div
             className={classNames(classes.statUpdatePreview, {
@@ -81,17 +83,30 @@ const AbilityPreview = ({ previewStatUpdate }: { previewStatUpdate: PreviewStatU
             <div className={classes.previewIconContainer}>
                 <Icon icon={CrossedSwordsIcon} size="sm" />
             </div>
-            {previewStatUpdate.map((preview, i) => (
-                <div
-                    className={classNames(classes.statUpdate, {
-                        [classes.negative]: preview.statUpdate.rawDamage < preview.action?.damage,
-                    })}
-                    key={["statUpdate", i].join("-")}
-                >
-                    {preview.statUpdate.rawDamage || 0}
-                    {preview.nondeterministic && "?"}
-                </div>
-            ))}
+            {previewStatUpdate.map((preview, i) => {
+                const { action, nondeterministic, statUpdate } = preview || {};
+                const rawDamage = statUpdate?.rawDamage;
+                const isAlreadyDead = effectiveHP <= 0 && !rawDamage;
+                if (isAlreadyDead) {
+                    // Prospected killed by a previous hit
+                    return null;
+                }
+
+                effectiveHP -= rawDamage;
+                const isLethal = rawDamage > 0 && effectiveHP <= 0;
+
+                return (
+                    <div
+                        className={classNames(classes.statUpdate, {
+                            [classes.negative]: !isLethal && rawDamage < action?.damage,
+                        })}
+                        key={["statUpdate", i].join("-")}
+                    >
+                        {rawDamage || 0}
+                        {nondeterministic && "?"} {isLethal && <Icon icon={CrossbonesIcon} size={"sm"} />}
+                    </div>
+                );
+            })}
         </div>
     );
 };

@@ -463,7 +463,9 @@ const CombatantView = forwardRef(
                             )}
                         </div>
 
-                        {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} />}
+                        {oldState?.HP > 0 && (
+                            <AbilityPreview previewStatUpdate={previewStatUpdate} HP={oldState.HP} armor={oldState.armor} />
+                        )}
                         {oldState?.HP > 0 && (
                             <>
                                 <CombatantTooltip combatant={combatant} />

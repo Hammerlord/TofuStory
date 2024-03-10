@@ -7,6 +7,7 @@ export { default as CactusIcon } from "./Cactus.svg";
 export { default as CampingIcon } from "./Camping.svg";
 export { default as CloudIcon } from "./Cloud.svg";
 export { default as CloudyIcon } from "./Cloudy.svg";
+export { default as CrossbonesIcon } from "./Crossbones.svg";
 export { default as CrossedSwordsIcon } from "./CrossedSwords.svg";
 export { default as CrossmarkIcon } from "./Crossmark.svg";
 export { default as DizzyIcon } from "./Dizzy.svg";

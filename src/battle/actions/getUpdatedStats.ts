@@ -100,6 +100,7 @@ export const getUpdatedStats = ({
             hand,
             discard,
         });
+
         const damage =
             calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
             Math.floor(targetCombatant.armor * destroyArmor) +

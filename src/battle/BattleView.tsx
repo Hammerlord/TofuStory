@@ -782,7 +782,8 @@ const BattlefieldContainer = () => {
     };
 
     const abilityUsePreviews = ((): { [combatantId: string]: PreviewStatUpdate[] } => {
-        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbilityFromHand) {
+        const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
+        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
             return {};
         }
         const result = {};
@@ -794,7 +795,7 @@ const BattlefieldContainer = () => {
             },
         };
 
-        selectedAbilityFromHand.actions.forEach((action: Action) => {
+        selectedAbility.actions.forEach((action: Action) => {
             if (![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target)) {
                 return;
             }
@@ -816,7 +817,7 @@ const BattlefieldContainer = () => {
                 !passesConditions({
                     getCalculationTarget,
                     proc: action,
-                    source: { source: selectedAbilityFromHand, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                    source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
                 })
             ) {
                 return;
@@ -841,8 +842,8 @@ const BattlefieldContainer = () => {
                 action,
                 getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
                 actionParent: {
-                    ...selectedAbilityFromHand,
-                    resourceCost: selectedAbilityFromHand.resourceCost === "x" ? player.resources : selectedAbilityFromHand.resourceCost,
+                    ...selectedAbility,
+                    resourceCost: selectedAbility.resourceCost === "x" ? player.resources : selectedAbility.resourceCost,
                 },
                 hand,
                 deck,
@@ -860,12 +861,12 @@ const BattlefieldContainer = () => {
                     return;
                 }
 
-                const { index, combatant } = combatantInfo;
+                const { index, combatant, friendlySide } = combatantInfo;
                 const hasRandomSecondaryTargets = action.numTargets && hoveredCombatant.index !== index;
 
                 const staging = stageStatChanges(statUpdate, combatant);
                 // If it's a multi-hit attack being previewed, we want to update the previous combatant state so we can get a more accurate preview of the proceeding hits
-                previousCombatantStates.battle[index] = staging;
+                previousCombatantStates.battle[friendlySide][index] = staging;
                 const targetsRandomly = action.target === TARGET_TYPES.RANDOM_HOSTILE;
 
                 result[combatantId].push({
