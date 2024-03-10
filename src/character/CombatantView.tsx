@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { Event } from "../battle/types";
@@ -26,7 +26,7 @@ import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import { Combatant, Player } from "./types";
 import { playDyingAnimation, playHitAnimation } from "./animations";
-import { BLUE, RED } from "../ability/AbilityView/constants";
+import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -277,6 +277,7 @@ const CombatantView = forwardRef(
             isHighlighted,
             showReticle,
             previewStatUpdate,
+            selectedAbility,
             ...other
         }: {
             combatant?: Combatant | Player;
@@ -289,6 +290,7 @@ const CombatantView = forwardRef(
             isHighlighted: boolean;
             showReticle: boolean;
             previewStatUpdate?: PreviewStatUpdate[];
+            selectedAbility?: Ability | CombatAbility;
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },
@@ -407,6 +409,8 @@ const CombatantView = forwardRef(
         if (isTargeted) {
             if (isEnemy) {
                 reticleColor = RED;
+            } else if (selectedAbility?.minion) {
+                reticleColor = GREEN;
             } else {
                 reticleColor = BLUE;
             }

@@ -283,6 +283,7 @@ const BattlefieldContainer = () => {
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
     const selectedAbilityFromHand = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
 
@@ -673,23 +674,24 @@ const BattlefieldContainer = () => {
         }
 
         const hoveredIndex = hoveredCombatant?.index;
-        const selectedAbility = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
         return (
-            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, getState: () => state, actorId }) &&
-            isWithinAbilityArea({ ability: selectedAbility, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
+            isValidTarget({ ability: abilityToUse, side, index: hoveredIndex, getState: () => state, actorId }) &&
+            isWithinAbilityArea({ ability: abilityToUse, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
         );
     };
 
+    /**
+     * When selecting an ability, if a reticle should appear on a combatant, it means that combatant is a valid target.
+     */
     const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
         if (selectedAbilityFromHand && !canUseAbility(player, selectedAbilityFromHand)) {
             return false;
         }
 
-        const selectedAbility = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
         const moveAbility = allowFriendlyMovement && selectedMinion ? movementAbility : undefined;
 
-        if (!selectedAbility && !moveAbility) {
+        if (!abilityToUse && !moveAbility) {
             return false;
         }
 
@@ -725,7 +727,7 @@ const BattlefieldContainer = () => {
             }
         };
 
-        return checkValidTargetForAbility(selectedAbility) || checkValidTargetForAbility(moveAbility);
+        return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
     };
 
     const abilityIndex = hand.findIndex(({ instanceId }) => selectedAbilityId === instanceId);
@@ -932,6 +934,7 @@ const BattlefieldContainer = () => {
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         previewStatUpdate={abilityUsePreviews[enemy?.id]}
+                                        selectedAbility={abilityToUse}
                                         ref={enemyRefs[i]}
                                     />
                                 ))}
@@ -969,6 +972,7 @@ const BattlefieldContainer = () => {
                                                 events={events}
                                                 isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
+                                                selectedAbility={abilityToUse}
                                                 ref={allyRefs[i]}
                                             />
                                         );
