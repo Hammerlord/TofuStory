@@ -243,6 +243,7 @@ export const miniBean: Minion = {
     image: MiniBeanImage,
     maxHP: 300,
     resources: 0,
+    mesos: 50,
     isBoss: true,
     abilities: [
         {
