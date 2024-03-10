@@ -371,12 +371,6 @@ export enum MULTIPLIER_TYPES {
     EFFECT_DURATIONS = "effect-durations",
 }
 
-export interface Radiate {
-    damage?: number;
-    area?: number;
-    effects?: Effect[];
-}
-
 export interface SelectCards {
     type: SELECT_CARD_TYPES;
     cards?: Ability[];

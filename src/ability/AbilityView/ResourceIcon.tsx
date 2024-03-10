@@ -15,6 +15,9 @@ const useStyles = createUseStyles({
             color: "#ff9b94",
         },
     },
+    placeholder: {
+        width: 24,
+    },
 });
 
 /**
@@ -26,7 +29,8 @@ const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | Comb
     const { resourceCost = 0, effects = [], hideResourceCostIcon } = ability;
 
     if (hideResourceCostIcon) {
-        return null;
+        // Retain the dimensions
+        return <div className={classes.placeholder} />;
     }
 
     const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {

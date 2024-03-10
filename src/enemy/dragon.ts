@@ -38,7 +38,6 @@ const soulPain: Ability = {
         {
             type: ACTION_TYPES.HINDER,
             target: TARGET_TYPES.SELF,
-            damage: 5,
         },
     ],
 };
