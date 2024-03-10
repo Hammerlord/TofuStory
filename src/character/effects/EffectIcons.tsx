@@ -18,16 +18,6 @@ const useStyles = createUseStyles({
             borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
         },
     },
-    buffs: {
-        minHeight: 30,
-    },
-    debuffs: {
-        minHeight: 30,
-    },
-    divider: {
-        display: "flex",
-        minHeight: 20,
-    },
     up: {
         borderLeft: `${indicatorSize}px solid transparent`,
         borderRight: `${indicatorSize}px solid transparent`,
@@ -38,11 +28,6 @@ const useStyles = createUseStyles({
         borderLeft: `${indicatorSize}px solid transparent`,
         borderRight: `${indicatorSize}px solid transparent`,
         borderTop: `${indicatorSize}px solid ${DEBUFF_COLOUR}`,
-    },
-    dividerIndicator: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "4px 8px",
     },
 });
 
@@ -76,47 +61,26 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
         return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);
     };
 
-    const hasVisibleBuff = buffs.some((e) => e.icon && !e.disableDisplayIcon);
-    const hasVisibleDebuff = debuffs.some((e) => e.icon && !e.disableDisplayIcon);
-
     return (
         <div className={classes.root}>
-            <div className={classes.buffs}>
-                {getEffectGroups(buffs).map((effects: CombatEffect[], i) => (
-                    <EffectGroupIcon
-                        effects={effects}
-                        key={effects[0]?.name || i}
-                        owner={combatant}
-                        isSilenced={isSilenced}
-                        glow={shouldGlow(effects)}
-                    />
-                ))}
-            </div>
-
-            <div className={classes.divider}>
-                {hasVisibleBuff && hasVisibleDebuff && (
-                    <>
-                        <hr />
-                        <div className={classes.dividerIndicator}>
-                            <span className={classes.up} />
-                            <span className={classes.down} />
-                        </div>
-                        <hr />
-                    </>
-                )}
-            </div>
-
-            <div className={classes.debuffs}>
-                {getEffectGroups(debuffs).map((effects: CombatEffect[], i) => (
-                    <EffectGroupIcon
-                        effects={effects}
-                        key={effects[0]?.name || i}
-                        owner={combatant}
-                        isSilenced={isSilenced}
-                        glow={shouldGlow(effects)}
-                    />
-                ))}
-            </div>
+            {getEffectGroups(buffs).map((effects: CombatEffect[], i) => (
+                <EffectGroupIcon
+                    effects={effects}
+                    key={effects[0]?.name || i}
+                    owner={combatant}
+                    isSilenced={isSilenced}
+                    glow={shouldGlow(effects)}
+                />
+            ))}
+            {getEffectGroups(debuffs).map((effects: CombatEffect[], i) => (
+                <EffectGroupIcon
+                    effects={effects}
+                    key={effects[0]?.name || i}
+                    owner={combatant}
+                    isSilenced={isSilenced}
+                    glow={shouldGlow(effects)}
+                />
+            ))}
         </div>
     );
 };
