@@ -2488,7 +2488,7 @@ export const abominableSnowman: Ability = {
                     {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.ATTACK,
-                        damage: 2,
+                        damage: 4,
                         area: 1,
                     },
                 ],
