@@ -352,7 +352,7 @@ export const alligatorTube: Item = {
     description: "When you summon a minion, it gains 1 attack power.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     effects: [
         {
             name: "Alligator Tube",
@@ -394,7 +394,7 @@ export const cactus: Item = {
 
 export const nependeathSap: Item = {
     name: "Nependeath Sap",
-    description: "Every 3 turns, your first attack inflicts poison.",
+    description: "Every turn, your first attack inflicts poison.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: SapOfNependeathImage,
@@ -403,7 +403,6 @@ export const nependeathSap: Item = {
             name: "Nependeath Sap",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 3,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
@@ -1189,11 +1188,11 @@ export const blueSaunaRobe: Item = {
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "Every 3 turns, gain 1 armor from armor sources.",
+    description: "Every 3 turns, gain +1 armor from armor sources.",
     effects: [
         {
             name: "Blue Sauna Robe Item",
-            description: "Every 3 turns, gain 1 armor from armor sources.",
+            description: "Every 3 turns, gain +1 armor from armor sources.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             turnsTriggerFrequency: 3,
@@ -1469,7 +1468,7 @@ export const flamingFeather: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: FlamingFeatherImage,
-    description: "When you use an offense card, you have a 33% chance for each resource to Burn an enemy.",
+    description: "When you use an offense card, you have a 50% chance for each resource to Burn an enemy.",
     effects: [
         {
             name: "Flaming Feather",
@@ -1484,7 +1483,7 @@ export const flamingFeather: Item = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                chance: 0.334,
+                chance: 0.5,
                 multiplier: {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                     type: MULTIPLIER_TYPES.RESOURCES_SPENT,
