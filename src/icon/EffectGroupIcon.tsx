@@ -108,6 +108,26 @@ const useStyles = createUseStyles({
         display: "inline-block",
         marginRight: 8,
     },
+    upCorner: {
+        borderLeft: `${indicatorSize / 1.5}px solid transparent`,
+        borderRight: `${indicatorSize / 1.5}px solid transparent`,
+        borderBottom: `${indicatorSize / 1.5}px solid ${BUFF_COLOUR}`,
+        display: "inline-block",
+        filter: "drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7))",
+        position: "absolute",
+        left: 0,
+        top: 0,
+    },
+    downCorner: {
+        borderLeft: `${indicatorSize / 1.5}px solid transparent`,
+        borderRight: `${indicatorSize / 1.5}px solid transparent`,
+        borderTop: `${indicatorSize / 1.5}px solid ${DEBUFF_COLOUR}`,
+        display: "inline-block",
+        filter: "drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7))",
+        position: "absolute",
+        left: 0,
+        top: 0,
+    },
 });
 
 const EffectGroupIcon = ({
@@ -300,7 +320,7 @@ const EffectGroupIcon = ({
                 {!allSameDuration && (
                     <span>
                         {effects.map((e, i) => (
-                            <Icon key={i} icon={<HourglassIcon />} text={e.duration === Infinity ? "∞" : e.duration} />
+                            <Icon key={i} icon={<HourglassIcon />} text={isNaN(e.duration) || e.duration === Infinity ? "∞" : e.duration} />
                         ))}{" "}
                         turn{duration !== 1 ? "s" : ""} remaining
                     </span>
@@ -327,6 +347,8 @@ const EffectGroupIcon = ({
                         {(displayStacks || stackCount > 1) && (
                             <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
                         )}
+                        {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.upCorner} />}
+                        {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.downCorner} />}
                     </>
                 </Icon>
             </span>
