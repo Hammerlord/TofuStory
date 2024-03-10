@@ -253,7 +253,7 @@ const ScenePlayer = ({
     ) => void;
     onExit: Function;
     onShop?: Function;
-    onTransition?: Function;
+    onTransition: Function;
     deck: CombatAbility[];
     updateDeck?: (newDeck: CombatAbility[]) => void;
     onChangeRegion?: (region: REGIONS) => void;

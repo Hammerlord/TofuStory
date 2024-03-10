@@ -81,7 +81,7 @@ const ItemRewards = ({
     onClose,
     rewardType,
     overrideItemChoices,
-    itemRewards,
+    itemRewards = [],
     disableAttainConsumable,
 }: {
     player: Player;
