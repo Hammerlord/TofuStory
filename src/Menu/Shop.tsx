@@ -315,10 +315,10 @@ const Shop = ({
 
     // Tofu Special and Shopper's Club Membership should take effect immediately if they were bought.
     const checkItemAffectsShop = (item: Item) => {
-        const { refreshTimes = 0, discount: purchasedItemDiscount = 0, freeFood = false } = item?.merchant || {};
+        const { refreshTimes = 0, discount: purchasedItemDiscount = 0, freeFood: itemFreeFood = false } = item?.merchant || {};
         const updatedShopOptions = {
             numRefreshes: numRefreshes + refreshTimes,
-            freeFood,
+            freeFood: freeFood || itemFreeFood,
             discount: discount + purchasedItemDiscount,
         };
 
