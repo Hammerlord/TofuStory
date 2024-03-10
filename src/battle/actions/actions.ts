@@ -1567,31 +1567,45 @@ export const calculateTargetIndices = ({
     }, []);
 };
 
+export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, source, battle, actorData, statsProps }) => {
+    if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+        return;
+    }
+
+    const { index: actorIndex, friendly, friendlySide } = actorData;
+    const recipientIndices = calculateTargetIndices({
+        action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
+        selectedIndex: actorIndex,
+        side: friendlySide,
+        actorData,
+        targetData: actorData,
+        battle,
+    });
+    const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
+
+    return getUpdatedStats({
+        ...statsProps,
+        // Based on secondaryAction.target, but only actor recipient is supported for now
+        recipientIds,
+        selectedIndex: undefined,
+        action: secondaryAction,
+    });
+};
+
 const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps }) => {
     return (dispatch, getState) => {
-        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+        const actorData = findCombatantData(getState, actorId);
+        const updatedSecondary = stageSecondaryAction({
+            secondaryAction,
+            getCalculationTarget,
+            source,
+            battle: getState().battle,
+            actorData,
+            statsProps: updatedStatsProps,
+        });
+        if (!updatedSecondary) {
             return;
         }
-
-        const actorData = findCombatantData(getState, actorId);
-        const { index: actorIndex, friendly, friendlySide } = actorData;
-        const recipientIndices = calculateTargetIndices({
-            action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
-            selectedIndex: actorIndex,
-            side: friendlySide,
-            actorData,
-            targetData: actorData,
-            battle: getState().battle,
-        });
-        const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
-
-        const updatedSecondary = getUpdatedStats({
-            ...updatedStatsProps,
-            // Based on secondaryAction.target, but only actor recipient is supported for now
-            recipientIds,
-            selectedIndex: undefined,
-            action: secondaryAction,
-        });
 
         dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
         if (secondaryAction.returnParentCardToHand) {
