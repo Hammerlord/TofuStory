@@ -295,7 +295,6 @@ export const sendToPile = ({
     const yDiff = (y2 - y) * 3; // *3 because of 0.3 scale
 
     const rotation = getRotationToFaceTarget({ x, y, x2, y2 });
-
     const animationFrames = [
         {
             transform: "translateY(0)",
@@ -311,14 +310,14 @@ export const sendToPile = ({
         },
         {
             transform: "translateY(0)",
-            filter: `saturate(${desaturate ? 0 : 1}) brightness(${desaturate ? 0.5 : 1})`,
+            filter: `saturate(${desaturate ? 0 : 1}) brightness(${darken ? 0.2 : 1})`,
             offset: 0.4,
             opacity: 1,
             easing: "ease-in",
         },
         {
             transform: "translateY(0)",
-            filter: `saturate(${desaturate ? 0 : 1}) brightness(${desaturate ? 0.5 : 1})`,
+            filter: `saturate(${desaturate ? 0 : 1}) brightness(${darken ? 0.2 : 1})`,
             offset: 0.75,
             opacity: 1,
             easing: "ease-in",
