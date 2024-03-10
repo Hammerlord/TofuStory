@@ -10,7 +10,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { BlueManonImage, DragonScreechImage, EncroachingDarknessImage, FireMarbleImage, RedMagicClawImage } from "../images";
-import { CrossedSwordsIcon, JapaneseOgreIcon } from "../images/icons";
+import { CrossedSwordsIcon, JapaneseOgreIcon, ZzzIcon } from "../images/icons";
 import { bleed, burn, hardy, poison, raging } from "./../ability/Effects";
 import { loaf } from "./abilities";
 
@@ -34,7 +34,13 @@ const soulPain: Ability = {
             ],
         },
     },
-    actions: [],
+    actions: [
+        {
+            type: ACTION_TYPES.HINDER,
+            target: TARGET_TYPES.SELF,
+            damage: 5,
+        },
+    ],
 };
 
 const terriblePower: Effect = {
@@ -47,6 +53,7 @@ const terriblePower: Effect = {
 const reawakening: Effect = {
     name: "Reawakening",
     description: "When this effect ends, the character will regain its full power.",
+    icon: ZzzIcon,
     duration: 5,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
@@ -62,7 +69,7 @@ const reawakening: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     icon: JapaneseOgreIcon,
-                    effects: [raging],
+                    effects: [terriblePower],
                 },
             ],
         },

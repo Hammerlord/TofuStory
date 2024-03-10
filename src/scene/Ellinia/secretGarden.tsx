@@ -215,6 +215,9 @@ export const secretGardenScene: EventScene = {
                                 },
                             ],
                         },
+                        {
+                            dialog: ["Congratulations! You beat the dragon!", "[WIP.]"],
+                        },
                     ],
                 },
                 {
