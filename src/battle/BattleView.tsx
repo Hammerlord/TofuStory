@@ -588,8 +588,8 @@ const BattlefieldContainer = () => {
             return;
         }
 
+        const prevBattleState = battleStateRef.current;
         battleStateRef.current = battleState;
-
         if (battleState === BATTLE_STATES.BATTLE_START) {
             setTimeout(() => {
                 dispatch(onBattleStart());
@@ -615,7 +615,7 @@ const BattlefieldContainer = () => {
                 dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
 
                 if (isPlayerTurn) {
-                    dispatch(startPlayerTurn());
+                    dispatch(startPlayerTurn(prevBattleState === BATTLE_STATES.WAVE_START));
                 } else {
                     dispatch(startEnemyTurn());
                 }

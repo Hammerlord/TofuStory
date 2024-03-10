@@ -154,9 +154,9 @@ export const playerEndTurn = () => {
     };
 };
 
-export const startPlayerTurn = () => {
+export const startPlayerTurn = (isNewWave: boolean) => {
     return (dispatch, getState) => {
-        const { playerSide, round } = getState().battle;
+        const { playerSide, round, hand } = getState().battle;
         dispatch(
             updateBattle({
                 round: round + 1,
@@ -188,9 +188,11 @@ export const startPlayerTurn = () => {
             player.drawCardsPerTurn
         );
 
+        // If it's a new wave, draw only to the drawCardsPerTurn maximum. We have kept the cards from the previous wave for this.
+        const drawCardsAmount = isNewWave ? drawCardsPerTurn - hand.length : drawCardsPerTurn;
         dispatch(
             drawCards({
-                amount: drawCardsPerTurn,
+                amount: drawCardsAmount,
             })
         );
 

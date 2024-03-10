@@ -57,18 +57,11 @@ export const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { playerSide, hand, discard } = getState().battle;
+        const { playerSide } = getState().battle;
 
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
         });
-
-        dispatch(
-            updateBattle({
-                discard: [...prepareForDiscard(hand), ...discard],
-                hand: [],
-            })
-        );
     };
 };
 
