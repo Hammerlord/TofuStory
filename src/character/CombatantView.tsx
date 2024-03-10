@@ -426,7 +426,7 @@ const CombatantView = forwardRef(
                 {...other}
             >
                 <div className={classes.inner}>
-                    {showReticle && (
+                    {showReticle && !isTargeted && (
                         <span className={classes.targetAffectedIndicatorContainer}>
                             <Icon icon={ClickIndicatorImage} />
                         </span>
