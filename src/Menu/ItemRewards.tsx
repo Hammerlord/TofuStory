@@ -80,7 +80,8 @@ const ItemRewards = ({
     onLoot,
     onClose,
     rewardType,
-    overrideItems,
+    overrideItemChoices,
+    itemRewards,
     disableAttainConsumable,
 }: {
     player: Player;
@@ -89,7 +90,8 @@ const ItemRewards = ({
     onClose: () => void;
     rewardType?: BATTLE_TYPES;
     // Eg. encounter-specific item(s); it takes the place of the auto-generated item from elites/bosses
-    overrideItems: Item[];
+    overrideItemChoices?: Item[];
+    itemRewards?: Item[]; // Items which are granted automatically without having to choose
     disableAttainConsumable?: boolean;
 }) => {
     const classes = useStyles();
@@ -105,7 +107,7 @@ const ItemRewards = ({
             return acc;
         }, {});
 
-        const items = (overrideItems || []).filter((item: Item) => !alreadyObtained[item.name]);
+        const items = (overrideItemChoices || []).filter((item: Item) => !alreadyObtained[item.name]);
         if (items.length < BASE_NUM_CHOICES) {
             Array.from({ length: BASE_NUM_CHOICES - items.length }).forEach(() => {
                 let rareBonus = 0;
@@ -129,14 +131,14 @@ const ItemRewards = ({
             items.push(mesoItem);
         }
 
-        const itemRewards = [];
+        const itemsToBeRewarded = itemRewards.slice();
         if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType) && !disableAttainConsumable) {
-            itemRewards.push(goldenHammer);
+            itemsToBeRewarded.push(goldenHammer);
         }
 
-        setRewards(itemRewards);
+        setRewards(itemsToBeRewarded);
         setItemChoices(items);
-        onLoot({ items: itemRewards });
+        onLoot({ items: itemsToBeRewarded });
     }, []);
 
     const handleClickItem = (index: number) => {
@@ -163,7 +165,7 @@ const ItemRewards = ({
         <Overlay>
             <div className={classes.inner}>
                 <div className={classes.titleContainer}>
-                    <h2>Loot!</h2>
+                    <h2>Loot</h2>
                 </div>
                 <div className={classes.container}>
                     <div className={classes.containerInner}>
@@ -173,7 +175,7 @@ const ItemRewards = ({
                                 <img src={item.image} /> <span>{item.name}</span>
                             </div>
                         ))}
-                        <hr className={classes.border} />
+                        {rewards.length > 0 && <hr className={classes.border} />}
                         <h3>Pick an item:</h3>
                         <div className={classes.itemChoices}>
                             {itemChoices.map((item, i) => (
@@ -187,7 +189,7 @@ const ItemRewards = ({
                             ))}
                         </div>
                         <Button color="primary" onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
-                            Select!
+                            Confirm
                         </Button>
                     </div>
                 </div>

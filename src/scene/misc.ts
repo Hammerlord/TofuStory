@@ -35,8 +35,9 @@ export const introScene: EventScene = {
             disableBackground: true,
             disableTransition: true,
             dialog: [
-                "[You don't know what happened to yourself, but there is a portside town nearby. Something about the town's blue rooftops and the white stones seems familiar, or does it?",
-                "Either way, maybe you can find help there.]",
+                "[As you gain your bearings, you notice the blue rooftops and bleached stone walls of a nearby portside town. Something about the place seems familiar, though you don't know what exactly.",
+                "Well, civilization is a welcome sight, isn't it?",
+                "Maybe you can start there.]",
             ],
         },
     ],
@@ -48,14 +49,15 @@ export const startJourneyScene: EventScene = {
         {
             disableBackground: true,
             disableTransition: true,
-            dialog: [
-                "[The townsfolk were wary of you, seeing as you are a mushroom. It'll be hard to convince people that you aren't a monster.]",
-            ],
+            dialog: ["[The townsfolk were wary of your presence. It'll be hard to approach people, seeing as you are a mushroom."],
         },
         {
             disableBackground: true,
             disableTransition: true,
-            dialog: ["[This can't be your fate, can it?", "Somewhere on this island, there must be answers. Journey to find them.]"],
+            dialog: [
+                "[Can this really be your fate?",
+                "Somewhere on this island, there must be answers. You'll have to journey to find them.]",
+            ],
         },
     ],
 };

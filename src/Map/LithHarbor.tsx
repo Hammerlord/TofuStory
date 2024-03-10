@@ -124,9 +124,7 @@ const skipScript: EventScene = {
             background: LithHarborCityBGImage,
             scene: CaseyBackdrop,
             disableTransition: true,
-            dialog: [
-                "Hey Mushie! Not your first rodeo, huh? Here's the stuff you would've gotten from the events in town. Good luck out there!",
-            ],
+            dialog: ["Hey Mushie! Here's the stuff you would've gotten from the events in town. Good luck out there!"],
         },
     ],
 };
@@ -206,11 +204,6 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
         onClickScene &&
             onClickScene(skipScript, () => {
                 setIsExiting(true);
-
-                if (!visited[LITH_PLACES.SHARK]) {
-                    dispatch(acquireItems([halfEatenHotdog]));
-                }
-
                 const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
                     (v) => !v
                 ).length;
@@ -357,11 +350,12 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                     <ItemRewards
                         player={player}
                         playerCurrentItems={player.items}
-                        overrideItems={olafRewards}
+                        overrideItemChoices={olafRewards}
                         onLoot={({ items }) => {
                             dispatch(acquireItems(items));
                         }}
                         onClose={handleCloseAcquireItems}
+                        itemRewards={!visited[LITH_PLACES.SHARK] ? [halfEatenHotdog] : []}
                     />
                 )}
                 {showAcquireAbility > 0 && (
