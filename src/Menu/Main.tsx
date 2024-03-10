@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { clamp } from "ramda";
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Camp from "../Map/Camp";
 import Map from "../Map/Map";
@@ -25,6 +25,7 @@ import { Item, RARITIES } from "../item/types";
 import ScenePlayer from "../scene/ScenePlayer";
 import TradingPost from "../scene/TradingPost";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
+import { introScene, startJourneyScene } from "../scene/misc";
 import { EventScene, SCENE_CONDITION_TYPES, SceneCondition } from "../scene/types";
 import { getRandomItem } from "../utils";
 import Overlay from "../view/Overlay";
@@ -39,7 +40,6 @@ import Shop from "./Shop";
 import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { introScene, startJourneyScene } from "../scene/misc";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -138,6 +138,8 @@ const Main = () => {
     const [openClassSelection, setOpenClassSelection] = useState(true);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
 
+    const transitionRef: MutableRefObject<ReturnType<typeof setTimeout> | null> = useRef(null);
+
     const resetTravels = () => {
         const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
         //const route = generateTravelRoute({ startingRoute: { ...toLith } });
@@ -220,11 +222,15 @@ const Main = () => {
     };
 
     const handleTransition = (callback: Function = () => {}) => {
+        if (transitionRef.current) {
+            return;
+        }
         setShowTransitionOverlay(true);
-        setTimeout(() => {
+        transitionRef.current = setTimeout(() => {
             callback();
             setTimeout(() => {
                 setShowTransitionOverlay(false);
+                transitionRef.current = null;
             }, TRANSITION_TIME * 1000);
         }, TRANSITION_TIME * 1000);
     };

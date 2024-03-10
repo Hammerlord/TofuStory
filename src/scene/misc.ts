@@ -35,9 +35,9 @@ export const introScene: EventScene = {
             disableBackground: true,
             disableTransition: true,
             dialog: [
-                "[As you gain your bearings, you notice a nearby portside town. Something about blue roofs and white stones seems familiar, though you don't know what exactly.",
+                "[As you gain your bearings, you notice a portside town nearby. Something about blue roofs and white stones seems familiar, though you can't place what exactly.",
                 "Well, civilization is a welcome sight, isn't it?",
-                "Maybe you can start there.]",
+                "Let's start there.]",
             ],
         },
     ],
@@ -54,10 +54,7 @@ export const startJourneyScene: EventScene = {
         {
             disableBackground: true,
             disableTransition: true,
-            dialog: [
-                "[Can this really be your fate?",
-                "Somewhere on this island, there must be answers. You'll have to journey to find them, whatever adversity you must face.]",
-            ],
+            dialog: ["[Can this really be your fate?", "Somewhere on this island, there has to be answers. Journey to find them.]"],
         },
     ],
 };
