@@ -26,6 +26,7 @@ import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import { Combatant, Player } from "./types";
 import { playDyingAnimation, playHitAnimation } from "./animations";
+import { BLUE, RED } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -402,6 +403,14 @@ const CombatantView = forwardRef(
 
         const imageNode = getImageNode(imageProps);
         const dialog = (actionParent as unknown as Ability)?.dialog || "";
+        let reticleColor;
+        if (isTargeted) {
+            if (isEnemy) {
+                reticleColor = RED;
+            } else {
+                reticleColor = BLUE;
+            }
+        }
 
         return (
             <div
@@ -490,7 +499,7 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                 </div>
-                {showReticle && <Reticle className={classes.reticle} />}
+                {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
             </div>
         );
     }

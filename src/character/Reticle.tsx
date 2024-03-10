@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
+import { BLUE, RED } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     "@keyframes throb": {
@@ -18,7 +19,11 @@ const useStyles = createUseStyles({
     },
 });
 
-const Reticle = ({ color = "rgba(0, 0, 0, 0.3)", className, ...props }) => {
+export const DEFAULT_RETICLE_COLOR = "rgba(0, 0, 0, 0.3)";
+export const OFFENSE_RETICLE_COLOR = RED;
+export const SUPPORT_RETICLE_COLOR = BLUE;
+
+const Reticle = ({ color = DEFAULT_RETICLE_COLOR, className, ...props }) => {
     const classes = useStyles();
     return (
         <div className={classNames(classes.root, className)} {...props}>

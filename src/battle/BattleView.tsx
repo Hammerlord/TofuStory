@@ -673,10 +673,11 @@ const BattlefieldContainer = () => {
         }
 
         const hoveredIndex = hoveredCombatant?.index;
+        const selectedAbility = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
         return (
-            isValidTarget({ ability: selectedAbilityFromHand, side, index: hoveredIndex, getState: () => state, actorId }) &&
-            isWithinAbilityArea({ ability: selectedAbilityFromHand, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
+            isValidTarget({ ability: selectedAbility, side, index: hoveredIndex, getState: () => state, actorId }) &&
+            isWithinAbilityArea({ ability: selectedAbility, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
         );
     };
 
