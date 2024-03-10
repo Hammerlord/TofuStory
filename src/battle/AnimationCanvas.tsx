@@ -158,8 +158,20 @@ const AnimationCanvas = ({
     }, [actorElement]);
 
     const { icon, animation, animationOptions } = action || {};
-    const { mirrorX, width, height, rotateToFaceTarget, rotate, opacity, flash, fadeOut, sidewinder, brightness, ricochet } =
-        animationOptions || {};
+    const {
+        mirrorX,
+        width,
+        height,
+        rotateToFaceTarget,
+        rotate,
+        opacity,
+        flash,
+        fadeOut,
+        sidewinder,
+        brightness,
+        ricochet,
+        disableScreenShake,
+    } = animationOptions || {};
     const classes = useStyles({ playbackTime, flash, brightness } as any)();
 
     // "Beam" animations shoot a bunch of projectile images
@@ -227,7 +239,7 @@ const AnimationCanvas = ({
         } else if (animation === ANIMATION_TYPES.STOMP) {
             const shakeDuration = 175;
             const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
-            if (battlefieldRef.current) {
+            if (battlefieldRef.current && !disableScreenShake) {
                 playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
             }
 

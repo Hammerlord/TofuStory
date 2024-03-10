@@ -511,6 +511,7 @@ export type Action = {
         brightness?: number; // Value of 1 is normal brightness
         // Bounces between numTargets within targetArea.
         ricochet?: boolean;
+        disableScreenShake?: boolean; // Only applicable for stomp
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: {

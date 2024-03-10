@@ -4,6 +4,7 @@ import {
     BlackManualImage,
     BlueMushroomImage,
     BlueMushroomJumpImage,
+    BlueMushroomJumpRightImage,
     BlueSnailImage,
     BombImage,
     CaseyImage,
@@ -2395,18 +2396,49 @@ export const blueMushroom: Minion = {
                         action: {
                             type: ACTION_TYPES.EFFECT,
                             target: TARGET_TYPES.SELF,
+                            animation: ANIMATION_TYPES.STOMP,
+                            animationOptions: {
+                                disableScreenShake: true,
+                            },
                             effects: [
                                 {
                                     ...attackPower,
                                     duration: 3,
                                 },
                             ],
-                            playbackTime: 300,
+                            playbackTime: 600,
                         },
                     },
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     area: 5,
+                    playbackTime: 400,
+                },
+            ],
+        },
+        {
+            name: "Do the Other Wave!",
+            resourceCost: 3,
+            image: BlueMushroomJumpRightImage,
+            actions: [
+                {
+                    induceCombatant: {
+                        mode: "right-to-left",
+                        action: {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            animation: ANIMATION_TYPES.STOMP,
+                            animationOptions: {
+                                disableScreenShake: true,
+                            },
+                            armor: 7,
+                            playbackTime: 600,
+                        },
+                    },
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    area: 5,
+                    playbackTime: 400,
                 },
             ],
         },

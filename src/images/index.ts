@@ -53,6 +53,7 @@ export { default as BlueMushroomImage } from "./BlueMushroom.gif";
 export { default as BlueMushroomCardImage } from "./BlueMushroomCard.png";
 export { default as BlueMushroomForestImage } from "./BlueMushroomForest.png";
 export { default as BlueMushroomJumpImage } from "./BlueMushroomJump.gif";
+export { default as BlueMushroomJumpRightImage } from "./BlueMushroomJumpRight.gif";
 export { default as BluePotionImage } from "./BluePotion.png";
 export { default as BlueRushImage } from "./BlueRush.png";
 export { default as BlueSaunaRobeImage } from "./BlueSaunaRobe.png";
