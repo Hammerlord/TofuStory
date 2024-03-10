@@ -840,7 +840,10 @@ const BattlefieldContainer = () => {
                 selectedIndex: hoveredCombatant.index,
                 action,
                 getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
-                actionParent: selectedAbilityFromHand,
+                actionParent: {
+                    ...selectedAbilityFromHand,
+                    resourceCost: selectedAbilityFromHand.resourceCost === "x" ? player.resources : selectedAbilityFromHand.resourceCost,
+                },
                 hand,
                 deck,
                 discard,
