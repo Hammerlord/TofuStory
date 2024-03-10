@@ -28,6 +28,9 @@ export interface Item {
     abilityChoices?: 1;
     rarity?: RARITIES;
     stacks?: number;
+    upgradeScreen?: {
+        maxUpgradeLevel: number;
+    };
     camp?: {
         abilityChoices?: number;
         healing?: number;

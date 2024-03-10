@@ -8,6 +8,10 @@ import Button from "../view/Button";
 import { cloneDeep } from "lodash";
 import { getUpgradeCard } from "./utils";
 import { Checkbox } from "@material-ui/core";
+import { useAppSelector } from "../hooks";
+import { Item } from "../item/types";
+import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { JOB_CARD_MAP } from "../ability";
 
 const useStyles = createUseStyles({
     root: {
@@ -30,10 +34,19 @@ const useStyles = createUseStyles({
     },
 });
 
-const UpgradeTile = ({ card, onClick, isSelected }: { card: CombatAbility; onClick; isSelected: boolean }) => {
+const UpgradeTile = ({
+    card,
+    upgrade,
+    onClick,
+    isSelected,
+}: {
+    card: CombatAbility;
+    upgrade?: CombatAbility;
+    onClick;
+    isSelected: boolean;
+}) => {
     const classes = useStyles();
 
-    const upgrade = getUpgradeCard(card);
     if (!upgrade) {
         return null;
     }
@@ -100,6 +113,15 @@ const CardUpgradeGrid = ({
 }) => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
+    const state = useAppSelector((state) => state);
+    const { character } = state;
+    const { player } = character || {};
+    const upgradeLevelBonus =
+        player?.items?.reduce((acc, item: Item) => {
+            const upgradeLevel = item?.upgradeScreen?.maxUpgradeLevel || 0;
+            return acc + upgradeLevel;
+        }, 0) || 0;
+
     const classes = useGridStyles();
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
@@ -108,6 +130,11 @@ const CardUpgradeGrid = ({
     }, {});
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
+    const upgrade = (card: CombatAbility) => {
+        const isStarter = JOB_CARD_MAP[player?.class]?.starters.some(({ name }) => name === card.name);
+        const maxUpgradeLevel = isStarter ? STARTER_CARD_MAX_LEVEL : DEFAULT_CARD_MAX_LEVEL + upgradeLevelBonus;
+        return getUpgradeCard(card, { maxLevel: maxUpgradeLevel });
+    };
 
     return (
         <div className={classes.root}>
@@ -121,6 +148,7 @@ const CardUpgradeGrid = ({
                         <div className={classes.tileContainer} key={card.instanceId}>
                             <UpgradeTile
                                 card={card}
+                                upgrade={upgrade(card)}
                                 onClick={() => setSelectedAbilityId(card.instanceId)}
                                 isSelected={selectedAbilityId === card.instanceId}
                             />
@@ -135,10 +163,9 @@ const CardUpgradeGrid = ({
                                                 return;
                                             }
 
-                                            const upgrade = getUpgradeCard(cardToUpgrade);
                                             const updatedCards = [
                                                 ...cards.filter((card) => card.instanceId !== selectedAbilityId),
-                                                upgrade,
+                                                upgrade(cardToUpgrade),
                                             ];
                                             onConfirm && onConfirm(updatedCards);
                                         }}

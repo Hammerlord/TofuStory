@@ -66,6 +66,7 @@ import {
     RisingStarImage,
     SafetyCharmImage,
     SapOfNependeathImage,
+    ScrollImage,
     SnowshoesImage,
     SpectrumGogglesImage,
     StarEarringsImage,
@@ -1903,4 +1904,15 @@ export const ironBall: Item = {
             ],
         },
     ],
+};
+
+export const scrollForClawForAtt: Item = {
+    name: "Scroll for Claw for ATT 60%",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    image: ScrollImage,
+    description: "Cards may be upgraded to level 3 on the Upgrade screen.",
+    upgradeScreen: {
+        maxUpgradeLevel: 1,
+    },
 };

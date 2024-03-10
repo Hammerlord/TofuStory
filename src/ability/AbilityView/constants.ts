@@ -52,5 +52,5 @@ export const resourceClassNameMap = {
     [PLAYER_CLASSES.MAGICIAN]: "Mana",
 };
 
-export const CARD_MAX_LEVEL = 2;
-export const STARTER_MAX_LEVEL = 3;
+export const DEFAULT_CARD_MAX_LEVEL = 2;
+export const STARTER_CARD_MAX_LEVEL = 3;

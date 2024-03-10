@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { Ability, CombatAbility, Effect } from "../ability/types";
 import { Item } from "../item/types";
 import { AbilityUpgrade } from "./../ability/types";
@@ -33,8 +33,9 @@ export const aggregateAbilityEffects = (abilities: Ability[]): Effect[] => {
     return effects;
 };
 
-export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?: boolean }) => {
-    if (!card.upgrades?.length || (card.level && card.level === card.maxLevel && !options?.ignoreMaxLevel)) {
+export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: boolean; maxLevel?: number } = {}) => {
+    const { ignoreMaxLevel = false, maxLevel = DEFAULT_CARD_MAX_LEVEL } = options;
+    if (!card.upgrades?.length || (card.level && card.level >= maxLevel && !ignoreMaxLevel)) {
         return;
     }
 
@@ -136,7 +137,6 @@ export const getUpgradeCard = (card: CombatAbility, options?: { ignoreMaxLevel?:
     return {
         ...newCard,
         level: (card.level || 1) + 1,
-        maxLevel: card.maxLevel || CARD_MAX_LEVEL,
         instanceId: card.instanceId || uuid.v4(),
     };
 };

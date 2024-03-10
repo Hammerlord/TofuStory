@@ -1,5 +1,4 @@
 import { PLAYER_CLASSES } from "../Menu/types";
-import { STARTER_MAX_LEVEL } from "./AbilityView/constants";
 import {
     abominableSnowman,
     arcaneAim,
@@ -61,9 +60,9 @@ import {
 import {
     anger,
     arsenal,
-    bash,
     battlelord,
     berserk,
+    bide,
     bladedArmor,
     bladestorm,
     block,
@@ -80,16 +79,18 @@ import {
     divineCharge,
     doubleTime,
     dustDevils,
+    forgehammer,
+    guardian,
     guillotine,
     gungnir,
     hammerang,
     hurlBoulder,
     hyperBody,
     ironBody,
+    ironMaiden,
     ironWill,
     judgment,
     magicCrash,
-    ironMaiden,
     overpower,
     parashockGuard,
     parry,
@@ -97,6 +98,7 @@ import {
     puncture,
     ragingBlow,
     recovery,
+    reinforce,
     rendingStrike,
     risingRage,
     rupture,
@@ -115,10 +117,6 @@ import {
     whirlwind,
     worldReaver,
     yell,
-    reinforce,
-    forgehammer,
-    guardian,
-    bide,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -180,13 +178,7 @@ export const JOB_CARD_MAP = {
             abominableSnowman,
             whelp,
         ],
-        // !!! mutation !!! -- starter cards specified here have a custom max level
-        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor].map(
-            (card) => {
-                card.maxLevel = STARTER_MAX_LEVEL;
-                return card;
-            }
-        ),
+        starters: [energyBolt, energyBolt, energyBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
@@ -251,10 +243,6 @@ export const JOB_CARD_MAP = {
             guardian,
             bide,
         ],
-        // !!! mutation !!! -- starter cards specified here have a custom max level
-        starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block].map((card) => {
-            card.maxLevel = STARTER_MAX_LEVEL;
-            return card;
-        }),
+        starters: [warLeap, slashBlast, slashBlast, slashBlast, slam, slam, slam, block, block, block],
     },
 };

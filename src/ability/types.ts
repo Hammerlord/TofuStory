@@ -623,8 +623,6 @@ export interface Ability {
     upgrades?: AbilityUpgrade[];
     /** The upgrade level of this ability; assumed to be 1 (baseline) if not provided */
     level?: number;
-    /** Max upgrade level of this ability, default 2 */
-    maxLevel?: number;
     /** On battle start, this ability is shuffled to the top of your deck. */
     preemptive?: boolean;
     /** This is treated as a prerequisite to using the ability */
