@@ -414,6 +414,7 @@ export const nependeathSap: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: SapOfNependeathImage,
                         onAttack: {
+                            disableTriggerFromProcs: true,
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                             effects: [{ ...poison, duration: 1 }],
