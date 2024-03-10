@@ -562,20 +562,8 @@ const BattlefieldContainer = () => {
     }, [currentWaveIndex]);
 
     const handleBattlePhase = () => {
-        if (isWinConditionTriggered && !showWaveClear) {
-            setShowWaveClear(true);
+        if (isWinConditionTriggered) {
             dispatch(updateBattleState(BATTLE_STATES.WAVE_END));
-
-            setTimeout(() => {
-                setShowWaveClear(false);
-                dispatch(onWaveClear());
-                if (waves[currentWaveIndex + 1]) {
-                    dispatch(nextWave());
-                    dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
-                } else {
-                    dispatch(onBattleEnd());
-                }
-            }, TURN_ANNOUNCEMENT_TIME);
         } else if (battleState === BATTLE_STATES.TURN_ENDING) {
             setTimeout(() => {
                 dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
@@ -631,6 +619,23 @@ const BattlefieldContainer = () => {
             }
 
             dispatch(updateBattleState(BATTLE_STATES.TURN_ENDING));
+        }
+
+        if (battleState === BATTLE_STATES.WAVE_END) {
+            setTimeout(() => {
+                setShowWaveClear(true);
+
+                setTimeout(() => {
+                    setShowWaveClear(false);
+                    dispatch(onWaveClear());
+                    if (waves[currentWaveIndex + 1]) {
+                        dispatch(nextWave());
+                        dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
+                    } else {
+                        dispatch(onBattleEnd());
+                    }
+                }, TURN_ANNOUNCEMENT_TIME);
+            }, 1000);
         }
     };
 
