@@ -16,6 +16,7 @@ const useStyles = createUseStyles({
         width: "100%",
         position: "absolute",
         top: 0,
+        pointerEvents: "none",
     },
     center: {
         position: "absolute",
