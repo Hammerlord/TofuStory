@@ -91,8 +91,8 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
 
     const tooltip = (
         <div>
-            {!combatant.isPlayer && "Estimates the damage of this character's next attack."}
-            {combatant.isPlayer && `Each attack power adds 1 damage, +1 for every ${ATTACK_POWER_COEFF} damage dealt by a skill.`}
+            {!combatant.isPlayer && "Estimated attack damage."}
+            {combatant.isPlayer && `Each attack power increases ability damage by ${ATTACK_POWER_COEFF}% + 1.`}
             {attackPowerEffects.length > 0 && (
                 <>
                     <hr />
