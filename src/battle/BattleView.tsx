@@ -876,11 +876,15 @@ const BattlefieldContainer = () => {
             });
 
             // For abilities like Combo Fury which gain damage when you attack
-            if (previousCombatantStates.battle?.[actorData.friendlySide]?.[actorData.index]) {
-                previousCombatantStates.battle[actorData.friendlySide][actorData.index] = {
-                    ...actorData.combatant,
-                    turnHistory: [...(actorData.combatant.turnHistory || []), action],
-                };
+            const recentActor = findCombatantData(() => previousCombatantStates, actorId);
+            if (recentActor) {
+                const friendly = previousCombatantStates.battle[recentActor.friendlySide];
+                if (friendly?.[recentActor.index]) {
+                    friendly[recentActor.index] = {
+                        ...recentActor.combatant,
+                        turnHistory: [...(recentActor.combatant.turnHistory || []), action],
+                    };
+                }
             }
         });
 
