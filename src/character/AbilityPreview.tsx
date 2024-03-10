@@ -47,6 +47,12 @@ const useStyles = createUseStyles({
     negative: {
         color: "#ff9b94",
     },
+    lethalIcon: {
+        display: "inline-block",
+        verticalAlign: "middle",
+        marginLeft: 8,
+        marginBottom: 2,
+    },
 });
 
 export interface PreviewStatUpdate {
@@ -103,7 +109,12 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                         key={["statUpdate", i].join("-")}
                     >
                         {rawDamage || 0}
-                        {nondeterministic && "?"} {isLethal && <Icon icon={CrossbonesIcon} size={"sm"} />}
+                        {nondeterministic && "?"}{" "}
+                        {isLethal && (
+                            <span className={classes.lethalIcon}>
+                                <Icon icon={CrossbonesIcon} size={"xs"} />
+                            </span>
+                        )}
                     </div>
                 );
             })}
