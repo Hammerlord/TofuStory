@@ -435,7 +435,7 @@ export const yell: Ability = {
                 {
                     name: "Admonished",
                     attackPower: -1,
-                    duration: 2,
+                    duration: 3,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
                     icon: WarMushImage,
@@ -2035,14 +2035,14 @@ export const gungnir: Ability = {
 
 export const ironMaiden: Ability = {
     name: "Iron Maiden",
-    resourceCost: 1,
+    resourceCost: 2,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
     description: "(Damage increased by Thorns.)",
     actions: [
         {
             target: TARGET_TYPES.SELF,
-            effects: [{ ...thorns, duration: 1 }],
+            effects: [{ ...thorns }],
             type: ACTION_TYPES.EFFECT,
         },
         {
