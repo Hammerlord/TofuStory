@@ -225,7 +225,7 @@ export const raging: Effect = {
 const vengeful: Effect = {
     name: "Vengeful",
     canBeSilenced: true,
-    duration: 2,
+    duration: 4,
     attackPower: 3,
     icon: JapaneseOgreIcon,
     type: EFFECT_TYPES.NONE,
