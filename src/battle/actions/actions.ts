@@ -1592,7 +1592,6 @@ const performAction = ({
 
         const battleSide = getState().battle[side];
         const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
-        const area = calculateActionArea({ action, actor: actorData, target });
 
         const { vacuum, movement, secondaryAction, autoCastAbilities, retreat } = action;
         const combatants = getState().battle[side];
@@ -1630,13 +1629,25 @@ const performAction = ({
         let updatedSecondary;
         const triggerSecondaryAction = () => {
             if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+                const { index: actorIndex, friendly, friendlySide } = findCombatantData(getState, actorId);
+                const recipientIndices = calculateTargetIndices({
+                    action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
+                    selectedIndex: actorIndex,
+                    side: friendlySide,
+                    actorData,
+                    targetData: actorData,
+                    battle: getState().battle,
+                });
+                const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
+
                 updatedSecondary = getUpdatedStats({
                     ...updatedStatsProps,
                     // Based on secondaryAction.target, but only actor recipient is supported for now
-                    recipientIds: [actorId],
+                    recipientIds,
                     selectedIndex: undefined,
                     action: secondaryAction,
                 });
+
                 dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
                 if (secondaryAction.returnParentCardToHand) {
                     // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
@@ -1667,6 +1678,7 @@ const performAction = ({
             triggerSecondaryAction();
         }
 
+        const area = calculateActionArea({ action, actor: actorData, target });
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         dispatch(checkHandleMovement({ movement, side, actorIndex: actorData.index, selectedIndex, source }));
         const updated = getUpdatedStats(updatedStatsProps);
