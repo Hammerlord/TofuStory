@@ -666,7 +666,7 @@ export const pigsRibbonItem: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: PigsRibbonImage,
                         canBeSilenced: true,
-                        duration: 1,
+                        duration: 2,
                         onReceiveAttack: {
                             disableTriggerFromProcs: true,
                             usableWhileStunned: false,
@@ -682,6 +682,9 @@ export const pigsRibbonItem: Item = {
                                     },
                                 ],
                             },
+                        },
+                        onTurnStart: {
+                            removeEffect: true,
                         },
                     },
                 ],
