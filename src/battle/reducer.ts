@@ -38,7 +38,8 @@ export interface BattleState {
     type: BATTLE_TYPES; // Determines the rewards at the end of battle
     itemRewards?: Item[];
     cardRewards?: Ability[];
-    disableCardRewards: boolean;
+    disableCardRewards?: boolean;
+    disableItemRewards?: boolean;
     notification?: Notification;
     totalDamageDealt: number; // Should include DoTs, etc.
     totalKills?: number;

@@ -101,6 +101,7 @@ export const startBattle = ({
     itemRewards,
     cardRewards,
     disableCardRewards,
+    disableItemRewards,
 }: {
     waves: Wave[];
     deck?: Ability[];
@@ -112,6 +113,7 @@ export const startBattle = ({
     itemRewards?: Item[];
     cardRewards?: Ability[];
     disableCardRewards?: boolean;
+    disableItemRewards?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { character } = getState();
@@ -172,6 +174,7 @@ export const startBattle = ({
             itemRewards,
             cardRewards,
             disableCardRewards,
+            disableItemRewards,
             totalDamageDealt: 0,
             totalKills: 0,
             charactersAttackedThisTurn: [],

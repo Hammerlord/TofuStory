@@ -17,8 +17,15 @@ import {
 import { CactusIcon, ShieldIcon } from "../images/icons";
 import { Fury, Mana } from "../resource/ResourcesView";
 
-export const warriorTutorial = {
+export interface Tutorial {
+    isTutorial?: boolean;
+    disableItemRewards?: boolean;
+    waves: Wave[];
+}
+
+export const warriorTutorial: Tutorial = {
     isTutorial: true,
+    disableItemRewards: true,
     waves: [
         {
             description: [
@@ -66,8 +73,9 @@ export const warriorTutorial = {
     ] as Wave[],
 };
 
-export const magicianTutorial = {
+export const magicianTutorial: Tutorial = {
     isTutorial: true,
+    disableItemRewards: true,
     waves: [
         {
             description: [
