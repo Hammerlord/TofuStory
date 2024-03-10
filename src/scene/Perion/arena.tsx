@@ -121,7 +121,7 @@ const ArenaBackdrop = ({ player, showTauromacis, showManji }: { player: Player; 
             <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander6, classes.character)} />
             <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander7, classes.character)} />
             <img src={announcer.image} alt="Announcer" className={classNames(classes.announcer, classes.character)} />
-            <Tooltip placement="top" title="..." open={true}>
+            <Tooltip placement="top" title="..." open={true} PopperProps={{ disablePortal: true }}>
                 <img
                     src={DancesWithBalrogSittingImage}
                     alt="Dances With Balrog"
