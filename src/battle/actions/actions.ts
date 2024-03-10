@@ -56,7 +56,7 @@ import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { getUpgradeCard } from "../../Menu/utils";
 
-const { updateBattle, updateBattleState, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 /**
@@ -1567,6 +1567,60 @@ export const calculateTargetIndices = ({
     }, []);
 };
 
+const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps }) => {
+    return (dispatch, getState) => {
+        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+            return;
+        }
+
+        const actorData = findCombatantData(getState, actorId);
+        const { index: actorIndex, friendly, friendlySide } = actorData;
+        const recipientIndices = calculateTargetIndices({
+            action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
+            selectedIndex: actorIndex,
+            side: friendlySide,
+            actorData,
+            targetData: actorData,
+            battle: getState().battle,
+        });
+        const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
+
+        const updatedSecondary = getUpdatedStats({
+            ...updatedStatsProps,
+            // Based on secondaryAction.target, but only actor recipient is supported for now
+            recipientIds,
+            selectedIndex: undefined,
+            action: secondaryAction,
+        });
+
+        dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
+        if (secondaryAction.returnParentCardToHand) {
+            // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
+            const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
+            dispatch(deleteCard(ability.instanceId));
+            const cardCopy: CombatAbility = {
+                ...ability,
+                effects: ability?.effects.filter((e: AbilityEffect) => {
+                    // TODO retain upgrades, but look for a less hard-baked way to do this
+                    return e.upgradedByLevels;
+                }),
+            };
+
+            dispatch(
+                checkCardActions(
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        addCards: [cardCopy],
+                    },
+                    parentSource
+                )
+            );
+        }
+
+        return updatedSecondary;
+    };
+};
+
 const performAction = ({
     action,
     selectedIndex,
@@ -1628,54 +1682,13 @@ const performAction = ({
 
         let updatedSecondary;
         const triggerSecondaryAction = () => {
-            if (secondaryAction && passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
-                const { index: actorIndex, friendly, friendlySide } = findCombatantData(getState, actorId);
-                const recipientIndices = calculateTargetIndices({
-                    action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
-                    selectedIndex: actorIndex,
-                    side: friendlySide,
-                    actorData,
-                    targetData: actorData,
-                    battle: getState().battle,
-                });
-                const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
-
-                updatedSecondary = getUpdatedStats({
-                    ...updatedStatsProps,
-                    // Based on secondaryAction.target, but only actor recipient is supported for now
-                    recipientIds,
-                    selectedIndex: undefined,
-                    action: secondaryAction,
-                });
-
-                dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
-                if (secondaryAction.returnParentCardToHand) {
-                    // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
-                    const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
-                    dispatch(deleteCard(ability.instanceId));
-                    const cardCopy: CombatAbility = {
-                        ...ability,
-                        effects: ability?.effects.filter((e: AbilityEffect) => {
-                            // TODO retain upgrades, but look for a less hard-baked way to do this
-                            return e.upgradedByLevels;
-                        }),
-                    };
-
-                    dispatch(
-                        checkCardActions(
-                            {
-                                type: ACTION_TYPES.EFFECT,
-                                addCards: [cardCopy],
-                            },
-                            parentSource
-                        )
-                    );
-                }
-            }
+            return dispatch(
+                handleSecondaryAction({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps })
+            );
         };
 
         if (secondaryAction?.isPriority) {
-            triggerSecondaryAction();
+            updatedSecondary = triggerSecondaryAction();
         }
 
         const area = calculateActionArea({ action, actor: actorData, target });
@@ -1696,7 +1709,7 @@ const performAction = ({
         });
 
         if (!secondaryAction?.isPriority) {
-            triggerSecondaryAction();
+            updatedSecondary = triggerSecondaryAction();
         }
 
         // HACK: ensure that the selected index is hit first in playback
