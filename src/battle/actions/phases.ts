@@ -75,7 +75,7 @@ export const onWaveClear = () => {
 export const nextWave = () => {
     return (dispatch, getState) => {
         const { waves, currentWaveIndex, deck, hand, discard } = getState().battle;
-        const { presetDeck, enemies } = waves[currentWaveIndex + 1] || {};
+        const { presetDeck, enemies = [] } = waves[currentWaveIndex + 1] || {};
 
         dispatch(
             updateBattle({

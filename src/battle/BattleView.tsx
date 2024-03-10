@@ -564,6 +564,8 @@ const BattlefieldContainer = () => {
     const handleBattlePhase = () => {
         if (isWinConditionTriggered && !showWaveClear) {
             setShowWaveClear(true);
+            dispatch(updateBattleState(BATTLE_STATES.WAVE_END));
+
             setTimeout(() => {
                 setShowWaveClear(false);
                 dispatch(onWaveClear());
@@ -592,7 +594,7 @@ const BattlefieldContainer = () => {
             setTimeout(() => {
                 dispatch(onBattleStart());
                 dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
-            }, 1000);
+            }, 500);
             return;
         }
 
@@ -629,7 +631,6 @@ const BattlefieldContainer = () => {
             }
 
             dispatch(updateBattleState(BATTLE_STATES.TURN_ENDING));
-            return;
         }
     };
 

@@ -113,6 +113,11 @@ export const battleStateSlice = createSlice({
             if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state.state)) {
                 return state;
             }
+
+            // If the wave is over due to end of turn effects like DoTs or Charged Energy Bolt, don't proceed to the enemy's turn
+            if (state.state === BATTLE_STATES.WAVE_END && action.payload === BATTLE_STATES.TURN_ENDING) {
+                return state;
+            }
             return {
                 ...state,
                 state: action.payload,

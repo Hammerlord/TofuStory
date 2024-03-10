@@ -139,17 +139,18 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
-        const { playerSide, discard, hand } = getState().battle;
+        const { playerSide } = getState().battle;
         dispatch(onEndTurnTriggers(playerSide));
 
         setTimeout(() => {
+            const { discard, hand } = getState().battle;
             dispatch(
                 updateBattle({
                     discard: [...prepareForDiscard(hand), ...discard],
                     hand: [],
                 })
             );
-        }, 1000);
+        }, 500);
     };
 };
 
