@@ -96,7 +96,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, preventArmorDecay, stun, stashCardEffect } from "./../Effects";
+import { armorUp, burn, chill, freeze, preventArmorDecay, stun, stashCardEffect, preventArmorDecayPlayer } from "./../Effects";
 
 export const energyBolt: Ability = {
     name: "Energy Bolt",
@@ -1748,12 +1748,7 @@ export const arcaneWard: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
             armor: 15,
-            effects: [
-                {
-                    ...preventArmorDecay,
-                    duration: 1,
-                },
-            ],
+            effects: [preventArmorDecayPlayer],
         },
     ],
     upgrades: [
