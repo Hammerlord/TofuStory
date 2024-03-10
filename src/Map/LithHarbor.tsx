@@ -124,7 +124,24 @@ const skipScript: EventScene = {
             background: LithHarborCityBGImage,
             scene: CaseyBackdrop,
             disableTransition: true,
-            dialog: ["Hey Mushie! Here's the stuff you would've gotten from the events in town. Good luck out there!"],
+            dialog: [
+                "Hey Mushie! Before you go, here's the stuff you would've gotten from the remaining events in town. Good luck out there!",
+            ],
+        },
+    ],
+};
+
+/**
+ * If the player is only missing the hotdog, grant it through a dialog option rather than through ItemRewards
+ */
+const skipWithHotdogScript: EventScene = {
+    ...skipScript,
+    script: [
+        {
+            ...skipScript.script[0],
+            items: {
+                itemPool: [halfEatenHotdog],
+            },
         },
     ],
 };
@@ -171,12 +188,13 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isShopScriptOpen, setIsShopScriptOpen] = useState(false);
 
-    const isFulfilledExitRequirement = Object.values(visited).length >= Object.values(LITH_PLACES).length;
+    const exitRequirements = [...Object.values(LITH_PLACES), TOWN_PLACES.SHOP];
+    const isFulfilledExitRequirement = Object.values(visited).length >= exitRequirements.length;
     const dispatch = useAppDispatch();
 
-    const handleClickEvent = (eventKey: string, scene) => {
+    const handleClickEvent = (eventKey: string, scene: EventScene) => {
         if (checkVisitPlace(eventKey)) {
-            onClickScene && onClickScene(scene);
+            onClickScene(scene);
         }
     };
 
@@ -200,16 +218,16 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
             onExit();
             return;
         }
+        const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
+            (v) => !v
+        ).length;
 
-        onClickScene &&
-            onClickScene(skipScript, () => {
-                setIsExiting(true);
-                const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
-                    (v) => !v
-                ).length;
-                setShowAcquireAbility(combatsNotVisited);
-                setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
-            });
+        const script = combatsNotVisited === 0 ? skipWithHotdogScript : skipScript;
+        onClickScene(script, () => {
+            setIsExiting(true);
+            setShowAcquireAbility(combatsNotVisited);
+            setShowAcquireItem(!visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]);
+        });
     };
 
     const handleCloseAcquireItems = () => {
