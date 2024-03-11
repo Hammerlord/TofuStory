@@ -369,6 +369,7 @@ export const alligatorTube: Item = {
                 effects: [
                     {
                         name: "Attack Power Increase",
+                        disableDisplayIcon: true,
                         icon: WeaponMasteryImage,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,

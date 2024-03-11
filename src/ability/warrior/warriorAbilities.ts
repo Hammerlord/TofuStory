@@ -1737,6 +1737,7 @@ export const burningSoulBlade: Ability = {
             {
                 name: "Soul Blade",
                 icon: BurningSoulBladeMinionImage,
+                disableDisplayIcon: true,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 description: "When this character attacks, it gains +1 ATT.",
