@@ -24,14 +24,14 @@ import {
     WeaponMasteryImage,
 } from "../../images";
 
-const mesoCoin: Minion = {
+const coin: Minion = {
     name: "Meso",
     image: MesoImage,
     maxHP: 1,
     mesos: 1,
 };
 
-const goldMesoCoin: Minion = {
+const goldCoin: Minion = {
     name: "Meso",
     image: MesoCoinImage,
     maxHP: 1,
@@ -57,16 +57,16 @@ const richyRich: Effect = {
                     target: TARGET_TYPES.SELF,
                     summon: [
                         {
-                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                            minion: [coin, coin, goldCoin],
                         },
                         {
-                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                            minion: [coin, coin, goldCoin],
                         },
                         {
-                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                            minion: [coin, coin, goldCoin],
                         },
                         {
-                            minion: [mesoCoin, mesoCoin, goldMesoCoin],
+                            minion: [coin, coin, goldCoin],
                         },
                     ],
                     playbackTime: 2000,
