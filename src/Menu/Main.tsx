@@ -223,6 +223,8 @@ const Main = () => {
 
     const handleTransition = (callback: Function = () => {}) => {
         if (transitionRef.current) {
+            // Just call the callback immediately
+            callback();
             return;
         }
         setShowTransitionOverlay(true);
