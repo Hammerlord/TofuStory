@@ -2379,11 +2379,18 @@ export const ironHog: Minion = {
 export const blueMushroom: Minion = {
     name: "Blue Mushroom",
     image: BlueMushroomImage,
-    maxHP: 65,
+    maxHP: 60,
     mesos: 12,
     abilities: [
         {
             ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
         },
         {
             name: "Do the Wave!",

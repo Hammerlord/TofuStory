@@ -22,7 +22,6 @@ export const slimeGlobule: Minion = {
     resources: 1,
     effects: [
         stun,
-        hardy,
         {
             name: "Vulnerable",
             type: EFFECT_TYPES.NONE,
