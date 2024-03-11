@@ -1147,9 +1147,11 @@ export const doubleTime: Ability = {
             actions: [
                 {
                     selectCards: {
-                        effects: {
-                            resourceCost: -1,
-                        },
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
                     },
                 },
             ],
