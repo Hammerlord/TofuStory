@@ -1339,6 +1339,7 @@ const checkHandleVacuum = ({
         if (!vacuum) {
             return;
         }
+
         dispatch(
             updateBattle({
                 [side]: applyVacuum({
@@ -1348,6 +1349,15 @@ const checkHandleVacuum = ({
                     distance: vacuum,
                 }),
             })
+        );
+
+        // Give the board a bit of time to update. Issue where Close Combat was causing the player character to fly off to (0, 0).
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                id: uuid.v4(),
+                playbackTime: 10,
+            } as Event)
         );
     };
 };

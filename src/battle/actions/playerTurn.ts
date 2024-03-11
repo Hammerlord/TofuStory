@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
-import { CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -27,7 +27,27 @@ export const onUsePlayerAbility = ({
 
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
         const ability: CombatAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
-        dispatch(removeAbilityFromHand(selectedAbilityId));
+        if (ability?.reusable) {
+            // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
+            dispatch(
+                updateBattle({
+                    hand: hand.map((card: CombatAbility) => {
+                        if (card.instanceId === selectedAbilityId) {
+                            return {
+                                ...card,
+                                effects: (card.effects || []).filter((effect: AbilityEffect) => {
+                                    // Do not keep any resource cost change or players can reuse the ability indefinitely
+                                    return !effect.resourceCost;
+                                }),
+                            };
+                        }
+                        return applyAbilityEventEffects({ event: card.onAbilityUse, ability: card });
+                    }),
+                })
+            );
+        } else {
+            dispatch(removeAbilityFromHand(selectedAbilityId));
+        }
 
         dispatch(
             useAbility({
@@ -71,18 +91,13 @@ const removeAbilityFromHand = (abilityId: string) => {
 
 const handleDiscard = (ability: CombatAbility) => {
     return (dispatch, getState) => {
-        const { removeAfterTurn, reusable, depletedOnUse, minion } = ability;
+        const { removeAfterTurn, depletedOnUse, minion } = ability;
 
         const { hand, discard, depleted } = getState().battle;
         const newDiscard = discard.slice();
         const newHand = hand.slice();
         const newDepleted = depleted.slice();
-        if (reusable) {
-            newHand.push({
-                ...ability,
-                effects: [],
-            });
-        } else if (depletedOnUse) {
+        if (depletedOnUse) {
             newDepleted.push(ability);
         } else if (!minion && !removeAfterTurn) {
             // Minions go into a special bucket rather than immediately to discard; see useAbility
