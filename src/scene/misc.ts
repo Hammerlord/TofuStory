@@ -35,7 +35,7 @@ export const introScene: EventScene = {
             disableBackground: true,
             disableTransition: true,
             dialog: [
-                "[As you gain your bearings, you notice a portside town nearby. Something about blue roofs and white stones seems familiar, though you can't place what exactly.",
+                "[As you gain your bearings, you notice a seaside town nearby. Something about blue roofs and white stones seems familiar, though you can't place what exactly.",
                 "Well, civilization is a welcome sight, isn't it?",
                 "Let's start there.]",
             ],
