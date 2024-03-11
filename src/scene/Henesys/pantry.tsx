@@ -1,11 +1,8 @@
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
-import { miniBean } from "../../enemy/miniBean";
-import { CakeSliceImage, FrownyMaskImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
-import { Item, ITEM_TYPES } from "../../item/types";
+import { eat, miniBean } from "../../enemy/miniBean";
+import { CakeSliceImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
+import { ITEM_TYPES, Item } from "../../item/types";
 import { EventScene, ScriptResponse } from "../types";
-import { Minion } from "../../ability/types";
-import { eat } from "../../enemy/miniBean";
 import PantryScene from "./PantryScene";
 
 const miniBeanCharacter = {
@@ -31,75 +28,6 @@ const miniBeanFight = {
     ],
     backgroundMusic: "https://maplestory.io/api/GMS/236/music/Bgm16/FightingPinkBeen",
     type: BATTLE_TYPES.BOSS,
-};
-
-export const mayaEnemy: Minion = {
-    name: "Maya",
-    image: MayaImage,
-    maxHP: 15,
-    abilities: [
-        {
-            name: "Cower",
-            image: FrownyMaskImage,
-            dialog: "Help!",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 2,
-                },
-            ],
-        },
-    ],
-    effects: [
-        {
-            name: "Help!",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.NONE,
-            canBeSilenced: false,
-            onReceiveAttack: {
-                removeEffect: true,
-                ability: {
-                    name: "",
-                    actions: [
-                        {
-                            type: ACTION_TYPES.NONE,
-                            target: TARGET_TYPES.SELF,
-                            effects: [
-                                {
-                                    name: "Help!",
-                                    type: EFFECT_TYPES.FEAR,
-                                    class: EFFECT_CLASSES.NONE,
-                                    onReceiveAttack: {
-                                        ability: {
-                                            name: "Help!",
-                                            image: FrownyMaskImage,
-                                            actions: [
-                                                {
-                                                    type: ACTION_TYPES.EFFECT,
-                                                    target: TARGET_TYPES.SELF,
-                                                    movement: 1,
-                                                },
-                                            ],
-                                        },
-                                    },
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
-        },
-    ],
-};
-
-const mayaFight = {
-    characters: [],
-    waves: [
-        {
-            enemies: [null, null, mayaEnemy, null, null],
-        },
-    ],
 };
 
 const cake: Item = {
@@ -178,22 +106,6 @@ const postFightDialog2 = {
                             text: "Time to go.",
                             isExit: true,
                         },
-                        {
-                            text: "Mug Maya.",
-                            encounter: mayaFight,
-                            next: [
-                                {
-                                    scene: (other) => <PantryScene {...other} hideMiniBean={true} hideMaya={true} />,
-                                    dialog: ["[The house is a mess. Perhaps it's time to go.]"],
-                                    responses: [
-                                        {
-                                            text: "Leave.",
-                                            isExit: true,
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
                     ],
                 },
             ],
@@ -230,82 +142,6 @@ const miniBeanFightOption2: ScriptResponse = {
             dialog: ["..."],
         },
         postFightDialog2,
-    ],
-};
-
-const mugMayaOption: ScriptResponse = {
-    text: "Take the creature's advice and mug Maya.",
-    encounter: mayaFight,
-    next: [
-        {
-            scene: (other) => <PantryScene {...other} hideMaya={true} />,
-            speaker: miniBeanCharacter,
-            dialog: ["Wow, you sure showed that NPC! That was hysterical!"],
-        },
-        {
-            speaker: miniBeanCharacter,
-            dialog: ["Your story ain't shaping up to be half bad, yanno. Can't say I've ever seen a {{ class }} mushroom, eheheheh."],
-        },
-        {
-            speaker: miniBeanCharacter,
-            dialog: [
-                "You're probably gonna get some heroes on your trail for that one, though. Hahaha! Hope you're ready.",
-                "What? I didn't lie to ya. It WAS free EXP! As free as it was gonna get, anyway!",
-            ],
-            responses: [
-                {
-                    text: "Turn against the creature.",
-                    next: [
-                        {
-                            speaker: miniBeanCharacter,
-                            dialog: [
-                                "You can't tell me you're THAT offended. Sheesh!",
-                                "Oh, I get it, seekers just gotta gobble each other up all the time, one story to rule 'em all, or whatever.",
-                            ],
-                        },
-                        {
-                            speaker: miniBeanCharacter,
-                            dialog: [
-                                "I'm not much in the business of eating my fellows, either, but hey, if you wanna scrap, have at it!",
-                                "[The creature boxes the air with its fists.]",
-                            ],
-                            responses: [
-                                {
-                                    text: "Fight Mini Bean.",
-                                    encounter: miniBeanFight,
-                                    next: [
-                                        {
-                                            speaker: miniBeanCharacter,
-                                            dialog: ["Urgh, not again... Just needed more... food!", "Curse... this... bo... dy..."],
-                                        },
-                                        {
-                                            speaker: miniBeanCharacter,
-                                            dialog: ["..."],
-                                        },
-                                        {
-                                            scene: (other) => <PantryScene {...other} hideMaya={true} hideMiniBean={true} />,
-                                            dialog: ["[There is some leftover food available.]"],
-                                            items: {
-                                                itemPool: [cake, unagi],
-                                            },
-                                        },
-                                        {
-                                            dialog: ["[The house is a mess. Perhaps it's time to go.]"],
-                                            responses: [
-                                                {
-                                                    text: "Leave.",
-                                                    isExit: true,
-                                                },
-                                            ],
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
     ],
 };
 
@@ -577,12 +413,10 @@ const pantry: EventScene = {
                                                                         },
                                                                     ],
                                                                 },
-                                                                mugMayaOption,
                                                             ],
                                                         },
                                                     ],
                                                 },
-                                                mugMayaOption,
                                             ],
                                         },
                                     ],
