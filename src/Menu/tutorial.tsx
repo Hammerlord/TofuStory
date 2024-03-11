@@ -1,5 +1,5 @@
-import { energyBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
-import { block, slam, slashBlast } from "../ability/warrior/warriorAbilities";
+import { lesserBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
+import { block, slam, cleave } from "../ability/warrior/warriorAbilities";
 import { Wave } from "../battle/types";
 import { basicAoeDummyMagician, basicDummy, basicDummy2, spikedDummy } from "../enemy/dummy";
 import Icon from "../icon/Icon";
@@ -42,11 +42,11 @@ export const warriorTutorial: Tutorial = {
         {
             description: [
                 <>
-                    Target multiple enemies with <Icon icon={SlashBlastImage} /> Slash Blast.
+                    Target multiple enemies with <Icon icon={SlashBlastImage} /> Cleave.
                 </>,
             ],
             enemies: [null, { ...basicDummy, maxHP: 10 }, null, { ...basicDummy, maxHP: 10 }, null],
-            presetDeck: [slashBlast, slashBlast, slashBlast],
+            presetDeck: [cleave, cleave, cleave],
         },
         {
             description: [
@@ -58,7 +58,7 @@ export const warriorTutorial: Tutorial = {
                 </>,
             ],
             enemies: [basicDummy2, basicDummy2, basicDummy2, basicDummy2, basicDummy2],
-            presetDeck: [block, block, block, slashBlast, slashBlast],
+            presetDeck: [block, block, block, cleave, cleave],
         },
         {
             description: [
@@ -136,7 +136,7 @@ export const magicianTutorial: Tutorial = {
                 <>Try playing a combination of cards to see how this works.</>,
             ],
             enemies: [null, { ...basicDummy, maxHP: 7 }, { ...basicDummy, maxHP: 23 }, { ...basicDummy, maxHP: 7 }, null],
-            presetDeck: [magicClaw, magicFang, energyBolt],
+            presetDeck: [magicClaw, magicFang, lesserBolt],
         },
     ] as Wave[],
 };

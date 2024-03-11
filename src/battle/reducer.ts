@@ -114,7 +114,7 @@ export const battleStateSlice = createSlice({
                 return state;
             }
 
-            // If the wave is over due to end of turn effects like DoTs or Charged Energy Bolt, don't proceed to the enemy's turn
+            // If the wave is over due to end of turn effects like DoTs or Charged Bolt, don't proceed to the enemy's turn
             if (state.state === BATTLE_STATES.WAVE_END && action.payload === BATTLE_STATES.TURN_ENDING) {
                 return state;
             }

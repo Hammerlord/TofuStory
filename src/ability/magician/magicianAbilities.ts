@@ -98,8 +98,8 @@ import {
 } from "../types";
 import { armorUp, burn, chill, freeze, preventArmorDecay, stun, stashCardEffect, preventArmorDecayPlayer } from "./../Effects";
 
-export const energyBolt: Ability = {
-    name: "Energy Bolt",
+export const lesserBolt: Ability = {
+    name: "Lesser Bolt",
     image: OldEnergyBoltImage,
     resourceCost: 0,
     rarity: RARITIES.COMMON,
@@ -1027,8 +1027,8 @@ export const throwTheBook: Ability = {
     ],
 };
 
-export const magicBooster: Ability = {
-    name: "Magic Booster",
+export const quickspell: Ability = {
+    name: "Quickspell",
     image: MagicBoosterImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
@@ -1063,8 +1063,8 @@ export const magicBooster: Ability = {
     ],
 };
 
-export const coldBeam: Ability = {
-    name: "Cold Beam",
+export const glacier: Ability = {
+    name: "Glacier",
     image: ColdBeamImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,

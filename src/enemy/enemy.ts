@@ -128,7 +128,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { bash, block, slashBlast } from "./../ability/warrior/warriorAbilities";
+import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
 import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effect";
 
@@ -547,7 +547,7 @@ export const noobAWarrior = {
     abilities: [
         bash,
         {
-            ...slashBlast,
+            ...cleave,
             resourceCost: 0,
         },
         bash,
@@ -566,7 +566,7 @@ export const noobBWarrior = {
     abilities: [
         bash,
         {
-            ...slashBlast,
+            ...cleave,
             resourceCost: 0,
         },
         bash,

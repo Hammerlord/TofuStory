@@ -109,8 +109,8 @@ export const bash: Ability = {
     ],
 };
 
-export const warLeap: Ability = {
-    name: "War Leap",
+export const charge: Ability = {
+    name: "Charge",
     resourceCost: 0,
     image: WarLeapImage,
     actions: [
@@ -132,8 +132,8 @@ export const warLeap: Ability = {
     ],
 };
 
-export const slashBlast: Ability = {
-    name: "Slash Blast",
+export const cleave: Ability = {
+    name: "Cleave",
     resourceCost: 1,
     image: SlashBlastImage,
     actions: [
@@ -786,8 +786,8 @@ export const recovery: Ability = {
     ],
 };
 
-export const magicCrash: Ability = {
-    name: "Magic Crash",
+export const disrupt: Ability = {
+    name: "Disrupt",
     resourceCost: 1,
     image: MagicCrashImage,
     depletedOnUse: true,
@@ -867,7 +867,7 @@ export const ironBody: Ability = {
     ],
 };
 
-export const rendingStrike: Ability = {
+export const rend: Ability = {
     name: "Rend",
     resourceCost: 1,
     image: BlastExtraStrikeImage,
@@ -930,7 +930,7 @@ export const whirlwind: Ability = {
     ],
 };
 
-export const rupture: Ability = {
+export const rightInTheKisser: Ability = {
     name: "Right In The Kisser",
     resourceCost: 1,
     image: RedFistOfFuryImage,
@@ -1710,14 +1710,14 @@ export const risingRage: Ability = {
 };
 
 export const burningSoulBlade: Ability = {
-    name: "Burning Soul Blade",
+    name: "Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
     description: "When this character attacks, it gains +1 ATT.",
     rarity: RARITIES.RARE,
     actions: [],
     minion: {
-        name: "Burning Soul Blade",
+        name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
         maxHP: 1,
         abilities: [
@@ -1735,7 +1735,7 @@ export const burningSoulBlade: Ability = {
         effects: [
             { ...immunity, duration: 2 },
             {
-                name: "Burning Soul Blade",
+                name: "Soul Blade",
                 icon: BurningSoulBladeMinionImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
@@ -1855,8 +1855,8 @@ export const judgment: Ability = {
     ],
 };
 
-export const parashockGuard: Ability = {
-    name: "Parashock Guard",
+export const shockGuard: Ability = {
+    name: "Shock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
     description: "Double your current Armor.",
@@ -2334,8 +2334,8 @@ export const guardian: Ability = {
     ],
 };
 
-export const chanceAttack: Ability = {
-    name: "Chance Attack",
+export const pursuit: Ability = {
+    name: "Pursuit",
     image: ChanceAttackImage,
     description: "When you apply a debuff, attack the target for {{ nestedAbility.actions.0.damage }} damage.",
     resourceCost: 1,
@@ -2346,7 +2346,7 @@ export const chanceAttack: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Chance Attack Effect",
+                    name: "Pursuit Effect",
                     icon: ChanceAttackImage,
                     duration: 5,
                     type: EFFECT_TYPES.NONE,
@@ -2354,7 +2354,7 @@ export const chanceAttack: Ability = {
                     onApplyEffect: {
                         targetType: TRIGGER_TARGET_TYPES.TARGET,
                         ability: {
-                            name: "Chance Attack",
+                            name: "Pursuit",
                             image: ChanceAttackImage,
                             actions: [
                                 {

@@ -2,7 +2,7 @@ import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
-import { energyBolt, greaterBolt } from "./../ability/magician/magicianAbilities";
+import { lesserBolt, greaterBolt } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -97,7 +97,7 @@ const chargingStoneEffect: Effect = {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 icon: AlchemistStoneImage,
-                description: "Charged. If unused at the end of your turn, fire an Energy Bolt.",
+                description: "Charged. If unused at the end of your turn, fire a Lesser Bolt.",
                 duration: 0,
                 weaponAnimation: "glow",
                 onAbility: {
@@ -112,7 +112,7 @@ const chargingStoneEffect: Effect = {
                 },
                 onTurnEnd: {
                     ability: {
-                        ...energyBolt,
+                        ...lesserBolt,
                     },
                 },
             },
@@ -122,7 +122,7 @@ const chargingStoneEffect: Effect = {
 
 export const chargingStone: Item = {
     name: "Charging Stone",
-    description: "Playing a card grants Charged. If unused by end of turn, fire an Energy Bolt.",
+    description: "Playing a card grants Charged. If unused by end of turn, fire a Lesser Bolt.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: AlchemistStoneImage,
     type: ITEM_TYPES.EQUIPMENT,

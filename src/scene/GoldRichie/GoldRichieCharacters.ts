@@ -1,5 +1,5 @@
-import { bash, slashBlast } from "./../../ability/warrior/warriorAbilities";
-import { energyBolt, magicFang, magicClaw } from "./../../ability/magician/magicianAbilities";
+import { bash, cleave } from "./../../ability/warrior/warriorAbilities";
+import { lesserBolt, magicFang, magicClaw } from "./../../ability/magician/magicianAbilities";
 import { attack } from "./../../enemy/abilities";
 import {
     ACTION_TYPES,
@@ -146,7 +146,7 @@ export const adventurerFighter = {
     name: "Fighter",
     image: GuardWarriorImage,
     maxHP: 75,
-    abilities: [{ ...bash }, { ...slashBlast, resourceCost: 3 }, rally],
+    abilities: [{ ...bash }, { ...cleave, resourceCost: 3 }, rally],
 };
 
 export const adventurerIceWizard = {
@@ -155,7 +155,7 @@ export const adventurerIceWizard = {
     maxHP: 60,
     abilities: [
         {
-            name: "Energy Bolt",
+            name: "Lesser Bolt",
             image: OldEnergyBoltImage,
             actions: [
                 {

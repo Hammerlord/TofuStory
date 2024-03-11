@@ -357,7 +357,7 @@ export const dancesWithBalrog: Minion = {
             ],
         },
         {
-            name: "Slash Blast",
+            name: "Cleave",
             image: SlashBlastImage,
             actions: [
                 {
