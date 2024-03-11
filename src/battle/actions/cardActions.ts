@@ -266,24 +266,30 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         }
 
         if (retrieveDepletedCards?.amount) {
-            const depleted = shuffle([...getState().battle.depleted]);
-            const hand = [...getState().battle.hand];
-            Array.from({ length: retrieveDepletedCards.amount }).forEach(() => {
-                const retrieved = depleted.pop();
+            const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
+            // Prevent eg. Bag From Beyond from pulling itself back out (it can still pull out other Bags From Beyond)
+            const eligible = shuffle([...getState().battle.depleted.filter((card) => card.instanceId !== sourceAbilityId)]);
+            if (eligible.length > 0) {
+                const cardsToHand = [];
+                Array.from({ length: retrieveDepletedCards.amount }).forEach(() => {
+                    const retrieved = eligible.pop();
 
-                if (retrieved) {
-                    hand.push(retrieved);
-                }
-            });
+                    if (retrieved) {
+                        cardsToHand.push(retrieved);
+                    }
+                });
 
-            dispatch(
-                updateBattle({
-                    hand,
-                    depleted,
-                })
-            );
+                dispatch(
+                    updateBattle({
+                        hand: [...getState().battle.hand, ...cardsToHand],
+                        depleted: getState().battle.depleted.filter((card) =>
+                            cardsToHand.every(({ instanceId }) => instanceId !== card.instanceId)
+                        ),
+                    })
+                );
 
-            triggerAddCardsToHandEvent(retrieveDepletedCards?.amount);
+                triggerAddCardsToHandEvent(cardsToHand.length);
+            }
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
