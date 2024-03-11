@@ -549,10 +549,6 @@ const maladyDialog: ScriptNode[] = [
                                                                                 text: "Follow the fairies.",
                                                                                 next: [
                                                                                     {
-                                                                                        puzzle: FollowFairies,
-                                                                                        dialog: [],
-                                                                                    },
-                                                                                    {
                                                                                         scene: DarkForest1,
                                                                                         region: REGIONS.ELLINIA,
                                                                                         background: ElliniaBGImage,
@@ -579,7 +575,6 @@ const maladyDialog: ScriptNode[] = [
                                                                                         speaker: malady,
                                                                                         dialog: [
                                                                                             "But we, Malady, have decided what we are long ago. Twisted, betrayed, shunned. Our will shall not be stopped.",
-                                                                                            "Now shall the pawn face the one we lovingly call Faust.",
                                                                                         ],
                                                                                     },
                                                                                     {
@@ -612,33 +607,27 @@ const maladyDialog: ScriptNode[] = [
                                                                                                     {
                                                                                                         speaker: malady,
                                                                                                         dialog: [
-                                                                                                            "The beloved one Merusa had foretold this end, long before Malady ever came to be. But we had not understood, then, what a creature a mere mushroom could be.",
+                                                                                                            "The beloved one Merusa had foretold this day, long before Malady ever came to be. But we had not understood, then, what a creature a mere mushroom could be.",
                                                                                                         ],
                                                                                                     },
                                                                                                     {
                                                                                                         speaker: malady,
                                                                                                         dialog: [
-                                                                                                            "Now, we do. Now, we are ready. Hehehe! Come, then, seeker. Learn why we are Malady.",
-                                                                                                        ],
-                                                                                                        responses: [
-                                                                                                            {
-                                                                                                                text: "Confront Malady.",
-                                                                                                                encounter: maladysFight,
-                                                                                                            },
-                                                                                                        ],
-                                                                                                    },
-                                                                                                    {
-                                                                                                        speaker: malady,
-                                                                                                        dialog: [
-                                                                                                            "The curse will continue on, even if Malady do not.",
-                                                                                                            "May it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
+                                                                                                            "The curse will continue on, and may it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
                                                                                                             "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
                                                                                                         ],
                                                                                                     },
                                                                                                     {
+                                                                                                        speaker: malady,
                                                                                                         dialog: [
-                                                                                                            "[The monsters known as Malady dissipate into ashes, which are borne away by the wind.",
-                                                                                                            "Perhaps it's time to return to Ellinia.]",
+                                                                                                            "We will meet again, pawn. And we, Malady, will not be so forgiving when that time comes.",
+                                                                                                            "[Malady swoop away.]",
+                                                                                                        ],
+                                                                                                    },
+                                                                                                    {
+                                                                                                        scene: DarkForest1,
+                                                                                                        dialog: [
+                                                                                                            "With the creatures defeated, you've fulfilled your end of the bargain with the fairies. It's time to return to Ellinia.]",
                                                                                                         ],
                                                                                                     },
                                                                                                     ...endingDialog,
