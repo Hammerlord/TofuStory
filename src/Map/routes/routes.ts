@@ -9,6 +9,7 @@ import {
     greenMushroom,
     ironHog,
     lupin,
+    malady,
     miniKargo,
     octopus,
     orangeMushroom,
@@ -256,7 +257,10 @@ export const routeElliniaSleepywood = {
         duo: [axeStump, wildBoar],
         trio: [elliniaHornyMushroom, orangeMushroom],
         squad: [stump, elliniaGreenMushroom],
-        special: [[null, mossyMushroom, null, mossySnail, null]],
+        special: [
+            [null, mossyMushroom, null, mossySnail, null],
+            [null, malady, null, malady, null],
+        ],
     },
     enemies: [
         [stump, stump, axeStump, stump, stump],

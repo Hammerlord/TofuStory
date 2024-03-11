@@ -1567,7 +1567,7 @@ export const malady: Minion = {
             resourceCost: 0,
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -1604,14 +1604,14 @@ export const malady: Minion = {
             name: "Throw Concoction",
             image: InkSackImage,
             resourceCost: 3,
-            dialog: "Have a taste of my medicine!",
+            dialog: "Have a taste of our medicine!",
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.EFFECT,
                     effects: [
                         { ...poison, duration: 2 },
-                        { ...burn, duration: 1 },
+                        { ...burn, duration: 2 },
                     ],
                 },
             ],
@@ -1629,7 +1629,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -1642,7 +1642,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -1655,7 +1655,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
