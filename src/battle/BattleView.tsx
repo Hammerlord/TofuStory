@@ -19,7 +19,7 @@ import {
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
+import { ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -544,6 +544,7 @@ const BattlefieldContainer = () => {
         }, {});
 
         const imageUrls = Object.keys(imagesMap);
+        imageUrls.push(ClearImage);
 
         imageUrls.forEach((image) => {
             const newImage = new Image();
