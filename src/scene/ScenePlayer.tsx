@@ -459,7 +459,8 @@ const ScenePlayer = ({
         const eligibleCards = deck.filter((card: CombatAbility) => !card.level || card.level === 1);
         const upgraded = shuffle(eligibleCards)
             .slice(0, numCards)
-            .map((card) => getUpgradeCard(card));
+            .map((card) => getUpgradeCard(card))
+            .filter((v) => v);
 
         const updatedDeck = deck.map((card: CombatAbility) => {
             return upgraded.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
