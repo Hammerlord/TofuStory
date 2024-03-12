@@ -729,7 +729,7 @@ export const octopus: Minion = {
                             name: "Constrict",
                             image: OctopusLegImage,
                             depletedOnUse: true,
-                            resourceCost: 1,
+                            resourceCost: 0,
                             actions: [
                                 {
                                     type: ACTION_TYPES.HINDER,
@@ -1395,6 +1395,7 @@ export const snailFriend: Minion = {
             icon: SnailShellImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
             onReceiveDamage: {
                 conditions: [
                     {
@@ -1446,6 +1447,7 @@ export const bob: Minion = {
             icon: SnailShellImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
             onReceiveDamage: {
                 conditions: [
                     {
