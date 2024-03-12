@@ -65,7 +65,11 @@ export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: 
 
             if (Array.isArray(val)) {
                 val.forEach((v, i) => {
-                    traverseAndApplyUpgradeStats(v, equivalentObj[key][i]);
+                    if (!equivalentObj[key][i]) {
+                        equivalentObj[key][i] = v;
+                    } else {
+                        traverseAndApplyUpgradeStats(v, equivalentObj[key][i]);
+                    }
                 });
                 return;
             }

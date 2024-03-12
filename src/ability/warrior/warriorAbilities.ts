@@ -2410,7 +2410,8 @@ export const bide: Ability = {
     name: "Bide",
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain Infuriate.",
+    description:
+        "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Infuriate.",
     image: WarriorThroneImage,
     actions: [
         {
@@ -2432,6 +2433,7 @@ export const bide: Ability = {
                     selectCards: {
                         maxAmount: 1,
                     },
+                    effects: [infuriateEffect, infuriateEffect],
                 },
             ],
         },
