@@ -1301,15 +1301,11 @@ const curseEyeDouble: Minion = {
     name: "Mirage",
     image: CurseEyeImage,
     maxHP: 5,
-    abilities: [
-        {
-            ...attack,
-        },
-    ],
+    abilities: [],
     effects: [
         {
             ...incorporeal,
-            description: "Cannot take more than 1 damage per hit. Mirage disappears when stunned or this effect ends.",
+            description: "Cannot take more than 1 damage per hit. Vanishes when crowd controlled or this effect ends.",
             duration: 4,
             canBeSilenced: false,
             onEnd: {

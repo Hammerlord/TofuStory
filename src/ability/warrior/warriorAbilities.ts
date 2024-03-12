@@ -331,7 +331,7 @@ export const warBanner: Ability = {
     name: "War Banner",
     image: FlagImage,
     resourceCost: 1,
-    description: "Summon and Turn Start: 2 Armor and +1 ATT to nearby allies.",
+    description: "Every turn, grant 2 Armor and 1 ATT to nearby allies.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -2471,7 +2471,7 @@ export const honedBlock: Ability = {
     name: "Honed Block",
     image: SilverAquilaImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it becomes Upgraded.",
+    description: "Whenever this card leaves your hand, it Upgrades.",
     rarity: RARITIES.COMMON,
     onLeaveHand: {
         abilityEffects: [
@@ -2503,7 +2503,7 @@ export const honedStrike: Ability = {
     name: "Honed Strike",
     image: BurningSoulBladeImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it becomes Upgraded.",
+    description: "Whenever this card leaves your hand, it Upgrades.",
     rarity: RARITIES.COMMON,
     onLeaveHand: {
         abilityEffects: [
