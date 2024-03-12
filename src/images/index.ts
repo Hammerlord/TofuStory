@@ -528,6 +528,7 @@ export { default as TauromacisStampedeImage } from "./TauromacisStampede.png";
 export { default as TauromacisThunderCrashImage } from "./TauromacisThunderCrash.png";
 export { default as TaurospearImage } from "./Taurospear.gif";
 export { default as TaurospearHornImage } from "./TaurospearHorn.png";
+export { default as TaurospearLightningSpearImage } from "./TaurospearLightningSpear.png";
 export { default as TeleportImage } from "./Teleport.png";
 export { default as TeleportMasteryImage } from "./TeleportMastery.png";
 export { default as TeleportMasteryFireImage } from "./TeleportMasteryFire.png";

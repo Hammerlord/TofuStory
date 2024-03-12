@@ -69,6 +69,9 @@ import {
     TauromacisImage,
     TauromacisStampedeImage,
     TauromacisThunderCrashImage,
+    TaurospearHornImage,
+    TaurospearImage,
+    TaurospearLightningSpearImage,
     TeleportImage,
     ThiefImage,
     TreasureChestImage,
@@ -113,9 +116,11 @@ import {
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    Ability,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
     MULTIPLIER_TYPES,
@@ -2560,6 +2565,17 @@ export const egg: Minion = {
     ],
 };
 
+const tauroAvenger: Effect = {
+    ...avenger,
+    onFriendlyDeath: {
+        ...avenger.onFriendlyDeath,
+        ability: {
+            ...(avenger.onFriendlyDeath.ability as Ability),
+            dialog: "No... Brother! I will avenge you!",
+        },
+    },
+};
+
 export const tauromacis: Minion = {
     name: "Tauromacis",
     maxHP: 150,
@@ -2593,8 +2609,7 @@ export const tauromacis: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     animation: ANIMATION_TYPES.SHOUT,
-                    area: 1,
-                    armor: 10,
+                    area: 2,
                     excludePrimaryTarget: true,
                     effects: [attackPower],
                 },
@@ -2623,7 +2638,7 @@ export const tauromacis: Minion = {
         {
             name: "Gore",
             image: TauromacisHornImage,
-            description: "Inflicts Bleed. Tauromacis becomes Enraged, dealing enhanced damage.",
+            description: "Inflicts Bleed and heals itself for 10.",
             castTime: 1,
             resourceCost: 3,
             actions: [
@@ -2634,17 +2649,7 @@ export const tauromacis: Minion = {
                     effects: [bleed],
                     secondaryAction: {
                         target: "actor",
-                        effects: [
-                            {
-                                name: "Enraged",
-                                canBeSilenced: true,
-                                duration: 3,
-                                attackPower: 1,
-                                icon: JapaneseOgreIcon,
-                                type: EFFECT_TYPES.NONE,
-                                class: EFFECT_CLASSES.BUFF,
-                            },
-                        ],
+                        healing: 10,
                     },
                 },
             ],
@@ -2684,7 +2689,125 @@ export const tauromacis: Minion = {
             ],
         },
     ],
-    effects: [avenger, hardy],
+    effects: [tauroAvenger, hardy],
+};
+
+export const taurospear: Minion = {
+    name: "Taurospear",
+    maxHP: 150,
+    image: TaurospearImage,
+    isElite: true,
+    mesos: 50,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Bolster Allies",
+            image: preventArmorDecay.icon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    area: 2,
+                    armor: 10,
+                    excludePrimaryTarget: true,
+                    effects: [preventArmorDecay],
+                },
+            ],
+        },
+        {
+            name: "Stampede",
+            image: TauromacisStampedeImage,
+            description: "Hits up to 2 extra targets for 3.",
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 6,
+                    secondaryDamage: 3,
+                    animationOptions: {
+                        ricochet: true,
+                    },
+                    numTargets: 2,
+                    targetArea: 2,
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Gore",
+            image: TaurospearHornImage,
+            description: "Inflicts Bleed. Taurospear gains 10 armor.",
+            castTime: 1,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 8,
+                    effects: [bleed],
+                    secondaryAction: {
+                        target: "actor",
+                        armor: 10,
+                    },
+                },
+            ],
+        },
+        {
+            name: "Lightning Bull Rush",
+            image: TaurospearLightningSpearImage,
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    damage: 5,
+                    area: 2,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animationOptions: {
+                        flash: 200,
+                    },
+                },
+                {
+                    damage: 5,
+                    area: 2,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animationOptions: {
+                        flash: 200,
+                    },
+                },
+                {
+                    damage: 5,
+                    area: 2,
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    animationOptions: {
+                        flash: 200,
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [tauroAvenger, hardy],
 };
 
 export const casey: Minion = {

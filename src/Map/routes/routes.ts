@@ -21,6 +21,8 @@ import {
     slime,
     snail,
     stump,
+    tauromacis,
+    taurospear,
     wildBoar,
     wildKargo,
 } from "../../enemy/enemy";
@@ -61,6 +63,7 @@ const routePerionSleepywood: Route = {
             [null, owlTower, null, owlTower, null],
             [null, miniKargo, wildKargo, miniKargo, null],
             [null, egg, egg, egg, null],
+            [null, tauromacis, null, taurospear, null],
         ],
     },
     nodes: [
@@ -260,6 +263,7 @@ export const routeElliniaSleepywood = {
         special: [
             [null, mossyMushroom, null, mossySnail, null],
             [null, malady, null, malady, null],
+            [null, taurospear, null, tauromacis, null],
         ],
     },
     enemies: [
