@@ -1110,7 +1110,7 @@ const onSummonTriggers =
 /**
  * Handle action that summons a combatant in an empty slot on the board
  */
-const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
+const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
         if (!action.summon) {
             return;
@@ -1118,9 +1118,29 @@ const checkHandleSummon = ({ action, actorId, parentSource }: { action: Action; 
 
         const minionsSummoned: Combatant[] = [];
         for (const summon of action.summon) {
-            const { friendly, friendlySide } = findCombatantData(getState, actorId);
-            const { minion, positionIndex, noDuplicateMinions = false } = summon;
-            const pos = typeof positionIndex === "number" ? positionIndex : getRandomItem(getPossibleSummonIndices(friendly));
+            const { friendly, friendlySide, index: actorIndex } = findCombatantData(getState, actorId);
+            const { minion, positionIndex, placement, noDuplicateMinions = false } = summon;
+            let pos: number;
+            if (typeof positionIndex === "number") {
+                pos = positionIndex;
+            } else if (placement) {
+                const validSummonIndices = getPossibleSummonIndices(friendly);
+                const isValidIndex = (index: number) => validSummonIndices.includes(index);
+                for (let i = 1; i < 5; ++i) {
+                    if (isValidIndex(actorIndex - i)) {
+                        pos = actorIndex - i;
+                        break;
+                    }
+
+                    if (isValidIndex(actorIndex + i)) {
+                        pos = actorIndex + i;
+                        break;
+                    }
+                }
+            } else {
+                pos = getRandomItem(getPossibleSummonIndices(friendly));
+            }
+
             if (typeof pos !== "number") {
                 break;
             }
@@ -1809,7 +1829,7 @@ const performAction = ({
                 combatants,
             })
         );
-        dispatch(checkHandleSummon({ action, actorId, parentSource }));
+        dispatch(checkHandleActionSummon({ action, actorId, parentSource }));
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
         if (retreat) {
             const { friendly, friendlySide } = findCombatantData(getState, actorId);
@@ -1922,6 +1942,9 @@ const checkCastRadiate = ({
     };
 };
 
+/**
+ * This is for ability.minion handling only. Randomized summons from actions are handled at checkHandleActionSummon.
+ */
 const checkSummonMinion = ({
     ability,
     selectedIndex,
@@ -2038,12 +2061,28 @@ export const useAbility = ({
         dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source }));
 
         const { target: initialTarget } = actions[0] || {};
+
+        // This could become stale between actions but not an issue at the time of implementation. Only Curse Eye applies this effect.
+        const isEffectRandomTargeting = combatant.effects?.some((e) => e.hitRandomTarget);
+
         let prevSelection;
 
         const handleAction = (action: Action) => {
             let selection;
+            if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
+                selection = autoSelectActionTarget({
+                    initialSelectedIndex: selectedIndex,
+                    initialSelectedSide: initialSide,
+                    action: {
+                        ...action,
+                        target: TARGET_TYPES.RANDOM_HOSTILE,
+                    },
+                    actorId,
+                    getState,
+                });
+            }
             // If it is a multi-hit ability, the attacks should go to the same target
-            if (action.target === TARGET_TYPES.HOSTILE && action.target === initialTarget && prevSelection) {
+            else if (action.target === TARGET_TYPES.HOSTILE && action.target === initialTarget && prevSelection) {
                 selection = prevSelection;
             } else {
                 selection = autoSelectActionTarget({

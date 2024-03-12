@@ -233,6 +233,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     maxDamageTaken?: number;
     // Effect owner cannot use abilities with these action types. Eg. Whip causes Snails to be unable to Loaf.
     disableAbilities?: ACTION_TYPES[];
+    // If true, attacks become RANDOM_HOSTILE targeting.
+    hitRandomTarget?: boolean;
 };
 
 export type CombatEffect = Effect & {
@@ -479,8 +481,10 @@ export type Action = {
     summon?: {
         // If more than one minion is provided, chooses one randomly.
         minion: (Minion | string)[];
-        // Which position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
+        // Which specific index position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
         positionIndex?: number;
+        // Place the summoned minion next to the summoner if there is space. If not, finds the next closest space.
+        placement?: "adjacent";
         // If true, there cannot be more than one minion with the same name on the board
         noDuplicateMinions?: boolean;
     }[];

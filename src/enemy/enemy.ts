@@ -1297,6 +1297,17 @@ export const elliniaHornyMushroom: Minion = {
     effects: [thorns],
 };
 
+const curseEyeDouble: Minion = {
+    name: "Seeing Doubles",
+    image: CurseEyeImage,
+    maxHP: 30,
+    abilities: [
+        {
+            ...attack,
+        },
+    ],
+};
+
 export const curseEye: Minion = {
     name: "Curse Eye",
     maxHP: 100,
@@ -1312,7 +1323,7 @@ export const curseEye: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
                     bonus: {
-                        damage: 1,
+                        damage: 2,
                         conditions: [
                             {
                                 calculationTarget: CONDITION_TARGETS.TARGET,
@@ -1330,7 +1341,6 @@ export const curseEye: Minion = {
         {
             name: "Eye Beam",
             resourceCost: 3,
-            castTime: 1,
             image: EyeIcon,
             actions: [
                 {
@@ -1341,29 +1351,22 @@ export const curseEye: Minion = {
                     effects: [
                         {
                             name: "Dazed",
+                            description: "Your attacks may randomly hit target's neighbors instead.",
                             icon: DizzyIcon,
                             image: DizzyIcon,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
-                            drawCardsPerTurn: -1,
-                            duration: 1,
-                        },
-                        {
-                            name: "Weakened",
-                            icon: ZzzIcon,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            attackPower: -1,
-                            duration: 2,
-                        },
-                        {
-                            name: "Vulnerable",
-                            icon: EyeIcon,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            armorReceived: -1,
                             duration: 3,
+                            hitRandomTarget: true,
                         },
+                    ],
+                },
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.SELF,
+                    summon: [
+                        { minion: [curseEyeDouble], placement: "adjacent" },
+                        { minion: [curseEyeDouble], placement: "adjacent" },
                     ],
                 },
             ],
@@ -1373,7 +1376,7 @@ export const curseEye: Minion = {
         {
             name: "Predatory",
             icon: EyeIcon,
-            description: "Deals extra damage against targets suffering from status ailments.",
+            description: "Deals +2 damage against debuffed targets.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
         },
