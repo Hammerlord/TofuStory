@@ -334,7 +334,7 @@ const EffectGroupIcon = ({
                 <Icon
                     icon={icon}
                     className={classNames({
-                        [classes.disabled]: disabled || isSilenced,
+                        [classes.disabled]: disabled,
                         [classes.glow]: glow,
                     })}
                 >
