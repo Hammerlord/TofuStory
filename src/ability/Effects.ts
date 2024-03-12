@@ -195,30 +195,44 @@ export const raging: Effect = {
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: AngerIcon,
-    description: "Periodically increasing ATT.",
+    description: "Ramping attack power. Attack power stacks are removed if stunned.",
     turnsTriggerFrequency: 2,
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [
-            {
-                name: "Rage",
-                type: EFFECT_TYPES.RAGE,
-                class: EFFECT_CLASSES.BUFF,
-                icon: WeaponMasteryImage,
-                description: "Effect is removed if the character is stunned.",
-                attackPower: 1,
-                onReceiveEffect: {
-                    conditions: [
+        ability: {
+            name: "Raging",
+            image: AngerIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    icon: AngerIcon,
+                    effects: [
                         {
-                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
-                            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                            comparator: "eq",
+                            name: "Rage",
+                            type: EFFECT_TYPES.RAGE,
+                            class: EFFECT_CLASSES.BUFF,
+                            icon: WeaponMasteryImage,
+                            disableDisplayIcon: true,
+                            description: "Effect is removed if the character is stunned.",
+                            attackPower: 1,
+                            onReceiveEffect: {
+                                conditions: [
+                                    {
+                                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER, // This should be comparing the effect not its owner
+                                        hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                                        comparator: "eq",
+                                    },
+                                ],
+                                removeEffect: true,
+                            },
                         },
                     ],
-                    removeEffect: true,
+                    playbackTime: 500,
                 },
-            },
-        ],
+            ],
+        },
     },
 };
 
