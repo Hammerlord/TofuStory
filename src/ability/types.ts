@@ -93,6 +93,7 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
     triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
+    excludeEffectOwner?: boolean; // For onFriendlyAttacked, do not include the effect owner in the event triggers
 };
 
 export enum EFFECT_EVENT_KEYS {

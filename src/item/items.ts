@@ -305,7 +305,7 @@ export const leatherSandals: Item = {
 
 export const adventurerCape: Item = {
     name: "Adventurer Cape",
-    description: "Every 5 times you are attacked, gain 1 resource.",
+    description: "Every 5 times you or an ally are attacked, gain 1 resource.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdventurerCapeImage,
@@ -314,7 +314,7 @@ export const adventurerCape: Item = {
             name: "Adventurer Cape Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onReceiveAttack: {
+            onFriendlyReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 eventTriggerFrequency: 5,
                 resources: 1,
@@ -887,6 +887,7 @@ export const cursedDoll: Item = {
                                     type: EFFECT_TYPES.NONE,
                                     class: EFFECT_CLASSES.DEBUFF,
                                     onFriendlyReceiveAttack: {
+                                        excludeEffectOwner: true,
                                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                         damage: 1,
                                     },

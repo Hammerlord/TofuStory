@@ -137,7 +137,7 @@ const useStyles = createUseStyles({
     },
     fadeInOut: {
         animationName: "$fadeOut",
-        animationDuration: `1s`,
+        animationDuration: "1s",
         animationTimingFunction: "ease-in-out",
         animationIterationCount: "infinite",
         animationDirection: "alternate",

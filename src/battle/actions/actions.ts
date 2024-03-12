@@ -391,9 +391,11 @@ const handleOnReceiveAction = ({
             }
 
             updatedStats.forEach(([stats, action]) => {
-                if (stats.combatantId === combatant.id || !isAttack(action)) {
+                const excludeEffectOwner = (source?.source as CombatEffect)?.excludeEffectOwner && stats.combatantId === combatant.id;
+                if (excludeEffectOwner || !isAttack(action)) {
                     return;
                 }
+
                 dispatch(
                     checkEventTrigger({
                         combatantId: combatant.id,
