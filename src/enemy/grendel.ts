@@ -24,7 +24,7 @@ import {
     NimbleJewelImage,
     TeleportImage,
     TriboltImage,
-    WeaponBoosterImage,
+    WeaponMasteryImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
 import { burn, hardy, raging } from "./../ability/Effects";
@@ -252,7 +252,7 @@ const stormBarrier: Ability = {
                                     effects: [
                                         {
                                             name: "Electrified",
-                                            icon: WeaponBoosterImage,
+                                            icon: WeaponMasteryImage,
                                             type: EFFECT_TYPES.NONE,
                                             class: EFFECT_CLASSES.BUFF,
                                             attackPower: 3,

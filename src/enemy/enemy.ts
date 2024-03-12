@@ -51,7 +51,6 @@ import {
     OrangeMushroomIdleImage,
     OwlTowerImage,
     PigIdleImage,
-    PigsHeadImage,
     PoisonImage,
     RedFistOfFuryImage,
     RedMeatImage,
@@ -60,7 +59,6 @@ import {
     RibbonPigIdleImage,
     SavageBlowImage,
     ShroomImage,
-    SirBlacksmithImage,
     SlimeIdleImage,
     SnailImage,
     SnailShellImage,
@@ -74,8 +72,6 @@ import {
     TeleportImage,
     ThiefImage,
     TreasureChestImage,
-    UrsusPawImage,
-    WeaponBoosterImage,
     WeaponMasteryImage,
     WildBoarImage,
     WildKargoImage,
@@ -2591,7 +2587,7 @@ export const tauromacis: Minion = {
         },
         {
             name: "Bolster Allies",
-            image: WeaponBoosterImage,
+            image: WeaponMasteryImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

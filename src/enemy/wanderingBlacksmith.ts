@@ -1,4 +1,3 @@
-import { attack } from "./abilities";
 import {
     AvengersArrowImage,
     SirBlacksmithHammerImage,
@@ -8,9 +7,9 @@ import {
     TerracottaDieImage,
     TerracottaSwordsmanImage,
     UrsusPawImage,
-    WeaponBoosterImage,
+    WeaponMasteryImage,
 } from "../images";
-import { attackPower, hardy } from "./../ability/Effects";
+import { attackPower } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -22,6 +21,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { attack } from "./abilities";
 import { earthen } from "./effect";
 
 const terracottaCrossbowman: Minion = {
@@ -111,7 +111,7 @@ export const wanderingBlacksmith: Minion = {
         forgeWarriors,
         {
             name: "Enhance Weaponry",
-            image: WeaponBoosterImage,
+            image: WeaponMasteryImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

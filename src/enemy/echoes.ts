@@ -1,5 +1,5 @@
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
-import { AvengersArrowImage, EncroachingDarknessImage, FairyImage, HuntersBowImage, RoyalFairyImage, WeaponBoosterImage } from "../images";
+import { AvengersArrowImage, EncroachingDarknessImage, FairyImage, HuntersBowImage, RoyalFairyImage, WeaponMasteryImage } from "../images";
 import { ShieldIcon } from "../images/icons";
 import { attackPower, stealth } from "./../ability/Effects";
 
@@ -53,7 +53,7 @@ export const lostGuardEcho: Minion = {
         {
             resourceCost: 3,
             name: "Echo of Rallying",
-            image: WeaponBoosterImage,
+            image: WeaponMasteryImage,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
