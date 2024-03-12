@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { getUpgradeCard } from "./../../Menu/utils";
 import {
     AdvancedWeaponMasteryImage,
@@ -2338,10 +2339,52 @@ export const guardian: Ability = {
     ],
 };
 
-export const pursuit: Ability = {
-    name: "Pursuit",
+const beatdownEffect: Effect = {
+    name: "Beatdown Ready",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    maxApplications: 1,
+    onApplyEffect: {
+        targetType: TRIGGER_TARGET_TYPES.TARGET,
+        ability: {
+            name: "Beatdown",
+            image: ChanceAttackImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                    playbackTime: 500,
+                },
+            ],
+        },
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                comparator: "eq",
+            },
+        ],
+        decrementStacks: 1,
+    },
+};
+
+const beatdownUpgrade: any = {
+    onApplyEffect: {
+        ability: {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    },
+};
+
+export const beatdown: Ability = {
+    name: "Beatdown",
     image: ChanceAttackImage,
-    description: "When you apply a debuff, attack the target for {{ nestedAbility.actions.0.damage }} damage.",
+    description: "When you apply a debuff, attack that target for {{ nestedAbility.actions.0.damage }} damage.",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -2350,35 +2393,22 @@ export const pursuit: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Pursuit Effect",
+                    name: "Beatdown",
                     icon: ChanceAttackImage,
                     duration: 5,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    onApplyEffect: {
-                        targetType: TRIGGER_TARGET_TYPES.TARGET,
-                        ability: {
-                            name: "Pursuit",
-                            image: ChanceAttackImage,
-                            actions: [
-                                {
-                                    // On AOEs, this hits the same target multiple times.
-                                    type: ACTION_TYPES.ATTACK,
-                                    target: TARGET_TYPES.HOSTILE,
-                                    damage: 3,
-                                    playbackTime: 500,
-                                },
-                            ],
-                        },
-                        conditions: [
-                            {
-                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                                comparator: "eq",
-                            },
-                        ],
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        // cloneDeep because due to the way upgrades work, references will affect each other
+                        effects: [cloneDeep(beatdownEffect)],
+                    },
+                    onAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [cloneDeep(beatdownEffect)],
                     },
                 },
+                cloneDeep(beatdownEffect),
             ],
         },
     ],
@@ -2388,18 +2418,14 @@ export const pursuit: Ability = {
                 {
                     effects: [
                         {
-                            onApplyEffect: [
-                                {
-                                    ability: {
-                                        actions: [
-                                            {
-                                                damage: 1,
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
+                            onTurnStart: {
+                                effects: [beatdownUpgrade],
+                            },
+                            onAttack: {
+                                effects: [beatdownUpgrade],
+                            },
                         },
+                        beatdownUpgrade,
                     ],
                 },
             ],
