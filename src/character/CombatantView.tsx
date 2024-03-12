@@ -353,9 +353,11 @@ const CombatantView = forwardRef(
                 }
             }
 
+            const playbackTime = event?.playbackTime;
+
             const timeout = setTimeout(() => {
                 callback();
-            }, 500);
+            }, (playbackTime && playbackTime / 2) || 500);
             return () => clearTimeout(timeout);
         }, [combatant, event?.id]);
 
