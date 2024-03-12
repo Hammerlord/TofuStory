@@ -872,7 +872,8 @@ const BattlefieldContainer = () => {
                 const staging = stageStatChanges(statUpdate, combatant);
                 // If it's a multi-hit attack being previewed, we want to update the previous combatant state so we can get a more accurate preview of the proceeding hits
                 previousCombatantStates.battle[friendlySide][index] = staging;
-                const targetsRandomly = action.target === TARGET_TYPES.RANDOM_HOSTILE;
+                const targetsRandomly =
+                    action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget);
 
                 result[combatantId].push({
                     statUpdate,
