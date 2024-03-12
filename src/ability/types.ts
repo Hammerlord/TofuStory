@@ -536,6 +536,7 @@ export type Action = {
         armor?: number;
         removeEffects?: string[];
         isPriority?: boolean; // If true, play this before the main ability
+        excludePrimaryTarget?: boolean;
     };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;

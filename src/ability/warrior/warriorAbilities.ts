@@ -2264,6 +2264,7 @@ export const guardian: Ability = {
                                 },
                                 secondaryAction: {
                                     target: "actor",
+                                    excludePrimaryTarget: true,
                                     area: 2,
                                     healing: 2,
                                 },
@@ -2287,6 +2288,7 @@ export const guardian: Ability = {
                                 },
                                 secondaryAction: {
                                     target: "actor",
+                                    excludePrimaryTarget: true,
                                     area: 2,
                                     healing: 2,
                                 },
