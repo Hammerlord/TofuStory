@@ -2439,3 +2439,35 @@ export const bide: Ability = {
         },
     ],
 };
+
+export const honedStrike: Ability = {
+    name: "Honed Strike",
+    image: BurningSoulBladeImage,
+    resourceCost: 1,
+    description: "Whenever this card leaves your hand, it becomes Upgraded.",
+    rarity: RARITIES.COMMON,
+    onLeaveHand: {
+        abilityEffects: [
+            {
+                removeOnDiscard: false,
+                upgradedByLevels: 1,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 8,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+};
