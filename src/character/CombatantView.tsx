@@ -127,6 +127,21 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
     },
+    "@keyframes fadeOut": {
+        "0%": {
+            opacity: 0.75,
+        },
+        "100%": {
+            opacity: 0.25,
+        },
+    },
+    fadeInOut: {
+        animationName: "$fadeOut",
+        animationDuration: `1s`,
+        animationTimingFunction: "ease-in-out",
+        animationIterationCount: "infinite",
+        animationDirection: "alternate",
+    },
     "@keyframes actionIcon": {
         from: {
             transform: "translateY(0)",
@@ -302,7 +317,14 @@ const CombatantView = forwardRef(
 
         const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
-        const isLifeLinked = combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+        const isLifeLinked = combatant?.effects.some((effect: CombatEffect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+        const { fadeInOut } =
+            combatant?.effects.reduce(
+                (acc, e: CombatEffect) => {
+                    return { ...acc, ...e.portraitAnimationOptions }; // The last effect applied wins for all animation options
+                },
+                { fadeInOut: false }
+            ) || {};
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
@@ -377,6 +399,7 @@ const CombatantView = forwardRef(
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
+                [classes.fadeInOut]: fadeInOut,
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dead]: !action && oldState?.HP === 0,

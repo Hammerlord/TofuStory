@@ -235,6 +235,9 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     disableAbilities?: ACTION_TYPES[];
     // If true, attacks become RANDOM_HOSTILE targeting.
     hitRandomTarget?: boolean;
+    portraitAnimationOptions?: {
+        fadeInOut?: boolean; // Exclusive with combatant portrait animations (you can only have one animation).
+    };
 };
 
 export type CombatEffect = Effect & {

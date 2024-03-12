@@ -68,6 +68,7 @@ export { default as BouquetImage } from "./Bouquet.png";
 export { default as BrandishImage } from "./Brandish.png";
 export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";
+export { default as BrokenMirrorGlassImage } from "./BrokenMirrorGlass.png";
 export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
 export { default as BrutalClawImage } from "./BrutalClaw.png";
 export { default as BundleOfNailsImage } from "./BundleOfNails.png";

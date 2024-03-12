@@ -11,6 +11,7 @@ import {
 import {
     AncientFairyImage,
     BatsEffectImage,
+    BrokenMirrorGlassImage,
     FirewoodImage,
     GreenFairiesImage,
     NamelessSwordImage,
@@ -425,6 +426,18 @@ export const championsRibbon: Effect = {
                 },
             },
         ],
+    },
+};
+
+export const incorporeal: Effect = {
+    name: "Incorporeal",
+    description: "Character cannot take more than 1 damage in a single hit.",
+    icon: BrokenMirrorGlassImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    maxDamageTaken: 1,
+    portraitAnimationOptions: {
+        fadeInOut: true,
     },
 };
 

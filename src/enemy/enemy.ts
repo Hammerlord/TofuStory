@@ -131,7 +131,7 @@ import {
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, pigHeaded, poisonous, sneaky } from "./effect";
+import { championsRibbon, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1298,12 +1298,58 @@ export const elliniaHornyMushroom: Minion = {
 };
 
 const curseEyeDouble: Minion = {
-    name: "Seeing Doubles",
+    name: "Mirage",
     image: CurseEyeImage,
-    maxHP: 30,
+    maxHP: 5,
     abilities: [
         {
             ...attack,
+        },
+    ],
+    effects: [
+        {
+            ...incorporeal,
+            description: "Cannot take more than 1 damage per hit. Mirage disappears when stunned or this effect ends.",
+            duration: 4,
+            canBeSilenced: false,
+            onEnd: {
+                usableWhileStunned: true,
+                removeEffect: true, // onDeath removeEffect is insufficient for some reason
+                ability: {
+                    name: "Vanish",
+                    image: TeleportImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.NONE,
+                            retreat: true,
+                        },
+                    ],
+                },
+            },
+            onReceiveEffect: {
+                usableWhileStunned: true,
+                removeEffect: true, // onDeath removeEffect is insufficient for some reason
+                ability: {
+                    name: "Vanish",
+                    image: TeleportImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.NONE,
+                            retreat: true,
+                        },
+                    ],
+                },
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                        comparator: "eq",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            },
         },
     ],
 };
@@ -1351,7 +1397,7 @@ export const curseEye: Minion = {
                     effects: [
                         {
                             name: "Dazed",
-                            description: "Your attacks may randomly hit target's neighbors instead.",
+                            description: "Your attacks may randomly hit other targets instead.",
                             icon: DizzyIcon,
                             image: DizzyIcon,
                             type: EFFECT_TYPES.NONE,
