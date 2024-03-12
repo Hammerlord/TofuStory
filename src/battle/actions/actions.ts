@@ -835,7 +835,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
                 return;
             }
             ++idCountMap[effect.name].count;
-            if (effect.duration < idCountMap[effect.name].duration) {
+            if (effect.duration < idCountMap[effect.name].lowestDuration?.duration) {
                 idCountMap[effect.name].lowestDuration = effect;
             }
         });
