@@ -239,7 +239,7 @@ export const block: Ability = {
     image: BlockImage,
     actions: [
         {
-            armor: 7,
+            armor: 6,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -550,7 +550,7 @@ export const hyperBody: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            armor: 7,
+            armor: 6,
             drawCards: {
                 amount: 1,
             },
@@ -847,7 +847,7 @@ export const ironBody: Ability = {
     description: "Prevent the next time your armor decays",
     actions: [
         {
-            armor: 7,
+            armor: 6,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -2457,7 +2457,7 @@ export const honedBlock: Ability = {
     },
     actions: [
         {
-            armor: 7,
+            armor: 6,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
