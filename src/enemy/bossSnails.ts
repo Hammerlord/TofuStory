@@ -189,7 +189,11 @@ export const mutantSnailEnemy: Minion = {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                    summon: [
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                    ],
                 },
             ],
         },
@@ -212,7 +216,11 @@ export const mutantSnailEnemy: Minion = {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                    summon: [
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                    ],
                 },
             ],
         },
