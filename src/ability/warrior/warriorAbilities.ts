@@ -52,6 +52,7 @@ import {
     ShieldMasteryImage,
     ShieldRedImage,
     ShoutImage,
+    SilverAquilaImage,
     SlashBlastImage,
     SpikeBallImage,
     SpikedMaceImage,
@@ -2434,6 +2435,38 @@ export const bide: Ability = {
                         maxAmount: 1,
                     },
                     effects: [infuriateEffect, infuriateEffect],
+                },
+            ],
+        },
+    ],
+};
+
+export const honedBlock: Ability = {
+    name: "Honed Block",
+    image: SilverAquilaImage,
+    resourceCost: 1,
+    description: "Whenever this card leaves your hand, it becomes Upgraded.",
+    rarity: RARITIES.COMMON,
+    onLeaveHand: {
+        abilityEffects: [
+            {
+                removeOnDiscard: false,
+                upgradedByLevels: 1,
+            },
+        ],
+    },
+    actions: [
+        {
+            armor: 7,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 3,
                 },
             ],
         },

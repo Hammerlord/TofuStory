@@ -464,6 +464,7 @@ export { default as ShoImage } from "./Sho.png";
 export { default as ShoRopeImage } from "./ShoRope.png";
 export { default as ShoutImage } from "./Shout.png";
 export { default as ShroomImage } from "./Shroom.png";
+export { default as SilverAquilaImage } from "./SilverAquila.png";
 export { default as SirBlacksmithImage } from "./SirBlacksmith.png";
 export { default as SirBlacksmithHammerImage } from "./SirBlacksmithHammer.png";
 export { default as SkipLithBackdropImage } from "./SkipLithBackdrop.png";
