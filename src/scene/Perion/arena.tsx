@@ -1,13 +1,12 @@
+import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../../battle/types";
 import { Player } from "../../character/types";
 import { manji } from "../../enemy/Manji";
-import { tauromacis, taurospear } from "../../enemy/enemy";
 import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
-import { EventScene, SceneEncounter } from "../types";
-import classNames from "classnames";
-import { dancesWithBalrog } from "../../enemy/dancesWithBalrog";
 import Tooltip from "../../view/Tooltip";
+import { EventScene, SceneEncounter } from "../types";
+import { tauromacis, taurospear } from "../../enemy/minotaur";
 
 const announcer = {
     name: "Announcer",

@@ -72,7 +72,7 @@ const disgusting: Effect = {
     icon: YuckImage,
     description: "Try not to touch it!",
     type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
+    class: EFFECT_CLASSES.NONE,
     onDeath: {
         targetType: TRIGGER_TARGET_TYPES.ACTOR,
         effects: [yuck],

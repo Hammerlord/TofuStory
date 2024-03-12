@@ -21,8 +21,6 @@ import {
     slime,
     snail,
     stump,
-    tauromacis,
-    taurospear,
     wildBoar,
     wildKargo,
 } from "../../enemy/enemy";
@@ -34,6 +32,7 @@ import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../en
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
 import { balrog } from "../../enemy/balrog";
+import { tauromacis, taurospear } from "../../enemy/minotaur";
 
 const sleepywood: Route = {
     nodes: [
