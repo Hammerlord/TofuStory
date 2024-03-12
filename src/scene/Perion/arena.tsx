@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../../battle/types";
 import { Player } from "../../character/types";
 import { manji } from "../../enemy/Manji";
-import { tauromacis } from "../../enemy/enemy";
+import { tauromacis, taurospear } from "../../enemy/enemy";
 import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
 import { EventScene, SceneEncounter } from "../types";
 import classNames from "classnames";
@@ -23,6 +23,16 @@ const tauromacisFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, tauromacis, null, null],
+        },
+    ],
+    type: BATTLE_TYPES.ELITE_ENCOUNTER,
+    disableItemRewards: true,
+};
+
+const taurospearFight: SceneEncounter = {
+    waves: [
+        {
+            enemies: [null, null, taurospear, null, null],
         },
     ],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
@@ -106,7 +116,17 @@ const useStyles = createUseStyles({
     },
 });
 
-const ArenaBackdrop = ({ player, showTauromacis, showManji }: { player: Player; showTauromacis?: boolean; showManji?: boolean }) => {
+const ArenaBackdrop = ({
+    player,
+    showTauromacis,
+    showManji,
+    showTaurospear,
+}: {
+    player: Player;
+    showTauromacis?: boolean;
+    showManji?: boolean;
+    showTaurospear?: boolean;
+}) => {
     const classes = useStyles();
 
     return (
@@ -128,17 +148,87 @@ const ArenaBackdrop = ({ player, showTauromacis, showManji }: { player: Player; 
                     className={classNames(classes.dancesWithBalrog, classes.character)}
                 />
             </Tooltip>
+            {showTaurospear && <img src={taurospear.image} alt="Taurospear" className={classNames(classes.opponent, classes.character)} />}
             {showTauromacis && <img src={tauromacis.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
             {showManji && <img src={manji.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
         </div>
     );
 };
 
+const manjiScript = [
+    {
+        scene: (other) => <ArenaBackdrop showManji={true} {...other} />,
+        speaker: announcer,
+        dialog: [
+            "Next up! Heralding from the peaks of the eastern rocky mountains, our next contestant is the distinguished swordsman Manji!",
+        ],
+    },
+    {
+        speaker: announcer,
+        dialog: ["He's on a relentless quest to be the strongest swordsman in all of Victoria. Some say he's already earned the title!"],
+    },
+    {
+        speaker: announcer,
+        dialog: ["Our brave mushroom challenger is in for a match!"],
+    },
+    {
+        speaker: manji,
+        dialog: ["I see you, Seeker. You are but a stepping stone on my path."],
+    },
+    {
+        speaker: manji,
+        dialog: ["Prepare yourself."],
+        responses: [
+            {
+                text: "Prepare.",
+                encounter: manjiFight,
+            },
+        ],
+    },
+    {
+        speaker: manji,
+        dialog: ["Impossible.", "I've struck down so many of your kind, but here I find myself bested."],
+    },
+    {
+        speaker: announcer,
+        dialog: ["Manji has been defeated!!", "The champion today is a mushroom that came from nowhere. What an incredible show!"],
+    },
+    {
+        speaker: announcer,
+        dialog: ["To the winner goes the spoils!"],
+    },
+    {
+        speaker: announcer,
+        dialog: ["To the winner goes the spoils!"],
+        treasureBox: {
+            isOpen: true,
+            isCursed: true,
+        },
+    },
+    {
+        scene: ArenaBackdrop,
+        speaker: announcer,
+        dialog: [
+            "That's it for today, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
+        ],
+    },
+    {
+        speaker: crowd,
+        dialog: ["[The crowd roars.]"],
+        responses: [
+            {
+                text: "Time to go.",
+                isExit: true,
+            },
+        ],
+    },
+];
+
 export const arenaScene: EventScene = {
     id: "perion-arena",
     script: [
         {
-            scene: (other) => <ArenaBackdrop showTauromacis={true} {...other} />,
+            scene: (other) => <ArenaBackdrop showTaurospear={true} {...other} />,
             speaker: announcer,
             dialog: [
                 "[The announcer's voice blares from a megaphone.] Hang onto your seats folks, or the coming match will knock you clean out of it!",
@@ -146,128 +236,147 @@ export const arenaScene: EventScene = {
         },
         {
             speaker: announcer,
-            dialog: [
-                "Are you ready?",
-                "On the left, from the depths of the Ant Tunnel, a creature cursed by Balrog itself, we have the fearsome Tauromacis!",
-            ],
-        },
-        {
-            speaker: announcer,
-            dialog: [
-                "It's weaker without its brother-in-arms the Taurospear, but not to be underestimated!",
-                "Countless over-arrogant opponents have been gored by its horns and trampled by its hooves. That pronged staff has laid low many a would-be champion in this arena!",
-            ],
-        },
-        {
-            speaker: crowd,
-            dialog: ["[The crowd roars.]"],
-        },
-        {
-            speaker: announcer,
-            dialog: ["And on the right, the Tauromacis' challenger today is the equally-fierce and mighty...", "..."],
-        },
-        {
-            speaker: announcer,
-            dialog: ["Mushroom? Who let a mushroom in here!?"],
-        },
-        {
-            speaker: crowd,
-            dialog: ["[The crowd boos.]"],
-        },
-        {
-            speaker: announcer,
-            dialog: ["Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!"],
-        },
-        {
-            speaker: tauromacis,
-            dialog: [
-                "Hmph. Looks like you've wandered into the wrong place.",
-                "Whatever your circumstances, I've fought too long to stop here. I will regain my freedom!",
-            ],
-            responses: [
+            dialog: ["Are you ready?"],
+            conditionalNext: [
                 {
-                    text: "Defend yourself.",
-                    encounter: tauromacisFight,
+                    conditions: [
+                        {
+                            chance: 0.5,
+                        },
+                    ],
                     next: [
                         {
                             speaker: announcer,
-                            scene: ArenaBackdrop,
                             dialog: [
-                                "Wha--what an upset! The monster king of the arena has lost its crown to a mushroom! Have you ever seen a mushroom do anything besides run and jump!?",
-                            ],
-                        },
-                        {
-                            speaker: crowd,
-                            dialog: ["[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]"],
-                        },
-                        {
-                            scene: (other) => <ArenaBackdrop showManji={true} {...other} />,
-                            speaker: announcer,
-                            dialog: [
-                                "Next up! Heralding from the peaks of the eastern rocky mountains, our next contestant is the distinguished swordsman Manji, two-time champion of the arena!",
+                                "Are you ready?",
+                                "On the left, from the depths of the Ant Tunnel, a creature cursed by Balrog itself, we have the fearsome Tauromacis!",
                             ],
                         },
                         {
                             speaker: announcer,
                             dialog: [
-                                "He's on a relentless quest to be known as the strongest swordsman in all of Victoria. Some say he's already earned the title!",
-                            ],
-                        },
-                        {
-                            speaker: announcer,
-                            dialog: ["Our brave mushroom challenger is in for a match!"],
-                        },
-                        {
-                            speaker: manji,
-                            dialog: ["I see you, Seeker. You are but a stepping stone on my path."],
-                        },
-                        {
-                            speaker: manji,
-                            dialog: ["Prepare yourself."],
-                            responses: [
-                                {
-                                    text: "Prepare.",
-                                    encounter: manjiFight,
-                                },
-                            ],
-                        },
-                        {
-                            speaker: manji,
-                            dialog: ["Impossible.", "I've struck down so many of your kind, but here I find myself bested."],
-                        },
-                        {
-                            speaker: announcer,
-                            dialog: [
-                                "Manji has been defeated!!",
-                                "The champion today is a mushroom that came from nowhere. What an incredible show!",
-                            ],
-                        },
-                        {
-                            speaker: announcer,
-                            dialog: ["To the winner goes the spoils!"],
-                        },
-                        {
-                            speaker: announcer,
-                            dialog: ["To the winner goes the spoils!"],
-                            treasureBox: {
-                                isOpen: true,
-                                isCursed: true,
-                            },
-                        },
-                        {
-                            scene: ArenaBackdrop,
-                            speaker: announcer,
-                            dialog: [
-                                "That's it for today, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
+                                "It's weaker without its brother-in-arms the Taurospear, but not to be underestimated!",
+                                "Countless over-arrogant opponents have been gored by its horns and trampled by its hooves. That pronged staff has laid low many a would-be champion in this arena!",
                             ],
                         },
                         {
                             speaker: crowd,
                             dialog: ["[The crowd roars.]"],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["And on the right, the Tauromacis' challenger today is the equally-fierce and mighty...", "..."],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["Mushroom? Who let a mushroom in here!?"],
+                        },
+                        {
+                            speaker: crowd,
+                            dialog: ["[The crowd boos.]"],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!"],
+                        },
+                        {
+                            speaker: tauromacis,
+                            dialog: [
+                                "Hmph. Looks like you've wandered into the wrong place.",
+                                "Whatever your circumstances, I've fought too long to stop here. I will regain my freedom!",
+                            ],
                             responses: [
                                 {
-                                    text: "Time to go.",
-                                    isExit: true,
+                                    text: "Defend yourself.",
+                                    encounter: tauromacisFight,
+                                    next: [
+                                        {
+                                            speaker: announcer,
+                                            scene: ArenaBackdrop,
+                                            dialog: [
+                                                "Wha--what an upset! The monster king of the arena has lost its crown to a mushroom! Have you ever seen a mushroom do anything besides run and jump!?",
+                                            ],
+                                        },
+                                        {
+                                            speaker: crowd,
+                                            dialog: [
+                                                "[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]",
+                                            ],
+                                        },
+                                        ...manjiScript,
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    conditions: [],
+                    next: [
+                        {
+                            speaker: announcer,
+                            dialog: [
+                                "Are you ready?",
+                                "On the left, from the depths of the Ant Tunnel, a creature cursed by Balrog itself, we have the fearsome Taurospear!",
+                            ],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: [
+                                "It's weaker without its brother-in-arms the Tauromacis, but not to be underestimated!",
+                                "Countless over-arrogant opponents have been gored by its horns and trampled by its hooves. That spear has pierced through the armor of many a would-be champion in this arena!",
+                            ],
+                        },
+                        {
+                            speaker: crowd,
+                            dialog: ["[The crowd roars.]"],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["And on the right, the Taurospear's challenger today is the equally-fierce and mighty...", "..."],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["Mushroom? Who let a mushroom in here!?"],
+                        },
+                        {
+                            speaker: crowd,
+                            dialog: ["[The crowd boos.]"],
+                        },
+                        {
+                            speaker: announcer,
+                            dialog: ["Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!"],
+                        },
+                        {
+                            speaker: taurospear,
+                            dialog: ["I will show you no mercy."],
+                            responses: [
+                                {
+                                    text: "Defend yourself.",
+                                    encounter: taurospearFight,
+                                    next: [
+                                        {
+                                            speaker: taurospear,
+                                            dialog: [
+                                                "Brother... I wanted nothing more than to enjoy one last Tofu Miso Soup with you...",
+                                                "I am sorry...",
+                                            ],
+                                        },
+                                        {
+                                            speaker: announcer,
+                                            scene: ArenaBackdrop,
+                                            dialog: [
+                                                "Wha--what an upset! The monster king of the arena has lost its crown to a mushroom! Have you ever seen a mushroom do anything besides run and jump!?",
+                                            ],
+                                        },
+                                        {
+                                            speaker: crowd,
+                                            dialog: [
+                                                "[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]",
+                                            ],
+                                        },
+                                        ...manjiScript,
+                                    ],
                                 },
                             ],
                         },
