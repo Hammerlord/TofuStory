@@ -198,7 +198,9 @@ const AnimationCanvas = ({
         animationRefs.current?.forEach((animation) => animation?.cancel());
         animationRefs.current = [];
 
-        const options = { spin, rotation: rotate, playbackTime, rotateToFaceTarget };
+        // Finish the animation slightly slower than playback time, or there is an issue with projectiles overrunning each other's animations
+        // Hmm, but why? Isn't the animation canceled when a new one plays?
+        const options = { spin, rotation: rotate, playbackTime: playbackTime - 10, rotateToFaceTarget };
 
         if (icon) {
             const animateProjectile = (target, projectileRefIndex: number) => {
