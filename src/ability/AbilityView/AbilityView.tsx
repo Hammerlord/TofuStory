@@ -11,7 +11,7 @@ import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { ACTION_TYPES, Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
@@ -106,7 +106,6 @@ const useStyles = createUseStyles({
         bottom: 32,
         width: "100%",
     },
-    minionHP: {},
     minionHPContainer: {
         left: 0,
         position: "absolute",
@@ -116,9 +115,14 @@ const useStyles = createUseStyles({
         right: -10,
         top: -10,
     },
-    minionDamage: {
+    minionDamageContainer: {
         right: 0,
         position: "absolute",
+    },
+    minionAbilityEffect: {
+        position: "absolute",
+        left: -10,
+        top: -10,
     },
     selectedAbility: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
@@ -403,15 +407,21 @@ const AbilityView = forwardRef(
         })();
 
         const hasBonus = hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
-        let attackDamage = 0;
+
+        let minionAttackDamage = 0;
+        let minionHostileAction = null;
         for (const ability of minion?.abilities || []) {
             for (const action of ability.actions) {
-                if (action.damage) {
-                    attackDamage = action.damage;
+                if (action.target === TARGET_TYPES.RANDOM_HOSTILE || action.target === TARGET_TYPES.HOSTILE) {
+                    minionHostileAction = action;
+                    minionAttackDamage = action.damage || 0;
                     break;
                 }
             }
         }
+
+        const minionHostileEffect = (minionHostileAction?.effects || []).find((e) => e.class === EFFECT_CLASSES.DEBUFF);
+
         const taunt = minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
         const isAbilityUsable = canUseAbility(player, ability);
@@ -533,12 +543,17 @@ const AbilityView = forwardRef(
                             {minion && (
                                 <div className={classes.minionStats}>
                                     <span className={classes.minionHPContainer}>
-                                        <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
+                                        <Icon icon={<HeartIcon />} text={minion.maxHP} />
                                         {minion.armor > 0 && (
                                             <Icon icon={ShieldIcon} size="sm" text={minion.armor} className={classes.minionArmor} />
                                         )}
                                     </span>
-                                    <Icon icon={<CrossedSwordsIcon />} text={attackDamage} className={classes.minionDamage} />
+                                    <span className={classes.minionDamageContainer}>
+                                        <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
+                                        {minionHostileEffect && (
+                                            <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
+                                        )}
+                                    </span>
                                 </div>
                             )}
                         </div>
