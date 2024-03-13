@@ -212,7 +212,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         tooltips.push(
             <AbilityTooltipSection
                 title="Tribute"
-                description={"This minion may be played on top of another minion, refunding the summon cost. The old minion is destroyed."}
+                description={"If a character is destroyed by playing this minion on top of it, this minion's cost is refunded."}
                 key={"tribute"}
             />
         );

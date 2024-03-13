@@ -2344,25 +2344,6 @@ export const icicles: Ability = {
     ],
 };
 
-const ifritEmberAbility = {
-    name: "Ember",
-    image: FireMarbleImage,
-    actions: [
-        {
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            icon: FireMarbleImage,
-            damage: 1,
-            effects: [
-                {
-                    ...burn,
-                    duration: 1,
-                },
-            ],
-        },
-    ],
-};
-
 export const ifrit: Ability = {
     name: "Ifrit",
     image: IfritImage,
@@ -2376,7 +2357,26 @@ export const ifrit: Ability = {
             animation: "float",
         },
         maxHP: 7,
-        abilities: [ifritEmberAbility],
+        abilities: [
+            {
+                name: "Ember",
+                image: FireMarbleImage,
+                actions: [
+                    {
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        icon: FireMarbleImage,
+                        damage: 1,
+                        effects: [
+                            {
+                                ...burn,
+                                duration: 2,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
         effects: [
             {
                 name: "Radiant Ember Effect",
@@ -2450,7 +2450,7 @@ export const elquines: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.RANGE_ATTACK,
                         icon: NimbleJewelImage,
-                        damage: 2,
+                        damage: 3,
                         effects: [chill],
                     },
                 ],
@@ -2592,7 +2592,7 @@ export const whelp: Ability = {
                         type: ACTION_TYPES.RANGE_ATTACK,
                         animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
-                        damage: 3,
+                        damage: 2,
                     },
                 ],
             },
@@ -2603,6 +2603,12 @@ export const whelp: Ability = {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+                onDeath: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     drawCards: {
                         amount: 1,
@@ -2620,7 +2626,7 @@ export const whelp: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },
@@ -2641,7 +2647,26 @@ export const fireSpirit: Ability = {
         name: "Fire Spirit",
         image: FireSpiritImage,
         maxHP: 5,
-        abilities: [cloneDeep(ifritEmberAbility)],
+        abilities: [
+            {
+                name: "Ember",
+                image: FireMarbleImage,
+                actions: [
+                    {
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        icon: FireMarbleImage,
+                        damage: 1,
+                        effects: [
+                            {
+                                ...burn,
+                                duration: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
         effects: [
             {
                 name: "",

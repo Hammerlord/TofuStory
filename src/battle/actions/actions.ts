@@ -1974,20 +1974,23 @@ const checkSummonMinion = ({
         const actor = findCombatantData(getState, actorId)?.combatant;
         const actorResources = actor?.resources || 0;
 
-        const { tributeSummon } = minionOptions || {};
-        const isTributeSummoned = tributeSummon && previousMinionInSlot?.HP > 0;
-        if (isTributeSummoned) {
-            // The replaced minion actually dies
+        const isKillPreviousMinion = previousMinionInSlot?.HP > 0;
+        if (isKillPreviousMinion) {
+            const { tributeSummon } = minionOptions || {};
+
+            // The replaced minion dies
             dispatch(
                 performAction({
                     action: {
                         flatDamage: 1000,
                         type: ACTION_TYPES.NONE,
                         playbackTime: 500,
-                        secondaryAction: {
-                            target: "actor",
-                            resources: resourceCost === "x" ? actorResources : resourceCost,
-                        },
+                        secondaryAction: tributeSummon
+                            ? {
+                                  target: "actor",
+                                  resources: resourceCost === "x" ? actorResources : resourceCost,
+                              }
+                            : undefined,
                     },
                     side,
                     selectedIndex: index,
@@ -2023,7 +2026,7 @@ const checkSummonMinion = ({
         );
 
         // Tribute summons count as a kill for the new minion
-        if (isTributeSummoned) {
+        if (isKillPreviousMinion) {
             dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill }));
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));

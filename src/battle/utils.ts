@@ -146,7 +146,7 @@ export const isValidTarget = ({
     const { friendly: playerSide, hostile: enemySide } = actorData || {};
 
     if (minion) {
-        const isValidSpot = !playerSide[index]?.HP || (!playerSide[index]?.isPlayer && minionOptions?.tributeSummon);
+        const isValidSpot = !playerSide[index]?.isPlayer;
         return side === BATTLEFIELD_SIDES.PLAYER_SIDE && Boolean(isValidSpot);
     }
 
