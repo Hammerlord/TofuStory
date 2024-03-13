@@ -175,6 +175,7 @@ export { default as FireArrowImage } from "./FireArrow.gif";
 export { default as FireArrowProjectileImage } from "./FireArrowProjectile.png";
 export { default as FireBoarImage } from "./FireBoar.png";
 export { default as FireMarbleImage } from "./FireMarble.gif";
+export { default as FireSpiritImage } from "./FireSpirit.png";
 export { default as FirewoodImage } from "./Firewood.png";
 export { default as FishSpearImage } from "./FishSpear.png";
 export { default as FlagImage } from "./Flag.png";

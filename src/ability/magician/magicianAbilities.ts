@@ -21,6 +21,7 @@ import {
     FireArrowImage,
     FireArrowProjectileImage,
     FireMarbleImage,
+    FireSpiritImage,
     FlameHazeImage,
     FullMoonImage,
     GiantSnowmanImage,
@@ -2372,7 +2373,7 @@ export const ifrit: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 10,
+        maxHP: 7,
         abilities: [ifritEmberAbility],
         effects: [
             {
@@ -2410,7 +2411,7 @@ export const ifrit: Ability = {
     upgrades: [
         {
             minion: {
-                HP: 1,
+                HP: 2,
                 abilities: [
                     {
                         actions: [
@@ -2437,7 +2438,7 @@ export const elquines: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 10,
+        maxHP: 7,
         abilities: [
             {
                 name: "Ice Bolt",
@@ -2484,12 +2485,12 @@ export const elquines: Ability = {
     upgrades: [
         {
             minion: {
-                HP: 1,
+                HP: 2,
                 abilities: [
                     {
                         actions: [
                             {
-                                damage: 1,
+                                damage: 2,
                             },
                         ],
                     },
@@ -2566,7 +2567,7 @@ export const abominableSnowman: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 2,
+                armor: 3,
                 abilities: [
                     {
                         actions: [
@@ -2585,9 +2586,9 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "Summon and on death: Draw a card.",
+    description: "Summon: Draw a card.",
     overrideBodyText: true,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     minion: {
         name: "Star Whelp",
         image: BabyDragonImage,
@@ -2602,7 +2603,7 @@ export const whelp: Ability = {
                         type: ACTION_TYPES.RANGE_ATTACK,
                         animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
-                        damage: 1,
+                        damage: 3,
                     },
                 ],
             },
@@ -2613,12 +2614,6 @@ export const whelp: Ability = {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    drawCards: {
-                        amount: 1,
-                    },
-                },
-                onDeath: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     drawCards: {
                         amount: 1,
@@ -2636,7 +2631,84 @@ export const whelp: Ability = {
                     {
                         actions: [
                             {
-                                damage: 1,
+                                damage: 2,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const fireSpirit: Ability = {
+    name: "Fire Spirit",
+    resourceCost: 1,
+    image: FireSpiritImage,
+    description: "Every turn, Burn a random enemy for 1 turn.",
+    overrideBodyText: true,
+    rarity: RARITIES.COMMON,
+    minion: {
+        name: "Fire Spirit",
+        image: FireSpiritImage,
+        maxHP: 5,
+        abilities: [cloneDeep(ifritEmberAbility)],
+        effects: [
+            {
+                name: "",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                onSummoned: {
+                    ability: {
+                        name: "Ember",
+                        image: FireMarbleImage,
+                        actions: [
+                            {
+                                target: TARGET_TYPES.RANDOM_HOSTILE,
+                                type: ACTION_TYPES.RANGE_ATTACK,
+                                icon: FireMarbleImage,
+                                effects: [
+                                    {
+                                        ...burn,
+                                        duration: 1,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+                onTurnStart: {
+                    ability: {
+                        name: "Ember",
+                        image: FireMarbleImage,
+                        actions: [
+                            {
+                                target: TARGET_TYPES.RANDOM_HOSTILE,
+                                type: ACTION_TYPES.RANGE_ATTACK,
+                                icon: FireMarbleImage,
+                                effects: [
+                                    {
+                                        ...burn,
+                                        duration: 1,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 2,
                             },
                         ],
                     },

@@ -430,7 +430,7 @@ export const startEnemyTurn = () => {
 };
 
 /**
- * Decides whether the enemy should use an item should be used. If true, it returns the index of the item to use.
+ * Decides whether the enemy should use an item. If true, it returns the index of the item to use.
  */
 const checkUseItem = (combatant: Combatant): number | undefined => {
     const { items = [], maxHP, HP } = combatant || {};
