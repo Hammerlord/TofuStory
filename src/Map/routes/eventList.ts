@@ -81,6 +81,7 @@ import {
     hugeMesoItem,
     ironBall,
     scrollForClawForAtt,
+    opal,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -171,6 +172,7 @@ export const ITEMS = [
     toyHammer,
     ironBall,
     scrollForClawForAtt,
+    opal,
 ];
 
 export const CLASS_ITEMS = {

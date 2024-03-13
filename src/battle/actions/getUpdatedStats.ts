@@ -15,6 +15,7 @@ import { enemyEffectNameMap } from "./../../enemy/effect";
 import { CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getRandomItem } from "../../utils";
+import { passesValueComparison } from "../passesConditions";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
@@ -143,6 +144,34 @@ export const getUpdatedStats = ({
 
         const effects: CombatEffect[] = [];
 
+        const getEffectDuration = (incomingEffect: Effect) => {
+            if (isNaN(incomingEffect.duration) || incomingEffect.duration === Infinity) {
+                return Infinity;
+            }
+
+            const totalBonusDuration = enabledEffects.reduce((acc, e) => {
+                const { amount, filters } = e.extendEffectDuration || {};
+
+                if (!amount) {
+                    return acc;
+                }
+
+                if (
+                    !filters ||
+                    filters.every((filter) => {
+                        const { value, property, comparator } = filter;
+                        return passesValueComparison({ val: incomingEffect[property], otherVal: value, comparator });
+                    })
+                ) {
+                    return acc + amount;
+                }
+
+                return acc;
+            }, 0);
+
+            return incomingEffect.duration + totalBonusDuration;
+        };
+
         Array.from({ length: multiplier }).forEach(() => {
             const effectsToAdd = actionEffects
                 .map((effect: String | Effect) => {
@@ -166,6 +195,7 @@ export const getUpdatedStats = ({
                     }
                     return {
                         ...cloneDeep(effect),
+                        duration: getEffectDuration(effect),
                         override: overrideObj,
                         // @ts-ignore
                         uptime: effect.uptime || 1,

@@ -239,6 +239,10 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     portraitAnimationOptions?: {
         fadeInOut?: boolean; // Exclusive with combatant portrait animations (you can only have one animation).
     };
+    extendEffectDuration?: {
+        amount: number;
+        filters?: { property: string; comparator: "includes" | "eq"; value: any }[];
+    };
 };
 
 export type CombatEffect = Effect & {

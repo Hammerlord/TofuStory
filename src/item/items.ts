@@ -49,6 +49,7 @@ import {
     MesoImage,
     MesoStackImage,
     NewspaperImage,
+    OpalImage,
     PanlidImage,
     PawnChessPieceImage,
     PeachImage,
@@ -1920,4 +1921,29 @@ export const scrollForClawForAtt: Item = {
     upgradeScreen: {
         maxUpgradeLevel: 1,
     },
+};
+
+export const opal: Item = {
+    name: "Opal",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: OpalImage,
+    description: "Your buffs are extended by 1 turn.",
+    effects: [
+        {
+            name: "Opal Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            extendEffectDuration: {
+                amount: 1,
+                filters: [
+                    {
+                        property: "class",
+                        comparator: "eq",
+                        value: EFFECT_CLASSES.BUFF,
+                    },
+                ],
+            },
+        },
+    ],
 };
