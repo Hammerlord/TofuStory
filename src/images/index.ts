@@ -467,6 +467,7 @@ export { default as ShiningFairyImage } from "./ShiningFairy.png";
 export { default as ShoImage } from "./Sho.png";
 export { default as ShoRopeImage } from "./ShoRope.png";
 export { default as ShoutImage } from "./Shout.png";
+export { default as ShrineSceneImage } from "./ShrineScene.png";
 export { default as ShroomImage } from "./Shroom.png";
 export { default as SilverAquilaImage } from "./SilverAquila.png";
 export { default as SirBlacksmithImage } from "./SirBlacksmith.png";
