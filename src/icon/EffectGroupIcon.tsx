@@ -17,10 +17,10 @@ import { isTurnToTrigger } from "../battle/utils";
 const indicatorSize = 8;
 
 const useStyles = createUseStyles({
-    root: {
+    iconRoot: {
         position: "relative",
         display: "inline-block",
-        margin: "0 1px",
+        margin: "4px 2px",
     },
     iconText: {
         position: "absolute",
@@ -229,7 +229,7 @@ const EffectGroupIcon = ({
     );
 
     const inner = (
-        <span className={classes.root}>
+        <span className={classes.iconRoot}>
             <Icon
                 icon={icon}
                 className={classNames({
