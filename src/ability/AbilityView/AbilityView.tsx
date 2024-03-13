@@ -11,10 +11,10 @@ import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import { ACTION_TYPES, Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
-import Area from "./AreaView";
+import Area, { AreaIndicator } from "./AreaView";
 import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
@@ -122,6 +122,12 @@ const useStyles = createUseStyles({
     minionAbilityEffect: {
         position: "absolute",
         left: -10,
+        top: -10,
+    },
+    minionAbilityArea: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
         top: -10,
     },
     selectedAbility: {
@@ -552,6 +558,11 @@ const AbilityView = forwardRef(
                                         <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
                                         {minionHostileEffect && (
                                             <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
+                                        )}
+                                        {minionHostileAction.area > 0 && (
+                                            <span className={classes.minionAbilityArea}>
+                                                <AreaIndicator {...minionHostileAction} size="sm" />
+                                            </span>
                                         )}
                                     </span>
                                 </div>

@@ -34,8 +34,8 @@ const useStyles = createUseStyles({
         verticalAlign: "bottom",
     },
     small: {
-        width: "12px",
-        height: "13px",
+        width: "11px",
+        height: "12px",
         marginRight: "2px",
 
         "&:not(:last-child)": {

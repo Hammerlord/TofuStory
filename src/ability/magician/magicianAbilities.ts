@@ -2523,7 +2523,8 @@ export const abominableSnowman: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 5,
+                        damage: 7,
+                        area: 1,
                     },
                 ],
             },
@@ -2556,7 +2557,7 @@ export const abominableSnowman: Ability = {
     upgrades: [
         {
             minion: {
-                armor: 3,
+                armor: 5,
                 abilities: [
                     {
                         actions: [
