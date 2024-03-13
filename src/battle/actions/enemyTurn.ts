@@ -34,8 +34,8 @@ const pickIndex = ({ hostile, actor, actorIndex }) => {
     });
 
     let baseProbability = 1 / validTargetIndices.length;
-    // Enemies are more likely to attack targets closer to them. 0 proximity: +30%, 1 proximity: +15%; 2: +5%
-    if (validTargetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.3) {
+    // Enemies are more likely to attack targets closer to them. 0 proximity: +25%, 1 proximity: +15%; 2: +5%
+    if (validTargetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.25) {
         return actorIndex;
     }
 
@@ -53,6 +53,8 @@ const pickIndex = ({ hostile, actor, actorIndex }) => {
     if (rest.length) {
         return getRandomItem(rest);
     }
+
+    return getRandomItem(validTargetIndices);
 };
 /**
  * Given an ability, pick a target that makes sense.
