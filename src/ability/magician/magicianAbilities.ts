@@ -1248,7 +1248,7 @@ export const aurora: Ability = {
     },
     actions: [
         {
-            damage: 8,
+            damage: 10,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 2,
