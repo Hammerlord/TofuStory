@@ -106,9 +106,15 @@ const useStyles = createUseStyles({
         bottom: 32,
         width: "100%",
     },
-    minionHP: {
+    minionHP: {},
+    minionHPContainer: {
         left: 0,
         position: "absolute",
+    },
+    minionArmor: {
+        position: "absolute",
+        right: -10,
+        top: -10,
     },
     minionDamage: {
         right: 0,
@@ -526,7 +532,12 @@ const AbilityView = forwardRef(
                             <AbilityTypeView targetType={targetType} type={type} minion={minion} />
                             {minion && (
                                 <div className={classes.minionStats}>
-                                    <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
+                                    <span className={classes.minionHPContainer}>
+                                        <Icon icon={<HeartIcon />} text={minion.maxHP} className={classes.minionHP} />
+                                        {minion.armor > 0 && (
+                                            <Icon icon={ShieldIcon} size="sm" text={minion.armor} className={classes.minionArmor} />
+                                        )}
+                                    </span>
                                     <Icon icon={<CrossedSwordsIcon />} text={attackDamage} className={classes.minionDamage} />
                                 </div>
                             )}
