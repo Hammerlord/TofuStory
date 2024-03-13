@@ -98,7 +98,6 @@ const chargingStoneEffect: Effect = {
                 class: EFFECT_CLASSES.BUFF,
                 icon: AlchemistStoneImage,
                 description: "Charged. If unused at the end of your turn, fire a Lesser Bolt.",
-                duration: 0,
                 weaponAnimation: "glow",
                 onAbility: {
                     conditions: [
@@ -114,6 +113,7 @@ const chargingStoneEffect: Effect = {
                     ability: {
                         ...lesserBolt,
                     },
+                    removeEffect: true,
                 },
             },
         ],
@@ -148,7 +148,6 @@ export const greaterChargingStone: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
                         description: "Charged. If unused at the end of your turn, fire a Greater Bolt.",
-                        duration: 0,
                         weaponAnimation: "glow",
                         onAbility: {
                             conditions: [
@@ -162,6 +161,7 @@ export const greaterChargingStone: Item = {
                         },
                         onTurnEnd: {
                             ability: greaterBolt,
+                            removeEffect: true,
                         },
                     },
                 ],
