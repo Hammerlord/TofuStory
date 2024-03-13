@@ -1306,7 +1306,7 @@ const curseEyeDouble: Minion = {
         {
             ...incorporeal,
             description: "Cannot take more than 1 damage per hit. Vanishes when crowd controlled or this effect ends.",
-            duration: 4,
+            duration: 3,
             canBeSilenced: false,
             onEnd: {
                 usableWhileStunned: true,
@@ -1383,6 +1383,7 @@ export const curseEye: Minion = {
         {
             name: "Eye Beam",
             resourceCost: 3,
+            castTime: 1,
             image: EyeIcon,
             actions: [
                 {
@@ -1398,7 +1399,7 @@ export const curseEye: Minion = {
                             image: DizzyIcon,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
-                            duration: 3,
+                            duration: 2,
                             hitRandomTarget: true,
                         },
                     ],
