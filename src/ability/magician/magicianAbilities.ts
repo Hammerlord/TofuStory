@@ -2016,7 +2016,6 @@ export const starBolt: Ability = {
     name: "Star Bolt",
     resourceCost: 1,
     image: GlisteningStarImage,
-    description: "Draw a card.",
     rarity: RARITIES.COMMON,
     actions: [
         {
