@@ -26,7 +26,7 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, MountainIcon, RedShieldIcon, SmilingImpIcon } from "../images/icons";
+import { CloudyIcon, LinkIcon, MountainIcon, RedShieldIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
 import { defUp } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
@@ -439,6 +439,15 @@ export const incorporeal: Effect = {
     portraitAnimationOptions: {
         fadeInOut: true,
     },
+};
+
+export const armorDown: Effect = {
+    name: "Armor Down",
+    icon: ShieldIcon,
+    class: EFFECT_CLASSES.DEBUFF,
+    type: EFFECT_TYPES.NONE,
+    armorReceived: -1,
+    duration: 3,
 };
 
 /**

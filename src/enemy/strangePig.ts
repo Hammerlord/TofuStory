@@ -13,7 +13,7 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
-import { championsRibbon, pigHeaded, earthen, counterEffect } from "./effect";
+import { championsRibbon, pigHeaded, earthen, counterEffect, armorDown } from "./effect";
 
 export const strangePig: Minion = {
     name: "Strange Pig",
@@ -103,16 +103,7 @@ const stalagmite: Minion = {
             onAttack: {
                 usableWhileStunned: true,
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
-                effects: [
-                    {
-                        name: "Weighed Down",
-                        icon: MountainIcon,
-                        armorReceived: -1,
-                        duration: 1,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.DEBUFF,
-                    },
-                ],
+                effects: [armorDown],
             },
         },
     ],

@@ -33,7 +33,7 @@ import {
     WildBoarImage,
 } from "../images";
 import { bleed, burn, hardy } from "./../ability/Effects";
-import { counterEffect } from "./effect";
+import { armorDown, counterEffect } from "./effect";
 
 const golemStanceEligible: Effect = {
     name: "Stone Golem Stance Ready",
@@ -76,16 +76,7 @@ const golemStanceEffect: Effect = {
     canBeSilenced: false,
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-        effects: [
-            {
-                name: "Armor Down",
-                icon: StoneGolemRubbleImage,
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.DEBUFF,
-                armorReceived: -1,
-                duration: 1,
-            },
-        ],
+        effects: [armorDown],
     },
     onRemoved: {
         usableWhileStunned: true,
