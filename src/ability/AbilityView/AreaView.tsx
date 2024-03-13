@@ -8,6 +8,7 @@ import { CombatantInfo } from "../../battle/types";
 const useStyles = createUseStyles({
     root: {
         fontSize: "0.8rem",
+        display: "flex",
     },
     area: {
         width: "14px",
@@ -31,6 +32,15 @@ const useStyles = createUseStyles({
         color: "white",
         fontSize: "0.7rem",
         verticalAlign: "bottom",
+    },
+    small: {
+        width: "12px",
+        height: "13px",
+        marginRight: "2px",
+
+        "&:not(:last-child)": {
+            marginRight: "2px",
+        },
     },
     highlight: {
         color: "#42f57b",
@@ -67,10 +77,29 @@ const Area = ({
         discard,
     });
 
+    return <AreaIndicator area={area} hasBonus={hasBonus} baseDamage={baseDamage} secondaryDamage={secondaryDamage} />;
+};
+
+export const AreaIndicator = ({
+    area,
+    hasBonus,
+    baseDamage,
+    secondaryDamage,
+    size,
+}: {
+    area: number;
+    hasBonus?: boolean;
+    baseDamage?: number;
+    secondaryDamage?: number;
+    size?: "sm";
+}) => {
+    const classes = useStyles();
+
     const areaIndicator = Array.from({ length: area }).map((_, i) => (
         <span
             className={classNames(classes.area, {
                 [classes.highlight]: hasBonus,
+                [classes.small]: size === "sm",
             })}
             key={i}
         >
@@ -83,6 +112,7 @@ const Area = ({
             <span
                 className={classNames(classes.mainTarget, {
                     [classes.highlight]: hasBonus,
+                    [classes.small]: size === "sm",
                 })}
             >
                 {baseDamage > 0 && baseDamage}
