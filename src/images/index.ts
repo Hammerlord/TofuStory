@@ -187,6 +187,7 @@ export { default as ForkedTurkeyImage } from "./ForkedTurkey.png";
 export { default as FrostpreyImage } from "./Frostprey.png";
 export { default as FrownyMaskImage } from "./FrownyMask.png";
 export { default as FrozenTunaImage } from "./FrozenTuna.png";
+export { default as FullMoonImage } from "./FullMoon.png";
 export { default as FungalStumpImage } from "./FungalStump.png";
 export { default as GachaponImage } from "./Gachapon.png";
 export { default as GarnetImage } from "./Garnet.png";

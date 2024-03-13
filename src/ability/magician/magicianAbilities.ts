@@ -2,7 +2,6 @@ import {
     AdvancedChargeImage,
     ArcaneAimImage,
     BabyDragonImage,
-    BackpackImage,
     BigSnowballImage,
     BlueRushImage,
     CakeTemptationImage,
@@ -23,6 +22,7 @@ import {
     FireArrowProjectileImage,
     FireMarbleImage,
     FlameHazeImage,
+    FullMoonImage,
     GiantSnowmanImage,
     GlisteningStarImage,
     HighWisdomImage,
@@ -96,7 +96,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, preventArmorDecay, stun, stashCardEffect, preventArmorDecayPlayer } from "./../Effects";
+import { armorUp, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun } from "./../Effects";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -1970,10 +1970,10 @@ export const snowball: Ability = {
     ],
 };
 
-export const starBolt: Ability = {
-    name: "Star Bolt",
+export const moonBolt: Ability = {
+    name: "Moon Bolt",
     resourceCost: 2,
-    image: GlisteningStarImage,
+    image: FullMoonImage,
     description: "Heal 1 each hit.",
     rarity: RARITIES.COMMON,
     actions: [
@@ -1985,11 +1985,10 @@ export const starBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
-            icon: GlisteningStarImage,
+            icon: FullMoonImage,
             animationOptions: {
                 width: 75,
                 height: 75,
-                flash: 500,
                 ricochet: true,
             },
             secondaryAction: {
@@ -2007,6 +2006,41 @@ export const starBolt: Ability = {
                 {
                     damage: 2,
                     numTargets: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const starBolt: Ability = {
+    name: "Star Bolt",
+    resourceCost: 1,
+    image: GlisteningStarImage,
+    description: "Draw a card.",
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.YOYO,
+            icon: GlisteningStarImage,
+            drawCards: {
+                amount: 1,
+            },
+            animationOptions: {
+                width: 75,
+                height: 75,
+                flash: 500,
+                ricochet: true,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },

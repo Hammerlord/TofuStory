@@ -43,7 +43,7 @@ import {
     shootingStars,
     slimmingMuffin,
     snowball,
-    starBolt,
+    moonBolt,
     teleport,
     temporalBag,
     throwTheBook,
@@ -55,6 +55,7 @@ import {
     whelp,
     wishUponAStar,
     zap,
+    starBolt,
 } from "./magician/magicianAbilities";
 
 import {
@@ -169,6 +170,7 @@ export const JOB_CARD_MAP = {
             icyDraft,
             hyperMetronome,
             snowball,
+            moonBolt,
             starBolt,
             moonlight,
             zap,
