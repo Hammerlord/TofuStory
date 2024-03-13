@@ -1235,7 +1235,7 @@ export const bladedArmor: Ability = {
     resourceCost: 1,
     image: MetalAxeImage,
     description: "When you lose armor, hurl a sidearm at a random enemy for {{ nestedAbility.actions.0.damage }} damage",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
