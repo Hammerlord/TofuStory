@@ -1945,7 +1945,7 @@ const checkCastRadiate = ({
 };
 
 /**
- * This is for ability.minion handling only. Randomized summons from actions are handled at checkHandleActionSummon.
+ * This is for player ability.minion handling only. Randomized summons from actions are handled at checkHandleActionSummon.
  */
 const checkSummonMinion = ({
     ability,
@@ -1953,12 +1953,14 @@ const checkSummonMinion = ({
     side,
     actorId,
     parentSource,
+    isAutoCast,
 }: {
     side: BATTLEFIELD_SIDES;
     selectedIndex: number;
     ability: CombatAbility;
     actorId: string;
     parentSource: TriggerSource;
+    isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { minion, minionOptions, removeAfterTurn, depletedOnUse, resourceCost = 0 } = ability;
@@ -1967,7 +1969,13 @@ const checkSummonMinion = ({
         }
 
         const battlefieldSide = getState().battle[side];
-        const pickRandomSummonIndex = () => getRandomItem(getPossibleSummonIndices(battlefieldSide));
+        const pickRandomSummonIndex = () => {
+            if (isAutoCast) {
+                const indices = battlefieldSide.map((_, i) => i).filter((_, i) => !battlefieldSide[i]?.isPlayer);
+                return getRandomItem(indices);
+            }
+            return getRandomItem(getPossibleSummonIndices(battlefieldSide));
+        };
         const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
         const previousMinionInSlot = battlefieldSide[index];
         const summonedMinion: Combatant = createCombatant(cloneDeep(minion));
@@ -2063,7 +2071,7 @@ export const useAbility = ({
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
-        dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source }));
+        dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source, isAutoCast }));
 
         const { target: initialTarget } = actions[0] || {};
 
