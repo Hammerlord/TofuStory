@@ -8,7 +8,7 @@ import { CombatantInfo } from "../../battle/types";
 const useStyles = createUseStyles({
     root: {
         fontSize: "0.8rem",
-        display: "flex",
+        whiteSpace: "nowrap",
     },
     area: {
         width: "14px",
@@ -62,8 +62,6 @@ const Area = ({
 }) => {
     const { actions = [] } = ability || {};
     const area = calculateActionArea({ action: actions[0], actor: playerInfo }) || actions[0]?.area || 0;
-
-    const classes = useStyles();
 
     if (!area) {
         return null;
