@@ -1611,7 +1611,7 @@ export const ragingBlow: Ability = {
     resourceCost: 1,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain immunity for the rest of your turn. Hits twice.",
+    description: "Hit twice. Gain 2 Infuriate.",
     overrideBodyText: true,
     actions: [
         {
@@ -1620,18 +1620,17 @@ export const ragingBlow: Ability = {
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
                 target: "actor",
-                effects: [
-                    {
-                        ...immunity,
-                        duration: 1,
-                    },
-                ],
+                effects: [infuriateEffect],
             },
         },
         {
             damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            secondaryAction: {
+                target: "actor",
+                effects: [infuriateEffect],
+            },
         },
     ],
     upgrades: [
