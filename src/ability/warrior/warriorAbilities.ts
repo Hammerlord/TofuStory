@@ -1608,14 +1608,14 @@ export const parry: Ability = {
 
 export const ragingBlow: Ability = {
     name: "Raging Blow",
-    resourceCost: 1,
+    resourceCost: 2,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
     description: "Hit twice. Gain 2 Infuriate.",
     overrideBodyText: true,
     actions: [
         {
-            damage: 3,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1624,7 +1624,7 @@ export const ragingBlow: Ability = {
             },
         },
         {
-            damage: 3,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
