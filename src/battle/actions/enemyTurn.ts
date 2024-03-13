@@ -1,5 +1,5 @@
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { ACTION_TYPES, Ability, CONDITION_TARGETS, CombatEffect, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
@@ -33,28 +33,37 @@ const pickIndex = ({ hostile, actor, actorIndex }) => {
         excludeStealth: !hasTruesight(actor.combatant),
     });
 
-    let baseProbability = 1 / validTargetIndices.length;
+    // If any of the hostiles have taunt, it/they become the only valid targets for offensive abilities
+    const tauntIndices = validTargetIndices.filter((index) => {
+        return hostile[index]?.effects.some((e: CombatEffect) => e.type === EFFECT_TYPES.TAUNT);
+    });
+
+    console.log(tauntIndices);
+
+    const targetIndices = tauntIndices.length ? tauntIndices : validTargetIndices;
+
+    let baseProbability = 1 / targetIndices.length;
     // Enemies are more likely to attack targets closer to them. 0 proximity: +25%, 1 proximity: +15%; 2: +5%
-    if (validTargetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.25) {
+    if (targetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.25) {
         return actorIndex;
     }
 
-    const adjacent = validTargetIndices.filter((index) => Math.abs(index - actorIndex) === 1);
+    const adjacent = targetIndices.filter((index) => Math.abs(index - actorIndex) === 1);
     if (adjacent.length && Math.random() < baseProbability + 0.15) {
         return getRandomItem(adjacent);
     }
 
-    const outer = validTargetIndices.filter((index) => Math.abs(index - actorIndex) === 2);
+    const outer = targetIndices.filter((index) => Math.abs(index - actorIndex) === 2);
     if (outer.length && Math.random() < baseProbability + 0.05) {
         return getRandomItem(outer);
     }
 
-    const rest = validTargetIndices.filter((index) => Math.abs(index - actorIndex) > 2);
+    const rest = targetIndices.filter((index) => Math.abs(index - actorIndex) > 2);
     if (rest.length) {
         return getRandomItem(rest);
     }
 
-    return getRandomItem(validTargetIndices);
+    return getRandomItem(targetIndices);
 };
 /**
  * Given an ability, pick a target that makes sense.

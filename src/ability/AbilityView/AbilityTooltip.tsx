@@ -131,6 +131,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const stringified = JSON.stringify(ability).toLowerCase();
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
     const tributeSummon = ability.minionOptions?.tributeSummon;
+    const taunt = ability?.minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -215,6 +216,10 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 key={"tribute"}
             />
         );
+    }
+
+    if (taunt) {
+        tooltips.push(<AbilityTooltipSection title="Taunt" description={"Enemies must attack this target."} key={"taunt"} />);
     }
 
     const discover = stringified.includes("discover");

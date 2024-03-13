@@ -634,3 +634,10 @@ export const infuriateEffect = {
         removeEffect: true,
     },
 };
+
+export const taunt = {
+    name: "Taunt",
+    type: EFFECT_TYPES.TAUNT,
+    class: EFFECT_CLASSES.BUFF,
+    image: BlackShieldIcon,
+};

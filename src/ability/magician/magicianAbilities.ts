@@ -1,3 +1,5 @@
+import { attack } from "./../../enemy/abilities";
+import { cloneDeep } from "lodash";
 import {
     AdvancedChargeImage,
     ArcaneAimImage,
@@ -97,7 +99,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun } from "./../Effects";
+import { armorUp, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -2411,7 +2413,7 @@ export const ifrit: Ability = {
     upgrades: [
         {
             minion: {
-                HP: 2,
+                maxHP: 2,
                 abilities: [
                     {
                         actions: [
@@ -2485,7 +2487,7 @@ export const elquines: Ability = {
     upgrades: [
         {
             minion: {
-                HP: 2,
+                maxHP: 2,
                 abilities: [
                     {
                         actions: [
@@ -2502,7 +2504,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains +1 ATT and 3 Armor when it kills.",
+    description: "Gains 3 Armor when it attacks.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,
@@ -2516,26 +2518,24 @@ export const abominableSnowman: Ability = {
         armor: 15,
         abilities: [
             {
-                name: "Snow Cleave",
-                image: GiantSnowmanImage,
+                ...attack,
                 actions: [
                     {
-                        target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.ATTACK,
-                        damage: 4,
-                        area: 1,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 5,
                     },
                 ],
             },
         ],
         effects: [
+            taunt,
             {
                 name: "Abomination",
-                description: "Gains +1 ATT and 3 Armor when it kills.",
-                icon: GiantSnowmanImage,
+                description: "Gains 3 Armor when it attacks.",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                onKill: {
+                onAttack: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Abominable",
@@ -2544,17 +2544,6 @@ export const abominableSnowman: Ability = {
                             {
                                 target: TARGET_TYPES.SELF,
                                 type: ACTION_TYPES.EFFECT,
-                                animation: ANIMATION_TYPES.SHOUT,
-                                effects: [
-                                    {
-                                        name: "Abominable",
-                                        icon: GiantSnowmanImage,
-                                        disableDisplayIcon: true,
-                                        type: EFFECT_TYPES.RAGE,
-                                        class: EFFECT_CLASSES.BUFF,
-                                        attackPower: 1,
-                                    },
-                                ],
                                 armor: 3,
                             },
                         ],
@@ -2572,7 +2561,7 @@ export const abominableSnowman: Ability = {
                     {
                         actions: [
                             {
-                                damage: 1,
+                                damage: 2,
                             },
                         ],
                     },

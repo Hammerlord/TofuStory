@@ -27,6 +27,7 @@ export enum EFFECT_TYPES {
     ATTACK_IMMUNITY = "attackImmunity",
     LIFE_LINK = "lifeLink",
     FEAR = "fear",
+    TAUNT = "taunt", // Characters hostile to a unit with this effect are only allowed to target that unit
 }
 
 export enum EFFECT_CLASSES {

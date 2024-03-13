@@ -599,7 +599,6 @@ export const calculateHealing = ({ target, action }: { target?: CombatantInfo; a
 };
 
 /**
- * @param characters
  * @returns indices of characters that are alive
  */
 export const getValidTargetIndices = (

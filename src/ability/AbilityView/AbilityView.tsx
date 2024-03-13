@@ -11,7 +11,7 @@ import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, TARGET_TYPES } from "../types";
+import { Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area from "./AreaView";
@@ -232,7 +232,6 @@ const AbilityView = forwardRef(
             minion,
             minionOptions,
             image,
-            description,
             overrideBodyText,
             removeAfterTurn,
             depletedOnUse,
@@ -407,6 +406,7 @@ const AbilityView = forwardRef(
                 }
             }
         }
+        const taunt = minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
         const isAbilityUsable = canUseAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
@@ -464,11 +464,12 @@ const AbilityView = forwardRef(
                         </span>
                         <div className={classes.portraitContainer}>{imageNode}</div>
                         <div className={classes.body}>
-                            {tributeSummon && (
+                            {
                                 <div>
-                                    <span className={classes.bold}>Tribute</span>
+                                    {tributeSummon && <span className={classes.bold}>Tribute.</span>}
+                                    {taunt && <span className={classes.bold}> Taunt.</span>}
                                 </div>
-                            )}
+                            }
                             {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}
