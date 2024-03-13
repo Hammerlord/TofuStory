@@ -19,7 +19,7 @@ import {
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
+import { BackpackImage, ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -45,6 +45,8 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from ".
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 import Icon from "../icon/Icon";
 import { PreviewStatUpdate } from "../character/AbilityPreview";
+import Tooltip from "../view/Tooltip";
+import EffectGroupIcon from "../icon/EffectGroupIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -189,6 +191,12 @@ const useStyles = createUseStyles({
         left: "50%",
         position: "absolute",
     },
+    placeCardIntoDeckContainer: {
+        position: "absolute",
+        bottom: -75,
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
 });
 
 const BATTLEFIELD_SIZE = 5;
@@ -254,18 +262,24 @@ const BattlefieldContainer = () => {
     const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
 
     // Look up special effects that allow the player to do extra actions on the battlefield
-    const { allowMoveCardFromHandToDeck, allowFriendlyMovement } = useMemo(() => {
+    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(() => {
         return player?.effects.reduce(
             (acc, effect: CombatEffect) => {
+                const moveCardFromHandToDeckEffects = [...acc.moveCardFromHandToDeckEffects];
+                if (effect.allowMoveCardFromHandToDeck) {
+                    moveCardFromHandToDeckEffects.push(effect);
+                }
                 return {
                     ...acc,
-                    allowMoveCardFromHandToDeck: effect.allowMoveCardFromHandToDeck || acc.allowMoveCardFromHandToDeck,
+                    moveCardFromHandToDeckEffects,
                     allowFriendlyMovement: effect.allowFriendlyMovement || acc.allowFriendlyMovement,
                 };
             },
-            { allowMoveCardFromHandToDeck: false, allowFriendlyMovement: false }
+            { moveCardFromHandToDeckEffects: [], allowFriendlyMovement: false }
         );
     }, [player]);
+
+    const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
 
     const isWinConditionTriggered = (() => {
         if (winCondition.defeatBoss) {
@@ -954,6 +968,17 @@ const BattlefieldContainer = () => {
                                         highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
                                         deckRef={deckRef}
                                     />
+                                    {allowMoveCardFromHandToDeck && (
+                                        <Tooltip title="Select a card in your hand to place it onto your deck.">
+                                            <span className={classes.placeCardIntoDeckContainer}>
+                                                <EffectGroupIcon
+                                                    effects={moveCardFromHandToDeckEffects}
+                                                    owner={player}
+                                                    disableTooltip={true}
+                                                />
+                                            </span>
+                                        </Tooltip>
+                                    )}
                                 </div>
                             </div>
                             <div className={classes.combatantContainer}>

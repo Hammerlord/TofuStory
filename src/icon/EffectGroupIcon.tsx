@@ -135,11 +135,13 @@ const EffectGroupIcon = ({
     isSilenced,
     owner,
     glow,
+    disableTooltip,
 }: {
     effects: CombatEffect[];
     isSilenced?: boolean;
     owner: Combatant | Player;
-    glow: boolean;
+    glow?: boolean;
+    disableTooltip?: boolean;
 }) => {
     if (!effects?.length) {
         return null;
@@ -225,6 +227,35 @@ const EffectGroupIcon = ({
         },
         { stackCount: 0, displayStacks: false }
     );
+
+    const inner = (
+        <span className={classes.root}>
+            <Icon
+                icon={icon}
+                className={classNames({
+                    [classes.disabled]: disabled,
+                    [classes.glow]: glow,
+                })}
+            >
+                <>
+                    {duration !== Infinity && (
+                        <span className={classes.duration}>
+                            <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
+                        </span>
+                    )}
+                    {(displayStacks || stackCount > 1) && (
+                        <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
+                    )}
+                    {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.upCorner} />}
+                    {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.downCorner} />}
+                </>
+            </Icon>
+        </span>
+    );
+
+    if (disableTooltip) {
+        return inner;
+    }
 
     const tooltipContent = (
         <div className={classes.tooltipContents}>
@@ -328,32 +359,7 @@ const EffectGroupIcon = ({
             </div>
         </div>
     );
-    return (
-        <Tooltip title={tooltipContent}>
-            <span className={classes.root}>
-                <Icon
-                    icon={icon}
-                    className={classNames({
-                        [classes.disabled]: disabled,
-                        [classes.glow]: glow,
-                    })}
-                >
-                    <>
-                        {duration !== Infinity && (
-                            <span className={classes.duration}>
-                                <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
-                            </span>
-                        )}
-                        {(displayStacks || stackCount > 1) && (
-                            <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
-                        )}
-                        {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.upCorner} />}
-                        {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.downCorner} />}
-                    </>
-                </Icon>
-            </span>
-        </Tooltip>
-    );
+    return <Tooltip title={tooltipContent}>{inner}</Tooltip>;
 };
 
 export default EffectGroupIcon;

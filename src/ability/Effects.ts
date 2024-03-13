@@ -622,6 +622,7 @@ export const stashCardEffect: Effect = {
     onMoveCardFromHandToDeck: {
         decrementStacks: 1,
     },
+    disableDisplayIcon: true,
 };
 
 export const infuriateEffect = {
