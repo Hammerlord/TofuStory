@@ -2593,6 +2593,7 @@ export const whelp: Ability = {
                         animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
                         damage: 2,
+                        playbackTime: 500,
                     },
                 ],
             },

@@ -2018,7 +2018,9 @@ const checkSummonMinion = ({
         };
 
         // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
-        if (actor?.isPlayer && !removeAfterTurn && !depletedOnUse) {
+        // Checking for ability.instanceId: only cards owned by the player have this, whereas abilities triggered from eg. Metronome do not.
+        // Minion summons from Metronome should not go into discard when they die.
+        if (actor?.isPlayer && !removeAfterTurn && !depletedOnUse && ability.instanceId) {
             newBattleProps.playerSummonsInPlay = { ...getState().battle?.playerSummonsInPlay, [summonedMinion.id]: ability };
         }
         dispatch(updateBattle(newBattleProps));
