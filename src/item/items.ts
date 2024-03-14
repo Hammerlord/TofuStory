@@ -70,6 +70,7 @@ import {
     ScrollImage,
     SnowshoesImage,
     SpectrumGogglesImage,
+    SpikyCollarImage,
     StarEarringsImage,
     StarfallMagicSquareImage,
     SteelyImage,
@@ -85,6 +86,7 @@ import {
     WhiteUndershirtImage,
     WildKargoEyeImage,
     WorkGlovesImage,
+    YellowHatImage,
 } from "../images";
 import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import {
@@ -351,16 +353,11 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "When you summon a minion, it gains 1 attack power.",
+    description: "Your summoned minions gain 1 attack power.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
-        {
-            name: "Alligator Tube",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-        },
         {
             name: "Alligator Tube",
             type: EFFECT_TYPES.NONE,
@@ -1941,6 +1938,58 @@ export const opal: Item = {
                         property: "class",
                         comparator: "eq",
                         value: EFFECT_CLASSES.BUFF,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const yellowHat: Item = {
+    name: "Yellow Hat",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: YellowHatImage,
+    description: "Every 5 times your summoned minions use an ability, gain 1 resource and draw a card.",
+    effects: [
+        {
+            name: "Yellow Hat Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onFriendlyAbility: {
+                excludeEffectOwner: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                eventTriggerFrequency: 5,
+                resources: 1,
+                drawCards: {
+                    amount: 1,
+                },
+            },
+        },
+    ],
+};
+
+export const spikyCollar: Item = {
+    name: "Bain's Spiky Collar",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: SpikyCollarImage,
+    description: "When one of your summoned minions is attacked, it will Counter that enemy for 3 damage.",
+    effects: [
+        {
+            name: "Bain's Spiky Collar Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        ...counterEffect,
+                        image: undefined,
+                        disableDisplayIcon: true,
+                        icon: WeaponMasteryImage,
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
                     },
                 ],
             },

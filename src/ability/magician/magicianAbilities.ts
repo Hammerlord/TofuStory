@@ -2576,7 +2576,7 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "Summon: Draw a card.",
+    description: "Summon / Death: Draw a card.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {

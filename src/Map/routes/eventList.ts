@@ -83,6 +83,8 @@ import {
     ironBall,
     scrollForClawForAtt,
     opal,
+    yellowHat,
+    spikyCollar,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -175,6 +177,8 @@ export const ITEMS = [
     ironBall,
     scrollForClawForAtt,
     opal,
+    yellowHat,
+    spikyCollar,
 ];
 
 export const CLASS_ITEMS = {

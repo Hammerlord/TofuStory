@@ -391,8 +391,7 @@ const handleOnReceiveAction = ({
             }
 
             updatedStats.forEach(([stats, action]) => {
-                const excludeEffectOwner = (source?.source as CombatEffect)?.excludeEffectOwner && stats.combatantId === combatant.id;
-                if (excludeEffectOwner || !isAttack(action)) {
+                if (!isAttack(action)) {
                     return;
                 }
 
@@ -734,7 +733,9 @@ export const checkEventTrigger = ({
 
             // Dead characters generally cannot trigger effects except in case of killing blows
             const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
-            if (!usable) {
+
+            const excludeEffectOwner = effectEvent.excludeEffectOwner && source?.actorId === combatant.id;
+            if (!usable || excludeEffectOwner) {
                 return;
             }
 
@@ -2245,6 +2246,28 @@ const onUseAbility =
                         checkEventTrigger({
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onHostileSupportAbility,
+                            source: source,
+                        })
+                    );
+                }
+            }
+        });
+
+        actorInfo.friendly.forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onFriendlyAbility,
+                        source: source,
+                    })
+                );
+
+                if (!isOffensiveAbility(ability)) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onFriendlySupportAbility,
                             source: source,
                         })
                     );

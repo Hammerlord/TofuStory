@@ -94,7 +94,7 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
     triggerFrequencyFromSum?: number;
     // Sources that were triggered from effect events cannot trigger this event
     disableTriggerFromProcs?: boolean;
-    excludeEffectOwner?: boolean; // For onFriendlyAttacked, do not include the effect owner in the event triggers
+    excludeEffectOwner?: boolean; // For onFriendlyAttacked/onFriendly<event>s, if true, do not include the effect owner in the event triggers
 };
 
 export enum EFFECT_EVENT_KEYS {
@@ -109,6 +109,8 @@ export enum EFFECT_EVENT_KEYS {
     onKill = "onKill", // When the effect owner personally gets the killing blow
     onReceiveAttack = "onReceiveAttack",
     onFriendlyReceiveAttack = "onFriendlyReceiveAttack",
+    onFriendlyAbility = "onFriendlyAbility",
+    onFriendlySupportAbility = "onFriendlySupportAbility",
     onReceiveDamage = "onReceiveDamage",
     onReceiveHealing = "onReceiveHealing",
     onReceiveArmor = "onReceiveArmor",
