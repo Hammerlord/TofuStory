@@ -1668,8 +1668,7 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description:
-        "The next {{ actions.0.effects.0.stacks }} times you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
+    description: "Once per turn, when you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
     overrideBodyText: true,
     actions: [
         {
@@ -1677,27 +1676,35 @@ export const volatileMagic: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Volatile Magic",
-                    description: "When you use a 2+ cost offense card, cast a random offense spell.",
-                    icon: StarfallMagicSquareImage,
+                    name: "Volatile Magic Effect",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    maxApplications: 1,
-                    stacks: 3,
-                    onAbility: {
-                        conditions: [
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [
                             {
-                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                comparator: "gt",
-                                resourceCost: 1,
-                                isOffense: true,
+                                name: "Volatile Magic",
+                                description: "When you use a 2+ cost offense card, cast a random offense spell.",
+                                icon: StarfallMagicSquareImage,
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                                onAbility: {
+                                    conditions: [
+                                        {
+                                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                            comparator: "gt",
+                                            resourceCost: 1,
+                                            isOffense: true,
+                                        },
+                                    ],
+                                    autoCastAbilities: {
+                                        type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
+                                        amount: 1,
+                                    },
+                                    removeEffect: true,
+                                },
                             },
                         ],
-                        autoCastAbilities: {
-                            type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
-                            amount: 1,
-                        },
-                        decrementStacks: 1,
                     },
                 },
             ],
@@ -1705,11 +1712,22 @@ export const volatileMagic: Ability = {
     ],
     upgrades: [
         {
+            description: "Once per turn, when you use a 2+ cost {{{ _offense_ }}} card, cast a random Upgraded {{{ _offense_ }}} spell.",
             actions: [
                 {
                     effects: [
                         {
-                            stacks: 1,
+                            onTurnStart: {
+                                effects: [
+                                    {
+                                        onAbility: {
+                                            autoCastAbilities: {
+                                                upgradeLevels: 1,
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
                         },
                     ],
                 },
