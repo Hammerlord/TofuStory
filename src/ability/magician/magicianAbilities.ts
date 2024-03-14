@@ -1052,6 +1052,8 @@ export const quickspell: Ability = {
     ],
     upgrades: [
         {
+            description:
+                "Draw {{ actions.0.drawCards.amount }} {{{ _offense_ }}} cards. Their cost is reduced by {{ actions.0.drawCards.effects.0.resourceCost }} until discarded.",
             actions: [
                 {
                     drawCards: {
@@ -1762,6 +1764,8 @@ export const bagFromBeyond: Ability = {
 export const arcaneWard: Ability = {
     name: "Arcane Ward",
     image: ElementalAdaptationFPImage,
+    description: "Prevent the next time your armor decays.",
+    overrideBodyText: true,
     resourceCost: 1,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
