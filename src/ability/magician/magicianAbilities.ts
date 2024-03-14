@@ -2737,7 +2737,8 @@ export const fireSpirit: Ability = {
 
 export const astralRewind: Ability = {
     name: "Astral Rewind",
-    description: "Place Ephemeral copies of the last 3 cards you played into your hand.",
+    description:
+        "Copy the last {{ actions.0.addLastPlayedCards.amount }} cards you played and place them into your hand. They are Ephemeral.",
     image: EpicAdventureImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
