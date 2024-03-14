@@ -131,7 +131,7 @@ import {
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
+import { championsRibbon, critical, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -2265,23 +2265,7 @@ export const wildKargo: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "Critical",
-            image: MarksmanshipImage,
-            description: "Gains +1 ATT against debuffed targets.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackPower: 1,
-            conditions: [
-                {
-                    hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                },
-            ],
-        },
-        avenger,
-    ],
+    effects: [critical, avenger],
 };
 
 const vulnerablePig: Minion = {
@@ -2502,7 +2486,7 @@ export const blueMushroom: Minion = {
     effects: [hardy],
 };
 
-const copperDrake: Minion = {
+export const copperDrake: Minion = {
     name: "Copper Drake",
     image: CopperDrakeImage,
     maxHP: 100,

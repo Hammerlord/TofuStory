@@ -14,6 +14,7 @@ import {
     BrokenMirrorGlassImage,
     FirewoodImage,
     GreenFairiesImage,
+    MarksmanshipImage,
     NamelessSwordImage,
     OmokPigImage,
     PigsHeadImage,
@@ -448,6 +449,21 @@ export const armorDown: Effect = {
     type: EFFECT_TYPES.NONE,
     armorReceived: -1,
     duration: 3,
+};
+
+export const critical: Effect = {
+    name: "Critical",
+    image: MarksmanshipImage,
+    description: "Gains +1 ATT against debuffed targets.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    conditions: [
+        {
+            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+        },
+    ],
 };
 
 /**

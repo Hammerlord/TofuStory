@@ -38,8 +38,6 @@ const pickIndex = ({ hostile, actor, actorIndex }) => {
         return hostile[index]?.effects.some((e: CombatEffect) => e.type === EFFECT_TYPES.TAUNT);
     });
 
-    console.log(tauntIndices);
-
     const targetIndices = tauntIndices.length ? tauntIndices : validTargetIndices;
 
     let baseProbability = 1 / targetIndices.length;
@@ -173,7 +171,10 @@ const handleCastTick = (combatantId: string) => {
         }
 
         dispatch(useAbility({ actorId: combatantId, ability, side: selectedSide, selectedIndex: index }));
-        const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
+        const { combatant: postAbilityActor } = findCombatantData(getState, combatantId) || {};
+        if (!postAbilityActor) {
+            return;
+        }
         const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
 
         dispatch(
@@ -415,7 +416,7 @@ export const startEnemyTurn = () => {
             const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length;
             const nobodyHasActed = !Object.keys(acted).length;
             let delay;
-            if (nobodyHasActed) {
+            if (nobodyHasActed || casting) {
                 delay = 0;
             } else if (unableToAct) {
                 delay = 250;

@@ -259,6 +259,7 @@ export interface Minion {
     imageOptions?: {
         filter?: string;
         animation?: "float";
+        fadeInOut?: boolean;
     };
     maxHP: number;
     HP?: number;
@@ -480,6 +481,7 @@ export type Action = {
         effects?: Effect[];
         icon?: string;
         animation?: ANIMATION_TYPES;
+        animationOptions?;
         playbackTime?: number;
         bonus?: Bonus;
     };
@@ -641,6 +643,7 @@ export interface Ability {
     preemptive?: boolean;
     /** This is treated as a prerequisite to using the ability */
     selectCards?: SelectCards;
+    conditionOperator?: "and" | "or"; // OR by default
     /** Prerequisite to use the ability at all */
     conditions?: Condition[];
     effectsWhileOwned?: Effect[];

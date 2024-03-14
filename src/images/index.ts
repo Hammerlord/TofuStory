@@ -544,6 +544,7 @@ export { default as TerracottaCrossbowmanImage } from "./TerracottaCrossbowman.g
 export { default as TerracottaDieImage } from "./TerracottaDie.png";
 export { default as TerracottaSwordsmanImage } from "./TerracottaSwordsman.gif";
 export { default as TheBookOfAncientImage } from "./TheBookOfAncient.png";
+export { default as TheRemembererImage } from "./TheRememberer.png";
 export { default as ThiefImage } from "./Thief.gif";
 export { default as ThunderBoltImage } from "./ThunderBolt.png";
 export { default as ThunderBoltProjectileImage } from "./ThunderBoltProjectile.png";

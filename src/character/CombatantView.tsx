@@ -318,13 +318,12 @@ const CombatantView = forwardRef(
         const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
         const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect: CombatEffect) => effect.type === EFFECT_TYPES.LIFE_LINK);
-        const { fadeInOut } =
-            combatant?.effects.reduce(
-                (acc, e: CombatEffect) => {
-                    return { ...acc, ...e.portraitAnimationOptions }; // The last effect applied wins for all animation options
-                },
-                { fadeInOut: false }
-            ) || {};
+
+        // @ts-ignore
+        const { fadeInOut: fadeInOutFromEffect } =
+            combatant?.effects.reduce((acc, e: CombatEffect) => {
+                return { ...acc, ...e.portraitAnimationOptions }; // The last effect applied wins for all animation options
+            }, {}) || {};
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
@@ -394,17 +393,17 @@ const CombatantView = forwardRef(
         const isApplyingEffect =
             ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
             (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
-        const { animation: portraitAnimation } = oldState?.imageOptions || {};
+        const { animation: portraitAnimation, fadeInOut } = oldState?.imageOptions || {};
 
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
-                [classes.fadeInOut]: fadeInOut,
+                [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && oldState?.HP > 0,
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
                 [classes.dead]: !action && oldState?.HP === 0,
                 [classes.applyingEffect]: isApplyingEffect,
-                [classes.casting]: oldState?.casting,
+                [classes.casting]: oldState?.casting && !(fadeInOut || fadeInOutFromEffect),
                 [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
             }),
             style: {
