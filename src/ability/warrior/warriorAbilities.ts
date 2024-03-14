@@ -2473,7 +2473,7 @@ export const honedBlock: Ability = {
     name: "Honed Block",
     image: SilverAquilaImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it Upgrades.",
+    description: "Whenever this card leaves your hand, it Upgrades for the rest of battle.",
     rarity: RARITIES.COMMON,
     onLeaveHand: {
         abilityEffects: [
@@ -2505,7 +2505,7 @@ export const honedStrike: Ability = {
     name: "Honed Strike",
     image: BurningSoulBladeImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it Upgrades.",
+    description: "Whenever this card leaves your hand, it Upgrades for the rest of battle.",
     rarity: RARITIES.COMMON,
     onLeaveHand: {
         abilityEffects: [
@@ -2541,7 +2541,7 @@ export const moratorium: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 12,
+            damage: 11,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             targetMinHP: 1,
@@ -2551,7 +2551,7 @@ export const moratorium: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },

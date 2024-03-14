@@ -1453,7 +1453,7 @@ export const temporalBag: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: EmptySackImage,
-    description: "You may place 2 abilities from your hand back into your deck.",
+    description: "You may place {{ actions.0.effects.0.stacks }} cards from your hand onto your deck.",
     depletedOnUse: true,
     actions: [
         {
@@ -2737,8 +2737,7 @@ export const fireSpirit: Ability = {
 
 export const astralRewind: Ability = {
     name: "Astral Rewind",
-    description:
-        "Copy the last {{ actions.0.addLastPlayedCards.amount }} cards you played and place them into your hand. They are Ephemeral.",
+    description: "Create Ephemeral copies of the last {{ actions.0.addLastPlayedCards.amount }} cards you used and add them to your hand.",
     image: EpicAdventureImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
