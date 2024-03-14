@@ -19,6 +19,7 @@ import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { balrog } from "../enemy/balrog";
 import { BATTLE_TYPES } from "../battle/types";
+import { theRememberer } from "../enemy/rememberer";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -47,6 +48,7 @@ const store = {
 
 const SLEEPYWOOD_PLACES = {
     BALROG: "balrog",
+    REMEMBERER: "rememberer",
 };
 
 const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost, onCamp, onBattle }) => {
@@ -153,6 +155,27 @@ const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingP
                                             waves: [{ enemies: [null, null, balrog, null, null], winCondition: { defeatBoss: true } }],
                                             type: BATTLE_TYPES.BOSS,
                                             backgroundImage: DeepDungeonBGImage,
+                                        },
+                                        () => {}
+                                    );
+                                }
+                            }}
+                        />
+
+                        <TownNode
+                            icon={JapaneseOgreIcon}
+                            isVisited={false}
+                            label={"[Test] The Rememberer"}
+                            nodeImage={SleepywoodAntTunnelImage}
+                            onClick={() => {
+                                if (checkVisitPlace(SLEEPYWOOD_PLACES.REMEMBERER)) {
+                                    onBattle(
+                                        {
+                                            waves: [
+                                                { enemies: [null, null, theRememberer, null, null], winCondition: { defeatBoss: true } },
+                                            ],
+                                            type: BATTLE_TYPES.BOSS,
+                                            backgroundImage: SleepywoodRegionBGImage,
                                         },
                                         () => {}
                                     );
