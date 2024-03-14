@@ -65,6 +65,7 @@ export { default as BlueUmbrellaImage } from "./BlueUmbrella.png";
 export { default as BoarIconImage } from "./BoarIcon.png";
 export { default as BombImage } from "./Bomb.png";
 export { default as BoneHelmImage } from "./BoneHelm.png";
+export { default as BounceImage } from "./Bounce.png";
 export { default as BouquetImage } from "./Bouquet.png";
 export { default as BrandishImage } from "./Brandish.png";
 export { default as BrickImage } from "./Brick.png";

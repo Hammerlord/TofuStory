@@ -15,6 +15,7 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { getUpgradeCard } from "./utils";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 const useStyles = createUseStyles({
     inner: {
@@ -95,7 +96,7 @@ const CardRewards = ({
                 }
                 return card;
             }),
-        ];
+        ].concat(NEUTRAL_ABILITIES);
 
         const choices = [...cardRewardOptions];
         const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);

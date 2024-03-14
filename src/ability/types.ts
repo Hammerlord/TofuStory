@@ -468,6 +468,11 @@ export type Action = {
         to: "hand" | "deck" | "discard" | "deplete";
         amount: number;
     };
+    discardCardsFromHand?: {
+        amount: number; // If n is less than the number of cards in hand, random cards are chosen
+        effects?: AbilityEffect[];
+        filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
+    };
     drawCards?: {
         amount: number;
         effects?: AbilityEffect[];

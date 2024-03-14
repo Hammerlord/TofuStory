@@ -14,6 +14,7 @@ import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { getUpgradeCard } from "./utils";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 const HEADER_BAR = 72;
 
@@ -218,13 +219,15 @@ const Shop = ({
 
     const refreshItems = () => {
         // Abilities
-        const potentialAbilities = JOB_CARD_MAP[player.class].all.map((ability: Ability) => {
-            if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
-                return getUpgradeCard(ability);
-            }
+        const potentialAbilities = JOB_CARD_MAP[player.class].all
+            .map((ability: Ability) => {
+                if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
+                    return getUpgradeCard(ability);
+                }
 
-            return ability;
-        });
+                return ability;
+            })
+            .concat(NEUTRAL_ABILITIES);
 
         const rolledAbilities = [];
         Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {

@@ -164,10 +164,26 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             retrieveDepletedCards,
             moveCards,
             addLastPlayedCards,
+            discardCardsFromHand,
         } = action;
 
         if (cardsToDraw) {
             dispatch(drawCards({ ...cardsToDraw, source }));
+        }
+
+        if (discardCardsFromHand) {
+            const { amount } = discardCardsFromHand;
+            const { hand, discard } = getState().battle;
+
+            const cardsDiscarded = shuffle(hand).slice(0, amount);
+            const newHand = hand.filter((card) => cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId));
+
+            dispatch(
+                updateBattle({
+                    hand: newHand,
+                    discard: [...cardsDiscarded, ...discard],
+                })
+            );
         }
 
         const triggerAddCardsToHandEvent = (amount: number) => {
@@ -425,7 +441,6 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                     hand: [...hand, ...cardsToHand],
                 })
             );
-            triggerAddCardsToHandEvent(cardsToHand.length);
         }
     };
 };

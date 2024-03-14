@@ -5,7 +5,7 @@ import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
-import { shellThrow } from "../ability/neutralAbilities";
+import { NEUTRAL_ABILITIES, shellThrow } from "../ability/neutralAbilities";
 import Button from "../view/Button";
 import { Ability, CombatAbility } from "../ability/types";
 import { RARITIES } from "../item/types";
@@ -77,7 +77,7 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div className={classes.viewer}>
                     <p>Neutral Cards</p>
-                    <Grid cards={formatCards([shellThrow])} />
+                    <Grid cards={formatCards(NEUTRAL_ABILITIES)} />
                     <hr />
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})

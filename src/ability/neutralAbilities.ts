@@ -1,4 +1,4 @@
-import { BlueSnailShellImage, RedSnailShellImage, SnailShellImage } from "../images";
+import { BlueSnailShellImage, BounceImage, RedSnailShellImage, SnailShellImage } from "../images";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./types";
 
 export const shellThrowRed: Ability = {
@@ -83,3 +83,41 @@ export const shellThrow: Ability = {
         },
     ],
 };
+
+export const bounce: Ability = {
+    name: "Bounce",
+    image: BounceImage,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description: "Discard your hand. Then, draw {{ actions.1.drawCards.amount }}.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            discardCardsFromHand: {
+                amount: 10,
+            },
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.NONE,
+            drawCards: {
+                amount: 3,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {},
+                {
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const NEUTRAL_ABILITIES = [shellThrow, bounce];
