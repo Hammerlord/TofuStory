@@ -158,6 +158,7 @@ export { default as EndureImage } from "./Endure.png";
 export { default as EnergyBoltImage } from "./EnergyBolt.png";
 export { default as EnergyBoltProjectileImage } from "./EnergyBoltProjectile.png";
 export { default as EnrageImage } from "./Enrage.png";
+export { default as EpicAdventureImage } from "./EpicAdventure.png";
 export { default as EstherShieldImage } from "./EstherShield.png";
 export { default as EvilCupImage } from "./EvilCup.png";
 export { default as EvilEyeImage } from "./EvilEye.png";

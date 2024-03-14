@@ -20,6 +20,7 @@ import {
     EmptySackImage,
     EnergyBoltImage,
     EnergyBoltProjectileImage,
+    EpicAdventureImage,
     FireArrowImage,
     FireArrowProjectileImage,
     FireMarbleImage,
@@ -2730,6 +2731,42 @@ export const fireSpirit: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const astralRewind: Ability = {
+    name: "Astral Rewind",
+    description: "Place Ephemeral copies of the last 3 cards you played into your hand.",
+    image: EpicAdventureImage,
+    depletedOnUse: true,
+    rarity: RARITIES.RARE,
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            icon: EpicAdventureImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            addLastPlayedCards: {
+                amount: 3,
+                abilityEffects: [
+                    {
+                        removeParentCardAfterTurn: true,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    addLastPlayedCards: {
+                        amount: 1,
+                    },
+                },
+            ],
         },
     ],
 };

@@ -163,6 +163,7 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             selectCards,
             retrieveDepletedCards,
             moveCards,
+            addLastPlayedCards,
         } = action;
 
         if (cardsToDraw) {
@@ -395,6 +396,36 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             if (to === "hand") {
                 triggerAddCardsToHandEvent(cardsToMove.length);
             }
+        }
+
+        if (addLastPlayedCards) {
+            const { amount, abilityEffects = [] } = addLastPlayedCards;
+            const { hand, playerSide } = getState().battle;
+            const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
+            // Procced abilities do not have instanceIds, only actual cards do. Do not copy procs.
+            const historyPile = player.abilityHistory
+                .slice()
+                .reverse()
+                .filter((ability) => ability.instanceId);
+
+            const cardsToHand = historyPile.slice(0, amount).map((card) =>
+                applyAbilityEventEffects({
+                    event: { abilityEffects },
+                    ability: {
+                        ...card,
+                        instanceId: uuid.v4(),
+                        removeAfterTurn: abilityEffects.some((e) => e.removeParentCardAfterTurn), // Why not make this effect consumed properly by the system?
+                    },
+                })
+            );
+
+            dispatch(
+                updateBattle({
+                    hand: [...hand, ...cardsToHand],
+                })
+            );
+            triggerAddCardsToHandEvent(cardsToHand.length);
         }
     };
 };

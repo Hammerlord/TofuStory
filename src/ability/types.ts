@@ -458,6 +458,11 @@ export type Action = {
     addCardsToDeck?: Ability[];
     /** Adds cards to your current discard pile */
     addCardsToDiscard?: Ability[];
+    /** Add the player's last n played cards to the hand. */
+    addLastPlayedCards?: {
+        amount?: number;
+        abilityEffects?: AbilityEffect[];
+    };
     moveCards?: {
         from: "hand" | "deck" | "discard" | "deplete";
         to: "hand" | "deck" | "discard" | "deplete";
@@ -574,6 +579,7 @@ export interface AbilityUpgrade {
         actions: Action[];
     };
     // Eg. the first item maps to action[0]
+    // See Action interface for comprehensive available properties
     actions?: {
         // Numbers should be amount to increase by, not absolute value
         damage?: number;
@@ -607,6 +613,8 @@ export interface AbilityUpgrade {
         selectCardOptions?: AddCardUpgradeOptions; // Only applicable if the card has selectCards.cards
         autoCastAbilities?;
         secondaryAction?;
+        moveCards?;
+        addLastPlayedCards?;
     }[];
 }
 

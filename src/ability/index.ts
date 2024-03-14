@@ -57,6 +57,7 @@ import {
     zap,
     starBolt,
     fireSpirit,
+    astralRewind,
 } from "./magician/magicianAbilities";
 
 import {
@@ -185,6 +186,7 @@ export const JOB_CARD_MAP = {
             abominableSnowman,
             whelp,
             fireSpirit,
+            astralRewind,
         ],
         starters: [lesserBolt, lesserBolt, lesserBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
