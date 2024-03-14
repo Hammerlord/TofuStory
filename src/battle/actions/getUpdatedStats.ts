@@ -87,6 +87,7 @@ export const getUpdatedStats = ({
             removeDebuffs,
             removeEffects = [],
             flatDamage = 0,
+            targetMinHP = 0,
         } = action;
 
         const enabledEffects = getEnabledEffects({ combatantInfo: target });
@@ -110,7 +111,9 @@ export const getUpdatedStats = ({
         const totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
         const updatedTargetArmor = Math.max(0, totalArmor - damage);
         const armorGained = updatedTargetArmor - targetCombatant.armor;
-        const healthDamage = Math.max(0, damage - totalArmor);
+        const targetApplicableHP = targetCombatant.HP - targetMinHP;
+        const healthDamage = Math.min(targetApplicableHP, Math.max(0, damage - totalArmor));
+        const rawDamage = Math.min(targetApplicableHP + targetCombatant.armor, damage);
 
         let rawHealing = 0;
         if (targetCombatant.HP - healthDamage > 0 || resurrect) {
@@ -221,7 +224,7 @@ export const getUpdatedStats = ({
         return [
             {
                 combatantId: targetCombatant.id,
-                rawDamage: Math.min(targetCombatant.HP + targetCombatant.armor, damage),
+                rawDamage,
                 healthDamage,
                 healing,
                 rawHealing,

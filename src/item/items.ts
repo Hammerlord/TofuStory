@@ -1987,7 +1987,6 @@ export const spikyCollar: Item = {
                         ...counterEffect,
                         image: undefined,
                         disableDisplayIcon: true,
-                        icon: WeaponMasteryImage,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                     },

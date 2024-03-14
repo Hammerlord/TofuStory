@@ -17,6 +17,7 @@ import {
     CombatOrdersImage,
     ComboFuryImage,
     ComboSynergyImage,
+    DarkImpaleImage,
     DarkThirstImage,
     DivineChargeImage,
     DoubleTimeImage,
@@ -2519,6 +2520,31 @@ export const honedStrike: Ability = {
             damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const moratorium: Ability = {
+    name: "Moratorium",
+    image: DarkImpaleImage,
+    resourceCost: 1,
+    description: "If this attack is lethal, the target lives with 1 HP.",
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 12,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            targetMinHP: 1,
         },
     ],
     upgrades: [

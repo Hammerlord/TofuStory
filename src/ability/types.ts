@@ -179,6 +179,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
     /** If true, effect has no effect on its owner */
+    // TODO: is this even useful?
     excludeEffectOwner?: boolean;
     /** Prevent application of certain effects */
     immunities?: {
@@ -425,6 +426,7 @@ export type Action = {
     damage?: number;
     secondaryDamage?: number;
     flatDamage?: number; // Deal damage that is not affected by any modifiers
+    targetMinHP?: number; // Target will stay at this HP if the damage would otherwise bring it below, see Stay of Execution
     type: ACTION_TYPES;
     healing?: number;
     armor?: number;
