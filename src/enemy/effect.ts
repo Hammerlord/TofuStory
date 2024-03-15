@@ -27,8 +27,8 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, MountainIcon, RedShieldIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
-import { defUp } from "./../ability/Effects";
+import { CloudyIcon, LinkIcon, MountainIcon, MuscleIcon, RedShieldIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
+import { defUp, attackPower } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
 export const pigHeaded: Effect = {
@@ -359,6 +359,22 @@ export const earthen: Effect = {
     immunities: {
         type: "effect-type",
         value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
+    },
+};
+
+export const battleTrance: Effect = {
+    name: "Battle Trance",
+    icon: MuscleIcon,
+    type: EFFECT_TYPES.RAGE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Gains +1 ATT for next turn when struck.",
+    onReceiveAttack: {
+        effects: [
+            {
+                ...attackPower,
+                duration: 2,
+            },
+        ],
     },
 };
 
