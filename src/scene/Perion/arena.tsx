@@ -5,8 +5,9 @@ import { Player } from "../../character/types";
 import { manji } from "../../enemy/Manji";
 import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
-import { EventScene, SceneEncounter } from "../types";
+import { EventScene, SceneEncounter, ScriptNode } from "../types";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
+import { ayanEnemy } from "../../enemy/ayan";
 
 const announcer = {
     name: "Announcer",
@@ -42,6 +43,16 @@ const manjiFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, manji, null, null],
+        },
+    ],
+    type: BATTLE_TYPES.ELITE_ENCOUNTER,
+    disableItemRewards: true,
+};
+
+const ayanFight: SceneEncounter = {
+    waves: [
+        {
+            enemies: [null, null, ayanEnemy, null, null],
         },
     ],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
@@ -120,11 +131,13 @@ const ArenaBackdrop = ({
     showTauromacis,
     showManji,
     showTaurospear,
+    showAyan,
 }: {
     player: Player;
     showTauromacis?: boolean;
     showManji?: boolean;
     showTaurospear?: boolean;
+    showAyan?: boolean;
 }) => {
     const classes = useStyles();
 
@@ -149,10 +162,47 @@ const ArenaBackdrop = ({
             </Tooltip>
             {showTaurospear && <img src={taurospear.image} alt="Taurospear" className={classNames(classes.opponent, classes.character)} />}
             {showTauromacis && <img src={tauromacis.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
-            {showManji && <img src={manji.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
+            {showManji && <img src={manji.image} alt="Manji" className={classNames(classes.opponent, classes.character)} />}
+            {showAyan && <img src={ayanEnemy.image} alt="Ayan" className={classNames(classes.opponent, classes.character)} />}
         </div>
     );
 };
+
+const ayanScript = [
+    {
+        scene: (other) => <ArenaBackdrop showAyan={true} {...other} />,
+        speaker: announcer,
+        dialog: ["Next up! A decade ago, she appeared at the gates without any memories and without a tribe..."],
+    },
+    {
+        speaker: announcer,
+        dialog: [
+            "But since coming of age, she quickly rose to become one of the greatest warriors under the chieftain himself. Our very own Ayan!",
+        ],
+    },
+    {
+        speaker: announcer,
+        dialog: ["Our brave mushroom challenger is in for a match!"],
+    },
+    {
+        speaker: crowd,
+        dialog: ["[The crowd cries out in excitement, arms raised.]"],
+    },
+    {
+        speaker: ayanEnemy,
+        dialog: ["Hello there. I watched you defeat that overgrown bull. I expect you'll give me a challenge."],
+    },
+    {
+        speaker: ayanEnemy,
+        dialog: ["Ready or not...!"],
+        responses: [
+            {
+                text: "Ready.",
+                encounter: ayanFight,
+            },
+        ],
+    },
+];
 
 const manjiScript = [
     {
@@ -227,7 +277,7 @@ export const arenaScene: EventScene = {
     id: "perion-arena",
     script: [
         {
-            scene: (other) => <ArenaBackdrop showTaurospear={true} {...other} />,
+            scene: (other) => <ArenaBackdrop {...other} />,
             speaker: announcer,
             dialog: [
                 "[The announcer's voice blares from a megaphone.] Hang onto your seats folks, or the coming match will knock you clean out of it!",
@@ -245,6 +295,8 @@ export const arenaScene: EventScene = {
                     ],
                     next: [
                         {
+                            scene: (other) => <ArenaBackdrop showTauromacis={true} {...other} />,
+
                             speaker: announcer,
                             dialog: [
                                 "Are you ready?",
@@ -313,6 +365,8 @@ export const arenaScene: EventScene = {
                     conditions: [],
                     next: [
                         {
+                            scene: (other) => <ArenaBackdrop showTaurospear={true} {...other} />,
+
                             speaker: announcer,
                             dialog: [
                                 "Are you ready?",
@@ -374,7 +428,24 @@ export const arenaScene: EventScene = {
                                                 "[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]",
                                             ],
                                         },
-                                        ...manjiScript,
+                                        {
+                                            speaker: announcer,
+                                            dialog: ["Next up!"], // Fix me: This is skipped due to the way conditionalNext is processed
+                                            conditionalNext: [
+                                                {
+                                                    conditions: [
+                                                        {
+                                                            chance: 0.5,
+                                                        },
+                                                    ],
+                                                    next: manjiScript,
+                                                },
+                                                {
+                                                    conditions: [],
+                                                    next: ayanScript,
+                                                },
+                                            ],
+                                        },
                                     ],
                                 },
                             ],
