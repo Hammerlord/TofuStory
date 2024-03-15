@@ -117,7 +117,6 @@ export const tauromacis: Minion = {
                     damage: 8,
                     effects: [bleed],
                     secondaryAction: {
-                        target: "actor",
                         healing: 10,
                     },
                 },
@@ -234,7 +233,6 @@ export const taurospear: Minion = {
                     damage: 8,
                     effects: [bleed],
                     secondaryAction: {
-                        target: "actor",
                         armor: 10,
                     },
                 },

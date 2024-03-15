@@ -1,5 +1,5 @@
 import { Combatant, Player } from "./../character/types";
-import { Ability, Action, CombatEffect } from "./../ability/types";
+import { Ability, Action, ActionOptionalProperties, CombatEffect } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 export interface BattleNotification {

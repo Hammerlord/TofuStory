@@ -163,7 +163,6 @@ export const wanderingBlacksmith: Minion = {
                     damage: 100,
                     area: 2,
                     secondaryAction: {
-                        target: "actor",
                         armor: 3,
                         effects: [{ ...attackPower, duration: 3 }],
                         multiplier: {

@@ -164,7 +164,6 @@ const puppeteerRevive: EffectEventTrigger = {
                                 value: 1,
                             },
                             secondaryAction: {
-                                target: "actor",
                                 armor: 50,
                             },
                             resurrect: true,

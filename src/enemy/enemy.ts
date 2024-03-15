@@ -2257,7 +2257,6 @@ export const wildKargo: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                     secondaryAction: {
-                        target: "actor",
                         healing: 15,
                         resources: 1,
                     },
@@ -2356,7 +2355,6 @@ export const ironHog: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 10,
                     secondaryAction: {
-                        target: "actor",
                         armor: 5,
                     },
                 },

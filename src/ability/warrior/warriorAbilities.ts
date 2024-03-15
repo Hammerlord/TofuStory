@@ -214,11 +214,9 @@ export const shieldStrike: Ability = {
             damage: 8,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-        },
-        {
-            armor: 8,
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            secondaryAction: {
+                armor: 8,
+            },
         },
     ],
     upgrades: [
@@ -226,9 +224,9 @@ export const shieldStrike: Ability = {
             actions: [
                 {
                     damage: 2,
-                },
-                {
-                    armor: 2,
+                    secondaryAction: {
+                        armor: 2,
+                    },
                 },
             ],
         },
@@ -1303,7 +1301,6 @@ export const guillotine: Ability = {
             target: TARGET_TYPES.HOSTILE,
             damage: 10,
             secondaryAction: {
-                target: "actor",
                 returnParentCardToHand: true,
                 resources: 1,
                 conditions: [
@@ -1620,7 +1617,6 @@ export const ragingBlow: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
-                target: "actor",
                 effects: [infuriateEffect],
             },
         },
@@ -1629,7 +1625,6 @@ export const ragingBlow: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
-                target: "actor",
                 effects: [infuriateEffect],
             },
         },
@@ -1656,7 +1651,6 @@ export const worldReaver: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
-                target: "actor",
                 isPriority: true,
                 effects: [
                     {
@@ -1781,7 +1775,6 @@ export const divineCharge: Ability = {
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             secondaryAction: {
-                target: "actor",
                 healing: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
@@ -2263,7 +2256,6 @@ export const guardian: Ability = {
                                     damage: 5,
                                 },
                                 secondaryAction: {
-                                    target: "actor",
                                     excludePrimaryTarget: true,
                                     area: 2,
                                     healing: 2,
@@ -2287,7 +2279,6 @@ export const guardian: Ability = {
                                     damage: 5,
                                 },
                                 secondaryAction: {
-                                    target: "actor",
                                     excludePrimaryTarget: true,
                                     area: 2,
                                     healing: 2,

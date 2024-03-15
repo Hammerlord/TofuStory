@@ -1,4 +1,4 @@
-import { AbilityEffect } from "./../ability/types";
+import { AbilityEffect, ActionOptionalProperties } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
@@ -471,7 +471,7 @@ export const calculateDamage = ({
     target?: CombatantInfo;
     targetIndex?: number;
     selectedIndex?: number;
-    action: Action;
+    action: Action | ActionOptionalProperties;
     actionParent?: Ability | Item;
     multiplier?: number;
 }): number => {
@@ -577,7 +577,15 @@ export const calculateDamage = ({
     return Math.max(minimumDamage, total);
 };
 
-export const calculateArmor = ({ target, action, multiplier = 1 }: { target?: CombatantInfo; action: Action; multiplier }): number => {
+export const calculateArmor = ({
+    target,
+    action,
+    multiplier = 1,
+}: {
+    target?: CombatantInfo;
+    action: { armor?: number };
+    multiplier;
+}): number => {
     if (!action.armor) {
         return 0;
     }
@@ -588,7 +596,7 @@ export const calculateArmor = ({ target, action, multiplier = 1 }: { target?: Co
     return Math.max(0, armor);
 };
 
-export const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: Action }): number => {
+export const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: { healing?: number } }): number => {
     if (!action.healing) {
         return 0;
     }
@@ -793,7 +801,7 @@ export const calculateBonus = ({
     hand,
     discard,
 }: {
-    action: Action; // The action to apply the bonus to
+    action: ActionOptionalProperties; // The action to apply the bonus to
     target?: CombatantInfo;
     allTargets: CombatantInfo[];
     actor?: CombatantInfo;
@@ -803,7 +811,7 @@ export const calculateBonus = ({
     deck: Ability[];
     hand: Ability[];
     discard: Ability[];
-}): Action => {
+}): ActionOptionalProperties => {
     if (!action.bonus) {
         return action;
     }

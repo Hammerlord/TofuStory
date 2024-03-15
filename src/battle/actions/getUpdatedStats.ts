@@ -2,6 +2,8 @@ import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { Ability, Action, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
 import { Item } from "../../item/types";
+import { getRandomItem } from "../../utils";
+import { passesValueComparison } from "../passesConditions";
 import {
     calculateArmor,
     calculateBonus,
@@ -14,8 +16,6 @@ import {
 import { enemyEffectNameMap } from "./../../enemy/effect";
 import { CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
-import { getRandomItem } from "../../utils";
-import { passesValueComparison } from "../passesConditions";
 
 export interface UpdatedCombatantStats {
     combatantId: string;

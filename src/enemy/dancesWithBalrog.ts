@@ -413,7 +413,6 @@ export const dancesWithBalrog: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     targetArea: 1,
                     secondaryAction: {
-                        target: "actor",
                         removeEffects: [boarStanceEffect.name],
                     },
                 },
@@ -444,7 +443,6 @@ export const dancesWithBalrog: Minion = {
                     damage: 7,
                     destroyArmor: 1,
                     secondaryAction: {
-                        target: "actor",
                         removeEffects: [golemStanceEffect.name],
                     },
                 },
@@ -473,7 +471,6 @@ export const dancesWithBalrog: Minion = {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                     },
                     secondaryAction: {
-                        target: "actor",
                         removeEffects: [snailStanceBlueEffect.name, snailStanceRedEffect.name],
                     },
                 },

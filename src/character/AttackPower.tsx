@@ -50,8 +50,9 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
     const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatantInfo)];
 
-    const { damage, timesToAttack } = abilityToUse?.actions.reduce(
-        (acc, action: Action) => {
+    const defaultActionStats = { damage: 0, timesToAttack: 0 };
+    const { damage, timesToAttack } =
+        abilityToUse?.actions.reduce((acc, action: Action) => {
             const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
             if (isAttack) {
@@ -63,9 +64,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                 // TODO just taking the last damage number in the actions array; but sometimes they will be different
                 damage: (isAttack && action.damage) || acc.damage,
             };
-        },
-        { damage: 0, timesToAttack: 0 }
-    ) || { damage: 0, timesToAttack: 0 };
+        }, defaultActionStats) || defaultActionStats;
 
     const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
         return !excludeEffectOwner && attackPower !== 0;

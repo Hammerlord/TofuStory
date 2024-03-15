@@ -4,7 +4,7 @@ import { passesConditions } from "../../battle/passesConditions";
 import { calculateArmor, calculateBonus, getEnabledEffects, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
-import { Action, CONDITION_TARGETS, CombatAbility, TRIGGER_TARGET_TYPES } from "../types";
+import { Action, ActionOptionalProperties, CONDITION_TARGETS, CombatAbility, TRIGGER_TARGET_TYPES } from "../types";
 import { CombatantInfo } from "../../battle/types";
 
 export const getArmorStatistics = ({
@@ -28,7 +28,7 @@ export const getArmorStatistics = ({
     isAdditive: boolean;
 } => {
     const { actions = [] } = ability;
-    const armorActions = actions.filter((action) => action.armor > 0);
+    const armorActions = actions.filter((action) => action.armor > 0 || action.secondaryAction?.armor > 0);
     if (armorActions.length === 0) {
         return {
             base: 0,
@@ -40,18 +40,33 @@ export const getArmorStatistics = ({
         };
     }
 
-    const withBonus: Action[] = armorActions.map((action) => {
-        return calculateBonus({
-            action,
-            actor: playerInfo,
-            target: playerInfo, // Fix me: This is only if the ability targets SELF
-            allTargets: [playerInfo],
-            isTargetSelected: false,
-            actionParent: ability,
-            deck,
-            hand,
-            discard,
-        });
+    const withBonus = armorActions.map((action) => {
+        return {
+            ...calculateBonus({
+                action,
+                actor: playerInfo,
+                target: playerInfo, // Fix me: This is only if the ability targets SELF
+                allTargets: [playerInfo],
+                isTargetSelected: false,
+                actionParent: ability,
+                deck,
+                hand,
+                discard,
+            }),
+            secondaryAction:
+                action.secondaryAction &&
+                calculateBonus({
+                    action: action.secondaryAction,
+                    actor: playerInfo,
+                    target: playerInfo,
+                    allTargets: [playerInfo],
+                    isTargetSelected: false,
+                    actionParent: ability,
+                    deck,
+                    hand,
+                    discard,
+                }),
+        };
     });
 
     const withArmorReceived = withBonus.map((action) => {
@@ -63,23 +78,39 @@ export const getArmorStatistics = ({
             discard,
         });
 
-        return { ...action, armor: calculateArmor({ target: playerInfo, action, multiplier }) };
+        const secondaryAction = action.secondaryAction || {};
+
+        return {
+            ...action,
+            armor: calculateArmor({ target: playerInfo, action, multiplier }),
+            secondaryAction: secondaryAction && {
+                ...secondaryAction,
+                armor: calculateArmor({ target: playerInfo, action: secondaryAction, multiplier }),
+            },
+        };
     });
 
-    const hasUnfulfilledBonus = withArmorReceived[0].armor === armorActions[0].armor && armorActions.some(({ bonus }) => bonus);
+    // Just taking the first one apparently because we don't have more than one armor action
+    const withArmorReceivedArmor = withArmorReceived[0].armor || withArmorReceived[0].secondaryAction?.armor;
+    const armorActionsArmor = armorActions[0].armor || armorActions[0].secondaryAction?.armor;
+
+    // This is not accurate because of secondaryAction being baked into withArmorReceivedArmor/armorActionsArmor but not the bonus check
+    const hasUnfulfilledBonus = withArmorReceivedArmor === armorActionsArmor && armorActions.some(({ bonus }) => bonus);
+    const withBonusArmor = withBonus[0].armor || withBonus[0].secondaryAction?.armor;
+
     // This is the potential to have a multiplier; false when a bonus is being applied
-    const hasMultiplier = armorActions.some((action) => action.multiplier) && armorActions[0].armor === withArmorReceived[0].armor;
+    const hasMultiplier = armorActions.some((action) => action.multiplier) && armorActionsArmor === withArmorReceivedArmor;
     const hasAdditiveArmor = withArmorReceived.some(({ armor }) => {
-        return armor && armor !== withArmorReceived[0].armor;
+        return armor && armor !== withArmorReceivedArmor;
     });
     const isAdditive = hasAdditiveArmor || hasUnfulfilledBonus;
 
     return {
-        base: withArmorReceived[0].armor,
+        base: withArmorReceivedArmor,
         hasMultiplier,
-        hasConditionFulfilled: withBonus[0].armor > armorActions[0].armor,
-        hasBonus: withArmorReceived[0].armor > armorActions[0].armor,
-        hasPenalty: withArmorReceived[0].armor < armorActions[0].armor,
+        hasConditionFulfilled: withBonusArmor > armorActionsArmor,
+        hasBonus: withArmorReceivedArmor > armorActionsArmor,
+        hasPenalty: withArmorReceivedArmor < armorActionsArmor,
         isAdditive,
     };
 };

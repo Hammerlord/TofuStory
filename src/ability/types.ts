@@ -427,7 +427,7 @@ export type Action = {
     secondaryDamage?: number;
     flatDamage?: number; // Deal damage that is not affected by any modifiers
     targetMinHP?: number; // Target will stay at this HP if the damage would otherwise bring it below, see Stay of Execution
-    type: ACTION_TYPES;
+    type?: ACTION_TYPES;
     healing?: number;
     armor?: number;
     target?: TARGET_TYPES;
@@ -543,27 +543,14 @@ export type Action = {
         disableScreenShake?: boolean; // Only applicable for stomp
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
-    secondaryAction?: {
-        target: "actor";
-        area?: number;
-        damage?: number;
-        resources?: number;
-        healing?: number;
-        multiplier?: Multiplier;
-        flatDamage?: number;
-        conditions?: Condition[];
-        effects?: Effect[];
-        returnParentCardToHand?: boolean;
-        armor?: number;
-        removeEffects?: string[];
-        isPriority?: boolean; // If true, play this before the main ability
-        excludePrimaryTarget?: boolean;
-    };
+    secondaryAction?: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
     /** Combatant runs away (turns null) */
     retreat?: boolean;
 };
+
+export type ActionOptionalProperties = { [key in keyof Action]?: Action[key] };
 
 export interface AddCardUpgradeOptions {
     // If true, the cards of addCards should be upgraded

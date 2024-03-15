@@ -1618,7 +1618,7 @@ export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, so
 
     return getUpdatedStats({
         ...statsProps,
-        // Based on secondaryAction.target, but only actor recipient is supported for now
+        // Only actor recipient is supported for now
         recipientIds,
         selectedIndex: undefined,
         action: secondaryAction,
@@ -1996,7 +1996,6 @@ const checkSummonMinion = ({
                         playbackTime: 500,
                         secondaryAction: tributeSummon
                             ? {
-                                  target: "actor",
                                   resources: resourceCost === "x" ? actorResources : resourceCost,
                               }
                             : undefined,

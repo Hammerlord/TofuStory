@@ -34,7 +34,7 @@ const spotWeaknessEffect: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: EyeIcon,
-    description: "Gains ATT whenever an enemy plays a support ability.",
+    description: "Gains +ATT for next turn whenever an enemy plays a support ability.",
     onHostileSupportAbility: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [

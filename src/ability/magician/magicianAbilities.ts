@@ -1286,7 +1286,7 @@ export const feedback: Ability = {
             icon: TeleportMasteryFireImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             secondaryAction: {
-                target: "actor",
+                type: ACTION_TYPES.EFFECT,
                 resources: 1,
                 flatDamage: 1,
                 multiplier: {
@@ -2018,7 +2018,6 @@ export const moonBolt: Ability = {
                 ricochet: true,
             },
             secondaryAction: {
-                target: "actor",
                 healing: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
@@ -2272,7 +2271,6 @@ const icicleMinion: Minion = {
                         },
                     ],
                     secondaryAction: {
-                        target: "actor",
                         damage: 1,
                     },
                 },
