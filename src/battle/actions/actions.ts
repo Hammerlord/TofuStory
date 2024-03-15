@@ -611,7 +611,7 @@ const onEffectEventTrigger = ({
         }
 
         $applyStatChanges: {
-            if (!targetIds.length) {
+            if (!targetIds.length || !targets) {
                 break $applyStatChanges;
             }
 
