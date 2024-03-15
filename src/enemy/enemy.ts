@@ -58,6 +58,7 @@ import {
     RedSnailShellImage,
     RibbonPigIdleImage,
     RockyMaskImage,
+    RockyWallopImage,
     SavageBlowImage,
     ShroomImage,
     SlimeIdleImage,
@@ -2630,6 +2631,7 @@ export const rockyMask: Minion = {
         },
         {
             name: "Rocky Wallop",
+            image: RockyWallopImage,
             resourceCost: 3,
             castTime: 1,
             actions: [

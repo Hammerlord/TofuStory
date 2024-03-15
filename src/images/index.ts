@@ -452,6 +452,7 @@ export { default as RockImage } from "./Rock.gif";
 export { default as RockyMaskImage } from "./RockyMask.gif";
 export { default as RockyRoadImage } from "./RockyRoad.png";
 export { default as RockyRoad2Image } from "./RockyRoad2.png";
+export { default as RockyWallopImage } from "./RockyWallop.gif";
 export { default as RopeQuestImage } from "./RopeQuest.png";
 export { default as RowenTheFairyImage } from "./RowenTheFairy.png";
 export { default as RoyalFairyImage } from "./RoyalFairy.gif";
