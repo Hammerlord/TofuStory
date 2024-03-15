@@ -177,7 +177,7 @@ const ayanScript = [
     {
         speaker: announcer,
         dialog: [
-            "But since coming of age, she quickly rose to become one of the greatest warriors under the chieftain himself. Our very own Ayan!",
+            "Yet, since coming of age, she quickly rose to become one of Perion's greatest warriors, and is esteemed by the chieftain himself. Our very own Ayan!",
         ],
     },
     {
