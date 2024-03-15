@@ -96,13 +96,19 @@ const routePerionSleepywood: Route = {
 export const routeKerningToPerion: Route = {
     elites: {
         minions: [shroom, redSnail, stump],
-        single: [fireBoar],
-        duo: [wildBoar, axeStump, rockyMask],
+        single: [fireBoar, rockyMask],
+        duo: [wildBoar, axeStump],
         trio: [orangeMushroom, octopus],
         squad: [redSnail, stump],
         special: [
             [null, egg, null, egg, null],
-            [null, rockyMask, rockyMask, rockyMask, null],
+            [
+                null,
+                { ...rockyMask, isElite: true, armor: 150, mesos: 20 },
+                null,
+                { ...rockyMask, isElite: true, armor: 150, mesos: 20 },
+                null,
+            ],
         ],
     },
     enemies: [

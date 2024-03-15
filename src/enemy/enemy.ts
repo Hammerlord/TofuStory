@@ -2506,8 +2506,8 @@ export const blueMushroom: Minion = {
 export const copperDrake: Minion = {
     name: "Copper Drake",
     image: CopperDrakeImage,
+    isElite: true,
     maxHP: 100,
-    HP: 100,
     mesos: 20,
     abilities: [
         {
@@ -2557,6 +2557,7 @@ export const egg: Minion = {
     maxHP: 15,
     mesos: 20,
     image: EggImage,
+    isElite: true,
     abilities: [{ ...loaf, name: "Zzz" }],
     effects: [
         {
@@ -2618,6 +2619,7 @@ export const rockyMask: Minion = {
     image: RockyMaskImage,
     maxHP: 10,
     armor: 100,
+    mesos: 15,
     abilities: [
         {
             ...attack,
@@ -2657,7 +2659,13 @@ export const rockyMask: Minion = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
-            attackPower: 5,
+            attackPower: 4,
+            skillBonus: [
+                {
+                    skill: "Rocky Wallop",
+                    damage: 3,
+                },
+            ],
             icon: RedShieldIcon,
         },
     ],
