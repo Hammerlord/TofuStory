@@ -117,9 +117,6 @@ const Map = ({
         }
     };
 
-    // Since we have two routes pointing to Sleepywood, we only want to render the Sleepywood node once
-    const nodeMemo = {};
-
     // prev and current are the output of generateTravelRoute
     const drawRouteNode = ({ prev, current, routeNodes, lines }: any) => {
         if (!current) {
@@ -144,60 +141,51 @@ const Map = ({
             );
         }
 
-        if (!nodeMemo[current.id]) {
-            nodeMemo[current.id] = true;
-            const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
-            const isNext = prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id]);
-            let handleClickNodeCallback;
-            if (isNext) {
-                handleClickNodeCallback = () => handleClickNode(current);
-            }
-
-            const iconProps = {
-                width: NODE_ICON_SIZE,
-                height: NODE_ICON_SIZE,
-                x: x - NODE_ICON_SIZE / 2,
-                y: y - NODE_ICON_SIZE / 2,
-            };
-
-            routeNodes.push(
-                <g
-                    x={x - 8}
-                    y={y - 8}
-                    onClick={handleClickNodeCallback}
-                    className={classNames(classes.routeNode)}
-                    key={`${current.id}-node`}
-                >
-                    <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
-                    <g
-                        className={classNames({
-                            [classes.visited]: visited[current.id],
-                        })}
-                    >
-                        {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
-                        {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
-                        {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
-                    </g>
-                    {isPlayerPosition && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
-                    {visited[current.id] && !isPlayerPosition && (
-                        <XIcon
-                            {...{
-                                width: X_SIZE,
-                                height: X_SIZE,
-                                x: x - X_SIZE / 2,
-                                y: y - X_SIZE / 2,
-                            }}
-                        />
-                    )}
-                    {isNext && !disableClick && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
-                </g>
-            );
+        const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
+        const isNext = prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id]);
+        let handleClickNodeCallback;
+        if (isNext) {
+            handleClickNodeCallback = () => handleClickNode(current);
         }
+
+        const iconProps = {
+            width: NODE_ICON_SIZE,
+            height: NODE_ICON_SIZE,
+            x: x - NODE_ICON_SIZE / 2,
+            y: y - NODE_ICON_SIZE / 2,
+        };
+
+        routeNodes.push(
+            <g x={x - 8} y={y - 8} onClick={handleClickNodeCallback} className={classNames(classes.routeNode)} key={`${current.id}-node`}>
+                <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
+                <g
+                    className={classNames({
+                        [classes.visited]: visited[current.id],
+                    })}
+                >
+                    {current.type === NODE_TYPES.ENCOUNTER && <CrossedSwordsIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
+                    {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
+                </g>
+                {isPlayerPosition && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
+                {visited[current.id] && !isPlayerPosition && (
+                    <XIcon
+                        {...{
+                            width: X_SIZE,
+                            height: X_SIZE,
+                            x: x - X_SIZE / 2,
+                            y: y - X_SIZE / 2,
+                        }}
+                    />
+                )}
+                {isNext && !disableClick && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
+            </g>
+        );
 
         if (current.next) {
             current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines }));

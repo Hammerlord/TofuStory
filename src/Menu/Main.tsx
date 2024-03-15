@@ -7,7 +7,7 @@ import Map from "../Map/Map";
 import { REGIONS } from "../Map/regions";
 import { events } from "../Map/routes/eventList";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { toLith } from "../Map/routes/routes";
+import { routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
 import { BG_MAP, NODE_TYPES, Route, RouteNode, TOWNS, TOWN_MAP } from "../Map/types";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
@@ -142,8 +142,6 @@ const Main = () => {
 
     const resetTravels = () => {
         const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
-        //const route = generateTravelRoute({ startingRoute: { ...toLith } });
-
         setRoute(route);
         setLocationNode(route);
         setSceneRegion(null);
@@ -438,6 +436,18 @@ const Main = () => {
                 }
                 setHideMapClickIndicator(false);
             }, 1500);
+            return;
+        }
+
+        if (town === TOWNS.KERNING) {
+            const route = generateTravelRoute({ startingRoute: routeKerningToPerion });
+            setRoute(route);
+            return;
+        }
+
+        if (town === TOWNS.HENESYS) {
+            const route = generateTravelRoute({ startingRoute: routeHenesysEllinia });
+            setRoute(route);
         }
     };
 

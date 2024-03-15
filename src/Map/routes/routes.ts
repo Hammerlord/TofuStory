@@ -137,6 +137,14 @@ export const routeKerningToPerion: Route = {
         [null, octopus, null, octopus, null],
     ],
     nodes: [
+        {
+            x: 0.14982728842832468,
+            y: 0.39576595119082625,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.KERNING,
+            region: REGIONS.KERNING,
+            id: "Kerning",
+        },
         { x: 0.18101545253863136, y: 0.3502607225066942, region: REGIONS.KERNING },
         { x: 0.21444339325134026, y: 0.32964451811635537, region: REGIONS.KERNING },
         { x: 0.2532324187953327, y: 0.33093303089075154, region: REGIONS.KERNING },
@@ -203,9 +211,10 @@ const toKerning: Route = {
             type: NODE_TYPES.TOWN,
             town: TOWNS.KERNING,
             region: REGIONS.KERNING,
+            id: "Kerning",
         },
     ] as RouteNode[],
-    next: [routeKerningToPerion],
+    next: [],
 };
 
 const toKerningForest: Route = {
@@ -443,6 +452,14 @@ export const routeHenesysEllinia: Route = {
         special: [[null, null, darkStoneGolem, null, null]],
     },
     nodes: [
+        {
+            x: 0.45509499136442144,
+            y: 0.8068215230814466,
+            type: NODE_TYPES.TOWN,
+            town: TOWNS.HENESYS,
+            region: REGIONS.HENESYS,
+            id: "Henesys",
+        },
         { x: 0.5162946428571429, y: 0.814892576037545, region: REGIONS.HENESYS },
         { x: 0.546875, y: 0.7790196702466737, region: REGIONS.HENESYS },
         { x: 0.5584821428571428, y: 0.7282503883223052, region: REGIONS.HENESYS },
@@ -506,9 +523,10 @@ export const toHenesys: Route = {
             type: NODE_TYPES.TOWN,
             town: TOWNS.HENESYS,
             region: REGIONS.HENESYS,
+            id: "Henesys",
         },
     ],
-    next: [routeHenesysEllinia],
+    next: [],
 };
 
 export const toHenesysForest: Route = {
