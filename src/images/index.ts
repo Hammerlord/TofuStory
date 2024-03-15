@@ -449,6 +449,7 @@ export { default as RisingRageImage } from "./RisingRage.png";
 export { default as RisingStarImage } from "./RisingStar.png";
 export { default as RoastedTurkeyImage } from "./RoastedTurkey.png";
 export { default as RockImage } from "./Rock.gif";
+export { default as RockyMaskImage } from "./RockyMask.gif";
 export { default as RockyRoadImage } from "./RockyRoad.png";
 export { default as RockyRoad2Image } from "./RockyRoad2.png";
 export { default as RopeQuestImage } from "./RopeQuest.png";

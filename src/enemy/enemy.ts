@@ -57,6 +57,7 @@ import {
     RedSnailImage,
     RedSnailShellImage,
     RibbonPigIdleImage,
+    RockyMaskImage,
     SavageBlowImage,
     ShroomImage,
     SlimeIdleImage,
@@ -94,6 +95,7 @@ import {
     MountainIcon,
     MuscleIcon,
     PristineRedShieldIcon,
+    RedShieldIcon,
     ShieldIcon,
     ZzzIcon,
 } from "../images/icons";
@@ -716,6 +718,22 @@ export const octopus: Minion = {
             ],
         },
         {
+            name: "Lash And Thrash",
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+        {
             name: "Constrict",
             resourceCost: 3,
             image: OctopusLegImage,
@@ -747,7 +765,7 @@ export const octopus: Minion = {
         {
             name: "Tentacular",
             icon: OctopusLegImage,
-            lifeOnHit: 3,
+            lifeOnHit: 1,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             canBeSilenced: true,
@@ -2504,7 +2522,6 @@ export const copperDrake: Minion = {
                         {
                             ...attackPower,
                             type: EFFECT_TYPES.RAGE,
-                            duration: 3,
                         },
                     ],
                 },
@@ -2591,6 +2608,55 @@ export const egg: Minion = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const rockyMask: Minion = {
+    name: "Rocky Mask",
+    image: RockyMaskImage,
+    maxHP: 10,
+    armor: 100,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                },
+            ],
+        },
+        {
+            name: "Rocky Wallop",
+            resourceCost: 3,
+            castTime: 1,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Rock Mask",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: true,
+            description: "While this character has armor:",
+            conditions: [
+                {
+                    comparator: "gt",
+                    armor: 0,
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                },
+            ],
+            attackPower: 5,
+            icon: RedShieldIcon,
         },
     ],
 };

@@ -17,6 +17,7 @@ import {
     pig,
     redSnail,
     ribbonPig,
+    rockyMask,
     shroom,
     slime,
     snail,
@@ -96,10 +97,13 @@ export const routeKerningToPerion: Route = {
     elites: {
         minions: [shroom, redSnail, stump],
         single: [fireBoar],
-        duo: [wildBoar, axeStump],
+        duo: [wildBoar, axeStump, rockyMask],
         trio: [orangeMushroom, octopus],
         squad: [redSnail, stump],
-        special: [[null, egg, null, egg, null]],
+        special: [
+            [null, egg, null, egg, null],
+            [null, rockyMask, rockyMask, rockyMask, null],
+        ],
     },
     enemies: [
         [stump, stump, axeStump, stump, stump],
@@ -112,11 +116,12 @@ export const routeKerningToPerion: Route = {
         [stump, redSnail, stump, redSnail, stump],
         [stump, stump, wildBoar, stump, stump],
         [null, axeStump, null, axeStump, null],
+        [null, rockyMask, null, rockyMask, null],
     ],
     multiWaveEnemies: [
         [null, stump, stump, stump, null],
         [null, redSnail, stump, redSnail, null],
-        [null, snail, wildBoar, snail, null],
+        [null, blueSnail, wildBoar, blueSnail, null],
         [null, null, fireBoar, null, null],
         [null, blueSnail, axeStump, blueSnail, null],
         [null, stump, null, axeStump, null],
@@ -124,7 +129,6 @@ export const routeKerningToPerion: Route = {
         [null, orangeMushroom, null, orangeMushroom, null],
         [null, stump, octopus, stump, null],
         [null, octopus, null, octopus, null],
-        [snail, stump, snail, stump, snail],
     ],
     nodes: [
         { x: 0.18101545253863136, y: 0.3502607225066942, region: REGIONS.KERNING },
