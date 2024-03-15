@@ -102,7 +102,7 @@ const spotWeakness: Ability = {
 
 export const manji: Minion = {
     name: "Manji, the Strongest Swordsman",
-    maxHP: 150,
+    maxHP: 200,
     isElite: true,
     image: ManjiImage,
     mesos: 50,

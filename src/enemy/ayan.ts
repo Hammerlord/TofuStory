@@ -25,6 +25,7 @@ const phalanx: Minion = {
                     damage: 3,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                 },
             ],
@@ -37,7 +38,7 @@ export const ayanEnemy: Minion = {
     name: "Ayan",
     image: AyanImage,
     isElite: true,
-    maxHP: 150,
+    maxHP: 200,
     mesos: 50,
     abilities: [
         {
@@ -46,7 +47,7 @@ export const ayanEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 4,
                 },
             ],
         },
@@ -57,12 +58,12 @@ export const ayanEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 3,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 3,
                 },
             ],
         },
@@ -72,7 +73,7 @@ export const ayanEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 4,
                 },
             ],
         },
@@ -104,6 +105,11 @@ export const ayanEnemy: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 7,
+                },
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.SHOUT,
                     removeEffects: ["It's Time To Duel!"],
                 },
             ],

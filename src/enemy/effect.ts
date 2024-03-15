@@ -369,6 +369,8 @@ export const battleTrance: Effect = {
     class: EFFECT_CLASSES.BUFF,
     description: "Gains +1 ATT for next turn when struck.",
     onReceiveAttack: {
+        disableTriggerFromProcs: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {
                 ...attackPower,
