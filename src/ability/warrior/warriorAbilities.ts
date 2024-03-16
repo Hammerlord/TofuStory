@@ -4,6 +4,7 @@ import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
     BlastExtraStrikeImage,
+    BlastImage,
     BlockImage,
     BlueFistOfFuryImage,
     BrandishImage,
@@ -2543,6 +2544,37 @@ export const moratorium: Ability = {
             actions: [
                 {
                     damage: 4,
+                },
+            ],
+        },
+    ],
+};
+
+export const bluntForce: Ability = {
+    name: "Blunt Force",
+    image: BlastImage,
+    resourceCost: 3,
+    rarity: RARITIES.UNCOMMON,
+    description: "Deal damage equal to {{ actions.0.multiplier.value }}x your current HP.",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 1,
+            multiplier: {
+                type: MULTIPLIER_TYPES.HP,
+                value: 0.5,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    multiplier: {
+                        value: 0.075,
+                    },
                 },
             ],
         },
