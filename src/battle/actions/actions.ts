@@ -45,6 +45,7 @@ import {
     getValidTargetIndices,
     isSilenced,
     isStunnedOrFrozen,
+    isTurnActionPrevented,
     isTurnToTrigger,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
@@ -2083,7 +2084,16 @@ export const useAbility = ({
         let prevSelection;
 
         const handleAction = (action: Action) => {
+            const actorInfo = findCombatantData(getState, actorId);
+            const actor = actorInfo?.combatant;
+            // Something could've happened between actions that killed the actor
+            const canAct = actor?.HP > 0 && !isTurnActionPrevented(actorInfo);
+            if (!canAct) {
+                return;
+            }
+
             let selection;
+
             if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
                 selection = autoSelectActionTarget({
                     initialSelectedIndex: selectedIndex,
