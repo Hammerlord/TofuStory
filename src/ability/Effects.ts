@@ -125,7 +125,7 @@ export const stun: Effect = {
     type: EFFECT_TYPES.STUN,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
-    description: "Stunned targets are unable to act during their turn.",
+    description: "Stunned targets are unable to act.",
     icon: DizzyIcon,
 };
 

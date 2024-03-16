@@ -1061,7 +1061,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoIcon,
-    description: "When you attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} damage and hit up to 3 enemies",
+    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} damage to up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1074,7 +1074,7 @@ export const dustDevils: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 5,
                     icon: TornadoIcon,
-                    description: "When you attack, cast tornadoes that hit up to 3 enemies",
+                    description: "Casting tornadoes on attack.",
                     onAttack: {
                         ability: {
                             name: "Dust Devils",
