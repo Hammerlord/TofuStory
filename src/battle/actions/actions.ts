@@ -1799,12 +1799,12 @@ const performAction = ({
                     statChanges.map(([statUpdate, action]) => ({
                         statUpdate,
                         source: {
+                            ...source,
                             source: action,
                             type: TRIGGER_SOURCE_TYPES.EFFECT,
                             actorId,
                             targetId: actorId,
                             statUpdate,
-                            triggerHistory: [],
                         },
                     }))
                 )
