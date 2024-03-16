@@ -1998,7 +1998,7 @@ export const gungnir: Ability = {
     resourceCost: 2,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "Deal damage equal to {{ actions.0.multiplier.value }}x your current HP.",
+    description: "Deal damage equal to {{ actions.0.multiplier.value }} of your HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2548,7 +2548,7 @@ export const bluntForce: Ability = {
     image: BlastImage,
     resourceCost: 3,
     rarity: RARITIES.UNCOMMON,
-    description: "Deal damage equal to {{ actions.0.multiplier.value }}x your current HP.",
+    description: "Deal damage equal to {{ actions.0.multiplier.value }} of your HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,

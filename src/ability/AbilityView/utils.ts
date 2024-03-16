@@ -1,8 +1,8 @@
+import { cloneDeep } from "lodash";
 import Handlebars from "handlebars";
 import { getUpgradeCard } from "../../Menu/utils";
 import { Combatant } from "../../character/types";
 import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility, Effect, TARGET_TYPES } from "./../types";
-import { getDamageStatistics } from "./DamageIcon";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
@@ -59,6 +59,7 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
 };
 
 export const interpolateAbilityDescription = ({ ability }) => {
+    ability = cloneDeep(ability);
     // Some abilities apply an effect, where the "main" point of the ability is a proc from that effect, eg. Dust Devils.
     // Do a lookup to find the statistics that allow us to interpolate the description, in those cases.
     const traverseForNestedAbility = (obj: any): Ability | undefined => {
@@ -89,6 +90,30 @@ export const interpolateAbilityDescription = ({ ability }) => {
         }
     };
 
+    // If displaying a percentage, show "25%" instead of "0.25x" for values 0 < n < 1.
+    // !!! This action is destructive! Must clone deep beforehand !!!
+    const traverseForNestedPercentages = (obj) => {
+        if (!obj) {
+            return;
+        }
+
+        for (const [key, val] of Object.entries(obj)) {
+            if (typeof val === "object") {
+                traverseForNestedPercentages(val);
+            } else if (typeof val === "number") {
+                if (val > 0 && val < 1) {
+                    obj[key] = Math.floor(val * 100) + "%";
+                }
+            } else if (Array.isArray(obj)) {
+                for (const val of obj) {
+                    traverseForNestedPercentages(val);
+                }
+            }
+        }
+
+        return obj;
+    };
+
     const cardTypeString = (color) => {
         const properties = {
             width: 7,
@@ -110,11 +135,11 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _support_: cardTypeString(BLUE),
     };
 
-    const nestedAbility = traverseForNestedAbility(ability);
+    const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
 
     return Handlebars.compile(ability.description || "")({
-        ...ability,
+        ...traverseForNestedPercentages(ability),
         ...elementMapping,
-        nestedAbility,
+        nestedAbility: traverseForNestedPercentages(nestedAbility),
     });
 };
