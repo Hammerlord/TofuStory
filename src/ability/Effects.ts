@@ -642,3 +642,34 @@ export const taunt = {
     class: EFFECT_CLASSES.BUFF,
     image: BlackShieldIcon,
 };
+
+export const directDamageTaken: Effect = {
+    name: "Direct Damage Taken",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    duration: 1,
+};
+
+export const directDamageTakenTrigger: Effect = {
+    name: "Direct Damage Taken Trigger",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    onReceiveDamage: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditionOperator: "and",
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 0,
+                comparator: "eq",
+            },
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                property: "isPlayer",
+                comparator: "not",
+                value: true,
+            },
+        ],
+        effects: [directDamageTaken],
+    },
+};

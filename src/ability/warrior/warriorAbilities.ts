@@ -57,6 +57,7 @@ import {
     ShoutImage,
     SilverAquilaImage,
     SlashBlastImage,
+    SpearSweepImage,
     SpikeBallImage,
     SpikedMaceImage,
     SquareHammerImage,
@@ -71,7 +72,7 @@ import {
 } from "../../images";
 import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, infuriateEffect } from "../Effects";
+import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, infuriateEffect, directDamageTaken } from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1704,7 +1705,7 @@ export const burningSoulBlade: Ability = {
     name: "Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
-    description: "When this character attacks, it gains +1 ATT.",
+    description: "When this attacks, it gains +1 ATT.",
     rarity: RARITIES.RARE,
     actions: [],
     minion: {
@@ -1731,7 +1732,7 @@ export const burningSoulBlade: Ability = {
                 disableDisplayIcon: true,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                description: "When this character attacks, it gains +1 ATT.",
+                description: "Gaining +1 ATT when this attacks.",
                 onAttack: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     effects: [attackPower],
@@ -2006,7 +2007,7 @@ export const gungnir: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.25,
+                value: 0.3,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
@@ -2565,7 +2566,66 @@ export const bluntForce: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.075,
+                        value: 0.05,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const retribute: Ability = {
+    name: "Retribute",
+    image: SpearSweepImage,
+    description:
+        "Heal {{ actions.0.secondaryAction.healing }} HP. <br/> +{{actions.0.bonus.damage}} DMG / +{{actions.0.secondaryAction.bonus.healing}} HP if you took unblocked damage last turn.",
+    overrideBodyText: true,
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 2,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 10,
+            area: 2,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: directDamageTaken.name,
+                        comparator: "eq",
+                    },
+                ],
+            },
+            secondaryAction: {
+                healing: 3,
+                bonus: {
+                    healing: 2,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: directDamageTaken.name,
+                            comparator: "eq",
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
+                    secondaryAction: {
+                        healing: 1,
+                        bonus: {
+                            healing: 1,
+                        },
                     },
                 },
             ],

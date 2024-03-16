@@ -85,6 +85,8 @@ export const passesConditions = ({
             isOffense,
             numFriendly,
             otherCalculationTarget,
+            property,
+            value,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -313,6 +315,12 @@ export const passesConditions = ({
                         comparator,
                     })
                 ) {
+                    return false;
+                }
+            }
+
+            if (property !== undefined) {
+                if (!passesValueComparison({ val: combatant[property], otherVal: value, comparator })) {
                     return false;
                 }
             }

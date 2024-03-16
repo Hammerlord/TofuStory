@@ -13,7 +13,6 @@ import {
     YellowUmbrellaImage,
 } from "../images";
 import { chargingStone, rageStone } from "../item/starterItems";
-import { Combatant } from "./types";
 
 /** Default character stats */
 const defaultCharacterProperties = {
@@ -43,7 +42,7 @@ const defaultCharacterProperties = {
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
     ],
-} as Combatant;
+};
 
 export const wizardProperties = {
     ...defaultCharacterProperties,

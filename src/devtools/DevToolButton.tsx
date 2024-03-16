@@ -221,7 +221,7 @@ const DevToolButton = () => {
                 />
             )}
             {isTradingPostOpen && (
-                <TradingPost player={defaultCharacterProperties as Player} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
+                <TradingPost player={defaultCharacterProperties} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
             )}
         </>
     );

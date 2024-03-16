@@ -359,6 +359,9 @@ export interface Condition {
     isOffense?: boolean;
     /** Number of units on the board friendly to the calculationTarget, including itself */
     numFriendly?: number;
+    /** Custom property/value. */
+    property?: string;
+    value?: any;
 }
 
 export enum MULTIPLIER_TYPES {

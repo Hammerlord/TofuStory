@@ -4,6 +4,7 @@ import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { Ability, CombatAbility, Effect } from "../ability/types";
 import { Item } from "../item/types";
 import { AbilityUpgrade } from "./../ability/types";
+import { directDamageTakenTrigger } from "../ability/Effects";
 
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
@@ -12,7 +13,7 @@ const copyEffect = (e: Effect) => ({
 });
 
 export const aggregateItemEffects = (items: Item[]): Effect[] => {
-    const effects = [];
+    const effects = [directDamageTakenTrigger]; // Player always has this effect for calculating whether damage was recently taken
     items.forEach((item) => {
         const itemEffects: Effect[] = item?.effects?.map((e: Effect) => ({ ...copyEffect(e), itemSource: item.name })) || [];
         effects.push(...itemEffects);
