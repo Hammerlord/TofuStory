@@ -331,7 +331,7 @@ export const warBanner: Ability = {
     name: "War Banner",
     image: FlagImage,
     resourceCost: 1,
-    description: "Every turn, grant 2 Armor and 1 ATT to nearby allies.",
+    description: "Grants {{ minion.effects.1.onTurnStart.ability.actions.0.armor }} Armor and 1 ATT to nearby allies every turn.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -352,11 +352,11 @@ export const warBanner: Ability = {
         effects: [
             {
                 ...stealth,
-                duration: 3,
+                duration: Infinity,
             },
             {
                 name: "War Banner - Drumbeat of War",
-                description: "Granting 2 Armor and +1 ATT to nearby allies every turn.",
+                description: "Granting Armor and ATT to nearby allies every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
@@ -367,13 +367,7 @@ export const warBanner: Ability = {
                         name: "Drumbeat of War",
                         actions: [
                             {
-                                ...drumOfWar,
-                                effects: [
-                                    {
-                                        ...drumOfWarAttackPower,
-                                        duration: 1,
-                                    },
-                                ],
+                                ...cloneDeep(drumOfWar),
                             },
                         ],
                     },
@@ -393,9 +387,7 @@ export const warBanner: Ability = {
         {
             minion: {
                 effects: [
-                    {
-                        duration: 2,
-                    },
+                    {},
                     {
                         onTurnStart: {
                             ability: {
