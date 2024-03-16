@@ -129,7 +129,7 @@ const SelectCardOverlay = ({
                                 {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
                                 {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
-                                    `Select up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to move to the top of the deck`}
+                                    `Pick up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to remove from your hand`}
                                 {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Keep or replace cards in your hand"}
                             </h2>
                         </div>

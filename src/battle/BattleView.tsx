@@ -409,6 +409,11 @@ const BattlefieldContainer = () => {
                 warn("That ability requires at least one other card in your hand to deplete");
                 return;
             }
+        } else if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            if (hand.length <= 1) {
+                warn("That ability requires at least one other card in your hand to move");
+                return;
+            }
         }
 
         dispatch(
