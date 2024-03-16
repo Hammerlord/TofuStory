@@ -54,6 +54,7 @@ export interface ScriptConditions {
     activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
     comparator?: "lt" | "eq" | "gt";
     items?: string[];
+    mesos?: number;
     chance?: number;
 }
 
@@ -98,8 +99,9 @@ export interface ScriptNode {
     dialog: string[];
     responses?: ScriptResponse[];
     // Items given straight to the player. If amount < itemPool.length, that number of items will be selected randomly
+    // If itemPool not supplied, all non-acquired equipment is used as the pool
     items?: {
-        itemPool: Item[];
+        itemPool?: Item[];
         amount?: number;
     };
 
@@ -117,6 +119,7 @@ export interface ScriptNode {
     };
     region?: REGIONS;
     loseItems?: string[];
+    loseMesos?: number;
     // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
     conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];

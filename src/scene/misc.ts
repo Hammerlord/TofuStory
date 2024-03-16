@@ -58,3 +58,57 @@ export const startJourneyScene: EventScene = {
         },
     ],
 };
+
+export const gamblingBoxScene: EventScene = {
+    id: "gambling-box",
+    script: [
+        {
+            dialog: ["Win a prize! Anyone can play... as long as you have at least 100 mesos!"],
+        },
+        {
+            dialog: ["Win a prize! Anyone can play, as long as you have at least 100 mesos!"],
+            conditionalNext: [
+                {
+                    conditions: [
+                        {
+                            mesos: 99,
+                            comparator: "gt",
+                        },
+                    ],
+                    next: [
+                        {
+                            dialog: ["Play the game?"],
+                            responses: [
+                                {
+                                    text: "Play. [Exchange 100 mesos for a random item]",
+                                    next: [
+                                        {
+                                            dialog: ["You got..."],
+                                            loseMesos: 100,
+                                            items: {
+                                                amount: 1,
+                                            },
+                                        },
+                                        {
+                                            dialog: ["And that's it! That's the whole game, folks."],
+                                            responses: [
+                                                {
+                                                    text: "Continue journey.",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    text: "No thanks.",
+                                    isExit: true,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
