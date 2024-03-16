@@ -37,7 +37,7 @@ const explosiveBarrel: Minion = {
                             animation: ANIMATION_TYPES.EXPLODE,
                             damage: 5,
                             area: 2,
-                            effects: [burn],
+                            effects: [{ ...burn, duration: 2 }],
                         },
                     ],
                 },
@@ -127,7 +127,7 @@ export const stumpy: Minion = {
             name: "Summon Barrel",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 6,
+            turnsTriggerFrequency: 4,
             onTurnStart: {
                 usableWhileStunned: true,
                 ability: {
