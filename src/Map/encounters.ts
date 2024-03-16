@@ -220,12 +220,38 @@ export const generateElites = (route: Route): { enemies: Minion[] }[] => {
     return [{ enemies: getRandomItem(eliteGenerators)() }];
 };
 
-export const generateWaves = (route: Route, fallbackRoute?: Route): Wave[] => {
+export const generateWaves = ({
+    route,
+    fallbackRoute,
+    previousEncounters = [],
+}: {
+    route: Route;
+    fallbackRoute?: Route;
+    previousEncounters: Wave[][];
+}): Wave[] => {
     const numWaves = getRandomItem([1, 2]);
 
     const waves = [];
-    let enemyPool = numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
-    enemyPool = shuffle(enemyPool || []);
+    const baseEnemyPool: Minion[][] =
+        numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
+
+    let enemyPool = baseEnemyPool.slice();
+
+    const lastThreeBattles = previousEncounters.slice().reverse().slice(0, 3);
+    const getNames = (characters: (Minion | null)[]) => JSON.stringify(characters.map((e) => e?.name)); // Quick and dirty way to identify the board enemy side.
+
+    const filteredEnemyPool = (enemyPool || []).filter((enemies: Minion[]) => {
+        const enemyNames = getNames(enemies);
+        return lastThreeBattles.every((waves: Wave[]) => {
+            return waves.every((wave: Wave) => {
+                return enemyNames !== getNames(wave.enemies);
+            });
+        });
+    });
+
+    if (filteredEnemyPool.length > 0) {
+        enemyPool = filteredEnemyPool;
+    }
 
     for (let i = 0; i < numWaves; ++i) {
         let retries = 3;

@@ -66,7 +66,7 @@ const Map = ({
 }: {
     onSelectNode?: (node: RouteNode) => void;
     playerLocationNode?: RouteNode;
-    generatedRoute?: Route;
+    generatedRoute?; // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     playerImage?: string;
     enableDraw?: boolean;
     visited?: { [nodeId: string]: true };

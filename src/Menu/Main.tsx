@@ -118,7 +118,7 @@ const Main = () => {
     const [scene, setScene]: [EventScene | null, Function] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [isResting, setIsResting] = useState(false);
-    const [route, setRoute]: [Route, Function] = useState(null);
+    const [route, setRoute]: [any, Function] = useState(null); // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     const [locationNode, setLocationNode] = useState(null);
     const [nodesVisitedMap, setNodesVisitedMap] = useState({});
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);

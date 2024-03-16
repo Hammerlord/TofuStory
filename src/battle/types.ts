@@ -1,5 +1,5 @@
 import { Combatant, Player } from "./../character/types";
-import { Ability, Action, ActionOptionalProperties, CombatEffect } from "./../ability/types";
+import { Ability, Action, ActionOptionalProperties, CombatEffect, Minion } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 export interface BattleNotification {
@@ -71,7 +71,7 @@ export interface TriggerSource {
 
 export interface Wave {
     description?: string | string[] | JSX.Element | JSX.Element[];
-    enemies: Array<any>;
+    enemies: Minion[];
     presetDeck?: Ability[];
     generateEliteAffixes?: boolean;
     winCondition?: {

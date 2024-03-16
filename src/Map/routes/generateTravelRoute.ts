@@ -6,11 +6,13 @@ import { NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
 import { generateElites, generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
+import { Wave } from "../../battle/types";
 
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
  */
 const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
+    const encounterMemo: Wave[][] = [];
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
         let initialNode;
         let currentNode;
@@ -51,7 +53,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
 
             const type = transformedNode.type;
             if (type === NODE_TYPES.ENCOUNTER) {
-                transformedNode.encounter = generateWaves(baseRoute, prevRoute);
+                transformedNode.encounter = generateWaves({
+                    route: baseRoute,
+                    fallbackRoute: prevRoute,
+                    previousEncounters: encounterMemo,
+                });
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.ELITE_ENCOUNTER) {
                 --numEliteEncounters;
@@ -71,6 +77,10 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
                 --numEvents;
             } else if (type === NODE_TYPES.RESTING_ZONE) {
                 numEncountersSinceRestPoint = 0;
+            }
+
+            if (type === NODE_TYPES.ELITE_ENCOUNTER || type === NODE_TYPES.ENCOUNTER) {
+                encounterMemo.push(transformedNode.encounter);
             }
             return transformedNode;
         };
