@@ -675,7 +675,15 @@ const onEffectEventTrigger = ({
                 return findCombatantData(getState, target?.id);
             };
 
-            const actor = findCombatantData(getState, ownerId)?.combatant;
+            const actorInfo = findCombatantData(getState, ownerId);
+            const actor = actorInfo?.combatant;
+            const canAct = (actor?.HP > 0 || usableWhileDead) && !isTurnActionPrevented(actorInfo);
+
+            // Something could've happened between actions that killed the actor
+            if (!canAct) {
+                return;
+            }
+
             if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && !canTargetIfStealthed(actor, target)) {
                 return;
             }
