@@ -1238,7 +1238,7 @@ export const steely: Item = {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
-                            playbackTime: 1000,
+                            playbackTime: 500,
                             animationOptions: {
                                 rotate: 135,
                                 rotateToFaceTarget: true,
