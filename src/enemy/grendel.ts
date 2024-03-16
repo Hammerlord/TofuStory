@@ -209,6 +209,7 @@ const volcanicBurst: Ability = {
 
 const stormBarrier: Ability = {
     name: "Storm Barrier",
+    description: "Dispels debuffs. Gain 100 Armor and pulsate increasing damage until Armor is broken.",
     resourceCost: 3,
     image: MagicArmorImage,
     actions: [
@@ -218,6 +219,7 @@ const stormBarrier: Ability = {
             icon: MagicArmorImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             armor: 100,
+            removeDebuffs: true,
             effects: [
                 {
                     name: "Storm Barrier",
