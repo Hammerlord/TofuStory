@@ -253,6 +253,7 @@ const AbilityView = forwardRef(
             depletedOnUse,
             preemptive,
             unplayable,
+            disableConditionGlow,
         } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
@@ -448,7 +449,7 @@ const AbilityView = forwardRef(
                 <div
                     className={classNames(classes.root, className, {
                         "-selected": isSelected,
-                        [classes.glow]: isAbilityUsable && !disableGlow && state.battle && hasBonus,
+                        [classes.glow]: isAbilityUsable && !disableGlow && !disableConditionGlow && state.battle && hasBonus,
                     })}
                 >
                     <div

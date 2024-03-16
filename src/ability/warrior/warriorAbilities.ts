@@ -1859,6 +1859,7 @@ export const shockGuard: Ability = {
     description: "Double your current Armor.",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
+    disableConditionGlow: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
