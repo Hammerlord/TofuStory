@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Ability, Action } from "../types";
+import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../types";
 import { useAppSelector } from "../../hooks";
 import { findCombatantData } from "../../battle/actions/actions";
 import { CombatantInfo } from "../../battle/types";
@@ -23,10 +23,12 @@ export const getDamageStatistics = ({
     isAdditive: boolean;
 } => {
     const { actions = [] } = ability;
-    const attackActions = actions.filter((action) => action.damage > 0);
-    if (attackActions.length === 0) {
+    const damageActions = actions.filter(
+        (action) => action.damage !== undefined || action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE
+    );
+    if (damageActions.length === 0) {
         return {
-            baseDamage: 0,
+            baseDamage: undefined,
             secondaryDamage: undefined,
             hasMultiplier: false,
             hasBonus: false,
@@ -36,7 +38,7 @@ export const getDamageStatistics = ({
     }
 
     // With bonus damage applied
-    const withBonus = attackActions.map((action) => {
+    const withBonus = damageActions.map((action) => {
         return calculateBonus({
             action,
             actor: playerInfo,
@@ -75,10 +77,10 @@ export const getDamageStatistics = ({
     });
 
     // This is the potential to have a multiplier; false when a bonus is being applied
-    const hasAttackMultiplier = attackActions.some((action) => action.multiplier) && attackActions[0].damage === withAttackPower[0].damage;
+    const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && damageActions[0].damage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
-    const hasUnfulfilledBonus = withBonus[0].damage === attackActions[0].damage && attackActions.some(({ bonus }) => bonus);
+    const hasUnfulfilledBonus = withBonus[0].damage === damageActions[0].damage && damageActions.some(({ bonus }) => bonus);
     const hasAdditiveDamage = withAttackPower.some(({ secondaryDamage, damage }) => {
         return secondaryDamage > 0 || (damage && damage !== withAttackPower[0].damage);
     });
@@ -88,8 +90,8 @@ export const getDamageStatistics = ({
         baseDamage: withAttackPower[0].damage,
         secondaryDamage: withAttackPower[0].secondaryDamage,
         hasMultiplier: hasAttackMultiplier || isMultiHit,
-        hasConditionFulfilled: withBonus[0].damage > attackActions[0].damage,
-        hasBonus: withAttackPower[0].damage > attackActions[0].damage,
+        hasConditionFulfilled: withBonus[0].damage > damageActions[0].damage,
+        hasBonus: withAttackPower[0].damage > damageActions[0].damage,
         isAdditive,
     };
 };
@@ -127,10 +129,9 @@ const DamageIcon = ({
     });
     const classes = useStyles();
 
-    if (!baseDamage) {
-        return null;
+    if (baseDamage === undefined) {
+        return;
     }
-
     return (
         <Icon
             icon={<CrossedSwordsIcon />}
