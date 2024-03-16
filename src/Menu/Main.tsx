@@ -113,22 +113,27 @@ const {
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
+// These activities are considered to be exclusive with each other
+enum ACTIVITIES {
+    SHOP = "shop",
+    CAMP = "camp",
+    TRADING_POST = "trading-post",
+}
+
 const Main = () => {
     const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
     const [scene, setScene]: [EventScene | null, Function] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
-    const [isResting, setIsResting] = useState(false);
     const [route, setRoute]: [any, Function] = useState(null); // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     const [locationNode, setLocationNode] = useState(null);
     const [nodesVisitedMap, setNodesVisitedMap] = useState({});
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
-    const [shop, setShop] = useState(null);
-    const [treasure, setTreasure] = useState(null);
+    const [activity, setActivity] = useState(null);
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const [upgradingAbility, setUpgradingAbility] = useState(null);
     const [removingAbility, setRemovingAbility] = useState(null);
-    const [tradingPost, setTradingPost] = useState(null);
+    const [treasure, setTreasure] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const [town, setTown]: [TOWNS | null, Function] = useState(null);
     const classes = useStyles();
@@ -254,7 +259,7 @@ const Main = () => {
             } else if (node.type === NODE_TYPES.TREASURE) {
                 setTreasure(node.treasure);
             } else if (node.type === NODE_TYPES.RESTING_ZONE) {
-                setIsResting(true);
+                setActivity(ACTIVITIES.CAMP);
             } else if (node.type === NODE_TYPES.TOWN) {
                 setTown(node.town);
             }
@@ -465,11 +470,11 @@ const Main = () => {
                 updatePlayer={updatePlayer}
                 onExit={handleExitTown}
                 onClickScene={handleClickScene}
-                onClickShop={setShop}
-                onClickTradingPost={() => setTradingPost(true)}
+                onClickShop={() => setActivity(ACTIVITIES.SHOP)}
+                onClickTradingPost={() => setActivity(ACTIVITIES.TRADING_POST)}
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
-                onCamp={() => setIsResting(true)}
+                onCamp={() => setActivity(ACTIVITIES.CAMP)}
             />
         );
     };
@@ -492,7 +497,7 @@ const Main = () => {
     };
 
     const isActivityOpen =
-        battle || isResting || scene || shop || cardRewardsOpen || treasure || upgradingAbility || removingAbility || tradingPost;
+        activity || battle || scene || cardRewardsOpen || itemRewardsOpen || upgradingAbility || removingAbility || treasure;
 
     return (
         <>
@@ -521,22 +526,22 @@ const Main = () => {
                                 setSceneRegion(null);
                             }}
                             onBattle={handleSceneBattle}
-                            onShop={setShop}
+                            onShop={() => setActivity(ACTIVITIES.SHOP)}
                             onTransition={handleTransition}
                             onChangeRegion={setSceneRegion}
                             region={sceneRegion || locationNode?.region}
                         />
                     )}
-                    {isResting && (
+                    {activity === ACTIVITIES.CAMP && (
                         <Camp
-                            onExit={() => setIsResting(false)}
+                            onExit={() => setActivity(null)}
                             player={player}
                             deck={deck}
                             updateDeck={handleUpdateDeck}
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {shop && <Shop player={player} mesos={player.mesos} {...shop} onExit={() => setShop(null)} onBuyItem={handleBuyItem} />}
+                    {activity === ACTIVITIES.SHOP && <Shop player={player} onExit={() => setActivity(null)} onBuyItem={handleBuyItem} />}
                     {cardRewardsOpen && (
                         <CardRewards
                             deck={deck}
@@ -603,7 +608,9 @@ const Main = () => {
                             />
                         </Overlay>
                     )}
-                    {tradingPost && <TradingPost player={player} onExit={() => setTradingPost(null)} onTrade={handleTrade} />}
+                    {activity === ACTIVITIES.TRADING_POST && (
+                        <TradingPost player={player} onExit={() => setActivity(null)} onTrade={handleTrade} />
+                    )}
                 </div>
             )}
             {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}
