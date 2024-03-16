@@ -99,7 +99,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const HEALTH_REGAINED = 0.25;
+const HEALTH_REGAINED = 0.2;
 const Camp = ({
     onExit,
     deck,
