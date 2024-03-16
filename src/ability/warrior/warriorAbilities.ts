@@ -1838,7 +1838,6 @@ export const judgment: Ability = {
     ],
     upgrades: [
         {
-            description: "Gain {{ actions.0.secondaryAction.armor }} Armor. Deals damage equal to your Armor.",
             actions: [
                 {
                     secondaryAction: {
