@@ -1841,7 +1841,7 @@ export const judgment: Ability = {
             actions: [
                 {
                     secondaryAction: {
-                        armor: 2,
+                        armor: 1,
                         target: TARGET_TYPES.SELF,
                         type: ACTION_TYPES.EFFECT,
                         isPriority: true,
@@ -1857,7 +1857,7 @@ export const shockGuard: Ability = {
     resourceCost: 1,
     image: ParashockGuardImage,
     description: "Double your current Armor.",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     overrideBodyText: true,
     actions: [
         {
