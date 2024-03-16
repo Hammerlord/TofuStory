@@ -241,7 +241,7 @@ export const block: Ability = {
     image: BlockImage,
     actions: [
         {
-            armor: 6,
+            armor: 5,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
         },
@@ -544,7 +544,7 @@ export const hyperBody: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            armor: 6,
+            armor: 5,
             drawCards: {
                 amount: 1,
             },
@@ -758,7 +758,7 @@ export const recovery: Ability = {
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 3,
+                        healing: 2,
                     },
                 },
             ],
@@ -841,7 +841,7 @@ export const ironBody: Ability = {
     description: "Prevent the next time your armor decays",
     actions: [
         {
-            armor: 6,
+            armor: 5,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
@@ -2007,7 +2007,7 @@ export const gungnir: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.3,
+                value: 0.25,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
@@ -2470,7 +2470,7 @@ export const honedBlock: Ability = {
     },
     actions: [
         {
-            armor: 6,
+            armor: 5,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -2556,7 +2556,7 @@ export const bluntForce: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.5,
+                value: 0.4,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
