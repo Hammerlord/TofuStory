@@ -1687,7 +1687,7 @@ const performAction = ({
 }) => {
     return (dispatch, getState) => {
         const actorData: CombatantInfo | undefined = findCombatantData(getState, actorId);
-        if (!actorData) {
+        if (!actorData || !side) {
             return;
         }
 

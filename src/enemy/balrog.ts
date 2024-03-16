@@ -16,6 +16,8 @@ import { bleed, burn, explosive, hardy, poison, raging, sentry, shielding } from
 import { attack } from "./abilities";
 import { poisonous } from "./effect";
 
+const balrogName = "Avatar of Balrog";
+
 const flameShield: Effect = {
     ...shielding,
     icon: GemHeartImage,
@@ -29,7 +31,7 @@ const flameShield: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.FRIENDLY_CHARACTER,
-                    targetName: "Balrog",
+                    targetName: balrogName,
                     effects: [
                         {
                             name: "Attack Immunity",
@@ -59,7 +61,7 @@ const flameRaging: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.FRIENDLY_CHARACTER,
-                    targetName: "Balrog",
+                    targetName: balrogName,
                     effects: [
                         {
                             name: "Rage",
@@ -99,7 +101,7 @@ const flamePoison: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.FRIENDLY_CHARACTER,
-                    targetName: "Balrog",
+                    targetName: balrogName,
                     effects: [{ ...poisonous, duration: 1 }],
                 },
             ],
@@ -151,7 +153,7 @@ const balrogAttack = {
 };
 
 export const balrog: Minion = {
-    name: "Avatar of Balrog",
+    name: balrogName,
     maxHP: 666,
     image: JrBalrogImage,
     isBoss: true,
