@@ -125,6 +125,7 @@ export const stun: Effect = {
     type: EFFECT_TYPES.STUN,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
+    maxApplications: 1,
     description: "Stunned targets are unable to act.",
     icon: DizzyIcon,
 };
@@ -165,6 +166,7 @@ export const freeze: Effect = {
     icon: NimbleJewelCImage,
     type: EFFECT_TYPES.FREEZE,
     class: EFFECT_CLASSES.DEBUFF,
+    maxApplications: 1,
     description: "Frozen targets are unable to act.",
     duration: 1,
 };
