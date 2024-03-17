@@ -1706,7 +1706,7 @@ export const risingRage: Ability = {
     ],
 };
 
-export const burningSoulBlade: Ability = {
+export const soulBlade: Ability = {
     name: "Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
@@ -1716,7 +1716,7 @@ export const burningSoulBlade: Ability = {
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
-        maxHP: 1,
+        maxHP: 5,
         abilities: [
             {
                 ...attack,
@@ -1748,6 +1748,7 @@ export const burningSoulBlade: Ability = {
     upgrades: [
         {
             minion: {
+                maxHP: 1,
                 abilities: [
                     {
                         actions: [
