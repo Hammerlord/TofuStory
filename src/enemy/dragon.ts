@@ -46,6 +46,7 @@ const terriblePower: Effect = {
     ...raging,
     name: "Terrible Power",
     description: "Increasing ATT every turn.",
+    icon: JapaneseOgreIcon,
     image: JapaneseOgreIcon,
 };
 
@@ -53,7 +54,7 @@ const reawakening: Effect = {
     name: "Reawakening",
     description: "When this effect ends, the character will regain its full power.",
     icon: ZzzIcon,
-    duration: 5,
+    duration: 3,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
     onEnd: {
@@ -87,7 +88,7 @@ export const lostDragon: Minion = {
             actions: [
                 {
                     area: 2,
-                    damage: 5,
+                    damage: 7,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: FireMarbleImage,
@@ -115,14 +116,14 @@ export const lostDragon: Minion = {
             actions: [
                 {
                     area: 2,
-                    damage: 6,
+                    damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     effects: [{ ...poison }],
                 },
                 {
                     area: 2,
-                    damage: 6,
+                    damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     effects: [{ ...bleed }],
@@ -135,7 +136,7 @@ export const lostDragon: Minion = {
             actions: [
                 {
                     area: 1,
-                    damage: 10,
+                    damage: 15,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                 },
@@ -151,7 +152,7 @@ export const lostDragon: Minion = {
             resourceCost: 3,
             actions: [
                 {
-                    damage: 3,
+                    damage: 7,
                     type: ACTION_TYPES.EFFECT,
                     icon: EncroachingDarknessImage,
                     animationOptions: {
@@ -174,7 +175,7 @@ export const lostDragon: Minion = {
             resourceCost: 3,
             actions: [
                 {
-                    damage: 5,
+                    damage: 10,
                     type: ACTION_TYPES.EFFECT,
                     icon: EncroachingDarknessImage,
                     animationOptions: {
@@ -200,22 +201,22 @@ export const lostDragon: Minion = {
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 5,
+                    damage: 6,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 5,
+                    damage: 6,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 5,
+                    damage: 6,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 5,
+                    damage: 6,
                 },
             ],
         },

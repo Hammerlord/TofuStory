@@ -235,7 +235,7 @@ export const balrog: Minion = {
             image: ThunderBoltImage,
             actions: [
                 {
-                    damage: 5,
+                    damage: 10,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     icon: DarkThunderBoltProjectileImage,
@@ -261,13 +261,13 @@ export const balrog: Minion = {
             image: BloodIcon,
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
                 },
                 {
-                    damage: 3,
+                    damage: 5,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
