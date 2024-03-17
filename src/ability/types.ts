@@ -648,7 +648,7 @@ export interface Ability {
     level?: number;
     /** On battle start, this ability is shuffled to the top of your deck. */
     preemptive?: boolean;
-    /** This is treated as a prerequisite to using the ability */
+    /** selectCards is treated as a prerequisite to using the ability for `deplete from hand` and `hand to top of deck` */
     selectCards?: SelectCards;
     conditionOperator?: "and" | "or"; // OR by default
     /** Prerequisite to use the ability at all */
