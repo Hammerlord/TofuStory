@@ -589,7 +589,7 @@ const BattlefieldContainer = () => {
             setTimeout(() => {
                 dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
                 dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, 1000);
+            }, 500);
         }
 
         // Prevent duplicate battle states from triggering consecutively
