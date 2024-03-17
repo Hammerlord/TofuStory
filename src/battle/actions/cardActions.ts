@@ -356,8 +356,12 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                         // TODO no op for now. There are no actions which deplete from hand.
                     } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-                        const chosenCardIds = cards.map(({ instanceId } = {}) => instanceId);
-                        const updatedHand = hand.filter((ability) => !chosenCardIds.includes(ability.instanceId));
+                        const cardsToMove = cards.map((card: CombatAbility) =>
+                            applyAbilityEventEffects({ event: card.onLeaveHand, ability: card })
+                        );
+                        const updatedHand = hand.filter((ability: CombatAbility) =>
+                            cardsToMove.every((card) => card.instanceId !== ability.instanceId)
+                        );
                         const updatedDeck = [...cards, ...deck];
                         dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
                     } else {
@@ -551,7 +555,7 @@ export const selectCardsAction =
             const updatedDeck = [...deck];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDeck.unshift(ability);
+                    updatedDeck.unshift(applyAbilityEventEffects({ event: ability.onLeaveHand, ability }));
                 } else {
                     updatedHand.push(ability);
                 }
