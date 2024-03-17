@@ -38,7 +38,7 @@ import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
-import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME } from "./constants";
+import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
@@ -343,13 +343,9 @@ const BattlefieldContainer = () => {
         );
     };
 
-    const warnUnplayable = () => {
-        warn("That card cannot be played.");
-    };
-
     const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
         if (selectCardsPrompt) {
-            warn(`Finish selecting cards in the overlay prompt first.`);
+            warn(battleWarnings.promptFinishSelecting);
             return;
         }
 
@@ -366,7 +362,7 @@ const BattlefieldContainer = () => {
             }
 
             if (ability.unplayable) {
-                warnUnplayable();
+                warn(battleWarnings.unplayable);
                 return;
             }
         }
@@ -406,12 +402,12 @@ const BattlefieldContainer = () => {
     const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             if (hand.length <= 1) {
-                warn("That ability requires at least one other card in your hand to deplete");
+                warn(battleWarnings.depleteMinCardInHand);
                 return;
             }
         } else if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
             if (hand.length <= 1) {
-                warn("That ability requires at least one other card in your hand to move");
+                warn(battleWarnings.moveToDeckMinCardInHand);
                 return;
             }
         }
@@ -426,7 +422,7 @@ const BattlefieldContainer = () => {
 
     const handleAllyClick = (e: React.ChangeEvent, index: number) => {
         if (selectCardsPrompt) {
-            warn(`Finish selecting cards in the overlay prompt first.`);
+            warn(battleWarnings.promptFinishSelecting);
             return;
         }
 
@@ -443,7 +439,7 @@ const BattlefieldContainer = () => {
 
                 if (selectedAbilityFromHand.actions.some((action) => action.retrieveDepletedCards)) {
                     if (depleted.length === 0) {
-                        warn("You haven't Depleted any other cards this battle.");
+                        warn(battleWarnings.minDepleted);
                         return;
                     }
                 }
@@ -481,7 +477,7 @@ const BattlefieldContainer = () => {
     };
 
     const warnStealth = () => {
-        warn("That character is stealthed and cannot be targeted directly.");
+        warn(battleWarnings.targetStealth);
     };
 
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {

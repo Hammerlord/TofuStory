@@ -11,3 +11,12 @@ export const CARD_DEPLETED_PLAYBACK_SPEED = 1000;
 
 export const TURN_ANNOUNCEMENT_TIME = 1500; // MS
 export const SUMMON_DELAY = 50;
+
+export const battleWarnings = {
+    depleteMinCardInHand: "That ability requires at least one other card in your hand to deplete",
+    moveToDeckMinCardInHand: "That ability requires at least one other card in your hand to move",
+    promptFinishSelecting: "Finish selecting cards in the overlay prompt first.",
+    minDepleted: "You haven't Depleted any other cards this battle.",
+    targetStealth: "That character is stealthed and cannot be targeted directly.",
+    unplayable: "That card cannot be played.",
+};
