@@ -117,6 +117,7 @@ export const drawCards = ({
                         effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
                         source: {
                             ...source,
+                            isProc: true,
                             trackSumAmount: cardsToDraw.length,
                         },
                     })
