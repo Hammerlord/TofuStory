@@ -525,11 +525,13 @@ const checkRemoveEffect =
 
 const onEffectEventTrigger = ({
     effectEvent,
+    effectEventKey,
     effect,
     ownerId,
     source,
 }: {
     effectEvent: EffectEventTrigger;
+    effectEventKey: string;
     effect: CombatEffect;
     ownerId: string;
     source?: TriggerSource;
@@ -677,7 +679,8 @@ const onEffectEventTrigger = ({
 
             const actorInfo = findCombatantData(getState, ownerId);
             const actor = actorInfo?.combatant;
-            const canAct = (actor?.HP > 0 || usableWhileDead) && !isTurnActionPrevented(actorInfo);
+            const canAct =
+                (actor?.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath) && !isTurnActionPrevented(actorInfo);
 
             // Something could've happened between actions that killed the actor
             if (!canAct) {
@@ -807,6 +810,7 @@ export const checkEventTrigger = ({
                         onEffectEventTrigger({
                             effectEvent,
                             effect,
+                            effectEventKey: effectEventKey,
                             ownerId: combatant.id,
                             source: {
                                 ...source,
@@ -1007,7 +1011,14 @@ export const triggerStatChangeEvents =
             });
 
             removedEffects.forEach((e: CombatEffect) => {
-                dispatch(onEffectEventTrigger({ ownerId: combatantId, effectEvent: e.onRemoved, effect: e }));
+                dispatch(
+                    onEffectEventTrigger({
+                        ownerId: combatantId,
+                        effectEvent: e.onRemoved,
+                        effect: e,
+                        effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
+                    })
+                );
             });
 
             if (isDeathBlow) {
@@ -1069,7 +1080,9 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
         );
 
         effectsEnded.forEach((effect: CombatEffect) => {
-            dispatch(onEffectEventTrigger({ ownerId: combatantId, effectEvent: effect.onEnd, effect }));
+            dispatch(
+                onEffectEventTrigger({ ownerId: combatantId, effectEvent: effect.onEnd, effect, effectEventKey: EFFECT_EVENT_KEYS.onEnd })
+            );
         });
     };
 };
