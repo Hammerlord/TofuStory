@@ -1319,7 +1319,7 @@ export const elliniaHornyMushroom: Minion = {
 const curseEyeDouble: Minion = {
     name: "Mirage",
     image: CurseEyeImage,
-    maxHP: 5,
+    maxHP: 3,
     abilities: [],
     effects: [
         {

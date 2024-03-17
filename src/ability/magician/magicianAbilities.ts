@@ -243,7 +243,7 @@ export const magicGuard: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             effects: [
                 {
@@ -951,7 +951,8 @@ export const greaterBolt: Ability = {
     image: EnergyBoltImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "While you own this card, 'bolt' abilities gain +1 damage. Greater Bolt benefits twice.",
+    description:
+        "While you own this card, 'bolt' abilities gain +{{ effectsWhileOwned.0.skillBonus.0.damage }} damage. Greater Bolt gains +2.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1003,7 +1004,7 @@ export const throwTheBook: Ability = {
     image: PurpleFlyingBookIconImage,
     resourceCost: 3,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to the amount of cards you own",
+    description: "Deals damage equal to the amount of cards you own.",
     actions: [
         {
             damage: 1,
@@ -1276,7 +1277,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} damage for each enemy targeted.",
+        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} damage for each target.",
     actions: [
         {
             damage: 0,
@@ -1581,7 +1582,7 @@ export const combust: Ability = {
     image: ParalyzeImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to the pending damage of all Burns on the target.",
+    description: "Deals damage equal to pending Burn damage on the target.",
     actions: [
         {
             area: 1,
@@ -1614,7 +1615,8 @@ export const leechingFlame: Ability = {
     name: "Leeching Flame",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn. Max 1 per target.",
+    description:
+        "While target is Burning, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -1629,11 +1631,12 @@ export const leechingFlame: Ability = {
                 },
                 {
                     name: "Leeching Flame",
-                    description: "While the target is Burning, you gain 1 HP and 1 Mana per turn.",
+                    description: "Leeching 1 HP and 1 Mana while the target is Burning.",
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
                     maxApplications: 1,
+                    duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         resources: 1,
@@ -1656,6 +1659,9 @@ export const leechingFlame: Ability = {
                     effects: [
                         {
                             duration: 1,
+                        },
+                        {
+                            duration: 2,
                         },
                     ],
                 },
