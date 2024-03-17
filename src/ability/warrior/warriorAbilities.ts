@@ -966,7 +966,11 @@ export const cross: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.SEARCH_DECK,
-                filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+                filters: [
+                    {
+                        actionTypes: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+                    },
+                ],
                 effects: [
                     {
                         resourceCost: -1,
@@ -1167,7 +1171,11 @@ export const arsenal: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.DISCOVER_FROM_CLASS,
-                filters: [ACTION_TYPES.ATTACK],
+                filters: [
+                    {
+                        actionTypes: [ACTION_TYPES.EFFECT],
+                    },
+                ],
                 effects: [
                     {
                         resourceCost: -1,
@@ -2123,7 +2131,8 @@ export const hurlBoulder: Ability = {
 export const reinforce: Ability = {
     name: "Reinforce",
     image: ComboSynergyImage,
-    description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded until discarded.",
+    description:
+        "Search for a {{{ _support_ }}} {{{ _summon_ }}} card from your deck. It costs {{ actions.0.selectCards.effects.0.resourceCost }} less until discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
@@ -2133,10 +2142,17 @@ export const reinforce: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.SEARCH_DECK,
-                filters: [ACTION_TYPES.EFFECT],
+                filters: [
+                    {
+                        primaryActionType: ACTION_TYPES.EFFECT,
+                    },
+                    {
+                        hasMinion: true,
+                    },
+                ],
                 effects: [
                     {
-                        upgradedByLevels: 1,
+                        resourceCost: -1,
                     },
                 ],
             },
@@ -2144,13 +2160,12 @@ export const reinforce: Ability = {
     ],
     upgrades: [
         {
-            description: "Search for a {{{ _support_ }}} card from your deck. It is Upgraded for the rest of battle.",
             actions: [
                 {
                     selectCards: {
                         effects: [
                             {
-                                removeOnDiscard: false,
+                                resourceCost: -1,
                             },
                         ],
                     },

@@ -41,7 +41,22 @@ const getCardSelection = ({
             cards = cards.filter(({ instanceId }) => instanceId !== selectedAbilityId);
         }
         if (filters?.length) {
-            return cards.filter(({ actions }) => actions.some((action: Action) => filters.includes(action.type)));
+            return cards.filter((card) => {
+                return filters.some((filter) => {
+                    const { actionTypes, hasMinion, primaryActionType } = filter;
+                    if (primaryActionType && card.actions[0]?.type === primaryActionType) {
+                        return true;
+                    }
+
+                    if (actionTypes && card.actions.some((action: Action) => actionTypes.includes(action.type))) {
+                        return true;
+                    }
+
+                    if (hasMinion && card.minion) {
+                        return true;
+                    }
+                });
+            });
         }
         return cards;
     };

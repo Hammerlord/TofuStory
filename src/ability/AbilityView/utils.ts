@@ -133,6 +133,7 @@ export const interpolateAbilityDescription = ({ ability }) => {
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
+        _summon_: cardTypeString(GREEN),
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));

@@ -207,7 +207,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     /** How many turns it should cool down before triggering again */
     turnsTriggerFrequency?: number;
     skillBonus?: {
-        comparator?: "includes" | "eq"; // Default is exact match (eq). Not case sensitive
+        comparator?: Comparator; // Default is exact match (eq). Not case sensitive
         skill: string;
         damage: number;
     }[];
@@ -245,7 +245,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     };
     extendEffectDuration?: {
         amount: number;
-        filters?: { property: string; comparator: "includes" | "eq"; value: any }[];
+        filters?: { property: string; comparator: Comparator; value: any }[];
     };
 };
 
@@ -282,6 +282,8 @@ export interface Minion {
     };
 }
 
+type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
+
 export interface Multiplier {
     type: MULTIPLIER_TYPES;
     calculationTarget?: CONDITION_TARGETS;
@@ -290,7 +292,7 @@ export interface Multiplier {
     value?: string | number;
     // Currently only available for ALL_CARDS and EFFECT_DURATIONS.
     // Eg. Providing a filter can narrow down the number of cards { property: "name", comparator: "includes", value: "bolt" }
-    filters?: { property: string; comparator: "includes" | "eq"; value: any }[];
+    filters?: { property: string; comparator: Comparator; value: any }[];
 }
 
 export interface Bonus {
@@ -318,7 +320,7 @@ export interface Bonus {
 
 export interface Condition {
     /** Equals | Less than | Greater than | Not equals/has -- Only used in pass/fail check */
-    comparator?: "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
+    comparator?: Comparator;
     calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
     // Comparing properties on another target, eg. HP between actor and target
     otherCalculationTarget?: {
@@ -392,7 +394,11 @@ export enum MULTIPLIER_TYPES {
 export interface SelectCards {
     type: SELECT_CARD_TYPES;
     cards?: Ability[];
-    filters?: ACTION_TYPES[];
+    filters?: {
+        hasMinion?: boolean; // If Ability.summon is populated, this is true
+        actionTypes?: ACTION_TYPES[];
+        primaryActionType?: ACTION_TYPES; // This checks the first action only
+    }[];
     effects?: AbilityEffect[];
     maxAmount?: number;
 }
@@ -737,6 +743,6 @@ export interface AutoCastAbility {
     type: AUTO_CAST_ABILITY_TYPES;
     amount: number;
     presetCards?: Ability[];
-    filters?: { property: string; comparator: "includes" | "eq" | "lt" | "gt"; value: any }[];
+    filters?: { property: string; comparator: Comparator; value: any }[];
     upgradeLevels?: number;
 }
