@@ -1603,11 +1603,11 @@ export const ragingBlow: Ability = {
     resourceCost: 2,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Hit twice. Gain 2 Infuriate.",
+    description: "Hit twice. Gain 1 Infuriate.",
     overrideBodyText: true,
     actions: [
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1615,12 +1615,9 @@ export const ragingBlow: Ability = {
             },
         },
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            secondaryAction: {
-                effects: [infuriateEffect],
-            },
         },
     ],
     upgrades: [
@@ -2447,7 +2444,6 @@ export const bide: Ability = {
                     selectCards: {
                         maxAmount: 1,
                     },
-                    effects: [infuriateEffect, infuriateEffect],
                 },
             ],
         },
