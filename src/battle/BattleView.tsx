@@ -441,6 +441,13 @@ const BattlefieldContainer = () => {
                     return;
                 }
 
+                if (selectedAbilityFromHand.actions.some((action) => action.retrieveDepletedCards)) {
+                    if (depleted.length === 0) {
+                        warn("You haven't Depleted any other cards this battle.");
+                        return;
+                    }
+                }
+
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
                 if (!canUseAbility(player, selectedAbilityFromHand)) {
