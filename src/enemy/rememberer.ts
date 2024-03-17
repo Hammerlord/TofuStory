@@ -233,24 +233,16 @@ const pulsingNightmare: Ability = {
     image: EncroachingDarknessImage,
     actions: [
         {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
             icon: EncroachingDarknessImage,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
             animationOptions: {
                 width: 100,
                 height: 100,
             },
-            radiate: {
-                area: 3,
-                damage: 5,
-                icon: EncroachingDarknessImage,
-                animationOptions: {
-                    width: 100,
-                    height: 100,
-                },
-                playbackTime: 400,
-            },
+            damage: 5,
+            area: 1,
+            playbackTime: 400,
         },
     ],
     conditions: [
@@ -267,7 +259,7 @@ export const theRememberer: Minion = {
     image: TheRemembererImage,
     isBoss: true,
     mesos: 100,
-    maxHP: 250,
+    maxHP: 500,
     abilities: [summonCoalescingMists2, summonCoalescingMists3, summonCoalescingMists4, pulsingNightmare],
     effects: [
         {
@@ -292,33 +284,49 @@ export const theRememberer: Minion = {
                 ability: summonCoalescingMists,
             },
             onTurnEnd: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 ability: {
                     name: "Pulsing Nightmare",
                     image: EncroachingDarknessImage,
                     actions: [
                         {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
                             icon: EncroachingDarknessImage,
-                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            damage: 3,
+                            area: 1,
+                            playbackTime: 400,
                             animationOptions: {
                                 width: 75,
                                 height: 75,
                             },
-                            radiate: {
-                                area: 3,
-                                damage: 3,
-                                icon: EncroachingDarknessImage,
-                                animationOptions: {
-                                    width: 75,
-                                    height: 75,
-                                },
-                                playbackTime: 400,
-                            },
                         },
                     ],
                 },
+            },
+        },
+        {
+            name: "Encroaching Nightmare",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onTurnEnd: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Plus Nightmare Damage",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.NONE,
+                        skillBonus: [
+                            {
+                                skill: "Pulsing Nightmare",
+                                damage: 1,
+                            },
+                            {
+                                skill: "Pulsing Night Terror",
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
             },
         },
     ],

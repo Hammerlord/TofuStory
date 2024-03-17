@@ -16,10 +16,14 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
+import { PreviewStatUpdate } from "../character/AbilityPreview";
 import CombatantView from "../character/CombatantView";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { BackpackImage, ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
+import EffectGroupIcon from "../icon/EffectGroupIcon";
+import Icon from "../icon/Icon";
+import { ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
+import Tooltip from "../view/Tooltip";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -35,7 +39,7 @@ import WaveInfo from "./WaveInfo";
 import { calculateTargetIndices, checkEventTrigger, findCombatantData, stageStatChanges, useAbility } from "./actions/actions";
 import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
-import { UpdatedCombatantStats, getUpdatedStats } from "./actions/getUpdatedStats";
+import { getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
@@ -43,10 +47,6 @@ import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
-import Icon from "../icon/Icon";
-import { PreviewStatUpdate } from "../character/AbilityPreview";
-import Tooltip from "../view/Tooltip";
-import EffectGroupIcon from "../icon/EffectGroupIcon";
 
 const useStyles = createUseStyles({
     root: {

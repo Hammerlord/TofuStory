@@ -1415,7 +1415,7 @@ export const overpower: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             area: 1,
