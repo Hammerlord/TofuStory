@@ -255,7 +255,7 @@ export const magicGuard: Ability = {
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 3,
+                        armor: 2,
                     },
                 },
             ],
@@ -294,7 +294,7 @@ export const magicArmor: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -310,7 +310,7 @@ export const barrier: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            armor: 7,
+            armor: 6,
             bonus: {
                 conditions: [
                     {
@@ -318,7 +318,7 @@ export const barrier: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 3,
+                armor: 2,
             },
         },
     ],
@@ -326,7 +326,7 @@ export const barrier: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                     bonus: {
                         armor: 1,
                     },
@@ -565,7 +565,7 @@ export const frostBarrier: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -801,7 +801,7 @@ const parfaitCupcake: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -2226,7 +2226,7 @@ export const manaGem: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },

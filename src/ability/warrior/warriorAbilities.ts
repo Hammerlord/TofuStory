@@ -250,7 +250,7 @@ export const block: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -295,14 +295,13 @@ export const spikes: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
-            armor: 3,
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -554,7 +553,7 @@ export const hyperBody: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -855,7 +854,7 @@ export const ironBody: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
@@ -2492,7 +2491,7 @@ export const honedBlock: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 2,
                 },
             ],
         },
