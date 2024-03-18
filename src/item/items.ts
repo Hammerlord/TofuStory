@@ -2085,7 +2085,7 @@ export const arcStaff: Item = {
             class: EFFECT_CLASSES.BUFF,
             onFriendlyReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                eventTriggerFrequency: 10,
+                eventTriggerFrequency: 8,
                 ability: {
                     name: "Enough!",
                     image: ArcStaffImage,

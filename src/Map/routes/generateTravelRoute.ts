@@ -29,7 +29,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             if (numTreasures > 0 && currentNode?.type !== NODE_TYPES.TREASURE) {
                 types.push(NODE_TYPES.TREASURE);
             }
-            if (numEncountersSinceRestPoint >= 2) {
+            if (numEncountersSinceRestPoint >= 3) {
                 types.push(NODE_TYPES.RESTING_ZONE);
             } else {
                 if (numEvents > 0 && currentNode?.type !== NODE_TYPES.EVENT) {
