@@ -185,6 +185,7 @@ const ItemRewards = ({
                                     highlight={selectedItemIndices.includes(i)}
                                     className={classes.item}
                                     onClick={() => handleClickItem(i)}
+                                    playerClass={player.class}
                                 />
                             ))}
                         </div>

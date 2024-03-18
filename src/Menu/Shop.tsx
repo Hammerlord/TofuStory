@@ -465,7 +465,7 @@ const Shop = ({
                         }
                     }}
                 >
-                    <ItemView item={item} />
+                    <ItemView item={item} playerClass={player.class} />
                 </div>
                 <div className={classes.priceContainer}>
                     <div

@@ -396,7 +396,7 @@ const TradingPost = ({
                                 })}
                                 key={item.name}
                             >
-                                <ItemView item={item} onClick={() => onClickPlayerItem(item)} />
+                                <ItemView item={item} onClick={() => onClickPlayerItem(item)} playerClass={player.class} />
                             </div>
                         ))}
                     </div>
@@ -418,7 +418,7 @@ const TradingPost = ({
                                 })}
                                 key={item.name}
                             >
-                                <ItemView item={item} onClick={() => onClickVendorItem(item)} />
+                                <ItemView item={item} onClick={() => onClickVendorItem(item)} playerClass={player.class} />
                             </div>
                         ))}
                     </div>

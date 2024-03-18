@@ -36,7 +36,7 @@ import {
     fairyWing,
     fishSpear,
     flamingFeather,
-    garnet,
+    garnetWarrior,
     greenBambooHat,
     guideBook,
     ironMace,
@@ -126,7 +126,6 @@ export const ITEMS = [
     amethyst,
     topaz,
     redWhip,
-    garnet,
     ironMace,
     fishSpear,
     pigsRibbonItem,
@@ -184,6 +183,6 @@ export const ITEMS = [
 ];
 
 export const CLASS_ITEMS = {
-    [PLAYER_CLASSES.WARRIOR]: [bloodMask],
+    [PLAYER_CLASSES.WARRIOR]: [bloodMask, garnetWarrior],
     [PLAYER_CLASSES.MAGICIAN]: [starEarrings],
 };

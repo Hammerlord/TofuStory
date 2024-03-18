@@ -111,7 +111,7 @@ const ItemSelection = ({
                             className={classNames({ selected: i === selectedIndex }, classes.item)}
                             key={[choice.name, i].join("-")}
                         >
-                            <ItemView item={choice} />
+                            <ItemView item={choice} playerClass={player.class} />
                         </div>
                     ))}
                 </div>

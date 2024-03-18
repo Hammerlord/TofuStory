@@ -2,6 +2,9 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { Item, RARITIES } from "./types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
+import Handlebars from "handlebars";
+import { PLAYER_CLASSES } from "../Menu/types";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     item: {
@@ -51,8 +54,25 @@ const useStyles = createUseStyles({
     },
 });
 
-const ItemView = ({ item, highlight, className, onClick }: { item: Item; highlight?: boolean; className?: string; onClick? }) => {
+const ItemView = ({
+    item,
+    highlight,
+    className,
+    onClick,
+    playerClass,
+}: {
+    item: Item;
+    highlight?: boolean;
+    className?: string;
+    onClick?;
+    playerClass?: PLAYER_CLASSES;
+}) => {
     const classes = useStyles();
+    const interpolatedDescription = Handlebars.compile(item.description || "")({
+        ...item,
+        resources: resourceClassNameMap[playerClass] || "resource",
+    });
+
     return (
         <div
             key={item.name}
@@ -76,7 +96,7 @@ const ItemView = ({ item, highlight, className, onClick }: { item: Item; highlig
                 </div>
                 <hr />
             </div>
-            <div>{item.description}</div>
+            <div>{interpolatedDescription}</div>
         </div>
     );
 };
