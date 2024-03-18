@@ -674,15 +674,10 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        const { playbackTime } = events[0];
-
-        const prevEvents = eventQueueRef?.current as Event[];
-        // Disregard pushes to the queue unless going from 0 to n events; this is to smoothen playback
-        const shouldTriggerPop = (prevEvents?.length === 0 && events.length > 0) || events.length < prevEvents.length;
-        if (shouldTriggerPop) {
+        if (events.length > 0) {
             const timeout = setTimeout(() => {
                 dispatch(popEventQueue());
-            }, playbackTime);
+            }, events[0].playbackTime);
 
             return () => clearTimeout(timeout);
         }
