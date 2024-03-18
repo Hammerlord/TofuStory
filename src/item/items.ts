@@ -620,6 +620,57 @@ export const garnetWarrior: Item = {
     ],
 };
 
+export const garnetMagician: Item = {
+    name: "Garnet",
+    image: GarnetImage,
+    description: "+3 attack power while you have at least 8 Mana.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    effects: [
+        {
+            name: "Garnet Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: GarnetImage,
+            disableDisplayIcon: true,
+            // Resources are spent right before using an ability, and we want to retain the attack power that ability even if it brings you below the threshold
+            onResourcesGained: {
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        property: "resources",
+                        value: 7,
+                        comparator: "gt",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Garnet",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: GarnetImage,
+                        disableDisplayIcon: true,
+                        attackPower: 3,
+                        maxApplications: 1,
+                        onAbility: {
+                            conditions: [
+                                {
+                                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                    property: "resources",
+                                    value: 8,
+                                    comparator: "lt",
+                                },
+                            ],
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+};
+
 export const ironMace: Item = {
     name: "Iron Mace",
     image: IronMaceImage,
