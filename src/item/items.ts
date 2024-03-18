@@ -224,7 +224,7 @@ export const amethyst: Item = {
     image: AmethystImage,
     effects: [
         {
-            name: "Amethyst",
+            name: "Amethyst Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onReceiveOverhealing: {
@@ -234,6 +234,24 @@ export const amethyst: Item = {
                     type: MULTIPLIER_TYPES.OVERHEALING,
                     value: 1,
                 },
+            },
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        name: "Amethyst",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        onReceiveOverhealing: {
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            armor: 1,
+                            multiplier: {
+                                type: MULTIPLIER_TYPES.OVERHEALING,
+                                value: 1,
+                            },
+                        },
+                    },
+                ],
             },
         },
     ],
