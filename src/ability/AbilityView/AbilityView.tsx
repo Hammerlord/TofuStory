@@ -487,12 +487,12 @@ const AbilityView = forwardRef(
                         </span>
                         <div className={classes.portraitContainer}>{imageNode}</div>
                         <div className={classes.body}>
-                            {
+                            {(tributeSummon || taunt) && (
                                 <div>
                                     {tributeSummon && <span className={classes.bold}>Tribute.</span>}
                                     {taunt && <span className={classes.bold}> Taunt.</span>}
                                 </div>
-                            }
+                            )}
                             {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}
