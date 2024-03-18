@@ -13,6 +13,7 @@ export { default as AnonymushroomImage } from "./Anonymushroom.png";
 export { default as AquamarineImage } from "./Aquamarine.png";
 export { default as ArcaneAimImage } from "./ArcaneAim.png";
 export { default as ArcaneOverdriveImage } from "./ArcaneOverdrive.png";
+export { default as ArcStaffImage } from "./ArcStaff.png";
 export { default as ArrowImage } from "./Arrow.png";
 export { default as ArturoImage } from "./Arturo.png";
 export { default as ArwensGlassShoeImage } from "./ArwensGlassShoe.png";

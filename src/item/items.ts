@@ -1,5 +1,5 @@
 import { counterEffect } from "./../enemy/effect";
-import { bleed, chill, poison, stashCardEffect, thorns } from "../ability/Effects";
+import { bleed, chill, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -8,6 +8,7 @@ import {
     AmethystImage,
     AncientTreeSapImage,
     AquamarineImage,
+    ArcStaffImage,
     ArwensGlassShoeImage,
     ASetOfMemoryCardsImage,
     BackpackImage,
@@ -79,6 +80,7 @@ import {
     SwordImage,
     TauromacisHornImage,
     TaurospearHornImage,
+    ThunderSparkImage,
     TopazImage,
     TortieShellImage,
     ToyHammerImage,
@@ -2009,6 +2011,44 @@ export const spikyCollar: Item = {
                         class: EFFECT_CLASSES.BUFF,
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const arcStaff: Item = {
+    name: "Arc Staff",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: ArcStaffImage,
+    description: "When you or your allies are attacked 10 times, Stun the last attacker.",
+    effects: [
+        {
+            name: "Arc Staff Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onFriendlyReceiveAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                eventTriggerFrequency: 10,
+                ability: {
+                    name: "Enough!",
+                    image: ArcStaffImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            animation: ANIMATION_TYPES.ONE_WAY,
+                            playbackTime: 500,
+                            icon: ThunderSparkImage,
+                            animationOptions: {
+                                rotateToFaceTarget: true,
+                                rotate: 135,
+                                flash: 500,
+                            },
+                            effects: [{ ...stun, duration: 2 }],
+                        },
+                    ],
+                },
             },
         },
     ],

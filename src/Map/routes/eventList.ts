@@ -85,6 +85,7 @@ import {
     opal,
     yellowHat,
     spikyCollar,
+    arcStaff,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -179,6 +180,7 @@ export const ITEMS = [
     opal,
     yellowHat,
     spikyCollar,
+    arcStaff,
 ];
 
 export const CLASS_ITEMS = {
