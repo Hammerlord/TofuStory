@@ -187,7 +187,7 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, duration: 1 }],
+            effects: [{ ...attackPower, attackPower: 2, duration: 1 }],
         },
     ],
     upgrades: [
@@ -206,7 +206,7 @@ export const empower: Ability = {
 };
 
 const magicClawAction: Action = {
-    damage: 3,
+    damage: 4,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -217,15 +217,6 @@ const magicClawAction: Action = {
     },
     icon: MagicClawProjectileImage,
     playbackTime: 400,
-    bonus: {
-        conditions: [
-            {
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                hasEffect: "Charged",
-            },
-        ],
-        damage: 2,
-    },
 };
 
 export const magicClaw: Ability = {
@@ -250,16 +241,10 @@ export const magicClaw: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
-                    bonus: {
-                        damage: 1,
-                    },
+                    damage: 2,
                 },
                 {
-                    damage: 1,
-                    bonus: {
-                        damage: 1,
-                    },
+                    damage: 2,
                 },
             ],
         },
@@ -454,26 +439,25 @@ export const mpEater: Ability = {
     ],
 };
 
+const arcaneAimingAttackPower = {
+    name: "Arcane Aiming",
+    icon: ArcaneAimImage,
+    disableDisplayIcon: true,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    duration: 1,
+};
+
 const arcaneAiming: Effect = {
     name: "Arcane Aim",
     icon: ArcaneAimImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     duration: 0,
-    attackPower: 1,
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [
-            {
-                name: "Arcane Aiming",
-                icon: ArcaneAimImage,
-                disableDisplayIcon: true,
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                attackPower: 1,
-                duration: 1,
-            },
-        ],
+        effects: [arcaneAimingAttackPower],
     },
 };
 
@@ -482,13 +466,13 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "This turn only, gain +1 ATT whenever you attack.",
+    description: "This turn, gain +1 ATT whenever you attack.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [arcaneAiming],
+            effects: [arcaneAiming, arcaneAimingAttackPower],
         },
     ],
     upgrades: [
@@ -624,15 +608,6 @@ export const chainLightning: Ability = {
                 flash: 200,
                 ricochet: true,
             },
-            bonus: {
-                damage: 3,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: "Charged",
-                    },
-                ],
-            },
         },
     ],
     upgrades: [
@@ -641,9 +616,6 @@ export const chainLightning: Ability = {
                 {
                     damage: 2,
                     secondaryDamage: 2,
-                    bonus: {
-                        damage: 1,
-                    },
                 },
             ],
         },
@@ -687,7 +659,7 @@ export const shootingStars: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            addCards: [swift, swift],
+            addCards: [swift, swift, swift],
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -719,7 +691,8 @@ export const wishUponAStar: Ability = {
     resourceCost: 1,
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
-    description: "On draw / deck cycle: Cast a 2 damage star at a random enemy.",
+    description:
+        "On draw / deck cycle: Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} damage star at a random enemy.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -735,14 +708,14 @@ export const wishUponAStar: Ability = {
                         ability: {
                             name: "Falling Star",
                             image: StarImage,
-                            actions: [fallingStar],
+                            actions: [{ ...fallingStar }],
                         },
                     },
                     onDeckCycle: {
                         ability: {
                             name: "Falling Star",
                             image: StarImage,
-                            actions: [fallingStar],
+                            actions: [{ ...fallingStar }],
                         },
                     },
                     duration: 5,
@@ -756,7 +729,16 @@ export const wishUponAStar: Ability = {
                 {
                     effects: [
                         {
-                            duration: Infinity,
+                            onDrawCard: {
+                                ability: {
+                                    actions: [{ damage: 1 }],
+                                },
+                            },
+                            onDeckCycle: {
+                                ability: {
+                                    actions: [{ damage: 1 }],
+                                },
+                            },
                         },
                     ],
                 },
@@ -794,7 +776,12 @@ export const fireArrow: Ability = {
                             hasEffect: "Charged",
                         },
                     ],
-                    damage: 3,
+                    effects: [
+                        {
+                            ...burn,
+                            duration: 3,
+                        },
+                    ],
                 },
             ],
         },
@@ -804,9 +791,6 @@ export const fireArrow: Ability = {
             actions: [
                 {
                     damage: 3,
-                    bonus: {
-                        damage: 2,
-                    },
                 },
             ],
         },
@@ -1119,22 +1103,10 @@ export const glacier: Ability = {
             effects: [
                 {
                     ...chill,
-                    duration: 3,
+                    duration: 2,
                 },
-            ],
-            bonus: [
                 {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                            hasEffect: "Charged",
-                        },
-                    ],
-                    effects: [
-                        {
-                            ...freeze,
-                        },
-                    ],
+                    ...freeze,
                 },
             ],
         },
@@ -1181,7 +1153,7 @@ export const thunderBolt: Ability = {
     image: ThunderBoltImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    description: "Charged: Cast again for {{ actions.1.damage }} damage",
+    description: "<b>Charged:</b> Cast again for {{ actions.1.damage }} damage.",
     actions: [
         {
             damage: 3,
@@ -1218,7 +1190,7 @@ export const thunderBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
                 },
                 {
                     damage: 1,
@@ -1233,6 +1205,8 @@ export const slimmingMuffin: Ability = {
     image: ChocolateMuffinImage,
     resourceCost: 0,
     rarity: RARITIES.COMMON,
+    description: "Draw a card. It costs ({{ actions.0.drawCards.effects.0.resourceCost }}) less until discarded.",
+    overrideBodyText: true,
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
     },
@@ -1242,7 +1216,6 @@ export const slimmingMuffin: Ability = {
             type: ACTION_TYPES.EFFECT,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: ChocolateMuffinImage,
-            healing: 3,
             drawCards: {
                 amount: 1,
                 effects: [
@@ -1255,9 +1228,10 @@ export const slimmingMuffin: Ability = {
     ],
     upgrades: [
         {
+            description:
+                "Draw {{ actions.0.drawCards.amount }}. It costs ({{ actions.0.drawCards.effects.0.resourceCost }}) less until discarded.",
             actions: [
                 {
-                    healing: 2,
                     drawCards: {
                         amount: 1,
                     },
@@ -1615,7 +1589,6 @@ export const combust: Ability = {
     description: "Deals damage equal to pending Burn damage on the target.",
     actions: [
         {
-            area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.BEAM,
@@ -1634,7 +1607,7 @@ export const combust: Ability = {
         {
             actions: [
                 {
-                    area: 1,
+                    damage: 3,
                 },
             ],
         },
@@ -1646,7 +1619,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While target is Burning, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
+        "While target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -1661,7 +1634,7 @@ export const leechingFlame: Ability = {
                 },
                 {
                     name: "Leeching Flame",
-                    description: "Leeching 1 HP and 1 Mana while the target is Burning.",
+                    description: "Leeching 1 HP and 1 Mana while the target has Burn.",
                     icon: EliteFirebrandImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
@@ -2036,12 +2009,14 @@ export const moonBolt: Ability = {
     name: "Moon Bolt",
     resourceCost: 2,
     image: FullMoonImage,
-    description: "Heal 1 each hit.",
+    overrideBodyText: true,
+    //description: "Hits up to {{ actions.0.numTargets }} more targets. Heal {{ actions.0.secondaryAction.healing }} each hit.",
+    description: "Heal {{ actions.0.secondaryAction.healing }} each hit. <b>Charged:</b> +1 healing.",
+
     rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 6,
-            secondaryDamage: 6,
             targetArea: 3,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2058,6 +2033,15 @@ export const moonBolt: Ability = {
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
                 },
+                bonus: {
+                    healing: 1,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: "Charged",
+                        },
+                    ],
+                },
             },
         },
     ],
@@ -2066,7 +2050,6 @@ export const moonBolt: Ability = {
             actions: [
                 {
                     damage: 2,
-                    numTargets: 2,
                 },
             ],
         },
@@ -2077,6 +2060,8 @@ export const starBolt: Ability = {
     name: "Star Bolt",
     resourceCost: 1,
     image: GlisteningStarImage,
+    description: "Draw {{ actions.0.drawCards.amount }} card. <br/> <b>Charged:</b> Draw {{ actions.0.bonus.drawCards.amount }} more.",
+    overrideBodyText: true,
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -2093,6 +2078,17 @@ export const starBolt: Ability = {
                 height: 75,
                 flash: 500,
                 ricochet: true,
+            },
+            bonus: {
+                drawCards: {
+                    amount: 1, // This doesn't work because card actions don't take bonuses into account yet
+                },
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
             },
         },
     ],
@@ -2633,7 +2629,7 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "Summon / Death: Draw a card.",
+    description: "<b>Charged:</b> Draw a card. <br/> <b>On death:</b> Draw a card.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -2676,7 +2672,21 @@ export const whelp: Ability = {
             },
         ],
     },
-    actions: [],
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
     upgrades: [
         {
             minion: {

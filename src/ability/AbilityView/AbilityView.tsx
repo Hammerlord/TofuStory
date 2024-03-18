@@ -503,7 +503,7 @@ const AbilityView = forwardRef(
                             {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
                             {numTargets > 0 && (
                                 <div>
-                                    Hits up to {numTargets} more targets{" "}
+                                    Hits up to +{numTargets} targets{" "}
                                     {secondaryDamage && (
                                         <>
                                             for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}

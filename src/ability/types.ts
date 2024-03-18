@@ -303,6 +303,7 @@ export interface Bonus {
     healing?: number;
     armor?: number;
     effects?: Effect[];
+    drawCards?;
     area?: number;
 
     /**

@@ -132,7 +132,6 @@ import {
 export const JOB_CARD_MAP = {
     [PLAYER_CLASSES.MAGICIAN]: {
         all: [
-            lesserBolt,
             magicClaw,
             magicFang,
             empower,
