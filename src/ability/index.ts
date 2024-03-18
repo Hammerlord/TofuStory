@@ -14,6 +14,7 @@ import {
     conjureTreat,
     copySpell,
     elquines,
+    empower,
     feedback,
     fireArrow,
     fireSpirit,
@@ -134,6 +135,7 @@ export const JOB_CARD_MAP = {
             lesserBolt,
             magicClaw,
             magicFang,
+            empower,
             tribolt,
             magicArmor,
             barrier,
@@ -190,7 +192,7 @@ export const JOB_CARD_MAP = {
             fireSpirit,
             astralRewind,
         ],
-        starters: [lesserBolt, lesserBolt, lesserBolt, magicClaw, magicClaw, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
+        starters: [empower, magicClaw, magicClaw, magicClaw, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [

@@ -1885,7 +1885,7 @@ export const shockGuard: Ability = {
                 prepend: true,
                 actions: [
                     {
-                        armor: 2,
+                        armor: 1,
                         target: TARGET_TYPES.SELF,
                         type: ACTION_TYPES.EFFECT,
                     },

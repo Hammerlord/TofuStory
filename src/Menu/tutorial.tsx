@@ -87,7 +87,7 @@ export const magicianTutorial: Tutorial = {
                 </>,
             ],
             enemies: [null, { ...basicDummy, maxHP: 22 }, null],
-            presetDeck: [magicClaw, magicClaw],
+            presetDeck: [magicClaw, magicClaw, magicClaw],
         },
         {
             description: [
@@ -95,7 +95,7 @@ export const magicianTutorial: Tutorial = {
                     Target multiple enemies with <Icon icon={BlueRushImage} /> Magic Fang.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 11 }, null, { ...basicDummy, maxHP: 11 }, null],
+            enemies: [null, { ...basicDummy, maxHP: 12 }, null, { ...basicDummy, maxHP: 12 }, null],
             presetDeck: [magicFang, magicFang, magicFang],
         },
         {
@@ -118,7 +118,7 @@ export const magicianTutorial: Tutorial = {
                 <>These effects can be dangerous, so try to pay attention to them.</>,
             ],
             enemies: [null, null, spikedDummy, null, null],
-            presetDeck: [magicClaw, magicArmor, manaGem],
+            presetDeck: [magicClaw, magicArmor, magicClaw],
         },
         {
             description: [

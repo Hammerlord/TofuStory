@@ -3,6 +3,7 @@ import { cloneDeep } from "lodash";
 import {
     AdvancedChargeImage,
     ArcaneAimImage,
+    ArcaneOverdriveImage,
     BabyDragonImage,
     BigSnowballImage,
     BlueRushImage,
@@ -100,7 +101,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { armorUp, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
+import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -140,7 +141,7 @@ export const magicFang: Ability = {
     actions: [
         {
             area: 1,
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -175,8 +176,37 @@ export const magicFang: Ability = {
     ],
 };
 
+export const empower: Ability = {
+    name: "Empower",
+    image: ArcaneOverdriveImage,
+    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} attack power.",
+    overrideBodyText: true,
+    resourceCost: 0,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [{ ...attackPower, duration: 1 }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            attackPower: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
 const magicClawAction: Action = {
-    damage: 5,
+    damage: 3,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -194,13 +224,13 @@ const magicClawAction: Action = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 3,
+        damage: 2,
     },
 };
 
 export const magicClaw: Ability = {
     name: "Magic Claw",
-    resourceCost: 2,
+    resourceCost: 1,
     image: MagicClawImage,
     description: "Hits twice",
     rarity: RARITIES.COMMON,
@@ -220,13 +250,13 @@ export const magicClaw: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
                     bonus: {
                         damage: 1,
                     },
                 },
                 {
-                    damage: 2,
+                    damage: 1,
                     bonus: {
                         damage: 1,
                     },
