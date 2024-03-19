@@ -507,7 +507,7 @@ const AbilityView = forwardRef(
                             {preemptive && <div className={classes.bold}>Pre-emptive</div>}
                             {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
                             {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                            {ability.reusable && <div className={classes.bold}>Boomerang</div>}
+                            {ability.reusable && <div className={classes.bold}>Reusable</div>}
                             {unplayable && <div className={classes.bold}>Unplayable</div>}
                             <SelectCards ability={ability} />
                             {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}

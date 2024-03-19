@@ -194,7 +194,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     }
 
     if (isReusable) {
-        tooltips.push(<AbilityTooltipSection title="Boomerang" description={"Ability returns to your hand after use."} key={"reusable"} />);
+        tooltips.push(<AbilityTooltipSection title="Reusable" description={"Ability is not discarded when used."} key={"reusable"} />);
     }
 
     const hasRadiate = ability.actions.some((action) => action.radiate) || stringified.includes("radiate");
