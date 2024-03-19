@@ -962,7 +962,7 @@ const chocolateCupcake: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: ChocolateCupcakeImage,
             healing: 3,
@@ -987,7 +987,7 @@ const pieceOfCake: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: PieceOfBirthdayCakeImage,
             effects: [
