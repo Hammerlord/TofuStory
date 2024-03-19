@@ -281,7 +281,15 @@ const handleRetrieveDepletedCards = ({
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
-export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }, source?: TriggerSource, isAutoCast?: boolean) => {
+export const checkCardActions = ({
+    action,
+    source,
+    isAutoCast,
+}: {
+    action: { [key in keyof Action]?: Action[key] };
+    source?: TriggerSource;
+    isAutoCast?: boolean;
+}) => {
     return (dispatch, getState) => {
         const {
             drawCards: cardsToDraw,

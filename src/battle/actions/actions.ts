@@ -608,7 +608,7 @@ const onEffectEventTrigger = ({
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, source }));
-        dispatch(checkCardActions(other, source)); // Why does this use original source when there is procSource?
+        dispatch(checkCardActions({ action: other, source })); // Why does this use original source when there is procSource?
 
         const owner = findCombatantData(getState, ownerId);
         if (owner?.combatant?.isPlayer) {
@@ -1678,13 +1678,13 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
             };
 
             dispatch(
-                checkCardActions(
-                    {
+                checkCardActions({
+                    action: {
                         type: ACTION_TYPES.EFFECT,
                         addCards: [cardCopy],
                     },
-                    parentSource
-                )
+                    source: parentSource,
+                })
             );
         }
 
@@ -1840,7 +1840,7 @@ const performAction = ({
 
         dispatch(checkInduce({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
-        dispatch(checkCardActions(action, parentSource, isAutoCast));
+        dispatch(checkCardActions({ action, source: parentSource, isAutoCast }));
         dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));
         dispatch(
             onAction({

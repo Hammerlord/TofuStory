@@ -183,19 +183,19 @@ export const onBattleStart = () => {
         const { playerSide, enemySide, addAbilities = [] } = getState().battle;
         if (addAbilities.length) {
             dispatch(
-                checkCardActions(
-                    {
+                checkCardActions({
+                    action: {
                         addCardsToDeck: addAbilities.map((card) => ({
                             ...card,
                             instanceId: uuid.v4(),
                         })),
                     },
-                    {
+                    source: {
                         type: TRIGGER_SOURCE_TYPES.NONE,
                         triggerHistory: [],
                         targetId: playerSide.find((c) => c?.isPlayer)?.id,
-                    }
-                )
+                    },
+                })
             );
         }
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
