@@ -578,7 +578,7 @@ const arcaneAimingAttackPower = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
-    duration: 1,
+    duration: 0,
 };
 
 const arcaneAiming: Effect = {
@@ -598,7 +598,7 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "This turn, gain +1 ATT whenever you attack.",
+    description: "This turn only, gain +1 ATT whenever you attack.",
     overrideBodyText: true,
     actions: [
         {
