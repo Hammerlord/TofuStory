@@ -2682,13 +2682,10 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains 3 Armor when it attacks.",
+    description: "Gains 3 Armor when it attacks or kills.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,
-    minionOptions: {
-        tributeSummon: true,
-    },
     minion: {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
@@ -2711,7 +2708,7 @@ export const abominableSnowman: Ability = {
             taunt,
             {
                 name: "Abomination",
-                description: "Gains 3 Armor when it attacks.",
+                description: "Gains 3 Armor when it attacks or kills.",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onAttack: {
