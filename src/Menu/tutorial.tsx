@@ -1,4 +1,4 @@
-import { lesserBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
+import { energyBolt, lesserBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
 import { block, slam, cleave } from "../ability/warrior/warriorAbilities";
 import { Wave } from "../battle/types";
 import { basicAoeDummyMagician, basicDummy, basicDummy2, spikedDummy } from "../enemy/dummy";
@@ -80,14 +80,14 @@ export const magicianTutorial: Tutorial = {
         {
             description: [
                 <>
-                    Select <Icon icon={MagicClawImage} /> Magic Claw, and attack the dummy.
+                    Select <Icon icon={OldEnergyBoltImage} /> Energy Bolt, and attack the dummy.
                 </>,
                 <>
                     Cards often cost <Mana /> Mana, limiting how many you can play per turn.
                 </>,
             ],
             enemies: [null, { ...basicDummy, maxHP: 22 }, null],
-            presetDeck: [magicClaw, magicClaw, magicClaw],
+            presetDeck: [energyBolt, energyBolt, energyBolt],
         },
         {
             description: [
@@ -118,7 +118,7 @@ export const magicianTutorial: Tutorial = {
                 <>These effects can be dangerous, so try to pay attention to them.</>,
             ],
             enemies: [null, null, spikedDummy, null, null],
-            presetDeck: [magicClaw, magicArmor, magicClaw],
+            presetDeck: [energyBolt, magicArmor, energyBolt],
         },
         {
             description: [
@@ -126,17 +126,17 @@ export const magicianTutorial: Tutorial = {
                     Magicians gain <Icon icon={AlchemistStoneImage} /> Charged when they play a card.
                 </>,
                 <>
-                    <Icon icon={MagicClawImage} /> Magic Claw and <Icon icon={BlueRushImage} /> Magic Fang consume{" "}
+                    <Icon icon={OldEnergyBoltImage} /> Energy Bolt and <Icon icon={BlueRushImage} /> Magic Fang consume{" "}
                     <Icon icon={AlchemistStoneImage} /> to do bonus damage.
                 </>,
                 <>
-                    If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot <Icon icon={OldEnergyBoltImage} /> Energy
+                    If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot <Icon icon={OldEnergyBoltImage} /> Lesser
                     Bolt.
                 </>,
                 <>Try playing a combination of cards to see how this works.</>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 7 }, { ...basicDummy, maxHP: 23 }, { ...basicDummy, maxHP: 7 }, null],
-            presetDeck: [magicClaw, magicFang, lesserBolt],
+            enemies: [null, { ...basicDummy, maxHP: 9 }, { ...basicDummy, maxHP: 23 }, { ...basicDummy, maxHP: 9 }, null],
+            presetDeck: [energyBolt, magicFang, magicArmor],
         },
     ] as Wave[],
 };
