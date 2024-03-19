@@ -1,13 +1,14 @@
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Popper from "@material-ui/core/Popper";
 import classNames from "classnames";
-import { useRef, useState } from "react";
+import Handlebars from "handlebars";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Item, ITEM_TYPES, RARITIES } from "../item/types";
-import Button from "../view/Button";
+import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import { useAppSelector } from "../hooks";
-import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
+import { ITEM_TYPES, Item, RARITIES } from "../item/types";
+import Button from "../view/Button";
 
 const useStyles = createUseStyles({
     root: {
@@ -215,7 +216,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                                 {selectedItem.rarity || RARITIES.COMMON}
                             </div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
-                            {selectedItem.description}
+                            {Handlebars.compile(selectedItem.description || "")(selectedItem)}
                             <div className={classes.useButtonContainer}>
                                 {isItemUsable && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>
