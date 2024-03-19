@@ -848,6 +848,8 @@ export const calculateBonus = ({
             if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
                 const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards } = acc;
+                const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
+                const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;
 
                 return {
                     ...acc,
@@ -857,9 +859,7 @@ export const calculateBonus = ({
                     healing: healing + (bonus.healing || 0) * multiplier,
                     armor: armor + (bonus.armor || 0) * multiplier,
                     effects: [...effects, ...bonusEffects],
-                    drawCards: {
-                        amount: (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0),
-                    },
+                    drawCards: drawCardsObj,
                 } as Action;
             }
             return acc;
