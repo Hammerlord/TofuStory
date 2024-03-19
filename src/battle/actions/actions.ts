@@ -1842,7 +1842,7 @@ const performAction = ({
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
 
         // Tricky: Updated is a tuple where the second element is an Action. If eg. a bonus card draw was applied during that action, checkCardActions should consume it.
-        const postUpdateAction = updated[0][1] || action;
+        const postUpdateAction = updated?.[0]?.[1] || action;
         dispatch(checkCardActions({ action: postUpdateAction, source: parentSource, isAutoCast }));
 
         dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));
