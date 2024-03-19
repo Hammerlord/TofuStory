@@ -102,7 +102,7 @@ const chargingStoneEffect: Effect = {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 icon: AlchemistStoneImage,
-                description: "Charged. If unused at the end of your turn, fire a Lesser Bolt.",
+                description: "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
                 weaponAnimation: "glow",
                 onAbility: {
                     conditions: [
@@ -138,7 +138,7 @@ export const chargingStone: Item = {
 export const greaterChargingStone: Item = {
     ...chargingStone,
     name: "Greater Charging Stone",
-    description: "Playing a card grants Greater Charged. On turn end, fire an Upgraded Bolt.",
+    description: "Playing a card grants Charged. On turn end, fire an Upgraded Bolt.",
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
@@ -148,20 +148,29 @@ export const greaterChargingStone: Item = {
                 ...chargingStoneEffect.onAbility,
                 effects: [
                     {
-                        name: "Greater Charged",
+                        name: "Charged",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
-                        description: "No longer consumed by Charged abilities. Firing an Upgraded Bolt on turn end.",
+                        description: "Grants a bonus to certain cards.",
                         weaponAnimation: "glow",
-                        onTurnEnd: {
-                            ability: {
-                                ...getUpgradeCard(lesserBolt),
-                            },
+                        onAbility: {
+                            conditions: [
+                                {
+                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                    comparator: "eq",
+                                    name: chargedAbilityNames,
+                                },
+                            ],
                             removeEffect: true,
                         },
                     },
                 ],
+            },
+            onTurnEnd: {
+                ability: {
+                    ...getUpgradeCard(lesserBolt),
+                },
             },
         },
     ],
