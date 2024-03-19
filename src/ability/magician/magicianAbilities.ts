@@ -1727,7 +1727,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
+        "While the target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [

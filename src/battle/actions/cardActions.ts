@@ -152,6 +152,95 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
     );
 };
 
+const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent }) => {
+    return (dispatch, getState) => {
+        if (!isAutoCast) {
+            dispatch(
+                promptPlayerSelectCards({
+                    selectCards,
+                })
+            );
+            return;
+        }
+        const { type, maxAmount = 1 } = selectCards;
+
+        const { hand, deck, discard, playerSide } = getState().battle;
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
+        const cards = getRandomItems(
+            getCardSelection({
+                hand,
+                deck,
+                discard,
+                selectCards: selectCards,
+                selectedAbilityId: null,
+                player,
+            }),
+            maxAmount
+        );
+
+        if (cards.length) {
+            if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+                // TODO no op for now. There are no actions which deplete from hand.
+            } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+                const cardsToMove = cards.map((card: CombatAbility) =>
+                    applyAbilityEventEffects({ event: card.onLeaveHand, ability: card })
+                );
+                const updatedHand = hand.filter((ability: CombatAbility) =>
+                    cardsToMove.every((card) => card.instanceId !== ability.instanceId)
+                );
+                const updatedDeck = [...cards, ...deck];
+                dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
+            } else {
+                dispatch(updateBattle({ hand: [...hand, ...cards] }));
+                triggerAddCardsToHandEvent(cards.length);
+            }
+        }
+    };
+};
+
+const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
+    return (dispatch, getState) => {
+        const { from, to, amount = 1 } = moveCards;
+        const validKeys = ["hand", "deck", "discard", "deplete"];
+        if (!validKeys.includes(from) || !validKeys.includes(to)) {
+            return;
+        }
+
+        const battle = getState().battle;
+        const fromPile: CombatAbility[] = battle[from]?.slice() || [];
+        const toPile: CombatAbility[] = battle[to]?.slice() || [];
+        const cardsToMove = [];
+        // If there are no cards in the `from` pile, just whiff
+        for (let i = 0; i < amount && fromPile.length > 0; ++i) {
+            cardsToMove.push(fromPile.shift());
+        }
+
+        toPile.unshift(...cardsToMove);
+
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                id: uuid.v4(),
+                playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                newCards: cardsToMove,
+                cardsAddedTo: to,
+            } as Event)
+        );
+
+        dispatch(
+            updateBattle({
+                [from]: fromPile,
+                [to]: toPile,
+            })
+        );
+
+        if (to === "hand") {
+            triggerAddCardsToHandEvent(cardsToMove.length);
+        }
+    };
+};
+
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
@@ -336,89 +425,11 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
         }
 
         if (selectCards) {
-            if (isAutoCast) {
-                const { type, maxAmount = 1 } = selectCards;
-
-                const { hand, deck, discard, playerSide } = getState().battle;
-                const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
-
-                const cards = getRandomItems(
-                    getCardSelection({
-                        hand,
-                        deck,
-                        discard,
-                        selectCards: selectCards,
-                        selectedAbilityId: null,
-                        player,
-                    }),
-                    maxAmount
-                );
-
-                if (cards.length) {
-                    if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                        // TODO no op for now. There are no actions which deplete from hand.
-                    } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-                        const cardsToMove = cards.map((card: CombatAbility) =>
-                            applyAbilityEventEffects({ event: card.onLeaveHand, ability: card })
-                        );
-                        const updatedHand = hand.filter((ability: CombatAbility) =>
-                            cardsToMove.every((card) => card.instanceId !== ability.instanceId)
-                        );
-                        const updatedDeck = [...cards, ...deck];
-                        dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
-                    } else {
-                        dispatch(updateBattle({ hand: [...hand, ...cards] }));
-                        triggerAddCardsToHandEvent(cards.length);
-                    }
-                }
-                return;
-            }
-
-            dispatch(
-                promptPlayerSelectCards({
-                    selectCards,
-                })
-            );
+            dispatch(handleSelectCards({ isAutoCast, selectCards, triggerAddCardsToHandEvent }));
         }
 
         if (moveCards) {
-            const { from, to, amount = 1 } = moveCards;
-            const validKeys = ["hand", "deck", "discard", "deplete"];
-            if (!validKeys.includes(from) || !validKeys.includes(to)) {
-                return;
-            }
-
-            const battle = getState().battle;
-            const fromPile: CombatAbility[] = battle[from]?.slice() || [];
-            const toPile: CombatAbility[] = battle[to]?.slice() || [];
-            const cardsToMove = [];
-            // If there are no cards in the `from` pile, just whiff
-            for (let i = 0; i < amount && fromPile.length > 0; ++i) {
-                cardsToMove.push(fromPile.shift());
-            }
-
-            toPile.unshift(...cardsToMove);
-
-            dispatch(
-                pushEventQueue({
-                    ...getState().battle,
-                    id: uuid.v4(),
-                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
-                    newCards: cardsToMove,
-                    cardsAddedTo: to,
-                } as Event)
-            );
-
-            dispatch(
-                updateBattle({
-                    [from]: fromPile,
-                    [to]: toPile,
-                })
-            );
-
-            if (to === "hand") {
-                triggerAddCardsToHandEvent(cardsToMove.length);
-            }
+            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent }));
         }
 
         if (addLastPlayedCards) {
