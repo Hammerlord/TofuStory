@@ -147,12 +147,14 @@ export const getUpdatedStats = ({
 
         const effects: CombatEffect[] = [];
 
+        const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
+
         const getEffectDuration = (incomingEffect: Effect) => {
             if (isNaN(incomingEffect.duration) || incomingEffect.duration === Infinity) {
                 return Infinity;
             }
 
-            const totalBonusDuration = enabledEffects.reduce((acc, e) => {
+            const totalBonusDuration = allEnabledEffects.reduce((acc, e) => {
                 const { amount, filters } = e.extendEffectDuration || {};
 
                 if (!amount) {

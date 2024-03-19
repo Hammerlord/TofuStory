@@ -86,6 +86,7 @@ import {
     yellowHat,
     arcStaff,
     garnetMagician,
+    blackCrystal,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -177,6 +178,7 @@ export const ITEMS = [
     ironBall,
     scrollForClawForAtt,
     opal,
+    blackCrystal,
     yellowHat,
     arcStaff,
 ];

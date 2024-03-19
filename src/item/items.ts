@@ -14,6 +14,7 @@ import {
     BackpackImage,
     BallerCaneImage,
     BattleShieldImage,
+    BlackCrystalImage,
     BloodMaskImage,
     BlueJeanShortsImage,
     BluePotionImage,
@@ -2096,6 +2097,41 @@ export const arcStaff: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const blackCrystal: Item = {
+    name: "Black Crystal",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: BlackCrystalImage,
+    description: "The non-Stun debuffs you apply are extended by 1 turn.",
+    effects: [
+        {
+            name: "Opal Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            extendEffectDuration: {
+                amount: 1,
+                filters: [
+                    {
+                        property: "class",
+                        comparator: "eq",
+                        value: EFFECT_CLASSES.DEBUFF,
+                    },
+                    {
+                        property: "type",
+                        comparator: "not",
+                        value: EFFECT_TYPES.FREEZE,
+                    },
+                    {
+                        property: "type",
+                        comparator: "not",
+                        value: EFFECT_TYPES.STUN,
+                    },
+                ],
             },
         },
     ],
