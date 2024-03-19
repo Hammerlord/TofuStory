@@ -303,17 +303,28 @@ const AbilityView = forwardRef(
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
 
         const hasConditionFulfilled = useMemo(() => {
-            return actions.some((action) => {
+            return actions.some((action: Action) => {
                 const conditionProcs = [];
+                const { conditions, bonus, secondaryAction } = action;
 
-                if (action.conditions) {
+                if (conditions) {
                     conditionProcs.push(action);
                 }
 
-                if (Array.isArray(action.bonus)) {
-                    conditionProcs.push(...action.bonus.map((bonus) => bonus));
-                } else if (action.bonus?.conditions) {
+                if (Array.isArray(bonus)) {
+                    conditionProcs.push(...bonus.map((bonus) => bonus));
+                } else if (bonus?.conditions) {
                     conditionProcs.push(action.bonus);
+                }
+
+                if (secondaryAction?.conditions) {
+                    conditionProcs.push(secondaryAction);
+                }
+
+                if (Array.isArray(secondaryAction?.bonus)) {
+                    conditionProcs.push(...secondaryAction?.bonus.map((bonus) => bonus));
+                } else if (secondaryAction?.bonus?.conditions) {
+                    conditionProcs.push(secondaryAction.bonus);
                 }
 
                 if (!conditionProcs.length) {

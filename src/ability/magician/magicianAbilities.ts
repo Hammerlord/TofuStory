@@ -367,27 +367,25 @@ export const ping: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             icon: PingProjectileImage,
             playbackTime: 400,
-        },
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.NONE,
-            effects: [
-                {
-                    name: "Draw Ping",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.NONE,
-                    onTurnInProgress: {
-                        drawOriginalAbility: true,
-                        removeEffect: true,
+            secondaryAction: {
+                effects: [
+                    {
+                        name: "Draw Ping",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.NONE,
+                        onTurnInProgress: {
+                            drawOriginalAbility: true,
+                            removeEffect: true,
+                        },
                     },
-                },
-            ],
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    hasEffect: "Charged",
-                },
-            ],
+                ],
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
         },
     ],
     upgrades: [

@@ -3,7 +3,7 @@ import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
-import { lesserBolt } from "./../ability/magician/magicianAbilities";
+import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -72,6 +72,10 @@ export const rampageStone: Item = {
 // Bit of grease to check charged abilities to avoid doing it manually anymore
 const chargedAbilityNames = JOB_CARD_MAP.Magician.all
     .filter((ability) => {
+        if (ability.name === pong.name) {
+            // Pong itself is not a charged ability (the abilities it adds to the hand are).
+            return false;
+        }
         if (JSON.stringify(ability.actions).includes('"hasEffect":"Charged"')) {
             return true;
         }
