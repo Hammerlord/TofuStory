@@ -356,7 +356,7 @@ export const magicGuard: Ability = {
 export const ping: Ability = {
     name: "Ping",
     resourceCost: 0,
-    image: DarkShockImage,
+    image: PingProjectileImage,
     rarity: RARITIES.UNCOMMON,
     description: "<b>Charged:</b> this card enters your hand next turn.",
     actions: [
@@ -403,11 +403,11 @@ export const pong: Ability = {
     name: "Pong",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    image: PingProjectileImage,
+    image: DarkShockImage,
     depletedOnUse: true,
     actions: [
         {
-            addCards: [ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [ping, ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -417,7 +417,7 @@ export const pong: Ability = {
             actions: [
                 {
                     addCardOptions: {
-                        appendCards: 1,
+                        upgradeLevels: 1,
                     },
                 },
             ],
