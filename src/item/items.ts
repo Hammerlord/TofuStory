@@ -715,49 +715,67 @@ export const fishSpear: Item = {
     ],
 };
 
+const pigsRibbonCounter = {
+    ...counterEffect,
+    name: "Retaliation",
+    description: "Countering on the next attack",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: PigsRibbonImage,
+    canBeSilenced: true,
+    duration: 2,
+    onReceiveAttack: {
+        disableTriggerFromProcs: true,
+        usableWhileStunned: false,
+        removeEffect: true,
+        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        ability: {
+            name: "Retaliate",
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    },
+    onTurnStart: {
+        removeEffect: true,
+    },
+};
+
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, counter for 1 damage when attacked.",
+    description: "Once per turn, you and your summoned minions gain Counter for 2 damage.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
-            name: "Pig's Ribbon",
+            name: "Pig's Ribbon Effect",
             description: "Once per turn, this character will counter when attacked.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             canBeSilenced: true,
             onTurnEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [pigsRibbonCounter],
+            },
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
                 effects: [
                     {
                         ...counterEffect,
-                        name: "Retaliation",
-                        description: "Countering on the next attack",
+                        name: "Pig's Ribbon",
+                        description: "Once per turn, this character will counter when attacked.",
+                        image: undefined,
+                        disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        icon: PigsRibbonImage,
-                        canBeSilenced: true,
-                        duration: 2,
-                        onReceiveAttack: {
-                            disableTriggerFromProcs: true,
-                            usableWhileStunned: false,
-                            removeEffect: true,
-                            targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                            ability: {
-                                name: "Retaliate",
-                                actions: [
-                                    {
-                                        type: ACTION_TYPES.ATTACK,
-                                        target: TARGET_TYPES.HOSTILE,
-                                        damage: 1,
-                                    },
-                                ],
-                            },
-                        },
-                        onTurnStart: {
-                            removeEffect: true,
+                        onTurnEnd: {
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            effects: [pigsRibbonCounter],
                         },
                     },
                 ],
@@ -2039,33 +2057,6 @@ export const yellowHat: Item = {
                 drawCards: {
                     amount: 1,
                 },
-            },
-        },
-    ],
-};
-
-export const spikyCollar: Item = {
-    name: "Bain's Spiky Collar",
-    rarity: RARITIES.UNCOMMON,
-    type: ITEM_TYPES.EQUIPMENT,
-    image: SpikyCollarImage,
-    description: "Your summoned minions gain Counterattack for 3 damage.",
-    effects: [
-        {
-            name: "Bain's Spiky Collar Effect",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.NONE,
-            onFriendlySummon: {
-                targetType: TRIGGER_TARGET_TYPES.TARGET,
-                effects: [
-                    {
-                        ...counterEffect,
-                        image: undefined,
-                        disableDisplayIcon: true,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                    },
-                ],
             },
         },
     ],

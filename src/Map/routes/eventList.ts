@@ -84,7 +84,6 @@ import {
     scrollForClawForAtt,
     opal,
     yellowHat,
-    spikyCollar,
     arcStaff,
     garnetMagician,
 } from "./../../item/items";
@@ -179,7 +178,6 @@ export const ITEMS = [
     scrollForClawForAtt,
     opal,
     yellowHat,
-    spikyCollar,
     arcStaff,
 ];
 
