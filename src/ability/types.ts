@@ -367,6 +367,9 @@ export interface Condition {
     /** Custom property/value. */
     property?: string;
     value?: any;
+
+    // For source type Ability or Effect. Do not pass the condition if it is a proc
+    notProc?: boolean;
 }
 
 export enum MULTIPLIER_TYPES {

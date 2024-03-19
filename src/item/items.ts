@@ -2157,6 +2157,9 @@ export const hardwoodWand: Item = {
                     comparator: "eq",
                     resourceCost: 0,
                     isOffense: true,
+                    // Tricky: proc abilities in actuality have sourceType TRIGGER_SOURCE_TYPES.EFFECT because procs so often come from effects.
+                    // Hence the above configured sourceType isn't read by the condition calculator for abilities that come from procs.
+                    notProc: true,
                 },
             ],
         },

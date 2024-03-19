@@ -87,10 +87,11 @@ export const passesConditions = ({
             otherCalculationTarget,
             property,
             value,
+            notProc,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            const { type, source: sourcePayload = {} } = source || {};
+            const { type, source: sourcePayload = {}, isProc } = source || {};
             if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
                 const { name: sourceName, resourceCost: sourceResourceCost }: Ability = sourcePayload as Ability;
 
@@ -103,6 +104,12 @@ export const passesConditions = ({
 
                 if (resourceCost !== undefined) {
                     if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
+                        return false;
+                    }
+                }
+
+                if (notProc !== undefined) {
+                    if (notProc && isProc) {
                         return false;
                     }
                 }
@@ -133,6 +140,12 @@ export const passesConditions = ({
                             return false;
                         }
                     } else if (effectClass !== hasEffectClass) {
+                        return false;
+                    }
+                }
+
+                if (notProc !== undefined) {
+                    if (notProc && isProc) {
                         return false;
                     }
                 }
