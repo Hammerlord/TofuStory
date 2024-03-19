@@ -1464,19 +1464,19 @@ export const braveSlash: Ability = {
     description: "Randomly hits the target or its neighbors, x3",
     actions: [
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,

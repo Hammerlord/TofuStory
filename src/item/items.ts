@@ -623,7 +623,7 @@ export const garnetWarrior: Item = {
 export const garnetMagician: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+3 attack power while you have at least 8 Mana.",
+    description: "+3 attack power while you have at least 5 Mana.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [

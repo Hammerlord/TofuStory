@@ -133,36 +133,6 @@ export const lesserBolt: Ability = {
     ],
 };
 
-export const bolt: Ability = {
-    name: "Bolt",
-    image: OldEnergyBoltImage,
-    resourceCost: 0,
-    rarity: RARITIES.COMMON,
-    actions: [
-        {
-            damage: 4,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: EnergyBoltProjectileImage,
-            playbackTime: 400,
-            animationOptions: {
-                rotate: -45,
-                rotateToFaceTarget: true,
-            },
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    damage: 2,
-                },
-            ],
-        },
-    ],
-};
-
 export const magicFang: Ability = {
     name: "Magic Fang",
     image: BlueRushImage,
@@ -171,7 +141,7 @@ export const magicFang: Ability = {
     actions: [
         {
             area: 1,
-            damage: 4,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -235,8 +205,50 @@ export const empower: Ability = {
     ],
 };
 
+export const energyBolt: Ability = {
+    name: "Energy Bolt",
+    image: OldEnergyBoltImage,
+    resourceCost: 1,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 3,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 const magicClawAction: Action = {
-    damage: 4,
+    damage: 8,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -247,11 +259,20 @@ const magicClawAction: Action = {
     },
     icon: MagicClawProjectileImage,
     playbackTime: 400,
+    bonus: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                hasEffect: "Charged",
+            },
+        ],
+        damage: 3,
+    },
 };
 
 export const magicClaw: Ability = {
     name: "Magic Claw",
-    resourceCost: 1,
+    resourceCost: 2,
     image: MagicClawImage,
     description: "Hits twice",
     rarity: RARITIES.COMMON,
@@ -272,9 +293,15 @@ export const magicClaw: Ability = {
             actions: [
                 {
                     damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
                 {
                     damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -409,7 +436,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction: Action = {
-    damage: 3,
+    damage: 4,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -2041,7 +2068,7 @@ export const moonBolt: Ability = {
     image: FullMoonImage,
     overrideBodyText: true,
     //description: "Hits up to {{ actions.0.numTargets }} more targets. Heal {{ actions.0.secondaryAction.healing }} each hit.",
-    description: "Heal {{ actions.0.secondaryAction.healing }} each hit. <b>Charged:</b> +1 healing.",
+    description: "Heal all allies for {{ actions.0.secondaryAction.healing }} each hit.",
 
     rarity: RARITIES.COMMON,
     actions: [
@@ -2059,18 +2086,10 @@ export const moonBolt: Ability = {
                 ricochet: true,
             },
             secondaryAction: {
-                healing: 1,
+                healing: 2,
+                area: 5,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
-                },
-                bonus: {
-                    healing: 1,
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                            hasEffect: "Charged",
-                        },
-                    ],
                 },
             },
         },

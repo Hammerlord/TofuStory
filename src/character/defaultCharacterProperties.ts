@@ -50,9 +50,9 @@ export const wizardProperties = {
     image: WizMushImage,
     HP: 65,
     maxHP: 65,
-    resourcesPerTurn: 2,
-    maxResources: 10,
+    resourcesPerTurn: 3,
     resources: 0,
+    maxResources: 7,
     weapon: OldWoodenStaffImage,
     items: [chargingStone],
     weaponSkins: [

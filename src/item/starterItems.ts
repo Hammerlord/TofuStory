@@ -1,8 +1,9 @@
+import { getUpgradeCard } from "./../Menu/utils";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
-import { lesserBolt, bolt } from "./../ability/magician/magicianAbilities";
+import { lesserBolt } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -151,7 +152,7 @@ export const greaterChargingStone: Item = {
                         weaponAnimation: "glow",
                         onTurnEnd: {
                             ability: {
-                                ...bolt,
+                                ...getUpgradeCard(lesserBolt),
                             },
                             removeEffect: true,
                         },
