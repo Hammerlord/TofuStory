@@ -241,6 +241,43 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
     };
 };
 
+const handleRetrieveDepletedCards = ({
+    amount,
+    source,
+    triggerAddCardsToHandEvent,
+}: {
+    amount: number;
+    source: TriggerSource;
+    triggerAddCardsToHandEvent: Function;
+}) => {
+    return (dispatch, getState) => {
+        const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
+        // Prevent eg. Bag From Beyond from pulling itself back out (it can still pull out other Bags From Beyond)
+        const eligible = shuffle([...getState().battle.depleted.filter((card) => card.instanceId !== sourceAbilityId)]);
+        if (eligible.length > 0) {
+            const cardsToHand = [];
+            Array.from({ length: amount }).forEach(() => {
+                const retrieved = eligible.pop();
+
+                if (retrieved) {
+                    cardsToHand.push(retrieved);
+                }
+            });
+
+            dispatch(
+                updateBattle({
+                    hand: [...getState().battle.hand, ...cardsToHand],
+                    depleted: getState().battle.depleted.filter((card) =>
+                        cardsToHand.every(({ instanceId }) => instanceId !== card.instanceId)
+                    ),
+                })
+            );
+
+            triggerAddCardsToHandEvent(cardsToHand.length);
+        }
+    };
+};
+
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
  */
@@ -374,31 +411,8 @@ export const checkCardActions = (action: { [key in keyof Action]?: Action[key] }
             );
         }
 
-        if (retrieveDepletedCards?.amount) {
-            const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
-            // Prevent eg. Bag From Beyond from pulling itself back out (it can still pull out other Bags From Beyond)
-            const eligible = shuffle([...getState().battle.depleted.filter((card) => card.instanceId !== sourceAbilityId)]);
-            if (eligible.length > 0) {
-                const cardsToHand = [];
-                Array.from({ length: retrieveDepletedCards.amount }).forEach(() => {
-                    const retrieved = eligible.pop();
-
-                    if (retrieved) {
-                        cardsToHand.push(retrieved);
-                    }
-                });
-
-                dispatch(
-                    updateBattle({
-                        hand: [...getState().battle.hand, ...cardsToHand],
-                        depleted: getState().battle.depleted.filter((card) =>
-                            cardsToHand.every(({ instanceId }) => instanceId !== card.instanceId)
-                        ),
-                    })
-                );
-
-                triggerAddCardsToHandEvent(cardsToHand.length);
-            }
+        if (typeof retrieveDepletedCards?.amount === "number") {
+            dispatch(handleRetrieveDepletedCards({ amount: retrieveDepletedCards?.amount, source, triggerAddCardsToHandEvent }));
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
@@ -706,6 +720,15 @@ export const handleDrawOriginalAbility = ({
             return;
         }
 
+        dispatch(
+            updateBattle({
+                hand: newHand,
+                deck: newDeck,
+                discard: newDiscard,
+                deplete: newDeplete,
+            })
+        );
+
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -721,14 +744,5 @@ export const handleDrawOriginalAbility = ({
                 );
             }
         });
-
-        dispatch(
-            updateBattle({
-                hand: newHand,
-                deck: newDeck,
-                discard: newDiscard,
-                deplete: newDeplete,
-            })
-        );
     };
 };
