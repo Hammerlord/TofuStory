@@ -133,6 +133,36 @@ export const lesserBolt: Ability = {
     ],
 };
 
+export const bolt: Ability = {
+    name: "Bolt",
+    image: OldEnergyBoltImage,
+    resourceCost: 0,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            damage: 4,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            playbackTime: 400,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
 export const magicFang: Ability = {
     name: "Magic Fang",
     image: BlueRushImage,

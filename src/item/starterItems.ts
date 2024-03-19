@@ -2,7 +2,7 @@ import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
 import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
-import { lesserBolt, greaterBolt } from "./../ability/magician/magicianAbilities";
+import { lesserBolt, bolt } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -133,7 +133,7 @@ export const chargingStone: Item = {
 export const greaterChargingStone: Item = {
     ...chargingStone,
     name: "Greater Charging Stone",
-    description: "Playing a card grants Charged. If unused by end of turn, fire a Greater Bolt.",
+    description: "Playing a card grants Greater Charged. On turn end, fire an Upgraded Bolt.",
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
@@ -143,24 +143,16 @@ export const greaterChargingStone: Item = {
                 ...chargingStoneEffect.onAbility,
                 effects: [
                     {
-                        name: "Charged",
+                        name: "Greater Charged",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: AlchemistStoneImage,
-                        description: "Charged. If unused at the end of your turn, fire a Greater Bolt.",
+                        description: "No longer consumed by Charged abilities. Firing an Upgraded Bolt on turn end.",
                         weaponAnimation: "glow",
-                        onAbility: {
-                            conditions: [
-                                {
-                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                    comparator: "eq",
-                                    name: chargedAbilityNames,
-                                },
-                            ],
-                            removeEffect: true,
-                        },
                         onTurnEnd: {
-                            ability: greaterBolt,
+                            ability: {
+                                ...bolt,
+                            },
                             removeEffect: true,
                         },
                     },
