@@ -61,7 +61,7 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
 };
 
 const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
-    const affixes = shuffle([eliteThorns, raging, avenger, shielding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
+    const affixes = shuffle([eliteThorns, raging, shielding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.squad);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
