@@ -1,12 +1,10 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../types";
-import { useAppSelector } from "../../hooks";
-import { findCombatantData } from "../../battle/actions/actions";
-import { CombatantInfo } from "../../battle/types";
+import { Ability, Action, TARGET_TYPES } from "../types";
 
 export const getDamageStatistics = ({
     ability,
@@ -65,6 +63,7 @@ export const getDamageStatistics = ({
             action,
             actionParent: ability,
             multiplier,
+            source: { source: ability, triggerHistory: [], type: TRIGGER_SOURCE_TYPES.ABILITY },
         };
         let secondaryDamage = action.secondaryDamage || 0;
         if (playerInfo?.combatant && secondaryDamage) {

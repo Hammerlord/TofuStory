@@ -222,6 +222,7 @@ export { default as GuardWizardImage } from "./GuardWizard.png";
 export { default as GuidebookImage } from "./Guidebook.png";
 export { default as GungnirImage } from "./Gungnir.png";
 export { default as HammerImage } from "./Hammer.png";
+export { default as HardwoodWandImage } from "./HardwoodWand.png";
 export { default as HasteImage } from "./Haste.png";
 export { default as HeavenHammerImage } from "./HeavenHammer.png";
 export { default as HenesysArcherHallImage } from "./HenesysArcherHall.png";

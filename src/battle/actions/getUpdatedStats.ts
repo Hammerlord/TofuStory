@@ -1,6 +1,16 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Ability, Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import {
+    Ability,
+    Action,
+    CombatAbility,
+    CombatEffect,
+    CONDITION_TARGETS,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../../ability/types";
 import { Item } from "../../item/types";
 import { getRandomItem } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
@@ -104,7 +114,7 @@ export const getUpdatedStats = ({
         });
 
         const damage =
-            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier }) +
+            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier, source }) +
             Math.floor(targetCombatant.armor * destroyArmor) +
             flatDamage * multiplier;
 

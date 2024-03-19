@@ -45,7 +45,7 @@ import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } fr
 import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
 
 const useStyles = createUseStyles({
@@ -835,11 +835,17 @@ const BattlefieldContainer = () => {
                 }
             };
 
+            const actionParent = {
+                ...selectedAbility,
+                resourceCost: selectedAbility.resourceCost === "x" ? player.resources : selectedAbility.resourceCost,
+            };
+            const source: TriggerSource = { source: actionParent, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
+
             if (
                 !passesConditions({
                     getCalculationTarget,
                     proc: action,
-                    source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                    source,
                 })
             ) {
                 return;
@@ -863,10 +869,8 @@ const BattlefieldContainer = () => {
                 selectedIndex: hoveredCombatant.index,
                 action,
                 getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
-                actionParent: {
-                    ...selectedAbility,
-                    resourceCost: selectedAbility.resourceCost === "x" ? player.resources : selectedAbility.resourceCost,
-                },
+                actionParent,
+                source,
                 hand,
                 deck,
                 discard,

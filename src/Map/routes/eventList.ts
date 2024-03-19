@@ -87,6 +87,7 @@ import {
     arcStaff,
     garnetMagician,
     blackCrystal,
+    hardwoodWand,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -185,5 +186,5 @@ export const ITEMS = [
 
 export const CLASS_ITEMS = {
     [PLAYER_CLASSES.WARRIOR]: [bloodMask, garnetWarrior],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, garnetMagician],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, garnetMagician, hardwoodWand],
 };

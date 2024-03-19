@@ -90,7 +90,7 @@ export const passesConditions = ({
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            const { type, source: sourcePayload = {} } = source;
+            const { type, source: sourcePayload = {} } = source || {};
             if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
                 const { name: sourceName, resourceCost: sourceResourceCost }: Ability = sourcePayload as Ability;
 
@@ -108,7 +108,7 @@ export const passesConditions = ({
                 }
 
                 if (isOffense !== undefined) {
-                    return isOffense === isOffensiveAbility(source?.source as Ability);
+                    return isOffense === isOffensiveAbility(sourcePayload as Ability);
                 }
 
                 return true;

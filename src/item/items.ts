@@ -38,6 +38,7 @@ import {
     GoldenHammerImage,
     GreenBambooHatImage,
     GuidebookImage,
+    HardwoodWandImage,
     HerbsImage,
     HotdogImage,
     IcarusCapeImage,
@@ -2133,6 +2134,31 @@ export const blackCrystal: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const hardwoodWand: Item = {
+    name: "Hardwood Wand",
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: HardwoodWandImage,
+    description: "Your 0-cost attacks deal 3 more damage.",
+    effects: [
+        {
+            name: "Hardwood Wand Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            attackPower: 3,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    comparator: "eq",
+                    resourceCost: 0,
+                    isOffense: true,
+                },
+            ],
         },
     ],
 };

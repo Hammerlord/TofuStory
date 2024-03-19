@@ -26,7 +26,7 @@ import {
 import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getUseAbilityIndex } from "./actions/enemyTurn";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
@@ -397,11 +397,13 @@ export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
 export const getEnabledEffects = ({
     combatantInfo,
     getCalculationTarget,
+    source,
 }: {
     combatantInfo: CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[];
+    ) => CombatantInfo | CombatantInfo[] | Ability;
+    source?: TriggerSource;
 }): CombatEffect[] => {
     const { combatant } = combatantInfo || {};
     if (!combatant?.effects) {
@@ -428,7 +430,7 @@ export const getEnabledEffects = ({
 
         return (
             !disabled &&
-            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect }) &&
+            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, source }) &&
             isTurnToTrigger({ turnsTriggerFrequency, uptime })
         );
     });
@@ -466,6 +468,7 @@ export const calculateDamage = ({
     action,
     actionParent,
     multiplier = 1,
+    source,
 }: {
     actor?: CombatantInfo;
     target?: CombatantInfo;
@@ -474,6 +477,7 @@ export const calculateDamage = ({
     action: Action | ActionOptionalProperties;
     actionParent?: Ability | Item;
     multiplier?: number;
+    source?: TriggerSource;
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
@@ -517,7 +521,7 @@ export const calculateDamage = ({
     let maximumDamage;
 
     if (isAttack) {
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget }).forEach(
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(
             ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage }) => {
                 if (excludeEffectOwner) {
                     return;
@@ -531,7 +535,7 @@ export const calculateDamage = ({
             }
         );
 
-        getEnabledEffects({ combatantInfo: target, getCalculationTarget }).forEach((effect: CombatEffect) => {
+        getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).forEach((effect: CombatEffect) => {
             const { maxDamageTaken, excludeEffectOwner } = effect;
             if (excludeEffectOwner) {
                 return;
@@ -544,7 +548,7 @@ export const calculateDamage = ({
     }
 
     const applyAbilityDamageReceived = (damage: number): number => {
-        const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget }).reduce(
+        const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).reduce(
             (acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
                 acc.additionalDamageReceived += isAttack ? attackDamageReceived : 0;
 
