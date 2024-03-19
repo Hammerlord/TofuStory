@@ -2533,7 +2533,7 @@ export const ifrit: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 7,
+        maxHP: 10,
         abilities: [
             {
                 name: "Ember",
@@ -2543,7 +2543,7 @@ export const ifrit: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.RANGE_ATTACK,
                         icon: FireMarbleImage,
-                        damage: 1,
+                        damage: 3,
                         effects: [
                             {
                                 ...burn,
@@ -2617,7 +2617,7 @@ export const elquines: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 7,
+        maxHP: 10,
         abilities: [
             {
                 name: "Ice Bolt",
