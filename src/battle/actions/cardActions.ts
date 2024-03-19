@@ -1,3 +1,4 @@
+import { ping } from "./../../ability/magician/magicianAbilities";
 import uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import {
@@ -9,6 +10,7 @@ import {
     CombatAbility,
     SELECT_CARD_TYPES,
     AbilityEvent,
+    CombatEffect,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
@@ -655,3 +657,67 @@ export const selectCardsAction =
 
         triggerAddCardsToHandEvent();
     };
+
+/**
+ * @see ping for an example of how this is used.
+ */
+export const handleDrawOriginalAbility = ({
+    drawOriginalAbility,
+    effect,
+    source,
+}: {
+    drawOriginalAbility: boolean;
+    effect: CombatEffect;
+    source: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        if (!drawOriginalAbility || !effect.originalAbilityId) {
+            return;
+        }
+
+        const { hand, deck, discard, depleted, playerSide, enemySide } = getState().battle;
+        const newHand = hand.slice();
+        const newDeck = deck.slice();
+        const newDiscard = discard.slice();
+        const newDeplete = depleted.slice();
+
+        const lookupPile = (pile: CombatAbility[]) => {
+            const i = pile.findIndex((ability) => ability.instanceId === effect.originalAbilityId);
+            if (i > -1) {
+                const [card] = pile.splice(i, 1);
+                newHand.push(card);
+                return true;
+            }
+        };
+
+        const found = [newDeck, newDiscard, newDeplete].some(lookupPile);
+        if (!found) {
+            return;
+        }
+
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
+                        source: {
+                            ...source,
+                            isProc: true,
+                            trackSumAmount: 1,
+                        },
+                    })
+                );
+            }
+        });
+
+        dispatch(
+            updateBattle({
+                hand: newHand,
+                deck: newDeck,
+                discard: newDiscard,
+                deplete: newDeplete,
+            })
+        );
+    };
+};

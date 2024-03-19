@@ -12,6 +12,7 @@ import {
     ChocolateMuffinImage,
     ColdBeamImage,
     ColdBeamProjectileImage,
+    DarkShockImage,
     DoTPunisherImage,
     ElementalAdaptationFPImage,
     ElementalAdaptationImage,
@@ -27,6 +28,7 @@ import {
     FireMarbleImage,
     FireSpiritImage,
     FlameHazeImage,
+    FrostfireProjectileImage,
     FullMoonImage,
     GiantSnowmanImage,
     GlisteningStarImage,
@@ -59,6 +61,7 @@ import {
     ParfaitCupcakeImage,
     PepeRollingASnowballImage,
     PieceOfBirthdayCakeImage,
+    PingProjectileImage,
     PurpleEnergyBoltImage,
     PurpleEnergyBoltProjectileImage,
     PurpleFlyingBookIconImage,
@@ -344,6 +347,54 @@ export const magicGuard: Ability = {
                             },
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const ping: Ability = {
+    name: "Ping",
+    resourceCost: 0,
+    image: DarkShockImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "<b>Charged:</b> this card enters your hand next turn.",
+    actions: [
+        {
+            damage: 4,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+            icon: PingProjectileImage,
+            playbackTime: 400,
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.NONE,
+            effects: [
+                {
+                    name: "Draw Ping",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.NONE,
+                    onTurnInProgress: {
+                        drawOriginalAbility: true,
+                        removeEffect: true,
+                    },
+                },
+            ],
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
                 },
             ],
         },
@@ -2257,7 +2308,7 @@ export const frostfireBlast: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             playbackTime: 500,
-            icon: AdvancedChargeImage,
+            icon: FrostfireProjectileImage,
             animationOptions: {
                 flash: 500,
             },
@@ -2554,6 +2605,7 @@ export const elquines: Ability = {
                         icon: NimbleJewelImage,
                         damage: 3,
                         effects: [chill],
+                        playbackTime: 500,
                     },
                 ],
             },

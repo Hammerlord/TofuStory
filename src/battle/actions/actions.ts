@@ -52,7 +52,7 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
-import { checkCardActions, deleteCard, depleteAbilities } from "./cardActions";
+import { checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { getUpgradeCard } from "../../Menu/utils";
@@ -554,6 +554,7 @@ const onEffectEventTrigger = ({
             autoCastAbilities,
             chance = 1,
             decrementStacks = 0,
+            drawOriginalAbility = false,
             ...other
         } = effectEvent;
 
@@ -606,7 +607,8 @@ const onEffectEventTrigger = ({
         const targetIds = getCalculationTargetIds(targetType);
         const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
 
-        dispatch(checkCardActions(other, source));
+        dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, source }));
+        dispatch(checkCardActions(other, source)); // Why does this use original source when there is procSource?
 
         const owner = findCombatantData(getState, ownerId);
         if (owner?.combatant?.isPlayer) {

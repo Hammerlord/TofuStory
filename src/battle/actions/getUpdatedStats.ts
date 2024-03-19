@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
-import { Ability, Action, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import { Ability, Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
 import { Item } from "../../item/types";
 import { getRandomItem } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
@@ -51,12 +51,12 @@ export const getUpdatedStats = ({
     recipientIds?: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
-    actionParent?: Ability | Item;
+    actionParent?: Ability | CombatAbility | Item;
     source?: TriggerSource;
     getCombatantById: (id: string) => CombatantInfo;
-    deck: Ability[];
-    hand: Ability[];
-    discard: Ability[];
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
 }): [UpdatedCombatantStats, Action][] => {
     const actor = getCombatantById(actorId);
     const targets = targetIds.map(getCombatantById).filter((v) => v);
@@ -204,6 +204,7 @@ export const getUpdatedStats = ({
                         uptime: effect.uptime || 1,
                         id: uuid.v4(),
                         applierId: actorId,
+                        originalAbilityId: (actionParent as CombatAbility)?.instanceId,
                     };
                 });
 

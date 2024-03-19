@@ -24,7 +24,7 @@ export const basicDummy2 = {
 export const basicAoeDummyMagician = {
     name: "Dummy",
     image: PuppetreeImage,
-    maxHP: 4,
+    maxHP: 3,
     abilities: [
         {
             ...attack,
