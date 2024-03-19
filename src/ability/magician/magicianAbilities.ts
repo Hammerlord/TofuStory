@@ -401,6 +401,32 @@ export const ping: Ability = {
     ],
 };
 
+export const pong: Ability = {
+    name: "Pong",
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    image: PingProjectileImage,
+    depletedOnUse: true,
+    actions: [
+        {
+            addCards: [ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    addCardOptions: {
+                        appendCards: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 export const magicArmor: Ability = {
     name: "Magic Armor",
     resourceCost: 1,
@@ -767,7 +793,7 @@ export const shootingStars: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            addCards: [swift, swift, swift],
+            addCards: [swift, swift],
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },

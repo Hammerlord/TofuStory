@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
-import { Ability, CombatAbility, Effect } from "../ability/types";
+import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
 import { Item } from "../item/types";
 import { AbilityUpgrade } from "./../ability/types";
 import { directDamageTakenTrigger } from "../ability/Effects";
@@ -21,12 +21,13 @@ export const aggregateItemEffects = (items: Item[]): Effect[] => {
     return effects;
 };
 
-export const aggregateAbilityEffects = (abilities: Ability[]): Effect[] => {
+export const aggregateAbilityEffects = (abilities: CombatAbility[]): CombatEffect[] => {
     const effects = [];
-    abilities.forEach((a: Ability) => {
+    abilities.forEach((a: CombatAbility) => {
         const abilityEffects =
             a.effectsWhileOwned?.map((e) => ({
                 ...copyEffect(e),
+                originalAbilityId: a.instanceId,
                 isEffectFromHoldingAbility: true, // Flag to recalculate if a card event occurs
             })) || [];
         effects.push(...abilityEffects);

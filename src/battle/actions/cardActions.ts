@@ -717,8 +717,18 @@ export const handleDrawOriginalAbility = ({
 
         const found = [newDeck, newDiscard, newDeplete].some(lookupPile);
         if (!found) {
-            return;
+            // This card can still enter the hand even if it was supposed to be ephemeral. Look up the player's ability history to see if it's there.
+            const player = playerSide.find((combatant) => combatant?.isPlayer);
+            const card = player.abilityHistory.find((ability: CombatAbility) => ability.instanceId === effect.originalAbilityId);
+            if (!card) {
+                return;
+            }
+            if (newHand.every((ability: CombatAbility) => ability.instanceId !== card.instanceId)) {
+                newHand.push(card);
+            }
         }
+
+        // TODO Hand full check...
 
         dispatch(
             updateBattle({
