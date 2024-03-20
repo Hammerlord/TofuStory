@@ -149,6 +149,7 @@ const puppeteerRevive: EffectEventTrigger = {
             duration: 3,
             onEnd: {
                 usableWhileStunned: true,
+                usableWhileDead: true,
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 ability: {
                     name: "Revive",
