@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     DiamondImage,
@@ -10,10 +10,11 @@ import {
     HenesysGachaponImage,
     HenesysPantryImage,
     HenesysRegionBGImage,
+    HenesysRestImage,
     HenesysShopImage,
     HenesysTradingPostImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
 import pantry from "../scene/Henesys/pantry";
 import TownNode from "./TownNode";
@@ -55,7 +56,12 @@ const HENESYS_PLACES = {
     GACHAPON: "gachapon",
 };
 
-const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
+const HENESYS_BOSSES = {
+    ATHENA: "athena",
+    MINI_BEAN: "minibean",
+};
+
+const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost, onCamp }) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
     const activitiesRequiredToLeave = 4;
@@ -97,6 +103,20 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
         }
     };
 
+    const handleClickCamp = () => {
+        if (checkVisitPlace(TOWN_PLACES.REST)) {
+            onCamp && onCamp();
+        }
+    };
+
+    const boss = useMemo(() => {
+        if (Math.random() < 0.5) {
+            return HENESYS_BOSSES.ATHENA;
+        }
+
+        return HENESYS_BOSSES.MINI_BEAN;
+    }, []);
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
@@ -117,13 +137,25 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                             onClick={handleClickShop}
                         />
                         <br />
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[HENESYS_PLACES.PANTRY]}
-                            label={"HELP!"}
-                            nodeImage={HenesysPantryImage}
-                            onClick={() => handleClickEvent(HENESYS_PLACES.PANTRY, pantry)}
-                        />
+                        {boss === HENESYS_BOSSES.MINI_BEAN && (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[HENESYS_PLACES.PANTRY]}
+                                label={"HELP!"}
+                                nodeImage={HenesysPantryImage}
+                                onClick={() => handleClickEvent(HENESYS_PLACES.PANTRY, pantry)}
+                            />
+                        )}
+
+                        {boss !== HENESYS_BOSSES.MINI_BEAN && (
+                            <TownNode
+                                icon={CampingIcon}
+                                isVisited={visited[TOWN_PLACES.REST]}
+                                label={"Rest"}
+                                nodeImage={HenesysRestImage}
+                                onClick={handleClickCamp}
+                            />
+                        )}
 
                         <div className={classNames(classes.townCenter)}>
                             <img src={HenesysCenterImage} alt="Henesys Center" className={classes.townCenterImage} />
@@ -158,13 +190,26 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                             }
                             onClick={() => handleClickEvent(HENESYS_PLACES.GACHAPON, gachaponEvents)}
                         />
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
-                            label={"[Test] Athena Pierce"}
-                            nodeImage={HenesysArcherHallImage}
-                            onClick={handleClickClassLeader}
-                        />
+
+                        {boss === HENESYS_BOSSES.ATHENA && (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                                label={"[Test] Athena Pierce"}
+                                nodeImage={HenesysArcherHallImage}
+                                onClick={handleClickClassLeader}
+                            />
+                        )}
+
+                        {boss !== HENESYS_BOSSES.ATHENA && (
+                            <TownNode
+                                icon={CampingIcon}
+                                isVisited={visited[TOWN_PLACES.REST]}
+                                label={"Rest"}
+                                nodeImage={HenesysRestImage}
+                                onClick={handleClickCamp}
+                            />
+                        )}
                     </div>
                 </Pan>
                 <Legend />

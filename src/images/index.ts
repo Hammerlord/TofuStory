@@ -233,6 +233,7 @@ export { default as HenesysGachaponFullImage } from "./HenesysGachaponFull.png";
 export { default as HenesysHuntingGroundImage } from "./HenesysHuntingGround.png";
 export { default as HenesysPantryImage } from "./HenesysPantry.png";
 export { default as HenesysRegionBGImage } from "./HenesysRegionBG.jpg";
+export { default as HenesysRestImage } from "./HenesysRest.png";
 export { default as HenesysShopImage } from "./HenesysShop.png";
 export { default as HenesysTownstreetStageImage } from "./HenesysTownstreetStage.png";
 export { default as HenesysTradingPostImage } from "./HenesysTradingPost.png";
