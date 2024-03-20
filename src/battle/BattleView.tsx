@@ -546,7 +546,7 @@ const BattlefieldContainer = () => {
         // Preload character sprites, projectiles, etc. or they may be invisible
         // TODO this does not include minion/effect string references
         // Also next wave?
-        const imagesMap = playerSide.concat(enemySide).reduce((acc, combatant) => {
+        const imagesMap = [...playerSide, ...enemySide, ...hand, ...deck, ...discard].reduce((acc, object) => {
             const traverseObjForImages = (obj) => {
                 if (!obj) {
                     return;
@@ -561,7 +561,7 @@ const BattlefieldContainer = () => {
                 });
             };
 
-            traverseObjForImages(combatant);
+            traverseObjForImages(object);
             return acc;
         }, {});
 
