@@ -394,7 +394,7 @@ export const manoEnemy: Minion = {
                     },
                     playbackTime: 600,
                     description: "Bounces to 2 other targets for 3 damage.",
-                    damage: 6,
+                    damage: 5,
                     secondaryDamage: 3,
                     numTargets: 2,
                     targetArea: 2,
