@@ -539,7 +539,6 @@ const BattlefieldContainer = () => {
         }, delay);
     };
 
-    const eventQueueRef = useRef([]);
     const battleStateRef: MutableRefObject<BATTLE_STATES | undefined> = useRef();
 
     useEffect(() => {
@@ -669,7 +668,6 @@ const BattlefieldContainer = () => {
         }
 
         if (!events.length) {
-            eventQueueRef.current = events;
             handleBattlePhase();
             return;
         }
@@ -679,9 +677,10 @@ const BattlefieldContainer = () => {
                 dispatch(popEventQueue());
             }, events[0].playbackTime);
 
-            return () => clearTimeout(timeout);
+            return () => {
+                clearTimeout(timeout);
+            };
         }
-        eventQueueRef.current = events;
     }, [events, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {

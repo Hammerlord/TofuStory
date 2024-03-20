@@ -92,6 +92,7 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
 
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
+const projectileElementCount = 100;
 
 const AnimationCanvas = ({
     event,
@@ -145,7 +146,9 @@ const AnimationCanvas = ({
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
     const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
-    const projectileRefs = Array.from({ length: MAX_BEAM_PROJECTILES * 5 }).map(() => useRef() as any);
+    const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef() as any);
+    const lockedProjectileRefs = useRef(Array.from({ length: projectileElementCount }).map(() => false));
+
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
 
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
@@ -179,6 +182,9 @@ const AnimationCanvas = ({
 
     const animationRefs = useRef([]);
 
+    //@ts-ignore
+    const findOpenIndex = () => lockedProjectileRefs.current.findLastIndex((item) => item) + 1;
+
     useEffect(() => {
         if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
             return;
@@ -195,33 +201,40 @@ const AnimationCanvas = ({
             spin = 720;
         }
 
-        animationRefs.current?.forEach((animation) => animation?.cancel());
-        animationRefs.current = [];
-
-        // Finish the animation slightly slower than playback time, or there is an issue with projectiles overrunning each other's animations
-        // Hmm, but why? Isn't the animation canceled when a new one plays?
-        const options = { spin, rotation: rotate, playbackTime: playbackTime - 10, rotateToFaceTarget };
+        const options = { spin, rotation: rotate, playbackTime: playbackTime, rotateToFaceTarget };
 
         if (icon) {
             const animateProjectile = (target, projectileRefIndex: number) => {
-                const refsFrom = projectileRefIndex * beamProjectileMultiplier;
+                const openIndex = findOpenIndex();
+                const refsFrom = (openIndex + projectileRefIndex) * beamProjectileMultiplier;
                 const refsTo = refsFrom + 1 * beamProjectileMultiplier;
+                const setRefsLocked = (isLocked: boolean) => {
+                    for (let i = refsFrom; i < refsTo; ++i) {
+                        lockedProjectileRefs.current[i] = isLocked; // Lock the refs from being used by another animation, until the animation is done
+                    }
+                };
+
+                setRefsLocked(true);
+
                 const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
 
                 if (animation === ANIMATION_TYPES.CONSUMABLE) {
-                    animationRefs.current = playTossUpAnimation({
+                    const animations = playTossUpAnimation({
                         from: actorElement,
                         object,
                         ...options,
                     });
+                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
                 } else if (animation === ANIMATION_TYPES.ACTION_EXPLODE) {
-                    animationRefs.current = playExplodeAnimation({
+                    const animations = playExplodeAnimation({
                         from: actorElement,
                         object,
                         ...options,
                     });
+
+                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
                 } else {
-                    animationRefs.current = playTravelAnimation({
+                    const animations = playTravelAnimation({
                         from: actorElement,
                         to: target,
                         object,
@@ -230,6 +243,8 @@ const AnimationCanvas = ({
                         fadeIn: animation === ANIMATION_TYPES.BEAM,
                         ...options,
                     });
+
+                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
                 }
             };
 
@@ -329,6 +344,8 @@ const AnimationCanvas = ({
     }, [eventId]);
 
     const getProjectileElement = (i: number) => {
+        i = findOpenIndex() + i;
+
         const projectileDimensions = { width: 70, height: 70 };
         const props = {
             key: i,
@@ -343,7 +360,7 @@ const AnimationCanvas = ({
 
         if (typeof icon === "string") {
             return (
-                <div
+                <span
                     className={classNames(classes.iconProjectile, {
                         [classes.flash]: flash,
                         [classes.fadeOut]: fadeOut,
@@ -359,12 +376,12 @@ const AnimationCanvas = ({
                             opacity,
                         }}
                     />
-                </div>
+                </span>
             );
         } else if (typeof icon === "function") {
             const Icon: Function = icon;
             return (
-                <div
+                <span
                     className={classNames(classes.iconProjectile, {
                         [classes.flash]: flash,
                         [classes.fadeOut]: fadeOut,
@@ -376,7 +393,7 @@ const AnimationCanvas = ({
                             [classes.mirrorX]: mirrorX,
                         })}
                     />
-                </div>
+                </span>
             );
         }
     };
@@ -387,7 +404,7 @@ const AnimationCanvas = ({
 
     return (
         <div className={classNames("animation-canvas", classes.root)}>
-            {icon && <>{Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}</>}
+            {Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}
             <div className={classes.center}>
                 {event?.newCards?.map((ability: CombatAbility, i) => (
                     <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
