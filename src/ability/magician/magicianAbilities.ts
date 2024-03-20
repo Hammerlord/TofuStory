@@ -571,7 +571,7 @@ export const mpEater: Ability = {
     ],
 };
 
-const arcaneAimingAttackPower = {
+const arcaneAimingAttackPower: Effect = {
     name: "Arcane Aiming",
     icon: ArcaneAimImage,
     disableDisplayIcon: true,
@@ -579,6 +579,7 @@ const arcaneAimingAttackPower = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
     duration: 0,
+    maxApplications: 10,
 };
 
 const arcaneAiming: Effect = {
@@ -609,6 +610,7 @@ export const arcaneAim: Ability = {
     ],
     upgrades: [
         {
+            description: "Draw {{ actions.0.drawCards.amount }} card. This turn only, gain +1 ATT whenever you attack.",
             actions: [
                 {
                     drawCards: {
