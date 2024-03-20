@@ -145,9 +145,8 @@ const AnimationCanvas = ({
     const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v);
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
-    const eventIdRef: MutableRefObject<string> = useRef(); // Prevent duplicate playbacks of the same action
     const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef() as any);
-    const lockedProjectileRefs = useRef(Array.from({ length: projectileElementCount }).map(() => false));
+    const lockedProjectileRefs = useRef(Array.from({ length: projectileElementCount }).map(() => null));
 
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
 
@@ -186,11 +185,10 @@ const AnimationCanvas = ({
     const findOpenIndex = () => lockedProjectileRefs.current.findLastIndex((item) => item) + 1;
 
     useEffect(() => {
-        if (!targetElement || !action || eventIdRef.current === eventId || !actorElement) {
+        if (!targetElement || !action || !actorElement) {
             return;
         }
 
-        eventIdRef.current = eventId;
         const { type, animation, icon } = action || {};
         let spin = 0;
         if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
@@ -204,19 +202,19 @@ const AnimationCanvas = ({
         const options = { spin, rotation: rotate, playbackTime: playbackTime, rotateToFaceTarget };
 
         if (icon) {
-            const animateProjectile = (target, projectileRefIndex: number) => {
+            const animateProjectile = (target) => {
                 const openIndex = findOpenIndex();
-                const refsFrom = (openIndex + projectileRefIndex) * beamProjectileMultiplier;
-                const refsTo = refsFrom + 1 * beamProjectileMultiplier;
+                const toIndex = openIndex + 1 * beamProjectileMultiplier;
+
+                // Lock the refs from being used by another animation, until the animation is done
                 const setRefsLocked = (isLocked: boolean) => {
-                    for (let i = refsFrom; i < refsTo; ++i) {
-                        lockedProjectileRefs.current[i] = isLocked; // Lock the refs from being used by another animation, until the animation is done
+                    for (let i = openIndex; i < toIndex; ++i) {
+                        lockedProjectileRefs.current[i] = isLocked ? eventId : null;
                     }
                 };
 
                 setRefsLocked(true);
-
-                const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
+                const object = projectileRefs.slice(openIndex, toIndex).map((ref) => ref.current);
 
                 if (animation === ANIMATION_TYPES.CONSUMABLE) {
                     const animations = playTossUpAnimation({
@@ -244,12 +242,14 @@ const AnimationCanvas = ({
                         ...options,
                     });
 
-                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
+                    if (animations?.length) {
+                        animations[animations.length - 1].onfinish = () => setRefsLocked(false);
+                    }
                 }
             };
 
             if (ricochet) {
-                animateProjectile(allTargets, 0);
+                animateProjectile(allTargets);
             } else {
                 allTargets.forEach(animateProjectile);
             }
@@ -344,7 +344,14 @@ const AnimationCanvas = ({
     }, [eventId]);
 
     const getProjectileElement = (i: number) => {
-        i = findOpenIndex() + i;
+        // Check if we're still playing the same event, but this component rerendered for some reason. Don't change the ref if so
+        // Issue where projectiles would sometimes get stuck.
+        const currentLockIndex = lockedProjectileRefs.current.findIndex((id) => id === eventId);
+        if (currentLockIndex > -1) {
+            i = currentLockIndex + i;
+        } else {
+            i = findOpenIndex() + i;
+        }
 
         const projectileDimensions = { width: 70, height: 70 };
         const props = {
