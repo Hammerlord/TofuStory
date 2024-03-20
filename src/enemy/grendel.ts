@@ -3,6 +3,7 @@ import {
     ANIMATION_TYPES,
     Ability,
     Action,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
@@ -207,6 +208,54 @@ const volcanicBurst: Ability = {
     ],
 };
 
+const stormPulse: Ability = {
+    name: "Storm Pulse",
+    image: MagicArmorImage,
+    conditions: [
+        {
+            hasEffect: "Storm Barrier",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+        },
+    ],
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            damage: 7,
+            area: 5,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: EncroachingDarknessImage,
+            animationOptions: {
+                width: 200,
+                height: 200,
+            },
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Electrified",
+                    icon: WeaponMasteryImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    attackPower: 3,
+                    onReceiveDamage: {
+                        conditions: [
+                            {
+                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                armor: 0,
+                                comparator: "eq",
+                            },
+                        ],
+                        removeEffect: true,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 const stormBarrier: Ability = {
     name: "Storm Barrier",
     description: "Dispels debuffs. Gain 100 Armor and pulsate increasing damage until Armor is broken.",
@@ -229,51 +278,7 @@ const stormBarrier: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: false,
                     preventArmorDecay: true,
-                    preventTurnAction: true,
                     resourcesPerTurn: -3,
-                    onTurnStart: {
-                        ability: {
-                            name: "Storm Pulse",
-                            image: MagicArmorImage,
-                            actions: [
-                                {
-                                    target: TARGET_TYPES.HOSTILE,
-                                    type: ACTION_TYPES.RANGE_ATTACK,
-                                    damage: 7,
-                                    area: 5,
-                                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                                    icon: EncroachingDarknessImage,
-                                    animationOptions: {
-                                        width: 200,
-                                        height: 200,
-                                    },
-                                },
-                                {
-                                    target: TARGET_TYPES.SELF,
-                                    type: ACTION_TYPES.EFFECT,
-                                    effects: [
-                                        {
-                                            name: "Electrified",
-                                            icon: WeaponMasteryImage,
-                                            type: EFFECT_TYPES.NONE,
-                                            class: EFFECT_CLASSES.BUFF,
-                                            attackPower: 3,
-                                            onReceiveDamage: {
-                                                conditions: [
-                                                    {
-                                                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                                        armor: 0,
-                                                        comparator: "eq",
-                                                    },
-                                                ],
-                                                removeEffect: true,
-                                            },
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    },
                     onReceiveDamage: {
                         conditions: [
                             {
@@ -287,6 +292,7 @@ const stormBarrier: Ability = {
                 },
             ],
         },
+        ...stormPulse.actions,
     ],
 };
 
@@ -296,6 +302,13 @@ const grendelMagicClaw: Ability = {
     image: MagicClawImage,
     description: "Hits twice",
     level: 2,
+    conditions: [
+        {
+            hasEffect: stormBarrier.name,
+            comparator: "not",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+        },
+    ],
     actions: [
         {
             damage: 6,
@@ -438,10 +451,17 @@ const triboltAction: Action = {
     targetArea: 1,
 };
 
-const grendelTribolt = {
+const grendelTribolt: Ability = {
     name: "Tribolt",
     image: TriboltImage,
     description: "Randomly hits the target or its neighbors, x3",
+    conditions: [
+        {
+            hasEffect: stormBarrier.name,
+            comparator: "not",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+        },
+    ],
     actions: [triboltAction, triboltAction, triboltAction],
 };
 
@@ -456,6 +476,13 @@ export const grendel: Minion = {
             name: "Greater Bolt",
             image: EnergyBoltImage,
             resourceCost: 0,
+            conditions: [
+                {
+                    hasEffect: stormBarrier.name,
+                    comparator: "not",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            ],
             actions: [
                 {
                     damage: 9,
@@ -475,8 +502,9 @@ export const grendel: Minion = {
         },
         grendelMagicClaw,
         grendelTribolt,
-        volcanicBurst,
+        stormPulse,
         stormBarrier,
+        volcanicBurst,
         iceAge,
     ],
     effects: [
