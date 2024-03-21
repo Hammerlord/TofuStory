@@ -9,6 +9,7 @@ import { PLAYER_CLASSES } from "./types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { getGameFile } from "./gameFiles";
 import { playerStateSlice } from "../character/playerReducer";
+import { Ability } from "../ability/types";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -94,7 +95,7 @@ const useStyles = createUseStyles({
         marginTop: 4,
     },
     reloadButton: {
-        minHeight: 50,
+        minHeight: 90,
         paddingTop: 32,
         "& hr": {
             marginTop: 0,
@@ -109,7 +110,13 @@ const useStyles = createUseStyles({
 
 const { loadState } = playerStateSlice.actions;
 
-const ClassSelection = ({ onSelectClass, onClose }) => {
+const ClassSelection = ({
+    onSelectClass,
+    onClose,
+}: {
+    onSelectClass: (playerClass: PLAYER_CLASSES, starters: Ability[]) => void;
+    onClose: (reloadedRun: boolean) => void;
+}) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const { character } = useAppSelector((state) => state);
     const { player } = character || {};
@@ -137,7 +144,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                                 </div>
                             ))}
                     </div>
-                    <Button color="secondary" onClick={onClose}>
+                    <Button color="secondary" onClick={() => onClose(false)}>
                         Continue
                     </Button>
                 </div>
@@ -191,25 +198,27 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                     Start
                 </Button>
 
-                {previousRun && (
-                    <div className={classes.reloadButton}>
-                        <hr />
-                        <div>
-                            <p className={classes.runSavedNotice}>
-                                A run was saved from your previous session. Continue at the last campsite / town?
-                            </p>
-                            <Button
-                                color="secondary"
-                                onClick={() => {
-                                    dispatch(loadState(previousRun));
-                                    onClose(true);
-                                }}
-                            >
-                                Continue Run
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                <div className={classes.reloadButton}>
+                    {previousRun && (
+                        <>
+                            <hr />
+                            <div>
+                                <p className={classes.runSavedNotice}>
+                                    A run was saved from your previous session. Continue at the last campsite / town?
+                                </p>
+                                <Button
+                                    color="secondary"
+                                    onClick={() => {
+                                        dispatch(loadState(previousRun));
+                                        onClose(true);
+                                    }}
+                                >
+                                    Continue Run
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
