@@ -1,3 +1,4 @@
+import { toLith } from "./../Map/routes/routes";
 import { BattleState } from "./../battle/reducer";
 import uuid from "uuid";
 import { cloneDeep } from "lodash";
@@ -10,6 +11,8 @@ import { Item, ITEM_TYPES, RARITIES } from "../item/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
+import generateTravelRoute from "../Map/routes/generateTravelRoute";
+import { TOWNS } from "../Map/types";
 
 const INITIAL_STATE = {
     player: null,
@@ -23,6 +26,10 @@ const INITIAL_STATE = {
     activityHistory: [], // Logs the result of minigames etc. encountered
     visitedEvents: {}, // { [eventId: string]: number } - value is number of times visited
     infamy: 0,
+    currentMapLocation: null, // The current location node on the overworld map
+    currentTown: null, // The currently visited town (if any)
+    route: null, // The generated route that the player is currently on
+    nodesVisited: {}, // The location nodes the player has visited. { [nodeId: string]: true }
 };
 
 export type ActivityHistoryLog = {
@@ -221,6 +228,51 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 infamy: state.infamy + action.payload,
+            };
+        },
+        loadState: (state, action) => {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
+        newGame: (state) => {
+            const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
+
+            return {
+                ...state,
+                route,
+                currentMapLocation: route,
+                currentTown: null,
+            };
+        },
+        selectMapNode: (state, action) => {
+            const node = action.payload;
+            return {
+                ...state,
+                currentMapLocation: node,
+                nodesVisited: { ...state.nodesVisited, [node.id]: true },
+            };
+        },
+        selectInTownNode: (state, action: PayloadAction<string>) => {
+            const node = action.payload;
+            return {
+                ...state,
+                nodesVisited: { ...state.nodesVisited, [node]: true },
+            };
+        },
+        setRoute: (state, action) => {
+            const route = action.payload;
+            return {
+                ...state,
+                route,
+                currentMapLocation: route,
+            };
+        },
+        setTown: (state, action: PayloadAction<TOWNS>) => {
+            return {
+                ...state,
+                currentTown: action.payload,
             };
         },
     },

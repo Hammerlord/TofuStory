@@ -19,10 +19,14 @@ import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 import Tooltip from "../view/Tooltip";
 import Pan from "./Pan";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import { TOWN_STYLES } from "./constants";
 import { useState } from "react";
 import TownNode from "./TownNode";
 import Legend from "./Legend";
+import { TOWNS } from "./types";
+import { getTownPlaces } from "./utils";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { playerStateSlice } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -58,15 +62,27 @@ const store = {
     },
 };
 
-const KERNING_PLACES = {
+const KERNING_PLACES: any = {
+    ...getTownPlaces(TOWNS.KERNING),
     MATCH_CARDS: "match-cards",
 };
 
+const { selectInTownNode } = playerStateSlice.actions;
+
 const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
-    const [visited, setVisited] = useState({});
-    const activitiesRequiredToLeave = 4;
+    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const dispatch = useAppDispatch();
 
+    const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
+        if (visited[val]) {
+            return acc + 1;
+        }
+
+        return acc;
+    }, 0) as number;
+
+    const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     /**
@@ -76,37 +92,38 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
         if (visited[key]) {
             return false;
         }
-        setVisited((prev) => ({ ...prev, [key]: true }));
+
+        dispatch(selectInTownNode(key));
         return true;
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
+        if (checkVisitPlace(KERNING_PLACES.TRADING_POST)) {
             onClickTradingPost && onClickTradingPost();
         }
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
-            onClickShop && onClickShop(store);
+        if (checkVisitPlace(KERNING_PLACES.SHOP)) {
+            onClickShop(store);
         }
     };
 
     const handleClickClassLeader = () => {
-        if (checkVisitPlace(TOWN_PLACES.CLASS_LEADER)) {
+        if (checkVisitPlace(KERNING_PLACES.CLASS_LEADER)) {
             onClickScene(barScene);
         }
     };
 
     const handleClickCampaign = () => {
-        if (checkVisitPlace(TOWN_PLACES.CAMPAIGN)) {
-            onClickScene && onClickScene(KPQ);
+        if (checkVisitPlace(KERNING_PLACES.CAMPAIGN)) {
+            onClickScene(KPQ);
         }
     };
 
     const handleClickEvent = (eventKey: string, scene) => {
         if (checkVisitPlace(eventKey)) {
-            onClickScene && onClickScene(scene);
+            onClickScene(scene);
         }
     };
 
@@ -133,14 +150,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[KERNING_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            isVisited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[KERNING_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={KerningShopImage}
                             onClick={handleClickShop}
@@ -148,7 +165,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            isVisited={visited[TOWN_PLACES.CAMPAIGN]}
+                            isVisited={visited[KERNING_PLACES.CAMPAIGN]}
                             label={"Campaign"}
                             nodeImage={KerningSewerImage}
                             onClick={handleClickCampaign}
@@ -169,7 +186,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
-                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
+                            isLocked={!canLeaveTown}
                             label={"Exit to World Map"}
                             nodeImage={KerningExitImage}
                             onClick={onExit}
@@ -185,7 +202,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                         />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[KERNING_PLACES.CLASS_LEADER]}
                             label={"[Test] Dark Lord"}
                             onClick={handleClickClassLeader}
                             nodeImage={KerningBarImage}

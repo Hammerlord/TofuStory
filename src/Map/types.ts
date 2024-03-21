@@ -1,5 +1,5 @@
 import { Ability, Minion } from "../ability/types";
-import { BATTLE_TYPES, Wave } from "../battle/types";
+import { Wave } from "../battle/types";
 import {
     AltForestBGImage,
     ElliniaBGImage,
@@ -10,13 +10,7 @@ import {
     SleepywoodRegionBGImage,
 } from "../images";
 import { Item } from "../item/types";
-import Henesys from "./Henesys";
-import KerningCity from "./KerningCity";
-import LithHarbor from "./LithHarbor";
-import Perion from "./Perion";
-import Ellinia from "./Ellinia";
 import { REGIONS } from "./regions";
-import Sleepywood from "./Sleepywood";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
@@ -91,15 +85,6 @@ export enum TOWNS {
     ELLINIA = "Ellinia",
     SLEEPYWOOD = "Sleepywood",
 }
-
-export const TOWN_MAP = {
-    [TOWNS.KERNING]: KerningCity,
-    [TOWNS.LITH_HARBOR]: LithHarbor,
-    [TOWNS.HENESYS]: Henesys,
-    [TOWNS.PERION]: Perion,
-    [TOWNS.ELLINIA]: Ellinia,
-    [TOWNS.SLEEPYWOOD]: Sleepywood,
-};
 
 export const BG_MAP = {
     [REGIONS.HENESYS]: HenesysRegionBGImage,

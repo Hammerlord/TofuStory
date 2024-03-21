@@ -4,6 +4,7 @@ export const TOWN_PLACES = {
     CLASS_LEADER: "class-leader",
     CAMPAIGN: "campaign",
     REST: "resting-spot",
+    GACHAPON: "gachapon",
 };
 
 export const TOWN_STYLES = {

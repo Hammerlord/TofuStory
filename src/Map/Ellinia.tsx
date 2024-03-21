@@ -18,8 +18,12 @@ import { grendelScene } from "../scene/Ellinia/grendelScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import { TOWN_STYLES } from "./constants";
 import { secretGardenScene } from "../scene/Ellinia/secretGarden";
+import { getTownPlaces } from "./utils";
+import { TOWNS } from "./types";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { playerStateSlice } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -43,14 +47,26 @@ const store = {
     },
 };
 
-const ELLINIA_PLACES = {
+const ELLINIA_PLACES: any = {
+    ...getTownPlaces(TOWNS.ELLINIA),
     SECRET_GARDEN: "secret-garden",
 };
 
+const { selectInTownNode } = playerStateSlice.actions;
+
 const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
     const classes = useStyles();
-    const [visited, setVisited] = useState({});
-    const activitiesRequiredToLeave = 4;
+    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const dispatch = useAppDispatch();
+    const numActivitiesComplete: number = Object.values(ELLINIA_PLACES).reduce((acc: number, val: string) => {
+        if (visited[val]) {
+            return acc + 1;
+        }
+
+        return acc;
+    }, 0) as number;
+
+    const canLeaveTown = numActivitiesComplete >= 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
@@ -61,37 +77,37 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
         if (visited[key]) {
             return false;
         }
-        setVisited((prev) => ({ ...prev, [key]: true }));
+        dispatch(selectInTownNode(key));
         return true;
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
-            onClickTradingPost && onClickTradingPost();
+        if (checkVisitPlace(ELLINIA_PLACES.TRADING_POST)) {
+            onClickTradingPost();
         }
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
-            onClickShop && onClickShop(store);
+        if (checkVisitPlace(ELLINIA_PLACES.SHOP)) {
+            onClickShop(store);
         }
     };
 
     const handleClickClassLeader = () => {
-        if (checkVisitPlace(TOWN_PLACES.CLASS_LEADER)) {
+        if (checkVisitPlace(ELLINIA_PLACES.CLASS_LEADER)) {
             onClickScene(grendelScene);
         }
     };
 
     const handleClickEvent = (eventKey, scene) => {
         if (checkVisitPlace(eventKey)) {
-            onClickScene && onClickScene(scene);
+            onClickScene(scene);
         }
     };
 
     const handleClickCampaign = () => {
-        if (checkVisitPlace(TOWN_PLACES.CAMPAIGN)) {
-            onClickScene && onClickScene(arwenScene);
+        if (checkVisitPlace(ELLINIA_PLACES.CAMPAIGN)) {
+            onClickScene(arwenScene);
         }
     };
 
@@ -102,14 +118,14 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[ELLINIA_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={ElliniaTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            isVisited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[ELLINIA_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={ElliniaShopImage}
                             onClick={handleClickShop}
@@ -117,7 +133,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
-                            isVisited={visited[TOWN_PLACES.CAMPAIGN]}
+                            isVisited={visited[ELLINIA_PLACES.CAMPAIGN]}
                             label={"Campaign"}
                             nodeImage={ElliniaCampaignImage}
                             onClick={handleClickCampaign}
@@ -138,7 +154,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
-                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
+                            isLocked={!canLeaveTown}
                             label={"Exit to World Map"}
                             nodeImage={ElliniaExitImage}
                             onClick={onExit}
@@ -146,7 +162,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <br />
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[ELLINIA_PLACES.CLASS_LEADER]}
                             label={"[Test] Grendel"}
                             nodeImage={ElliniaMagicianHallImage}
                             onClick={handleClickClassLeader}
@@ -154,7 +170,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}
-                            isLocked={!visited[TOWN_PLACES.CAMPAIGN]}
+                            isLocked={!visited[ELLINIA_PLACES.CAMPAIGN]}
                             label={"Secret Garden"}
                             nodeImage={MarrsForestPreviewImage}
                             onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}

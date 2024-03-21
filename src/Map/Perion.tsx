@@ -17,10 +17,15 @@ import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
+import { TOWN_STYLES } from "./constants";
 import { dummiesScene, mapleDummy } from "../scene/Perion/perionDummies";
 import { arenaScene } from "../scene/Perion/arena";
 import { basicDummy } from "../enemy/dummy";
+import { TOWNS } from "./types";
+import { getTownPlaces } from "./utils";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { EventScene } from "../scene/types";
+import { playerStateSlice } from "../character/playerReducer";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -59,48 +64,62 @@ const store = {
     },
 };
 
-const PERION_PLACES = {
+const PERION_PLACES: any = {
+    ...getTownPlaces(TOWNS.PERION),
     DUMMIES: "perion-training-dummies",
     ARENA: "perion-arena",
 };
 
-const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
-    const [visited, setVisited] = useState({});
-    const classes = useStyles();
-    const activitiesRequiredToLeave = 4;
+const { selectInTownNode } = playerStateSlice.actions;
 
-    const screenCentre = { x: 0, y: window.innerHeight / 2 };
-    const handleClickTradingPost = () => {
-        if (visited[TOWN_PLACES.TRADING_POST]) {
-            return;
+const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
+    const classes = useStyles();
+    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce((acc: number, val: string) => {
+        if (visited[val]) {
+            return acc + 1;
         }
-        setVisited((prev) => ({ ...prev, [TOWN_PLACES.TRADING_POST]: true }));
-        onClickTradingPost && onClickTradingPost();
+
+        return acc;
+    }, 0) as number;
+
+    const canLeaveTown = numActivitiesComplete >= 4;
+    const screenCentre = { x: 0, y: window.innerHeight / 2 };
+    const dispatch = useAppDispatch();
+
+    /**
+     * Logs which places have been visited. If place hasn't been visited, returns true (can visit the place).
+     */
+    const checkVisitPlace = (key: string): boolean => {
+        if (visited[key]) {
+            return false;
+        }
+        dispatch(selectInTownNode(key));
+        return true;
+    };
+
+    const handleClickTradingPost = () => {
+        if (checkVisitPlace(PERION_PLACES.TRADING_POST)) {
+            onClickTradingPost();
+        }
     };
 
     const handleClickShop = () => {
-        if (visited[TOWN_PLACES.SHOP]) {
-            return;
+        if (checkVisitPlace(PERION_PLACES.SHOP)) {
+            onClickShop(store);
         }
-        setVisited((prev) => ({ ...prev, [TOWN_PLACES.SHOP]: true }));
-        onClickShop && onClickShop(store);
     };
 
     const handleClickClassLeader = () => {
-        if (visited[TOWN_PLACES.CLASS_LEADER]) {
-            return;
+        if (checkVisitPlace(PERION_PLACES.CLASS_LEADER)) {
+            onClickScene(dancesWithBalrogScene);
         }
-
-        setVisited((prev) => ({ ...prev, [TOWN_PLACES.CLASS_LEADER]: true }));
-        onClickScene(dancesWithBalrogScene);
     };
 
-    const handleClickEvent = (eventKey: string, scene) => {
-        if (visited[eventKey]) {
-            return;
+    const handleClickEvent = (eventKey: string, scene: EventScene) => {
+        if (checkVisitPlace(eventKey)) {
+            onClickScene(scene);
         }
-        setVisited((prev) => ({ ...prev, [eventKey]: true }));
-        onClickScene && onClickScene(scene);
     };
 
     return (
@@ -110,14 +129,14 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[PERION_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            isVisited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[PERION_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={PerionShopImage}
                             onClick={handleClickShop}
@@ -147,7 +166,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
-                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
+                            isLocked={!canLeaveTown}
                             label={"Exit to World Map"}
                             nodeImage={PerionExitImage}
                             onClick={onExit}
@@ -172,7 +191,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
                         <TownNode
                             icon={JapaneseOgreIcon}
-                            isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                            isVisited={visited[PERION_PLACES.CLASS_LEADER]}
                             label={"[Test] Dances With Balrog"}
                             onClick={handleClickClassLeader}
                             nodeImage={PerionWarriorHallImage}

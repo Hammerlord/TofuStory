@@ -1,6 +1,8 @@
 import classNames from "classnames";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
+import { playerStateSlice } from "../character/playerReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     DiamondImage,
     GachaponImage,
@@ -17,11 +19,13 @@ import {
 import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
 import pantry from "../scene/Henesys/pantry";
-import TownNode from "./TownNode";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import Pan from "./Pan";
-import Legend from "./Legend";
 import { gachaponEvents } from "../scene/gachapon/Gachapon";
+import Legend from "./Legend";
+import Pan from "./Pan";
+import TownNode from "./TownNode";
+import { TOWN_STYLES } from "./constants";
+import { TOWNS } from "./types";
+import { getTownPlaces } from "./utils";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -51,9 +55,9 @@ const store = {
     },
 };
 
-const HENESYS_PLACES = {
+const HENESYS_PLACES: any = {
+    ...getTownPlaces(TOWNS.HENESYS),
     PANTRY: "pantry",
-    GACHAPON: "gachapon",
 };
 
 const HENESYS_BOSSES = {
@@ -61,11 +65,22 @@ const HENESYS_BOSSES = {
     MINI_BEAN: "minibean",
 };
 
+const { selectInTownNode } = playerStateSlice.actions;
+
 const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost, onCamp }) => {
     const classes = useStyles();
-    const [visited, setVisited] = useState({});
-    const activitiesRequiredToLeave = 4;
+    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const dispatch = useAppDispatch();
 
+    const numActivitiesComplete: number = Object.values(HENESYS_PLACES).reduce((acc: number, val: string) => {
+        if (visited[val]) {
+            return acc + 1;
+        }
+
+        return acc;
+    }, 0) as number;
+
+    const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     /**
@@ -75,37 +90,37 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
         if (visited[key]) {
             return false;
         }
-        setVisited((prev) => ({ ...prev, [key]: true }));
+        dispatch(selectInTownNode(key));
         return true;
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
-            onClickTradingPost && onClickTradingPost();
+        if (checkVisitPlace(HENESYS_PLACES.TRADING_POST)) {
+            onClickTradingPost();
         }
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
-            onClickShop && onClickShop(store);
+        if (checkVisitPlace(HENESYS_PLACES.SHOP)) {
+            onClickShop(store);
         }
     };
 
     const handleClickClassLeader = () => {
-        if (checkVisitPlace(TOWN_PLACES.CLASS_LEADER)) {
+        if (checkVisitPlace(HENESYS_PLACES.CLASS_LEADER)) {
             onClickScene(athenaPierceScene);
         }
     };
 
     const handleClickEvent = (eventKey, scene) => {
         if (checkVisitPlace(eventKey)) {
-            onClickScene && onClickScene(scene);
+            onClickScene(scene);
         }
     };
 
     const handleClickCamp = () => {
-        if (checkVisitPlace(TOWN_PLACES.REST)) {
-            onCamp && onCamp();
+        if (checkVisitPlace(HENESYS_PLACES.REST)) {
+            onCamp();
         }
     };
 
@@ -124,14 +139,14 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
+                            isVisited={visited[HENESYS_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={HenesysTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
                         <TownNode
                             icon={MoneyBagIcon}
-                            isVisited={visited[TOWN_PLACES.SHOP]}
+                            isVisited={visited[HENESYS_PLACES.SHOP]}
                             label={"Shop"}
                             nodeImage={HenesysShopImage}
                             onClick={handleClickShop}
@@ -150,7 +165,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         {boss !== HENESYS_BOSSES.MINI_BEAN && (
                             <TownNode
                                 icon={CampingIcon}
-                                isVisited={visited[TOWN_PLACES.REST]}
+                                isVisited={visited[HENESYS_PLACES.REST]}
                                 label={"Rest"}
                                 nodeImage={HenesysRestImage}
                                 onClick={handleClickCamp}
@@ -172,7 +187,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         <TownNode
                             icon={WorldMapIcon}
                             isVisited={false}
-                            isLocked={Object.keys(visited).length < activitiesRequiredToLeave}
+                            isLocked={!canLeaveTown}
                             label={"Exit to World Map"}
                             nodeImage={HenesysExitImage}
                             onClick={onExit}
@@ -194,7 +209,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         {boss === HENESYS_BOSSES.ATHENA && (
                             <TownNode
                                 icon={JapaneseOgreIcon}
-                                isVisited={visited[TOWN_PLACES.CLASS_LEADER]}
+                                isVisited={visited[HENESYS_PLACES.CLASS_LEADER]}
                                 label={"[Test] Athena Pierce"}
                                 nodeImage={HenesysArcherHallImage}
                                 onClick={handleClickClassLeader}
@@ -204,7 +219,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                         {boss !== HENESYS_BOSSES.ATHENA && (
                             <TownNode
                                 icon={CampingIcon}
-                                isVisited={visited[TOWN_PLACES.REST]}
+                                isVisited={visited[HENESYS_PLACES.REST]}
                                 label={"Rest"}
                                 nodeImage={HenesysRestImage}
                                 onClick={handleClickCamp}

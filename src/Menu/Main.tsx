@@ -8,7 +8,7 @@ import { REGIONS } from "../Map/regions";
 import { events } from "../Map/routes/eventList";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
-import { BG_MAP, NODE_TYPES, Route, RouteNode, TOWNS, TOWN_MAP } from "../Map/types";
+import { BG_MAP, NODE_TYPES, RouteNode, TOWNS } from "../Map/types";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
@@ -40,6 +40,7 @@ import Shop from "./Shop";
 import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
+import { TOWN_MAP } from "../Map/townMap";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -110,6 +111,10 @@ const {
     updateMesos,
     incrementEncounterTypeWon,
     logVisitedEvent,
+    newGame,
+    selectMapNode: selectNode,
+    setRoute,
+    setTown,
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
@@ -124,9 +129,6 @@ const Main = () => {
     const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
     const [scene, setScene]: [EventScene | null, Function] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
-    const [route, setRoute]: [any, Function] = useState(null); // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
-    const [locationNode, setLocationNode] = useState(null);
-    const [nodesVisitedMap, setNodesVisitedMap] = useState({});
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [activity, setActivity] = useState(null);
@@ -135,27 +137,31 @@ const Main = () => {
     const [removingAbility, setRemovingAbility] = useState(null);
     const [treasure, setTreasure] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
-    const [town, setTown]: [TOWNS | null, Function] = useState(null);
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const { character, battle } = useAppSelector((state) => state);
-    const { player, deck, visitedEvents, infamy } = character || {};
+    const {
+        player,
+        deck,
+        visitedEvents,
+        infamy,
+        route,
+        currentMapLocation: currentLocation,
+        nodesVisited,
+        currentTown: town,
+    } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
 
     const transitionRef: MutableRefObject<ReturnType<typeof setTimeout> | null> = useRef(null);
 
     const resetTravels = () => {
-        const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
-        setRoute(route);
-        setLocationNode(route);
+        dispatch(newGame());
         setSceneRegion(null);
         setScene(null);
-        setTown(null);
         setIsGameOver(false);
         setActivity(null);
         setOpenClassSelection(true);
-        setNodesVisitedMap({});
     };
 
     useEffect(() => {
@@ -243,8 +249,7 @@ const Main = () => {
     };
 
     const handleSelectNode = (node: RouteNode) => {
-        setLocationNode(node);
-        setNodesVisitedMap((prev) => ({ ...prev, [node.id]: true }));
+        dispatch(selectNode(node));
 
         const callback = () => {
             if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
@@ -263,7 +268,7 @@ const Main = () => {
             } else if (node.type === NODE_TYPES.RESTING_ZONE) {
                 setActivity(ACTIVITIES.CAMP);
             } else if (node.type === NODE_TYPES.TOWN) {
-                setTown(node.town);
+                dispatch(setTown(node.town));
             }
         };
         handleTransition(callback);
@@ -340,7 +345,7 @@ const Main = () => {
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            dispatch(startBattle({ ...encounter, backgroundImage: encounter.backgroundImage || BG_MAP[locationNode?.region] }));
+            dispatch(startBattle({ ...encounter, backgroundImage: encounter.backgroundImage || BG_MAP[currentLocation?.region] }));
             setEncounterVictoryCallback(() => onVictory);
         };
 
@@ -427,43 +432,45 @@ const Main = () => {
     };
 
     const handleExitTown = (options: { eventsSkipped?: boolean } = {}) => {
-        handleTransition(() => setTown(null));
+        handleTransition(() => dispatch(setTown(null)));
 
         if (town === TOWNS.LITH_HARBOR) {
             // We completed the intro. Load the rest of the route.
             const route = generateTravelRoute({ startingRoute: toLith });
-            // Don't want distracting clicky when there is about to be dialog on the overworld map
-            setHideMapClickIndicator(true);
+            dispatch(setRoute(route));
 
-            setRoute(route);
-            setLocationNode(route);
-            setTimeout(() => {
-                if (!options?.eventsSkipped) {
+            if (!options?.eventsSkipped) {
+                // Don't want distracting clicky when there is about to be dialog on the overworld map
+                setHideMapClickIndicator(true);
+                setTimeout(() => {
                     setScene(startJourneyScene);
-                }
-                setHideMapClickIndicator(false);
-            }, 1500);
+                    setHideMapClickIndicator(false);
+                }, 1500);
+            }
+
             return;
         }
 
         if (town === TOWNS.KERNING) {
             const route = generateTravelRoute({ startingRoute: routeKerningToPerion });
-            setRoute(route);
+            dispatch(setRoute(route));
             return;
         }
 
         if (town === TOWNS.HENESYS) {
             const route = generateTravelRoute({ startingRoute: routeHenesysEllinia });
-            setRoute(route);
+            dispatch(setRoute(route));
         }
     };
 
     const getTown = () => {
         const Town: any = TOWN_MAP[town];
+
         if (!Town) {
             setTown(null);
             return null;
         }
+
         return (
             <Town
                 player={player}
@@ -507,9 +514,9 @@ const Main = () => {
                 <Map
                     onSelectNode={handleSelectNode}
                     generatedRoute={route}
-                    playerLocationNode={locationNode}
+                    playerLocationNode={currentLocation}
                     playerImage={player?.image}
-                    visited={nodesVisitedMap}
+                    visited={nodesVisited}
                     disableClick={Boolean(scene) || hideMapClickIndicator || showTransitionOverlay}
                 />
             </div>
@@ -531,7 +538,7 @@ const Main = () => {
                             onShop={() => setActivity(ACTIVITIES.SHOP)}
                             onTransition={handleTransition}
                             onChangeRegion={setSceneRegion}
-                            region={sceneRegion || locationNode?.region}
+                            region={sceneRegion || currentLocation?.region}
                         />
                     )}
                     {activity === ACTIVITIES.CAMP && (
@@ -632,7 +639,7 @@ const Main = () => {
                 />
             )}
             <div className={classes.soundContainer}>
-                <Sound playlist={sceneRegion || locationNode?.region} playTrack={battle?.backgroundMusic} isGameOver={isGameOver} />
+                <Sound playlist={sceneRegion || currentLocation?.region} playTrack={battle?.backgroundMusic} isGameOver={isGameOver} />
             </div>
             <div
                 className={classNames(classes.transitionOverlay, {
