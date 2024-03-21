@@ -31,7 +31,6 @@ export interface RouteNode {
     encounter?: Wave[];
     event?;
     treasure?: {
-        puzzle: Function;
         mesos?: number[]; // [min, max]
         items?: Item[]; // If not provided, it will grant a piece of equipment not already owned by the player
         curse?: "damage";
@@ -51,6 +50,7 @@ export interface EliteMap {
 }
 
 export interface Route {
+    id: string; // Unique identifier for this route
     /** Value up to 1. 1 = 100%. If not provided, the chance is 0. */
     cursedTreasureChance?: number;
     nodes: RouteNode[];

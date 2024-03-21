@@ -10,12 +10,16 @@ import { RouteNode } from "./../types";
  */
 const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
     const encounterMemo: Wave[][] = [];
+
     const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
+        const routeId = baseRoute.id;
+
         let initialNode;
         let currentNode;
         let numEvents = baseRoute.nodes.length < 3 ? 0 : 1;
         let numTreasures = 1;
         let numEliteEncounters = 0;
+
         if (baseRoute.elites) {
             const { numElites = 1 } = baseRoute.eliteOptions || {};
             numEliteEncounters = numElites;
@@ -45,6 +49,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             const transformedNode: RouteNode = {
                 ...baseNode,
                 id: baseNode.id || uuid.v4(),
+                routeId,
                 type: baseNode.type || generateNodeType(),
             };
 

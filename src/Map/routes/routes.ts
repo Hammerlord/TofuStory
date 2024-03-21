@@ -36,6 +36,7 @@ import { balrog } from "../../enemy/balrog";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
 
 const sleepywood: Route = {
+    id: "to-sleepywood",
     nodes: [
         {
             x: 0.4294642857142857,
@@ -49,6 +50,7 @@ const sleepywood: Route = {
 };
 
 const routePerionSleepywood: Route = {
+    id: "perion-sleepywood",
     eliteOptions: {
         numElites: 3,
         numAffixes: 2,
@@ -94,6 +96,7 @@ const routePerionSleepywood: Route = {
 };
 
 export const routeKerningToPerion: Route = {
+    id: "kerning-perion",
     elites: {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask],
@@ -182,6 +185,7 @@ export const routeKerningToPerion: Route = {
 };
 
 const toKerning: Route = {
+    id: "to-kerning",
     elites: {
         minions: [snail, blueSnail],
         single: [orangeMushroom, octopus],
@@ -218,6 +222,7 @@ const toKerning: Route = {
 };
 
 const toKerningForest: Route = {
+    id: "kerning-forest",
     enemies: [
         [snail, null, octopus, null, snail],
         [snail, null, orangeMushroom, null, snail],
@@ -267,7 +272,8 @@ const toKerningForest: Route = {
     next: [toKerning],
 };
 
-export const routeElliniaSleepywood = {
+export const routeElliniaSleepywood: Route = {
+    id: "ellinia-sleepywood",
     eliteOptions: {
         numElites: 3,
         numAffixes: 2,
@@ -321,7 +327,8 @@ export const routeElliniaSleepywood = {
     next: [sleepywood],
 };
 
-export const routeElliniaPerion = {
+export const routeElliniaPerion: Route = {
+    id: "ellinia-perion",
     eliteOptions: {
         numElites: 3,
         numAffixes: 2,
@@ -415,6 +422,7 @@ export const routeElliniaPerion = {
 };
 
 export const routeHenesysEllinia: Route = {
+    id: "henesys-ellinia",
     enemies: [
         [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
         [null, null, curseEye, null, null],
@@ -493,6 +501,7 @@ export const routeHenesysEllinia: Route = {
 };
 
 export const toHenesys: Route = {
+    id: "to-henesys",
     elites: {
         minions: [snail, blueSnail],
         single: [orangeMushroom, ribbonPig],
@@ -530,6 +539,7 @@ export const toHenesys: Route = {
 };
 
 export const toHenesysForest: Route = {
+    id: "henesys-forest",
     enemies: [
         [blueSnail, null, ribbonPig, null, blueSnail],
         [null, orangeMushroom, null, orangeMushroom, null],
@@ -580,6 +590,7 @@ export const toHenesysForest: Route = {
 };
 
 export const routeLith: Route = {
+    id: "leaving-lith",
     initialPlayerPosition: {
         x: 0.15716753022452504,
         y: 0.7956483387239047,
@@ -640,6 +651,7 @@ export const routeLith: Route = {
 };
 
 export const toLith: Route = {
+    id: "lith-harbor",
     initialPlayerPosition: {
         x: 0.15873015873015872,
         y: 0.730697961704756,
@@ -692,3 +704,24 @@ const routeSewer = {
         },
     ],
 };
+
+export const ROUTE_ID_MAP = [
+    sleepywood,
+    routePerionSleepywood,
+    routeKerningToPerion,
+    toKerning,
+    toKerningForest,
+    routeElliniaSleepywood,
+    routeElliniaPerion,
+    routeHenesysEllinia,
+    toHenesys,
+    toHenesysForest,
+    routeLith,
+    toLith,
+].reduce(
+    (acc, route) => ({
+        ...acc,
+        [route.id]: route,
+    }),
+    {}
+);
