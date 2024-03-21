@@ -152,7 +152,10 @@ const Main = () => {
         setSceneRegion(null);
         setScene(null);
         setTown(null);
+        setIsGameOver(false);
+        setActivity(null);
         setOpenClassSelection(true);
+        setNodesVisitedMap({});
     };
 
     useEffect(() => {
@@ -356,7 +359,7 @@ const Main = () => {
         }, INTRO_PAN_TIME + 500);
     };
 
-    if (openClassSelection) {
+    if (!player || openClassSelection) {
         return <ClassSelection onSelectClass={handleSelectClass} onClose={handleCloseClassSelection} />;
     }
 
@@ -506,7 +509,7 @@ const Main = () => {
                     onSelectNode={handleSelectNode}
                     generatedRoute={route}
                     playerLocationNode={locationNode}
-                    playerImage={player.image}
+                    playerImage={player?.image}
                     visited={nodesVisitedMap}
                     disableClick={Boolean(scene) || hideMapClickIndicator || showTransitionOverlay}
                 />
@@ -623,7 +626,6 @@ const Main = () => {
                             dispatch(restartGame());
                             resetTravels();
                             dispatch(closeBattle());
-                            setIsGameOver(false);
                         };
 
                         handleTransition(callback);

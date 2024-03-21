@@ -169,7 +169,7 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                     </button>
                 </div>
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
-                    Select!
+                    Start
                 </Button>
             </div>
         </div>

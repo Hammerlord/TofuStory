@@ -10,7 +10,7 @@ const useStyles = createUseStyles({
         left: 0,
         top: 0,
         position: "fixed",
-        background: "rgba(50, 50, 50, 0.95)",
+        background: "rgba(10, 10, 10, 0.95)",
         zIndex: 1001,
         fontSize: "1.2rem",
         color: "white",
@@ -86,7 +86,7 @@ const GameOver = ({ onExit, player }) => {
                 </div>
                 <div>
                     <Button onClick={onExit} variant="contained" color="primary">
-                        Try again
+                        Restart
                     </Button>
                 </div>
             </div>
