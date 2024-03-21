@@ -29,6 +29,7 @@ const useStyles = createUseStyles({
     },
     itemImage: {
         margin: "8px 0",
+        minHeight: 24,
     },
     diamond: {
         width: "8px",
