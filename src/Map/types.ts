@@ -28,7 +28,7 @@ export interface RouteNode {
     x: number;
     y: number;
     type?: NODE_TYPES;
-    encounter?: Wave[];
+    encounter?: string; // This is usually a pre-configured overworld boss, identified by a string ID. See overworldBosses.ts.
     event?;
     treasure?: {
         mesos?: number[]; // [min, max]
@@ -38,6 +38,11 @@ export interface RouteNode {
     cardRewards?: Ability[]; // If this is a battle, these abilities will be included in the card rewards screen upon victory
     town?: TOWNS;
     region: REGIONS;
+}
+
+export interface GeneratedRouteNode extends RouteNode {
+    routeId: string;
+    previousRouteId?: string;
 }
 
 export interface EliteMap {

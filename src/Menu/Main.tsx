@@ -7,8 +7,8 @@ import Map from "../Map/Map";
 import { REGIONS } from "../Map/regions";
 import { events } from "../Map/routes/eventList";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
-import { BG_MAP, NODE_TYPES, RouteNode, TOWNS } from "../Map/types";
+import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS } from "../Map/types";
 import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
@@ -46,6 +46,8 @@ import Button from "../view/Button";
 import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
 import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
+import { OVERWORLD_BOSS_ID_MAP } from "../Map/routes/overworldBosses";
+import { generateElites, generateWaves } from "../Map/encounters";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -253,19 +255,40 @@ const Main = () => {
         }, TRANSITION_TIME * 1000);
     };
 
-    const handleSelectNode = (node: RouteNode) => {
+    const handleBattleNode = (node: GeneratedRouteNode) => {
+        let encounter;
+        if (node.type === NODE_TYPES.BOSS && node.encounter) {
+            encounter = OVERWORLD_BOSS_ID_MAP[node.encounter]?.waves;
+        } else if (node.type === NODE_TYPES.ELITE_ENCOUNTER) {
+            encounter = generateElites(ROUTE_ID_MAP[node.routeId]);
+        } else if (node.type === NODE_TYPES.ENCOUNTER) {
+            encounter = generateWaves({
+                route: ROUTE_ID_MAP[node.routeId],
+                fallbackRoute: ROUTE_ID_MAP[node.previousRouteId],
+                previousEncounters: [], // TODO use battle history
+            });
+        }
+
+        if (!encounter) {
+            return;
+        }
+
+        dispatch(
+            startBattle({
+                waves: encounter,
+                backgroundImage: BG_MAP[node.region],
+                type: node.type as unknown as BATTLE_TYPES, // NODE_TYPES.ENCOUNTER, ELITE_ENCOUNTER, BOSS are enums equivalent to BATTLE_TYPES
+                cardRewards: node.cardRewards,
+            })
+        );
+    };
+
+    const handleSelectNode = (node: GeneratedRouteNode) => {
         dispatch(selectNode(node));
 
         const callback = () => {
             if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
-                dispatch(
-                    startBattle({
-                        waves: node.encounter,
-                        backgroundImage: BG_MAP[node.region],
-                        type: node.type as unknown as BATTLE_TYPES, // NODE_TYPES.ENCOUNTER, ELITE_ENCOUNTER, BOSS are enums equivalent to BATTLE_TYPES
-                        cardRewards: node.cardRewards,
-                    })
-                );
+                handleBattleNode(node);
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {

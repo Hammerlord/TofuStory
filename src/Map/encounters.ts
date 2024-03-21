@@ -207,6 +207,10 @@ const generateElite = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | nu
 };
 
 export const generateElites = (route: Route): { enemies: Minion[] }[] => {
+    if (!route) {
+        return;
+    }
+
     const getSquad = () => generateEliteSquad(route.elites, route.eliteOptions?.numAffixes);
     const getTriad = () => generateEliteTriad(route.elites, route.eliteOptions?.numAffixes);
     const getDuo = () => generateEliteDuo(route.elites, route.eliteOptions?.numAffixes);
