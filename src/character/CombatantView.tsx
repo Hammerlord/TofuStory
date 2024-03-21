@@ -38,10 +38,9 @@ const useStyles = createUseStyles({
         },
     },
     root: {
-        minWidth: "20%",
-        margin: "0 1vw",
         cursor: "pointer",
         position: "relative",
+        flex: 1,
 
         "&.-highlighted .portrait": {
             animationName: "$highlightAnimation",

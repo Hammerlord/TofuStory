@@ -2144,7 +2144,6 @@ export const moonBolt: Ability = {
     resourceCost: 2,
     image: FullMoonImage,
     overrideBodyText: true,
-    //description: "Hits up to {{ actions.0.numTargets }} more targets. Heal {{ actions.0.secondaryAction.healing }} each hit.",
     description: "Heal all allies for {{ actions.0.secondaryAction.healing }} each hit.",
 
     rarity: RARITIES.COMMON,

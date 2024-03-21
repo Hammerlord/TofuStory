@@ -103,8 +103,6 @@ const useStyles = createUseStyles({
     combatantContainer: {
         position: "relative",
         height: "19vh",
-        width: "90%",
-        maxWidth: "60rem",
         margin: "auto",
         maxHeight: 225,
     },
@@ -112,9 +110,8 @@ const useStyles = createUseStyles({
         display: "flex",
         margin: "auto",
         justifyContent: "space-evenly",
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
+        gap: 24,
+        maxWidth: "70rem",
         height: "100%",
     },
     divider: {
