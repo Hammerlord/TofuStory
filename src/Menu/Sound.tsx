@@ -130,14 +130,23 @@ const getDefaultVolume = (): number => {
     return JSON.parse(value);
 };
 
-const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGIONS; playTrack?: string }) => {
+const Sound = ({
+    playlist = REGIONS.LITH_HARBOR,
+    playTrack,
+    isGameOver,
+}: {
+    playlist: REGIONS;
+    playTrack?: string;
+    isGameOver?: boolean;
+}) => {
     const [trackIndex, setTrackIndex] = useState(0);
     const [volume, setVolume] = useState(getDefaultVolume());
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [overrideAudio, setOverrideAudio] = useState(null);
     const tracks = musicMap[playlist] || [];
     const [isPlaying, setIsPlaying] = useState(volume > 0 && getDefaultPlaying());
-    const [playlistAudio] = useState(() => {
+
+    const [playlistAudio, setPlaylistAudio] = useState(() => {
         const audio = new Audio(tracks[trackIndex]);
         audio.volume = volume;
         if (isPlaying) {
@@ -145,6 +154,7 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
         }
         return audio;
     });
+
     const audio = overrideAudio || playlistAudio;
     const classes = useStyles();
 
@@ -202,6 +212,26 @@ const Sound = ({ playlist = REGIONS.LITH_HARBOR, playTrack }: { playlist: REGION
             playlistAudio.removeEventListener("ended", onEnded);
         };
     }, [tracks, trackIndex, isPlaying]);
+
+    useEffect(() => {
+        if (!isGameOver) {
+            return;
+        }
+
+        if (overrideAudio) {
+            fadeOutAudio(overrideAudio);
+            setTimeout(() => {
+                overrideAudio.src = "";
+                setOverrideAudio(null);
+            }, TRANSITION_TIME);
+        } else {
+            fadeOutAudio(playlistAudio);
+            setTimeout(() => {
+                playlistAudio.src = "";
+                setPlaylistAudio(null);
+            }, TRANSITION_TIME);
+        }
+    }, [isGameOver]);
 
     useEffect(() => {
         if (!isPlaying || playTrack === overrideAudio?.src) {

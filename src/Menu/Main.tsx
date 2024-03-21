@@ -633,7 +633,7 @@ const Main = () => {
                 />
             )}
             <div className={classes.soundContainer}>
-                <Sound playlist={sceneRegion || locationNode?.region} playTrack={battle?.backgroundMusic} />
+                <Sound playlist={sceneRegion || locationNode?.region} playTrack={battle?.backgroundMusic} isGameOver={isGameOver} />
             </div>
             <div
                 className={classNames(classes.transitionOverlay, {
