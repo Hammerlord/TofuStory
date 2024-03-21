@@ -1,5 +1,6 @@
-import { BlueSnailShellImage, BounceImage, RedSnailShellImage, SnailShellImage } from "../images";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "./types";
+import { BlueSnailShellImage, BounceImage, ComboSynergyImage, RedSnailShellImage, SnailShellImage } from "../images";
+import { RARITIES } from "../item/types";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, SELECT_CARD_TYPES, TARGET_TYPES } from "./types";
 
 export const shellThrowRed: Ability = {
     name: "Shell Throw",
@@ -120,4 +121,51 @@ export const bounce: Ability = {
     ],
 };
 
-export const NEUTRAL_ABILITIES = [shellThrow, bounce];
+export const reinforce: Ability = {
+    name: "Reinforce",
+    image: ComboSynergyImage,
+    description:
+        "Search for a {{{ _support_ }}} {{{ _summon_ }}} card from your deck. It costs {{ actions.0.selectCards.effects.0.resourceCost }} less until discarded.",
+    resourceCost: 0,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.SEARCH_DECK,
+                filters: [
+                    {
+                        primaryActionType: ACTION_TYPES.EFFECT,
+                    },
+                    {
+                        hasMinion: true,
+                    },
+                ],
+                effects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    selectCards: {
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const NEUTRAL_ABILITIES = [shellThrow, bounce, reinforce];

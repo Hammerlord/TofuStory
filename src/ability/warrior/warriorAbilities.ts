@@ -2129,53 +2129,6 @@ export const hurlBoulder: Ability = {
     ],
 };
 
-export const reinforce: Ability = {
-    name: "Reinforce",
-    image: ComboSynergyImage,
-    description:
-        "Search for a {{{ _support_ }}} {{{ _summon_ }}} card from your deck. It costs {{ actions.0.selectCards.effects.0.resourceCost }} less until discarded.",
-    resourceCost: 0,
-    depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.SEARCH_DECK,
-                filters: [
-                    {
-                        primaryActionType: ACTION_TYPES.EFFECT,
-                    },
-                    {
-                        hasMinion: true,
-                    },
-                ],
-                effects: [
-                    {
-                        resourceCost: -1,
-                    },
-                ],
-            },
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    selectCards: {
-                        effects: [
-                            {
-                                resourceCost: -1,
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    ],
-};
-
 export const forgehammer: Ability = {
     name: "Forge Hammer",
     image: SquareHammerImage,
