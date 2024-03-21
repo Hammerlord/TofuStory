@@ -1,12 +1,9 @@
 import uuid from "uuid";
-import OnOffPuzzle from "../../scene/TreasureBox/OnOffPuzzle";
-import ReelLockPuzzle from "../../scene/TreasureBox/ReelLockPuzzle";
-import RowPuzzle from "../../scene/TreasureBox/RowPuzzle";
+import { Wave } from "../../battle/types";
 import { NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
 import { generateElites, generateWaves } from "./../encounters";
 import { RouteNode } from "./../types";
-import { Wave } from "../../battle/types";
 
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
@@ -66,7 +63,6 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             } else if (type === NODE_TYPES.TREASURE) {
                 const isCursedTreasure = baseRoute?.cursedTreasureChance && Math.random() <= baseRoute?.cursedTreasureChance;
                 transformedNode.treasure = {
-                    puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
                     mesos: [20, 40],
                     curse: isCursedTreasure ? "damage" : undefined,
                 };

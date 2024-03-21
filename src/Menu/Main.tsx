@@ -43,6 +43,9 @@ import { aggregateItemEffects } from "./utils";
 import { TOWN_MAP } from "../Map/townMap";
 import { getGameFile, saveGame } from "./gameFiles";
 import Button from "../view/Button";
+import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
+import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
+import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -266,7 +269,7 @@ const Main = () => {
             } else if (node.type === NODE_TYPES.EVENT) {
                 handleEventNode(node);
             } else if (node.type === NODE_TYPES.TREASURE) {
-                setTreasure(node.treasure);
+                setTreasure({ ...node.treasure, puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]) });
             } else if (node.type === NODE_TYPES.RESTING_ZONE) {
                 setActivity(ACTIVITIES.CAMP);
             } else if (node.type === NODE_TYPES.TOWN) {
