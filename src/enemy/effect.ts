@@ -259,6 +259,7 @@ export const lifeLink: Effect = {
                 type: EFFECT_TYPES.LIFE_LINK,
                 class: EFFECT_CLASSES.BUFF,
                 icon: RespawnTokenImage,
+                persistsWhenDead: true,
                 canBeSilenced: false,
                 description: "When this effect ends, the character will revive with half HP.",
                 duration: 3,

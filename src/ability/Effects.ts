@@ -512,6 +512,7 @@ export const silence: Effect = {
     type: EFFECT_TYPES.SILENCE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: SpeechBubbleIcon,
+    persistsWhenDead: true,
 };
 
 export const poison: Effect = {

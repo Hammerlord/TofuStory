@@ -202,6 +202,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     allowMoveCardFromHandToDeck?: boolean;
     conditions?: Condition[];
     canBeSilenced?: boolean;
+    persistsWhenDead?: boolean; // False by default. When the effect owner dies, effects with durations are usually removed. If true, this effect is not removed on death.
     /** Character does not choose and play an ability during its turn */
     preventTurnAction?: boolean;
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect

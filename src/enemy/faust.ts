@@ -145,6 +145,7 @@ const puppeteerRevive: EffectEventTrigger = {
             class: EFFECT_CLASSES.BUFF,
             icon: RespawnTokenImage,
             canBeSilenced: false,
+            persistsWhenDead: true,
             description: "When this effect ends, Ghostly Puppeteers will revive.",
             duration: 3,
             onEnd: {
