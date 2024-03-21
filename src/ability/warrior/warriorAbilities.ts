@@ -606,7 +606,7 @@ export const sweepingReach: Ability = {
 
 export const sharpen: Ability = {
     name: "Sharpen",
-    resourceCost: 1,
+    resourceCost: 0,
     image: WeaponMasteryImage,
     actions: [
         {
@@ -620,7 +620,7 @@ export const sharpen: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     attackPower: 1,
-                    duration: 5,
+                    duration: 3,
                 },
             ],
         },
@@ -631,7 +631,7 @@ export const sharpen: Ability = {
                 {
                     effects: [
                         {
-                            duration: Infinity,
+                            attackPower: 1,
                         },
                     ],
                 },
@@ -647,7 +647,7 @@ export const rush: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 7,
+            damage: 6,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -677,7 +677,7 @@ export const rush: Ability = {
 
 export const berserk: Ability = {
     name: "Berserk",
-    resourceCost: 0,
+    resourceCost: 2,
     image: PowerStanceImage,
     depletedOnUse: true,
     description: "5 random cards in your hand cost 3 less, until they are discarded.",
@@ -2107,7 +2107,7 @@ export const hurlBoulder: Ability = {
     },
     actions: [
         {
-            damage: 25,
+            damage: 28,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
@@ -2137,7 +2137,7 @@ export const forgehammer: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
