@@ -170,9 +170,8 @@ const Main = () => {
     useEffect(() => {
         // Check game over when player updates
         if (player?.HP <= 0 && (battle?.eventQueue || []).length === 0) {
-            handleTransition(() => setIsGameOver(true));
             const timeout = setTimeout(() => {
-                setIsGameOver(true);
+                handleTransition(() => setIsGameOver(true));
             }, 1500);
 
             return () => clearTimeout(timeout);
