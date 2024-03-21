@@ -65,6 +65,8 @@ import {
     SnailImage,
     SnailShellImage,
     StealImage,
+    StoneGolemImage,
+    StoneGolemRubbleImage,
     StumpImage,
     SubiImage,
     TauromacisHornImage,
@@ -134,7 +136,7 @@ import {
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, enemyHaste, loaf } from "./abilities";
-import { championsRibbon, critical, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
+import { armorDown, championsRibbon, critical, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1761,12 +1763,12 @@ export const darkStoneGolem: Minion = {
     abilities: [
         {
             name: "Stone Skin",
-            image: MountainIcon,
+            image: ShieldIcon,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 5,
+                    armor: 3,
                 },
             ],
         },
@@ -1784,7 +1786,22 @@ export const darkStoneGolem: Minion = {
             ],
         },
     ],
-    effects: [hardy, preventArmorDecay],
+    effects: [
+        hardy,
+        preventArmorDecay,
+        {
+            name: "Strength",
+            description: "Attacks apply Armor Down.",
+            icon: StoneGolemRubbleImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: false,
+            onAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [armorDown],
+            },
+        },
+    ],
 };
 
 export const mesoThief: Minion = {
@@ -2667,6 +2684,55 @@ export const rockyMask: Minion = {
                 },
             ],
             icon: RedShieldIcon,
+        },
+    ],
+};
+
+export const golem: Minion = {
+    name: "Stone Golem",
+    image: StoneGolemImage,
+    maxHP: 100,
+    armor: 50,
+    isElite: true,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Crushing Blow",
+            resourceCost: 3,
+            castTime: 1,
+            image: StoneGolemRubbleImage,
+            actions: [
+                {
+                    damage: 10,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                },
+            ],
+        },
+    ],
+    effects: [
+        hardy,
+        preventArmorDecay,
+        {
+            name: "Strength",
+            description: "Attacks apply Armor Down.",
+            icon: StoneGolemRubbleImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            canBeSilenced: false,
+            onAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [armorDown],
+            },
         },
     ],
 };

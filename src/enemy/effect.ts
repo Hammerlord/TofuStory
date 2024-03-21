@@ -467,7 +467,7 @@ export const armorDown: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     type: EFFECT_TYPES.NONE,
     armorReceived: -1,
-    duration: 3,
+    duration: 5,
 };
 
 export const critical: Effect = {

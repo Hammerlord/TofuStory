@@ -6,6 +6,7 @@ import {
     darkStoneGolem,
     egg,
     fireBoar,
+    golem,
     greenMushroom,
     ironHog,
     lupin,
@@ -441,7 +442,10 @@ export const routeHenesysEllinia: Route = {
         duo: [axeStump, orangeMushroom, slime, elliniaHornyMushroom],
         trio: [elliniaGreenMushroom, pig, blueMushroom],
         squad: [stump, elliniaGreenMushroom],
-        special: [[null, null, darkStoneGolem, null, null]],
+        special: [
+            [null, null, darkStoneGolem, null, null],
+            [null, null, golem, null, null],
+        ],
     },
     nodes: [
         {
