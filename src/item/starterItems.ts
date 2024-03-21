@@ -10,7 +10,7 @@ import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const rageStone: Item = {
     name: "Rage Stone",
-    description: "Every 2 Fury you spend, gain 1 next turn.",
+    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, gain 1 next turn.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -22,7 +22,7 @@ export const rageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 2,
+                triggerFrequencyFromSum: 3,
                 effects: [infuriateEffect],
             },
         },
@@ -31,7 +31,8 @@ export const rageStone: Item = {
 
 export const rampageStone: Item = {
     name: "Rampage Stone",
-    description: "Every 2 Fury you spend, gain 1 next turn. +1 card draw while active.",
+    description:
+        "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, gain 1 next turn. +1 card draw while active.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -42,7 +43,7 @@ export const rampageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 2,
+                triggerFrequencyFromSum: 3,
                 effects: [
                     infuriateEffect,
                     {
