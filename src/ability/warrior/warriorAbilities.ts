@@ -99,7 +99,7 @@ export const bash: Ability = {
     image: BrickImage,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -457,6 +457,7 @@ export const bunchOBricks: Ability = {
     name: "Bunch o' Bricks",
     resourceCost: 1,
     image: BricksImage,
+    depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
