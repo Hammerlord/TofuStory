@@ -6,7 +6,9 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, LandImage, WarMushImage, WizMushImage } from "../images";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { getGameFile } from "./gameFiles";
+import { playerStateSlice } from "../character/playerReducer";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -26,7 +28,7 @@ const useStyles = createUseStyles({
         height: 648,
         background: `url(${LandImage})`,
         position: "fixed",
-        top: "50%",
+        top: "43%",
         left: "50%",
         transform: "translate(-50%, -71%)",
         zIndex: -1,
@@ -91,13 +93,28 @@ const useStyles = createUseStyles({
         display: "block",
         marginTop: 4,
     },
+    reloadButton: {
+        minHeight: 50,
+        paddingTop: 32,
+        "& hr": {
+            marginTop: 0,
+            marginBottom: 32,
+            borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
+        },
+    },
+    runSavedNotice: {
+        fontSize: 16,
+    },
 });
+
+const { loadState } = playerStateSlice.actions;
 
 const ClassSelection = ({ onSelectClass, onClose }) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const { character } = useAppSelector((state) => state);
     const { player } = character || {};
     const classes = useStyles();
+    const dispatch = useAppDispatch();
 
     const handleSelectClass = () => {
         if (selectedClass) {
@@ -127,6 +144,8 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
             </div>
         );
     }
+
+    const previousRun = getGameFile();
 
     return (
         <div className={classes.root}>
@@ -171,6 +190,26 @@ const ClassSelection = ({ onSelectClass, onClose }) => {
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
                     Start
                 </Button>
+
+                {previousRun && (
+                    <div className={classes.reloadButton}>
+                        <hr />
+                        <div>
+                            <p className={classes.runSavedNotice}>
+                                A run was saved from your previous session. Continue at the last campsite / town?
+                            </p>
+                            <Button
+                                color="secondary"
+                                onClick={() => {
+                                    dispatch(loadState(previousRun));
+                                    onClose(true);
+                                }}
+                            >
+                                Continue Run
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

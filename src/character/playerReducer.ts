@@ -1,18 +1,17 @@
-import { toLith } from "./../Map/routes/routes";
-import { BattleState } from "./../battle/reducer";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import uuid from "uuid";
-import { cloneDeep } from "lodash";
-import { Ability, CombatAbility } from "./../ability/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
-import { aggregateItemEffects } from "../Menu/utils";
-import { calculateMesoGain, getMaxHP } from "../battle/utils";
-import { Item, ITEM_TYPES, RARITIES } from "../item/types";
-import { BATTLE_TYPES } from "../battle/types";
-import { PLAYER_CLASSES } from "../Menu/types";
-import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { TOWNS } from "../Map/types";
+import { NODE_TYPES, TOWNS } from "../Map/types";
+import { saveGame } from "../Menu/gameFiles";
+import { PLAYER_CLASSES } from "../Menu/types";
+import { aggregateItemEffects } from "../Menu/utils";
+import { BATTLE_TYPES } from "../battle/types";
+import { calculateMesoGain, getMaxHP } from "../battle/utils";
+import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
+import { ITEM_TYPES, Item, RARITIES } from "../item/types";
+import { toLith } from "./../Map/routes/routes";
+import { Ability, CombatAbility } from "./../ability/types";
+import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 
 const INITIAL_STATE = {
     player: null,
@@ -248,6 +247,12 @@ export const playerStateSlice = createSlice({
         },
         selectMapNode: (state, action) => {
             const node = action.payload;
+
+            if (node.type === NODE_TYPES.RESTING_ZONE) {
+                saveGame({
+                    ...state,
+                });
+            }
             return {
                 ...state,
                 currentMapLocation: node,
@@ -270,10 +275,13 @@ export const playerStateSlice = createSlice({
             };
         },
         setTown: (state, action: PayloadAction<TOWNS>) => {
-            return {
+            const newState = {
                 ...state,
                 currentTown: action.payload,
             };
+
+            saveGame(newState);
+            return newState;
         },
     },
 });

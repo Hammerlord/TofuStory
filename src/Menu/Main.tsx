@@ -41,6 +41,8 @@ import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 import { TOWN_MAP } from "../Map/townMap";
+import { getGameFile, saveGame } from "./gameFiles";
+import Button from "../view/Button";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -352,15 +354,18 @@ const Main = () => {
         handleTransition(callback);
     };
 
-    const handleCloseClassSelection = () => {
+    const handleCloseClassSelection = (reloadedRun: boolean) => {
         setOpenClassSelection(false);
-        // Don't want distracting clicky when there is about to be dialog on the overworld map
-        setHideMapClickIndicator(true);
 
-        setTimeout(() => {
-            setScene(introScene);
-            setHideMapClickIndicator(false);
-        }, INTRO_PAN_TIME + 500);
+        if (!reloadedRun) {
+            // Don't want distracting clicky when there is about to be dialog on the overworld map
+            setHideMapClickIndicator(true);
+
+            setTimeout(() => {
+                setScene(introScene);
+                setHideMapClickIndicator(false);
+            }, INTRO_PAN_TIME + 500);
+        }
     };
 
     if (!player || openClassSelection) {
@@ -467,7 +472,6 @@ const Main = () => {
         const Town: any = TOWN_MAP[town];
 
         if (!Town) {
-            setTown(null);
             return null;
         }
 
