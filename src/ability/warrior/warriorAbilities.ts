@@ -61,6 +61,7 @@ import {
     SpikeBallImage,
     SpikedMaceImage,
     SquareHammerImage,
+    TornadoImage,
     WarLeapImage,
     WarMushBattleLordImage,
     WarMushImage,
@@ -1057,7 +1058,7 @@ export const combatOrders: Ability = {
 export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
-    image: TornadoIcon,
+    image: TornadoImage,
     description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} damage to up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -1070,12 +1071,12 @@ export const dustDevils: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 5,
-                    icon: TornadoIcon,
+                    icon: TornadoImage,
                     description: "Casting tornadoes on attack.",
                     onAttack: {
                         ability: {
                             name: "Dust Devils",
-                            image: TornadoIcon,
+                            image: TornadoImage,
                             actions: [
                                 {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -1084,7 +1085,7 @@ export const dustDevils: Ability = {
                                         sidewinder: true,
                                     },
                                     damage: 1,
-                                    icon: TornadoIcon,
+                                    icon: TornadoImage,
                                     playbackTime: 350,
                                     numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
                                     targetArea: 5,
