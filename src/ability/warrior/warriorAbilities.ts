@@ -74,7 +74,19 @@ import {
 } from "../../images";
 import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { bleed, immunity, silence, stealth, stun, thorns, attackPower, armorUp, infuriateEffect, directDamageTaken } from "../Effects";
+import {
+    bleed,
+    immunity,
+    silence,
+    stealth,
+    stun,
+    thorns,
+    attackPower,
+    armorUp,
+    infuriateEffect,
+    directDamageTaken,
+    ward,
+} from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1712,13 +1724,14 @@ export const soulBlade: Ability = {
     name: "Soul Blade",
     resourceCost: 1,
     image: BurningSoulBladeImage,
-    description: "When this attacks, it gains +1 ATT.",
-    rarity: RARITIES.RARE,
+    overrideBodyText: true,
+    description: "<b>Ward.</b> When this attacks, it gains +1 ATT.",
+    rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
-        maxHP: 5,
+        maxHP: 3,
         abilities: [
             {
                 ...attack,
@@ -1726,7 +1739,7 @@ export const soulBlade: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 1,
+                        damage: 3,
                         animationOptions: {
                             rotateToFaceTarget: true,
                         },
@@ -1735,7 +1748,7 @@ export const soulBlade: Ability = {
             },
         ],
         effects: [
-            { ...immunity, duration: 2 },
+            ward,
             {
                 name: "Soul Blade",
                 icon: BurningSoulBladeMinionImage,
@@ -2179,13 +2192,13 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "Every turn, Radiates {{ nestedAbility.actions.0.radiate.damage }} damage to enemies / {{ nestedAbility.actions.0.secondaryAction.healing }} healing to allies within 2 spaces.",
+        "<b>Ward.</b> Every turn, this <b>Radiates</b> {{ nestedAbility.actions.0.radiate.damage }} damage to enemies / {{ nestedAbility.actions.0.secondaryAction.healing }} healing to allies within 2 spaces.",
     rarity: RARITIES.RARE,
-    resourceCost: 2,
+    resourceCost: 1,
     minion: {
         name: "Guardian Statue",
         image: PinkBeanStatueImage,
-        maxHP: 9,
+        maxHP: 10,
         abilities: [
             {
                 ...attack,
@@ -2199,13 +2212,11 @@ export const guardian: Ability = {
             },
         ],
         effects: [
+            ward,
             {
                 name: "Golden",
-                description: "Character cannot take more than 3 damage in a single hit.",
-                icon: GoldBarImage,
                 type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                maxDamageTaken: 3,
+                class: EFFECT_CLASSES.NONE,
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {

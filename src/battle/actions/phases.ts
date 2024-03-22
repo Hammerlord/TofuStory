@@ -1,5 +1,5 @@
 import uuid from "uuid";
-import { elite, eruptive, raging, shielding, thorns } from "../../ability/Effects";
+import { elite, eruptive, raging, warding, thorns } from "../../ability/Effects";
 import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
@@ -120,7 +120,7 @@ export const startBattle = ({
         const battleObj: BattleState = {
             enemySide: enemies.map((enemy: Minion) => {
                 if (generateEliteAffixes && enemy?.isElite) {
-                    const affixes = [thorns, raging, shielding, eruptive, sneaky, poisonous];
+                    const affixes = [thorns, raging, warding, eruptive, sneaky, poisonous];
                     return createCombatant({
                         ...enemy,
                         effects: [elite, getRandomItem(affixes)],

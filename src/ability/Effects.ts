@@ -190,6 +190,15 @@ export const immunity: Effect = {
     duration: 1,
 };
 
+export const ward: Effect = {
+    ...immunity,
+    type: EFFECT_TYPES.ATTACK_IMMUNITY,
+    name: "Ward",
+    description: "Wards off the next attack.",
+    duration: Infinity,
+    onReceiveAttack: { removeEffect: true },
+};
+
 export const raging: Effect = {
     name: "Raging",
     canBeSilenced: true,
@@ -285,8 +294,8 @@ export const avenger: Effect = {
     },
 };
 
-export const shielding: Effect = {
-    name: "Shielding",
+export const warding: Effect = {
+    name: "Warding",
     canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
@@ -298,12 +307,8 @@ export const shielding: Effect = {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {
-                name: "Attack Immunity",
-                icon: UpMATTImage,
-                type: EFFECT_TYPES.ATTACK_IMMUNITY,
-                class: EFFECT_CLASSES.BUFF,
+                ...ward,
                 duration: 2,
-                onReceiveAttack: { removeEffect: true },
             },
         ],
     },

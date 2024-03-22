@@ -5,6 +5,7 @@ import Icon from "../../icon/Icon";
 import { chargingStone, rageStone } from "../../item/starterItems";
 import { Ability, Effect, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
+import { immunity } from "../Effects";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -165,6 +166,18 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                 icon={rageStone.image}
                 description={<>Gain 1 resource next turn.</>}
                 key={"infuriate"}
+            />
+        );
+    }
+
+    const ward = stringified.includes("ward");
+    if (ward) {
+        tooltips.push(
+            <AbilityTooltipSection
+                title="Ward"
+                icon={immunity.icon}
+                description={<>A shield that wards off the next attack.</>}
+                key={"ward"}
             />
         );
     }

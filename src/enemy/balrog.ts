@@ -12,14 +12,14 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { AngerIcon, BloodIcon } from "../images/icons";
-import { bleed, burn, explosive, hardy, poison, raging, sentry, shielding } from "./../ability/Effects";
+import { bleed, burn, explosive, hardy, poison, raging, sentry, warding } from "./../ability/Effects";
 import { attack } from "./abilities";
 import { poisonous } from "./effect";
 
 const balrogName = "Avatar of Balrog";
 
 const flameShield: Effect = {
-    ...shielding,
+    ...warding,
     icon: GemHeartImage,
     image: GemHeartImage,
     description: "Periodically granting Balrog a shield that wards off a single attack.",
