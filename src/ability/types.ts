@@ -581,6 +581,7 @@ export interface AbilityUpgrade {
     resourceCost?: number;
     depletedOnUse?: boolean;
     minion?;
+    selectCards?;
     addActions?: {
         // If true, instead of .pushing to actions, the action will be prepended
         prepend?: boolean;

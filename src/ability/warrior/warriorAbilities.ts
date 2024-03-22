@@ -2408,7 +2408,7 @@ export const bide: Ability = {
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Place up to {{ actions.0.selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Infuriate.",
+        "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Infuriate.",
     image: WarriorThroneImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -2425,13 +2425,9 @@ export const bide: Ability = {
     ],
     upgrades: [
         {
-            actions: [
-                {
-                    selectCards: {
-                        maxAmount: 1,
-                    },
-                },
-            ],
+            selectCards: {
+                maxAmount: 1,
+            },
         },
     ],
 };
