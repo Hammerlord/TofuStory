@@ -2192,7 +2192,7 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "<b>Ward.</b> Every turn, this <b>Radiates</b> {{ nestedAbility.actions.0.radiate.damage }} damage to enemies / {{ nestedAbility.actions.0.secondaryAction.healing }} healing to allies within 2 spaces.",
+        "<b>Ward.</b> Every turn, <b>Radiate</b> {{ nestedAbility.actions.0.radiate.damage }} {{{ _damage_ }}} to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
     rarity: RARITIES.RARE,
     resourceCost: 1,
     minion: {

@@ -4,6 +4,9 @@ import { getUpgradeCard } from "../../Menu/utils";
 import { Combatant } from "../../character/types";
 import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility, Effect, TARGET_TYPES } from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
+import DamageIcon from "./DamageIcon";
+import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
+import { CrossedSwordsImage, HeartImage } from "../../images";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -130,10 +133,13 @@ export const interpolateAbilityDescription = ({ ability }) => {
 
         return `<span style="${styleStr}"></span>`;
     };
+
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
         _summon_: cardTypeString(GREEN),
+        _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
+        _healing_: `<img src="${HeartImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
