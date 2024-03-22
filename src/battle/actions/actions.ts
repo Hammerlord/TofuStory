@@ -968,7 +968,7 @@ export const triggerStatChangeEvents =
                     checkEventTrigger({
                         combatantId,
                         effectEventKey,
-                        source: { ...source, ...sourcePayload, statUpdate },
+                        source: { ...source, ...sourcePayload, targetId: combatantId, statUpdate },
                     })
                 );
             };
@@ -1007,7 +1007,7 @@ export const triggerStatChangeEvents =
                     checkEventTrigger({
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
-                        source: { ...source, statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT },
+                        source: { ...source, statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId },
                     })
                 );
             });
