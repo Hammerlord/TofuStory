@@ -128,6 +128,7 @@ import {
     whirlwind,
     worldReaver,
     yell,
+    bladeworks,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -264,6 +265,7 @@ export const JOB_CARD_MAP = {
             moratorium,
             bluntForce,
             retribute,
+            bladeworks,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },

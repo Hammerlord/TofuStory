@@ -622,6 +622,7 @@ export interface AbilityUpgrade {
         autoCastAbilities?;
         secondaryAction?;
         moveCards?;
+        summon?;
         addLastPlayedCards?;
     }[];
 }

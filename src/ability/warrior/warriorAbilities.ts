@@ -3,6 +3,7 @@ import { getUpgradeCard } from "./../../Menu/utils";
 import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
+    BladeworksImage,
     BlastExtraStrikeImage,
     BlastImage,
     BlockImage,
@@ -1726,6 +1727,9 @@ export const soulBlade: Ability = {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
                         damage: 1,
+                        animationOptions: {
+                            rotateToFaceTarget: true,
+                        },
                     },
                 ],
             },
@@ -2594,6 +2598,44 @@ export const retribute: Ability = {
                             healing: 1,
                         },
                     },
+                },
+            ],
+        },
+    ],
+};
+
+const soulBladeUpgrade = soulBlade.upgrades[0].minion;
+
+export const bladeworks: Ability = {
+    name: "Bladeworks",
+    image: BladeworksImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 2,
+    depletedOnUse: true,
+    description: "Fill your side of the battlefield with Soul Blades.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            summon: [
+                { minion: [cloneDeep(soulBlade.minion)] },
+                { minion: [cloneDeep(soulBlade.minion)] },
+                { minion: [cloneDeep(soulBlade.minion)] },
+                { minion: [cloneDeep(soulBlade.minion)] },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            description: "Fill your side of the battlefield with Soul Blades.",
+            actions: [
+                {
+                    summon: [
+                        { minion: [soulBladeUpgrade] },
+                        { minion: [soulBladeUpgrade] },
+                        { minion: [soulBladeUpgrade] },
+                        { minion: [soulBladeUpgrade] },
+                    ],
                 },
             ],
         },
