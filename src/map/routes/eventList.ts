@@ -182,9 +182,10 @@ export const ITEMS = [
     blackCrystal,
     yellowHat,
     arcStaff,
+    hardwoodWand,
 ];
 
 export const CLASS_ITEMS = {
     [PLAYER_CLASSES.WARRIOR]: [bloodMask, garnetWarrior],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, garnetMagician, hardwoodWand],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, garnetMagician],
 };
