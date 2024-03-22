@@ -41,14 +41,14 @@ export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: 
         return;
     }
 
-    const newCard = cloneDeep(card);
+    let newCard = cloneDeep(card);
 
     const traverseAndApplyUpgradeStats = (upgradeObj: AbilityUpgrade | any, equivalentObj: any) => {
         if (!upgradeObj || !equivalentObj) {
             return;
         }
 
-        const cannotBeBelowZeroProperties = ["damage", "healing", "resourceCost", "armor"];
+        const cannotBeBelowZeroProperties = ["damage", "healing", "armor"];
         const { addCardOptions, selectCardOptions, addCardsToDeckOptions, addActions, ...other } = upgradeObj;
 
         Object.entries(other).forEach(([key, val]) => {
@@ -131,6 +131,13 @@ export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: 
     };
 
     traverseAndApplyUpgradeStats(card.upgrades[0], newCard);
+
+    // The top level resourceCost cannot be below zero, but nested resourceCosts (eg. resource cost reductions can).
+    // So only apply the floor on the top level.
+    newCard = {
+        ...newCard,
+        resourceCost: typeof newCard.resourceCost === "number" ? Math.max(0, newCard.resourceCost) : newCard.resourceCost,
+    };
 
     const isFunctionallySameCard = JSON.stringify(newCard) === JSON.stringify(card);
     if (isFunctionallySameCard) {
