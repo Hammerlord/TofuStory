@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
-import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
+import { BOSS_RARE_RATE, BOSS_UNCOMMON_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
 import { goldenHammer, mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
@@ -114,7 +114,7 @@ const ItemRewards = ({
                 let uncommonBonus = 0;
                 if (rewardType === BATTLE_TYPES.BOSS) {
                     rareBonus = BOSS_RARE_RATE;
-                    uncommonBonus = ELITE_UNCOMMON_RATE;
+                    uncommonBonus = BOSS_UNCOMMON_RATE;
                 } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
                     rareBonus = ELITE_RARE_RATE;
                     uncommonBonus = ELITE_UNCOMMON_RATE;

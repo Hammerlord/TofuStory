@@ -679,10 +679,10 @@ export const rush: Ability = {
 
 export const berserk: Ability = {
     name: "Berserk",
-    resourceCost: 2,
+    resourceCost: 1,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "5 random cards in your hand cost 3 less, until they are discarded.",
+    description: "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less, until they are discarded.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -694,7 +694,7 @@ export const berserk: Ability = {
             target: TARGET_TYPES.SELF,
             applyAbilityEffects: {
                 pile: "hand",
-                amount: 5,
+                amount: 4,
                 abilityEffects: [
                     {
                         resourceCost: -3,

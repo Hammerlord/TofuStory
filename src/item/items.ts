@@ -1667,7 +1667,7 @@ export const tofuSpecial: Item = {
 
 export const sword: Item = {
     name: "Sword",
-    description: "On wave start, gain +1 attack power for one turn.",
+    description: "On wave start, gain +{{ effects.0.onWaveStart.effects.0.attackPower }} attack power for one turn.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SwordImage,
@@ -1685,7 +1685,7 @@ export const sword: Item = {
                         disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        attackPower: 1,
+                        attackPower: 2,
                         duration: 2,
                     },
                 ],
@@ -1701,8 +1701,8 @@ export const rabbitFoot: Item = {
     rarity: RARITIES.COMMON,
     image: RabbitFootImage,
     equipment: {
-        rareRateIncrease: 0.075,
-        uncommonRateIncrease: 0.15,
+        rareRateIncrease: 0.05,
+        uncommonRateIncrease: 0.1,
     },
 };
 
@@ -2019,7 +2019,7 @@ export const opal: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: OpalImage,
-    description: "Your buffs are extended by 1 turn.",
+    description: "Your non-Immunity buffs are extended by 1 turn.",
     effects: [
         {
             name: "Opal Effect",
@@ -2032,6 +2032,11 @@ export const opal: Item = {
                         property: "class",
                         comparator: "eq",
                         value: EFFECT_CLASSES.BUFF,
+                    },
+                    {
+                        property: "type",
+                        comparator: "not",
+                        value: EFFECT_TYPES.IMMUNITY,
                     },
                 ],
             },
