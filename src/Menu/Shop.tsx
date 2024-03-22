@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import AbilityRarityTag from "../ability/AbilityView/RarityTag";
+import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
 import { Player } from "../character/types";
 import { MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
@@ -411,7 +411,7 @@ const Shop = ({
         const { item, price } = shopItem;
         return (
             <div className={classes.abilityContainer} key={[item.name, i].join("-")}>
-                <AbilityRarityTag ability={item} />
+                <RarityTag rarity={item.rarity} />
                 <div
                     className={classNames(classes.ability, {
                         selected: i === selectedAbilityIndex,

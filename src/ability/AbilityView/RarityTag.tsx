@@ -38,27 +38,27 @@ const useStyles = makeStyles({
 /**
  * Rarity indicator that appears above a card.
  */
-const AbilityRarityTag = ({ ability }) => {
+const RarityTag = ({ rarity }: { rarity: RARITIES }) => {
     const classes = useStyles();
     return (
         <div className={classes.rarityContainer}>
             <span
                 className={classNames(classes.diamond, {
-                    [classes.common]: ability.rarity === RARITIES.COMMON || !ability.rarity,
-                    [classes.uncommon]: ability.rarity === RARITIES.UNCOMMON,
-                    [classes.rare]: ability.rarity === RARITIES.RARE,
+                    [classes.common]: rarity === RARITIES.COMMON || !rarity,
+                    [classes.uncommon]: rarity === RARITIES.UNCOMMON,
+                    [classes.rare]: rarity === RARITIES.RARE,
                 })}
             />{" "}
             <span
                 className={classNames({
-                    [classes.uncommonText]: ability.rarity === RARITIES.UNCOMMON,
-                    [classes.rareText]: ability.rarity === RARITIES.RARE,
+                    [classes.uncommonText]: rarity === RARITIES.UNCOMMON,
+                    [classes.rareText]: rarity === RARITIES.RARE,
                 })}
             >
-                {ability.rarity || RARITIES.COMMON}
+                {rarity || RARITIES.COMMON}
             </span>
         </div>
     );
 };
 
-export default AbilityRarityTag;
+export default RarityTag;

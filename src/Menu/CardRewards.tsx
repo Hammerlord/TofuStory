@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import AbilityRarityTag from "../ability/AbilityView/RarityTag";
+import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability, CombatAbility } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { Player } from "../character/types";
@@ -164,7 +164,7 @@ const CardRewards = ({
                 <div className={classes.abilitySectionContainer}>
                     {rolledAbilities.map((ability: CombatAbility, i) => (
                         <div className={classes.abilityContainer} key={ability.instanceId}>
-                            <AbilityRarityTag ability={ability} />
+                            <RarityTag rarity={ability.rarity} />
                             <div
                                 className={classNames(classes.ability, {
                                     selected: selectedAbilityIndices.includes(i),
