@@ -965,7 +965,6 @@ const BattlefieldContainer = () => {
                             <div className={classes.leftContainer}>
                                 <div className={classes.deckContainer}>
                                     <Deck
-                                        deck={deck}
                                         viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
                                         onClickDeck={handleClickDeck}
                                         highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}

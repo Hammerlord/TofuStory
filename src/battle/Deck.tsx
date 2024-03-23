@@ -1,11 +1,12 @@
 import { compose } from "ramda";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
 import { DownArrowImage } from "../images";
 import { getAbilityLevel, getAbilityMap } from "./deckDisplayUtils";
+import { useAppSelector } from "../hooks";
 
 const DECK_COLOR = "#176fbd";
 const DECK_SHADOW = "#125896";
@@ -82,22 +83,32 @@ const useStyles = createUseStyles({
 });
 
 const Deck = ({
-    deck = [],
     viewDeckInOrder,
     onClickDeck,
     highlightDeck,
     deckRef,
 }: {
-    deck: CombatAbility[];
     viewDeckInOrder: boolean;
     onClickDeck: (event: any) => void;
     highlightDeck: boolean;
     deckRef;
 }) => {
     const classes = useStyles();
+    const { battle } = useAppSelector((state) => state);
+    const { deck, deckCycled } = battle;
+    const [precycleDeck, setPrecycleDeck] = useState(deck);
+
+    useEffect(() => {
+        // animationCanvas.ts is playing the deck recycle animation. Don't update the deck until it's done.
+        if (deckCycled) {
+            return;
+        }
+
+        setPrecycleDeck(deck);
+    }, [deck, deckCycled]);
 
     const getCardColor = (i: number): string => {
-        const isLast = i === deck.length - 1;
+        const isLast = i === precycleDeck.length - 1;
         return isLast ? DECK_COLOR : DECK_SHADOW;
     };
 
@@ -172,23 +183,23 @@ const Deck = ({
                         ref={deckRef}
                     >
                         <svg viewBox="0 0 100 100" className={classes.svg}>
-                            {Array.from({ length: deck.length }).map((_, i) => {
+                            {Array.from({ length: precycleDeck.length }).map((_, i) => {
                                 return (
                                     <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
                                         <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
-                                        {i === deck.length - 1 && (
+                                        {i === precycleDeck.length - 1 && (
                                             <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                                {deck.length}
+                                                {precycleDeck.length}
                                             </text>
                                         )}
                                     </svg>
                                 );
                             })}
-                            {deck.length === 0 && (
+                            {precycleDeck.length === 0 && (
                                 <svg y={75} viewBox="0 0 100 100">
                                     <path fill={DECK_SHADOW} d="M 50 0 100 25 50 50 0 25 Z" opacity={0.5} />
                                     <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                        {deck.length}
+                                        {precycleDeck.length}
                                     </text>
                                 </svg>
                             )}

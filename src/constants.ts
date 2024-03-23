@@ -17,6 +17,8 @@ export const REGULAR_BATTLE_LOOT_CHANCE = 0.2;
 export const INTRO_PAN_TIME = 2000;
 export const RE_PAN_TIME = 400;
 
+export const DECK_CYCLE_TIME = 1000;
+
 export const COMMON_STYLES = {
     "@keyframes highlightAnimation": {
         from: {

@@ -18,6 +18,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { battleStateSlice } from "./reducer";
 import { MapleLeavesImage } from "../images";
+import { DECK_CYCLE_TIME } from "../constants";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -389,12 +390,12 @@ const AnimationCanvas = ({
     }, [eventId]);
 
     useEffect(() => {
-        if (!deckCycled || deck.length === 0) {
+        if (!deckCycled) {
             return;
         }
 
         const animations = deckCycleRefs.slice(0, deck.length).map((ref, i) => {
-            return refreshToPile({ object: ref.current, playbackTime: 1000, to: deckRef.current, delay: i * 25 });
+            return refreshToPile({ object: ref.current, playbackTime: DECK_CYCLE_TIME, to: deckRef.current, delay: i * 25 });
         });
 
         if (animations?.length) {

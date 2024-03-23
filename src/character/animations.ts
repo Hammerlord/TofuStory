@@ -371,7 +371,7 @@ export const refreshToPile = ({ object, to, playbackTime, delay }) => {
         },
         {
             transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
-            opacity: 0,
+            opacity: 0.1,
             easing: "ease-in",
         },
     ];
