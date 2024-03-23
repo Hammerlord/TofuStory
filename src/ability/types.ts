@@ -1,4 +1,3 @@
-import { chessPiece } from "./../item/items";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 
@@ -10,6 +9,7 @@ export enum TARGET_TYPES {
     RANDOM_FRIENDLY = "random-friendly",
     FRIENDLY_CHARACTER = "friendly-character",
     MOVE = "move",
+    PLAYER = "player",
 }
 
 export enum EFFECT_TYPES {

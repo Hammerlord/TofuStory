@@ -1898,6 +1898,25 @@ const autoSelectActionTarget = ({
 }) => {
     const { friendly, hostile, friendlySide, hostileSide } = findCombatantData(getState, actorId);
     const { targetArea: area = 0, target, targetName } = action;
+
+    if (target === TARGET_TYPES.PLAYER) {
+        const friendlyPlayerIndex = friendly.findIndex((combatant) => combatant?.isPlayer);
+        if (friendlyPlayerIndex > -1) {
+            return {
+                index: friendlyPlayerIndex,
+                side: friendlySide,
+            };
+        }
+
+        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
+        if (hostilePlayerIndex > -1) {
+            return {
+                index: hostilePlayerIndex,
+                side: hostileSide,
+            };
+        }
+    }
+
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
@@ -1909,7 +1928,9 @@ const autoSelectActionTarget = ({
             index: getRandomItem(targetIndices),
             side: hostileSide,
         };
-    } else if (target === TARGET_TYPES.RANDOM_FRIENDLY || (target === TARGET_TYPES.FRIENDLY && noValidSelection)) {
+    }
+
+    if (target === TARGET_TYPES.RANDOM_FRIENDLY || (target === TARGET_TYPES.FRIENDLY && noValidSelection)) {
         const targetIndices = getValidTargetIndices(friendly).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
@@ -1918,12 +1939,16 @@ const autoSelectActionTarget = ({
             index: getRandomItem(targetIndices),
             side: friendlySide,
         };
-    } else if (target === TARGET_TYPES.SELF) {
+    }
+
+    if (target === TARGET_TYPES.SELF) {
         return {
             index: friendly.findIndex((ally) => ally?.id === actorId),
             side: friendlySide,
         };
-    } else if (target === TARGET_TYPES.FRIENDLY_CHARACTER) {
+    }
+
+    if (target === TARGET_TYPES.FRIENDLY_CHARACTER) {
         const index = friendly.findIndex((ally) => ally?.name === targetName);
         if (index > -1) {
             return {
