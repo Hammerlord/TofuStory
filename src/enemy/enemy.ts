@@ -389,19 +389,14 @@ export const orangeMushroom: Minion = {
                     damage: 5,
                     area: 1,
                     secondaryDamage: 3,
-                    effects: [
+                    addCardsToDiscard: [
                         {
-                            name: "Flattened",
-                            description: "Receiving increased damage from Whomp.",
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            icon: MushroomOmokImage,
-                            duration: 6,
-                            abilityDamageReceived: [
+                            name: "Dazed",
+                            image: DizzyIcon,
+                            actions: [
                                 {
-                                    abilityName: "Whomp",
-                                    damage: 2,
-                                    type: SCALING_VALUE_TYPES.FLAT,
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
                                 },
                             ],
                         },
