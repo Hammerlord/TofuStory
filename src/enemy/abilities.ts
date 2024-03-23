@@ -1,4 +1,4 @@
-import { HasteImage, IronHogHoofImage } from "../images";
+import { AvengersArrowImage, HasteImage, IronHogHoofImage } from "../images";
 import { CrossedSwordsIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 
@@ -10,6 +10,25 @@ export const attack: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             damage: 1,
+        },
+    ],
+};
+
+export const shoot: Ability = {
+    name: "Shoot",
+    image: AvengersArrowImage,
+    resourceCost: 0,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            playbackTime: 400,
+            damage: 2,
+            animationOptions: {
+                rotate: -45,
+            },
         },
     ],
 };

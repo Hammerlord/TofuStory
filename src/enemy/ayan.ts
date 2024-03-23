@@ -1,8 +1,8 @@
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
-import { AvengersArrowImage, AyanImage, BattleStatueImage, BrandishImage, SpiritVikingFlagImage } from "../images";
+import { AyanImage, BattleStatueImage, BrandishImage, SpiritVikingFlagImage } from "../images";
 import { CrossedSwordsIcon } from "../images/icons";
 import { hardy } from "./../ability/Effects";
-import { attack } from "./abilities";
+import { attack, shoot } from "./abilities";
 import { battleTrance, counterEffect } from "./effect";
 
 const phalanx: Minion = {
@@ -12,21 +12,11 @@ const phalanx: Minion = {
     armor: 50,
     abilities: [
         {
-            name: "Shoot",
-            image: AvengersArrowImage,
-            resourceCost: 0,
+            ...shoot,
             actions: [
                 {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    icon: AvengersArrowImage,
-                    playbackTime: 400,
+                    ...shoot.actions[0],
                     damage: 3,
-                    animationOptions: {
-                        rotate: -45,
-                        rotateToFaceTarget: true,
-                    },
                 },
             ],
         },

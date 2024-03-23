@@ -21,34 +21,14 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { attack } from "./abilities";
+import { attack, shoot } from "./abilities";
 import { earthen } from "./effect";
 
 const terracottaCrossbowman: Minion = {
     name: "Terracotta Bowman",
     maxHP: 14,
     image: TerracottaCrossbowmanImage,
-    abilities: [
-        {
-            name: "Shoot",
-            image: AvengersArrowImage,
-            resourceCost: 0,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    icon: AvengersArrowImage,
-                    playbackTime: 400,
-                    damage: 2,
-                    animationOptions: {
-                        rotateToFaceTarget: true,
-                        rotate: -45,
-                    },
-                },
-            ],
-        },
-    ],
+    abilities: [shoot],
     effects: [earthen],
 };
 

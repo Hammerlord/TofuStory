@@ -13,7 +13,7 @@ import {
     WolfImage,
 } from "../images";
 import { TornadoIcon } from "../images/icons";
-import { attack } from "./abilities";
+import { attack, shoot } from "./abilities";
 
 export const guardWolf: Minion = {
     name: "Wolf",
@@ -76,24 +76,7 @@ export const athena: Minion = {
     image: AthenaAttackStanceImage,
     resources: 0,
     abilities: [
-        {
-            name: "Shoot",
-            image: AvengersArrowImage,
-            resourceCost: 0,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    icon: AvengersArrowImage,
-                    playbackTime: 400,
-                    damage: 2,
-                    animationOptions: {
-                        rotate: -45,
-                    },
-                },
-            ],
-        },
+        shoot,
         {
             name: "Covering Fire",
             image: CoveringFireImage,

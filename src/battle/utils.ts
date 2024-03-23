@@ -28,6 +28,7 @@ import { ATTACK_POWER_COEFF } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getUseAbilityIndex } from "./actions/enemyTurn";
+import { attack, shoot } from "../enemy/abilities";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -741,6 +742,12 @@ export const applyVacuum = ({
 
 export const getInducedAttack = (actor: Combatant): Action => {
     let basicAttackDamage = 0;
+
+    const attackAbility = actor.abilities.find((ability) => ability.name === attack.name || ability.name === shoot.name);
+    // If there is an ability called "Attack" or "Shoot", just grab it
+    if (attackAbility) {
+        return attackAbility.actions[0];
+    }
 
     for (const ability of actor.abilities) {
         if (!ability.resourceCost) {
