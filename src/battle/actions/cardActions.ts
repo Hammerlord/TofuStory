@@ -102,6 +102,7 @@ export const drawCards = ({
             deck: newDeck,
             hand: newHand,
             discard: newDiscard,
+            deckCycled,
         };
 
         dispatch(updateBattle(newState));

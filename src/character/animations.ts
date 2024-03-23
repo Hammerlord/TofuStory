@@ -341,6 +341,48 @@ export const sendToPile = ({
 };
 
 /**
+ * Animation for when the deck has cycled and discard cards move back into the deck. It's a bit faster/different than sendToPile.
+ */
+export const refreshToPile = ({ object, to, playbackTime, delay }) => {
+    const { x, y } = getCenterCoords(object);
+    const { x: x2, y: y2 } = getCenterCoords(to);
+    const xDiff = x2 - x; // *3 because of 0.3 scale
+    const yDiff = y2 - y; // *3 because of 0.3 scale
+
+    const rotation = getRotationToFaceTarget({ x, y, x2, y2 });
+    const animationFrames = [
+        {
+            transform: "translateY(20px)",
+            easing: "ease-in",
+            opacity: 0.5,
+            offset: 0.1,
+        },
+        {
+            transform: "translateY(0)",
+            offset: 0.2,
+            opacity: 0.75,
+            easing: "ease-in",
+        },
+        {
+            transform: "translateY(0)",
+            offset: 0.75,
+            opacity: 1,
+            easing: "ease-in",
+        },
+        {
+            transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
+            opacity: 0,
+            easing: "ease-in",
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
+    });
+};
+
+/**
  * `object` plays a "stomping" animation. The element gets compressed and stretched.
  */
 export const playStompAnimation = ({ object, playbackTime = 1000 }) => {

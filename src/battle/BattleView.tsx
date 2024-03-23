@@ -243,10 +243,10 @@ const BattlefieldContainer = () => {
     const allyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
     const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
-    const battlefieldRef: React.RefObject<HTMLDivElement> = React.createRef();
-    const deckRef: React.RefObject<HTMLDivElement> = React.createRef();
-    const discardRef: React.RefObject<HTMLDivElement> = React.createRef();
-    const depleteRef: React.RefObject<HTMLDivElement> = React.createRef();
+    const battlefieldRef: React.RefObject<HTMLDivElement> = useRef();
+    const deckRef: React.RefObject<HTMLDivElement> = useRef();
+    const discardRef: React.RefObject<HTMLDivElement> = useRef();
+    const depleteRef: React.RefObject<HTMLDivElement> = useRef();
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);

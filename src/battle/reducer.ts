@@ -45,6 +45,7 @@ export interface BattleState {
     totalKills?: number;
     isTutorial?: boolean;
     addAbilities: CombatAbility[];
+    deckCycled?: boolean;
 }
 
 export interface PlayerSelectCardsPrompt {

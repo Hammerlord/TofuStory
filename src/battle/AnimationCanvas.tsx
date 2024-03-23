@@ -10,13 +10,21 @@ import {
     playShakeAnimation,
     playTossUpAnimation,
     playTravelAnimation,
+    refreshToPile,
 } from "../character/animations";
 import { Combatant } from "../character/types";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 import AbilityView from "../ability/AbilityView/AbilityView";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { battleStateSlice } from "./reducer";
+import { MapleLeavesImage } from "../images";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
+
+// For the animated cards that refresh from the discard back to the deck
+const CARD_WIDTH = 50;
+const CARD_HEIGHT = 75;
 
 // Bug with JSS where props are not passed to animation keyframes. Use HO function instead
 const useStyles = ({ brightness = 1, flash = 200 }) => {
@@ -87,12 +95,36 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             left: "50%",
             transform: "translateX(-50%) translateY(-50%)",
         },
+        cycledAbilityContainer: {
+            position: "fixed",
+            opacity: 0,
+            background: "#176fbd",
+            width: CARD_WIDTH,
+            height: CARD_HEIGHT,
+            borderRadius: "4px",
+            border: "3px solid white",
+            boxSizing: "content-box",
+            "&:before": {
+                content: "' '",
+                backgroundImage: `url(${MapleLeavesImage})`,
+                width: "100%",
+                height: "100%",
+                opacity: 0.1,
+                display: "block",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                backgroundPosition: "50% 0",
+            },
+        },
     });
 };
 
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
 const projectileElementCount = 100;
+
+const { updateBattle } = battleStateSlice.actions;
 
 const AnimationCanvas = ({
     event,
@@ -125,6 +157,10 @@ const AnimationCanvas = ({
         enemySide,
     } = event || {};
 
+    const { battle } = useAppSelector((state) => state);
+    const { deck, deckCycled } = battle;
+    const dispatch = useAppDispatch();
+
     const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
         if (!characterId) {
             return;
@@ -149,6 +185,7 @@ const AnimationCanvas = ({
     const lockedProjectileRefs = useRef(Array.from({ length: projectileElementCount }).map(() => null));
 
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
+    const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef());
 
     const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { x: actorX, y: actorY } = useMemo(() => {
@@ -158,6 +195,14 @@ const AnimationCanvas = ({
 
         return getCenterCoords(actorElement);
     }, [actorElement]);
+
+    const { x: discardX, y: discardY } = useMemo(() => {
+        if (!discardRef?.current?.getBoundingClientRect) {
+            return { x: 0, y: 0 };
+        }
+
+        return getCenterCoords(discardRef.current);
+    }, [discardRef?.current]);
 
     const { icon, animation, animationOptions } = action || {};
     const {
@@ -343,6 +388,22 @@ const AnimationCanvas = ({
         });
     }, [eventId]);
 
+    useEffect(() => {
+        if (!deckCycled || deck.length === 0) {
+            return;
+        }
+
+        const animations = deckCycleRefs.slice(0, deck.length).map((ref, i) => {
+            return refreshToPile({ object: ref.current, playbackTime: 1000, to: deckRef.current, delay: i * 25 });
+        });
+
+        if (animations?.length) {
+            animations[animations.length - 1].onfinish = () => dispatch(updateBattle({ deckCycled: false }));
+        } else {
+            dispatch(updateBattle({ deckCycled: false }));
+        }
+    }, [deckCycled, deck]);
+
     const getProjectileElement = (i: number) => {
         // Check if we're still playing the same event, but this component rerendered for some reason. Don't change the ref if so
         // Issue where projectiles would sometimes get stuck.
@@ -419,6 +480,18 @@ const AnimationCanvas = ({
                     </div>
                 ))}
             </div>
+            {deckCycled &&
+                deck.map((card, i) => (
+                    <div
+                        ref={deckCycleRefs[i]}
+                        className={classes.cycledAbilityContainer}
+                        key={card.instanceId || i}
+                        style={{
+                            left: discardX - CARD_WIDTH / 2,
+                            top: discardY - CARD_HEIGHT / 2,
+                        }}
+                    ></div>
+                ))}
         </div>
     );
 };
