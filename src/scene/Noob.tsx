@@ -207,7 +207,7 @@ export const noobRivalWarrior: EventScene = {
     conditions: [
         {
             type: SCENE_CONDITION_TYPES.VISITED_SCENES,
-            value: NOOB_EVENT_IDS.FOUGHT_WARRIOR,
+            value: NOOB_EVENT_IDS.INTRO,
             comparator: "includes",
         },
         {
