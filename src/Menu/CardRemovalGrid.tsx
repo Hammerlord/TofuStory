@@ -74,7 +74,7 @@ const CardRemovalGrid = ({
 }) => {
     const classes = useStyles();
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
-    const [isHideDuplicates, setIsHideDuplicates] = useState(true);
+    const [isHideDuplicates, setIsHideDuplicates] = useState(false);
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
@@ -99,12 +99,11 @@ const CardRemovalGrid = ({
                 </label>
                 <div className={classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
-                        <div className={classes.tileContainer}>
+                        <div className={classes.tileContainer} key={card.instanceId}>
                             <div
                                 className={classNames(classes.ability, {
                                     selectedForRemoval: card.instanceId === selectedAbilityId,
                                 })}
-                                key={card.instanceId}
                                 onClick={() => setSelectedAbilityId(card.instanceId)}
                             >
                                 <AbilityView ability={card} />
