@@ -9,13 +9,11 @@ import { RightAroundLith2Image, RightAroundLithImage } from "../images";
 import classNames from "classnames";
 
 const noobEncounter1 = {
-    characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobA, null, noobB, null] }],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
 const noobEncounter2 = {
-    characters: [noobA.name, noobB.name],
     waves: [{ enemies: [null, noobAWarrior, null, noobBWarrior, null] }],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };

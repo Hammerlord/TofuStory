@@ -28,17 +28,11 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
 const pickIndex = ({ hostile, actor, actorIndex }) => {
-    const validTargetIndices = getValidTargetIndices(hostile, {
+    const targetIndices = getValidTargetIndices(hostile, {
         // TODO area attacks are still applicable to stealthed units
         excludeStealth: !hasTruesight(actor.combatant),
+        onlyTaunt: true,
     });
-
-    // If any of the hostiles have taunt, it/they become the only valid targets for offensive abilities
-    const tauntIndices = validTargetIndices.filter((index) => {
-        return hostile[index]?.effects.some((e: CombatEffect) => e.type === EFFECT_TYPES.TAUNT);
-    });
-
-    const targetIndices = tauntIndices.length ? tauntIndices : validTargetIndices;
 
     let baseProbability = 1 / targetIndices.length;
     // Enemies are more likely to attack targets closer to them. 0 proximity: +25%, 1 proximity: +15%; 2: +5%

@@ -1357,10 +1357,17 @@ const checkInduce = ({
                     return;
                 }
 
+                const attackAction = getInducedAttack(combatant);
+                const { index } = autoSelectActionTarget({
+                    action: attackAction,
+                    actorId: id,
+                    getState,
+                });
+
                 dispatch(
                     performAction({
-                        action: getInducedAttack(combatant),
-                        selectedIndex,
+                        action: attackAction,
+                        selectedIndex: index,
                         side: hostileSide,
                         actorId: id,
                         parentSource,
@@ -1909,7 +1916,10 @@ const autoSelectActionTarget = ({
         }
 
         const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        if (hostilePlayerIndex > -1) {
+        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true }).filter((i) => {
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+        });
+        if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
             return {
                 index: hostilePlayerIndex,
                 side: hostileSide,
@@ -1920,7 +1930,7 @@ const autoSelectActionTarget = ({
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
-        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true }).filter((i) => {
+        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true }).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
 
