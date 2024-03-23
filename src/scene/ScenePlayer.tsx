@@ -27,6 +27,7 @@ import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
 import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
+import { PuzzleCompletionPayload } from "./TreasureBox/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -60,7 +61,6 @@ const useStyles = createUseStyles({
         top: "45%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        fontSize: "1.2rem",
         cursor: "pointer",
     },
     wrapper: {
@@ -84,6 +84,7 @@ const useStyles = createUseStyles({
         lineHeight: "26px",
         background: "rgba(25, 25, 25, 0.95)",
         marginBottom: "8px",
+        fontSize: "1.2rem",
 
         "& p": {
             marginTop: 0,
@@ -164,6 +165,8 @@ const useStyles = createUseStyles({
     },
     response: {
         marginBottom: "8px",
+        fontSize: "1.2rem",
+
         "& > span:before": {
             content: "'◇'",
             marginRight: "8px",
@@ -282,6 +285,7 @@ const ScenePlayer = ({
         puzzle,
         itemChoices,
         loseItems = [],
+        loseMesos,
         treasureBox,
         conditionalNext,
         infamy,
@@ -360,6 +364,12 @@ const ScenePlayer = ({
             });
         }
 
+        if (loseMesos) {
+            updatePlayer({
+                mesos: Math.max(0, player.mesos - loseMesos),
+            });
+        }
+
         if (treasureBox) {
             const { isOpen, isCursed }: ScriptNodeTreasure = treasureBox;
             setTreasureBoxOptions({
@@ -414,10 +424,16 @@ const ScenePlayer = ({
         }
     };
 
-    const onCompletePuzzle = (completionPayload: { success?: boolean; infamy?: number; score?: number; type? }) => {
-        const { infamy = 0 } = completionPayload || {};
-        dispatch(addInfamy(infamy));
-        dispatch(pushActivityHistory(completionPayload));
+    const onCompletePuzzle = (completionPayload?: PuzzleCompletionPayload) => {
+        if (completionPayload) {
+            const { infamy = 0, items = [] } = completionPayload;
+            if (items.length) {
+                dispatch(acquireItems(items));
+            }
+            dispatch(addInfamy(infamy));
+            dispatch(pushActivityHistory(completionPayload));
+        }
+
         handleClickDialog();
     };
 
@@ -430,7 +446,7 @@ const ScenePlayer = ({
         const recentActivity = activityHistory[activityHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battle = {}, comparator, chance, activityScore, items = [] } = condition || {};
+            const { battle = {}, comparator, chance, activityScore, items = [], mesos } = condition || {};
             if (chance) {
                 return Math.random() <= chance;
             }
@@ -449,6 +465,10 @@ const ScenePlayer = ({
 
             if (items.length) {
                 return items.every((itemName: string) => player.items.some((i) => i.name === itemName));
+            }
+
+            if (typeof mesos === "number") {
+                return passesValueComparison({ val: player.mesos, otherVal: mesos, comparator });
             }
         };
 

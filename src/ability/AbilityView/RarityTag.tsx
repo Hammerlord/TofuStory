@@ -25,6 +25,7 @@ const useStyles = makeStyles({
         background: "rgba(10, 10, 10, 0.7)",
         borderRadius: "4px",
         padding: "6px 8px",
+        textAlign: "center",
         color: COLOR_RARITY_COMMON,
     },
     uncommonText: {

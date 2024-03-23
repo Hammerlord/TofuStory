@@ -27,6 +27,7 @@ import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
 import TradingPost from "../scene/TradingPost";
 import { Player } from "../character/types";
+import { FortuneBox } from "../scene/FortuneBox";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -97,6 +98,7 @@ const DevToolButton = () => {
     const [isItemViewerOpen, setIsItemViewerOpen] = useState(false);
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
+    const [isFortuneBoxOpen, setIsFortuneBoxOpen] = useState(false);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -135,6 +137,7 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsTradingPostOpen((prev) => !prev)}>Trading Post</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                                 <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
+                                <MenuItem onClick={() => setIsFortuneBoxOpen((prev) => !prev)}>Fortune Box</MenuItem>
                             </MenuList>
                             Treasure Box Puzzles
                             <MenuList>
@@ -223,6 +226,7 @@ const DevToolButton = () => {
             {isTradingPostOpen && (
                 <TradingPost player={defaultCharacterProperties} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
             )}
+            {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
         </>
     );
 };

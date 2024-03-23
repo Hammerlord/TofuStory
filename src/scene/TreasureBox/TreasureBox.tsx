@@ -385,6 +385,7 @@ const TreasureBox = ({
                                 onComplete={() => setIsChestUnlocked(true)}
                                 completed={isChestUnlocked}
                                 onInteraction={handlePuzzleInteraction}
+                                player={player}
                             />
                         </div>
                     </div>

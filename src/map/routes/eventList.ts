@@ -1,6 +1,7 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
 import { cursedChestScene } from "../../scene/CursedTreasureScene";
 import { dueyIntroScene } from "../../scene/Duey/duey";
+import { fortuneBoxScene } from "../../scene/FortuneBox";
 import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { shrineScene } from "../../scene/Shrine";
@@ -103,6 +104,7 @@ export const events: EventScene[] = [
     cursedChestScene,
     wanderingSmithScene,
     shrineScene,
+    fortuneBoxScene,
 ];
 
 /**

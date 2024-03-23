@@ -12,10 +12,12 @@ import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Tooltip from "../view/Tooltip";
+import { COMMON_STYLES } from "../constants";
 
 const HEADER_BAR = 72;
 
 const useStyles = createUseStyles({
+    ...COMMON_STYLES,
     tradingPostRoot: {
         color: "white",
         position: "fixed",
@@ -38,20 +40,6 @@ const useStyles = createUseStyles({
         top: 519,
         zIndex: -1,
         opacity: 0.2,
-    },
-    "@keyframes highlightAnimation": {
-        from: {
-            filter: "drop-shadow(0 0 1px #45ff61) drop-shadow(0 0 1px #45ff61)",
-        },
-        to: {
-            filter: "drop-shadow(0 0 3px #45ff61) drop-shadow(0 0 3px #45ff61)",
-        },
-    },
-    highlightAnimation: {
-        animationName: "$highlightAnimation",
-        animationDuration: "2s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
     },
     doneContainer: {
         position: "absolute",

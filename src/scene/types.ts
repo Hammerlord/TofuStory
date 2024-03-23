@@ -10,6 +10,7 @@ export enum SCENE_CONDITION_TYPES {
     // Scene.id strings
     VISITED_SCENES = "visited-scenes",
     PLAYER_CLASS = "player-class",
+    MESOS = "mesos",
 }
 
 export interface SceneCondition {
