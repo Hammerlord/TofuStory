@@ -1,33 +1,42 @@
 import uuid from "uuid";
-import { Wave } from "../../battle/types";
 import { GeneratedRouteNode, NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
-import { generateElites, generateWaves } from "./../encounters";
-import { RouteNode } from "./../types";
 
 /**
  * Given a route's raw data, generate a route tree traversable by the player.
  */
 const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
-    const generateBranch = (baseRoute: Route, numEncountersSinceRestPoint = 0, prevRoute = undefined) => {
-        const routeId = baseRoute.id;
+    const generateBranch = ({
+        route,
+        numEncountersSinceRestPoint = 0,
+        numNodesSinceLastTreasure = 0,
+        prevRoute = undefined,
+    }: {
+        route: Route;
+        numEncountersSinceRestPoint?: number;
+        numNodesSinceLastTreasure?: number;
+        prevRoute?;
+    }) => {
+        const routeId = route.id;
 
         let initialNode;
         let currentNode;
-        let numEvents = baseRoute.nodes.length < 3 ? 0 : 1;
+        let numEvents = route.nodes.length < 3 ? 0 : 1;
         let numTreasures = 1;
         let numEliteEncounters = 0;
 
-        if (baseRoute.elites) {
-            const { numElites = 1 } = baseRoute.eliteOptions || {};
+        if (route.elites) {
+            const { numElites = 1 } = route.eliteOptions || {};
             numEliteEncounters = numElites;
         }
 
         const generateNodeType = () => {
             const types = [];
-            if (numTreasures > 0 && currentNode?.type !== NODE_TYPES.TREASURE) {
+
+            if (numTreasures > 0 && numNodesSinceLastTreasure >= 3) {
                 types.push(NODE_TYPES.TREASURE);
             }
+
             if (numEncountersSinceRestPoint >= 3) {
                 types.push(NODE_TYPES.RESTING_ZONE);
             } else {
@@ -59,7 +68,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
                 --numEliteEncounters;
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.TREASURE) {
-                const isCursedTreasure = baseRoute?.cursedTreasureChance && Math.random() <= baseRoute?.cursedTreasureChance;
+                const isCursedTreasure = route?.cursedTreasureChance && Math.random() <= route?.cursedTreasureChance;
                 transformedNode.treasure = {
                     mesos: [20, 40],
                     curse: isCursedTreasure ? "damage" : undefined,
@@ -71,6 +80,12 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
                 --numEvents;
             } else if (type === NODE_TYPES.RESTING_ZONE) {
                 numEncountersSinceRestPoint = 0;
+            }
+
+            if (type === NODE_TYPES.TREASURE) {
+                numNodesSinceLastTreasure = 0;
+            } else {
+                ++numNodesSinceLastTreasure;
             }
 
             return transformedNode;
@@ -94,7 +109,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             return generateTreeNode(baseNode);
         };
 
-        baseRoute.nodes.forEach((node) => {
+        route.nodes.forEach((node) => {
             if (!initialNode) {
                 initialNode = generateInitialNode(node);
                 currentNode = initialNode;
@@ -108,14 +123,16 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }) => {
             currentNode = next;
         });
 
-        if (baseRoute.next) {
-            currentNode.next = baseRoute.next.map((route) => generateBranch(route, numEncountersSinceRestPoint, baseRoute));
+        if (route.next) {
+            currentNode.next = route.next.map((nextRoute) =>
+                generateBranch({ route: nextRoute, numEncountersSinceRestPoint, numNodesSinceLastTreasure, prevRoute: route })
+            );
         }
 
         return initialNode;
     };
 
-    return generateBranch(startingRoute);
+    return generateBranch({ route: startingRoute });
 };
 
 export default generateTravelRoute;
