@@ -188,7 +188,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                         onClick={(e) => handleItemClick(e, i)}
                         className={classNames(ITEM_CLASS_NAME, classes.item, {
                             [classes.selectedItem]: i === selectedItemIndex,
-                            [classes.glow]: shouldGlow(item),
+                            [classes.glow]: shouldGlow(item) || getCombatCounter(item) === 0,
                         })}
                     />
                     <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
