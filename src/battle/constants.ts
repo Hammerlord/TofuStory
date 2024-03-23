@@ -3,6 +3,7 @@ export const BOSS_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm14/DragonN
 export const CLASS_LEADER_MUSIC = "https://delta.vgmsite.com/soundtracks/maplestory-music/ofdbhseojv/79.%20Hontale.mp3";
 export const STRANGE_ENCOUNTER_MUSIC = "https://delta.vgmsite.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3";
 export const CAMPAIGN_BOSS_MUSIC = "https://delta.vgmsite.com/soundtracks/maplestory-music/lywsorddis/54.%20Eregos.mp3";
+export const MARCH_MUSIC = "https://vgmsite.com/soundtracks/maplestory-music/vbuzxkzqon/46.%20Lets%20March.mp3";
 export const ATTACK_POWER_COEFF = 10; // every attack power grants 1 damage for every 10 damage dealt, minimum 1
 export const MULTI_ACTION_PLAYBACK_SPEED = 600;
 export const NORMAL_ACTION_PLAYBACK_SPEED = 750;

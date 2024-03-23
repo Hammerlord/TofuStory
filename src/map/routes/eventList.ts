@@ -7,7 +7,7 @@ import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { shrineScene } from "../../scene/Shrine";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
-import { mesoThiefScene, mesoThievesScene } from "../../scene/misc";
+import { adminScene, mesoThiefScene, mesoThievesScene } from "../../scene/misc";
 import { EventScene } from "../../scene/types";
 import { wanderingSmithScene } from "../../scene/wanderingBlacksmithScene";
 import {
@@ -106,6 +106,7 @@ export const events: EventScene[] = [
     wanderingSmithScene,
     shrineScene,
     fortuneBoxScene,
+    adminScene,
 ];
 
 /**

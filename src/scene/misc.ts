@@ -1,4 +1,5 @@
-import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
+import { MARCH_MUSIC, STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
+import { administrator } from "../enemy/administrator";
 import { duoThiefA, duoThiefB, mesoThief } from "../enemy/mesoThieves";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
@@ -51,6 +52,32 @@ export const mesoThievesScene: EventScene = {
                     encounter: {
                         waves: [{ enemies: [null, duoThiefA, null, duoThiefB, null] }],
                         backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const adminScene: EventScene = {
+    id: "admin-scene",
+    conditions: [
+        {
+            type: SCENE_CONDITION_TYPES.INFAMY,
+            comparator: "gt",
+            value: 20,
+        },
+    ],
+    script: [
+        {
+            speaker: administrator,
+            dialog: ["You have been blocked by Police GM for the HACK reason."],
+            responses: [
+                {
+                    text: "OK.",
+                    encounter: {
+                        waves: [{ enemies: [null, null, administrator, null, null] }],
+                        backgroundMusic: MARCH_MUSIC,
                     },
                 },
             ],

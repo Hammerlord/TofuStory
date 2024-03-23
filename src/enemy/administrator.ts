@@ -93,6 +93,9 @@ export const administrator: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: SuitcaseImage,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+                    animationOptions: {
+                        ricochet: true,
+                    },
                     damage: 15,
                     secondaryDamage: 7,
                     targetArea: 2,
@@ -130,7 +133,7 @@ export const administrator: Minion = {
             name: "Nimble Feet",
             image: NimbleFeetImage,
             description: "Every turn, gains a shield that wards off a single attack.",
-            turnsTriggerFrequency: 1,
+            turnsTriggerFrequency: undefined,
             onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
@@ -139,6 +142,16 @@ export const administrator: Minion = {
                         duration: 2,
                     },
                 ],
+                ability: {
+                    name: "",
+                    dialog: "GM will never ask for your username or password",
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.NONE,
+                        },
+                    ],
+                },
             },
         },
     ],
