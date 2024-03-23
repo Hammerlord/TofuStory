@@ -1,9 +1,9 @@
 import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
-import { mesoThief } from "../enemy/enemy";
+import { duoThiefA, duoThiefB, mesoThief } from "../enemy/mesoThieves";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
 export const mesoThiefScene: EventScene = {
-    id: "wanted-poster",
+    id: "meso-thief",
     conditions: [
         {
             type: SCENE_CONDITION_TYPES.INFAMY,
@@ -20,6 +20,36 @@ export const mesoThiefScene: EventScene = {
                     text: "Defend yourself.",
                     encounter: {
                         waves: [{ enemies: [null, null, mesoThief, null, null] }],
+                        backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const mesoThievesScene: EventScene = {
+    id: "duo-meso-thieves",
+    conditions: [
+        {
+            type: SCENE_CONDITION_TYPES.VISITED_SCENES,
+            comparator: "includes",
+            value: mesoThiefScene.id,
+        },
+    ],
+    script: [
+        {
+            speaker: duoThiefA,
+            dialog: ["There! It's that mushroom that beat up ImaTheif!"],
+        },
+        {
+            speaker: duoThiefB,
+            dialog: ["You'll pay for what you did to our sister!"],
+            responses: [
+                {
+                    text: "Defend yourself.",
+                    encounter: {
+                        waves: [{ enemies: [null, duoThiefA, null, duoThiefB, null] }],
                         backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
                     },
                 },

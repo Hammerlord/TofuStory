@@ -34,7 +34,6 @@ import {
     LigatorImage,
     LupinImage,
     MaladyImage,
-    MarksmanshipImage,
     MesoImage,
     MiniKargoImage,
     MonkeyBananaImage,
@@ -64,26 +63,16 @@ import {
     SlimeIdleImage,
     SnailImage,
     SnailShellImage,
-    StealImage,
     StoneGolemImage,
     StoneGolemRubbleImage,
     StumpImage,
     SubiImage,
-    TauromacisHornImage,
-    TauromacisImage,
-    TauromacisStampedeImage,
-    TauromacisThunderCrashImage,
-    TaurospearHornImage,
-    TaurospearImage,
-    TaurospearLightningSpearImage,
     TeleportImage,
-    ThiefImage,
     TreasureChestImage,
     WeaponMasteryImage,
     WildBoarImage,
     WildKargoImage,
     WoodenClubImage,
-    YellowThunderBoltProjectileImage,
     ZombieLupinJumpImage,
 } from "../images";
 import {
@@ -94,13 +83,10 @@ import {
     DizzyIcon,
     EyeIcon,
     FireIcon,
-    JapaneseOgreIcon,
-    MountainIcon,
     MuscleIcon,
     PristineRedShieldIcon,
     RedShieldIcon,
     ShieldIcon,
-    ZzzIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
 import {
@@ -121,11 +107,9 @@ import {
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
-    Ability,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Effect,
     MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
     MULTIPLIER_TYPES,
@@ -1800,100 +1784,6 @@ export const darkStoneGolem: Minion = {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                 effects: [armorDown],
             },
-        },
-    ],
-};
-
-export const mesoThief: Minion = {
-    name: "ImaTheif",
-    maxHP: 70,
-    image: ThiefImage,
-    resources: 0,
-    mesos: 50,
-    abilities: [
-        {
-            ...attack,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
-                },
-            ],
-        },
-        {
-            name: "Double Stab",
-            image: DoubleStabImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
-                },
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
-                },
-            ],
-        },
-        {
-            name: "Dark Sight",
-            image: DarkSightImage,
-            resourceCost: 3,
-            dialog: "So long, and thanks for all the mesos!",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    playbackTime: 2000,
-                    effects: [
-                        {
-                            ...stealth,
-                            description: "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
-                            preventTurnAction: true,
-                            duration: 3,
-                            onEnd: {
-                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                ability: {
-                                    name: "Retreat",
-                                    dialog: "Ciao!",
-                                    actions: [
-                                        {
-                                            type: ACTION_TYPES.EFFECT,
-                                            target: TARGET_TYPES.SELF,
-                                            retreat: true,
-                                        },
-                                    ],
-                                },
-                            },
-                            onRemoved: {
-                                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                ability: {
-                                    name: "",
-                                    dialog: "Dammit! My escape path!",
-                                    actions: [
-                                        {
-                                            type: ACTION_TYPES.NONE,
-                                            target: TARGET_TYPES.SELF,
-                                        },
-                                    ],
-                                },
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
-    effects: [
-        {
-            name: "Thief",
-            description: "Steals mesos with each attack.",
-            icon: StealImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            mesoSteal: 10,
         },
     ],
 };
