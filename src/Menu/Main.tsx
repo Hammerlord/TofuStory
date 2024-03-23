@@ -140,8 +140,7 @@ const Main = () => {
     const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
     const [activity, setActivity] = useState(null);
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
-    const [upgradingAbility, setUpgradingAbility] = useState(null);
-    const [removingAbility, setRemovingAbility] = useState(null);
+    const [usingItem, setUsingItem]: [Item, Function] = useState(null);
     const [treasure, setTreasure] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const classes = useStyles();
@@ -359,13 +358,8 @@ const Main = () => {
     } else {
         handleUseItem = (item: Item) => {
             const { upgradeCard, removeCard } = item;
-            if (upgradeCard) {
-                setUpgradingAbility(() => () => dispatch(useConsumable(item)));
-                return;
-            }
-
-            if (removeCard) {
-                setRemovingAbility(() => () => dispatch(useConsumable(item)));
+            if (upgradeCard || removeCard) {
+                setUsingItem(item);
                 return;
             }
 
@@ -537,8 +531,7 @@ const Main = () => {
         dispatch(updatePlayer({ weapon: weaponSkin }));
     };
 
-    const isActivityOpen =
-        activity || battle || scene || cardRewardsOpen || itemRewardsOpen || upgradingAbility || removingAbility || treasure;
+    const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOpen || usingItem || treasure;
 
     return (
         <>
@@ -619,32 +612,48 @@ const Main = () => {
                         />
                     )}
                     {battle && <BattlefieldContainer />}
-                    {upgradingAbility && (
+                    {usingItem?.upgradeCard && (
                         <Overlay>
                             <CardUpgradeGrid
                                 cards={deck}
-                                onCancel={() => setUpgradingAbility(null)}
+                                onCancel={() => setUsingItem(null)}
                                 onConfirm={(updatedDeck) => {
                                     dispatch(updateDeck(updatedDeck));
-                                    if (typeof upgradingAbility === "function") {
-                                        upgradingAbility();
-                                    }
-                                    setUpgradingAbility(null);
+                                    dispatch(useConsumable(usingItem));
+                                    setUsingItem((prev) => {
+                                        if (prev.stacks > 1) {
+                                            return {
+                                                ...prev,
+                                                stacks: prev.stacks - 1,
+                                            };
+                                        }
+
+                                        return null;
+                                    });
                                 }}
                             />
                         </Overlay>
                     )}
-                    {removingAbility && (
+                    {usingItem?.removeCard && (
                         <Overlay>
                             <CardRemovalGrid
                                 cards={deck}
-                                onCancel={() => setRemovingAbility(null)}
+                                onCancel={() => setUsingItem(null)}
                                 onRemoveAbility={(updatedDeck) => {
                                     dispatch(updateDeck(updatedDeck));
-                                    if (typeof removingAbility === "function") {
-                                        removingAbility();
+                                    dispatch(useConsumable(usingItem));
+                                    if (usingItem.stacks > 1) {
+                                        setUsingItem((prev) => {
+                                            if (prev.stacks > 1) {
+                                                return {
+                                                    ...prev,
+                                                    stacks: prev.stacks - 1,
+                                                };
+                                            }
+
+                                            return null;
+                                        });
                                     }
-                                    setRemovingAbility(null);
                                 }}
                             />
                         </Overlay>

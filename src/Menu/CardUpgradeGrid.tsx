@@ -167,6 +167,7 @@ const CardUpgradeGrid = ({
                                                 ...cards.filter((card) => card.instanceId !== selectedAbilityId),
                                                 upgrade(cardToUpgrade),
                                             ];
+                                            setSelectedAbilityId(null);
                                             onConfirm && onConfirm(updatedCards);
                                         }}
                                         disabled={!selectedAbilityId}
