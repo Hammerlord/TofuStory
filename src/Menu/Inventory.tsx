@@ -9,6 +9,8 @@ import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from ".
 import { useAppSelector } from "../hooks";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import Button from "../view/Button";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -107,7 +109,7 @@ const useStyles = createUseStyles({
 
 const ITEM_CLASS_NAME = "inventory-item";
 
-const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (item: Item) => void }) => {
+const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem: (item: Item) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
     const { battle } = useAppSelector((state) => state);
@@ -178,6 +180,12 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
 
     const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
 
+    const interpolateDescription = (item: Item) =>
+        Handlebars.compile(item.description || "")({
+            ...item,
+            resources: resourceClassNameMap[player.class] || "resource",
+        });
+
     return (
         <>
             {inventory.map((item: Item, i: number) => (
@@ -216,7 +224,7 @@ const Inventory = ({ inventory, onUseItem }: { inventory: Item[]; onUseItem: (it
                                 {selectedItem.rarity || RARITIES.COMMON}
                             </div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
-                            {Handlebars.compile(selectedItem.description || "")(selectedItem)}
+                            {interpolateDescription(selectedItem)}
                             <div className={classes.useButtonContainer}>
                                 {isItemUsable && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>

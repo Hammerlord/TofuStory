@@ -169,7 +169,7 @@ const Header = ({
                         <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                     </div>
                 </div>
-                <Inventory inventory={player.items} onUseItem={onUseItem} />
+                <Inventory player={player} inventory={player.items} onUseItem={onUseItem} />
             </div>
             {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
         </>
