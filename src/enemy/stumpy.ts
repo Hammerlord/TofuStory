@@ -70,7 +70,7 @@ export const stumpy: Minion = {
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.HOSTILE,
+                    target: TARGET_TYPES.PLAYER,
                     icon: BatsEffectImage,
                     effects: [bats],
                 },

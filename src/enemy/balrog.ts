@@ -215,7 +215,7 @@ export const balrog: Minion = {
             image: FireMarbleImage,
             actions: [
                 {
-                    damage: 5,
+                    damage: 10,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     icon: FireMarbleImage,
@@ -261,13 +261,13 @@ export const balrog: Minion = {
             image: BloodIcon,
             actions: [
                 {
-                    damage: 5,
+                    damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
                 },
                 {
-                    damage: 5,
+                    damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
@@ -281,13 +281,13 @@ export const balrog: Minion = {
             image: BrutalClawImage,
             actions: [
                 {
-                    damage: 7,
+                    damage: 8,
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
+                    target: TARGET_TYPES.PLAYER,
                     destroyArmor: 1,
                     moveCards: {
                         from: "deck",
-                        to: "discard",
+                        to: "deplete",
                         amount: 1,
                     },
                 },
