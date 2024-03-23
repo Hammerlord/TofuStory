@@ -208,7 +208,6 @@ export const cursedChestScene: EventScene = {
                         },
                         {
                             scene: (other) => <CursedTreasureBackdrop showBeginner={true} beginnerMoved={true} {...other} />,
-                            disableTransition: true,
                             speaker: noobA,
                             dialog: ["Come on, come on, give me Steelies!", "[The beginner fiddles with the lock...]"],
                         },
@@ -230,7 +229,6 @@ export const cursedChestScene: EventScene = {
                                         },
                                         {
                                             speaker: noobA,
-                                            disableTransition: true,
                                             scene: (other) => (
                                                 <CursedTreasureBackdrop
                                                     showBeginner={true}
@@ -246,7 +244,6 @@ export const cursedChestScene: EventScene = {
                                         },
                                         {
                                             scene: (other) => <CursedTreasureBackdrop {...other} />,
-                                            disableTransition: true,
                                             speaker: treasureBox,
                                             dialog: ["[The treasure box sits there menacingly...]"],
                                         },
@@ -257,7 +254,6 @@ export const cursedChestScene: EventScene = {
                                         },
                                         {
                                             scene: (other) => <CursedTreasureBackdrop showBandit={true} banditMoved={true} {...other} />,
-                                            disableTransition: true,
                                             speaker: eventBandit,
                                             dialog: [
                                                 "Silly noobs should've been bandits. Nobody beats a bandit at treasure hunting. Let's see here...",
@@ -275,7 +271,6 @@ export const cursedChestScene: EventScene = {
                                             ),
                                             speaker: treasureBox,
                                             dialog: ["[After a moment, the treasure box lock clicks and the sickly aura fades away.]"],
-                                            disableTransition: true,
                                         },
                                         {
                                             speaker: eventBandit,
@@ -296,7 +291,6 @@ export const cursedChestScene: EventScene = {
                                                                     {...other}
                                                                 />
                                                             ),
-                                                            disableTransition: true,
                                                             dialog: [
                                                                 "WTF? My treasure box! You stealer! Well, I'm a stealer, too, but--bah!",
                                                             ],
@@ -309,7 +303,6 @@ export const cursedChestScene: EventScene = {
                                                                     {...other}
                                                                 />
                                                             ),
-                                                            disableTransition: true,
                                                             speaker: eventBandit,
                                                             dialog: ["[Without another word, the bandit's ghost vanishes.]"],
                                                         },
@@ -346,7 +339,6 @@ export const cursedChestScene: EventScene = {
                                                             scene: (other) => <CursedTreasureBackdrop showChest={false} {...other} />,
                                                             speaker: eventBandit,
                                                             dialog: ["[The bandit saunters away, whistling.]"],
-                                                            disableTransition: true,
                                                         },
                                                         {
                                                             scene: (other) => (
@@ -402,11 +394,9 @@ export const cursedChestScene: EventScene = {
                                             ),
                                             speaker: noobA,
                                             dialog: ["Aieeeee!"],
-                                            disableTransition: true,
                                         },
                                         {
                                             scene: (other) => <CursedTreasureBackdrop {...other} />,
-                                            disableTransition: true,
                                             speaker: treasureBox,
                                             dialog: [
                                                 "[The Mimic snaps up the beginner, who promptly disappears into its dark depths screaming.",

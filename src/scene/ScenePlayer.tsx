@@ -404,17 +404,9 @@ const ScenePlayer = ({
     const onProceedDialog = () => {
         const newDialogIndex = dialogIndex + 1;
         if (script[newDialogIndex]) {
-            const { scene: newScene, disableTransition } = script[newDialogIndex] || {};
-            if (newScene && newScene !== Backdrop && !disableTransition) {
-                onTransition(() => {
-                    setDialogIndex(newDialogIndex);
-                });
-            } else {
-                setDialogIndex(newDialogIndex);
-            }
+            setDialogIndex(newDialogIndex);
         } else {
-            const { disableTransition } = script[dialogIndex] || {};
-            handleExit(disableTransition);
+            handleExit();
         }
     };
 

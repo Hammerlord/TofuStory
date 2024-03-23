@@ -83,8 +83,6 @@ export interface ScriptNode {
         image: string;
     };
     scene?: ({ player }: { player: Player }) => JSX.Element;
-    // Do not fade to black if scene changes
-    disableTransition?: boolean;
     disableBackground?: boolean;
     background?: string;
     puzzle?: ({

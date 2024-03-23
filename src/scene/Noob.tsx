@@ -116,7 +116,6 @@ export const noobIntro: EventScene = {
                         {
                             speaker: noobA,
                             dialog: ["[The beginners flee.]"],
-                            disableTransition: true,
                             scene: (other) => <NoobIntroBackdrop hideBeginners={true} {...other} />,
                             responses: [
                                 {

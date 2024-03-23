@@ -312,7 +312,6 @@ const maladyDialog: ScriptNode[] = [
                     },
                     {
                         scene: DarkForestMaladies,
-                        disableTransition: true,
                         speaker: malady,
                         dialog: [
                             "[The Malady swoop down.] Hmm! What's this we spy with our little eye? They sent a seeker. An unusual one who could almost pass as human to a less discerning gaze... Did they know?",
@@ -368,7 +367,6 @@ const maladyDialog: ScriptNode[] = [
                                     },
                                     {
                                         scene: TwilitForest2,
-                                        disableTransition: true,
                                         dialog: [
                                             "[As you venture forward, the path grows darker and darker in a way that has nothing to do with the forest canopy... You won't be able to find your way like this.]",
                                         ],
@@ -462,7 +460,6 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         scene: TwilitForest4,
-                                                        disableTransition: true,
                                                         dialog: [
                                                             "[You sense yourself being surrounded by strange presences. You can feel their forlorn stares even as they say nothing to you.]",
                                                         ],
@@ -503,7 +500,6 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         scene: TombstonesTwilitForest,
-                                                        disableTransition: true,
                                                         dialog: [
                                                             "[You come across a small group of ancient grave markers. It appears to be a gravesite.]",
                                                         ],
@@ -540,7 +536,6 @@ const maladyDialog: ScriptNode[] = [
                                                                     },
                                                                     {
                                                                         scene: TombstonesTwilitForestFairies,
-                                                                        disableTransition: true,
                                                                         dialog: [
                                                                             "[The tiny fairy-creatures you saw from the gravesite are now fluttering around you. They seem to be trying to get your attention. Maybe they can help you get out of here.]",
                                                                         ],
@@ -750,7 +745,6 @@ const inLupinForest = {
                 },
                 {
                     scene: LupinForest2,
-                    disableTransition: true,
                     speaker: lupin,
                     dialog: ["[Suddenly, a furry shape darts into sight.]"],
                 },

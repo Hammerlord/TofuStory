@@ -123,7 +123,6 @@ const skipScript: EventScene = {
             speaker: casey,
             background: LithHarborCityBGImage,
             scene: CaseyBackdrop,
-            disableTransition: true,
             dialog: [
                 "Hey Mushie! Before you go, here's the stuff you would've gotten from the remaining events in town. Good luck out there!",
             ],
@@ -150,7 +149,6 @@ const shopScript: EventScene = {
     id: "lith-shop",
     script: [
         {
-            disableTransition: true,
             disableBackground: true,
             speaker: { name: "Natasha", image: NatashaImage },
             dialog: ["Ahhh! Out, you pest!"],

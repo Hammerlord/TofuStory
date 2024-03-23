@@ -127,14 +127,12 @@ const playRoute: ScriptResponse = {
             loseMesos: 100,
         },
         {
-            disableTransition: true,
             speaker: casey,
             dialog: ["Woohoo!"],
         },
         {
             speaker: casey,
             dialog: ["Woohoo!"],
-            disableTransition: true,
             conditionalNext: [
                 {
                     conditions: [

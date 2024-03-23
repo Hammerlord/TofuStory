@@ -90,7 +90,6 @@ export const introScene: EventScene = {
     script: [
         {
             disableBackground: true,
-            disableTransition: true,
             dialog: [
                 "[As you gain your bearings, you notice a seaside town nearby. Something about blue roofs and white stones seems familiar, though you can't place what exactly.",
                 "Well, civilization is a welcome sight, isn't it?",
@@ -105,12 +104,10 @@ export const startJourneyScene: EventScene = {
     script: [
         {
             disableBackground: true,
-            disableTransition: true,
             dialog: ["[The townsfolk were wary of your presence. It'll be hard to approach people as a monster.]"],
         },
         {
             disableBackground: true,
-            disableTransition: true,
             dialog: ["[Can this really be your fate?", "Somewhere on this island, there has to be answers. Journey to find them.]"],
         },
     ],

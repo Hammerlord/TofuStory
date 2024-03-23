@@ -281,7 +281,6 @@ export const dueyIntroScene: EventScene = {
                         },
                         {
                             scene: DueyHelpedScene,
-                            disableTransition: true,
                             speaker: duey,
                             dialog: ["Phew! Thanks! You really saved my hide there."],
                         },
@@ -424,7 +423,6 @@ export const dueyIntroScene: EventScene = {
                                     next: [
                                         {
                                             scene: DueyMuggedScene,
-                                            disableTransition: true,
                                             dialog: ["Inside Duey's box is...", "Just a letter. It reads:"],
                                         },
                                         {
