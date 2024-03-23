@@ -79,6 +79,8 @@ const useStyles = createUseStyles({
         margin: "0 auto",
         alignSelf: "flex-end",
         position: "relative",
+        // Issue where your player character element could block clicks on the enemy when using subsequent abilities
+        pointerEvents: "none",
     },
     portraitImage: {
         minWidth: "40%",
