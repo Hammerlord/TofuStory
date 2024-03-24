@@ -91,6 +91,7 @@ const postFightDialog2 = {
         {
             scene: (other) => <PantryScene {...other} hideMiniBean={true} />,
             text: "Help yourself to a bunch of leftover food.",
+            infamy: 3,
             next: [
                 {
                     dialog: ["[You started grabbing some food.]"],

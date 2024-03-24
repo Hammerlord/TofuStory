@@ -82,6 +82,7 @@ const CLICKS_TO_COMPLETE = 10;
 
 const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);
+    const [bystandersClicked, setBystandersClicked] = useState(0);
     const [timer, setTimer] = useState(0);
     const classes = useStyles();
     const makeBystander = (left?: number) => {
@@ -172,12 +173,17 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                 };
             })
         );
+
+        const newBystanderClicked = !bystanders.find((bystander) => bystander.id === clickedId)?.clicked;
+        if (newBystanderClicked) {
+            setBystandersClicked((prev) => prev + 1);
+        }
     };
 
     const handleClickLakelis = () => {
         const clickedTimes = clickedLakelisTimes + 1;
         if (clickedTimes >= CLICKS_TO_COMPLETE) {
-            onComplete();
+            onComplete({ infamy: Math.min(5, bystandersClicked) });
         }
         setClickedLakelisTimes(clickedTimes);
     };

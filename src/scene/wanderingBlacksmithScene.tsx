@@ -55,11 +55,8 @@ const fedPath: ScriptNode[] = [
         speaker: wanderingBlacksmith,
         dialog: [
             "I am the Wandering Blacksmith. I travel across the island, offering my particular set of skills for the glory of the Maple gods.",
+            "Have you need of my services?",
         ],
-    },
-    {
-        speaker: wanderingBlacksmith,
-        dialog: ["Have you need of my services?"],
         responses: [
             {
                 text: "Nod.",
