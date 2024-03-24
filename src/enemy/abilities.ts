@@ -1,5 +1,13 @@
-import { AvengersArrowImage, HasteImage, IronHogHoofImage } from "../images";
-import { CrossedSwordsIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
+import { attackPower } from "./../ability/Effects";
+import {
+    AvengersArrowImage,
+    BlueMushroomJumpImage,
+    BlueMushroomJumpRightImage,
+    HasteImage,
+    IronHogHoofImage,
+    MushroomOmokImage,
+} from "../images";
+import { CrossedSwordsIcon, DizzyIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
 
 export const attack: Ability = {
@@ -111,6 +119,93 @@ export const enemyHaste: Ability = {
                     icon: HasteImage,
                 },
             ],
+        },
+    ],
+};
+
+export const whomp: Ability = {
+    name: "Whomp",
+    image: MushroomOmokImage,
+    resourceCost: 3,
+    castTime: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 5,
+            area: 1,
+            secondaryDamage: 3,
+            addCardsToDiscard: [
+                {
+                    name: "Dazed",
+                    image: DizzyIcon,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.HINDER,
+                            target: TARGET_TYPES.SELF,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const doWave: Ability = {
+    name: "Do the Wave!",
+    resourceCost: 3,
+    image: BlueMushroomJumpImage,
+    actions: [
+        {
+            induceCombatant: {
+                mode: "left-to-right",
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.STOMP,
+                    animationOptions: {
+                        disableScreenShake: true,
+                    },
+                    effects: [
+                        {
+                            ...attackPower,
+                            duration: 3,
+                        },
+                    ],
+                    playbackTime: 600,
+                },
+            },
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            area: 5,
+            playbackTime: 400,
+        },
+    ],
+};
+
+export const doOtherWave: Ability = {
+    name: "Do the Other Wave!",
+    resourceCost: 3,
+    image: BlueMushroomJumpRightImage,
+    actions: [
+        {
+            induceCombatant: {
+                mode: "right-to-left",
+                action: {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.STOMP,
+                    animationOptions: {
+                        disableScreenShake: true,
+                    },
+                    armor: 7,
+                    playbackTime: 600,
+                },
+            },
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            area: 5,
+            playbackTime: 400,
         },
     ],
 };

@@ -119,7 +119,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
-import { attack, enemyHaste, loaf } from "./abilities";
+import { attack, doOtherWave, doWave, enemyHaste, loaf, whomp } from "./abilities";
 import { armorDown, championsRibbon, critical, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
 
 export const snail: Minion = {
@@ -377,33 +377,7 @@ export const orangeMushroom: Minion = {
                 },
             ],
         },
-        {
-            name: "Whomp",
-            image: MushroomOmokImage,
-            resourceCost: 3,
-            castTime: 1,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
-                    area: 1,
-                    secondaryDamage: 3,
-                    addCardsToDiscard: [
-                        {
-                            name: "Dazed",
-                            image: DizzyIcon,
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.HINDER,
-                                    target: TARGET_TYPES.SELF,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
+        whomp,
     ],
 };
 
@@ -2344,63 +2318,8 @@ export const blueMushroom: Minion = {
                 },
             ],
         },
-        {
-            name: "Do the Wave!",
-            resourceCost: 3,
-            image: BlueMushroomJumpImage,
-            actions: [
-                {
-                    induceCombatant: {
-                        mode: "left-to-right",
-                        action: {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
-                            animation: ANIMATION_TYPES.STOMP,
-                            animationOptions: {
-                                disableScreenShake: true,
-                            },
-                            effects: [
-                                {
-                                    ...attackPower,
-                                    duration: 3,
-                                },
-                            ],
-                            playbackTime: 600,
-                        },
-                    },
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    area: 5,
-                    playbackTime: 400,
-                },
-            ],
-        },
-        {
-            name: "Do the Other Wave!",
-            resourceCost: 3,
-            image: BlueMushroomJumpRightImage,
-            actions: [
-                {
-                    induceCombatant: {
-                        mode: "right-to-left",
-                        action: {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
-                            animation: ANIMATION_TYPES.STOMP,
-                            animationOptions: {
-                                disableScreenShake: true,
-                            },
-                            armor: 7,
-                            playbackTime: 600,
-                        },
-                    },
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    area: 5,
-                    playbackTime: 400,
-                },
-            ],
-        },
+        doWave,
+        doOtherWave,
     ],
     effects: [hardy],
 };

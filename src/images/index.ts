@@ -357,6 +357,8 @@ export { default as MossyMushroomImage } from "./MossyMushroom.gif";
 export { default as MossySnailImage } from "./MossySnail.gif";
 export { default as MPEaterImage } from "./MPEater.png";
 export { default as MuddySwampMonsterImage } from "./MuddySwampMonster.gif";
+export { default as MushmomImage } from "./Mushmom.gif";
+export { default as MushmomJumpImage } from "./MushmomJump.gif";
 export { default as MushroomOmokImage } from "./MushroomOmok.png";
 export { default as MushroomSporeImage } from "./MushroomSpore.png";
 export { default as MutantRibbonPigImage } from "./MutantRibbonPig.gif";
