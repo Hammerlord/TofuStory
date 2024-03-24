@@ -9,7 +9,7 @@ export const mushmom: Minion = {
     name: "Mushmom",
     image: MushmomImage,
     isBoss: true,
-    maxHP: 200,
+    maxHP: 300,
     abilities: [
         {
             name: "Call Mushroom",
@@ -32,7 +32,7 @@ export const mushmom: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },

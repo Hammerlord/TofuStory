@@ -1,4 +1,5 @@
 import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
+import { mushmom } from "../../enemy/mushmom";
 import { strangePig } from "../../enemy/strangePig";
 import { stumpy } from "../../enemy/stumpy";
 
@@ -50,9 +51,22 @@ export const stumpyFight = {
     ],
 };
 
+export const mushmomFight = {
+    id: mushmom.name,
+    waves: [
+        {
+            enemies: [null, null, mushmom, null, null],
+            winCondition: {
+                defeatBoss: true,
+            },
+        },
+    ],
+};
+
 export const OVERWORLD_BOSS_ID_MAP = {
     [mutantSnailFight.id]: mutantSnailFight,
     [strangePigFight.id]: strangePigFight,
     [manoFight.id]: manoFight,
     [stumpyFight.id]: stumpyFight,
+    [mushmomFight.id]: mushmomFight,
 };
