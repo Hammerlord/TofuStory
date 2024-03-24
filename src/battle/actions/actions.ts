@@ -440,7 +440,7 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
  * (so that 5x bleed doesn't trigger damage received events 5x).
  * @param combatantId - Combatant UUID
  */
-const handleDoTs =
+export const handleDoTs =
     ({ combatantId, dotType, source }: { combatantId: string; dotType: EFFECT_TYPES; source?: TriggerSource }) =>
     (dispatch, getState) => {
         const combatantInfo = findCombatantData(getState, combatantId);
@@ -1091,16 +1091,6 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
 
 export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
     return (dispatch) => {
-        [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
-            side.forEach((combatant: Combatant | null) => {
-                if (!combatant) {
-                    return;
-                }
-
-                dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
-            });
-        });
-
         side.forEach((combatant: Combatant | null) => {
             if (!combatant) {
                 return;
