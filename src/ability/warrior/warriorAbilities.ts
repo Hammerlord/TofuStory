@@ -256,7 +256,7 @@ export const block: Ability = {
     actions: [
         {
             armor: 5,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
         },
     ],
@@ -557,7 +557,7 @@ export const hyperBody: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             armor: 5,
             drawCards: {
                 amount: 1,
@@ -761,7 +761,7 @@ export const recovery: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             effects: [
                 {
                     name: "Recovery",
@@ -857,7 +857,7 @@ export const ironBody: Ability = {
         {
             armor: 5,
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             effects: [
                 {
                     ...preventArmorDecayPlayer,
@@ -1874,14 +1874,14 @@ export const shockGuard: Ability = {
     name: "Shock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
-    description: "Double your current Armor.",
+    description: "Double a character's current Armor.",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
     disableConditionGlow: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             bonus: {
                 armor: 1,
                 multiplier: {
@@ -2198,7 +2198,7 @@ export const guardian: Ability = {
     minion: {
         name: "Guardian Statue",
         image: PinkBeanStatueImage,
-        maxHP: 10,
+        maxHP: 5,
         abilities: [
             {
                 ...attack,
@@ -2450,7 +2450,7 @@ export const honedBlock: Ability = {
         {
             armor: 5,
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
         },
     ],
     upgrades: [

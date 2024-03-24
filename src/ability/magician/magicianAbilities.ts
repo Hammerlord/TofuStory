@@ -432,7 +432,7 @@ export const magicArmor: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             armor: 5,
         },
@@ -455,7 +455,7 @@ export const barrier: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             armor: 6,
             bonus: {
@@ -685,7 +685,7 @@ export const frostBarrier: Ability = {
     description: "Attackers are Chilled for 2 turns.",
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             armor: 5,
             effects: [
@@ -2236,7 +2236,7 @@ export const moonlight: Ability = {
     actions: [
         {
             healing: 3,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: LunarPiecesImage,
