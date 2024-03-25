@@ -370,7 +370,16 @@ export const startEnemyTurn = () => {
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
         });
+    };
+};
 
+export const enemyMoves = () => {
+    return (dispatch, getState) => {
+        const getEnemySideInfo = () => {
+            return getState().battle.enemySide.map((combatant) => {
+                return findCombatantData(getState, combatant?.id);
+            });
+        };
         const acted = {};
         const isEligibleToMove = (char: Combatant | null) => {
             return char?.HP > 0 && !acted[char.id] && (char.abilities.length > 0 || char.damage > 0);

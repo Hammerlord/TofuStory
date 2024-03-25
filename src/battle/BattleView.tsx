@@ -38,7 +38,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { calculateTargetIndices, checkEventTrigger, findCombatantData, stageStatChanges, useAbility } from "./actions/actions";
 import { applyAbilityEventEffects } from "./actions/cardActions";
-import { endEnemyTurn, startEnemyTurn } from "./actions/enemyTurn";
+import { endEnemyTurn, enemyMoves, startEnemyTurn } from "./actions/enemyTurn";
 import { getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
@@ -618,16 +618,24 @@ const BattlefieldContainer = () => {
             setShowTurnAnnouncement(true);
             setTimeout(() => {
                 setShowTurnAnnouncement(false);
-                // Brittle: "Turn in progress" state can interfere with ending enemy turns that are too short, causing their turn to get stuck.
-                // So move it up here before turn happens. The "turn in progress" event itself happens in the startPlayer/EnemyTurn function anyway.
-                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
 
                 if (isPlayerTurn) {
                     dispatch(startPlayerTurn(prevBattleState === BATTLE_STATES.WAVE_START));
                 } else {
                     dispatch(startEnemyTurn());
                 }
+
+                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
             }, TURN_ANNOUNCEMENT_TIME);
+
+            return;
+        }
+
+        if (battleState === BATTLE_STATES.TURN_IN_PROGRESS) {
+            if (!isPlayerTurn) {
+                dispatch(enemyMoves());
+            }
+
             return;
         }
 
@@ -669,15 +677,9 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        if (events.length > 0) {
-            const timeout = setTimeout(() => {
-                dispatch(popEventQueue());
-            }, events[0].playbackTime);
-
-            return () => {
-                clearTimeout(timeout);
-            };
-        }
+        setTimeout(() => {
+            dispatch(popEventQueue());
+        }, events[0].playbackTime);
     }, [events, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {

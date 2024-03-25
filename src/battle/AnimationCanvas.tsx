@@ -183,8 +183,6 @@ const AnimationCanvas = ({
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
     const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef() as any);
-    const lockedProjectileRefs = useRef(Array.from({ length: projectileElementCount }).map(() => null));
-
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef());
 
