@@ -915,6 +915,22 @@ const BattlefieldContainer = () => {
         return result;
     })();
 
+    const animationCanvas = useMemo(
+        () => (
+            <AnimationCanvas
+                event={events[0]}
+                battlefieldRef={battlefieldRef}
+                allyRefs={allyRefs}
+                enemyRefs={enemyRefs}
+                deckRef={deckRef}
+                discardRef={discardRef}
+                depleteRef={depleteRef}
+                initialBattlefield={{ playerSide, enemySide }}
+            />
+        ),
+        [events[0]?.id]
+    );
+
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
             <div className={classes.root} onClick={handleBattlefieldClick}>
@@ -1028,16 +1044,7 @@ const BattlefieldContainer = () => {
                             </div>
                         </div>
                     </div>
-                    <AnimationCanvas
-                        event={events[0]}
-                        battlefieldRef={battlefieldRef}
-                        allyRefs={allyRefs}
-                        enemyRefs={enemyRefs}
-                        deckRef={deckRef}
-                        discardRef={discardRef}
-                        depleteRef={depleteRef}
-                        initialBattlefield={{ playerSide, enemySide }}
-                    />
+                    {animationCanvas}
                     <div className={classes.abilityContainer}>
                         {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && (
                             <div className={classes.clickIndicator}>
