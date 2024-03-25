@@ -227,9 +227,6 @@ const AnimationCanvas = ({
 
     const animationRefs = useRef([]);
 
-    //@ts-ignore
-    const findOpenIndex = () => lockedProjectileRefs.current.findLastIndex((item) => item) + 1;
-
     useEffect(() => {
         if (!targetElement || !action || !actorElement) {
             return;
@@ -246,21 +243,14 @@ const AnimationCanvas = ({
         }
 
         const options = { spin, rotation: rotate, playbackTime: playbackTime, rotateToFaceTarget };
+        animationRefs.current.forEach((animation) => animation.cancel());
+        animationRefs.current = [];
 
         if (icon) {
-            const animateProjectile = (target) => {
-                const openIndex = findOpenIndex();
-                const toIndex = openIndex + 1 * beamProjectileMultiplier;
-
-                // Lock the refs from being used by another animation, until the animation is done
-                const setRefsLocked = (isLocked: boolean) => {
-                    for (let i = openIndex; i < toIndex; ++i) {
-                        lockedProjectileRefs.current[i] = isLocked ? eventId : null;
-                    }
-                };
-
-                setRefsLocked(true);
-                const object = projectileRefs.slice(openIndex, toIndex).map((ref) => ref.current);
+            const animateProjectile = (target, projectileRefIndex: number = 0) => {
+                const refsFrom = projectileRefIndex * beamProjectileMultiplier;
+                const refsTo = refsFrom + 1 * beamProjectileMultiplier;
+                const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
 
                 if (animation === ANIMATION_TYPES.CONSUMABLE) {
                     const animations = playTossUpAnimation({
@@ -268,7 +258,7 @@ const AnimationCanvas = ({
                         object,
                         ...options,
                     });
-                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
+                    animationRefs.current.push(...animations);
                 } else if (animation === ANIMATION_TYPES.ACTION_EXPLODE) {
                     const animations = playExplodeAnimation({
                         from: actorElement,
@@ -276,7 +266,7 @@ const AnimationCanvas = ({
                         ...options,
                     });
 
-                    animations[animations.length - 1].onfinish = () => setRefsLocked(false);
+                    animationRefs.current.push(...animations);
                 } else {
                     const animations = playTravelAnimation({
                         from: actorElement,
@@ -289,7 +279,7 @@ const AnimationCanvas = ({
                     });
 
                     if (animations?.length) {
-                        animations[animations.length - 1].onfinish = () => setRefsLocked(false);
+                        animationRefs.current.push(...animations);
                     }
                 }
             };
@@ -406,15 +396,6 @@ const AnimationCanvas = ({
     }, [deckCycled, deck]);
 
     const getProjectileElement = (i: number) => {
-        // Check if we're still playing the same event, but this component rerendered for some reason. Don't change the ref if so
-        // Issue where projectiles would sometimes get stuck.
-        const currentLockIndex = lockedProjectileRefs.current.findIndex((id) => id === eventId);
-        if (currentLockIndex > -1) {
-            i = currentLockIndex + i;
-        } else {
-            i = findOpenIndex() + i;
-        }
-
         const projectileDimensions = { width: 70, height: 70 };
         const props = {
             key: i,
