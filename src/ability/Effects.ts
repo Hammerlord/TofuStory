@@ -138,7 +138,7 @@ export const bleed: Effect = {
     attackDamageReceived: 1,
     maxApplications: 5,
     icon: BloodIcon,
-    description: "Target takes 1 damage at turn start and receives +1 damage from attacks. Max 5.",
+    description: "Target takes 1 damage at turn end and receives +1 damage from attacks. Max 5.",
 };
 
 export const burn: Effect = {
@@ -147,7 +147,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     icon: FireIcon,
-    description: "Target takes 3 damage at turn start.",
+    description: "Target takes 3 damage at turn end.",
 };
 
 export const chill: Effect = {
@@ -524,7 +524,7 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Healing received reduced by 1. Taking 2 damage at turn start.",
+    description: "Healing received reduced by 1. Taking 2 damage at turn end.",
     icon: PoisonImage,
     duration: 3,
     healingReceived: -1,
