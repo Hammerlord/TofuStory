@@ -371,7 +371,19 @@ export const panlid: Item = {
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    effects: [armorUp, armorUp],
+    effects: [
+        armorUp,
+        armorUp,
+        {
+            name: "Pan Lid",
+            class: EFFECT_CLASSES.NONE,
+            type: EFFECT_TYPES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [armorUp, armorUp],
+            },
+        },
+    ],
 };
 
 export const alligatorTube: Item = {
@@ -537,7 +549,18 @@ export const aquamarine: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AquamarineImage,
-    effects: [armorUp],
+    effects: [
+        armorUp,
+        {
+            name: "Aquamarine",
+            class: EFFECT_CLASSES.NONE,
+            type: EFFECT_TYPES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [armorUp],
+            },
+        },
+    ],
 };
 
 export const boneHelm: Item = {
@@ -1469,6 +1492,19 @@ export const adamantiumPlate: Item = {
     ],
 };
 
+const kargoEyeEffect: Effect = {
+    name: "Wild Kargo Eye",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    attackPower: 1,
+    conditions: [
+        {
+            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+        },
+    ],
+};
+
 export const wildKargoEye: Item = {
     name: "Wild Kargo Eye",
     description: "Gain 1 attack power against debuffed targets.",
@@ -1476,17 +1512,15 @@ export const wildKargoEye: Item = {
     rarity: RARITIES.UNCOMMON,
     image: WildKargoEyeImage,
     effects: [
+        kargoEyeEffect,
         {
-            name: "Wild Kargo Eye",
+            name: "Wild Kargo Eye - Minion",
             type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackPower: 1,
-            conditions: [
-                {
-                    hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                },
-            ],
+            class: EFFECT_CLASSES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [kargoEyeEffect],
+            },
         },
     ],
 };
@@ -1980,6 +2014,20 @@ export const chessPiece: Item = {
     ],
 };
 
+const ironBallEffect: Effect = {
+    name: "Iron Ball",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    conditions: [
+        {
+            armor: 0,
+            comparator: "gt",
+            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+        },
+    ],
+};
+
 export const ironBall: Item = {
     name: "Iron Ball",
     type: ITEM_TYPES.EQUIPMENT,
@@ -1987,18 +2035,15 @@ export const ironBall: Item = {
     image: IronBallImage,
     description: "Gain 1 attack power against Armored targets.",
     effects: [
+        ironBallEffect,
         {
-            name: "Iron Ball",
+            name: "Iron Ball - Minion",
             type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            attackPower: 1,
-            conditions: [
-                {
-                    armor: 0,
-                    comparator: "gt",
-                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                },
-            ],
+            class: EFFECT_CLASSES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [ironBallEffect],
+            },
         },
     ],
 };
