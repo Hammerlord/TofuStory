@@ -1,5 +1,4 @@
 import { cloneDeep } from "lodash";
-import { getUpgradeCard } from "./../../Menu/utils";
 import {
     AdvancedWeaponMasteryImage,
     BladestormImage,
@@ -18,7 +17,6 @@ import {
     CloseCombatImage,
     CombatOrdersImage,
     ComboFuryImage,
-    ComboSynergyImage,
     DarkImpaleImage,
     DarkThirstImage,
     DivineChargeImage,
@@ -27,7 +25,6 @@ import {
     EnrageImage,
     FlagImage,
     GiganticSledgeImage,
-    GoldBarImage,
     GungnirImage,
     HammerImage,
     HighPaladinImage,
@@ -72,21 +69,8 @@ import {
     WeaponMasteryImage,
     WorldReaverImage,
 } from "../../images";
-import { TornadoIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import {
-    bleed,
-    immunity,
-    silence,
-    stealth,
-    stun,
-    thorns,
-    attackPower,
-    armorUp,
-    infuriateEffect,
-    directDamageTaken,
-    ward,
-} from "../Effects";
+import { armorUp, bleed, directDamageTaken, immunity, infuriateEffect, silence, stealth, stun, thorns, ward } from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -101,6 +85,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
+import { getUpgradeCard } from "./../../Menu/utils";
 import { preventArmorDecayPlayer } from "./../Effects";
 import { MULTIPLIER_TYPES } from "./../types";
 
@@ -694,7 +679,7 @@ export const berserk: Ability = {
     resourceCost: 1,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less, until they are discarded.",
+    description: "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less until discarded.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -1073,7 +1058,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoImage,
-    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} damage to up to 3 enemies",
+    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} to up to 3 enemies",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1249,7 +1234,7 @@ export const bladedArmor: Ability = {
     name: "Bladed Armor",
     resourceCost: 1,
     image: MetalAxeImage,
-    description: "When you lose armor, hurl a sidearm at a random enemy for {{ nestedAbility.actions.0.damage }} damage",
+    description: "When you lose armor, hurl a sidearm at a random enemy for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}}",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -1346,7 +1331,7 @@ export const counterattack: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Until your next turn, you counter attackers for {{ nestedAbility.actions.0.damage }} damage and inflict Bleed.",
+    description: "Until next turn, <b>Taunt</b> and counter attackers for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} + Bleed.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1354,7 +1339,7 @@ export const counterattack: Ability = {
             effects: [
                 {
                     name: "Counter",
-                    type: EFFECT_TYPES.RAGE,
+                    type: EFFECT_TYPES.TAUNT,
                     class: EFFECT_CLASSES.BUFF,
                     image: NamelessSwordImage,
                     icon: NamelessSwordImage,
@@ -1433,7 +1418,7 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "+{{ actions.0.bonus.damage }} damage to targets with less HP than you",
+    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} to targets with lesser HP.",
     overrideBodyText: true,
     actions: [
         {
@@ -1625,7 +1610,7 @@ export const ragingBlow: Ability = {
     resourceCost: 2,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Hit twice. Gain 1 Infuriate.",
+    description: "Hit twice. <b>Infuriate.</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1693,7 +1678,7 @@ export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
     image: RisingRageImage,
-    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} damage for each Fury spent.",
+    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} {{{ _damage_ }}} for each Fury.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1725,7 +1710,7 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward. Uncontrollable.</b> When you play a {{{ _offense_ }}} card, this attacks.",
+    description: "<b>Ward. Uncontrollable.</b> Attacks when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -2384,7 +2369,7 @@ const beatdownUpgrade: any = {
 export const beatdown: Ability = {
     name: "Beatdown",
     image: ChanceAttackImage,
-    description: "When you apply a debuff, attack that target for {{ nestedAbility.actions.0.damage }} damage.",
+    description: "When you apply a debuff, attack that target for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}}.",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -2438,8 +2423,7 @@ export const bide: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
-    description:
-        "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. Gain {{ actions.0.effects.length }} Infuriate.",
+    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Infuriate.</b>",
     image: WarriorThroneImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -2531,7 +2515,7 @@ export const moratorium: Ability = {
     name: "Moratorium",
     image: DarkImpaleImage,
     resourceCost: 1,
-    description: "If this attack is lethal, the target lives with 1 HP.",
+    description: "If this is lethal, the target lives with 1 HP.",
     rarity: RARITIES.COMMON,
     actions: [
         {
