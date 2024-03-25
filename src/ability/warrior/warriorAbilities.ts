@@ -1890,7 +1890,7 @@ export const judgment: Ability = {
             actions: [
                 {
                     secondaryAction: {
-                        armor: 1,
+                        armor: 2,
                         target: TARGET_TYPES.SELF,
                         type: ACTION_TYPES.EFFECT,
                         isPriority: true,
