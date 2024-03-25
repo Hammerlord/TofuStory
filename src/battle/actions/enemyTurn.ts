@@ -21,7 +21,7 @@ import {
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import { checkEventTrigger, findCombatantData, onEndTurnTriggers, updateCombatant, useAbility, useItem } from "./actions";
+import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, updateCombatant, useAbility, useItem } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -369,6 +369,9 @@ export const startEnemyTurn = () => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
+            [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
+                dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
+            });
         });
 
         const acted = {};
