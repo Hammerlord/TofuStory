@@ -238,11 +238,9 @@ const BattlefieldContainer = () => {
     }: BattleState = state.battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
-    const getCharacterRefs = () => Array.from({ length: BATTLEFIELD_SIZE }).map(() => React.createRef()) as React.RefObject<HTMLElement>[];
-
-    const allyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
-    const enemyRefs: React.RefObject<HTMLElement>[] = useMemo(getCharacterRefs, []);
-    const abilityRefs = useMemo(() => Array.from({ length: MAX_HAND_SIZE }).map(() => React.createRef()), []);
+    const allyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
+    const enemyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
+    const abilityRefs = Array.from({ length: MAX_HAND_SIZE }).map(() => useRef());
     const battlefieldRef: React.RefObject<HTMLDivElement> = useRef();
     const deckRef: React.RefObject<HTMLDivElement> = useRef();
     const discardRef: React.RefObject<HTMLDivElement> = useRef();
