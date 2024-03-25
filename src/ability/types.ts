@@ -140,6 +140,7 @@ export enum EFFECT_EVENT_KEYS {
     onBattleEnd = "onBattleEnd",
     onMoveCardFromHandToDeck = "onMoveCardFromHandToDeck",
     onFriendlyMove = "onFriendlyMove",
+    onArmorDecay = "onArmorDecay",
 }
 
 type effectEventKeys = keyof typeof EFFECT_EVENT_KEYS;
@@ -565,6 +566,8 @@ export type Action = {
     autoCastAbilities?: AutoCastAbility;
     /** Combatant runs away (turns null) */
     retreat?: boolean;
+    /** Causes armor decay (halves armor) */
+    decayArmor?: boolean;
 };
 
 export type ActionOptionalProperties = { [key in keyof Action]?: Action[key] };

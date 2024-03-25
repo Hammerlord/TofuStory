@@ -1868,7 +1868,7 @@ export const judgment: Ability = {
     resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to your Armor.",
+    description: "Deal damage equal to your Armor. Your Armor decays by half.",
     actions: [
         {
             damage: 1,
@@ -1878,6 +1878,11 @@ export const judgment: Ability = {
                 type: MULTIPLIER_TYPES.ARMOR,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
+        },
+        {
+            type: ACTION_TYPES.NONE,
+            target: TARGET_TYPES.SELF,
+            decayArmor: true,
         },
     ],
     upgrades: [

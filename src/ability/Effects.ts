@@ -561,8 +561,7 @@ export const preventArmorDecayPlayer: Effect = {
     ...preventArmorDecay,
     stacks: 1,
     alwaysDisplayStacks: true,
-    // onTurnInProgress should suffice unless there is something that specifically triggers armor decay later on
-    onTurnInProgress: {
+    onArmorDecay: {
         decrementStacks: 1,
     },
 };

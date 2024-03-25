@@ -971,6 +971,7 @@ export const triggerStatChangeEvents =
                 isDeathBlow = false,
                 rawResources = 0,
                 removedEffects = [],
+                isArmorDecay = false,
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?: { [key in keyof TriggerSource]? }) => {
                 dispatch(
@@ -1003,6 +1004,10 @@ export const triggerStatChangeEvents =
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveArmor, { trackSumAmount: Math.abs(armor) });
             } else if (armor < 0) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onArmorLoss, { trackSumAmount: Math.abs(armor) });
+            }
+
+            if (isArmorDecay) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onArmorDecay);
             }
 
             if (rawDamage > 0) {

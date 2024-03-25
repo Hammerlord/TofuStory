@@ -26,6 +26,7 @@ import {
 import { enemyEffectNameMap } from "./../../enemy/effect";
 import { CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
+import { getHalveArmorAmount } from "./checkHalveArmor";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
@@ -41,6 +42,7 @@ export interface UpdatedCombatantStats {
     isDeathBlow?: boolean;
     mesos?: number;
     removedEffects?: CombatEffect[];
+    isArmorDecay?: boolean;
 }
 
 export const getUpdatedStats = ({
@@ -98,6 +100,7 @@ export const getUpdatedStats = ({
             removeEffects = [],
             flatDamage = 0,
             targetMinHP = 0,
+            decayArmor = false,
         } = action;
 
         const enabledEffects = getEnabledEffects({ combatantInfo: target });
@@ -119,7 +122,11 @@ export const getUpdatedStats = ({
             flatDamage * multiplier;
 
         const totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
-        const updatedTargetArmor = Math.max(0, totalArmor - damage);
+        let updatedTargetArmor = Math.max(0, totalArmor - damage);
+        if (decayArmor) {
+            const halveArmorAmount = getHalveArmorAmount(target);
+            updatedTargetArmor += halveArmorAmount;
+        }
         const armorGained = updatedTargetArmor - targetCombatant.armor;
         const targetApplicableHP = targetCombatant.HP - targetMinHP;
         const healthDamage = Math.min(targetApplicableHP, Math.max(0, damage - totalArmor));
@@ -234,24 +241,23 @@ export const getUpdatedStats = ({
             }
         });
 
-        return [
-            {
-                combatantId: targetCombatant.id,
-                rawDamage,
-                healthDamage,
-                healing,
-                rawHealing,
-                overhealing,
-                armor: armorGained,
-                resources: resourcesGained,
-                rawResources: resources,
-                overcappedResources: resources - resourcesGained,
-                effects,
-                isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
-                mesos: mesos - stealMesos,
-                removedEffects,
-            },
-            action,
-        ];
+        const stats: UpdatedCombatantStats = {
+            combatantId: targetCombatant.id,
+            rawDamage,
+            healthDamage,
+            healing,
+            overhealing,
+            armor: armorGained,
+            resources: resourcesGained,
+            rawResources: resources,
+            overcappedResources: resources - resourcesGained,
+            effects,
+            isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
+            mesos: mesos - stealMesos,
+            removedEffects,
+            isArmorDecay: decayArmor,
+        };
+
+        return [stats, action];
     });
 };
