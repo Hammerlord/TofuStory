@@ -283,6 +283,7 @@ export interface Minion {
         left?: string;
         transform?: string;
     };
+    uncontrollable?: boolean;
 }
 
 type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes";

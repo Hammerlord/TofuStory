@@ -299,7 +299,7 @@ const BattlefieldContainer = () => {
     const actorId: string | undefined = (selectedMinion || player)?.id;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        if (!ally || ally.isPlayer || ally.HP === 0) {
+        if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable) {
             return false;
         }
         const damageFromEffects = getEnabledEffects({ combatantInfo: findCombatantData(() => state, ally.id) }).reduce(

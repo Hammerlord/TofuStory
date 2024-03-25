@@ -1725,13 +1725,14 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward.</b> When this attacks, it gains +1 ATT.",
+    description: "<b>Ward. Uncontrollable.</b> When you play a {{{ _offense_ }}} card, this attacks.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
         maxHP: 3,
+        uncontrollable: true,
         abilities: [
             {
                 ...attack,
@@ -1755,10 +1756,34 @@ export const soulBlade: Ability = {
                 disableDisplayIcon: true,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                description: "Gaining +1 ATT when this attacks.",
-                onAttack: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    effects: [attackPower],
+                onFriendlyAbility: {
+                    conditionOperator: "and",
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            isOffense: true,
+                            comparator: "eq",
+                        },
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            property: "isPlayer",
+                            value: true,
+                            comparator: "eq",
+                        },
+                    ],
+                    ability: {
+                        ...attack,
+                        actions: [
+                            {
+                                type: ACTION_TYPES.ATTACK,
+                                target: TARGET_TYPES.HOSTILE,
+                                damage: 3,
+                                animationOptions: {
+                                    rotateToFaceTarget: true,
+                                },
+                            },
+                        ],
+                    },
                 },
             },
         ],
@@ -2617,7 +2642,7 @@ export const bladeworks: Ability = {
     name: "Bladeworks",
     image: BladeworksImage,
     rarity: RARITIES.RARE,
-    resourceCost: 2,
+    resourceCost: 3,
     depletedOnUse: true,
     description: "Fill your side of the battlefield with Soul Blades.",
     actions: [

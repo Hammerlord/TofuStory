@@ -715,7 +715,16 @@ const onEffectEventTrigger = ({
         });
 
         if (abilityUsed) {
-            dispatch(onUseAbility({ actorInfo: findCombatantData(getState, ownerId), source, ability }));
+            dispatch(
+                onUseAbility({
+                    actorInfo: findCombatantData(getState, ownerId),
+                    source: {
+                        ...procSource,
+                        actorId: ownerId,
+                    },
+                    ability,
+                })
+            );
         }
     };
 };
