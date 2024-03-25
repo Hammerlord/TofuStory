@@ -191,9 +191,6 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
-                [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
-                    dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
-                });
             }
         });
 

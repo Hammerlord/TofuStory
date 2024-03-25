@@ -1758,6 +1758,7 @@ export const soulBlade: Ability = {
                 class: EFFECT_CLASSES.BUFF,
                 onFriendlyAbility: {
                     conditionOperator: "and",
+                    disableTriggerFromProcs: true,
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,

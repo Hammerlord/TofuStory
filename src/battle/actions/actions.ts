@@ -1106,6 +1106,9 @@ export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
             }
 
             dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
+            [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
+                dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
+            });
             dispatch(tickDownStatusEffects(combatant.id));
         });
     };
