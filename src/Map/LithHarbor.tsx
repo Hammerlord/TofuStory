@@ -118,6 +118,7 @@ const CaseyBackdrop = ({ player }) => {
 
 const skipScript: EventScene = {
     id: "lith-skip",
+    disableTransition: true,
     script: [
         {
             speaker: casey,

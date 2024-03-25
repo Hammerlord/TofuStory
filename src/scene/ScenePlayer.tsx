@@ -392,7 +392,7 @@ const ScenePlayer = ({
     }, [script?.[dialogIndex]]);
 
     const handleExit = (disableTransition?: boolean) => {
-        if (disableTransition) {
+        if (disableTransition || scene.disableTransition) {
             onExit();
             return;
         }

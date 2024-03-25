@@ -87,6 +87,7 @@ export const adminScene: EventScene = {
 
 export const introScene: EventScene = {
     id: "game-intro",
+    disableTransition: true,
     script: [
         {
             disableBackground: true,
@@ -101,6 +102,7 @@ export const introScene: EventScene = {
 
 export const startJourneyScene: EventScene = {
     id: "start-journey",
+    disableTransition: true,
     script: [
         {
             disableBackground: true,

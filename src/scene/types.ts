@@ -27,6 +27,7 @@ export interface EventScene {
     repeatable?: boolean; // Does nothing right now
     // Array of conditions resolves with AND operator by default
     conditions?: SceneCondition[];
+    disableTransition?: boolean; // If true, do not transition out on scene end
 }
 
 export interface SceneEncounter {
