@@ -1,12 +1,16 @@
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { getUpgradeCard } from "./utils";
+import { CLASS_ITEMS } from "../Map/routes/eventList";
+import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
+import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
 
 export const saveGame = (characterObject) => {
-    const { deck } = characterObject;
+    const { deck, player } = characterObject;
     // Due to card effects sometimes using SVGs (functions, which cannot be stringified), flatten the objects to just their name/level here and do a lookup on retrieval.
     const flattenDeck = deck.map((card) => ({ name: card.name, level: card.level }));
-    localStorage.setItem("saveFile", JSON.stringify({ ...characterObject, deck: flattenDeck }));
+    const flattenItems = player.items.map((item) => ({ name: item.name, stacks: item.stacks }));
+    localStorage.setItem("saveFile", JSON.stringify({ ...characterObject, deck: flattenDeck, player: { ...player, items: flattenItems } }));
 };
 
 export const getGameFile = () => {
@@ -32,7 +36,21 @@ export const getGameFile = () => {
                 }
             });
 
-            return { ...fileObj, deck: hydratedDeck };
+            const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
+            const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters];
+            const items = player.items.map((item) => {
+                const found = itemLookup.find((otherItem) => otherItem.name === item.name);
+                if (found) {
+                    return {
+                        ...found,
+                        stacks: item.stacks || undefined,
+                    };
+                }
+
+                return item;
+            });
+
+            return { ...fileObj, deck: hydratedDeck, player: { ...player, items } };
         } catch (e) {
             console.error(e);
             // Just return nothing if something failed. It will be treated as a new run.
