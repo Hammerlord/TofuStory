@@ -1345,30 +1345,32 @@ const checkInduce = ({
                         getState,
                     });
 
-                    dispatch(
-                        performAction({
-                            action,
-                            actorId: id,
-                            parentSource,
-                            selectedIndex: index,
-                            side,
-                        })
-                    );
-
-                    dispatch(
-                        onUseAbility({
-                            actorInfo: findCombatantData(getState, id),
-                            source: {
-                                ...parentSource,
+                    if (typeof index === "number") {
+                        dispatch(
+                            performAction({
+                                action,
                                 actorId: id,
-                                isProc: true,
-                            },
-                            ability: {
-                                name: "Induced Ability",
-                                actions: [action],
-                            },
-                        })
-                    );
+                                parentSource,
+                                selectedIndex: index,
+                                side,
+                            })
+                        );
+
+                        dispatch(
+                            onUseAbility({
+                                actorInfo: findCombatantData(getState, id),
+                                source: {
+                                    ...parentSource,
+                                    actorId: id,
+                                    isProc: true,
+                                },
+                                ability: {
+                                    name: "Induced Ability",
+                                    actions: [action],
+                                },
+                            })
+                        );
+                    }
                 });
             }
         }
@@ -1387,30 +1389,32 @@ const checkInduce = ({
                     getState,
                 });
 
-                dispatch(
-                    performAction({
-                        action: attackAction,
-                        selectedIndex: index,
-                        side: hostileSide,
-                        actorId: id,
-                        parentSource,
-                    })
-                );
-
-                dispatch(
-                    onUseAbility({
-                        actorInfo: findCombatantData(getState, id),
-                        source: {
-                            ...parentSource,
+                if (typeof index === "number") {
+                    dispatch(
+                        performAction({
+                            action: attackAction,
+                            selectedIndex: index,
+                            side: hostileSide,
                             actorId: id,
-                            isProc: true,
-                        },
-                        ability: {
-                            name: "Induced Attack",
-                            actions: [action],
-                        },
-                    })
-                );
+                            parentSource,
+                        })
+                    );
+
+                    dispatch(
+                        onUseAbility({
+                            actorInfo: findCombatantData(getState, id),
+                            source: {
+                                ...parentSource,
+                                actorId: id,
+                                isProc: true,
+                            },
+                            ability: {
+                                name: "Induced Attack",
+                                actions: [action],
+                            },
+                        })
+                    );
+                }
             });
         }
     };
