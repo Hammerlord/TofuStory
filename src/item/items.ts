@@ -740,7 +740,7 @@ export const fishSpear: Item = {
     ],
 };
 
-const pigsRibbonCounter = {
+const pigsRibbonCounter: Effect = {
     ...counterEffect,
     name: "Retaliation",
     description: "Countering on the next attack",
@@ -754,16 +754,7 @@ const pigsRibbonCounter = {
         usableWhileStunned: false,
         removeEffect: true,
         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        ability: {
-            name: "Retaliate",
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
-                },
-            ],
-        },
+        induceCombatantAttack: true,
     },
     onTurnStart: {
         removeEffect: true,
@@ -773,7 +764,7 @@ const pigsRibbonCounter = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, you and your summoned minions gain Counter for 2 damage.",
+    description: "Once per turn, you and your summons gain Counter.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -2104,7 +2095,7 @@ export const yellowHat: Item = {
             onFriendlyAbility: {
                 excludeEffectOwner: true,
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                eventTriggerFrequency: 5,
+                eventTriggerFrequency: 8,
                 resources: 1,
                 drawCards: {
                     amount: 1,

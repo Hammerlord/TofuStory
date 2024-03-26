@@ -761,7 +761,7 @@ export const getInducedAttack = (actor: Combatant): Action => {
     }
 
     return {
-        damage: basicAttackDamage,
+        damage: basicAttackDamage || 1,
         target: TARGET_TYPES.HOSTILE,
         type: ACTION_TYPES.ATTACK,
         playbackTime: 400,

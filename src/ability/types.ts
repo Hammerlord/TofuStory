@@ -533,7 +533,7 @@ export type Action = {
     }[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
     morph?: Morph;
-    // When cast on a combatant that has attack power, that combatant will attack randomly.
+    // When cast on a combatant, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     induceCombatant?: {
         mode: "random" | "left-to-right" | "right-to-left";
