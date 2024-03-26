@@ -365,7 +365,7 @@ export const warBanner: Ability = {
         effects: [
             {
                 ...stealth,
-                duration: Infinity,
+                duration: 3,
             },
             {
                 name: "War Banner - Drumbeat of War",
@@ -378,6 +378,7 @@ export const warBanner: Ability = {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Drumbeat of War",
+                        image: FlagImage,
                         actions: [
                             {
                                 ...cloneDeep(drumOfWar),
