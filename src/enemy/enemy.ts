@@ -660,7 +660,7 @@ export const olaf: Minion = {
 export const octopus: Minion = {
     name: "Octopus",
     image: OctopusIdleImage,
-    maxHP: 50,
+    maxHP: 40,
     mesos: 10,
     abilities: [
         {
@@ -669,7 +669,7 @@ export const octopus: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
