@@ -330,7 +330,8 @@ const Main = () => {
 
         const itemRewardProps = {
             rewardType: battle.type,
-            overrideItemChoices: battle.itemRewards,
+            itemRewards: battle.itemRewards,
+            overrideItemChoices: battle.overrideItemChoices,
             disableAttainConsumable: battle.isTutorial,
         };
 

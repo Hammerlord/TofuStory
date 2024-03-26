@@ -61,20 +61,15 @@ const Olaf = ({ player }) => {
     );
 };
 
-export const olafRewards = [redHeadband, leatherSandals, bigMesoItem];
-
 const olafFight: SceneEncounter = {
     isTutorial: true,
     waves: [
         {
             enemies: [null, null, olaf, null, null],
-            description: [
-                "You've encountered an elite opponent.",
-                "Elites typically have increased health, damage, and a few special abilities up their sleeve.",
-            ],
+            description: ["You've encountered an elite opponent.", "Elites often have higher HP, damage, and extra abilities."],
         },
     ],
-    itemRewards: olafRewards,
+    overrideItemChoices: Math.random() < 0.5 ? [redHeadband] : [leatherSandals],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
 };
 

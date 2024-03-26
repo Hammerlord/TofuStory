@@ -4,7 +4,6 @@ import { getUpgradeCard } from "./utils";
 import { CLASS_ITEMS } from "../Map/routes/eventList";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
-import { unagi } from "../enemy/miniBean";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 
 export const saveGame = (characterObject) => {

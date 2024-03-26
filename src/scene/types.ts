@@ -35,7 +35,7 @@ export interface SceneEncounter {
     waves: Wave[];
     disableCardRewards?: boolean;
     disableItemRewards?: boolean;
-    itemRewards?: Item[];
+    overrideItemChoices?: Item[];
     type?: BATTLE_TYPES;
     backgroundMusic?: string;
     isTutorial?: boolean;

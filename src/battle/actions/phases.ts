@@ -92,6 +92,7 @@ export const startBattle = ({
     backgroundMusic,
     type = BATTLE_TYPES.ENCOUNTER,
     itemRewards,
+    overrideItemChoices,
     cardRewards,
     disableCardRewards,
     disableItemRewards,
@@ -104,6 +105,7 @@ export const startBattle = ({
     backgroundMusic?: string;
     type?: BATTLE_TYPES;
     itemRewards?: Item[];
+    overrideItemChoices?: Item[];
     cardRewards?: Ability[];
     disableCardRewards?: boolean;
     disableItemRewards?: boolean;
@@ -165,6 +167,7 @@ export const startBattle = ({
             backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
             type,
             itemRewards,
+            overrideItemChoices,
             cardRewards,
             disableCardRewards,
             disableItemRewards,

@@ -22,7 +22,7 @@ import {
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { RARITIES } from "../item/types";
-import { lithEventsOlaf, olafRewards } from "../scene/olaf";
+import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -34,6 +34,7 @@ import ScenePlayer from "../scene/ScenePlayer";
 import { REGIONS } from "./regions";
 import Overlay from "../view/Overlay";
 import { halfEatenHotdog } from "../item/consumables";
+import { bigMesoItem, leatherSandals, redHeadband } from "../item/items";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -175,6 +176,8 @@ const shopScript: EventScene = {
         },
     ],
 };
+
+export const skipOlafRewards = [redHeadband, leatherSandals, bigMesoItem];
 
 const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, onTransition }) => {
     const classes = useStyles();
@@ -366,7 +369,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                 {showAcquireItem && !showAcquireAbility && (
                     <ItemRewards
                         player={player}
-                        overrideItemChoices={olafRewards}
+                        overrideItemChoices={skipOlafRewards}
                         onLoot={({ items }) => {
                             dispatch(acquireItems(items));
                         }}

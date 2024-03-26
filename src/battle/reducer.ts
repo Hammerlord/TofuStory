@@ -37,6 +37,7 @@ export interface BattleState {
     backgroundMusic?: string; // 'boss' or path to music URL
     type: BATTLE_TYPES; // Determines the rewards at the end of battle
     itemRewards?: Item[];
+    overrideItemChoices?: Item[];
     cardRewards?: Ability[];
     disableCardRewards?: boolean;
     disableItemRewards?: boolean;

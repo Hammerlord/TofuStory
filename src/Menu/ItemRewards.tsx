@@ -108,7 +108,7 @@ const ItemRewards = ({
         }, {});
 
         const items = (overrideItemChoices || []).filter((item: Item) => !alreadyObtained[item.name]);
-        if (items.length < numChoicesOffered) {
+        if (!overrideItemChoices && items.length < numChoicesOffered) {
             Array.from({ length: numChoicesOffered - items.length }).forEach(() => {
                 let rareBonus = 0;
                 let uncommonBonus = 0;

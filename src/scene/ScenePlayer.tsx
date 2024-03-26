@@ -246,6 +246,7 @@ const ScenePlayer = ({
     onBattle?: (
         props: {
             addAbilities?: Ability[];
+            overrideItemChoices?: Item[];
             waves: {
                 enemies: Minion[];
                 generateEliteAffixes?: boolean;
