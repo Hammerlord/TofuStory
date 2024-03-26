@@ -2223,7 +2223,7 @@ export const guardian: Ability = {
     description:
         "<b>Ward.</b> Every turn, <b>Radiate</b> {{ nestedAbility.actions.0.radiate.damage }} {{{ _damage_ }}} to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
     rarity: RARITIES.RARE,
-    resourceCost: 1,
+    resourceCost: 2,
     minion: {
         name: "Guardian Statue",
         image: PinkBeanStatueImage,
