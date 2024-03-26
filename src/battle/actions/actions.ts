@@ -43,6 +43,7 @@ import {
     getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
+    hasTruesight,
     isSilenced,
     isStunnedOrFrozen,
     isTurnActionPrevented,
@@ -695,8 +696,6 @@ const onEffectEventTrigger = ({
             if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && !canTargetIfStealthed(actor, target)) {
                 return;
             }
-
-            // Should this be part of autoSelectActionTarget to make it a bit smarter?
 
             if (passesConditions({ getCalculationTarget, proc: action, source })) {
                 abilityUsed = true;
@@ -1930,6 +1929,39 @@ const performAction = ({
     };
 };
 
+export const pickHostileIndex = ({ hostile, actorData }: { hostile: (Combatant | null)[]; actorData: CombatantInfo }) => {
+    const targetIndices = getValidTargetIndices(hostile, {
+        // TODO area attacks are still applicable to stealthed units
+        excludeStealth: !hasTruesight(actorData.combatant),
+        onlyTaunt: true,
+    });
+
+    const actorIndex = actorData.index;
+
+    let baseProbability = 1 / targetIndices.length;
+    // Enemies are more likely to attack targets closer to them. 0 proximity: +25%, 1 proximity: +15%; 2: +5%
+    if (targetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.25) {
+        return actorIndex;
+    }
+
+    const adjacent = targetIndices.filter((index) => Math.abs(index - actorIndex) === 1);
+    if (adjacent.length && Math.random() < baseProbability + 0.15) {
+        return getRandomItem(adjacent);
+    }
+
+    const outer = targetIndices.filter((index) => Math.abs(index - actorIndex) === 2);
+    if (outer.length && Math.random() < baseProbability + 0.05) {
+        return getRandomItem(outer);
+    }
+
+    const rest = targetIndices.filter((index) => Math.abs(index - actorIndex) > 2);
+    if (rest.length) {
+        return getRandomItem(rest);
+    }
+
+    return getRandomItem(targetIndices);
+};
+
 /**
  * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
  * This orients the target to the right place (if applicable) as actions are parsed.
@@ -1947,7 +1979,8 @@ const autoSelectActionTarget = ({
     actorId: string;
     getState: Function;
 }) => {
-    const { friendly, hostile, friendlySide, hostileSide } = findCombatantData(getState, actorId);
+    const actorData = findCombatantData(getState, actorId);
+    const { friendly, hostile, friendlySide, hostileSide } = actorData;
     const { targetArea: area = 0, target, targetName } = action;
 
     if (target === TARGET_TYPES.PLAYER) {
@@ -1974,12 +2007,8 @@ const autoSelectActionTarget = ({
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
-        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true }).filter((i) => {
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-        });
-
         return {
-            index: getRandomItem(targetIndices),
+            index: pickHostileIndex({ hostile, actorData }),
             side: hostileSide,
         };
     }

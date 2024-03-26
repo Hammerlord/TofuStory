@@ -21,42 +21,21 @@ import {
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, updateCombatant, useAbility, useItem } from "./actions";
+import {
+    checkEventTrigger,
+    findCombatantData,
+    handleDoTs,
+    onEndTurnTriggers,
+    pickHostileIndex,
+    updateCombatant,
+    useAbility,
+    useItem,
+} from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
-const pickIndex = ({ hostile, actor, actorIndex }) => {
-    const targetIndices = getValidTargetIndices(hostile, {
-        // TODO area attacks are still applicable to stealthed units
-        excludeStealth: !hasTruesight(actor.combatant),
-        onlyTaunt: true,
-    });
-
-    let baseProbability = 1 / targetIndices.length;
-    // Enemies are more likely to attack targets closer to them. 0 proximity: +25%, 1 proximity: +15%; 2: +5%
-    if (targetIndices.includes(actorIndex) && Math.random() < baseProbability + 0.25) {
-        return actorIndex;
-    }
-
-    const adjacent = targetIndices.filter((index) => Math.abs(index - actorIndex) === 1);
-    if (adjacent.length && Math.random() < baseProbability + 0.15) {
-        return getRandomItem(adjacent);
-    }
-
-    const outer = targetIndices.filter((index) => Math.abs(index - actorIndex) === 2);
-    if (outer.length && Math.random() < baseProbability + 0.05) {
-        return getRandomItem(outer);
-    }
-
-    const rest = targetIndices.filter((index) => Math.abs(index - actorIndex) > 2);
-    if (rest.length) {
-        return getRandomItem(rest);
-    }
-
-    return getRandomItem(targetIndices);
-};
 /**
  * Given an ability, pick a target that makes sense.
  * Index may be undefined if there were no valid indices to choose from.
@@ -82,7 +61,7 @@ const autoPickTarget = ({
     if (isOffensiveAbility(ability)) {
         return {
             side: hostileSide,
-            index: pickIndex({ hostile, actor, actorIndex: index }),
+            index: pickHostileIndex({ hostile, actorData: actor }),
         };
     }
 
