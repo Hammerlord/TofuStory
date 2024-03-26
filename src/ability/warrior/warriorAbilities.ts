@@ -1755,11 +1755,15 @@ export const soulBlade: Ability = {
         effects: [
             ward,
             {
-                name: "Soul Blade",
+                name: "Soul Blade Effect",
                 icon: BurningSoulBladeMinionImage,
                 disableDisplayIcon: true,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
+                onSummoned: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
+                },
                 onFriendlyAbility: {
                     conditionOperator: "and",
                     disableTriggerFromProcs: true,
@@ -1776,19 +1780,8 @@ export const soulBlade: Ability = {
                             comparator: "eq",
                         },
                     ],
-                    ability: {
-                        ...attack,
-                        actions: [
-                            {
-                                type: ACTION_TYPES.ATTACK,
-                                target: TARGET_TYPES.HOSTILE,
-                                damage: 3,
-                                animationOptions: {
-                                    rotateToFaceTarget: true,
-                                },
-                            },
-                        ],
-                    },
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
                 },
             },
         ],

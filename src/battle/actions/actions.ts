@@ -655,6 +655,8 @@ const onEffectEventTrigger = ({
                     }))
                 )
             );
+
+            dispatch(checkInduce({ action: effectEvent, affectedTargetIds, parentSource: procSource }));
         }
 
         if (!effectEventAbility) {
@@ -1312,12 +1314,10 @@ const checkHandleMorph = ({
 const checkInduce = ({
     action,
     affectedTargetIds,
-    selectedIndex,
     parentSource,
 }: {
     action: Action;
     affectedTargetIds: string[];
-    selectedIndex: number;
     parentSource: TriggerSource;
 }) => {
     return (dispatch, getState) => {
@@ -1353,6 +1353,21 @@ const checkInduce = ({
                             side,
                         })
                     );
+
+                    dispatch(
+                        onUseAbility({
+                            actorInfo: findCombatantData(getState, id),
+                            source: {
+                                ...parentSource,
+                                actorId: id,
+                                isProc: true,
+                            },
+                            ability: {
+                                name: "Induced Ability",
+                                actions: [action],
+                            },
+                        })
+                    );
                 });
             }
         }
@@ -1378,6 +1393,21 @@ const checkInduce = ({
                         side: hostileSide,
                         actorId: id,
                         parentSource,
+                    })
+                );
+
+                dispatch(
+                    onUseAbility({
+                        actorInfo: findCombatantData(getState, id),
+                        source: {
+                            ...parentSource,
+                            actorId: id,
+                            isProc: true,
+                        },
+                        ability: {
+                            name: "Induced Attack",
+                            actions: [action],
+                        },
                     })
                 );
             });
@@ -1852,7 +1882,7 @@ const performAction = ({
             );
         }
 
-        dispatch(checkInduce({ action, affectedTargetIds: targetIds, selectedIndex, parentSource }));
+        dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
 
         // Tricky: Updated is a tuple where the second element is an Action. If eg. a bonus card draw was applied during that action, checkCardActions should consume it.
