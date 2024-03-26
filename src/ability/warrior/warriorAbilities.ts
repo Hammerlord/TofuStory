@@ -1040,35 +1040,20 @@ export const combatOrders: Ability = {
     name: "Combat Orders",
     resourceCost: 1,
     image: CombatOrdersImage,
-    description: "Grants targeted allies +1 ATT for the rest of the turn and commands them to attack",
+    description: "Commands targeted allies to attack.",
     actions: [
         {
             area: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [
-                {
-                    name: "Inspired",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
-                    duration: 0,
-                    icon: CombatOrdersImage,
-                },
-            ],
             induceCombatantAttack: true,
-            playbackTime: 1200,
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    effects: [
-                        {
-                            attackPower: 1,
-                        },
-                    ],
+                    area: 1,
                 },
             ],
         },
