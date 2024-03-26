@@ -542,7 +542,7 @@ const onEffectEventTrigger = ({
         }
 
         source = { ...source, isProc: true };
-        const { canBeSilenced, excludeEffectOwner } = effect;
+        const { canBeSilenced } = effect;
         const {
             removeEffect,
             targetType,
@@ -604,8 +604,9 @@ const onEffectEventTrigger = ({
         }
 
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT };
-        const targetIds = getCalculationTargetIds(targetType);
-        const { index: i, friendlySide, friendly: targets } = findCombatantData(getState, targetIds[0]) || {};
+        const initialTargetIds = getCalculationTargetIds(targetType);
+        const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
+        const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, source }));
         dispatch(checkCardActions({ action: other, source })); // Why does this use original source when there is procSource?
@@ -616,27 +617,27 @@ const onEffectEventTrigger = ({
         }
 
         $applyStatChanges: {
-            if (!targetIds.length || !targets) {
+            if (!targets) {
                 break $applyStatChanges;
             }
 
-            const isAffected = (combatant: Combatant, j: number): boolean => {
-                const isExcludingPrimaryTarget = excludeEffectOwner && targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER && j === i;
-                const isAlive = combatant?.HP > 0 || combatant?.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
-                return isAlive && targetIds.includes(combatant?.id) && !isExcludingPrimaryTarget;
+            const action = {
+                ...other,
+                type: ACTION_TYPES.EFFECT,
             };
 
-            const affectedTargetIds = targets.reduce((acc, character: Combatant | null, i: number) => {
-                if (isAffected(character, i)) {
-                    acc.push(character.id);
-                }
-
-                return acc;
-            }, []);
-
+            const targetIndices = calculateTargetIndices({
+                action,
+                selectedIndex: i,
+                side: friendlySide,
+                actorData: owner,
+                targetData: initialTargetData,
+                battle: getState().battle,
+            });
+            const targetIds = targetIndices.map((i: number) => targets[i].id);
             const updated = getUpdatedStats({
                 ...getState().battle,
-                targetIds: affectedTargetIds,
+                targetIds,
                 actorId: ownerId,
                 action: {
                     ...other,
@@ -656,7 +657,7 @@ const onEffectEventTrigger = ({
                 )
             );
 
-            dispatch(checkInduce({ action: effectEvent, affectedTargetIds, parentSource: procSource }));
+            dispatch(checkInduce({ action: effectEvent, affectedTargetIds: targetIds, parentSource: procSource }));
         }
 
         if (!effectEventAbility) {
@@ -1649,7 +1650,9 @@ export const calculateTargetIndices = ({
     }
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
-        const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect);
+        const livingOrResurrecting =
+            combatant && (combatant.HP > 0 || resurrect || combatant.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK));
+
         const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
         if (excludePrimaryTarget) {
             return inArea && i !== selectedIndex;

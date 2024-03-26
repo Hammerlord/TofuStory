@@ -180,8 +180,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     basicAttackAreaIncrease?: number;
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
-    /** If true, effect has no effect on its owner */
-    // TODO: is this even useful?
+    /** If true, the effect event does not trigger from actions by the effect owner */
     excludeEffectOwner?: boolean;
     /** Prevent application of certain effects */
     immunities?: {
