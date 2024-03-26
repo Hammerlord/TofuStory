@@ -675,9 +675,13 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             dispatch(popEventQueue());
         }, events[0].playbackTime);
+
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [events, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
