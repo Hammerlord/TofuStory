@@ -629,7 +629,8 @@ export const sharpen: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
+            area: 1,
             effects: [
                 {
                     name: "Sharpen",
