@@ -4,6 +4,8 @@ import { getUpgradeCard } from "./utils";
 import { CLASS_ITEMS } from "../Map/routes/eventList";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
+import { unagi } from "../enemy/miniBean";
+import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 
 export const saveGame = (characterObject) => {
     const { deck, player } = characterObject;
@@ -37,7 +39,8 @@ export const getGameFile = () => {
             });
 
             const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
-            const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters];
+            const consumables = [halfEatenHotdog, unagiItem, cakeItem];
+            const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables];
             const items = player.items.map((item) => {
                 const found = itemLookup.find((otherItem) => otherItem.name === item.name);
                 if (found) {

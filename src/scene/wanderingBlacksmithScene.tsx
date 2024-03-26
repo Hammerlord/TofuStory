@@ -1,12 +1,11 @@
 import classNames from "classnames";
+import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
-import { cake, unagi } from "../enemy/miniBean";
 import { wanderingBlacksmith } from "../enemy/wanderingBlacksmith";
 import { HenesysHuntingGroundImage } from "../images";
-import { halfEatenHotdog } from "../item/items";
-import { EventScene, SceneEncounter, ScriptNode } from "./types";
+import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 import { SCENE_STYLES } from "./constants";
-import { createUseStyles } from "react-jss";
+import { EventScene, SceneEncounter, ScriptNode } from "./types";
 
 const wanderingBlacksmithFight: SceneEncounter = {
     waves: [
@@ -185,7 +184,7 @@ export const wanderingSmithScene: EventScene = {
                     ],
                 },
                 {
-                    conditions: [{ items: [cake.name] }],
+                    conditions: [{ items: [cakeItem.name] }],
                     next: [
                         {
                             speaker: wanderingBlacksmith,
@@ -196,7 +195,7 @@ export const wanderingSmithScene: EventScene = {
                                     next: [
                                         {
                                             dialog: ["You hand over the Cake."],
-                                            loseItems: [cake.name],
+                                            loseItems: [cakeItem.name],
                                         },
                                         ...fedPath,
                                     ],
@@ -210,7 +209,7 @@ export const wanderingSmithScene: EventScene = {
                     ],
                 },
                 {
-                    conditions: [{ items: [unagi.name] }],
+                    conditions: [{ items: [unagiItem.name] }],
                     next: [
                         {
                             speaker: wanderingBlacksmith,
@@ -221,7 +220,7 @@ export const wanderingSmithScene: EventScene = {
                                     next: [
                                         {
                                             dialog: ["You hand over the Unagi."],
-                                            loseItems: [unagi.name],
+                                            loseItems: [unagiItem.name],
                                         },
                                         ...fedPath,
                                     ],

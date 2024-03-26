@@ -21,7 +21,6 @@ import {
     SkipLithBackdropImage,
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
-import { halfEatenHotdog } from "../item/items";
 import { RARITIES } from "../item/types";
 import { lithEventsOlaf, olafRewards } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
@@ -34,6 +33,7 @@ import Shop from "../Menu/Shop";
 import ScenePlayer from "../scene/ScenePlayer";
 import { REGIONS } from "./regions";
 import Overlay from "../view/Overlay";
+import { halfEatenHotdog } from "../item/consumables";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,

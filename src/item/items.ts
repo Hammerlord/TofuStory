@@ -108,13 +108,6 @@ import {
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
-export const halfEatenHotdog: Item = {
-    name: "Half-eaten Hot Dog",
-    healing: 10,
-    image: HotdogImage,
-    type: ITEM_TYPES.CONSUMABLE,
-};
-
 export const stolenFence: Item = {
     name: "Stolen Fence",
     description: "On wave start, gain 7 armor.",

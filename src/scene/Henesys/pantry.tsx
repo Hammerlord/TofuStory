@@ -1,7 +1,7 @@
 import { BATTLE_TYPES } from "../../battle/types";
 import { eat, miniBean } from "../../enemy/miniBean";
-import { CakeSliceImage, HenesysRegionBGImage, MayaImage, MiniBeanImage, UnagiImage } from "../../images";
-import { ITEM_TYPES, Item } from "../../item/types";
+import { HenesysRegionBGImage, MayaImage, MiniBeanImage } from "../../images";
+import { cakeItem, unagiItem } from "../../item/consumables";
 import { EventScene, ScriptResponse } from "../types";
 import PantryScene from "./PantryScene";
 
@@ -30,20 +30,6 @@ const miniBeanFight = {
     type: BATTLE_TYPES.BOSS,
 };
 
-const cake: Item = {
-    name: "Slice of Cake",
-    healing: 10,
-    image: CakeSliceImage,
-    type: ITEM_TYPES.CONSUMABLE,
-};
-
-const unagi: Item = {
-    name: "Unagi",
-    healing: 20,
-    image: UnagiImage,
-    type: ITEM_TYPES.CONSUMABLE,
-};
-
 const postFightDialog = {
     scene: (other) => <PantryScene {...other} hideMiniBean={true} />,
     speaker: mayaCharacter,
@@ -63,7 +49,7 @@ const postFightDialog = {
                     speaker: mayaCharacter,
                     dialog: ["Um... it isn't much, but this piece of cake seems to be in okay shape. Please take it."],
                     items: {
-                        itemPool: [cake],
+                        itemPool: [cakeItem],
                     },
                 },
                 {
@@ -96,7 +82,7 @@ const postFightDialog2 = {
                 {
                     dialog: ["[You started grabbing some food.]"],
                     items: {
-                        itemPool: [cake, unagi],
+                        itemPool: [cakeItem, unagiItem],
                     },
                 },
                 {

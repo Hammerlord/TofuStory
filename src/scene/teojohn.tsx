@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { JohnImage, LithHarborCityBGImage, LithHarborSharkFullImage, TeoImage } from "../images";
-import { halfEatenHotdog } from "../item/items";
 import { EventScene } from "./types";
+import { halfEatenHotdog } from "../item/consumables";
 
 const teo = {
     name: "Teo",
