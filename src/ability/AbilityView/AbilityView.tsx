@@ -551,7 +551,9 @@ const AbilityView = forwardRef(
                             {!overrideBodyText && <Buffs ability={ability} player={player} />}
                             <CardsToAdd ability={ability} />
                             {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
-                            <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
+                            {!overrideBodyText && (
+                                <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
+                            )}
                             {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                             {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
                         </div>

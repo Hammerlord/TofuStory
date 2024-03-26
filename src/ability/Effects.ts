@@ -1,4 +1,5 @@
 import {
+    AttackDownImage,
     BackpackImage,
     BombImage,
     FireMarbleImage,
@@ -647,6 +648,14 @@ export const taunt = {
     type: EFFECT_TYPES.TAUNT,
     class: EFFECT_CLASSES.BUFF,
     image: BlackShieldIcon,
+};
+
+export const attackDown = {
+    name: "Attack Down",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.DEBUFF,
+    icon: AttackDownImage,
+    attackPower: -1,
 };
 
 export const directDamageTaken: Effect = {

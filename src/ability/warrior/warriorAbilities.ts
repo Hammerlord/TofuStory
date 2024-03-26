@@ -67,10 +67,24 @@ import {
     WarriorThroneImage,
     WeaponBoosterImage,
     WeaponMasteryImage,
+    WeaponMasteryLGImage,
     WorldReaverImage,
 } from "../../images";
 import { RARITIES } from "../../item/types";
-import { armorUp, bleed, directDamageTaken, immunity, infuriateEffect, silence, stealth, stun, thorns, ward } from "../Effects";
+import {
+    armorUp,
+    attackDown,
+    bleed,
+    directDamageTaken,
+    immunity,
+    infuriateEffect,
+    silence,
+    stealth,
+    stun,
+    taunt,
+    thorns,
+    ward,
+} from "../Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -418,22 +432,18 @@ export const yell: Ability = {
     resourceCost: 1,
     image: WarMushImage,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description: "Gain <b>Taunt</b>. <b>Radiate</b> Attack Down. Lasts {{ actions.0.effects.0.duration }} turns.",
     actions: [
         {
-            area: 2,
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.HOSTILE,
+            target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.SHOUT,
-            effects: [
-                {
-                    name: "Admonished",
-                    attackPower: -1,
-                    duration: 3,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.DEBUFF,
-                    icon: WarMushImage,
-                },
-            ],
+            effects: [{ ...taunt, duration: 3 }],
+            radiate: {
+                area: 2,
+                effects: [{ ...attackDown, duration: 3 }],
+            },
         },
     ],
     upgrades: [
@@ -443,6 +453,15 @@ export const yell: Ability = {
                     effects: [
                         {
                             duration: 1,
+                        },
+                    ],
+                    radiate: [
+                        {
+                            effects: [
+                                {
+                                    duration: 1,
+                                },
+                            ],
                         },
                     ],
                 },
@@ -606,7 +625,7 @@ export const sweepingReach: Ability = {
 export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 0,
-    image: WeaponMasteryImage,
+    image: WeaponMasteryLGImage,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
