@@ -76,16 +76,15 @@ const maxAmount = 1; // How many items the player can choose
 
 const ItemRewards = ({
     player,
-    playerCurrentItems,
     onLoot,
     onClose,
     rewardType,
     overrideItemChoices,
     itemRewards = [],
     disableAttainConsumable,
+    numChoicesOffered = BASE_NUM_CHOICES,
 }: {
     player: Player;
-    playerCurrentItems: Item[];
     onLoot: ({ items }: { items: Item[] }) => void;
     onClose: () => void;
     rewardType?: BATTLE_TYPES;
@@ -93,6 +92,7 @@ const ItemRewards = ({
     overrideItemChoices?: Item[];
     itemRewards?: Item[]; // Items which are granted automatically without having to choose
     disableAttainConsumable?: boolean;
+    numChoicesOffered?: number;
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState([]);
@@ -100,7 +100,7 @@ const ItemRewards = ({
     const [selectedItemIndices, setSelectedItemIndices] = useState([]);
 
     useEffect(() => {
-        const alreadyObtained = playerCurrentItems.reduce((acc, item: Item) => {
+        const alreadyObtained = player.items.reduce((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
                 acc[item.name] = true;
             }
@@ -108,8 +108,8 @@ const ItemRewards = ({
         }, {});
 
         const items = (overrideItemChoices || []).filter((item: Item) => !alreadyObtained[item.name]);
-        if (items.length < BASE_NUM_CHOICES) {
-            Array.from({ length: BASE_NUM_CHOICES - items.length }).forEach(() => {
+        if (items.length < numChoicesOffered) {
+            Array.from({ length: numChoicesOffered - items.length }).forEach(() => {
                 let rareBonus = 0;
                 let uncommonBonus = 0;
                 if (rewardType === BATTLE_TYPES.BOSS) {
@@ -176,7 +176,7 @@ const ItemRewards = ({
                             </div>
                         ))}
                         {rewards.length > 0 && <hr className={classes.border} />}
-                        <h3>Pick an item:</h3>
+                        {itemChoices.length > 1 && <h3>Pick an item:</h3>}
                         <div className={classes.itemChoices}>
                             {itemChoices.map((item, i) => (
                                 <ItemView

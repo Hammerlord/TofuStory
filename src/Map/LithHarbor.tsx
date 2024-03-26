@@ -366,7 +366,6 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                 {showAcquireItem && !showAcquireAbility && (
                     <ItemRewards
                         player={player}
-                        playerCurrentItems={player.items}
                         overrideItemChoices={olafRewards}
                         onLoot={({ items }) => {
                             dispatch(acquireItems(items));

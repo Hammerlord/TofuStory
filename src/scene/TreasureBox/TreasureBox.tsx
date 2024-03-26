@@ -210,7 +210,8 @@ const { updatePlayer } = playerStateSlice?.actions || {};
 
 const CURSE_RARE_BONUS = 0.4;
 const CURSE_UNCOMMON_BONUS = 0.2;
-const BASE_NUM_CHOICES = 3; // How many choices are offered
+const BASE_NUM_CHOICES = 1; // How many choices are offered
+const CURSED_NUM_CHOICES = 3;
 const maxAmount = 1; // How many items the player can choose
 
 const TreasureBox = ({
@@ -253,7 +254,7 @@ const TreasureBox = ({
         } else {
             const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
             const treasure = [];
-            Array.from({ length: BASE_NUM_CHOICES }).forEach(() => {
+            Array.from({ length: curse ? CURSED_NUM_CHOICES : BASE_NUM_CHOICES }).forEach(() => {
                 const equipment = getRandomItem(rollItemPool({ player, bonuses, excludeItems: treasure }));
                 if (equipment) {
                     treasure.push(equipment);

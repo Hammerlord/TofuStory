@@ -137,7 +137,7 @@ const Main = () => {
     const [scene, setScene]: [EventScene | null, Function] = useState(null);
     const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
     const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
-    const [itemRewardsOpen, setItemRewardsOpen] = useState(false);
+    const [itemRewardsOptions, setItemRewardsOptions] = useState(null);
     const [activity, setActivity] = useState(null);
     const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
     const [usingItem, setUsingItem]: [Item, Function] = useState(null);
@@ -328,15 +328,23 @@ const Main = () => {
             return;
         }
 
-        if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type) || Math.random() < REGULAR_BATTLE_LOOT_CHANCE) {
-            setItemRewardsOpen(true);
+        const itemRewardProps = {
+            rewardType: battle.type,
+            overrideItemChoices: battle.itemRewards,
+            disableAttainConsumable: battle.isTutorial,
+        };
+
+        if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type)) {
+            setItemRewardsOptions({ numChoicesOffered: 3, ...itemRewardProps });
+        } else if (Math.random() < REGULAR_BATTLE_LOOT_CHANCE) {
+            setItemRewardsOptions({ numChoicesOffered: 1, ...itemRewardProps });
         } else {
             handleExitBattle();
         }
     };
 
     const handleCloseItemRewards = () => {
-        setItemRewardsOpen(false);
+        setItemRewardsOptions(false);
         handleExitBattle();
     };
 
@@ -531,7 +539,7 @@ const Main = () => {
         dispatch(updatePlayer({ weapon: weaponSkin }));
     };
 
-    const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOpen || usingItem || treasure;
+    const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
 
     return (
         <>
@@ -588,16 +596,8 @@ const Main = () => {
                             disableIgnoreButton={battle.isTutorial}
                         />
                     )}
-                    {itemRewardsOpen && (
-                        <ItemRewards
-                            playerCurrentItems={player.items}
-                            overrideItemChoices={battle.itemRewards}
-                            onLoot={handleObtainLoot}
-                            onClose={handleCloseItemRewards}
-                            rewardType={battle.type}
-                            player={player}
-                            disableAttainConsumable={battle.isTutorial}
-                        />
+                    {itemRewardsOptions && (
+                        <ItemRewards onLoot={handleObtainLoot} onClose={handleCloseItemRewards} player={player} {...itemRewardsOptions} />
                     )}
 
                     {treasure && (
