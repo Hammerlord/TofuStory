@@ -72,6 +72,10 @@ export const stumpy: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.PLAYER,
                     icon: BatsEffectImage,
+                    animationOptions: {
+                        width: 75,
+                        height: 75,
+                    },
                     effects: [bats],
                 },
             ],

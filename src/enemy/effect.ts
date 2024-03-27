@@ -48,7 +48,7 @@ export const pigHeaded: Effect = {
 
 export const hardwood: Effect = {
     name: "Hardwood",
-    description: "When attacked, this character gains +1 damage reduction for the turn. Effect is disabled by Burn.",
+    description: "When attacked, character gains +1 damage reduction for the turn. Disabled by Burn.",
     icon: FirewoodImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -87,7 +87,7 @@ export const dryBranch: Effect = {
     icon: TreeBranchImage,
     attackDamageReceived: 3,
     type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
+    class: EFFECT_CLASSES.DEBUFF,
     conditions: [
         {
             calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
