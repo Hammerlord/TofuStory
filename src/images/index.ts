@@ -420,6 +420,7 @@ export { default as PigIdleImage } from "./PigIdle.gif";
 export { default as PigIllustratedImage } from "./PigIllustrated.png";
 export { default as PigsHeadImage } from "./PigsHead.png";
 export { default as PigsRibbonImage } from "./PigsRibbon.png";
+export { default as PillagingWildBoarImage } from "./PillagingWildBoar.gif";
 export { default as PingProjectileImage } from "./PingProjectile.png";
 export { default as PinkBeanStatueImage } from "./PinkBeanStatue.png";
 export { default as PlungerImage } from "./Plunger.png";
