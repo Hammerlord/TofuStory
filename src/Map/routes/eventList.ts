@@ -89,6 +89,7 @@ import {
     garnetMagician,
     blackCrystal,
     hardwoodWand,
+    starryBandana,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -187,6 +188,7 @@ export const ITEMS = [
     yellowHat,
     arcStaff,
     hardwoodWand,
+    starryBandana,
 ];
 
 export const CLASS_ITEMS = {

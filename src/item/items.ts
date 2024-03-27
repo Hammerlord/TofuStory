@@ -1,4 +1,3 @@
-import { counterEffect } from "./../enemy/effect";
 import { bleed, chill, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
@@ -40,7 +39,6 @@ import {
     GuidebookImage,
     HardwoodWandImage,
     HerbsImage,
-    HotdogImage,
     IcarusCapeImage,
     IronBallImage,
     IronMaceImage,
@@ -73,7 +71,6 @@ import {
     ScrollImage,
     SnowshoesImage,
     SpectrumGogglesImage,
-    SpikyCollarImage,
     StarEarringsImage,
     StarfallMagicSquareImage,
     SteelyImage,
@@ -85,12 +82,12 @@ import {
     ThunderSparkImage,
     TopazImage,
     TortieShellImage,
-    ToyHammerImage,
     WeaponMasteryImage,
     WhiteUndershirtImage,
     WildKargoEyeImage,
     WorkGlovesImage,
     YellowHatImage,
+    YellowStarryBandanaImage,
 } from "../images";
 import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import {
@@ -105,6 +102,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { counterEffect } from "./../enemy/effect";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
@@ -2040,6 +2038,26 @@ export const ironBall: Item = {
             onFriendlySummon: {
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
                 effects: [ironBallEffect],
+            },
+        },
+    ],
+};
+
+export const starryBandana: Item = {
+    name: "Yellow Starry Bandana",
+    image: YellowStarryBandanaImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    description: "When you summon a minion, draw a card.",
+    effects: [
+        {
+            name: "Yellow Starry Bandana Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onFriendlySummon: {
+                drawCards: {
+                    amount: 1,
+                },
             },
         },
     ],
