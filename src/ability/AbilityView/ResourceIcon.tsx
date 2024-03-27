@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { Fury, Mana } from "../../resource/ResourcesView";
 import { Ability, AbilityEffect, CombatAbility } from "../types";
 import { PLAYER_CLASSES } from "../../Menu/types";
+import { Player } from "../../character/types";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -15,6 +16,11 @@ const useStyles = createUseStyles({
             color: "#ff9b94",
         },
     },
+    cannotUse: {
+        "& .text": {
+            color: "#ff7373",
+        },
+    },
     placeholder: {
         width: 24,
     },
@@ -23,7 +29,7 @@ const useStyles = createUseStyles({
 /**
  * Resource (Fury, Mana, etc.) cost icon that shows on the top right of a card.
  */
-const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | CombatAbility; playerClass: PLAYER_CLASSES }) => {
+const AbilityResourceIcon = ({ ability, player }: { ability: Ability | CombatAbility; player: Player }) => {
     const classes = useStyles();
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
     const { resourceCost = 0, effects = [], hideResourceCostIcon } = ability;
@@ -36,19 +42,21 @@ const AbilityResourceIcon = ({ ability, playerClass }: { ability: Ability | Comb
     const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
         return acc + (e.resourceCost || 0);
     }, 0);
+    const playerResources = typeof player?.resources === "number" ? player?.resources : Infinity;
     const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffects);
 
     const Icon =
         {
             [PLAYER_CLASSES.WARRIOR]: Fury,
             [PLAYER_CLASSES.MAGICIAN]: Mana,
-        }[playerClass] || Fury;
+        }[player?.class] || Fury;
     return (
         <Icon
             text={totalResourceCost}
             className={classNames({
                 [classes.bonus]: resourceCostFromEffects < 0,
                 [classes.penalty]: resourceCostFromEffects > 0,
+                [classes.cannotUse]: totalResourceCost === "X" ? 1 > playerResources : totalResourceCost > playerResources,
             })}
         />
     );
