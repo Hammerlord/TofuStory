@@ -1154,16 +1154,18 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
+        const { friendly, friendlySide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
+        const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
+
         for (const summon of action.summon) {
-            const { friendly, friendlySide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
             const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false } = summon;
             let pos: number;
-            if (typeof positionIndex === "number" && !friendly[positionIndex]?.HP) {
+            if (typeof positionIndex === "number" && !mutableFriendly[positionIndex]?.HP) {
                 pos = positionIndex;
             } else if (placement) {
-                const validSummonIndices = getPossibleSummonIndices(friendly);
+                const validSummonIndices = getPossibleSummonIndices(mutableFriendly);
                 const isValidIndex = (index: number) => validSummonIndices.includes(index);
-                for (let i = 1; i < friendly.length; ++i) {
+                for (let i = 1; i < mutableFriendly.length; ++i) {
                     if (isValidIndex(actorIndex - i)) {
                         pos = actorIndex - i;
                         break;
@@ -1175,7 +1177,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                     }
                 }
             } else {
-                pos = getRandomItem(getPossibleSummonIndices(friendly));
+                pos = getRandomItem(getPossibleSummonIndices(mutableFriendly));
             }
 
             let isTributeKill = false;
@@ -1184,7 +1186,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                     return;
                 }
 
-                const existingMinionIndices = friendly.reduce((acc, combatant, i) => {
+                const existingMinionIndices = mutableFriendly.reduce((acc, combatant, i) => {
                     // Do not replace any of the minions summoned in the current action
                     if (!combatant?.isPlayer && minionsSummoned.every((minion) => minion.id !== combatant?.id)) {
                         acc.push(i);
@@ -1203,7 +1205,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             const availableMinions = minion.filter((minion: Minion | string) => {
                 if (noDuplicateMinions) {
                     const minionName = typeof minion === "string" ? minion : minion?.name;
-                    return friendly.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
+                    return mutableFriendly.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
                 }
 
                 return true;
@@ -1219,21 +1221,16 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 }
             }
 
-            const { friendly: friendlyAfterTribute } = findCombatantData(getState, actorId);
-            dispatch(
-                updateBattle({
-                    [friendlySide]: friendlyAfterTribute.map((combatant: Combatant | null, i) => {
-                        if (i !== pos) {
-                            return combatant;
-                        }
-
-                        return summonedMinion;
-                    }),
-                })
-            );
+            mutableFriendly[pos] = summonedMinion;
         }
 
         if (minionsSummoned.length) {
+            dispatch(
+                updateBattle({
+                    [friendlySide]: mutableFriendly,
+                })
+            );
+
             // Give minions time to appear before triggering any minion-related effect events (or the next action).
             // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
             dispatch(
