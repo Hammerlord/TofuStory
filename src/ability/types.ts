@@ -245,6 +245,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     portraitAnimationOptions?: {
         fadeInOut?: boolean; // Exclusive with combatant portrait animations (you can only have one animation).
     };
+    // Treated as true by default. If false, eg. removeDebuffs has no effect
+    dispellable?: boolean;
     extendEffectDuration?: {
         amount: number;
         filters?: { property: string; comparator: Comparator; value: any }[];

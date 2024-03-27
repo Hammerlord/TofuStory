@@ -232,7 +232,7 @@ export const getUpdatedStats = ({
 
         const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources * multiplier);
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
-            if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF) {
+            if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF && effect.dispellable) {
                 return true;
             }
 

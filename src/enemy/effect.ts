@@ -38,6 +38,7 @@ export const pigHeaded: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     attackDamageReceived: 2,
+    dispellable: false,
     conditions: [
         {
             hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],

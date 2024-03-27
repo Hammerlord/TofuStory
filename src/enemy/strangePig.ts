@@ -89,9 +89,22 @@ export const strangePig: Minion = {
 
 const stalagmite: Minion = {
     name: "Stalagmite",
-    maxHP: 15,
+    maxHP: 20,
+    uncontrollable: true,
     image: MountainIcon,
-    abilities: [],
+    abilities: [
+        {
+            ...attack,
+            name: "Stalagmite",
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
     effects: [
         {
             ...earthen,
@@ -113,6 +126,7 @@ const throwRocks: Action[] = [
     {
         type: ACTION_TYPES.EFFECT,
         target: TARGET_TYPES.SELF,
+        animation: ANIMATION_TYPES.SHOUT,
         excludePrimaryTarget: true,
         area: 5,
         effects: [
@@ -120,7 +134,6 @@ const throwRocks: Action[] = [
                 name: "Earthen Projectile",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                attackPower: 2,
                 duration: 0,
                 onAttack: {
                     damage: 1,
@@ -158,7 +171,10 @@ export const mutantRibbonPig: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.STOMP,
-                    summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
+                    summon: [
+                        { minion: [stalagmite], placement: "adjacent" },
+                        { minion: [stalagmite], placement: "adjacent" },
+                    ],
                 },
             ],
         },
@@ -222,7 +238,10 @@ export const mutantRibbonPig: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.STOMP,
-                    summon: [{ minion: [stalagmite] }, { minion: [stalagmite] }],
+                    summon: [
+                        { minion: [stalagmite], placement: "adjacent" },
+                        { minion: [stalagmite], placement: "adjacent" },
+                    ],
                 },
                 ...throwRocks,
             ],

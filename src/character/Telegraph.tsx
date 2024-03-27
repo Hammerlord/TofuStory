@@ -111,7 +111,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { battle } = useAppSelector((state) => state);
     const { combatant } = combatantInfo || {};
 
-    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn) {
+    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || combatant.uncontrollable) {
         return null;
     }
 

@@ -395,7 +395,7 @@ export const enemyMoves = () => {
             const { id, casting } = enemy;
             acted[id] = true;
             const enemyInfo = findCombatantData(getState, id);
-            const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length;
+            const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length || enemy.uncontrollable;
 
             // Enemies who are unable to act still must lose a turn when casting an ability
             if (casting) {
