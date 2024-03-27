@@ -122,6 +122,8 @@ const useStyles = createUseStyles({
     },
     itemsContainer: {
         display: "flex",
+        minWidth: 500,
+        justifyContent: "space-evenly",
     },
     item: {
         margin: 16,
@@ -251,6 +253,9 @@ const TreasureBox = ({
         let mesosToSet = curse ? getRandomInt(50, 100) : 0;
         if (initItems?.length > 0) {
             setItems(initItems);
+            if (initItems.length === 0) {
+                setSelectedItemIndices([0]);
+            }
         } else {
             const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
             const treasure = [];
@@ -263,6 +268,9 @@ const TreasureBox = ({
                 }
             });
             setItems(treasure);
+            if (treasure.length === 1) {
+                setSelectedItemIndices([0]);
+            }
         }
 
         if (Array.isArray(initMesos)) {
@@ -339,7 +347,7 @@ const TreasureBox = ({
                                 </div>
                             )}
                             <hr className={classes.border} />
-                            <h3>Pick an item:</h3>
+                            {items.length > 1 && <h3>Pick an item:</h3>}
                             <div className={classes.itemsContainer}>
                                 {items.map((item, i) => (
                                     <ItemView
@@ -355,7 +363,7 @@ const TreasureBox = ({
                             {isChestOpened && (
                                 <div className={classes.buttonContainer}>
                                     <Button color={"primary"} onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
-                                        {"Select"}
+                                        Collect
                                     </Button>
                                 </div>
                             )}
