@@ -130,6 +130,11 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         transformOrigin: "bottom left",
         maxWidth: "50px",
+        "& > *": {
+            left: "50%",
+            position: "absolute",
+            transform: "translateX(-50%)",
+        },
     },
     freeze: {
         bottom: "-105px",
