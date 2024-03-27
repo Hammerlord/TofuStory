@@ -5,6 +5,7 @@ import { CLASS_ITEMS } from "../Map/routes/eventList";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 export const saveGame = (characterObject) => {
     const { deck, player } = characterObject;
@@ -20,22 +21,25 @@ export const getGameFile = () => {
         try {
             const fileObj = JSON.parse(saveFileString);
             const { deck = [], player = {} } = fileObj;
-            const hydratedDeck = deck.map((flatCard) => {
-                const { name, level = 1 } = flatCard;
-                const hydrated = JOB_CARD_MAP[player.class].all.find((card) => card.name === name);
-                if (hydrated) {
-                    let upgradedCard = hydrated;
-                    while ((upgradedCard.level || 1) < level) {
-                        const newUpgradedCard = getUpgradeCard(upgradedCard);
-                        if (newUpgradedCard) {
-                            upgradedCard = newUpgradedCard;
-                        } else {
-                            break;
+            const cards = [...JOB_CARD_MAP[player.class].all, ...NEUTRAL_ABILITIES];
+            const hydratedDeck = deck
+                .map((flatCard) => {
+                    const { name, level = 1 } = flatCard;
+                    const hydrated = cards.find((card) => card.name === name);
+                    if (hydrated) {
+                        let upgradedCard = hydrated;
+                        while ((upgradedCard.level || 1) < level) {
+                            const newUpgradedCard = getUpgradeCard(upgradedCard);
+                            if (newUpgradedCard) {
+                                upgradedCard = newUpgradedCard;
+                            } else {
+                                break;
+                            }
                         }
+                        return { ...upgradedCard, instanceId: uuid.v4() };
                     }
-                    return { ...upgradedCard, instanceId: uuid.v4() };
-                }
-            });
+                })
+                .filter((v) => v);
 
             const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
             const consumables = [halfEatenHotdog, unagiItem, cakeItem];
