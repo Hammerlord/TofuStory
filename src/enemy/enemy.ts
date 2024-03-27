@@ -660,7 +660,7 @@ export const olaf: Minion = {
 export const octopus: Minion = {
     name: "Octopus",
     image: OctopusIdleImage,
-    maxHP: 40,
+    maxHP: 50,
     mesos: 10,
     abilities: [
         {
@@ -697,12 +697,12 @@ export const octopus: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                     addCardsToDiscard: [
                         {
                             name: "Constrict",
                             image: OctopusLegImage,
-                            depletedOnUse: true,
+                            removeAfterTurn: true,
                             resourceCost: 0,
                             actions: [
                                 {
@@ -1367,7 +1367,7 @@ export const curseEye: Minion = {
                     animation: ANIMATION_TYPES.BEAM,
                     effects: [
                         {
-                            name: "Dazed",
+                            name: "Dizzy",
                             description: "Your attacks may randomly hit other targets instead.",
                             icon: DizzyIcon,
                             image: DizzyIcon,

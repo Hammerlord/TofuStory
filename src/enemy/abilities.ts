@@ -139,7 +139,7 @@ export const whomp: Ability = {
                 {
                     name: "Dazed",
                     image: DizzyIcon,
-                    depletedOnUse: true,
+                    removeAfterTurn: true,
                     actions: [
                         {
                             type: ACTION_TYPES.HINDER,
