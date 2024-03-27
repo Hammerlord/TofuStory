@@ -1,6 +1,3 @@
-import { championsRibbon, counterEffect, pigHeaded, earthen } from "./effect";
-import { attack } from "./abilities";
-import { hardy, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -15,6 +12,9 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, OmokPigImage, PillagingWildBoarImage, RockImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
+import { attackDown, hardy, stun } from "./../ability/Effects";
+import { attack } from "./abilities";
+import { championsRibbon, counterEffect, earthen, pigHeaded } from "./effect";
 
 const boulder: Minion = {
     name: "Boulder",
@@ -38,14 +38,14 @@ const boulder: Minion = {
         {
             ...earthen,
             name: "Heavy",
-            description: "Immune to most debuff types. Targets struck by Boulder will have their armor decay by half.",
+            description: "Immune to most debuff types. Targets struck by Boulder will have their Attack Power reduced by 1.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onAttack: {
                 usableWhileStunned: true,
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
-                decayArmor: true,
+                effects: [{ ...attackDown, duration: 5 }],
             },
         },
     ],
