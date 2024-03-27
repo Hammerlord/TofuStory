@@ -1153,16 +1153,17 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
         }
 
         const minionsSummoned: Combatant[] = [];
+        const tributeSummonedMinions: string[] = []; // IDs of killers
         for (const summon of action.summon) {
-            const { friendly, friendlySide, index: actorIndex } = findCombatantData(getState, actorId);
-            const { minion, positionIndex, placement, noDuplicateMinions = false } = summon;
+            const { friendly, friendlySide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
+            const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false } = summon;
             let pos: number;
-            if (typeof positionIndex === "number") {
+            if (typeof positionIndex === "number" && !friendly[positionIndex]?.HP) {
                 pos = positionIndex;
             } else if (placement) {
                 const validSummonIndices = getPossibleSummonIndices(friendly);
                 const isValidIndex = (index: number) => validSummonIndices.includes(index);
-                for (let i = 1; i < 5; ++i) {
+                for (let i = 1; i < friendly.length; ++i) {
                     if (isValidIndex(actorIndex - i)) {
                         pos = actorIndex - i;
                         break;
@@ -1177,8 +1178,26 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 pos = getRandomItem(getPossibleSummonIndices(friendly));
             }
 
+            let isTributeKill = false;
             if (typeof pos !== "number") {
-                break;
+                if (!tributePossible) {
+                    return;
+                }
+
+                const existingMinionIndices = friendly.reduce((acc, combatant, i) => {
+                    // Do not replace any of the minions summoned in the current action
+                    if (!combatant?.isPlayer && minionsSummoned.every((minion) => minion.id !== combatant?.id)) {
+                        acc.push(i);
+                    }
+
+                    return acc;
+                }, []);
+
+                pos = getRandomItem(existingMinionIndices);
+                if (typeof pos === "number") {
+                    dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos }));
+                    isTributeKill = true;
+                }
             }
 
             const availableMinions = minion.filter((minion: Minion | string) => {
@@ -1189,16 +1208,22 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
                 return true;
             });
+
             const minionToSummon = getRandomItem(availableMinions);
             const summonedMinion = createCombatant(typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon);
             if (summonedMinion) {
                 minionsSummoned.push(summonedMinion);
+
+                if (isTributeKill) {
+                    tributeSummonedMinions.push(summonedMinion.id);
+                }
             }
 
+            const { friendly: friendlyAfterTribute } = findCombatantData(getState, actorId);
             dispatch(
                 updateBattle({
-                    [friendlySide]: friendly.map((combatant: Combatant | null, i) => {
-                        if (combatant?.HP > 0 || i !== pos) {
+                    [friendlySide]: friendlyAfterTribute.map((combatant: Combatant | null, i) => {
+                        if (i !== pos) {
                             return combatant;
                         }
 
@@ -1219,6 +1244,9 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 } as Event)
             );
         }
+
+        // Tribute summons count as a kill for the new minion
+        tributeSummonedMinions.forEach((id) => dispatch(checkEventTrigger({ combatantId: id, effectEventKey: EFFECT_EVENT_KEYS.onKill })));
 
         minionsSummoned.forEach((minion) => {
             dispatch(
@@ -2081,6 +2109,46 @@ const checkCastRadiate = ({
     };
 };
 
+const tributeKill = ({
+    tributeSummon,
+    resourceCost,
+    actor,
+    side,
+    index,
+}: {
+    tributeSummon?: boolean;
+    resourceCost: number | "x";
+    actor?: Combatant;
+    side: BATTLEFIELD_SIDES;
+    index: number;
+}) => {
+    return (dispatch) => {
+        if (typeof index !== "number") {
+            return;
+        }
+
+        const actorResources = actor?.resources || 0;
+        // The replaced minion dies
+        dispatch(
+            performAction({
+                action: {
+                    flatDamage: 1000,
+                    type: ACTION_TYPES.NONE,
+                    playbackTime: 750,
+                    secondaryAction: tributeSummon
+                        ? {
+                              resources: resourceCost === "x" ? actorResources : resourceCost,
+                          }
+                        : undefined,
+                },
+                side,
+                selectedIndex: index,
+                actorId: actor?.id, // The actor is considered to have killed it
+            })
+        );
+    };
+};
+
 /**
  * This is for player ability.minion handling only. Randomized summons from actions are handled at checkHandleActionSummon.
  */
@@ -2117,30 +2185,11 @@ const checkSummonMinion = ({
         const previousMinionInSlot = battlefieldSide[index];
         const summonedMinion: Combatant = createCombatant(cloneDeep(minion));
         const actor = findCombatantData(getState, actorId)?.combatant;
-        const actorResources = actor?.resources || 0;
 
         const isKillPreviousMinion = previousMinionInSlot?.HP > 0;
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};
-
-            // The replaced minion dies
-            dispatch(
-                performAction({
-                    action: {
-                        flatDamage: 1000,
-                        type: ACTION_TYPES.NONE,
-                        playbackTime: 500,
-                        secondaryAction: tributeSummon
-                            ? {
-                                  resources: resourceCost === "x" ? actorResources : resourceCost,
-                              }
-                            : undefined,
-                    },
-                    side,
-                    selectedIndex: index,
-                    actorId, // The actor is considered to have killed it
-                })
-            );
+            dispatch(tributeKill({ tributeSummon, resourceCost, actor, side, index }));
         }
 
         const newBattleProps: {

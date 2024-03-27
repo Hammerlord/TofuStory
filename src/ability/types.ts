@@ -531,6 +531,8 @@ export type Action = {
         placement?: "adjacent";
         // If true, there cannot be more than one minion with the same name on the board
         noDuplicateMinions?: boolean;
+        // If true, this can replace (destroy) minions that are on the board, if there is no room
+        tributePossible?: boolean;
     }[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
     morph?: Morph;

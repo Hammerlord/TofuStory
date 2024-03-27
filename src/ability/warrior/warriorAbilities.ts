@@ -2633,32 +2633,22 @@ export const bladeworks: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     depletedOnUse: true,
-    description: "Fill your side of the battlefield with Soul Blades.",
+    description: "Fill your side with Soul Blades, replacing all other summons.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [cloneDeep(soulBlade.minion)] },
-                { minion: [cloneDeep(soulBlade.minion)] },
-                { minion: [cloneDeep(soulBlade.minion)] },
-                { minion: [cloneDeep(soulBlade.minion)] },
+                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
             ],
         },
     ],
     upgrades: [
         {
-            description: "Fill your side of the battlefield with Soul Blades.",
-            actions: [
-                {
-                    summon: [
-                        { minion: [soulBladeUpgrade] },
-                        { minion: [soulBladeUpgrade] },
-                        { minion: [soulBladeUpgrade] },
-                        { minion: [soulBladeUpgrade] },
-                    ],
-                },
-            ],
+            resourceCost: -1,
         },
     ],
 };

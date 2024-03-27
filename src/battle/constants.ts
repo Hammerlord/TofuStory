@@ -11,7 +11,7 @@ export const CARD_ADDED_PLAYBACK_SPEED = 1500;
 export const CARD_DEPLETED_PLAYBACK_SPEED = 1000;
 
 export const TURN_ANNOUNCEMENT_TIME = 1500; // MS
-export const SUMMON_DELAY = 50;
+export const SUMMON_DELAY = 250;
 
 export const battleWarnings = {
     depleteMinCardInHand: "That ability requires at least one other card in your hand to deplete.",
