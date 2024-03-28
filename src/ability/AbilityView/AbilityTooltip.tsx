@@ -102,19 +102,8 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         if (Array.isArray(obj)) {
             obj.forEach(findCardsToAdd);
         } else if (typeof obj === "object") {
-            const {
-                addCards = [],
-                addCardsToDiscard = [],
-                addCardsToDeck = [],
-                selectCards = {},
-                ability: nestedAbility,
-                summon,
-                ...other
-            } = obj;
+            const { addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {}, summon, ...other } = obj;
             const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])];
-            if (nestedAbility?.image) {
-                cardsToDisplay.push(nestedAbility);
-            }
 
             if (summon) {
                 const summonCards = summon.reduce((acc, config: ActionSummon) => {
