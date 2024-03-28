@@ -23,6 +23,9 @@ const useStyles = createUseStyles({
         height: "100%",
         boxSizing: "border-box",
         position: "relative",
+        padding: 0,
+        background: "none",
+        border: "none",
     },
     item: {
         border: "1px solid transparent",
@@ -40,7 +43,8 @@ const useStyles = createUseStyles({
             .join(", "),
     },
     selectedItem: {
-        border: "1px solid rgba(255, 255, 255, 0.8)",
+        border: "1px solid rgba(255, 255, 255, 0.75)",
+        borderRadius: "2px",
     },
     menu: {
         background: "rgba(30, 30, 30, 0.95)",
@@ -189,7 +193,7 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
     return (
         <>
             {inventory.map((item: Item, i: number) => (
-                <div className={classes.itemContainer} key={i}>
+                <button className={classes.itemContainer} key={i}>
                     <img
                         src={item.image}
                         alt={item.name}
@@ -201,7 +205,7 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
                     />
                     <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
                     <span className={classes.combatCounter}>{getCombatCounter(item)}</span>
-                </div>
+                </button>
             ))}
             {menuAnchor && (
                 <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu}>
