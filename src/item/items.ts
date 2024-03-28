@@ -1147,7 +1147,8 @@ export const estherShield: Item = {
     image: EstherShieldImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When your deck cycles, you and your allies gain {{ effects.0.onDeckCycle.armor }} armor.",
+    description: "When your deck cycles, gain {{ effects.0.onDeckCycle.armor }} armor.",
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Esther Shield",
@@ -1156,7 +1157,6 @@ export const estherShield: Item = {
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 9,
-                area: 5,
             },
         },
     ],
@@ -1183,7 +1183,8 @@ export const redHeartedEarrings: Item = {
     image: RedHeartedEarringsImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When you deplete a card, you and your allies heal 1 HP.",
+    description: "When you deplete a card, heal 1 HP.",
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Red-Hearted Earrings",
@@ -1192,7 +1193,6 @@ export const redHeartedEarrings: Item = {
             onDepleteAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
-                area: 5,
             },
         },
     ],
