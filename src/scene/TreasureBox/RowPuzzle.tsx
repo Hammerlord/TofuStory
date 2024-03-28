@@ -35,7 +35,15 @@ const RowPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const classes = useStyles();
     // Eg. if you click on a index with value '3', it changes 3 tiles
     const [tilesChange] = useState(getRandomItem(tilesChangePossibilities));
-    const [currentAnswer, setCurrentAnswer] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, tiles.length - 1)));
+    const [currentAnswer, setCurrentAnswer] = useState(() => {
+        const rollInit = () => Array.from({ length: 5 }).map(() => getRandomInt(0, tiles.length - 1));
+        let initialState = rollInit();
+        while (initialState.every((item) => item === initialState[0])) {
+            initialState = rollInit();
+        }
+
+        return initialState;
+    });
 
     const onClickTile = (i: number) => {
         if (completed) {
