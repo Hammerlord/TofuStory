@@ -23,7 +23,15 @@ const useStyles = createUseStyles({
 });
 
 const OnOffPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
-    const [answer, setAnswer] = useState(Array.from({ length: 6 }).map(() => Math.random() < 0.5));
+    const [answer, setAnswer] = useState(() => {
+        const rollInit = () => Array.from({ length: 6 }).map(() => Math.random() < 0.5);
+        let initialState = rollInit();
+        while (initialState.every((item) => item === initialState[0])) {
+            initialState = rollInit();
+        }
+
+        return initialState;
+    });
 
     const onClickTile = (index: number) => {
         if (completed) {
