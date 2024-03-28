@@ -1995,7 +1995,7 @@ export const miniKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -2060,7 +2060,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -2071,7 +2071,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                     effects: [
                         {
                             ...bleed,
@@ -2097,7 +2097,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -2115,7 +2115,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                     effects: [
                         {
                             ...bleed,
@@ -2125,7 +2125,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                     effects: [
                         {
                             ...bleed,
@@ -2150,7 +2150,7 @@ export const wildKargo: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 10,
                     secondaryAction: {
                         healing: 15,
                         resources: 1,
