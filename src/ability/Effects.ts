@@ -688,3 +688,11 @@ export const directDamageTakenTrigger: Effect = {
         effects: [directDamageTaken],
     },
 };
+
+export const tributeSummonBuff: Effect = {
+    name: "Tribute Summoned",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    maxHP: 1,
+};

@@ -1,3 +1,4 @@
+import { getMaxHP } from "./../battle/utils";
 import { cloneDeep } from "lodash";
 import uuid from "uuid";
 import { aggregateItemEffects } from "../Menu/utils";
@@ -8,19 +9,21 @@ export const createCombatant = (combatant): Combatant => {
     if (!combatant) {
         return combatant;
     }
-    return {
+
+    const effects = [
+        ...aggregateItemEffects(combatant.items || []),
+        ...(combatant.effects?.map((effect: Effect | CombatEffect) => ({
+            ...cloneDeep(effect),
+            // @ts-ignore
+            uptime: effect.uptime || 1,
+            id: uuid.v4(),
+        })) || []),
+    ];
+
+    const baseChar = {
         id: uuid.v4(),
         ...combatant,
-        HP: combatant.HP || combatant.maxHP,
-        effects: [
-            ...aggregateItemEffects(combatant.items || []),
-            ...(combatant.effects?.map((effect: Effect | CombatEffect) => ({
-                ...cloneDeep(effect),
-                // @ts-ignore
-                uptime: effect.uptime || 1,
-                id: uuid.v4(),
-            })) || []),
-        ],
+        effects,
         armor: combatant.armor || 0,
         resources: typeof combatant.resources === "number" ? combatant.resources : 1,
         maxResources: combatant.maxResources || 3,
@@ -33,6 +36,14 @@ export const createCombatant = (combatant): Combatant => {
             })) || [],
         turnHistory: [],
         abilityHistory: [],
+    };
+
+    const maxHP = getMaxHP(baseChar);
+
+    return {
+        ...baseChar,
+        HP: combatant.HP || maxHP,
+        maxHP,
     };
 };
 

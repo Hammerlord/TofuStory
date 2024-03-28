@@ -57,6 +57,7 @@ import { checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbili
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { getUpgradeCard } from "../../Menu/utils";
+import { tributeSummonBuff } from "../../ability/Effects";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
