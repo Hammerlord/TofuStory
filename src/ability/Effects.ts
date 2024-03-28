@@ -5,6 +5,7 @@ import {
     FireMarbleImage,
     GemHeartImage,
     HumilityStoneImage,
+    MushroomOmokImage,
     NimbleJewelCImage,
     PoisonImage,
     StoneShieldImage,
@@ -691,6 +692,8 @@ export const directDamageTakenTrigger: Effect = {
 
 export const tributeSummonBuff: Effect = {
     name: "Tribute Summoned",
+    description: "Bonus from replacing a summon.",
+    icon: MushroomOmokImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,

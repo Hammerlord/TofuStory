@@ -1213,7 +1213,13 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             });
 
             const minionToSummon = getRandomItem(availableMinions);
-            const summonedMinion = createCombatant(typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon);
+            const baseMinion = typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon;
+            const minionEffects = baseMinion?.effects.slice() || [];
+            if (isTributeKill) {
+                minionEffects.push(tributeSummonBuff);
+            }
+
+            const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
             if (summonedMinion) {
                 minionsSummoned.push(summonedMinion);
 
@@ -2179,10 +2185,16 @@ const checkSummonMinion = ({
         };
         const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
         const previousMinionInSlot = battlefieldSide[index];
-        const summonedMinion: Combatant = createCombatant(cloneDeep(minion));
+        const isKillPreviousMinion = previousMinionInSlot?.HP > 0;
+        const minionEffects = minion.effects?.slice() || [];
+        if (isKillPreviousMinion) {
+            minionEffects.push(tributeSummonBuff);
+        }
+
+        const baseMinion = cloneDeep({ ...minion, effects: minionEffects });
+        const summonedMinion: Combatant = createCombatant(baseMinion);
         const actor = findCombatantData(getState, actorId)?.combatant;
 
-        const isKillPreviousMinion = previousMinionInSlot?.HP > 0;
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};
             dispatch(tributeKill({ tributeSummon, resourceCost, actor, side, index }));
@@ -2194,7 +2206,7 @@ const checkSummonMinion = ({
             playerSummonsInPlay?: { [id: string]: Ability };
         } = {
             [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
-                return i === index ? cloneDeep(summonedMinion) : combatant;
+                return i === index ? summonedMinion : combatant;
             }),
         };
 
