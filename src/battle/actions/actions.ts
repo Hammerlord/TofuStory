@@ -1387,7 +1387,6 @@ const checkInduce = ({
                                 source: {
                                     ...parentSource,
                                     actorId: id,
-                                    isProc: true,
                                 },
                                 ability: {
                                     name: "Induced Ability",
@@ -1431,7 +1430,6 @@ const checkInduce = ({
                             source: {
                                 ...parentSource,
                                 actorId: id,
-                                isProc: true,
                             },
                             ability: {
                                 name: "Induced Attack",
