@@ -812,7 +812,7 @@ export const disrupt: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
-            effects: [{ ...silence }],
+            effects: [{ ...silence }, stun],
         },
     ],
     upgrades: [
