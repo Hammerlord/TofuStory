@@ -21,6 +21,8 @@ const useStyles = createUseStyles({
         width: "50px",
         padding: "4px 8px",
         verticalAlign: "top",
+        background: "none",
+        border: "none",
         "& img": {
             width: "50px",
         },
@@ -29,16 +31,20 @@ const useStyles = createUseStyles({
         boxSizing: "content-box",
         height: "50px",
         width: "50px",
-        margin: "4px",
+        margin: "2px",
         padding: "4px",
         display: "inline-block",
         verticalAlign: "top",
+        background: "none",
+        border: "1px solid transparent",
+        cursor: "pointer",
         "& img": {
             width: "50px",
         },
     },
     selectedItem: {
-        border: "1px solid rgba(255, 255, 255, 0.8)",
+        border: "1px solid rgba(255, 255, 255, 0.75)",
+        borderRadius: "2px",
     },
     menu: {
         background: "rgba(30, 30, 30, 0.95)",
@@ -74,16 +80,16 @@ const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
 
     return (
         <div className={classes.root} ref={menuAnchor}>
-            <div onClick={() => setWeaponSkinInventoryOpen((prev) => !prev)} className={classes.menuToggle}>
+            <button onClick={() => setWeaponSkinInventoryOpen((prev) => !prev)} className={classes.menuToggle}>
                 <img src={player.weapon} alt="Currently equipped" />
-            </div>
+            </button>
             {weaponSkinInventoryOpen && (
                 <Popper anchorEl={menuAnchor.current} open={true} placement={"bottom-start"} className={classes.menu}>
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
                             {(player.weaponSkins || []).map(({ name, image }) => (
-                                <div
+                                <button
                                     onClick={() => onSelectWeaponSkin(image)}
                                     key={name}
                                     className={classNames(classes.item, {
@@ -91,7 +97,7 @@ const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
                                     })}
                                 >
                                     <img src={image} alt={name} title={name} />
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </ClickAwayListener>
