@@ -494,7 +494,7 @@ const AbilityView = forwardRef(
                                     </span>
                                 )}
                             </span>{" "}
-                            <AbilityResourceIcon ability={ability} player={player} />
+                            <AbilityResourceIcon ability={ability} player={player} disableBattleIndicators={disableBattleBonuses} />
                         </span>
                         <div className={classes.portraitContainer}>{imageNode}</div>
                         <div className={classes.body}>

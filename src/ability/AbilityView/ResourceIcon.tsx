@@ -29,7 +29,15 @@ const useStyles = createUseStyles({
 /**
  * Resource (Fury, Mana, etc.) cost icon that shows on the top right of a card.
  */
-const AbilityResourceIcon = ({ ability, player }: { ability: Ability | CombatAbility; player: Player }) => {
+const AbilityResourceIcon = ({
+    ability,
+    player,
+    disableBattleIndicators,
+}: {
+    ability: Ability | CombatAbility;
+    player: Player;
+    disableBattleIndicators?: boolean;
+}) => {
     const classes = useStyles();
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
     const { resourceCost = 0, effects = [], hideResourceCostIcon } = ability;
@@ -50,16 +58,16 @@ const AbilityResourceIcon = ({ ability, player }: { ability: Ability | CombatAbi
             [PLAYER_CLASSES.WARRIOR]: Fury,
             [PLAYER_CLASSES.MAGICIAN]: Mana,
         }[player?.class] || Fury;
-    return (
-        <Icon
-            text={totalResourceCost}
-            className={classNames({
-                [classes.bonus]: resourceCostFromEffects < 0,
-                [classes.penalty]: resourceCostFromEffects > 0,
-                [classes.cannotUse]: totalResourceCost === "X" ? 1 > playerResources : totalResourceCost > playerResources,
-            })}
-        />
-    );
+
+    let className;
+    if (!disableBattleIndicators) {
+        className = {
+            [classes.bonus]: resourceCostFromEffects < 0,
+            [classes.penalty]: resourceCostFromEffects > 0,
+            [classes.cannotUse]: totalResourceCost === "X" ? 1 > playerResources : totalResourceCost > playerResources,
+        };
+    }
+    return <Icon text={totalResourceCost} className={classNames(className)} />;
 };
 
 export const ResourceIcon = ({
