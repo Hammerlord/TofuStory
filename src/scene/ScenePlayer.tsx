@@ -627,7 +627,7 @@ const ScenePlayer = ({
                         [classes.hide]: disableBackground,
                     })}
                 />
-                <div className={classes.backgroundContainer} style={{ backgroundImage: `url(${background})` }} />
+                <div className={classes.backgroundContainer} style={background && { backgroundImage: `url(${background})` }} />
                 <div
                     className={classNames(classes.backgroundOverlay, {
                         [classes.hide]: disableBackground,
