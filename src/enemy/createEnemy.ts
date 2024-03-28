@@ -40,7 +40,7 @@ export const createCombatant = (combatant): Combatant => {
 
     return {
         ...baseChar,
-        // If this was tribute summoned, aka killed an old summon on the board, it gets a max HP buff. We want to reflect that in its HP.
+        // If this was tribute summoned, it gets a max HP buff. We want to reflect that in its HP.
         HP: combatant.HP || getMaxHP(baseChar),
     };
 };

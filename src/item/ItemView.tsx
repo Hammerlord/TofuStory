@@ -4,7 +4,9 @@ import { Item, RARITIES } from "./types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import Handlebars from "handlebars";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
+import { MushroomOmokImage } from "../images";
+import Tooltip from "../view/Tooltip";
 
 const useStyles = createUseStyles({
     item: {
@@ -19,6 +21,7 @@ const useStyles = createUseStyles({
         cursor: "pointer",
         boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.75)",
         textAlign: "center",
+        position: "relative",
         "& hr": {
             opacity: 0.6,
             width: "100%",
@@ -53,6 +56,17 @@ const useStyles = createUseStyles({
     highlight: {
         filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
     },
+    affectsSummons: {
+        position: "absolute",
+        right: 8,
+        top: 8,
+        background: GREEN,
+        width: "10px",
+        height: "10px",
+        transform: "rotate(45deg)",
+        display: "inline-block",
+        margin: "8px",
+    },
 });
 
 const ItemView = ({
@@ -84,6 +98,11 @@ const ItemView = ({
         >
             <img src={item.image} className={classes.itemImage} />
             <div>{item.name}</div>
+            {item.applyEffectsToSummons && (
+                <Tooltip title="Your summons also gain this effect.">
+                    <span className={classNames(classes.affectsSummons)} />
+                </Tooltip>
+            )}
             <div className={classes.rarityContainer}>
                 <hr />
                 <div>

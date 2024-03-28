@@ -1146,6 +1146,8 @@ const onSummonTriggers =
 
 /**
  * Handle action that summons a combatant in an empty slot on the board
+ * TODO: Reuse checkSummonMinion code
+ * @see checkSummonMinion
  */
 const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
@@ -1217,6 +1219,16 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             const minionEffects = baseMinion?.effects.slice() || [];
             if (isTributeKill) {
                 minionEffects.push(tributeSummonBuff);
+            }
+
+            if (actor?.isPlayer) {
+                const itemEffects = actor.items.reduce((acc, item: Item) => {
+                    if (item.applyEffectsToSummons) {
+                        acc.push(...(item.effects || []));
+                    }
+                    return acc;
+                }, []);
+                minionEffects.push(...itemEffects);
             }
 
             const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
@@ -2191,9 +2203,19 @@ const checkSummonMinion = ({
             minionEffects.push(tributeSummonBuff);
         }
 
+        const actor = findCombatantData(getState, actorId)?.combatant;
+        if (actor?.isPlayer) {
+            const itemEffects = actor.items.reduce((acc, item: Item) => {
+                if (item.applyEffectsToSummons) {
+                    acc.push(...(item.effects || []));
+                }
+                return acc;
+            }, []);
+            minionEffects.push(...itemEffects);
+        }
+
         const baseMinion = cloneDeep({ ...minion, effects: minionEffects });
         const summonedMinion: Combatant = createCombatant(baseMinion);
-        const actor = findCombatantData(getState, actorId)?.combatant;
 
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};

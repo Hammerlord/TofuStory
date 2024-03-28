@@ -28,6 +28,8 @@ export interface Item {
     abilityChoices?: 1;
     rarity?: RARITIES;
     stacks?: number;
+    // If true, item's `effects` will be appended to summons' effects
+    applyEffectsToSummons?: boolean;
     upgradeScreen?: {
         maxUpgradeLevel: number;
     };
