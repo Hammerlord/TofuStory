@@ -1603,11 +1603,13 @@ export const flamingFeather: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onOffensiveAbility: {
+                disableTriggerFromProcs: true,
                 conditions: [
                     {
                         comparator: "gt",
                         resourceCost: 1,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
