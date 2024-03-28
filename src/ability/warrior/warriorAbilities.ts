@@ -1716,13 +1716,13 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward. Uncontrollable.</b> Attacks on Summon and when you play a {{{ _offense_ }}} card.",
+    description: "<b>Ward. Uncontrollable.</b> Attacks when Summoned and when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
-        maxHP: 3,
+        maxHP: 1,
         uncontrollable: true,
         abilities: [
             {
@@ -2221,7 +2221,7 @@ export const guardian: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 0,
+                        damage: 3,
                     },
                 ],
             },
