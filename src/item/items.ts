@@ -49,6 +49,7 @@ import {
     MesoCoinImage,
     MesoImage,
     MesoStackImage,
+    NamelessSwordImage,
     NewspaperImage,
     OpalImage,
     PanlidImage,
@@ -745,7 +746,17 @@ const pigsRibbonCounter: Effect = {
         usableWhileStunned: false,
         removeEffect: true,
         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        induceCombatantAttack: true,
+        ability: {
+            name: "Counter",
+            image: NamelessSwordImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
     },
     onTurnStart: {
         removeEffect: true,
@@ -755,7 +766,7 @@ const pigsRibbonCounter: Effect = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, you and your summons gain Counter.",
+    description: "Once per turn, you and your summons gain Counter for 2 damage.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
