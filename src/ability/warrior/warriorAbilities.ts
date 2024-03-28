@@ -1716,7 +1716,7 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward. Uncontrollable.</b> Attacks when you play a {{{ _offense_ }}} card.",
+    description: "<b>Ward. Uncontrollable.</b> Attacks on Summon and when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -2624,8 +2624,6 @@ export const retribute: Ability = {
         },
     ],
 };
-
-const soulBladeUpgrade = soulBlade.upgrades[0].minion;
 
 export const bladeworks: Ability = {
     name: "Bladeworks",

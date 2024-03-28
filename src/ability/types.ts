@@ -441,6 +441,19 @@ export interface Morph {
     };
 }
 
+export type ActionSummon = {
+    // If more than one minion is provided, chooses one randomly.
+    minion: (Minion | string)[];
+    // Which specific index position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
+    positionIndex?: number;
+    // Place the summoned minion next to the summoner if there is space. If not, finds the next closest space.
+    placement?: "adjacent";
+    // If true, there cannot be more than one minion with the same name on the board
+    noDuplicateMinions?: boolean;
+    // If true, this can replace (destroy) minions that are on the board, if there is no room
+    tributePossible?: boolean;
+};
+
 export type Action = {
     damage?: number;
     secondaryDamage?: number;
@@ -522,18 +535,7 @@ export type Action = {
     destroyArmor?: number;
     resurrect?: boolean;
     playbackTime?: number;
-    summon?: {
-        // If more than one minion is provided, chooses one randomly.
-        minion: (Minion | string)[];
-        // Which specific index position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
-        positionIndex?: number;
-        // Place the summoned minion next to the summoner if there is space. If not, finds the next closest space.
-        placement?: "adjacent";
-        // If true, there cannot be more than one minion with the same name on the board
-        noDuplicateMinions?: boolean;
-        // If true, this can replace (destroy) minions that are on the board, if there is no room
-        tributePossible?: boolean;
-    }[];
+    summon?: ActionSummon[];
     // Mutate one or more combatants/minions to become one or more different combatants/minions.
     morph?: Morph;
     // When cast on a combatant, that combatant will attack randomly.

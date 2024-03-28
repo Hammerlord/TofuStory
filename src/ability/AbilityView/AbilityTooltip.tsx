@@ -3,9 +3,11 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
 import { chargingStone, rageStone } from "../../item/starterItems";
-import { Ability, Effect, EFFECT_TYPES } from "../types";
+import { Ability, ActionSummon, Effect, EFFECT_TYPES } from "../types";
 import AbilityView from "./AbilityView";
 import { immunity } from "../Effects";
+import { enemyNameMap } from "../../enemy";
+import { soulBlade } from "../warrior/warriorAbilities";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -90,18 +92,61 @@ const requiresExplanation = ({ type }): boolean => {
     ].includes(type);
 };
 
+const minionCardLookup = {
+    [soulBlade.name]: soulBlade,
+};
+
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
     const cardsToAddMap = {};
-    const findCardsToAdd = (ability: Ability) => {
-        ability.actions.forEach(({ addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {} }) => {
-            [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])].forEach((card) => {
+    const findCardsToAdd = (obj) => {
+        if (Array.isArray(obj)) {
+            obj.forEach(findCardsToAdd);
+        } else if (typeof obj === "object") {
+            const {
+                addCards = [],
+                addCardsToDiscard = [],
+                addCardsToDeck = [],
+                selectCards = {},
+                ability: nestedAbility,
+                summon,
+                ...other
+            } = obj;
+            const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])];
+            if (nestedAbility?.image) {
+                cardsToDisplay.push(nestedAbility);
+            }
+
+            if (summon) {
+                const summonCards = summon.reduce((acc, config: ActionSummon) => {
+                    const { minion: baseMinions = [] } = config;
+                    baseMinions.forEach((minion) => {
+                        const card = minionCardLookup[typeof minion === "string" ? minion : minion.name];
+                        if (card) {
+                            acc.push(card);
+                        } else if (typeof minion === "object") {
+                            // Display a "common card" version of the minion which is likely not as comprehensive as the card lookup
+                            // But it's something.
+                            acc.push({ name: minion.name, minion, actions: [], overrideBodyText: true });
+                        }
+                    });
+
+                    return acc;
+                }, []);
+                cardsToDisplay.push(...summonCards);
+            }
+            cardsToDisplay.forEach((card) => {
                 const key = card.name + JSON.stringify(card.image);
                 if (!cardsToAddMap[key]) {
                     cardsToAddMap[key] = card; // We only want to display it once
                     findCardsToAdd(card);
                 }
             });
-        });
+
+            // minion: undefined, do NOT look up minion abilities and treat them as 'cards'.
+            Object.values({ ...other, minion: undefined }).forEach((child) => {
+                findCardsToAdd(child);
+            });
+        }
     };
 
     findCardsToAdd(ability);
