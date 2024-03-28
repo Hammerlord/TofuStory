@@ -90,6 +90,7 @@ export const pillagingWildBoar: Minion = {
     name: "Pillaging Boar",
     maxHP: 300,
     image: PillagingWildBoarImage,
+    isBoss: true,
     mesos: 50,
     abilities: [
         {
