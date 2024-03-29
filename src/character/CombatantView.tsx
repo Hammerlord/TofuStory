@@ -514,7 +514,7 @@ const CombatantView = forwardRef(
                         )}
                         {oldState?.HP > 0 && (
                             <>
-                                {!isTargeted && <CombatantTooltip combatant={combatant} />}
+                                {!isTargeted && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} />}
                                 <div className={classes.leftContainer}>
                                     <Armor amount={oldState.armor} />
                                     <Health combatantInfo={combatantInfo} />

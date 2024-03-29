@@ -27,7 +27,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const CombatantTooltip = ({ combatant }) => {
+const CombatantTooltip = ({ combatant, isEnemy }) => {
     const { isBoss, isElite, isPlayer, name } = combatant || {};
     const classes = useStyles();
 
@@ -36,6 +36,10 @@ const CombatantTooltip = ({ combatant }) => {
     }
 
     const getDifficultyLabel = () => {
+        if (!isEnemy) {
+            return null;
+        }
+
         if (isBoss) {
             return (
                 <span className={classes.boss}>
