@@ -15,7 +15,7 @@ import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
-import { SkullPatchImage } from "../images";
+import { BronzeIncenseBurnerImage, GoldenHammerImage, SkullPatchImage } from "../images";
 import ItemSelection from "../item/ItemSelection";
 import { mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
@@ -28,6 +28,7 @@ import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
 import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
 import { PuzzleCompletionPayload } from "./TreasureBox/types";
+import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     root: {
@@ -154,14 +155,13 @@ const useStyles = createUseStyles({
         padding: "8px 16px",
         width: "100%",
         cursor: "pointer",
-        "& *": {
-            verticalAlign: "bottom",
-        },
-
         "& img": {
             maxWidth: 32,
             maxHeight: 32,
         },
+    },
+    optionIcon: {
+        verticalAlign: "middle",
     },
     response: {
         marginBottom: "8px",
@@ -564,23 +564,44 @@ const ScenePlayer = ({
 
     const getResponseAffix = (response: ScriptResponse) => {
         if (response.encounter) {
-            return "[Fight]";
+            return (
+                <>
+                    [<Icon icon={CrossedSwordsIcon} size="xs" className={classes.optionIcon} /> Fight]
+                </>
+            );
         }
 
         if (response.isExit) {
-            return "[Leave]";
+            return (
+                <>
+                    [<Icon icon={DoorIcon} size="xs" className={classes.optionIcon} /> Leave]
+                </>
+            );
         }
 
         if (response.shop) {
-            return "[Shop]";
+            return (
+                <>
+                    [<Icon icon={<MoneyBagIcon />} size="xs" className={classes.optionIcon} /> Shop]
+                </>
+            );
         }
 
         if (response.removeAbility) {
-            return "[Remove ability from deck]";
+            return (
+                <>
+                    [<Icon icon={BronzeIncenseBurnerImage} size="sm" className={classes.optionIcon} /> Remove card from deck]
+                </>
+            );
         }
 
         if (response.upgradeCards) {
-            return `[Upgrade ${response.upgradeCards} random abilities]`;
+            return (
+                <>
+                    [<Icon icon={GoldenHammerImage} size="sm" className={classes.optionIcon} /> Upgrade {response.upgradeCards} random
+                    cards]
+                </>
+            );
         }
     };
 
