@@ -83,7 +83,7 @@ const TownNode = ({
     nodeEl,
     label,
 }: {
-    isVisited: boolean;
+    isVisited?: boolean;
     isLocked?: boolean;
     onClick: () => void;
     icon;

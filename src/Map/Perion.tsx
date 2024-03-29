@@ -21,11 +21,13 @@ import { TOWN_STYLES } from "./constants";
 import { dummiesScene, mapleDummy } from "../scene/Perion/perionDummies";
 import { arenaScene } from "../scene/Perion/arena";
 import { basicDummy } from "../enemy/dummy";
-import { TOWNS } from "./types";
+import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { EventScene } from "../scene/types";
 import { playerStateSlice } from "../character/playerReducer";
+import { useShopConfig } from "../Menu/shopUtils";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -72,7 +74,7 @@ const PERION_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
+const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce((acc: number, val: string) => {
@@ -82,7 +84,8 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
 
         return acc;
     }, 0) as number;
-
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
     const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
     const dispatch = useAppDispatch();
@@ -105,9 +108,9 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(PERION_PLACES.SHOP)) {
-            onClickShop(store);
-        }
+        // Unlike some other nodes, the player can always revisit the shop.
+        checkVisitPlace(PERION_PLACES.SHOP);
+        setIsShopOpen(true);
     };
 
     const handleClickClassLeader = () => {
@@ -134,13 +137,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
-                        <TownNode
-                            icon={MoneyBagIcon}
-                            isVisited={visited[PERION_PLACES.SHOP]}
-                            label={"Shop"}
-                            nodeImage={PerionShopImage}
-                            onClick={handleClickShop}
-                        />
+                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={PerionShopImage} onClick={handleClickShop} />
 
                         <br />
                         <TownNode
@@ -199,6 +196,7 @@ const Perion = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost 
                     </div>
                 </Pan>
                 <Legend />
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
             </div>
         </div>
     );

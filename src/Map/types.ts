@@ -1,5 +1,6 @@
+import { OnBuyItem } from "../Menu/constants";
 import { Ability, Minion } from "../ability/types";
-import { Wave } from "../battle/types";
+import { Player } from "../character/types";
 import {
     AltForestBGImage,
     ElliniaBGImage,
@@ -10,6 +11,7 @@ import {
     SleepywoodRegionBGImage,
 } from "../images";
 import { Item } from "../item/types";
+import { EventScene } from "../scene/types";
 import { REGIONS } from "./regions";
 
 export enum NODE_TYPES {
@@ -99,4 +101,14 @@ export const BG_MAP = {
     [REGIONS.SLEEPYWOOD]: SleepywoodRegionBGImage,
     [REGIONS.ELLINIA]: ElliniaBGImage,
     [REGIONS.HIDDEN_FOREST]: AltForestBGImage,
+};
+
+export type TownProperties = {
+    player: Player;
+    onExit: () => void;
+    onClickScene: (scene: EventScene) => void;
+    onClickTradingPost: () => void;
+    onBuyItem: OnBuyItem;
+    onCamp: () => void;
+    onBattle: (battleConfig, callback: Function) => void;
 };

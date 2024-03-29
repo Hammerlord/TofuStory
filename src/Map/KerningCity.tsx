@@ -23,10 +23,12 @@ import { TOWN_STYLES } from "./constants";
 import { useState } from "react";
 import TownNode from "./TownNode";
 import Legend from "./Legend";
-import { TOWNS } from "./types";
+import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { playerStateSlice } from "../character/playerReducer";
+import { useShopConfig } from "../Menu/shopUtils";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -69,10 +71,12 @@ const KERNING_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
+const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyItem }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -104,9 +108,8 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(KERNING_PLACES.SHOP)) {
-            onClickShop(store);
-        }
+        checkVisitPlace(KERNING_PLACES.SHOP);
+        setIsShopOpen(true);
     };
 
     const handleClickClassLeader = () => {
@@ -155,13 +158,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
-                        <TownNode
-                            icon={MoneyBagIcon}
-                            isVisited={visited[KERNING_PLACES.SHOP]}
-                            label={"Shop"}
-                            nodeImage={KerningShopImage}
-                            onClick={handleClickShop}
-                        />
+                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
@@ -210,6 +207,7 @@ const KerningCity = ({ player, onExit, onClickScene, onClickShop, onClickTrading
                     </div>
                 </Pan>
                 <Legend />
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
             </div>
         </div>
     );

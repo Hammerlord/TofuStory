@@ -20,6 +20,9 @@ import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { balrog } from "../enemy/balrog";
 import { BATTLE_TYPES } from "../battle/types";
 import { theRememberer } from "../enemy/rememberer";
+import { TownProperties } from "./types";
+import { useShopConfig } from "../Menu/shopUtils";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -51,10 +54,11 @@ const SLEEPYWOOD_PLACES = {
     REMEMBERER: "rememberer",
 };
 
-const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost, onCamp, onBattle }) => {
+const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost, onCamp, onBattle }: TownProperties) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
-
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     /**
@@ -75,9 +79,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingP
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
-            onClickShop && onClickShop(store);
-        }
+        checkVisitPlace(TOWN_PLACES.SHOP);
     };
 
     const handleClickEvent = (eventKey: string, scene) => {
@@ -104,13 +106,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingP
                             nodeImage={SleepywoodTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
-                        <TownNode
-                            icon={MoneyBagIcon}
-                            isVisited={visited[TOWN_PLACES.SHOP]}
-                            label={"Shop"}
-                            nodeImage={SleepywoodShopImage}
-                            onClick={handleClickShop}
-                        />
+                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={SleepywoodShopImage} onClick={handleClickShop} />
                         <br />
                         <TownNode
                             icon={CampingIcon}
@@ -185,6 +181,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onClickShop, onClickTradingP
                     </div>
                 </Pan>
                 <Legend />
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
             </div>
         </div>
     );

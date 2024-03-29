@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -24,8 +24,10 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
-import { TOWNS } from "./types";
+import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
+import { useShopConfig } from "../Menu/shopUtils";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -67,10 +69,12 @@ const HENESYS_BOSSES = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost, onCamp }) => {
+const Henesys = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
 
     const numActivitiesComplete: number = Object.values(HENESYS_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -101,9 +105,8 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(HENESYS_PLACES.SHOP)) {
-            onClickShop(store);
-        }
+        checkVisitPlace(HENESYS_PLACES.SHOP);
+        setIsShopOpen(true);
     };
 
     const handleClickClassLeader = () => {
@@ -144,13 +147,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                             nodeImage={HenesysTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
-                        <TownNode
-                            icon={MoneyBagIcon}
-                            isVisited={visited[HENESYS_PLACES.SHOP]}
-                            label={"Shop"}
-                            nodeImage={HenesysShopImage}
-                            onClick={handleClickShop}
-                        />
+                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={HenesysShopImage} onClick={handleClickShop} />
                         <br />
                         {boss === HENESYS_BOSSES.MINI_BEAN && (
                             <TownNode
@@ -228,6 +225,7 @@ const Henesys = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     </div>
                 </Pan>
                 <Legend />
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
             </div>
         </div>
     );

@@ -21,9 +21,11 @@ import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
 import { secretGardenScene } from "../scene/Ellinia/secretGarden";
 import { getTownPlaces } from "./utils";
-import { TOWNS } from "./types";
+import { TOWNS, TownProperties } from "./types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { playerStateSlice } from "../character/playerReducer";
+import { useShopConfig } from "../Menu/shopUtils";
+import Shop from "../Menu/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -54,7 +56,7 @@ const ELLINIA_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost }) => {
+const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -65,7 +67,8 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
 
         return acc;
     }, 0) as number;
-
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
     const canLeaveTown = numActivitiesComplete >= 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
@@ -88,9 +91,8 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(ELLINIA_PLACES.SHOP)) {
-            onClickShop(store);
-        }
+        checkVisitPlace(ELLINIA_PLACES.SHOP);
+        setIsShopOpen(true);
     };
 
     const handleClickClassLeader = () => {
@@ -123,13 +125,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                             nodeImage={ElliniaTradingPostImage}
                             onClick={handleClickTradingPost}
                         />
-                        <TownNode
-                            icon={MoneyBagIcon}
-                            isVisited={visited[ELLINIA_PLACES.SHOP]}
-                            label={"Shop"}
-                            nodeImage={ElliniaShopImage}
-                            onClick={handleClickShop}
-                        />
+                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={ElliniaShopImage} onClick={handleClickShop} />
                         <br />
                         <TownNode
                             icon={QuestionMarkIcon}
@@ -178,6 +174,7 @@ const Ellinia = ({ player, onExit, onClickScene, onClickShop, onClickTradingPost
                     </div>
                 </Pan>
                 <Legend />
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
             </div>
         </div>
     );
