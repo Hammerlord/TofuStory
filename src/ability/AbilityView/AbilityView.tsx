@@ -148,7 +148,7 @@ const useStyles = createUseStyles({
         },
     },
     iconPlaceholder: {
-        width: "24px",
+        width: "30px",
     },
     bold: {
         fontWeight: "bold",

@@ -8,13 +8,13 @@ const useStyles = createUseStyles({
             fontFamily: "Barlow",
             fontWeight: "500",
             lineHeight: "24px",
-            background: "rgba(25, 25, 25, 0.9)",
+            background: "rgba(25, 25, 25, 0.95)",
             borderRadius: "8px",
             padding: "16px",
         },
 
         "& .MuiTooltip-Arrow::before": {
-            background: "rgba(25, 25, 25, 0.9)",
+            background: "rgba(25, 25, 25, 0.95)",
         },
 
         "& hr": {
