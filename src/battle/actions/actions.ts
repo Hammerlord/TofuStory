@@ -1186,7 +1186,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             let isTributeKill = false;
             if (typeof pos !== "number") {
                 if (!tributePossible) {
-                    return;
+                    break;
                 }
 
                 const existingMinionIndices = mutableFriendly.reduce((acc, combatant, i) => {
@@ -1234,13 +1234,12 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
             if (summonedMinion) {
                 minionsSummoned.push(summonedMinion);
+                mutableFriendly[pos] = summonedMinion;
 
                 if (isTributeKill) {
                     tributeSummonedMinions.push(summonedMinion.id);
                 }
             }
-
-            mutableFriendly[pos] = summonedMinion;
         }
 
         if (minionsSummoned.length) {
