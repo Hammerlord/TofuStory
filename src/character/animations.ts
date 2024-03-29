@@ -1,3 +1,4 @@
+import { SUMMON_DELAY } from "../battle/constants";
 import { getRandomArbitrary } from "./../utils";
 
 export const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
@@ -481,5 +482,21 @@ export const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) =
     return object.animate(animationFrames, {
         duration: playbackTime,
         delay,
+    });
+};
+
+export const playFadeInAnimation = ({ object, playbackTime = SUMMON_DELAY }) => {
+    const animationFrames = [
+        {
+            opacity: 0,
+            easing: "ease-out",
+        },
+        {
+            opacity: 1,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
     });
 };

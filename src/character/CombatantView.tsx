@@ -25,7 +25,7 @@ import Weapon from "./Weapon";
 import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import { Combatant, Player } from "./types";
-import { playDyingAnimation, playHitAnimation } from "./animations";
+import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
@@ -88,6 +88,9 @@ const useStyles = createUseStyles({
         objectFit: "contain",
         maxHeight: "15vh",
         maxWidth: "100%",
+    },
+    invisible: {
+        opacity: 0,
     },
     combatantContainer: {
         display: "flex",
@@ -357,6 +360,10 @@ const CombatantView = forwardRef(
                         const delta = isEnemy ? baseDelta : -baseDelta;
                         playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
                     }
+
+                    if (event?.newCombatants?.some((c) => c.id === combatant?.id)) {
+                        playFadeInAnimation({ object: characterImageRef.current });
+                    }
                 }
             };
 
@@ -399,6 +406,7 @@ const CombatantView = forwardRef(
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
+                [classes.invisible]: event?.newCombatants?.some((c) => c.id === combatant?.id),
                 [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && oldState?.HP > 0,
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),

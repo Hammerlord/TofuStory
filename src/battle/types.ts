@@ -32,6 +32,7 @@ export interface Event {
     // Cards which have been added to hand/deck/discard/deplete, for animation purposes.
     newCards: Ability[];
     cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
+    newCombatants: Combatant[];
 }
 
 export interface EventGroup {

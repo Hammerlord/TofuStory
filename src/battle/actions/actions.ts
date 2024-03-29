@@ -1257,6 +1257,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                     ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: SUMMON_DELAY,
+                    newCombatants: minionsSummoned,
                 } as Event)
             );
         }
@@ -1337,6 +1338,7 @@ const checkHandleMorph = ({
                 ...getState().battle,
                 id: uuid.v4(),
                 playbackTime: SUMMON_DELAY,
+                newCombatants: summons,
             } as Event)
         );
 
@@ -2247,6 +2249,7 @@ const checkSummonMinion = ({
                 ...getState().battle,
                 id: uuid.v4(),
                 playbackTime: SUMMON_DELAY,
+                newCombatants: [summonedMinion],
             } as Event)
         );
 
