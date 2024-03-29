@@ -8,6 +8,9 @@ import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
+import { ACTION_TYPES } from "../ability/types";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -101,6 +104,22 @@ const useStyles = createUseStyles({
     disabled: {
         color: "#ff9b94",
     },
+    diamond: {
+        width: "7px",
+        height: "7px",
+        transform: "rotate(45deg)",
+        display: "inline-block",
+        margin: "0 6px",
+    },
+    offensive: {
+        background: RED,
+    },
+    support: {
+        background: BLUE,
+    },
+    minion: {
+        background: GREEN,
+    },
 });
 
 /**
@@ -135,6 +154,19 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "" });
     const abilityHasYetToCast = typeof castingCastTime === "undefined" && castTime;
     const isTurnPrevented = isTurnActionPrevented(combatantInfo);
+    const abilityType = (() => {
+        if (isOffensiveAbility(ability)) {
+            return "offense";
+        }
+
+        if (ability.actions.some((action) => action.summon)) {
+            return "summon";
+        }
+
+        if (ability.actions.some((action) => action.type === ACTION_TYPES.EFFECT)) {
+            return "support";
+        }
+    })();
 
     return (
         <div className={classes.root}>
@@ -146,11 +178,30 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                                 <Icon icon={image} size="sm" /> {name}{" "}
                                 {isTurnPrevented && <span className={classes.disabled}>(Disabled)</span>}
                             </div>
+                            <div>
+                                {abilityType === "offense" && (
+                                    <span>
+                                        <span className={classNames(classes.diamond, classes.offensive)} />
+                                        Offense
+                                    </span>
+                                )}
+                                {abilityType === "summon" && (
+                                    <span>
+                                        <span className={classNames(classes.diamond, classes.minion)} />
+                                        Summon
+                                    </span>
+                                )}
+                                {abilityType === "support" && (
+                                    <span>
+                                        <span className={classNames(classes.diamond, classes.support)} />
+                                        Support
+                                    </span>
+                                )}
+                            </div>
                             <div>{interpolatedDescription}</div>
                             {abilityHasYetToCast && castTime > 0 && (
                                 <div className={classes.container}>
-                                    Activates after {castTime} turn
-                                    {castTime > 1 && "s"}.
+                                    Activates after {castTime === 1 ? "next turn." : `${castTime} turns.`}
                                 </div>
                             )}
                             {channelDuration > 1 && (
