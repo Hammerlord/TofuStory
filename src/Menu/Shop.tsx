@@ -15,6 +15,8 @@ import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import { getUpgradeCard } from "./utils";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
+import { useShopConfig } from "./shopUtils";
+import { OnBuyItem, ShopConfigProperties } from "./constants";
 
 const HEADER_BAR = 72;
 
@@ -150,258 +152,28 @@ const useStyles = createUseStyles({
     },
 });
 
-const NUM_SHOP_ABILITIES = 8;
-const NUM_SHOP_ITEMS = 8;
-
-const ABILITIES_PRICE_RARITY_MAP = {
-    [RARITIES.COMMON]: [50, 65],
-    [RARITIES.UNCOMMON]: [90, 120],
-    [RARITIES.RARE]: [140, 170],
-};
-
-const ITEMS_PRICE_RARITY_MAP = {
-    [RARITIES.COMMON]: [60, 75],
-    [RARITIES.UNCOMMON]: [130, 150],
-    [RARITIES.RARE]: [180, 210],
-};
-
-const Shop = ({
+const ShopView = ({
     player,
-    onBuyItem,
-    merchant,
+    shopConfig,
     onExit,
 }: {
     player: Player;
-    onBuyItem: ({
-        items,
-        mesosSpent,
-        type,
-    }: {
-        items: Item[] | Ability[];
-        mesosSpent: number;
-        type: "item" | "ability";
-        statChanges?: { maxHP?: number; HP?: number };
-    }) => void;
-    merchant?: { name: string };
+    shopConfig: ShopConfigProperties;
     onExit?: () => void; // MUST be provided to get the button to leave the shop
 }) => {
-    const [abilities, setAbilities] = useState([]);
-    const [items, setItems] = useState([]);
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
-    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const [{ discount, numRefreshes, freeFood }, setShopOptions] = useState(() => {
-        // Set refreshes/discount from item effects
-        const { totalRefreshes, totalDiscount, freeFood } = player.items.reduce(
-            (acc, item: Item) => {
-                const { refreshTimes = 0, discount = 0, freeFood } = item?.merchant || {};
-                acc.totalRefreshes += refreshTimes;
-                acc.totalDiscount += discount;
-                if (freeFood) {
-                    acc.freeFood = true;
-                }
-                return acc;
-            },
-            { totalRefreshes: 0, totalDiscount: 0, freeFood: false }
-        );
-        const cappedDiscount = Math.min(1, totalDiscount);
-        return {
-            discount: cappedDiscount,
-            numRefreshes: totalRefreshes,
-            freeFood,
-        };
-    });
-
+    const {
+        refresh,
+        buy,
+        selectedAbilityIndex,
+        selectedItemIndex,
+        setSelectedAbilityIndex,
+        setSelectedItemIndex,
+        numRefreshes,
+        abilities,
+        items,
+        freeFood,
+    } = shopConfig;
     const classes = useStyles();
-
-    const applyDiscount = (price: number, overrideDiscount?: number) => {
-        return Math.max(0, price - Math.floor((overrideDiscount || discount) * price));
-    };
-
-    const refreshItems = () => {
-        // Abilities
-        const potentialAbilities = JOB_CARD_MAP[player.class].all
-            .map((ability: Ability) => {
-                if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
-                    return getUpgradeCard(ability);
-                }
-
-                return ability;
-            })
-            .concat(NEUTRAL_ABILITIES);
-
-        const rolledAbilities = [];
-        Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
-            const selectedRarity = rollRarity({ player });
-            const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
-                const noDuplicate = rolledAbilities.every((choice) => choice.name !== ability.name);
-                return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
-            });
-            rolledAbilities.push(filteredByRarity);
-        });
-
-        const abilitiesForSale = rolledAbilities.map((ability: Ability) => {
-            const priceRangeForRarity: [number, number] = ABILITIES_PRICE_RARITY_MAP[ability.rarity || RARITIES.COMMON] as [number, number];
-            const price = getRandomInt(...priceRangeForRarity);
-            return { price, item: ability };
-        });
-
-        setAbilities(abilitiesForSale);
-
-        // Items
-        const itemsRolledForSale = [];
-        Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
-            const item = getRandomItem(
-                rollItemPool({ player, excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem, hugeMesoItem] })
-            );
-            itemsRolledForSale.push(item);
-        });
-
-        const itemsForSale = itemsRolledForSale.map((item) => {
-            const priceRangeForRarity: [number, number] = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON];
-            const price = getRandomInt(...priceRangeForRarity);
-            return { price, item, isConsumable: false, isFood: false };
-        });
-
-        const consumables = [
-            {
-                item: goldenHammer,
-                price: applyDiscount(40),
-                isConsumable: true,
-                isFood: false,
-            },
-            {
-                item: incense,
-                price: applyDiscount(60),
-                isConsumable: true,
-                isFood: false,
-            },
-        ];
-
-        itemsForSale.push(...consumables);
-
-        const food = [
-            {
-                item: {
-                    name: "Tofu",
-                    image: TofuImage,
-                    description: "Permanently increase max HP by 3.",
-                },
-                price: applyDiscount(50),
-                isConsumable: true,
-                isFood: true,
-                statChanges: {
-                    maxHP: 3,
-                },
-            },
-            {
-                item: {
-                    name: "Tofu Soup",
-                    image: NewYearRiceSoupImage,
-                    description: "Restore 15 HP.",
-                },
-                price: applyDiscount(50),
-                isConsumable: true,
-                isFood: true,
-                statChanges: {
-                    HP: 15,
-                },
-            },
-        ];
-
-        itemsForSale.push(...food);
-        setItems(itemsForSale);
-    };
-
-    useEffect(() => {
-        refreshItems();
-    }, []);
-
-    // Tofu Special and Shopper's Club Membership should take effect immediately if they were bought.
-    const checkItemAffectsShop = (item: Item) => {
-        const { refreshTimes = 0, discount: purchasedItemDiscount = 0, freeFood: itemFreeFood = false } = item?.merchant || {};
-        const updatedShopOptions = {
-            numRefreshes: numRefreshes + refreshTimes,
-            freeFood: freeFood || itemFreeFood,
-            discount: discount + purchasedItemDiscount,
-        };
-
-        setShopOptions(updatedShopOptions);
-
-        if (purchasedItemDiscount) {
-            const updatedAbilities = abilities.map((ability) => ({
-                ...ability,
-                price: applyDiscount(ability.price, purchasedItemDiscount),
-            }));
-
-            setAbilities(updatedAbilities);
-
-            const updatedItems = items.map((item) => ({
-                ...item,
-                price: applyDiscount(item.price, purchasedItemDiscount),
-            }));
-
-            setItems(updatedItems);
-        }
-    };
-
-    const handleBuyClick = () => {
-        if (abilities[selectedAbilityIndex]) {
-            const { price, item } = abilities[selectedAbilityIndex];
-            if (player.mesos >= price) {
-                onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
-                const updatedAbilities = abilities.slice();
-                updatedAbilities[selectedAbilityIndex] = null;
-                setAbilities(updatedAbilities);
-                setSelectedAbilityIndex(null);
-            }
-            return;
-        }
-
-        if (items[selectedItemIndex]) {
-            const { price, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
-            const canAfford = player.mesos >= price;
-            if (!canAfford) {
-                return;
-            }
-
-            if (isConsumable) {
-                if (isFood) {
-                    if (freeFood) {
-                        setShopOptions((prev) => ({ ...prev, freeFood: false }));
-                        onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
-                    } else {
-                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
-                    }
-
-                    setSelectedItemIndex(null);
-                    return;
-                }
-
-                // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
-                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-                const updatedItems = items.map((other) => {
-                    if (other?.item?.name === item.name) {
-                        return {
-                            ...other,
-                            price: Math.floor(price * 1.2),
-                        };
-                    }
-
-                    return other;
-                });
-                setItems(updatedItems);
-                setSelectedItemIndex(null);
-                return;
-            }
-
-            onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-            const updatedItems = items.slice();
-            updatedItems[selectedItemIndex] = null;
-            checkItemAffectsShop(item);
-            setItems(updatedItems);
-            setSelectedItemIndex(null);
-        }
-    };
 
     const getShopAbility = (shopItem, i: number) => {
         if (!shopItem) {
@@ -437,7 +209,7 @@ const Shop = ({
                 </div>
                 {i === selectedAbilityIndex && (
                     <div>
-                        <Button color={"primary"} onClick={handleBuyClick}>
+                        <Button color={"primary"} onClick={buy}>
                             Buy
                         </Button>
                     </div>
@@ -484,7 +256,7 @@ const Shop = ({
                 </div>
                 {i === selectedItemIndex && (
                     <div>
-                        <Button color={"primary"} onClick={handleBuyClick}>
+                        <Button color={"primary"} onClick={buy}>
                             Buy
                         </Button>
                     </div>
@@ -507,13 +279,7 @@ const Shop = ({
                     {numRefreshes > 0 && (
                         <>
                             <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
-                            <Button
-                                color={"secondary"}
-                                onClick={() => {
-                                    refreshItems();
-                                    setShopOptions((prev) => ({ ...prev, numRefreshes: prev.numRefreshes - 1 }));
-                                }}
-                            >
+                            <Button color={"secondary"} onClick={refresh}>
                                 Refresh Shop
                             </Button>
                         </>
@@ -541,6 +307,25 @@ const Shop = ({
             </div>
         </div>
     );
+};
+
+const Shop = ({
+    shopConfig: injectShopConfig,
+    ...other
+}: {
+    shopConfig?: ShopConfigProperties;
+    player: Player;
+    onBuyItem: OnBuyItem;
+    onExit?: () => void;
+}) => {
+    const { player, onBuyItem } = other;
+    const shopConfig = useShopConfig({ player, onBuyItem });
+
+    if (injectShopConfig) {
+        return <ShopView shopConfig={injectShopConfig} {...other} />;
+    }
+
+    return <ShopView shopConfig={shopConfig} {...other} />;
 };
 
 export default Shop;

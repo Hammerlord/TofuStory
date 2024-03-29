@@ -26,7 +26,6 @@ import DevAbilityViewer from "./DevAbilityViewer";
 import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
 import TradingPost from "../scene/TradingPost";
-import { Player } from "../character/types";
 import { FortuneBox } from "../scene/FortuneBox";
 
 const useStyles = createUseStyles({
