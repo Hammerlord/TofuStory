@@ -62,6 +62,7 @@ export const useShopConfig = ({
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
     const [{ discount, numRefreshes, freeFood }, setShopOptions] = useState(getShopCustomerProperties(player));
+    const [usedFreeFood, setUsedFreeFood] = useState(false);
 
     const applyDiscount = (price: number, overrideDiscount?: number) => {
         return Math.max(0, price - Math.floor((overrideDiscount || discount) * price));
@@ -217,7 +218,7 @@ export const useShopConfig = ({
             if (isConsumable) {
                 if (isFood) {
                     if (freeFood) {
-                        setShopOptions((prev) => ({ ...prev, freeFood: false }));
+                        setUsedFreeFood(true);
                         onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
                     } else {
                         onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
@@ -268,6 +269,6 @@ export const useShopConfig = ({
         numRefreshes,
         abilities,
         items,
-        freeFood,
+        freeFood: freeFood && !usedFreeFood,
     };
 };
