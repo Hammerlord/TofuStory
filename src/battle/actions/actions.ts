@@ -1216,7 +1216,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
             const minionToSummon = getRandomItem(availableMinions);
             const baseMinion = typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon;
-            const minionEffects = baseMinion?.effects.slice() || [];
+            const minionEffects = baseMinion?.effects?.slice() || [];
             if (isTributeKill) {
                 minionEffects.push(tributeSummonBuff);
             }
