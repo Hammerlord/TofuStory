@@ -344,7 +344,8 @@ export const warBanner: Ability = {
     name: "War Banner",
     image: FlagImage,
     resourceCost: 1,
-    description: "Grants {{ minion.effects.1.onTurnStart.ability.actions.0.armor }} Armor and 1 ATT to nearby allies every turn.",
+    description:
+        "Grants {{ minion.effects.1.onTurnStart.ability.actions.0.armor }} {{{ _armor_ }}} and +1 ATT to nearby allies every turn.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -1064,7 +1065,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoImage,
-    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} to up to 3 enemies",
+    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} to up to 3 enemies.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1569,7 +1570,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals 1 damage for every attack you made this turn. Hits twice.",
+    description: "Deals 1 {{{ _damage_ }}} for every attack you made this turn. Hits twice.",
     actions: [
         {
             damage: 1,
@@ -1596,7 +1597,7 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "Gain Armor equal to the number of attacks made this turn.",
+    description: "Gain {{{ _armor_ }}} equal to the number of attacks made this turn.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1795,7 +1796,7 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Heal 1 for every enemy hit.",
+    description: "Heal 1 {{{ _healing_ }}} for every enemy hit.",
     actions: [
         {
             damage: 6,
@@ -1852,7 +1853,7 @@ export const judgment: Ability = {
     resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Deal damage equal to your Armor. Your Armor decays by half.",
+    description: "Deal damage equal to your {{{ _armor_ }}}. Your {{{ _armor_ }}} decays by half.",
     actions: [
         {
             damage: 1,
@@ -1889,7 +1890,7 @@ export const shockGuard: Ability = {
     name: "Shock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
-    description: "Double a character's current Armor.",
+    description: "Double your {{{ _armor_ }}}.",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
     disableConditionGlow: true,
@@ -2570,7 +2571,7 @@ export const retribute: Ability = {
     name: "Retribute",
     image: SpearSweepImage,
     description:
-        "Heal {{ actions.0.secondaryAction.healing }} HP. <br/> +{{actions.0.bonus.damage}} DMG / +{{actions.0.secondaryAction.bonus.healing}} HP if you took unblocked damage last turn.",
+        "Heal {{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}. <br/> +{{actions.0.bonus.damage}} {{{ _damage_ }}} / +{{actions.0.secondaryAction.bonus.healing}} {{{ _healing_ }}} if you took unblocked damage last turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     resourceCost: 2,

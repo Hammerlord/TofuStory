@@ -6,7 +6,7 @@ import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility, Effect, TARGET_TYP
 import { BLUE, GREEN, GREY, RED } from "./constants";
 import DamageIcon from "./DamageIcon";
 import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
-import { CrossedSwordsImage, HeartImage } from "../../images";
+import { CrossedSwordsImage, HeartImage, ShieldImage } from "../../images";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -140,6 +140,7 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _summon_: cardTypeString(GREEN),
         _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
         _healing_: `<img src="${HeartImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
+        _armor_: `<img src="${ShieldImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));

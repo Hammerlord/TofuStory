@@ -481,6 +481,7 @@ export { default as SelfRecoveryImage } from "./SelfRecovery.png";
 export { default as ShackledHandImage } from "./ShackledHand.png";
 export { default as ShadowyForestImage } from "./ShadowyForest.png";
 export { default as SharpEyesImage } from "./SharpEyes.png";
+export { default as ShieldImage } from "./Shield.png";
 export { default as ShieldMasteryImage } from "./ShieldMastery.png";
 export { default as ShieldRedImage } from "./ShieldRed.png";
 export { default as ShimmeringStarsImage } from "./ShimmeringStars.png";

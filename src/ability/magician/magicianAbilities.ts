@@ -826,7 +826,7 @@ export const wishUponAStar: Ability = {
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
     description:
-        "On draw / deck cycle: Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} damage star at a random enemy.",
+        "<b>Draw / Deck Cycle:</b> Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} star at a random enemy.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1100,7 +1100,7 @@ export const greaterBolt: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While you own this card, 'bolt' abilities gain +{{ effectsWhileOwned.0.skillBonus.0.damage }} damage. Greater Bolt gains +2.",
+        "While you own this card, 'bolt' abilities gain +{{ effectsWhileOwned.0.skillBonus.0.damage }} {{{ _damage_ }}}. Greater Bolt gains +2.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1415,7 +1415,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} damage for each target.",
+        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
     actions: [
         {
             damage: 0,
@@ -1628,7 +1628,7 @@ export const greatestBolt: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
-    description: "+2 damage for every other 'bolt' card you own.",
+    description: "+2 {{{ _damage_ }}} for every other 'bolt' card you own.",
     overrideBodyText: true,
     actions: [
         {
@@ -1753,7 +1753,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While the target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} HP / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
+        "While the target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -2144,7 +2144,7 @@ export const moonBolt: Ability = {
     resourceCost: 2,
     image: FullMoonImage,
     overrideBodyText: true,
-    description: "Heal all allies for {{ actions.0.secondaryAction.healing }} each hit.",
+    description: "Heal all allies for {{ actions.0.secondaryAction.healing }} {{{ _healing_ }}} each hit.",
 
     rarity: RARITIES.COMMON,
     actions: [
@@ -2526,7 +2526,7 @@ export const ifrit: Ability = {
     name: "Ifrit",
     image: IfritImage,
     resourceCost: 2,
-    description: "Summon: Burns enemies in front of this character.",
+    description: "<b>Summon:</b> Burns enemies in front of this character.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "Ifrit",
@@ -2611,7 +2611,7 @@ export const elquines: Ability = {
     image: ElquinesImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
-    description: "Summon: Freezes enemies in front of this character.",
+    description: "<b>Summon:</b> Freezes enemies in front of this character.",
     minion: {
         name: "Elquines",
         image: ElquinesImage,
