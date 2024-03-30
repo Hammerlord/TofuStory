@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { BOSS_RARE_RATE, BOSS_UNCOMMON_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
-import { goldenHammer, mesoItem } from "../item/items";
+import { goldenHammer, incense, mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
 import { rollItemPool } from "../item/utils";
 import { getRandomItem } from "../utils";
@@ -133,7 +133,11 @@ const ItemRewards = ({
 
         const itemsToBeRewarded = itemRewards.slice();
         if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType) && !disableAttainConsumable) {
-            itemsToBeRewarded.push(goldenHammer);
+            if (Math.random() < 0.5) {
+                itemsToBeRewarded.push(goldenHammer);
+            } else {
+                itemsToBeRewarded.push(incense);
+            }
         }
 
         setRewards(itemsToBeRewarded);
