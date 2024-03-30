@@ -110,7 +110,9 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
     },
     tradesRemainingLabel: {
-        margin: 16,
+        margin: "9px 16px",
+        display: "inline-block",
+        verticalAlign: "bottom",
     },
     columnLabel: {
         textShadow: Array.from({ length: 5 })
