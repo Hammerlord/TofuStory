@@ -28,7 +28,17 @@ const terracottaCrossbowman: Minion = {
     name: "Terracotta Bowman",
     maxHP: 14,
     image: TerracottaCrossbowmanImage,
-    abilities: [shoot],
+    abilities: [
+        {
+            ...shoot,
+            actions: [
+                {
+                    ...shoot.actions[0],
+                    damage: 3,
+                },
+            ],
+        },
+    ],
     effects: [earthen],
 };
 
@@ -39,6 +49,13 @@ const terracottaSwordsman: Minion = {
     abilities: [
         {
             ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
         },
     ],
     effects: [earthen],
