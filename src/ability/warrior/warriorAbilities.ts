@@ -2570,10 +2570,9 @@ export const bluntForce: Ability = {
 export const retribute: Ability = {
     name: "Retribute",
     image: SpearSweepImage,
-    description:
-        "Heal {{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}. <br/> +{{actions.0.bonus.damage}} {{{ _damage_ }}} / +{{actions.0.secondaryAction.bonus.healing}} {{{ _healing_ }}} if you took unblocked damage last turn.",
+    description: "+{{actions.0.bonus.damage}} {{{ _damage_ }}} if you took unblocked damage last turn.",
     overrideBodyText: true,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     resourceCost: 2,
     actions: [
         {
@@ -2591,19 +2590,6 @@ export const retribute: Ability = {
                     },
                 ],
             },
-            secondaryAction: {
-                healing: 3,
-                bonus: {
-                    healing: 2,
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                            hasEffect: directDamageTaken.name,
-                            comparator: "eq",
-                        },
-                    ],
-                },
-            },
         },
     ],
     upgrades: [
@@ -2613,12 +2599,6 @@ export const retribute: Ability = {
                     damage: 2,
                     bonus: {
                         damage: 1,
-                    },
-                    secondaryAction: {
-                        healing: 1,
-                        bonus: {
-                            healing: 1,
-                        },
                     },
                 },
             ],
