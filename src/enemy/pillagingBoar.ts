@@ -45,7 +45,7 @@ const boulder: Minion = {
             onAttack: {
                 usableWhileStunned: true,
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
-                effects: [{ ...attackDown, duration: 5 }],
+                effects: [{ ...attackDown, duration: 3 }],
             },
         },
     ],
@@ -82,7 +82,20 @@ const throwRocks: Action[] = [
         target: TARGET_TYPES.SELF,
         excludePrimaryTarget: true,
         area: 5,
-        induceCombatantAttack: true,
+        induceCombatant: {
+            mode: "random",
+            action: {
+                type: ACTION_TYPES.ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                damage: 3,
+                targetArea: 2,
+                numTargets: 2,
+                animation: ANIMATION_TYPES.YOYO,
+                animationOptions: {
+                    ricochet: true,
+                },
+            },
+        },
     },
 ];
 

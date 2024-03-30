@@ -234,6 +234,7 @@ const endingDialog = [
             },
             {
                 text: "Who is Erylen?",
+                infamy: 3,
                 next: [
                     {
                         speaker: arwen,
@@ -255,6 +256,7 @@ const endingDialog = [
                             },
                             {
                                 text: "[Tell Arwen and Rowen what Malady said about their bitter history.]",
+                                infamy: 3,
                                 next: [
                                     {
                                         speaker: rowen,
