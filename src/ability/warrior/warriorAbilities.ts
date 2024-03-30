@@ -765,6 +765,8 @@ export const recovery: Ability = {
     name: "Recovery",
     resourceCost: 1,
     image: SelfRecoveryImage,
+    description: "Gain {{ actions.0.effects.0.lifeOnKill }} {{{ _healing_ }}} on kill.",
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -776,11 +778,7 @@ export const recovery: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     canBeSilenced: true,
-                    duration: 3,
-                    onTurnEnd: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        healing: 2,
-                    },
+                    lifeOnKill: 2,
                 },
             ],
         },
@@ -791,9 +789,7 @@ export const recovery: Ability = {
                 {
                     effects: [
                         {
-                            onTurnEnd: {
-                                healing: 1,
-                            },
+                            lifeOnKill: 1,
                         },
                     ],
                 },
