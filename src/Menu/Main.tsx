@@ -122,6 +122,7 @@ const {
     selectMapNode: selectNode,
     setRoute,
     setTown,
+    loseItems,
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
@@ -439,12 +440,8 @@ const Main = () => {
         if (!playerItem || !forItem) {
             return;
         }
-        dispatch(
-            updatePlayer({
-                items: player.items.filter((item) => item.name !== playerItem.name),
-            })
-        );
 
+        dispatch(loseItems([playerItem.name]));
         dispatch(acquireItems([forItem]));
     };
 

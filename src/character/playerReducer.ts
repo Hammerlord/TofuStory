@@ -1,3 +1,4 @@
+import { partition } from "ramda";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import uuid from "uuid";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
@@ -10,7 +11,7 @@ import { calculateMesoGain, getMaxHP } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import { toLith } from "./../Map/routes/routes";
-import { Ability, CombatAbility } from "./../ability/types";
+import { Ability, CombatAbility, Effect } from "./../ability/types";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 
 const INITIAL_STATE = {
@@ -91,6 +92,24 @@ export const playerStateSlice = createSlice({
         restartGame: () => {
             return INITIAL_STATE;
         },
+        loseItems: (state, action: PayloadAction<String[]>) => {
+            const player = state.player;
+            const [remainingItems, lostItems] = partition((item) => !action.payload.includes(item.name), player.items);
+
+            const lostItemsMaxHP = aggregateItemEffects(lostItems).reduce((acc, effect: Effect) => {
+                return acc + (effect.maxHP || 0);
+            }, 0);
+
+            return {
+                ...state,
+                player: {
+                    ...player,
+                    items: remainingItems,
+                    HP: Math.max(1, player.HP - lostItemsMaxHP), // Losing a max HP item cannot kill you
+                    effects: aggregateItemEffects(remainingItems),
+                },
+            };
+        },
         acquireItems: (state, action: PayloadAction<Item[]>) => {
             const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];
             let newItems = [...state.player.items];
@@ -143,6 +162,10 @@ export const playerStateSlice = createSlice({
                 updatedMesos = Math.max(0, state.player.mesos + incomingMesos);
             }
 
+            const newItemsMaxHP = aggregateItemEffects(regularItems).reduce((acc, effect: Effect) => {
+                return acc + (effect.maxHP || 0);
+            }, 0);
+
             return {
                 ...state,
                 player: {
@@ -150,6 +173,7 @@ export const playerStateSlice = createSlice({
                     effects: aggregateItemEffects(newItems),
                     items: newItems,
                     mesos: updatedMesos,
+                    HP: state.player.HP + newItemsMaxHP,
                 },
             };
         },

@@ -7,9 +7,9 @@ import { REGIONS } from "../Map/regions";
 import { BG_MAP } from "../Map/types";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { getUpgradeCard } from "../Menu/utils";
+import { aggregateItemEffects, getUpgradeCard } from "../Menu/utils";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, CombatAbility, Minion } from "../ability/types";
+import { Ability, CombatAbility, Effect, Minion } from "../ability/types";
 import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
@@ -29,6 +29,7 @@ import TreasureBox from "./TreasureBox/TreasureBox";
 import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
 import { PuzzleCompletionPayload } from "./TreasureBox/types";
 import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
+import { partition } from "ramda";
 
 const useStyles = createUseStyles({
     root: {
@@ -225,7 +226,7 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
 };
 
-const { logVisitedEvent, addInfamy, acquireItems, updateMesos, pushActivityHistory } = playerStateSlice.actions;
+const { logVisitedEvent, addInfamy, acquireItems, updateMesos, pushActivityHistory, loseItems: loseItemsAction } = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -360,9 +361,7 @@ const ScenePlayer = ({
         }
 
         if (loseItems.length) {
-            updatePlayer({
-                items: player.items.filter((item) => !loseItems.includes(item.name)),
-            });
+            dispatch(loseItemsAction(loseItems));
         }
 
         if (loseMesos) {
