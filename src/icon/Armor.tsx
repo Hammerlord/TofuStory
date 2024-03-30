@@ -1,9 +1,11 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ShieldIcon } from "../images/icons";
+import { PristineShieldIcon, ShieldIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
+import { CombatantInfo } from "../battle/types";
+import { getEnabledEffects } from "../battle/utils";
 
 const ANIMATION_DURATION = 0.5;
 
@@ -79,9 +81,10 @@ const useStyles = createUseStyles({
 interface ArmorInterface {
     amount: number;
     className?: string;
+    combatantInfo: CombatantInfo;
 }
 
-const Armor = ({ amount, className }: ArmorInterface) => {
+const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
     const [oldAmount, setOldAmount] = useState(0);
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -96,6 +99,9 @@ const Armor = ({ amount, className }: ArmorInterface) => {
         return null;
     }
 
+    const effects = getEnabledEffects({ combatantInfo });
+    const pristineArmorEffect = effects.find((e) => e.preventArmorDecay);
+
     return (
         <Tooltip
             title={
@@ -106,6 +112,15 @@ const Armor = ({ amount, className }: ArmorInterface) => {
                     <div className={classes.container}>
                         <div className={classes.tooltipTitle}>Armor</div>
                         <div>Blocks damage. Decays by half at the start of every turn.</div>
+                        {pristineArmorEffect && (
+                            <div>
+                                <hr />
+                                <div>Modifiers:</div>
+                                <span>
+                                    <Icon icon={PristineShieldIcon} size="sm" /> - Prevents armor decay
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
             }
@@ -114,7 +129,7 @@ const Armor = ({ amount, className }: ArmorInterface) => {
             <span>
                 <Icon
                     size="lg"
-                    icon={<ShieldIcon />}
+                    icon={pristineArmorEffect ? <PristineShieldIcon /> : <ShieldIcon />}
                     text={amount}
                     className={classNames(className, {
                         [classes.refresh]: amount > oldAmount,

@@ -121,7 +121,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
 
                 return (
                     <div key={name}>
-                        <Icon icon={icon} className={classes.icon} /> {name} {damage < 0 ? "-" : "+"}
+                        <Icon icon={icon} className={classes.icon} size="sm" /> {name} {damage < 0 ? "-" : "+"}
                         {damage}
                     </div>
                 );
