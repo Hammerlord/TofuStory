@@ -38,4 +38,5 @@ export type ShopConfigProperties = {
     abilities: Ability[];
     numRefreshes: number;
     freeFood: boolean;
+    applyDiscount: (initPrice: number) => number;
 };

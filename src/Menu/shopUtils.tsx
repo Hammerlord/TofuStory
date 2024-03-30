@@ -61,11 +61,14 @@ export const useShopConfig = ({
     const [items, setItems] = useState([]);
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const [{ discount, numRefreshes, freeFood }, setShopOptions] = useState(getShopCustomerProperties(player));
+    const [shopOptions, setShopOptions] = useState(getShopCustomerProperties(player));
     const [usedFreeFood, setUsedFreeFood] = useState(false);
+    const [usedNumRefreshes, setUsedNumRefreshes] = useState(0);
 
-    const applyDiscount = (price: number, overrideDiscount?: number) => {
-        return Math.max(0, price - Math.floor((overrideDiscount || discount) * price));
+    const { discount, numRefreshes, freeFood } = shopOptions;
+
+    const applyDiscount = (price: number) => {
+        return Math.max(0, price - Math.floor(discount * price));
     };
 
     const refreshItems = () => {
@@ -116,13 +119,13 @@ export const useShopConfig = ({
         const consumables = [
             {
                 item: goldenHammer,
-                price: applyDiscount(40),
+                price: 40,
                 isConsumable: true,
                 isFood: false,
             },
             {
                 item: incense,
-                price: applyDiscount(60),
+                price: 60,
                 isConsumable: true,
                 isFood: false,
             },
@@ -137,7 +140,7 @@ export const useShopConfig = ({
                     image: TofuImage,
                     description: "Permanently increase max HP by 3.",
                 },
-                price: applyDiscount(50),
+                price: 50,
                 isConsumable: true,
                 isFood: true,
                 statChanges: {
@@ -150,7 +153,7 @@ export const useShopConfig = ({
                     image: NewYearRiceSoupImage,
                     description: "Restore 15 HP.",
                 },
-                price: applyDiscount(50),
+                price: 50,
                 isConsumable: true,
                 isFood: true,
                 statChanges: {
@@ -167,37 +170,15 @@ export const useShopConfig = ({
         refreshItems();
     }, []);
 
-    // Tofu Special and Shopper's Club Membership should take effect immediately if they were bought.
-    const checkItemAffectsShop = (item: Item) => {
-        const { refreshTimes = 0, discount: purchasedItemDiscount = 0, freeFood: itemFreeFood = false } = item?.merchant || {};
-        const updatedShopOptions = {
-            numRefreshes: numRefreshes + refreshTimes,
-            freeFood: freeFood || itemFreeFood,
-            discount: discount + purchasedItemDiscount,
-        };
-
-        setShopOptions(updatedShopOptions);
-
-        if (purchasedItemDiscount) {
-            const updatedAbilities = abilities.map((ability) => ({
-                ...ability,
-                price: applyDiscount(ability.price, purchasedItemDiscount),
-            }));
-
-            setAbilities(updatedAbilities);
-
-            const updatedItems = items.map((item) => ({
-                ...item,
-                price: applyDiscount(item.price, purchasedItemDiscount),
-            }));
-
-            setItems(updatedItems);
-        }
-    };
+    useEffect(() => {
+        // Items like Tofu Special and Shopper's Club Membership should take effect if bought.
+        setShopOptions(getShopCustomerProperties(player));
+    }, [player?.items]);
 
     const buy = () => {
         if (abilities[selectedAbilityIndex]) {
-            const { price, item } = abilities[selectedAbilityIndex];
+            const { price: initPrice, item } = abilities[selectedAbilityIndex];
+            const price = applyDiscount(initPrice);
             if (player.mesos >= price) {
                 onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
                 const updatedAbilities = abilities.slice();
@@ -248,7 +229,6 @@ export const useShopConfig = ({
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
             const updatedItems = items.slice();
             updatedItems[selectedItemIndex] = null;
-            checkItemAffectsShop(item);
             setItems(updatedItems);
             setSelectedItemIndex(null);
         }
@@ -256,7 +236,7 @@ export const useShopConfig = ({
 
     const refresh = () => {
         refreshItems();
-        setShopOptions((prev) => ({ ...prev, numRefreshes: prev.numRefreshes - 1 }));
+        setUsedNumRefreshes((prev) => prev + 1);
     };
 
     return {
@@ -266,9 +246,10 @@ export const useShopConfig = ({
         selectedItemIndex,
         setSelectedAbilityIndex,
         setSelectedItemIndex,
-        numRefreshes,
+        numRefreshes: Math.max(0, numRefreshes - usedNumRefreshes),
         abilities,
         items,
+        applyDiscount,
         freeFood: freeFood && !usedFreeFood,
     };
 };

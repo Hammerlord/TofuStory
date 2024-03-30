@@ -172,6 +172,7 @@ const ShopView = ({
         abilities,
         items,
         freeFood,
+        applyDiscount,
     } = shopConfig;
     const classes = useStyles();
 
@@ -223,7 +224,9 @@ const ShopView = ({
             return <div className={classNames(classes.itemContainer, classes.itemPlaceholder)} key={i} />;
         }
 
-        const { item, price, isFood } = shopItem;
+        const { item, price: initPrice, isFood } = shopItem;
+        const price = applyDiscount(initPrice);
+
         return (
             <div className={classes.itemContainer} key={[item.name, i].join("-")}>
                 <div
