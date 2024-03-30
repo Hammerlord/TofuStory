@@ -13,6 +13,7 @@ import {
     KerningShopImage,
     KerningSwampImage,
     KerningTradingPostImage,
+    SwampRegionBGImage,
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLordScene";
@@ -32,7 +33,7 @@ import { useShopConfig } from "../Menu/shopUtils";
 import Shop from "../Menu/Shop";
 import { dyle } from "../enemy/dyle";
 import { BATTLE_TYPES } from "../battle/types";
-import { EventScene } from "../scene/types";
+import { EventScene, SceneEncounter } from "../scene/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -76,7 +77,7 @@ const KERNING_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const dyleFight = {
+const dyleFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, dyle, null, null],
@@ -91,6 +92,7 @@ export const dyleScene: EventScene = {
     script: [
         {
             dialog: ["[WIP - Dyle] An evil crocodile has taken over the sewers!"],
+            background: SwampRegionBGImage,
             responses: [
                 {
                     text: "Fight.",
