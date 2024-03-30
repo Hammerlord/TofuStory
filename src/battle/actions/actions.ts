@@ -1931,7 +1931,6 @@ const performAction = ({
             );
         }
 
-        dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentSource }));
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
 
         // Tricky: Updated is a tuple where the second element is an Action. If eg. a bonus card draw was applied during that action, checkCardActions should consume it.
@@ -1955,6 +1954,7 @@ const performAction = ({
         );
         dispatch(checkHandleActionSummon({ action, actorId, parentSource }));
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
+        dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentSource }));
         if (retreat) {
             const { friendly, friendlySide } = findCombatantData(getState, actorId);
             dispatch(
