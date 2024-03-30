@@ -640,6 +640,7 @@ export interface AbilityUpgrade {
 export interface AbilityEvent {
     abilityEffects?: AbilityEffect[];
     ability?: Ability;
+    conditions?: Condition[];
 }
 
 export interface Ability {

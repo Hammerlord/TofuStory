@@ -22,6 +22,7 @@ import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
 import { prepareForDiscard } from "./playerTurn";
+import { passesConditions } from "../passesConditions";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -439,7 +440,7 @@ export const checkCardActions = ({
                 updateBattle({
                     [pileKey]: pile.map((card: CombatAbility) => {
                         if (affectedCards[card.instanceId]) {
-                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card });
+                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, source });
                         }
                         return card;
                     }),
@@ -474,6 +475,7 @@ export const checkCardActions = ({
                         instanceId: uuid.v4(),
                         removeAfterTurn: abilityEffects.some((e) => e.removeParentCardAfterTurn), // Why not make this effect consumed properly by the system?
                     },
+                    source,
                 })
             );
 
@@ -548,12 +550,24 @@ export const depleteAbilities =
         });
     };
 
-export const applyAbilityEventEffects = ({ event, ability }: { event: AbilityEvent; ability: CombatAbility }) => {
+export const applyAbilityEventEffects = ({
+    event,
+    ability,
+    source,
+}: {
+    event: AbilityEvent;
+    ability: CombatAbility;
+    source?: TriggerSource;
+}) => {
     if (!event) {
         return ability;
     }
 
     const { abilityEffects = [] } = event || {};
+    const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
+    if (!passesConditions({ source, getCalculationTarget, proc: event })) {
+        return ability;
+    }
 
     const effects = [...(ability.effects || [])];
 

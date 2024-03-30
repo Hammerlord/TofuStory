@@ -3,6 +3,7 @@ import {
     axeStump,
     blueMushroom,
     blueSnail,
+    bubbling,
     darkStoneGolem,
     egg,
     fireBoar,
@@ -99,7 +100,7 @@ export const routeKerningToPerion: Route = {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask],
         duo: [wildBoar, axeStump],
-        trio: [orangeMushroom, octopus],
+        trio: [orangeMushroom, octopus, bubbling],
         squad: [redSnail, stump],
         special: [
             [null, egg, null, egg, null],
@@ -124,6 +125,7 @@ export const routeKerningToPerion: Route = {
         [stump, stump, wildBoar, stump, stump],
         [null, axeStump, null, axeStump, null],
         [null, rockyMask, null, rockyMask, null],
+        [null, bubbling, null, bubbling, null],
     ],
     multiWaveEnemies: [
         [null, stump, stump, stump, null],
@@ -181,7 +183,7 @@ const toKerning: Route = {
     id: "to-kerning",
     elites: {
         minions: [snail, blueSnail],
-        single: [orangeMushroom, octopus],
+        single: [orangeMushroom, octopus, bubbling],
         duo: [stump, slime],
         trio: [redSnail, shroom],
         squad: [snail, blueSnail],
@@ -217,7 +219,7 @@ const toKerning: Route = {
 const toKerningForest: Route = {
     id: "kerning-forest",
     enemies: [
-        [snail, null, octopus, null, snail],
+        [null, octopus, snail, octopus, null],
         [snail, null, orangeMushroom, null, snail],
         [null, snail, octopus, snail, null],
         [null, snail, orangeMushroom, snail, null],
@@ -228,12 +230,13 @@ const toKerningForest: Route = {
         [snail, redSnail, blueSnail, redSnail, snail],
         [null, redSnail, redSnail, redSnail, null],
         [snail, shroom, blueSnail, shroom, snail],
+        [null, blueSnail, bubbling, blueSnail, null],
     ],
     multiWaveEnemies: [
         [null, null, orangeMushroom, null, null],
-        [null, null, octopus, null, null],
+        [null, blueSnail, octopus, blueSnail, null],
         [null, snail, pig, snail, null],
-        [null, blueSnail, slime, blueSnail, null],
+        [null, slime, null, slime, null],
         [snail, null, slime, null, snail],
         [snail, blueSnail, redSnail, blueSnail, snail],
         [null, slime, null, redSnail, null],

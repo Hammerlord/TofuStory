@@ -49,6 +49,7 @@ export interface BattleState {
     deckCycled?: boolean;
 }
 
+// TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
 export interface PlayerSelectCardsPrompt {
     selectCards: SelectCards;
     abilityQueued?: {

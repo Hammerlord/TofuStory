@@ -4,7 +4,7 @@ import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from ".
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event } from "../types";
+import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
@@ -41,7 +41,11 @@ export const onUsePlayerAbility = ({
                                 }),
                             };
                         }
-                        return applyAbilityEventEffects({ event: card.onAbilityUse, ability: card });
+                        return applyAbilityEventEffects({
+                            event: card.onAbilityUse,
+                            ability: card,
+                            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                        });
                     }),
                 })
             );
@@ -119,7 +123,11 @@ const handleDiscard = (ability: CombatAbility) => {
         dispatch(
             updateBattle({
                 hand: newHand.map((card: CombatAbility) => {
-                    return applyAbilityEventEffects({ event: card.onAbilityUse, ability: card });
+                    return applyAbilityEventEffects({
+                        event: card.onAbilityUse,
+                        ability: card,
+                        source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                    });
                 }),
                 discard: newDiscard,
                 depleted: newDepleted,

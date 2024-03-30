@@ -61,7 +61,7 @@ export const passesConditions = ({
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[] | CombatAbility | undefined;
-    proc: Ability | Action | CombatEffect | Bonus | EffectEventTrigger; // The thing to activate conditionally--an action, an effect, a bonus
+    proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
     const passesCondition = (condition: Condition) => {

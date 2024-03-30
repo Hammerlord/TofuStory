@@ -7,6 +7,7 @@ import {
     BlueMushroomJumpRightImage,
     BlueSnailImage,
     BombImage,
+    BubblingImage,
     CaseyImage,
     CopperDrakeImage,
     CopperScreechImage,
@@ -63,6 +64,7 @@ import {
     SlimeIdleImage,
     SnailImage,
     SnailShellImage,
+    SquishyLiquidImage,
     StoneGolemImage,
     StoneGolemRubbleImage,
     StumpImage,
@@ -2539,6 +2541,80 @@ export const golem: Minion = {
             },
         },
     ],
+};
+
+export const bubbling: Minion = {
+    name: "Bubbling",
+    maxHP: 10,
+    armor: 40,
+    image: BubblingImage,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        loaf,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Goo",
+            image: SquishyLiquidImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: SquishyLiquidImage,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    addCardsToDiscard: [
+                        {
+                            name: "Goo",
+                            image: SquishyLiquidImage,
+                            resourceCost: 2,
+                            description: "Reduce cost by 1 for every attack played this turn.",
+                            depletedOnUse: true,
+                            onAbilityUse: {
+                                abilityEffects: [
+                                    {
+                                        resourceCost: -1,
+                                    },
+                                ],
+                                conditions: [
+                                    {
+                                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                        isOffense: true,
+                                        comparator: "eq",
+                                    },
+                                ],
+                            },
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [pristineDefense],
 };
 
 export const casey: Minion = {

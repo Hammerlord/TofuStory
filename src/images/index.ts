@@ -78,6 +78,7 @@ export { default as BricksImage } from "./Bricks.png";
 export { default as BrokenMirrorGlassImage } from "./BrokenMirrorGlass.png";
 export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
 export { default as BrutalClawImage } from "./BrutalClaw.png";
+export { default as BubblingImage } from "./Bubbling.gif";
 export { default as BundleOfNailsImage } from "./BundleOfNails.png";
 export { default as BurningSoulBladeImage } from "./BurningSoulBlade.png";
 export { default as BurningSoulBladeMinionImage } from "./BurningSoulBladeMinion.png";
