@@ -11,6 +11,7 @@ import {
     KerningExitImage,
     KerningSewerImage,
     KerningShopImage,
+    KerningSwampImage,
     KerningTradingPostImage,
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
@@ -29,6 +30,9 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { playerStateSlice } from "../character/playerReducer";
 import { useShopConfig } from "../Menu/shopUtils";
 import Shop from "../Menu/Shop";
+import { dyle } from "../enemy/dyle";
+import { BATTLE_TYPES } from "../battle/types";
+import { EventScene } from "../scene/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -67,9 +71,35 @@ const store = {
 const KERNING_PLACES: any = {
     ...getTownPlaces(TOWNS.KERNING),
     MATCH_CARDS: "match-cards",
+    DYLE: "dyle",
 };
 
 const { selectInTownNode } = playerStateSlice.actions;
+
+const dyleFight = {
+    waves: [
+        {
+            enemies: [null, null, dyle, null, null],
+        },
+    ],
+    type: BATTLE_TYPES.BOSS,
+    backgroundMusic: "https://vgmtreasurechest.com/soundtracks/maplestory-music/meohodsibk/64.%20Aqua%20Cave.mp3",
+};
+
+export const dyleScene: EventScene = {
+    id: "dyle-event",
+    script: [
+        {
+            dialog: ["[WIP - Dyle] An evil crocodile has taken over the sewers!"],
+            responses: [
+                {
+                    text: "Fight.",
+                    encounter: dyleFight,
+                },
+            ],
+        },
+    ],
+};
 
 const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyItem }: TownProperties) => {
     const classes = useStyles();
@@ -199,11 +229,18 @@ const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyIt
                         />
                         <TownNode
                             icon={JapaneseOgreIcon}
+                            isVisited={visited[KERNING_PLACES.DYLE]}
+                            label={"[Test] Dyle"}
+                            onClick={() => handleClickEvent(KERNING_PLACES.DYLE, dyleScene)}
+                            nodeImage={KerningSwampImage}
+                        />
+                        {/*<TownNode
+                            icon={JapaneseOgreIcon}
                             isVisited={visited[KERNING_PLACES.CLASS_LEADER]}
                             label={"[Test] Dark Lord"}
                             onClick={handleClickClassLeader}
                             nodeImage={KerningBarImage}
-                        />
+                        />*/}
                     </div>
                 </Pan>
                 <Legend />

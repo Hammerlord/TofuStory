@@ -292,6 +292,7 @@ export { default as KerningSewerImage } from "./KerningSewer.png";
 export { default as KerningSewerFullImage } from "./KerningSewerFull.png";
 export { default as KerningSewerFull2Image } from "./KerningSewerFull2.png";
 export { default as KerningShopImage } from "./KerningShop.png";
+export { default as KerningSwampImage } from "./KerningSwamp.png";
 export { default as KerningTowerImage } from "./KerningTower.png";
 export { default as KerningTradingPostImage } from "./KerningTradingPost.png";
 export { default as KingSlimeImage } from "./KingSlime.png";
