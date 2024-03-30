@@ -2924,6 +2924,36 @@ export const fireSpirit: Ability = {
     ],
 };
 
+export const flareBolt: Ability = {
+    name: "Flare Bolt",
+    resourceCost: 2,
+    description: "Summon a Fire Spirit.",
+    image: FireMarbleImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: FireMarbleImage,
+            damage: 10,
+            animationOptions: {
+                height: 90,
+                rotateToFaceTarget: true,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            summon: [{ minion: [fireSpirit.minion] }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [{ damage: 3 }],
+        },
+    ],
+};
+
 export const astralRewind: Ability = {
     name: "Astral Rewind",
     description: "Create Ephemeral copies of the last {{ actions.0.addLastPlayedCards.amount }} cards you used and add them to your hand.",
