@@ -68,7 +68,7 @@ const Hand = ({
         };
     }, [hand]);
 
-    const handleAbilityClick = (event, id: string) => {
+    const handleAbilityMouseDown = (event, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
             setOldHand(hand);
             onAbilityClick(event, id);
@@ -95,7 +95,7 @@ const Hand = ({
         <div className={className}>
             {handToDisplay.map((ability: CombatAbility, i: number) => (
                 <AbilityView
-                    onClick={(e) => handleAbilityClick(e, ability.instanceId)}
+                    onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
                     ability={ability}

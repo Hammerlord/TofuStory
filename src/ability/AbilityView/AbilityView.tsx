@@ -226,6 +226,7 @@ const useStyles = createUseStyles({
 
 interface AbilityViewProps {
     onClick?: (event: any) => void;
+    onMouseDown?: (event: any) => void;
     isSelected?: boolean;
     ability: Ability | CombatAbility;
     className?: string;
@@ -238,7 +239,7 @@ interface AbilityViewProps {
 }
 
 const AbilityView = forwardRef(
-    ({ onClick, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped }: AbilityViewProps, ref) => {
+    ({ onClick, onMouseDown, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped }: AbilityViewProps, ref) => {
         const classes = useStyles();
         const state = useAppSelector((state) => state);
         const { character, battle } = state;
@@ -470,6 +471,7 @@ const AbilityView = forwardRef(
                     />
                     <div
                         onClick={onClick}
+                        onMouseDown={onMouseDown}
                         className={classNames(classes.inner, {
                             [classes.selectedAbility]: isSelected,
                             [classes.ephemeral]: removeAfterTurn,

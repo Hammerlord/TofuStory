@@ -507,11 +507,6 @@ const BattlefieldContainer = () => {
         }
     };
 
-    const handleBattlefieldClick = () => {
-        setSelectedAllyIndex(null);
-        setSelectedAbilityId(null);
-    };
-
     const showWaveDescription = ({
         description,
         i = 0,
@@ -937,7 +932,7 @@ const BattlefieldContainer = () => {
 
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
-            <div className={classes.root} onClick={handleBattlefieldClick}>
+            <div className={classes.root}>
                 {notification && (
                     <div className={classes.notificationContainer}>
                         <Notification severity={notification.severity} onClick={() => dispatch(setNotification(null))} id={notification.id}>
