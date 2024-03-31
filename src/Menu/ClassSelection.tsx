@@ -181,7 +181,7 @@ const ClassSelection = ({
             animation.onfinish = () => {
                 playExplodeAnimation({ object: ghostRefs.map((ref) => ref.current), playbackTime: 250, maxScale: 3, translateX: -50 });
             };
-            return;
+            return () => animation.cancel();
         }
 
         if (selectedClass === PLAYER_CLASSES.MAGICIAN) {
@@ -189,6 +189,8 @@ const ClassSelection = ({
                 from: characterRef.current,
                 object: projectileRef.current,
             });
+
+            return () => animations.forEach((animation) => animation.cancel());
         }
     }, [selectedClass]);
 

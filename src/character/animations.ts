@@ -203,10 +203,12 @@ export const playExplodeAnimation = ({
     ];
 
     return elementsToAnimate.map((el, i) => {
-        return el.animate(animationFrames, {
-            duration: playbackTime,
-            delay: i * 50,
-        });
+        if (el) {
+            return el.animate(animationFrames, {
+                duration: playbackTime,
+                delay: i * 50,
+            });
+        }
     });
 };
 
