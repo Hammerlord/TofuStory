@@ -69,7 +69,7 @@ const dyleBubbleFish: Minion = {
         {
             name: "Flopping",
             icon: BubbleFishImage,
-            description: "Fleeing on the next turn. Drops a usable Air Bubble if it dies.",
+            description: "Drops a usable Air Bubble if it dies.",
             type: EFFECT_TYPES.FEAR,
             class: EFFECT_CLASSES.NONE,
             onDeath: {
@@ -123,7 +123,7 @@ export const harpoonCard: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            damage: 10,
+            damage: 5,
             effects: [bleed, bleed],
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -183,7 +183,7 @@ const dyleGarbage2: Minion = {
                         removeAfterTurn: true,
                         actions: [
                             {
-                                armor: 10,
+                                armor: 5,
                                 target: TARGET_TYPES.FRIENDLY,
                                 type: ACTION_TYPES.EFFECT,
                             },
@@ -230,6 +230,7 @@ export const dyle: Minion = {
     name: "Dyle",
     maxHP: 200,
     image: DyleIdleImage,
+    mesos: 50,
     isBoss: true,
     abilities: [
         {
