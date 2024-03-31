@@ -110,7 +110,7 @@ export const drawCards = ({
         cardsToDraw.forEach((card: CombatAbility) => {
             if (card.onDraw?.ability) {
                 const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
-                dispatch(useAbility({ ability: card.onDraw?.ability, actorId: player?.id }));
+                dispatch(useAbility({ ability: card.onDraw?.ability, actorId: player?.id, isProc: true }));
             }
         });
         playerSide.concat(enemySide).forEach((combatant) => {

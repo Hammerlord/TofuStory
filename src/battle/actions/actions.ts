@@ -2266,12 +2266,14 @@ export const useAbility = ({
     side: initialSide,
     actorId,
     isAutoCast,
+    isProc,
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
     ability: CombatAbility;
     actorId: string;
     isAutoCast?: boolean;
+    isProc?: boolean;
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
@@ -2286,7 +2288,7 @@ export const useAbility = ({
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier
         };
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [] };
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [], isProc };
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
         dispatch(applyStatChanges([resourceSpend]));
         dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
