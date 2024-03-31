@@ -82,6 +82,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const DECK_SIZE_CHANGE_SPEED = 50; // ms
+
 const Deck = ({
     viewDeckInOrder,
     onClickDeck,
@@ -95,8 +97,8 @@ const Deck = ({
 }) => {
     const classes = useStyles();
     const { battle } = useAppSelector((state) => state);
-    const { deck, deckCycled } = battle;
-    const [precycleDeck, setPrecycleDeck] = useState(deck);
+    const { deck, deckCycled }: { deck: CombatAbility[]; deckCycled: boolean } = battle;
+    const [deckSize, setDeckSize] = useState(deck.length); // This is purely for display animation purposes
 
     useEffect(() => {
         // animationCanvas.ts is playing the deck recycle animation. Don't update the deck until it's done.
@@ -104,11 +106,19 @@ const Deck = ({
             return;
         }
 
-        setPrecycleDeck(deck);
-    }, [deck, deckCycled]);
+        if (deckSize < deck.length) {
+            setTimeout(() => {
+                setDeckSize((prev) => prev + 1);
+            }, DECK_SIZE_CHANGE_SPEED);
+        } else if (deckSize > deck.length) {
+            setTimeout(() => {
+                setDeckSize((prev) => prev - 1);
+            }, DECK_SIZE_CHANGE_SPEED);
+        }
+    }, [deck, deckCycled, deckSize]);
 
     const getCardColor = (i: number): string => {
-        const isLast = i === precycleDeck.length - 1;
+        const isLast = i === deckSize - 1;
         return isLast ? DECK_COLOR : DECK_SHADOW;
     };
 
@@ -183,23 +193,23 @@ const Deck = ({
                         ref={deckRef}
                     >
                         <svg viewBox="0 0 100 100" className={classes.svg}>
-                            {Array.from({ length: precycleDeck.length }).map((_, i) => {
+                            {Array.from({ length: deckSize }).map((_, i) => {
                                 return (
                                     <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
                                         <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
-                                        {i === precycleDeck.length - 1 && (
+                                        {i === deckSize - 1 && (
                                             <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                                {precycleDeck.length}
+                                                {deckSize}
                                             </text>
                                         )}
                                     </svg>
                                 );
                             })}
-                            {precycleDeck.length === 0 && (
+                            {deckSize === 0 && (
                                 <svg y={75} viewBox="0 0 100 100">
                                     <path fill={DECK_SHADOW} d="M 50 0 100 25 50 50 0 25 Z" opacity={0.5} />
                                     <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                        {precycleDeck.length}
+                                        {deckSize}
                                     </text>
                                 </svg>
                             )}

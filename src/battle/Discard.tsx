@@ -1,5 +1,5 @@
 import { compose } from "ramda";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
@@ -72,8 +72,23 @@ const useStyles = createUseStyles({
     },
 });
 
+const DECK_SIZE_CHANGE_SPEED = 50; // ms
+
 const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
     const classes = useStyles();
+    const [discardSize, setDiscardSize] = useState(discard.length); // This is purely for display animation purposes
+
+    useEffect(() => {
+        if (discardSize < discard.length) {
+            setTimeout(() => {
+                setDiscardSize((prev) => prev + 1);
+            }, DECK_SIZE_CHANGE_SPEED);
+        } else if (discardSize > discard.length) {
+            setTimeout(() => {
+                setDiscardSize((prev) => prev - 1);
+            }, DECK_SIZE_CHANGE_SPEED);
+        }
+    }, [discard, discardSize]);
 
     const getImage = (ability: CombatAbility) => {
         const image = ability.image;
@@ -108,7 +123,7 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
     const depletedCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(depleted), [depleted]);
 
     const getCardColor = (i: number): string => {
-        const isLast = i === discard.length - 1;
+        const isLast = i === discardSize - 1;
         return isLast ? COOLDOWN_COLOR : COOLDOWN_SHADOW;
     };
 
@@ -132,13 +147,13 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
                 <Tooltip title={discardTooltip} placement={"right"}>
                     <div ref={discardRef} className={classes.deckContainerInner}>
                         <svg viewBox="0 0 100 100" className={classes.svg}>
-                            {Array.from({ length: discard.length }).map((_, i) => {
+                            {Array.from({ length: discardSize }).map((_, i) => {
                                 return (
                                     <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
                                         <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
-                                        {i === discard.length - 1 && (
+                                        {i === discardSize - 1 && (
                                             <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
-                                                {discard.length}
+                                                {discardSize}
                                             </text>
                                         )}
                                     </svg>
