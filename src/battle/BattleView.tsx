@@ -945,7 +945,14 @@ const BattlefieldContainer = () => {
                         <AbilityNotification ability={events[0].actionParent} />
                     </div>
                 )}
-                <div className={classes.battlefieldContainer}>
+                <div
+                    className={classes.battlefieldContainer}
+                    onContextMenu={(e) => {
+                        setSelectedAbilityId(null);
+                        setSelectedAllyIndex(null);
+                        e.preventDefault();
+                    }}
+                >
                     <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.waves}>
                             <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />
