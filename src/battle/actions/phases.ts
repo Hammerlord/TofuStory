@@ -57,7 +57,10 @@ export const onBattleEnd = () => {
 
 export const onWaveClear = () => {
     return (dispatch, getState) => {
-        const { playerSide } = getState().battle;
+        const { playerSide } = getState().battle || {};
+        if (!playerSide) {
+            return;
+        }
 
         playerSide.forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));

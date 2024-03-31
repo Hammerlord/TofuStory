@@ -204,7 +204,7 @@ export const cursedChestScene: EventScene = {
                         },
                         {
                             speaker: noobA,
-                            dialog: ["The beginner eagerly runs toward the chest.]"],
+                            dialog: ["[The beginner eagerly runs toward the chest.]"],
                         },
                         {
                             scene: (other) => <CursedTreasureBackdrop showBeginner={true} beginnerMoved={true} {...other} />,
