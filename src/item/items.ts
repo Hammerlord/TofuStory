@@ -1548,7 +1548,7 @@ export const flamingFeather: Item = {
                 conditions: [
                     {
                         comparator: "gt",
-                        resourceCost: 1,
+                        resourceCost: 0,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                     },
