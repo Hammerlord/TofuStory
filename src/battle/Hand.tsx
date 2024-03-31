@@ -25,10 +25,12 @@ const useStyles = createUseStyles({
     "@keyframes slideOut": {
         from: {
             transform: "translate(0, 0)",
+            width: "150px", // Card width, see AbilityView style root
             opacity: 1,
         },
         to: {
-            transform: "translate(0, -50%)",
+            transform: "translate(-75px, -50%)", // X is 1/2 card width
+            width: "0px",
             opacity: 0,
         },
     },
