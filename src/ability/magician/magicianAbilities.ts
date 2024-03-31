@@ -105,6 +105,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../types";
 import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -1078,6 +1079,7 @@ export const avatarOfTheStars: Ability = {
                                 comparator: "gt",
                                 resourceCost: 0,
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             },
                         ],
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -1840,6 +1842,7 @@ export const volatileMagic: Ability = {
                                             comparator: "gt",
                                             resourceCost: 1,
                                             isOffense: true,
+                                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                                         },
                                     ],
                                     autoCastAbilities: {
@@ -2493,6 +2496,7 @@ export const icicles: Ability = {
                                 comparator: "gt",
                                 resourceCost: 0,
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             },
                             {
                                 // Only summon if there is room to summon

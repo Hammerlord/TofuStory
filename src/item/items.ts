@@ -1477,6 +1477,7 @@ export const pigIllustrated: Item = {
                         comparator: "gt",
                         resourceCost: 1,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
