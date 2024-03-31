@@ -5,7 +5,7 @@ import { Ability } from "../ability/types";
 import { Player } from "../character/types";
 import { NewYearRiceSoupImage, TofuImage } from "../images";
 import { bigMesoItem, goldenHammer, hugeMesoItem, incense, mesoItem } from "../item/items";
-import { Item, RARITIES } from "../item/types";
+import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import { ABILITIES_PRICE_RARITY_MAP, ITEMS_PRICE_RARITY_MAP, NUM_SHOP_ABILITIES, NUM_SHOP_ITEMS, ShopConfigProperties } from "./constants";
@@ -173,7 +173,24 @@ export const useShopConfig = ({
     useEffect(() => {
         // Items like Tofu Special and Shopper's Club Membership should take effect if bought.
         setShopOptions(getShopCustomerProperties(player));
-    }, [player?.items]);
+
+        // If the player acquired new equipment prior to a revisit, those equipments should not be in the shop inventory
+        const alreadyObtained = player.items.reduce((acc, item: Item) => {
+            if (item.type === ITEM_TYPES.EQUIPMENT) {
+                acc[item.name] = true;
+            }
+            return acc;
+        }, {});
+        setItems((prev) =>
+            prev.map((item) => {
+                if (!item || !alreadyObtained[item.item?.name]) {
+                    return item;
+                }
+
+                return null;
+            })
+        );
+    }, [player.items]);
 
     const buy = () => {
         if (abilities[selectedAbilityIndex]) {
