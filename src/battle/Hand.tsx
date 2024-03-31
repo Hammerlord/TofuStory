@@ -39,6 +39,7 @@ const useStyles = createUseStyles({
         transitionTimingFunction: "ease-out",
         animationDuration: handPlaybackDuration,
         animationIterationCount: 1,
+        opacity: 0, // Prevent an issue where the cards would appear to flicker back into their original place when the animation is done
     },
 });
 
