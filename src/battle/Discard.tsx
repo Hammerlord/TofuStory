@@ -5,6 +5,8 @@ import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
 import { getAbilityMap } from "./deckDisplayUtils";
+import { AshesImage } from "../images";
+import Icon from "../icon/Icon";
 
 const COOLDOWN_COLOR = "#aaaaaa";
 const COOLDOWN_SHADOW = "#8a8a8a";
@@ -31,11 +33,10 @@ const useStyles = createUseStyles({
     },
     depleted: {
         position: "absolute",
-        bottom: "-70px",
+        bottom: "-80px",
         zIndex: 3,
         textAlign: "center",
         width: "100%",
-        background: "rgba(0, 0, 0, 0.7)",
         color: "rgba(255, 255, 255, 0.8)",
         padding: "4px 0",
         borderRadius: "4px",
@@ -171,7 +172,7 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
                     })}
                     ref={depleteRef}
                 >
-                    Depleted: {depleted.length}
+                    <Icon icon={AshesImage} text={depleted.length} size="xl" />
                 </div>
             </Tooltip>
         </div>

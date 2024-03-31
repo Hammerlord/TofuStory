@@ -18,6 +18,7 @@ export { default as ArturoImage } from "./Arturo.png";
 export { default as ArwensGlassShoeImage } from "./ArwensGlassShoe.png";
 export { default as ArwenTheFairyImage } from "./ArwenTheFairy.png";
 export { default as ASetOfMemoryCardsImage } from "./ASetOfMemoryCards.png";
+export { default as AshesImage } from "./Ashes.png";
 export { default as AssassinateImage } from "./Assassinate.gif";
 export { default as AthenaAttackStanceImage } from "./AthenaAttackStance.png";
 export { default as AttackDownImage } from "./AttackDown.png";
