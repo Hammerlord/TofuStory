@@ -10,7 +10,6 @@ const athenaPierceCharacter = {
 };
 
 const athenaPierceFight = {
-    characters: [],
     waves: [
         {
             enemies: [null, guardWolf, athena, guardHawk, null],

@@ -21,8 +21,8 @@ import { balrog } from "../enemy/balrog";
 import { BATTLE_TYPES } from "../battle/types";
 import { theRememberer } from "../enemy/rememberer";
 import { TownProperties } from "./types";
-import { useShopConfig } from "../Menu/shopUtils";
-import Shop from "../Menu/Shop";
+import { useShopConfig } from "../shops/shopUtils";
+import Shop from "../shops/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,

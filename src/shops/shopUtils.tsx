@@ -9,7 +9,7 @@ import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import { ABILITIES_PRICE_RARITY_MAP, ITEMS_PRICE_RARITY_MAP, NUM_SHOP_ABILITIES, NUM_SHOP_ITEMS, ShopConfigProperties } from "./constants";
-import { getUpgradeCard } from "./utils";
+import { getUpgradeCard } from "../Menu/utils";
 import { useEffect, useState } from "react";
 
 /**

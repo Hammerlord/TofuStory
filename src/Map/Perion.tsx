@@ -26,8 +26,8 @@ import { getTownPlaces } from "./utils";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { EventScene } from "../scene/types";
 import { playerStateSlice } from "../character/playerReducer";
-import { useShopConfig } from "../Menu/shopUtils";
-import Shop from "../Menu/Shop";
+import { useShopConfig } from "../shops/shopUtils";
+import Shop from "../shops/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,

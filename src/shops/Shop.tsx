@@ -13,7 +13,7 @@ import { Item, RARITIES } from "../item/types";
 import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
-import { getUpgradeCard } from "./utils";
+import { getUpgradeCard } from "../Menu/utils";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { useShopConfig } from "./shopUtils";
 import { OnBuyItem, ShopConfigProperties } from "./constants";

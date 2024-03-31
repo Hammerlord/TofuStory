@@ -29,7 +29,7 @@ import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { EventScene } from "../scene/types";
-import Shop from "../Menu/Shop";
+import Shop from "../shops/Shop";
 import ScenePlayer from "../scene/ScenePlayer";
 import { REGIONS } from "./regions";
 import Overlay from "../view/Overlay";

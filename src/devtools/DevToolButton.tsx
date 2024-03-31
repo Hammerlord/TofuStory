@@ -7,7 +7,7 @@ import Popper from "@material-ui/core/Popper";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import Map from "../Map/Map";
-import Shop from "../Menu/Shop";
+import Shop from "../shops/Shop";
 import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
 import CardMatchingGame from "../scene/CardMatchingGame";
 import DimPath from "../scene/Ellinia/DimPath";
@@ -25,7 +25,7 @@ import Button from "../view/Button";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
-import TradingPost from "../scene/TradingPost";
+import TradingPost from "../shops/TradingPost";
 import { FortuneBox } from "../scene/FortuneBox";
 
 const useStyles = createUseStyles({

@@ -1,4 +1,4 @@
-import { OnBuyItem } from "../Menu/constants";
+import { OnBuyItem } from "../shops/constants";
 import { Ability, Minion } from "../ability/types";
 import { Player } from "../character/types";
 import {

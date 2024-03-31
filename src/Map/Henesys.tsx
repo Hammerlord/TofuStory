@@ -26,8 +26,8 @@ import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
-import { useShopConfig } from "../Menu/shopUtils";
-import Shop from "../Menu/Shop";
+import { useShopConfig } from "../shops/shopUtils";
+import Shop from "../shops/Shop";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
