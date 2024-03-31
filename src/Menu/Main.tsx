@@ -640,18 +640,16 @@ const Main = () => {
                                 onRemoveAbility={(updatedDeck) => {
                                     dispatch(updateDeck(updatedDeck));
                                     dispatch(useConsumable(usingItem));
-                                    if (usingItem.stacks > 1) {
-                                        setUsingItem((prev) => {
-                                            if (prev.stacks > 1) {
-                                                return {
-                                                    ...prev,
-                                                    stacks: prev.stacks - 1,
-                                                };
-                                            }
+                                    setUsingItem((prev) => {
+                                        if (prev.stacks > 1) {
+                                            return {
+                                                ...prev,
+                                                stacks: prev.stacks - 1,
+                                            };
+                                        }
 
-                                            return null;
-                                        });
-                                    }
+                                        return null;
+                                    });
                                 }}
                             />
                         </Overlay>
