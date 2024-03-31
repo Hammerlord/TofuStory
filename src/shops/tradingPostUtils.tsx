@@ -44,7 +44,21 @@ export const useTradingPostConfig = ({ player, onTrade }): TradingPostConfigProp
                     item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
             )
         );
-    }, [tradesRemaining]);
+        // If the player acquired new equipment prior to a revisit, those equipments should not be in the inventory
+        const alreadyObtained = player.items.reduce((acc, item: Item) => {
+            if (item.type === ITEM_TYPES.EQUIPMENT) {
+                acc[item.name] = true;
+            }
+            return acc;
+        }, {});
+        setVendorItems((prev) =>
+            prev.filter((item) => {
+                if (!alreadyObtained[item.name]) {
+                    return true;
+                }
+            })
+        );
+    }, [player.items]);
 
     const trade = () => {
         if (!selectedPlayerItem || !selectedVendorItem) {
