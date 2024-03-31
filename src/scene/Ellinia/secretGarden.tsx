@@ -23,7 +23,7 @@ const lostDragonFight = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
-    backgroundMusic: "https://vgmsite.com/soundtracks/maplestory-music/otkvinbeci/77.%20Dragon%20Load.mp3",
+    backgroundMusic: "https://maplestory.io/api/GMS/200/music/Bgm14/DragonLoad",
 };
 
 const useStyles = createUseStyles({

@@ -15,7 +15,7 @@ const musicMap = {
     ],
     [REGIONS.KERNING]: [
         "https://maplestory.io/api/GMS/40B/music/Bgm01/BadGuys",
-        "https://delta.vgmsite.com/soundtracks/maplestory-music/uwemoqzyah/82.%20In%20Nautilus.mp3",
+        "https://maplestory.io/api/GMS/248/music/Bgm15/inNautilus",
         "https://maplestory.io/api/GMS/236/music/Bgm21/KerningSquare",
     ],
     [REGIONS.KERNING_SEWERS]: ["https://maplestory.io/api/GMS/93T/music/Bgm02/JungleBook"],
@@ -30,8 +30,8 @@ const musicMap = {
         "https://maplestory.io/api/GMS/236/music/Bgm02/WhenTheMorningComes",
     ],
     [REGIONS.HIDDEN_FOREST]: [
-        "https://delta.vgmsite.com/soundtracks/maplestory-music/uptjdyhuxm/81.%20Elin%20Forest.mp3",
-        "https://delta.vgmsite.com/soundtracks/maplestory-music/ynanilbuga/57.%20Timeless%20B.mp3",
+        "https://vgmtreasurechest.com/soundtracks/maplestory-music/uptjdyhuxm/81.%20Elin%20Forest.mp3",
+        "https://vgmtreasurechest.com/soundtracks/maplestory-music/ynanilbuga/57.%20Timeless%20B.mp3",
     ],
     [REGIONS.PERION]: [
         "https://maplestory.io/api/GMS/236/music/Bgm01/HighlandStar",
