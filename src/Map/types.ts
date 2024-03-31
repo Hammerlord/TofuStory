@@ -107,8 +107,8 @@ export type TownProperties = {
     player: Player;
     onExit: () => void;
     onClickScene: (scene: EventScene) => void;
-    onClickTradingPost: () => void;
     onBuyItem: OnBuyItem;
+    onTrade: (options: { playerItem: Item; forItem: Item }) => void;
     onCamp: () => void;
     onBattle: (battleConfig, callback: Function) => void;
 };

@@ -23,6 +23,8 @@ import { theRememberer } from "../enemy/rememberer";
 import { TownProperties } from "./types";
 import { useShopConfig } from "../shops/shopUtils";
 import Shop from "../shops/Shop";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
+import TradingPost from "../shops/TradingPost";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -54,11 +56,14 @@ const SLEEPYWOOD_PLACES = {
     REMEMBERER: "rememberer",
 };
 
-const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost, onCamp, onBattle }: TownProperties) => {
+const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onBattle }: TownProperties) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
     const [isShopOpen, setIsShopOpen] = useState(false);
     const shopConfig = useShopConfig({ player, onBuyItem });
+    const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
+    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     /**
@@ -73,9 +78,8 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPos
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(TOWN_PLACES.TRADING_POST)) {
-            onClickTradingPost && onClickTradingPost();
-        }
+        checkVisitPlace(TOWN_PLACES.TRADING_POST);
+        setIsTradingPostOpen(true);
     };
 
     const handleClickShop = () => {
@@ -101,7 +105,6 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPos
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[TOWN_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={SleepywoodTradingPostImage}
                             onClick={handleClickTradingPost}
@@ -182,6 +185,14 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPos
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isTradingPostOpen && (
+                    <TradingPost
+                        player={player}
+                        onExit={() => setIsTradingPostOpen(false)}
+                        onTrade={onTrade}
+                        tradingPostConfig={tradingPostConfig}
+                    />
+                )}
             </div>
         </div>
     );

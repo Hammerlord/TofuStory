@@ -28,6 +28,8 @@ import { EventScene } from "../scene/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { useShopConfig } from "../shops/shopUtils";
 import Shop from "../shops/Shop";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
+import TradingPost from "../shops/TradingPost";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -74,9 +76,14 @@ const PERION_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }: TownProperties) => {
+const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const [isShopOpen, setIsShopOpen] = useState(false);
+    const shopConfig = useShopConfig({ player, onBuyItem });
+    const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
+    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+
     const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
             return acc + 1;
@@ -84,8 +91,6 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }:
 
         return acc;
     }, 0) as number;
-    const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
     const dispatch = useAppDispatch();
@@ -102,9 +107,8 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }:
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(PERION_PLACES.TRADING_POST)) {
-            onClickTradingPost();
-        }
+        checkVisitPlace(PERION_PLACES.TRADING_POST);
+        setIsTradingPostOpen(true);
     };
 
     const handleClickShop = () => {
@@ -132,7 +136,6 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }:
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[PERION_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
@@ -197,6 +200,14 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onClickTradingPost }:
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isTradingPostOpen && (
+                    <TradingPost
+                        player={player}
+                        onExit={() => setIsTradingPostOpen(false)}
+                        onTrade={onTrade}
+                        tradingPostConfig={tradingPostConfig}
+                    />
+                )}
             </div>
         </div>
     );

@@ -512,7 +512,7 @@ const Main = () => {
                 onExit={handleExitTown}
                 onClickScene={handleClickScene}
                 onBuyItem={handleBuyItem}
-                onClickTradingPost={() => setActivity(ACTIVITIES.TRADING_POST)}
+                onTrade={handleTrade}
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
                 onCamp={() => setActivity(ACTIVITIES.CAMP)}

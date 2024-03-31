@@ -4,6 +4,9 @@ import { Item, RARITIES } from "../item/types";
 export const NUM_SHOP_ABILITIES = 8;
 export const NUM_SHOP_ITEMS = 8;
 
+export const NUM_TRADING_POST_ITEMS = 11;
+export const NUM_TRADING_POST_TRADES = 2;
+
 export const ABILITIES_PRICE_RARITY_MAP = {
     [RARITIES.COMMON]: [50, 65],
     [RARITIES.UNCOMMON]: [90, 120],
@@ -39,4 +42,15 @@ export type ShopConfigProperties = {
     numRefreshes: number;
     freeFood: boolean;
     applyDiscount: (initPrice: number) => number;
+};
+
+export type TradingPostConfigProperties = {
+    trade: (options: { playerItem: Item; forItem: Item }) => void;
+    playerItems: Item[];
+    vendorItems: Item[];
+    tradesRemaining: number;
+    selectedPlayerItem: Item;
+    setSelectedPlayerItem: (item: Item | null) => void;
+    selectedVendorItem: Item;
+    setSelectedVendorItem: (item: Item | null) => void;
 };

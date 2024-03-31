@@ -34,6 +34,8 @@ import Shop from "../shops/Shop";
 import { dyle } from "../enemy/dyle";
 import { BATTLE_TYPES } from "../battle/types";
 import { EventScene, SceneEncounter } from "../scene/types";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
+import TradingPost from "../shops/TradingPost";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -103,12 +105,14 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyItem }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const shopConfig = useShopConfig({ player, onBuyItem });
+    const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
+    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -134,9 +138,8 @@ const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyIt
     };
 
     const handleClickTradingPost = () => {
-        if (checkVisitPlace(KERNING_PLACES.TRADING_POST)) {
-            onClickTradingPost && onClickTradingPost();
-        }
+        checkVisitPlace(KERNING_PLACES.TRADING_POST);
+        setIsTradingPostOpen(true);
     };
 
     const handleClickShop = () => {
@@ -185,7 +188,6 @@ const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyIt
                     <div className={classes.inner}>
                         <TownNode
                             icon={DiamondImage}
-                            isVisited={visited[KERNING_PLACES.TRADING_POST]}
                             label={"Trading Post"}
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
@@ -247,6 +249,14 @@ const KerningCity = ({ player, onExit, onClickScene, onClickTradingPost, onBuyIt
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isTradingPostOpen && (
+                    <TradingPost
+                        player={player}
+                        onExit={() => setIsTradingPostOpen(false)}
+                        onTrade={onTrade}
+                        tradingPostConfig={tradingPostConfig}
+                    />
+                )}
             </div>
         </div>
     );

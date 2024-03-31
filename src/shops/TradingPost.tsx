@@ -13,6 +13,8 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Tooltip from "../view/Tooltip";
 import { COMMON_STYLES } from "../constants";
+import { NUM_TRADING_POST_ITEMS, NUM_TRADING_POST_TRADES, TradingPostConfigProperties } from "./constants";
+import { useTradingPostConfig } from "./tradingPostUtils";
 
 const HEADER_BAR = 72;
 
@@ -121,69 +123,38 @@ const useStyles = createUseStyles({
     },
 });
 
-const BASE_VENDOR_ITEMS = 11;
-const BASE_NUM_TRADES = 2;
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
 // or exchange their starter equipment for an upgraded version of their starter equipment.
-const TradingPost = ({
+const TradingPostView = ({
     player,
-    onTrade,
+    tradingPostConfig,
     onExit,
 }: {
     player: Player;
-    onTrade: (options: { playerItem: Item; forItem: Item }) => void;
-    onExit: () => void;
+    tradingPostConfig: TradingPostConfigProperties;
+    onExit?: () => void;
 }) => {
-    const [playerItems, setPlayerItems] = useState([]);
-    const [tradesRemaining, setTradesRemaining] = useState(BASE_NUM_TRADES);
-    const [vendorItems, setVendorItems] = useState([]);
-    const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
-    const [selectedVendorItem, setSelectedVendorItem] = useState(null);
     const [vendorDialog, setVendorDialog] = useState("");
     const classes = useStyles();
     const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
+    const {
+        trade,
+        playerItems,
+        vendorItems,
+        tradesRemaining,
+        selectedPlayerItem,
+        setSelectedPlayerItem,
+        selectedVendorItem,
+        setSelectedVendorItem,
+    } = tradingPostConfig;
     const starterItem = player.items.find((item) => item.rarity === RARITIES.STARTER);
-
-    useEffect(() => {
-        // Exclude already-obtained equipment
-        const exclude = player.items.reduce((acc, item: Item) => {
-            acc[item.name] = acc[item.name] || item.type === ITEM_TYPES.EQUIPMENT;
-            return acc;
-        }, {});
-
-        const itemPool = shuffle(
-            ITEMS.concat(CLASS_ITEMS[player.class] || [])
-                .filter((item: Item) => !exclude[item.name] && item.type === ITEM_TYPES.EQUIPMENT)
-                .concat([mesoItem, bigMesoItem, hugeMesoItem])
-        );
-        const items = itemPool.slice(0, BASE_VENDOR_ITEMS);
-
-        if (upgradedStarterItem && !exclude[upgradedStarterItem.name]) {
-            items.push(upgradedStarterItem);
-        }
-        setVendorItems(items);
-    }, []);
-
-    useEffect(() => {
-        // Only equipment is available to trade. Trading Post also does not want the starter item or its upgraded version.
-        setPlayerItems(
-            player.items.filter(
-                (item: Item) =>
-                    item.type === ITEM_TYPES.EQUIPMENT &&
-                    item.rarity !== RARITIES.STARTER &&
-                    item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
-            )
-        );
-    }, [tradesRemaining]);
-
     const isSelectedUpgradedStarter = selectedVendorItem?.name === upgradedStarterItem?.name;
-
     const dialogMemo = useRef([]);
 
     useEffect(() => {
         const getDialog = () => {
             if (!selectedPlayerItem && !selectedVendorItem) {
-                if (tradesRemaining === BASE_NUM_TRADES) {
+                if (tradesRemaining === NUM_TRADING_POST_TRADES) {
                     const greeting = "Hello, stranger. Got something to trade?";
                     if (dialogMemo.current.includes(greeting)) {
                         return "Change your mind? Hehe... it's no problem. Take your time.";
@@ -249,17 +220,6 @@ const TradingPost = ({
         }, 5000);
         return () => clearTimeout(timeout);
     }, [selectedPlayerItem, selectedVendorItem]);
-
-    const handleTrade = () => {
-        if (!selectedPlayerItem || !selectedVendorItem) {
-            return;
-        }
-        setTradesRemaining((prev) => prev - 1);
-        setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
-        setSelectedPlayerItem(null);
-        setSelectedVendorItem(null);
-        onTrade({ playerItem: selectedPlayerItem, forItem: selectedVendorItem });
-    };
 
     const onClickPlayerItem = (item: Item) => {
         if (selectedPlayerItem?.name === item.name) {
@@ -366,7 +326,7 @@ const TradingPost = ({
                         [classes.highlightAnimation]: selectedPlayerItem && selectedVendorItem,
                     })}
                 >
-                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
+                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={trade}>
                         Trade
                     </Button>
                 </span>
@@ -416,6 +376,25 @@ const TradingPost = ({
             </div>
         </div>
     );
+};
+
+const TradingPost = ({
+    tradingPostConfig: injectConfig,
+    ...other
+}: {
+    tradingPostConfig?: TradingPostConfigProperties;
+    player: Player;
+    onTrade: (options: { playerItem: Item; forItem: Item }) => void;
+    onExit?: () => void;
+}) => {
+    const { player, onTrade } = other;
+    const config = useTradingPostConfig({ player, onTrade });
+
+    if (injectConfig) {
+        return <TradingPostView tradingPostConfig={injectConfig} {...other} />;
+    }
+
+    return <TradingPostView tradingPostConfig={config} {...other} />;
 };
 
 export default TradingPost;
