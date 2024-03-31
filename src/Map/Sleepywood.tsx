@@ -86,6 +86,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
 
     const handleClickShop = () => {
         checkVisitPlace(TOWN_PLACES.SHOP);
+        setIsShopOpen(true);
     };
 
     const handleClickEvent = (eventKey: string, scene) => {
