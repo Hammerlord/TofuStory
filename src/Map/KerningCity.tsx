@@ -139,7 +139,9 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownP
 
     const handleClickTradingPost = () => {
         checkVisitPlace(KERNING_PLACES.TRADING_POST);
-        setIsTradingPostOpen(true);
+        if (tradingPostConfig.tradesRemaining > 0) {
+            setIsTradingPostOpen(true);
+        }
     };
 
     const handleClickShop = () => {
@@ -191,6 +193,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownP
                             label={"Trading Post"}
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
+                            isVisited={tradingPostConfig.tradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
                         <br />

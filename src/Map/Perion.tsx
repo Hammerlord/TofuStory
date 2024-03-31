@@ -108,7 +108,9 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProper
 
     const handleClickTradingPost = () => {
         checkVisitPlace(PERION_PLACES.TRADING_POST);
-        setIsTradingPostOpen(true);
+        if (tradingPostConfig.tradesRemaining > 0) {
+            setIsTradingPostOpen(true);
+        }
     };
 
     const handleClickShop = () => {
@@ -139,6 +141,7 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProper
                             label={"Trading Post"}
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
+                            isVisited={tradingPostConfig.tradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={PerionShopImage} onClick={handleClickShop} />
 

@@ -91,7 +91,9 @@ const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownPrope
 
     const handleClickTradingPost = () => {
         checkVisitPlace(ELLINIA_PLACES.TRADING_POST);
-        setIsTradingPostOpen(true);
+        if (tradingPostConfig.tradesRemaining > 0) {
+            setIsTradingPostOpen(true);
+        }
     };
 
     const handleClickShop = () => {
@@ -127,6 +129,7 @@ const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownPrope
                             label={"Trading Post"}
                             nodeImage={ElliniaTradingPostImage}
                             onClick={handleClickTradingPost}
+                            isVisited={tradingPostConfig.tradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={ElliniaShopImage} onClick={handleClickShop} />
                         <br />

@@ -104,7 +104,9 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
 
     const handleClickTradingPost = () => {
         checkVisitPlace(HENESYS_PLACES.TRADING_POST);
-        setIsTradingPostOpen(true);
+        if (tradingPostConfig.tradesRemaining > 0) {
+            setIsTradingPostOpen(true);
+        }
     };
 
     const handleClickShop = () => {
@@ -144,6 +146,7 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
                 <Pan userPosition={screenCentre} disableIntroAnimate={true}>
                     <div className={classes.inner}>
                         <TownNode
+                            isVisited={tradingPostConfig.tradesRemaining === 0}
                             icon={DiamondImage}
                             label={"Trading Post"}
                             nodeImage={HenesysTradingPostImage}

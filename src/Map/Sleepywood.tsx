@@ -79,7 +79,9 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
 
     const handleClickTradingPost = () => {
         checkVisitPlace(TOWN_PLACES.TRADING_POST);
-        setIsTradingPostOpen(true);
+        if (tradingPostConfig.tradesRemaining > 0) {
+            setIsTradingPostOpen(true);
+        }
     };
 
     const handleClickShop = () => {
@@ -108,6 +110,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
                             label={"Trading Post"}
                             nodeImage={SleepywoodTradingPostImage}
                             onClick={handleClickTradingPost}
+                            isVisited={tradingPostConfig.tradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={SleepywoodShopImage} onClick={handleClickShop} />
                         <br />
