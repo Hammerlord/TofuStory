@@ -171,6 +171,7 @@ export const greaterChargingStone: Item = {
             onTurnEnd: {
                 ability: {
                     ...getUpgradeCard(lesserBolt),
+                    instanceId: undefined, // This is a proc and so should not have an instanceId. Otherwise, Astral Rewind is copying it
                 },
             },
         },
