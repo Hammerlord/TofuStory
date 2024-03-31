@@ -2107,6 +2107,7 @@ export const blackCrystal: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     image: BlackCrystalImage,
     description: "The non-Stun debuffs you apply are extended by 1 turn.",
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Opal Effect",
