@@ -299,6 +299,12 @@ const TradingPostView = ({
         );
     };
 
+    const handleClickExit = () => {
+        setSelectedPlayerItem(null);
+        setSelectedVendorItem(null);
+        onExit && onExit();
+    };
+
     return (
         <div className={classes.tradingPostRoot}>
             <div className={classes.tradingPostBackdrop} />
@@ -306,7 +312,7 @@ const TradingPostView = ({
                 <h2>Trading Post</h2>
             </div>
             <div className={classes.doneContainer}>
-                <Button color="secondary" variant="contained" onClick={onExit}>
+                <Button color="secondary" variant="contained" onClick={handleClickExit}>
                     Leave Shop
                 </Button>
             </div>

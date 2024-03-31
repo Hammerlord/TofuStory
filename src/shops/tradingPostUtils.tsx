@@ -13,9 +13,6 @@ export const useTradingPostConfig = ({ player, onTrade }): TradingPostConfigProp
     const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
     const [selectedVendorItem, setSelectedVendorItem] = useState(null);
     const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
-    const starterItem = player.items.find((item) => item.rarity === RARITIES.STARTER);
-
-    const isSelectedUpgradedStarter = selectedVendorItem?.name === upgradedStarterItem?.name;
 
     useEffect(() => {
         // Exclude already-obtained equipment

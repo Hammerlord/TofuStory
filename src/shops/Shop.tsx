@@ -268,12 +268,18 @@ const ShopView = ({
         );
     };
 
+    const handleExitClick = () => {
+        onExit();
+        setSelectedAbilityIndex(null);
+        setSelectedItemIndex(null);
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
                 <div className={classes.doneContainer}>
                     {onExit && (
-                        <Button color="secondary" variant="contained" onClick={onExit}>
+                        <Button color="secondary" variant="contained" onClick={handleExitClick}>
                             Leave Shop
                         </Button>
                     )}
