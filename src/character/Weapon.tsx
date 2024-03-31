@@ -163,8 +163,8 @@ const Weapon = ({
 }: {
     image?: string;
     options?: { transform?: string };
-    action: Action;
-    wielder: Combatant;
+    action?: Action;
+    wielder?: Combatant;
     wielderRef: HTMLElement;
     target?: HTMLElement;
 }) => {

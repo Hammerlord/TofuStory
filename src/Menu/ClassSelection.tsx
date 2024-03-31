@@ -1,15 +1,25 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { AnonymushroomImage, ClassMagicianImage, ClassWarriorImage, LandImage, WarMushImage, WizMushImage } from "../images";
-import Button from "../view/Button";
-import { PLAYER_CLASSES } from "./types";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { getGameFile } from "./gameFiles";
-import { playerStateSlice } from "../character/playerReducer";
 import { Ability } from "../ability/types";
+import Weapon from "../character/Weapon";
+import { playExplodeAnimation, playStompAnimation } from "../character/animations";
+import { playerStateSlice } from "../character/playerReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import {
+    AnonymushroomImage,
+    ClassMagicianImage,
+    ClassWarriorImage,
+    LandImage,
+    OldGladiusImage,
+    WarMushImage,
+    WizMushImage,
+} from "../images";
+import Button from "../view/Button";
+import { getGameFile } from "./gameFiles";
+import { PLAYER_CLASSES } from "./types";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -106,6 +116,15 @@ const useStyles = createUseStyles({
     runSavedNotice: {
         fontSize: 16,
     },
+    ghost: {
+        opacity: 0,
+    },
+    weaponContainer: {
+        position: "absolute",
+        top: 0,
+        left: "calc(50% - 25px)",
+        transform: "translateX(-50%)",
+    },
 });
 
 const { loadState } = playerStateSlice.actions;
@@ -122,12 +141,22 @@ const ClassSelection = ({
     const { player } = character || {};
     const classes = useStyles();
     const dispatch = useAppDispatch();
+    const characterRef: any = useRef();
+    const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef());
 
     const handleSelectClass = () => {
         if (selectedClass) {
             onSelectClass(selectedClass, JOB_CARD_MAP[selectedClass].starters);
         }
     };
+
+    useEffect(() => {
+        if (selectedClass === PLAYER_CLASSES.WARRIOR) {
+            const animation = playStompAnimation({ object: characterRef.current, playbackTime: 500 });
+            animation.onfinish = () =>
+                playExplodeAnimation({ object: ghostRefs.map((ref) => ref.current), playbackTime: 250, maxScale: 3, translateX: -50 });
+        }
+    }, [selectedClass]);
 
     if (player) {
         return (
@@ -153,6 +182,11 @@ const ClassSelection = ({
     }
 
     const previousRun = getGameFile();
+    const getWeapon = () => {
+        if (selectedClass === PLAYER_CLASSES.WARRIOR) {
+            return <Weapon image={OldGladiusImage} wielderRef={characterRef} />;
+        }
+    };
 
     return (
         <div className={classes.root}>
@@ -160,8 +194,17 @@ const ClassSelection = ({
                 <div>
                     <h1>You wake up without arms or legs.</h1>
                     <div className={classes.bg} />
-                    <div className={classes.portraitContainer}>
+                    <div className={classes.portraitContainer} ref={characterRef}>
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <img
+                                key={i}
+                                src={portraits[selectedClass] || AnonymushroomImage}
+                                className={classNames(classes.portrait, classes.ghost)}
+                                ref={ghostRefs[i]}
+                            />
+                        ))}
                         <img src={portraits[selectedClass] || AnonymushroomImage} className={classes.portrait} />
+                        <div className={classNames(classes.weaponContainer)}>{getWeapon()}</div>
                     </div>
                     <p>After some time spent fumbling around, you realize that you are, in fact, a mushroom.</p>
                     <p>You don't remember much, but you do remember you were a...</p>

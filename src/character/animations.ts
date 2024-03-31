@@ -175,23 +175,27 @@ export const playExplodeAnimation = ({
     from,
     object,
     playbackTime,
+    maxScale = 7,
+    translateX = 0,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
-    from: HTMLElement;
+    from?: HTMLElement;
     playbackTime: number;
+    maxScale?: number;
+    translateX?: number;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
     const animationFrames = [
         {
-            transform: "scale(1)",
+            transform: `translateX(${translateX}%) scale(1)`,
             filter: "brightness(1.5) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             easing: "ease-out",
             offset: 0.2,
             opacity: 0.8,
         },
         {
-            transform: "scale(7)",
+            transform: `translateX(${translateX}%) scale(${maxScale})`,
             opacity: 0,
             filter: "brightness(3) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
             easing: "ease-in",
