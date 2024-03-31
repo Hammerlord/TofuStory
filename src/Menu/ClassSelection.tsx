@@ -5,7 +5,7 @@ import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import Weapon from "../character/Weapon";
-import { playExplodeAnimation, playStompAnimation } from "../character/animations";
+import { playExplodeAnimation, playStompAnimation, playTossUpAnimation } from "../character/animations";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
@@ -14,6 +14,8 @@ import {
     ClassWarriorImage,
     LandImage,
     OldGladiusImage,
+    OldWoodenStaffImage,
+    StarImage,
     WarMushImage,
     WizMushImage,
 } from "../images";
@@ -125,6 +127,28 @@ const useStyles = createUseStyles({
         left: "calc(50% - 25px)",
         transform: "translateX(-50%)",
     },
+    "@keyframes applyEffect": {
+        "0%": {
+            filter: "brightness(1) drop-shadow(0 0 1px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            transform: "translateX(-50%) translateY(0)",
+        },
+
+        "75%": {
+            filter: "brightness(1.5) drop-shadow(0 0 10px #fffee8) drop-shadow(0 0 5px #fffee8)",
+            transform: "translateX(-50%) translateY(-24px)",
+        },
+
+        "100%": {
+            filter: "brightness(1) drop-shadow(0 0 5px #fffee8) drop-shadow(0 0 1px #fffee8)",
+            transform: "translateX(-50%) unset",
+        },
+    },
+    applyingEffect: {
+        animationDuration: "1s",
+        animationName: "$applyEffect",
+        transition: "1s filter linear, 1s -webkit-filter linear",
+        animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
+    },
 });
 
 const { loadState } = playerStateSlice.actions;
@@ -143,6 +167,7 @@ const ClassSelection = ({
     const dispatch = useAppDispatch();
     const characterRef: any = useRef();
     const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef());
+    const projectileRef: any = useRef();
 
     const handleSelectClass = () => {
         if (selectedClass) {
@@ -153,8 +178,17 @@ const ClassSelection = ({
     useEffect(() => {
         if (selectedClass === PLAYER_CLASSES.WARRIOR) {
             const animation = playStompAnimation({ object: characterRef.current, playbackTime: 500 });
-            animation.onfinish = () =>
+            animation.onfinish = () => {
                 playExplodeAnimation({ object: ghostRefs.map((ref) => ref.current), playbackTime: 250, maxScale: 3, translateX: -50 });
+            };
+            return;
+        }
+
+        if (selectedClass === PLAYER_CLASSES.MAGICIAN) {
+            const animations = playTossUpAnimation({
+                from: characterRef.current,
+                object: projectileRef.current,
+            });
         }
     }, [selectedClass]);
 
@@ -186,6 +220,10 @@ const ClassSelection = ({
         if (selectedClass === PLAYER_CLASSES.WARRIOR) {
             return <Weapon image={OldGladiusImage} wielderRef={characterRef} />;
         }
+
+        if (selectedClass === PLAYER_CLASSES.MAGICIAN) {
+            return <Weapon image={OldWoodenStaffImage} wielderRef={characterRef} />;
+        }
     };
 
     return (
@@ -203,8 +241,20 @@ const ClassSelection = ({
                                 ref={ghostRefs[i]}
                             />
                         ))}
-                        <img src={portraits[selectedClass] || AnonymushroomImage} className={classes.portrait} />
-                        <div className={classNames(classes.weaponContainer)}>{getWeapon()}</div>
+                        <img
+                            src={portraits[selectedClass] || AnonymushroomImage}
+                            className={classNames(classes.portrait, {
+                                [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                            })}
+                        />
+                        <div
+                            className={classNames(classes.weaponContainer, {
+                                [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                            })}
+                        >
+                            {getWeapon()}
+                        </div>
+                        <img src={StarImage} ref={projectileRef} className={classes.ghost} />
                     </div>
                     <p>After some time spent fumbling around, you realize that you are, in fact, a mushroom.</p>
                     <p>You don't remember much, but you do remember you were a...</p>

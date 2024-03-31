@@ -216,11 +216,11 @@ export const playExplodeAnimation = ({
 export const playTossUpAnimation = ({
     from,
     object,
-    playbackTime,
+    playbackTime = 750,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
-    playbackTime: number;
+    playbackTime?: number;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
