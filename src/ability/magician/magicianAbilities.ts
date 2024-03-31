@@ -2538,7 +2538,7 @@ export const ifrit: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 10,
+        maxHP: 7,
         abilities: [
             {
                 name: "Ember",
@@ -2552,7 +2552,7 @@ export const ifrit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                duration: 2,
+                                duration: 1,
                             },
                         ],
                     },
@@ -2595,7 +2595,7 @@ export const ifrit: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 2,
+                maxHP: 1,
                 abilities: [
                     {
                         actions: [
@@ -2622,7 +2622,7 @@ export const elquines: Ability = {
         imageOptions: {
             animation: "float",
         },
-        maxHP: 10,
+        maxHP: 7,
         abilities: [
             {
                 name: "Ice Bolt",
@@ -2633,7 +2633,7 @@ export const elquines: Ability = {
                         type: ACTION_TYPES.RANGE_ATTACK,
                         icon: NimbleJewelImage,
                         damage: 3,
-                        effects: [chill],
+                        effects: [{ ...chill, duration: 1 }],
                         playbackTime: 500,
                     },
                 ],
@@ -2670,7 +2670,7 @@ export const elquines: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 2,
+                maxHP: 1,
                 abilities: [
                     {
                         actions: [
