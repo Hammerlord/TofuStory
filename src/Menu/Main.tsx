@@ -133,6 +133,9 @@ enum ACTIVITIES {
     TRADING_POST = "trading-post",
 }
 
+// Used to prevent re-renders of the element when going from class selection to the main UI.
+const TRANSITION_OVERLAY_KEY = "transition-overlay";
+
 const Main = () => {
     const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
     const [scene, setScene]: [EventScene | null, Function] = useState(null);
@@ -401,7 +404,18 @@ const Main = () => {
     };
 
     if (!player || openClassSelection) {
-        return <ClassSelection onSelectClass={handleSelectClass} onClose={handleCloseClassSelection} />;
+        return (
+            <>
+                <ClassSelection onSelectClass={handleSelectClass} onClose={handleCloseClassSelection} onTransition={handleTransition} />
+                <div
+                    key={TRANSITION_OVERLAY_KEY}
+                    className={classNames(classes.transitionOverlay, {
+                        show: showTransitionOverlay,
+                        hide: showTransitionOverlay === false,
+                    })}
+                />
+            </>
+        );
     }
 
     const handleBuyItem = ({
@@ -679,6 +693,7 @@ const Main = () => {
                 <Sound playlist={sceneRegion || currentLocation?.region} playTrack={battle?.backgroundMusic} isGameOver={isGameOver} />
             </div>
             <div
+                key={TRANSITION_OVERLAY_KEY}
                 className={classNames(classes.transitionOverlay, {
                     show: showTransitionOverlay,
                     hide: showTransitionOverlay === false,

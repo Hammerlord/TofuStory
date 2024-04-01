@@ -156,9 +156,11 @@ const { loadState } = playerStateSlice.actions;
 const ClassSelection = ({
     onSelectClass,
     onClose,
+    onTransition,
 }: {
     onSelectClass: (playerClass: PLAYER_CLASSES, starters: Ability[]) => void;
     onClose: (reloadedRun: boolean) => void;
+    onTransition: (callback: Function) => void;
 }) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const { character } = useAppSelector((state) => state);
@@ -170,9 +172,11 @@ const ClassSelection = ({
     const projectileRef: any = useRef();
 
     const handleSelectClass = () => {
-        if (selectedClass) {
-            onSelectClass(selectedClass, JOB_CARD_MAP[selectedClass].starters);
-        }
+        onTransition(() => {
+            if (selectedClass) {
+                onSelectClass(selectedClass, JOB_CARD_MAP[selectedClass].starters);
+            }
+        });
     };
 
     useEffect(() => {
@@ -201,7 +205,7 @@ const ClassSelection = ({
                     <div className={classes.bg} />
                     <h2>You gained abilities</h2>
                     <div className={classes.abilities}>
-                        {[...JOB_CARD_MAP[selectedClass].starters]
+                        {[...(JOB_CARD_MAP[selectedClass]?.starters || [])]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
                                 <div className={classes.abilityContainer} key={[ability.name, i].join("-")}>
@@ -209,7 +213,7 @@ const ClassSelection = ({
                                 </div>
                             ))}
                     </div>
-                    <Button color="secondary" onClick={() => onClose(false)}>
+                    <Button color="secondary" onClick={() => onTransition(() => onClose(false))}>
                         Continue
                     </Button>
                 </div>
@@ -304,8 +308,10 @@ const ClassSelection = ({
                                 <Button
                                     color="secondary"
                                     onClick={() => {
-                                        dispatch(loadState(previousRun));
-                                        onClose(true);
+                                        onTransition(() => {
+                                            dispatch(loadState(previousRun));
+                                            onClose(true);
+                                        });
                                     }}
                                 >
                                     Continue Run
