@@ -76,21 +76,21 @@ const getCardSelection = ({
     }
 
     if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
-        return selectCards?.cards?.map((card) => ({ ...card, instanceId: uuid.v4() })) || [];
+        return selectCards?.cards?.map(createNewOption) || [];
     }
 
     if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-        return applyFilters(hand);
+        return applyFilters(hand).map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
     }
 
     if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
-        return applyFilters(hand);
+        return applyFilters(hand).map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
     }
 
     if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
         return applyFilters(deck.concat(discard))
             .slice(0, DEFAULT_NUM_OPTIONS)
-            .map((card) => ({ ...card, effects }));
+            .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
     }
 
     return [];
