@@ -3,8 +3,8 @@ import { AbilityEffect, ActionOptionalProperties } from "./../ability/types";
  * @file Helpers for various battle functions
  */
 import { Combatant, Player } from "../character/types";
+import { attack, shoot } from "../enemy/abilities";
 import { Item } from "../item/types";
-import { getRandomItem } from "../utils";
 import {
     ACTION_TYPES,
     Ability,
@@ -12,11 +12,11 @@ import {
     Action,
     Bonus,
     CONDITION_TARGETS,
+    CombatAbility,
     CombatEffect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Effect,
-    CombatAbility,
     MULTIPLIER_TYPES,
     Multiplier,
     SCALING_VALUE_TYPES,
@@ -26,9 +26,7 @@ import {
 import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { getUseAbilityIndex } from "./actions/enemyTurn";
-import { attack, shoot } from "../enemy/abilities";
+import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
 
 export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
     const updatedStatChanges = {} as any;
@@ -666,16 +664,6 @@ export const getValidTargetIndices = (
             if (notStealth && notExcluded) {
                 indices.push(i);
             }
-        }
-    });
-    return indices;
-};
-
-export const getEmptyIndices = (characters: (Combatant | null)[]): number[] => {
-    const indices = [];
-    characters.forEach((character: Combatant | null, i: number) => {
-        if (!character || character.HP <= 0) {
-            indices.push(i);
         }
     });
     return indices;
