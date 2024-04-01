@@ -267,7 +267,7 @@ const EffectGroupIcon = ({
                     {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.up} />}
                     {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.down} />}
                     {name}
-                    {effects.length > 1 ? ` x${effects.length}` : ""}{" "}
+                    {stackCount > 1 ? ` x${stackCount}` : ""}{" "}
                     {
                         <span className={classes.silenced}>
                             {silenced && "(Silenced)"}
@@ -284,12 +284,7 @@ const EffectGroupIcon = ({
                     )}
                     {attackDamageReceived !== 0 && (
                         <div>
-                            ◆
-                            <Icon
-                                icon={<CrossedSwordsIcon />}
-                                text={attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`}
-                            />
-                            damage taken from attacks
+                            ◆ {attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`} damage taken from attacks
                         </div>
                     )}
                     {armor > 0 && (

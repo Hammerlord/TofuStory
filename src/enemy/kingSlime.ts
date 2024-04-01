@@ -78,10 +78,7 @@ export const kingSlimeEnemy: Minion = {
     armor: 30,
     effects: [
         hardy,
-        // TODO use stacks
-        pristineDefense,
-        pristineDefense,
-        pristineDefense,
+        { ...pristineDefense, stacks: 3 },
         {
             name: "Squishy Inside",
             description: "When this character receives direct damage, it will burst into three vulnerable slimes.",
