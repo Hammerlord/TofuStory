@@ -168,12 +168,21 @@ export const isValidTarget = ({
                 }
             };
             const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
-            if (area === 0) {
-                // No sense in letting a single target ability whiff on an empty slot, for now
-                return Boolean(playerSide[index]) && playerSide[index].HP > 0 && conditionsPassed;
+            if (!conditionsPassed) {
+                return false;
             }
 
-            return conditionsPassed;
+            // No whiffing on empty slots
+            if (area === 0) {
+                return playerSide[index]?.HP > 0;
+            }
+
+            for (let i = index - area; i <= index + area; ++i) {
+                if (playerSide[i]?.HP > 0) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         if (target === TARGET_TYPES.MOVE) {
@@ -192,10 +201,20 @@ export const isValidTarget = ({
             }
         };
         const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
-        if (area === 0) {
-            return targetedEnemy?.HP > 0 && conditionsPassed;
+        if (!conditionsPassed) {
+            return false;
         }
-        return true;
+
+        // No whiffing on empty slots
+        if (area === 0) {
+            return targetedEnemy?.HP > 0;
+        }
+
+        for (let i = index - area; i <= index + area; ++i) {
+            if (enemySide[i]?.HP > 0) {
+                return true;
+            }
+        }
     }
 
     return false;
