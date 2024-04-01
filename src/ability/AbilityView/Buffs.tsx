@@ -140,6 +140,7 @@ const Buffs = ({ ability, player }) => {
                     attackAreaIncrease,
                     turnsTriggerFrequency,
                     drawCardsPerTurn,
+                    stacks,
                     ...other
                 } = effect;
                 const effectComponents = [];
@@ -147,7 +148,7 @@ const Buffs = ({ ability, player }) => {
                 if (thorns > 0) {
                     effectComponents.push(
                         <span>
-                            Gain <Icon icon={<CactusIcon />} size={"sm"} />{" "}
+                            Gain <Icon icon={<CactusIcon />} size={"sm"} /> {stacks > 1 ? `x${stacks}` : undefined}
                         </span>
                     );
                 }

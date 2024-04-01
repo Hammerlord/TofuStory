@@ -1404,8 +1404,8 @@ export const poundOfNails: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [thorns, thorns, thorns],
+            target: TARGET_TYPES.SELF,
+            effects: [{ ...thorns, stacks: 3 }],
             type: ACTION_TYPES.EFFECT,
         },
     ],
