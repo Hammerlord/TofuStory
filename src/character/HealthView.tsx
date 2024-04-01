@@ -37,17 +37,18 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         );
     });
     const damageModifierTotal = damageModifiers.reduce((acc, effect) => {
-        return (acc += effect.attackDamageReceived);
+        return (acc += effect.attackDamageReceived * (effect.stacks || 1));
     }, 0);
     const modifierMap = damageModifiers.reduce((acc, effect) => {
-        if (!acc[effect.name]) {
-            acc[effect.name] = {
+        const { name, attackDamageReceived, stacks = 1 } = effect;
+        if (!acc[name]) {
+            acc[name] = {
                 count: 0,
                 effect,
             };
         }
 
-        acc[effect.name].count += effect.attackDamageReceived;
+        acc[name].count += attackDamageReceived * stacks;
 
         return acc;
     }, {});
