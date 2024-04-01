@@ -475,7 +475,7 @@ export const calculateAttackPowerDamage = ({ damage, totalAttackPower }: { damag
     if (!totalAttackPower) {
         return damage;
     }
-    return damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower;
+    return Math.ceil(damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower);
 };
 
 export const calculateDamage = ({
@@ -591,7 +591,7 @@ export const calculateDamage = ({
     const damage = baseDamage * multiplier + totalSkillBonus;
     const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
     const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
-    let total = Math.ceil(withAttackPower);
+    let total = withAttackPower;
     // Between minimum and maximum damage, minimum damage wins. There aren't that many effects that use this atm, just Brick and Steel Ore
     if (typeof maximumDamage === "number") {
         total = Math.min(total, maximumDamage);
