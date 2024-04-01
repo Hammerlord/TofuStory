@@ -117,7 +117,7 @@ const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
                                 <hr />
                                 <div>Modifiers:</div>
                                 <span>
-                                    <Icon icon={PristineShieldIcon} size="sm" /> - Prevents armor decay
+                                    <Icon icon={pristineArmorEffect.icon || PristineShieldIcon} size="sm" /> - Prevents armor decay
                                 </span>
                             </div>
                         )}
