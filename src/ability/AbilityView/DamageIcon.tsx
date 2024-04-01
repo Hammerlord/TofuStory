@@ -8,10 +8,10 @@ import { Ability, Action, TARGET_TYPES } from "../types";
 
 export const getDamageStatistics = ({
     ability,
-    playerInfo,
-    deck,
-    hand,
-    discard,
+    actorInfo,
+    deck = [],
+    hand = [],
+    discard = [],
 }): {
     baseDamage: number;
     secondaryDamage: number;
@@ -39,7 +39,7 @@ export const getDamageStatistics = ({
     const withBonus = damageActions.map((action) => {
         return calculateBonus({
             action,
-            actor: playerInfo,
+            actor: actorInfo,
             allTargets: [],
             isTargetSelected: false,
             actionParent: ability,
@@ -51,7 +51,7 @@ export const getDamageStatistics = ({
 
     const withAttackPower = withBonus.map((action: Action) => {
         const multiplier = getMultiplier({
-            actor: playerInfo,
+            actor: actorInfo,
             multiplier: action.multiplier,
             deck,
             hand,
@@ -59,18 +59,18 @@ export const getDamageStatistics = ({
         });
 
         const damageProps = {
-            actor: playerInfo,
+            actor: actorInfo,
             action,
             actionParent: ability,
             multiplier,
             source: { source: ability, triggerHistory: [], type: TRIGGER_SOURCE_TYPES.ABILITY },
         };
         let secondaryDamage = action.secondaryDamage || 0;
-        if (playerInfo?.combatant && secondaryDamage) {
+        if (actorInfo?.combatant && secondaryDamage) {
             secondaryDamage = calculateDamage({ ...damageProps, targetIndex: 1, selectedIndex: 2 });
         }
         return {
-            damage: playerInfo?.combatant ? calculateDamage(damageProps) : action.damage || 0,
+            damage: actorInfo?.combatant ? calculateDamage(damageProps) : action.damage || 0,
             secondaryDamage,
         };
     });
@@ -121,7 +121,7 @@ const DamageIcon = ({
 }) => {
     const { baseDamage, hasMultiplier, isAdditive, hasBonus } = getDamageStatistics({
         ability,
-        playerInfo,
+        actorInfo: playerInfo,
         deck,
         hand,
         discard,

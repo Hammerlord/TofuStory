@@ -295,7 +295,7 @@ const AbilityView = forwardRef(
 
         const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
             ability,
-            playerInfo,
+            actorInfo: playerInfo,
             deck,
             hand,
             discard,

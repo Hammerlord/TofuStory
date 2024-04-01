@@ -69,7 +69,7 @@ const Area = ({
 
     const { baseDamage, secondaryDamage, hasBonus } = getDamageStatistics({
         ability,
-        playerInfo,
+        actorInfo: playerInfo,
         deck,
         hand,
         discard,
