@@ -1972,11 +1972,23 @@ const performAction = ({
     };
 };
 
-export const pickHostileIndex = ({ hostile, actorData }: { hostile: (Combatant | null)[]; actorData: CombatantInfo }) => {
+export const pickHostileIndex = ({
+    hostile,
+    actorData,
+    initialIndex,
+    area,
+}: {
+    hostile: (Combatant | null)[];
+    actorData: CombatantInfo;
+    initialIndex?: number;
+    area?: number;
+}) => {
     const targetIndices = getValidTargetIndices(hostile, {
         // TODO area attacks are still applicable to stealthed units
         excludeStealth: !hasTruesight(actorData.combatant),
         onlyTaunt: true,
+    }).filter((i) => {
+        return Math.abs(i - initialIndex || 0) <= (area || Infinity);
     });
 
     const actorIndex = actorData.index;
@@ -2051,7 +2063,7 @@ const autoSelectActionTarget = ({
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
         return {
-            index: pickHostileIndex({ hostile, actorData }),
+            index: pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area }),
             side: hostileSide,
         };
     }
