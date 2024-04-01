@@ -46,7 +46,8 @@ import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constan
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
+import { calculateDamage, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
+import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -300,20 +301,9 @@ const BattlefieldContainer = () => {
         if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable) {
             return false;
         }
-        const damageFromEffects = getEnabledEffects({ combatantInfo: findCombatantData(() => state, ally.id) }).reduce(
-            (acc: number, { attackPower = 0 }) => acc + attackPower,
-            0
-        );
 
-        const allyAttackDamage = ally.abilities.reduce((acc, ability) => {
-            ability?.actions?.forEach((action) => {
-                acc += action.damage || 0;
-            });
-
-            return acc;
-        }, 0);
-
-        const totalDamage = allyAttackDamage + damageFromEffects;
+        const totalDamage =
+            getDamageStatistics({ ability: ally.abilities[0], actorInfo: findCombatantData(() => state, ally.id) })?.baseDamage || 0;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
 
