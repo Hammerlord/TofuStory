@@ -228,7 +228,7 @@ const dyleDredgeSummons = [
 
 export const dyle: Minion = {
     name: "Dyle",
-    maxHP: 200,
+    maxHP: 250,
     image: DyleIdleImage,
     mesos: 50,
     isBoss: true,
@@ -270,6 +270,7 @@ export const dyle: Minion = {
         {
             name: "Submerge",
             resourceCost: 3,
+            description: "Dispels debuffs. Gains 100 Armor.",
             image: WaterBombImage,
             conditions: [
                 {
@@ -283,6 +284,7 @@ export const dyle: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     armor: 100,
+                    removeDebuffs: true,
                     effects: [
                         {
                             ...pristineDefense,
