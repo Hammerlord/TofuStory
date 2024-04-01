@@ -7,6 +7,7 @@ import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 
 export const rageStone: Item = {
     name: "Rage Stone",
@@ -111,6 +112,7 @@ const chargingStoneEffect: Effect = {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                             comparator: "eq",
                             name: chargedAbilityNames,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         },
                     ],
                     removeEffect: true,
@@ -161,6 +163,7 @@ export const greaterChargingStone: Item = {
                                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                     comparator: "eq",
                                     name: chargedAbilityNames,
+                                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                                 },
                             ],
                             removeEffect: true,

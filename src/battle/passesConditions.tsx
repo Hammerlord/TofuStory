@@ -152,6 +152,14 @@ export const passesConditions = ({
 
                 return true;
             }
+
+            if (!type) {
+                console.warn(
+                    // @ts-ignore
+                    `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${source?.source?.name}.`
+                );
+                return false;
+            }
         }
 
         // TRIGGER_SOURCE already handled above
