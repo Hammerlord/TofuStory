@@ -1822,6 +1822,12 @@ const performAction = ({
             battle: getState().battle,
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
+
+        // Don't try to target things that are all gone/dead.
+        if (targetIds.length === 0) {
+            return;
+        }
+
         const source = { ...parentSource, actorId, targetId: combatants[selectedIndex]?.id || targetIds[0], allTargetIds: targetIds };
 
         const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
