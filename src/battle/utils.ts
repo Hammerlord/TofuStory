@@ -542,13 +542,13 @@ export const calculateDamage = ({
 
     if (isAttack) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(
-            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage }) => {
+            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage, stacks = 1 }) => {
                 if (excludeEffectOwner) {
                     return;
                 }
 
-                totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus });
-                totalAttackPower += attackPower;
+                totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus }) * stacks;
+                totalAttackPower += attackPower * stacks;
                 if (minimumAttackDamage > minimumDamage) {
                     minimumDamage = minimumAttackDamage;
                 }
@@ -569,15 +569,15 @@ export const calculateDamage = ({
 
     const applyAbilityDamageReceived = (damage: number): number => {
         const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).reduce(
-            (acc, { attackDamageReceived = 0, abilityDamageReceived }) => {
-                acc.additionalDamageReceived += isAttack ? attackDamageReceived : 0;
+            (acc, { attackDamageReceived = 0, abilityDamageReceived, stacks = 1 }) => {
+                acc.additionalDamageReceived += isAttack ? attackDamageReceived * stacks : 0;
 
                 abilityDamageReceived?.forEach(({ abilityName, damage = 0, type }: AbilityDamageReceived) => {
                     if (abilityName && abilityName.toLowerCase() === actionParent?.name.toLowerCase()) {
                         if (type === SCALING_VALUE_TYPES.PERCENTAGE) {
-                            acc.multiplier += damage;
+                            acc.multiplier += damage * stacks;
                         } else {
-                            acc.additionalDamageReceived += damage;
+                            acc.additionalDamageReceived += damage * stacks;
                         }
                     }
                 });

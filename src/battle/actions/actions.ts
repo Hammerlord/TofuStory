@@ -201,7 +201,10 @@ const getHitEffects = ({
     }
 
     const results = [];
-    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { lifeOnHit = 0 }) => acc + lifeOnHit, 0);
+    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce(
+        (acc, { lifeOnHit = 0, stacks = 1 }) => acc + lifeOnHit * stacks,
+        0
+    );
 
     if (lifeOnHit) {
         const updated = getUpdatedStats({
@@ -222,7 +225,7 @@ const getHitEffects = ({
 
     const totalThorns = affectedTargets.reduce((acc, id: string) => {
         const combatantData = findCombatantData(getState, id);
-        getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0 }) => (acc += thorns));
+        getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0, stacks = 1 }) => (acc += thorns * stacks));
         return acc;
     }, 0);
 
@@ -241,7 +244,10 @@ const getHitEffects = ({
         results.push(updated);
     }
 
-    const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce((acc, { mesoSteal = 0 }) => acc + mesoSteal, 0);
+    const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce(
+        (acc, { mesoSteal = 0, stacks }) => acc + mesoSteal * stacks,
+        0
+    );
 
     if (totalMesoSteal) {
         const updatedTargets = getUpdatedStats({
