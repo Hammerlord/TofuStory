@@ -615,7 +615,10 @@ export const calculateArmor = ({
     }
 
     const targetArmorReceived =
-        getEnabledEffects({ combatantInfo: target }).reduce((acc: number, { armorReceived = 0 }) => acc + armorReceived, 0) || 0;
+        getEnabledEffects({ combatantInfo: target }).reduce(
+            (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
+            0
+        ) || 0;
     const armor = targetArmorReceived + action.armor * multiplier;
     return Math.max(0, armor);
 };
@@ -625,7 +628,10 @@ export const calculateHealing = ({ target, action }: { target?: CombatantInfo; a
         return 0;
     }
     const healingReceived =
-        getEnabledEffects({ combatantInfo: target }).reduce((acc: number, { healingReceived = 0 }) => acc + healingReceived, 0) || 0;
+        getEnabledEffects({ combatantInfo: target }).reduce(
+            (acc: number, { healingReceived = 0, stacks = 1 }) => acc + healingReceived * stacks,
+            0
+        ) || 0;
     const healing = healingReceived + action.healing;
     return Math.max(0, healing);
 };
