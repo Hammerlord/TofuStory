@@ -272,7 +272,7 @@ export const playerStateSlice = createSlice({
         selectMapNode: (state, action) => {
             const node = action.payload;
 
-            if (node.type === NODE_TYPES.RESTING_ZONE) {
+            if (node.type === NODE_TYPES.RESTING_ZONE || state.currentMapLocation?.type === NODE_TYPES.TOWN) {
                 saveGame({
                     ...state,
                 });
