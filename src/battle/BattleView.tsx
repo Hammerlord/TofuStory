@@ -671,6 +671,16 @@ const BattlefieldContainer = () => {
     };
 
     useEffect(() => {
+        if (!events.length) {
+            return;
+        }
+
+        setTimeout(() => {
+            dispatch(popEventQueue());
+        }, events[0].playbackTime);
+    }, [events[0]?.id]);
+
+    useEffect(() => {
         if ([BATTLE_STATES.VICTORY].includes(battleState)) {
             return;
         }
@@ -679,14 +689,6 @@ const BattlefieldContainer = () => {
             handleBattlePhase();
             return;
         }
-
-        const timeout = setTimeout(() => {
-            dispatch(popEventQueue());
-        }, events[0].playbackTime);
-
-        return () => {
-            clearTimeout(timeout);
-        };
     }, [events, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
