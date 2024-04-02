@@ -305,6 +305,15 @@ export const warding: Effect = {
     icon: GemHeartImage,
     description: "Periodically gaining a shield that wards off a single attack.",
     turnsTriggerFrequency: 2,
+    onWaveStart: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [
+            {
+                ...ward,
+                duration: 1,
+            },
+        ],
+    },
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [

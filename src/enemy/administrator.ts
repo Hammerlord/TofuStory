@@ -149,6 +149,7 @@ export const administrator: Minion = {
                         {
                             target: TARGET_TYPES.SELF,
                             type: ACTION_TYPES.NONE,
+                            playbackTime: 1250,
                         },
                     ],
                 },
