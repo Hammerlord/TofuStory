@@ -60,7 +60,7 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
     };
 };
 
-const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
+const generateEliteSquad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.squad);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
@@ -90,7 +90,7 @@ const generateEliteSquad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
     return [enemy, alternate, enemy, alternate, enemy];
 };
 
-const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
+const generateEliteTriad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, avenger, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
@@ -126,7 +126,7 @@ const generateEliteTriad = (eliteMap: EliteMap, numAffixes: number = 1): (Minion
     ]);
 };
 
-const generateEliteDuo = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
+const generateEliteDuo = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
@@ -158,7 +158,7 @@ const generateEliteDuo = (eliteMap: EliteMap, numAffixes: number = 1): (Minion |
     ]);
 };
 
-const generateElite = (eliteMap: EliteMap, numAffixes: number = 1): (Minion | null)[] => {
+const generateElite = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
     const minion = getRandomItem(eliteMap.minions);
     const swarming: Effect = {
         type: EFFECT_TYPES.NONE,
@@ -211,10 +211,11 @@ export const generateElites = (route: Route): { enemies: Minion[] }[] => {
         return;
     }
 
-    const getSquad = () => generateEliteSquad(route.elites, route.eliteOptions?.numAffixes);
-    const getTriad = () => generateEliteTriad(route.elites, route.eliteOptions?.numAffixes);
-    const getDuo = () => generateEliteDuo(route.elites, route.eliteOptions?.numAffixes);
-    const getSingle = () => generateElite(route.elites, route.eliteOptions?.numAffixes);
+    const eliteProps = { eliteMap: route.elites, numAffixes: route.eliteOptions?.numAffixes };
+    const getSquad = () => generateEliteSquad(eliteProps);
+    const getTriad = () => generateEliteTriad(eliteProps);
+    const getDuo = () => generateEliteDuo(eliteProps);
+    const getSingle = () => generateElite(eliteProps);
 
     const eliteGenerators = [getSquad, getTriad, getDuo, getSingle];
     if (route.elites.special?.length > 0) {

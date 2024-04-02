@@ -41,8 +41,6 @@ import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 import { TOWN_MAP } from "../Map/townMap";
-import { getGameFile, saveGame } from "./gameFiles";
-import Button from "../view/Button";
 import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
 import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
