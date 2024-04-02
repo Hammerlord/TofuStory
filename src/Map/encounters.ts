@@ -12,9 +12,9 @@ import {
     raging,
     warding,
     stoneSkin,
-    thorns,
+    vengeful,
 } from "./../ability/Effects";
-import { attack, tantrum } from "./../enemy/abilities";
+import { attack, tantrum, shoot } from "./../enemy/abilities";
 import { getRandomItem, shuffle } from "./../utils";
 import { EliteMap, Route } from "./types";
 
@@ -22,8 +22,12 @@ const findAttackDamage = (minion: Minion): number => {
     let attackDamage = 0;
     let backupAttackDamage = 0;
     for (const ability of minion?.abilities || []) {
+        if (ability?.resourceCost) {
+            // Special abilities are not counted
+            continue;
+        }
         for (const action of ability.actions) {
-            if (ability.name === attack.name) {
+            if ([attack.name, shoot.name].includes(ability.name)) {
                 attackDamage = action.damage;
                 break;
             }
@@ -36,7 +40,7 @@ const findAttackDamage = (minion: Minion): number => {
 };
 
 const generateTantrumAttack = (baseEnemy: Minion): Ability => {
-    const attackDamage = findAttackDamage(baseEnemy);
+    const attackDamage = findAttackDamage(baseEnemy) || 1;
 
     return {
         ...tantrum,
@@ -57,6 +61,23 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
                 damage: Math.ceil(attackDamage * 1.2),
             },
         ],
+    };
+};
+
+// To help with early game scaling, Avenger's damage cannot exceed the character's base attack damage.
+const getAdjustedAvenger = (baseEnemy: Minion): Effect => {
+    const attackDamage = findAttackDamage(baseEnemy) || 1;
+    return {
+        ...avenger,
+        onFriendlyDeath: {
+            ...avenger.onFriendlyDeath,
+            effects: [
+                {
+                    ...vengeful,
+                    attackPower: Math.min(attackDamage, vengeful.attackPower),
+                },
+            ],
+        },
     };
 };
 
@@ -91,8 +112,12 @@ const generateEliteSquad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; 
 };
 
 const generateEliteTriad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
-    const affixes = shuffle([eliteThorns, raging, avenger, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = getRandomItem(eliteMap.trio);
+    const affixes = shuffle([eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, explosive, lifeLink, sneaky, stoneSkin]).slice(
+        0,
+        numAffixes
+    );
+
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;

@@ -249,7 +249,7 @@ export const raging: Effect = {
     },
 };
 
-const vengeful: Effect = {
+export const vengeful: Effect = {
     name: "Vengeful",
     canBeSilenced: true,
     duration: 4,
