@@ -27,6 +27,7 @@ import {
     wildBoar,
     wildKargo,
 } from "../../enemy/enemy";
+import { jrBoogie } from "../../enemy/jrBoogie";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 import { REGIONS } from "../regions";
@@ -65,6 +66,7 @@ const routePerionSleepywood: Route = {
             [null, miniKargo, wildKargo, miniKargo, null],
             [null, egg, egg, egg, null],
             [null, tauromacis, null, taurospear, null],
+            [null, jrBoogie, jrBoogie, jrBoogie, null],
         ],
     },
     nodes: [
@@ -111,6 +113,7 @@ export const routeKerningToPerion: Route = {
                 { ...rockyMask, isElite: true, armor: 150, mesos: 20 },
                 null,
             ],
+            [null, jrBoogie, null, jrBoogie, null],
         ],
     },
     enemies: [
@@ -276,6 +279,7 @@ export const routeElliniaSleepywood: Route = {
             [null, mossyMushroom, null, mossySnail, null],
             [null, malady, null, malady, null],
             [null, taurospear, null, tauromacis, null],
+            [null, darkStoneGolem, null, darkStoneGolem, null],
         ],
     },
     enemies: [

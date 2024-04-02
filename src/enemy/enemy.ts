@@ -13,6 +13,7 @@ import {
     CopperDrakeImage,
     CopperScreechImage,
     CurseEyeImage,
+    CurseImage,
     DarkSightImage,
     DarkStoneGolemImage,
     DarkStoneGolemRubbleImage,
@@ -90,6 +91,7 @@ import {
     PristineRedShieldIcon,
     RedShieldIcon,
     ShieldIcon,
+    SpeechBubbleIcon,
 } from "../images/icons";
 import { redPotion } from "../item/items";
 import {
