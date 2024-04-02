@@ -104,6 +104,7 @@ import { preventArmorDecayPlayer } from "./../Effects";
 import { MULTIPLIER_TYPES } from "./../types";
 
 import { attack } from "../../enemy/abilities";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 export const bash: Ability = {
     name: "Bash",
@@ -1754,6 +1755,7 @@ export const soulBlade: Ability = {
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             isOffense: true,
                             comparator: "eq",
                         },
@@ -2342,6 +2344,7 @@ const beatdownEffect: Effect = {
         conditions: [
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
                 hasEffectClass: EFFECT_CLASSES.DEBUFF,
                 comparator: "eq",
             },

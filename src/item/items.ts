@@ -1853,6 +1853,7 @@ export const bloodMask: Item = {
                             conditions: [
                                 {
                                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                    sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
                                     hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.SILENCE],
                                     comparator: "includes",
                                 },

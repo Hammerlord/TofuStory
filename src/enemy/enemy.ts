@@ -1,3 +1,4 @@
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AxeStumpImage,
     BananaPeelImage,
@@ -2631,6 +2632,7 @@ export const bubbling: Minion = {
                                 conditions: [
                                     {
                                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                                         isOffense: true,
                                         comparator: "eq",
                                     },

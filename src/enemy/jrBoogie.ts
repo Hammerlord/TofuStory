@@ -1,3 +1,4 @@
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { CurseImage, DarkSightImage, JrBoogieImage } from "../images";
 import { FireIcon, SpeechBubbleIcon } from "../images/icons";
 import { burn, stealth } from "./../ability/Effects";
@@ -40,6 +41,7 @@ export const curseCard: Ability = {
         conditions: [
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                 isOffense: false,
                 comparator: "eq",
             },
