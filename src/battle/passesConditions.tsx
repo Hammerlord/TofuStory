@@ -91,8 +91,8 @@ export const passesConditions = ({
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            const { type, source: sourcePayload = {}, isProc } = source || {};
-            if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
+            const { source: sourcePayload = {}, isProc } = source || {};
+            if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
                 const { name: sourceName, resourceCost: sourceResourceCost }: Ability = sourcePayload as Ability;
 
                 if (name) {
@@ -121,7 +121,7 @@ export const passesConditions = ({
                 return true;
             }
 
-            if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
+            if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
                 const { type: effectType, class: effectClass }: Effect = sourcePayload as Effect;
 
                 if (hasEffectType !== undefined) {
@@ -153,7 +153,7 @@ export const passesConditions = ({
                 return true;
             }
 
-            if (!type) {
+            if (!sourceType) {
                 console.warn(
                     // @ts-ignore
                     `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${source?.source?.name}.`
