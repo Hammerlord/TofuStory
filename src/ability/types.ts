@@ -129,6 +129,7 @@ export enum EFFECT_EVENT_KEYS {
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
     onHostileAbility = "onHostileAbility",
+    onPlayerAbility = "onPlayerAbility",
     onHostileSupportAbility = "onHostileSupportAbility",
     onHostileSummon = "onHostileSummon", // When a minion hostile to the effect owner is summoned
     onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned

@@ -2492,6 +2492,16 @@ const onUseAbility =
                     })
                 );
 
+                if (actor.isPlayer) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onPlayerAbility,
+                            source: source,
+                        })
+                    );
+                }
+
                 if (!isOffensiveAbility(ability)) {
                     dispatch(
                         checkEventTrigger({
@@ -2513,6 +2523,16 @@ const onUseAbility =
                         source: source,
                     })
                 );
+
+                if (actor.isPlayer) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onPlayerAbility,
+                            source: source,
+                        })
+                    );
+                }
 
                 if (!isOffensiveAbility(ability)) {
                     dispatch(

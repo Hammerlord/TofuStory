@@ -160,6 +160,34 @@ export const balrog: Minion = {
     effects: [
         hardy,
         {
+            name: "Brutal Claw",
+            icon: BrutalClawImage,
+            description: "Every 6 cards played, Balrog will attack for 6 damage and discard a card from the player's hand.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onPlayerAbility: {
+                disableTriggerFromProcs: true,
+                eventTriggerFrequency: 6,
+                ability: {
+                    name: "Brutal Claw",
+                    image: BrutalClawImage,
+                    actions: [
+                        {
+                            damage: 6,
+                            type: ACTION_TYPES.ATTACK,
+                            target: TARGET_TYPES.PLAYER,
+                            destroyArmor: 1,
+                            moveCards: {
+                                from: "hand",
+                                to: "discard",
+                                amount: 1,
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+        {
             name: "Summon Flames",
             icon: FlameImage,
             type: EFFECT_TYPES.NONE,
