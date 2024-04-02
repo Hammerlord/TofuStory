@@ -6,6 +6,7 @@ import {
     BlueMushroomJumpImage,
     BlueMushroomJumpRightImage,
     BlueSnailImage,
+    BlueSnailShellImage,
     BombImage,
     BubblingImage,
     CaseyImage,
@@ -136,7 +137,29 @@ export const blueSnail: Minion = {
     name: "Blue Snail",
     maxHP: 12,
     image: BlueSnailImage,
-    abilities: [attack, loaf, attack],
+    abilities: [
+        attack,
+        loaf,
+        {
+            name: "Tackle",
+            image: BlueSnailShellImage,
+            description: "Deal damage and gain 3 Armor.",
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                    animation: ANIMATION_TYPES.YOYO,
+                    animationOptions: {
+                        ricochet: true,
+                    },
+                    secondaryAction: {
+                        armor: 3,
+                    },
+                },
+            ],
+        },
+    ],
     mesos: 3,
 };
 
