@@ -1,7 +1,7 @@
 import { CurseImage, DarkSightImage, JrBoogieImage } from "../images";
 import { FireIcon, SpeechBubbleIcon } from "../images/icons";
 import { burn, stealth } from "./../ability/Effects";
-import { ACTION_TYPES, Ability, CONDITION_TARGETS, Minion, TARGET_TYPES } from "./../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Ability, CONDITION_TARGETS, Minion, TARGET_TYPES } from "./../ability/types";
 
 export const sealCard: Ability = {
     name: "Seal",
@@ -63,7 +63,12 @@ export const jrBoogie: Minion = {
             image: SpeechBubbleIcon,
             actions: [
                 {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: CurseImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     addCardsToDeck: [sealCard],
+                    damage: 3,
                 },
             ],
         },
@@ -120,7 +125,12 @@ export const jrBoogie: Minion = {
             image: CurseImage,
             actions: [
                 {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: CurseImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     addCardsToDeck: [curseCard],
+                    damage: 3,
                 },
             ],
         },
