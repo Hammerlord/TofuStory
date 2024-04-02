@@ -506,17 +506,20 @@ export const playFadeInAnimation = ({
     delay?: number;
     fill?: "forwards";
 }) => {
-    const animationFrames = [
+    const animationFrames: any[] = [
         {
             opacity: 0,
             easing: "ease-out",
-            transform: shiftUp ? "translateY(50px)" : undefined,
         },
         {
             opacity: 1,
-            transform: shiftUp ? "translateY(0px)" : undefined,
         },
     ];
+
+    if (shiftUp) {
+        animationFrames[0].transform = "translateY(50px)";
+        animationFrames[1].transform = "translateY(0px)";
+    }
 
     return object.animate(animationFrames, {
         duration: playbackTime,
