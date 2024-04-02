@@ -7,6 +7,7 @@ export const sealCard: Ability = {
     name: "Seal",
     image: SpeechBubbleIcon,
     description: "Adjacent cards are unplayable.",
+    depletedOnUse: true,
     resourceCost: 1,
     aura: {
         area: 1,
@@ -29,6 +30,7 @@ export const curseCard: Ability = {
     image: CurseImage,
     resourceCost: 2,
     description: "Reduce cost by 1 for every {{{ _support_ }}} {{{ _summon_ }}} card played this turn.",
+    depletedOnUse: true,
     onAbilityUse: {
         abilityEffects: [
             {

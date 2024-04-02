@@ -730,6 +730,7 @@ export const octopus: Minion = {
                             name: "Constrict",
                             image: OctopusLegImage,
                             removeAfterTurn: true,
+                            unplayable: true,
                             resourceCost: 0,
                             actions: [
                                 {
