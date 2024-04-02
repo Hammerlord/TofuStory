@@ -1,4 +1,3 @@
-import { SUMMON_DELAY } from "../battle/constants";
 import { getRandomArbitrary } from "./../utils";
 
 export const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
@@ -491,18 +490,35 @@ export const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) =
     });
 };
 
-export const playFadeInAnimation = ({ object, playbackTime = SUMMON_DELAY }) => {
+/**
+ * Fade in a new entity that has just appeared, such as a combatrant.
+ */
+export const playFadeInAnimation = ({
+    object,
+    playbackTime = 250,
+    shiftUp,
+    delay,
+}: {
+    object;
+    playbackTime?: number;
+    shiftUp?: boolean;
+    delay?: number;
+}) => {
     const animationFrames = [
         {
             opacity: 0,
             easing: "ease-out",
+            transform: shiftUp ? "translateY(50px)" : undefined,
         },
         {
             opacity: 1,
+            transform: shiftUp ? "translateY(0px)" : undefined,
         },
     ];
 
     return object.animate(animationFrames, {
         duration: playbackTime,
+        delay,
+        fill: "forwards",
     });
 };

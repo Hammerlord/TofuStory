@@ -5,7 +5,7 @@ import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import Weapon from "../character/Weapon";
-import { playExplodeAnimation, playStompAnimation, playTossUpAnimation } from "../character/animations";
+import { playExplodeAnimation, playFadeInAnimation, playStompAnimation, playTossUpAnimation } from "../character/animations";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
@@ -22,6 +22,7 @@ import {
 import Button from "../view/Button";
 import { getGameFile } from "./gameFiles";
 import { PLAYER_CLASSES } from "./types";
+import { COMMON_STYLES } from "../constants";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -29,6 +30,7 @@ const portraits = {
 };
 
 const useStyles = createUseStyles({
+    ...COMMON_STYLES,
     root: {
         width: "100%",
         height: "100%",
@@ -97,6 +99,7 @@ const useStyles = createUseStyles({
         marginTop: "32px",
         display: "inline-block",
         verticalAlign: "top",
+        opacity: 0,
     },
     abilities: {
         width: "70rem",
@@ -171,6 +174,8 @@ const ClassSelection = ({
     const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef());
     const projectileRef: any = useRef();
 
+    const cardsRefs = Array.from({ length: 15 }).map(() => useRef());
+
     const handleSelectClass = () => {
         onTransition(() => {
             if (selectedClass) {
@@ -198,6 +203,19 @@ const ClassSelection = ({
         }
     }, [selectedClass]);
 
+    useEffect(() => {
+        if (!player) {
+            return;
+        }
+
+        JOB_CARD_MAP[player.class].starters.map((_, i) => {
+            const ref = cardsRefs[i];
+            if (ref.current) {
+                return playFadeInAnimation({ object: ref.current, delay: (i + 1) * 50, shiftUp: true, playbackTime: 250 });
+            }
+        });
+    }, [player]);
+
     if (player) {
         return (
             <div className={classes.root}>
@@ -208,14 +226,16 @@ const ClassSelection = ({
                         {[...(JOB_CARD_MAP[selectedClass]?.starters || [])]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
-                                <div className={classes.abilityContainer} key={[ability.name, i].join("-")}>
+                                <div className={classes.abilityContainer} key={[ability.name, i].join("-")} ref={cardsRefs[i]}>
                                     <AbilityView ability={ability} disableBattleBonuses={true} />
                                 </div>
                             ))}
                     </div>
-                    <Button color="secondary" onClick={() => onTransition(() => onClose(false))}>
-                        Continue
-                    </Button>
+                    <span className={classes.highlightAnimation}>
+                        <Button color="secondary" onClick={() => onTransition(() => onClose(false))}>
+                            Continue
+                        </Button>
+                    </span>
                 </div>
             </div>
         );

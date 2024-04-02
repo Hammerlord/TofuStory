@@ -27,6 +27,7 @@ import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import { Combatant, Player } from "./types";
 import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
+import { SUMMON_DELAY } from "../battle/constants";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -362,7 +363,7 @@ const CombatantView = forwardRef(
                     }
 
                     if (event?.newCombatants?.some((c) => c.id === combatant?.id)) {
-                        playFadeInAnimation({ object: characterImageRef.current });
+                        playFadeInAnimation({ object: characterImageRef.current, playbackTime: SUMMON_DELAY });
                     }
                 }
             };
