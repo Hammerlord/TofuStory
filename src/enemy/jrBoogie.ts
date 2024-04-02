@@ -61,6 +61,7 @@ export const jrBoogie: Minion = {
         {
             name: "Seal",
             image: SpeechBubbleIcon,
+            description: "Adds a Seal card to the player's deck.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -123,6 +124,7 @@ export const jrBoogie: Minion = {
         {
             name: "Curse",
             image: CurseImage,
+            description: "Adds a Curse card to the player's deck.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
