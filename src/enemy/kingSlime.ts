@@ -76,6 +76,7 @@ export const kingSlimeEnemy: Minion = {
     isBoss: true,
     maxHP: 300,
     armor: 30,
+    mesos: 100,
     effects: [
         hardy,
         { ...pristineDefense, stacks: 3 },

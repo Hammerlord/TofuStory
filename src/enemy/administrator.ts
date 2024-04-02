@@ -20,6 +20,7 @@ export const administrator: Minion = {
     name: "Maple Administrator",
     image: MapleAdminImage,
     maxHP: 999,
+    mesos: 100,
     isBoss: true,
     abilities: [
         {

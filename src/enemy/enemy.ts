@@ -984,7 +984,8 @@ export const mimic: Minion = {
         filter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
     },
     isElite: true,
-    maxHP: 100,
+    maxHP: 150,
+    mesos: 50,
     effects: [thorns],
     abilities: [
         {
@@ -1300,6 +1301,7 @@ const curseEyeDouble: Minion = {
     name: "Mirage",
     image: CurseEyeImage,
     maxHP: 3,
+    mesos: 0,
     abilities: [],
     effects: [
         {
@@ -1428,6 +1430,7 @@ export const curseEye: Minion = {
 export const snailFriend: Minion = {
     name: "Snail Friend",
     maxHP: 10,
+    mesos: 0,
     image: SnailImage,
     abilities: [attack],
     effects: [
@@ -1532,6 +1535,7 @@ export const bananaPeelCard = {
 export const lupin: Minion = {
     name: "Lupin",
     maxHP: 70,
+    mesos: 15,
     image: LupinImage,
     abilities: [
         {
@@ -1566,6 +1570,7 @@ export const lupin: Minion = {
 export const zombieLupin: Minion = {
     name: "Zombie Lupin",
     maxHP: 100,
+    mesos: 20,
     image: ZombieLupinJumpImage,
     abilities: [
         {
@@ -1575,7 +1580,7 @@ export const zombieLupin: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -1735,6 +1740,7 @@ export const malady: Minion = {
 export const darkStoneGolem: Minion = {
     name: "Dark Stone Golem",
     maxHP: 100,
+    mesos: 25,
     armor: 50,
     isElite: true,
     image: DarkStoneGolemImage,
@@ -2522,6 +2528,7 @@ export const golem: Minion = {
     image: StoneGolemImage,
     maxHP: 100,
     armor: 50,
+    mesos: 25,
     isElite: true,
     abilities: [
         {
@@ -2569,6 +2576,7 @@ export const golem: Minion = {
 export const bubbling: Minion = {
     name: "Bubbling",
     maxHP: 10,
+    mesos: 15,
     armor: 40,
     image: BubblingImage,
     abilities: [
@@ -2642,6 +2650,7 @@ export const bubbling: Minion = {
 
 export const casey: Minion = {
     name: "Casey",
+    mesos: 0,
     image: CaseyImage,
     maxHP: 300,
     abilities: [],
