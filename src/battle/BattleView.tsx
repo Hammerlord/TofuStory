@@ -294,6 +294,7 @@ const BattlefieldContainer = () => {
     const selectedMinion = playerSide[selectedAllyIndex];
     const handAuraEffects = getHandAuraEffects(hand);
 
+    /** Returns a card with aura effects applied, if any. */
     const getCardByInstanceId = (id: string | null): CombatAbility => {
         if (!id) {
             return;
@@ -322,7 +323,8 @@ const BattlefieldContainer = () => {
     };
 
     const noMoreMoves =
-        playerSide.every((ally) => !isEligibleToAttack(ally)) && (!hand.length || hand.every((ability) => !canUseAbility(player, ability)));
+        playerSide.every((ally) => !isEligibleToAttack(ally)) &&
+        (!hand.length || hand.every((ability: CombatAbility) => !canUseAbility(player, getCardByInstanceId(ability.instanceId))));
 
     const warn = (text: string | JSX.Element) => {
         dispatch(

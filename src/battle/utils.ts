@@ -104,7 +104,7 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
  * Player conditional helpers
  */
 export const canUseAbility = (character, ability: CombatAbility | undefined): boolean => {
-    if (!character) {
+    if (!character || ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
         return false;
     }
 
