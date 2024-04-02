@@ -2611,13 +2611,12 @@ export const bladeworks: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     depletedOnUse: true,
-    description: "Fill your side with Soul Blades, replacing all other summons.",
+    description: "Summon 3 Soul Blades, replacing other summons.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
                 { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
                 { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
                 { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
