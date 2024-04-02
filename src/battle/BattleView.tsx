@@ -358,13 +358,13 @@ const BattlefieldContainer = () => {
         const ability = getCardByInstanceId(id);
 
         if (!allowMoveCardFromHandToDeck) {
-            if (!canUseAbility(player, ability)) {
-                warnNeedMoreResources(ability);
+            if (ability.unplayable || ability?.effects?.some((e) => e.isLocked)) {
+                warn(battleWarnings.unplayable);
                 return;
             }
 
-            if (ability.unplayable || ability?.effects?.some((e) => e.isLocked)) {
-                warn(battleWarnings.unplayable);
+            if (!canUseAbility(player, ability)) {
+                warnNeedMoreResources(ability);
                 return;
             }
         }
