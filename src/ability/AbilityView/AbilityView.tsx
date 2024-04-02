@@ -232,6 +232,9 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(0 0 4px #ff3a3a)",
         opacity: 0.75,
     },
+    cardLocked: {
+        filter: "saturate(0.25)",
+    },
 });
 
 interface AbilityViewProps {
@@ -476,135 +479,143 @@ const AbilityView = forwardRef(
                     })}
                 >
                     <div
-                        className={classNames(classes.cardBack, {
-                            "-flipped": flipped,
+                        className={classNames({
+                            [classes.cardLocked]: isLocked,
                         })}
-                    />
-                    <div
-                        onClick={onClick}
-                        onMouseDown={onMouseDown}
-                        className={classNames(classes.inner, {
-                            [classes.selectedAbility]: isSelected,
-                            [classes.ephemeral]: removeAfterTurn,
-                            "-flipped": flipped,
-                        })}
-                        style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                     >
-                        <span className={classes.header}>
-                            {cornerIcon}
-                            <span
-                                className={classNames(classes.name, {
-                                    rare: ability.rarity === RARITIES.RARE,
-                                    uncommon: ability.rarity === RARITIES.UNCOMMON,
-                                })}
-                            >
-                                {name}{" "}
-                                {ability.level > 1 && (
-                                    <span className={classes.abilityLevel}>
-                                        {Array.from({ length: ability.level })
-                                            .map(() => "⋆")
-                                            .join("")}
-                                    </span>
-                                )}
-                            </span>{" "}
-                            <AbilityResourceIcon
-                                ability={ability}
-                                player={player}
-                                disableBattleIndicators={disableBattleBonuses || !battle}
-                            />
-                        </span>
-                        <div className={classes.portraitContainer}>{imageNode}</div>
-                        <div className={classes.body}>
-                            {(tributeSummon || taunt) && (
-                                <div>
-                                    {tributeSummon && <span className={classes.bold}>Tribute.</span>}
-                                    {taunt && <span className={classes.bold}> Taunt.</span>}
-                                </div>
-                            )}
-                            {preemptive && <div className={classes.bold}>Pre-emptive</div>}
-                            {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
-                            {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                            {ability.reusable && <div className={classes.bold}>Reusable</div>}
-                            {unplayable && <div className={classes.bold}>Unplayable</div>}
-                            <SelectCards ability={ability} />
-                            {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}
-                            {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
-                            {numTargets > 0 && (
-                                <div>
-                                    Hits up to +{numTargets} targets{" "}
-                                    {secondaryDamage && (
-                                        <>
-                                            for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
-                                        </>
+                        <div
+                            className={classNames(classes.cardBack, {
+                                "-flipped": flipped,
+                            })}
+                        />
+                        <div
+                            onClick={onClick}
+                            onMouseDown={onMouseDown}
+                            className={classNames(classes.inner, {
+                                [classes.selectedAbility]: isSelected,
+                                [classes.ephemeral]: removeAfterTurn,
+                                "-flipped": flipped,
+                            })}
+                            style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
+                        >
+                            <span className={classes.header}>
+                                {cornerIcon}
+                                <span
+                                    className={classNames(classes.name, {
+                                        rare: ability.rarity === RARITIES.RARE,
+                                        uncommon: ability.rarity === RARITIES.UNCOMMON,
+                                    })}
+                                >
+                                    {name}{" "}
+                                    {ability.level > 1 && (
+                                        <span className={classes.abilityLevel}>
+                                            {Array.from({ length: ability.level })
+                                                .map(() => "⋆")
+                                                .join("")}
+                                        </span>
                                     )}
-                                </div>
-                            )}
-                            {!healingCornerIcon && healing > 0 && (
-                                <div>
-                                    Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
-                                </div>
-                            )}
-                            {!armorCornerIcon && armorTotal > 0 && (
-                                <div>
-                                    Gain{" "}
-                                    <Icon
-                                        icon={<ShieldIcon />}
-                                        text={armorTotal}
-                                        size={"sm"}
-                                        highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
-                                    />
-                                </div>
-                            )}
-                            {resourceGain > 0 && (
-                                <div>
-                                    Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
-                                </div>
-                            )}
-                            {selfDamage > 0 && (
-                                <div>
-                                    Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
-                                </div>
-                            )}
-                            {!overrideBodyText && <Buffs ability={ability} player={player} />}
-                            <CardsToAdd ability={ability} />
-                            {!overrideBodyText && <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />}
-                            {!overrideBodyText && (
-                                <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
-                            )}
-                            {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
-                            {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
-                        </div>
-                        <div className={classes.footer}>
-                            {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
-                            <AbilityTypeView targetType={targetType} type={type} minion={minion} />
-                            {minion && (
-                                <div className={classes.minionStats}>
-                                    <span className={classes.minionHPContainer}>
-                                        <Icon icon={<HeartIcon />} text={minion.maxHP} />
-                                        {minion.armor > 0 && (
-                                            <Icon icon={ShieldIcon} size="sm" text={minion.armor} className={classes.minionArmor} />
+                                </span>{" "}
+                                <AbilityResourceIcon
+                                    ability={ability}
+                                    player={player}
+                                    disableBattleIndicators={disableBattleBonuses || !battle}
+                                />
+                            </span>
+                            <div className={classes.portraitContainer}>{imageNode}</div>
+                            <div className={classes.body}>
+                                {(tributeSummon || taunt) && (
+                                    <div>
+                                        {tributeSummon && <span className={classes.bold}>Tribute.</span>}
+                                        {taunt && <span className={classes.bold}> Taunt.</span>}
+                                    </div>
+                                )}
+                                {preemptive && <div className={classes.bold}>Pre-emptive</div>}
+                                {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
+                                {depletedOnUse && <div className={classes.bold}>Deplete</div>}
+                                {ability.reusable && <div className={classes.bold}>Reusable</div>}
+                                {unplayable && <div className={classes.bold}>Unplayable</div>}
+                                <SelectCards ability={ability} />
+                                {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}
+                                {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
+                                {numTargets > 0 && (
+                                    <div>
+                                        Hits up to +{numTargets} targets{" "}
+                                        {secondaryDamage && (
+                                            <>
+                                                for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
+                                            </>
                                         )}
-                                    </span>
-                                    <span className={classes.minionDamageContainer}>
-                                        <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
-                                        {minionHostileEffect && (
-                                            <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
-                                        )}
-                                        {minionHostileAction.area > 0 && (
-                                            <span className={classes.minionAbilityArea}>
-                                                <AreaIndicator {...minionHostileAction} size="sm" />
-                                            </span>
-                                        )}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                        {isLocked && (
-                            <div className={classes.locked}>
-                                <LockIcon />
+                                    </div>
+                                )}
+                                {!healingCornerIcon && healing > 0 && (
+                                    <div>
+                                        Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
+                                    </div>
+                                )}
+                                {!armorCornerIcon && armorTotal > 0 && (
+                                    <div>
+                                        Gain{" "}
+                                        <Icon
+                                            icon={<ShieldIcon />}
+                                            text={armorTotal}
+                                            size={"sm"}
+                                            highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
+                                        />
+                                    </div>
+                                )}
+                                {resourceGain > 0 && (
+                                    <div>
+                                        Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
+                                    </div>
+                                )}
+                                {selfDamage > 0 && (
+                                    <div>
+                                        Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
+                                    </div>
+                                )}
+                                {!overrideBodyText && <Buffs ability={ability} player={player} />}
+                                <CardsToAdd ability={ability} />
+                                {!overrideBodyText && (
+                                    <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
+                                )}
+                                {!overrideBodyText && (
+                                    <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
+                                )}
+                                {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
+                                {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
                             </div>
-                        )}
+                            <div className={classes.footer}>
+                                {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
+                                <AbilityTypeView targetType={targetType} type={type} minion={minion} />
+                                {minion && (
+                                    <div className={classes.minionStats}>
+                                        <span className={classes.minionHPContainer}>
+                                            <Icon icon={<HeartIcon />} text={minion.maxHP} />
+                                            {minion.armor > 0 && (
+                                                <Icon icon={ShieldIcon} size="sm" text={minion.armor} className={classes.minionArmor} />
+                                            )}
+                                        </span>
+                                        <span className={classes.minionDamageContainer}>
+                                            <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
+                                            {minionHostileEffect && (
+                                                <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
+                                            )}
+                                            {minionHostileAction.area > 0 && (
+                                                <span className={classes.minionAbilityArea}>
+                                                    <AreaIndicator {...minionHostileAction} size="sm" />
+                                                </span>
+                                            )}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
+                    {isLocked && (
+                        <div className={classes.locked}>
+                            <LockIcon />
+                        </div>
+                    )}
                     <div className={classes.refContainer} ref={ref as any} />
                 </div>
             </AbilityTooltip>
