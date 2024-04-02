@@ -218,7 +218,15 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
             cardsToMove.push(fromPile.shift());
         }
 
-        toPile.unshift(...cardsToMove);
+        toPile.unshift(
+            ...cardsToMove.filter((card) => {
+                // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
+                if (card.removeAfterTurn && to === "discard") {
+                    return false;
+                }
+                return true;
+            })
+        );
 
         dispatch(
             pushEventQueue({
