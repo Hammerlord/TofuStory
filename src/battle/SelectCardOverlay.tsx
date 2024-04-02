@@ -39,10 +39,10 @@ const useStyles = createUseStyles({
         verticalAlign: "bottom",
         position: "relative",
         "&.selected": {
-            boxShadow: "0 0 8px 4px #45ff61",
+            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
         "&.selectedForRemoval": {
-            boxShadow: "0 0 8px 4px #ff3a3a",
+            filter: "drop-shadow(0 0 4px #ff3a3a) drop-shadow(0 0 4px #ff3a3a)",
         },
     },
     cancel: {
