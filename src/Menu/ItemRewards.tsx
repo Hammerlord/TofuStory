@@ -142,6 +142,9 @@ const ItemRewards = ({
 
         setRewards(itemsToBeRewarded);
         setItemChoices(items);
+        if (items.length === 1) {
+            setSelectedItemIndices([0]);
+        }
         onLoot({ items: itemsToBeRewarded });
     }, []);
 
