@@ -27,11 +27,13 @@ const useStyles = createUseStyles({
             transform: "translate(0, 0)",
             width: "150px", // Card width, see AbilityView style root
             opacity: 1,
+            filter: "saturate(0.5)",
         },
         to: {
             transform: "translate(-75px, -50%)", // X is 1/2 card width
             width: "0px",
             opacity: 0,
+            filter: "saturate(0)",
         },
     },
     slideOut: {
