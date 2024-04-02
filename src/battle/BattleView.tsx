@@ -302,6 +302,9 @@ const BattlefieldContainer = () => {
         // With hand aura effects applied
         const abilityIndex = hand.findIndex(({ instanceId }) => instanceId === id);
         const ability = hand[abilityIndex];
+        if (!ability) {
+            return;
+        }
         return {
             ...ability,
             effects: [...(ability.effects || []), ...(handAuraEffects[abilityIndex] || [])],
