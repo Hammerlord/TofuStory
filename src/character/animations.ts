@@ -498,11 +498,13 @@ export const playFadeInAnimation = ({
     playbackTime = 250,
     shiftUp,
     delay,
+    fill,
 }: {
     object;
     playbackTime?: number;
     shiftUp?: boolean;
     delay?: number;
+    fill?: "forwards";
 }) => {
     const animationFrames = [
         {
@@ -519,6 +521,6 @@ export const playFadeInAnimation = ({
     return object.animate(animationFrames, {
         duration: playbackTime,
         delay,
-        fill: "forwards",
+        fill,
     });
 };

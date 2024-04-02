@@ -211,7 +211,13 @@ const ClassSelection = ({
         JOB_CARD_MAP[player.class].starters.map((_, i) => {
             const ref = cardsRefs[i];
             if (ref.current) {
-                return playFadeInAnimation({ object: ref.current, delay: (i + 1) * 50, shiftUp: true, playbackTime: 250 });
+                return playFadeInAnimation({
+                    object: ref.current,
+                    delay: (i + 1) * 50,
+                    shiftUp: true,
+                    playbackTime: 250,
+                    fill: "forwards",
+                });
             }
         });
     }, [player]);
