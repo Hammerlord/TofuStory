@@ -209,10 +209,6 @@ export const useShopConfig = ({
         if (items[selectedItemIndex]) {
             const { price: initPrice, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
             const price = applyDiscount(initPrice);
-            const canAfford = player.mesos >= price;
-            if (!canAfford) {
-                return;
-            }
 
             if (isConsumable) {
                 if (isFood) {
