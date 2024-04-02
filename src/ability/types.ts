@@ -687,6 +687,11 @@ export interface Ability {
     onLeaveHand?: AbilityEvent;
     hideResourceCostIcon?: boolean;
     disableConditionGlow?: boolean;
+    /** Effects applied on other cards in your hand, based on proximity */
+    aura?: {
+        area?: number; // Eg. if value is 1, effects applies to cards directly adjacent to this one. If not supplied, it will affect all cards
+        effects: AbilityEffect[];
+    };
 }
 
 /**
@@ -740,6 +745,7 @@ export interface AbilityEffect {
     maxApplications?: number;
     // Whether this effect should be cleared if the card is discarded. True by default.
     removeOnDiscard?: boolean;
+    isLocked?: boolean; // The card becomes unplayable.
 }
 
 export enum SELECT_CARD_TYPES {

@@ -43,6 +43,33 @@ const useStyles = createUseStyles({
     },
 });
 
+export const getHandAuraEffects = (hand: CombatAbility[]) => {
+    const auraEffects = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
+    hand.forEach((card: CombatAbility, i) => {
+        if (!card.aura) {
+            return;
+        }
+
+        const { area = hand.length, effects } = card.aura;
+        const start = Math.max(0, i - area);
+        const end = Math.min(hand.length - 1, i + area);
+        for (let j = start; j <= end; ++j) {
+            if (i === j) {
+                // Does not affect itself
+                continue;
+            }
+
+            if (!auraEffects[j]) {
+                auraEffects[j] = [];
+            }
+
+            auraEffects[j].push(...effects);
+        }
+    });
+
+    return auraEffects;
+};
+
 const Hand = ({
     hand,
     onAbilityClick,
@@ -93,7 +120,14 @@ const Hand = ({
     };
 
     const handToDisplay = hand !== oldHand ? getMergedHand() : hand;
+    const auraEffects = getHandAuraEffects(handToDisplay);
 
+    const getAbility = (ability, i) => {
+        return {
+            ...ability,
+            effects: [...(ability.effects || []), ...(auraEffects[i] || [])],
+        };
+    };
     return (
         <div className={className}>
             {handToDisplay.map((ability: CombatAbility, i: number) => (
@@ -101,7 +135,7 @@ const Hand = ({
                     onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
-                    ability={ability}
+                    ability={getAbility(ability, i)}
                     ref={refs[i]}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),

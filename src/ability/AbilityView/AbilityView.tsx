@@ -9,7 +9,7 @@ import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
-import { CrossedSwordsIcon, HeartIcon, ShieldIcon } from "../../images/icons";
+import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import { ACTION_TYPES, Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
@@ -221,6 +221,16 @@ const useStyles = createUseStyles({
         "&.-flipped": {
             transform: "unset",
         },
+    },
+    locked: {
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 75,
+        zIndex: 10,
+        filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(0 0 4px #ff3a3a)",
+        opacity: 0.75,
     },
 });
 
@@ -445,6 +455,7 @@ const AbilityView = forwardRef(
 
         const isAbilityUsable = canUseAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
+        const isLocked = ((ability as CombatAbility).effects || []).some((effect) => effect.isLocked);
 
         const getTextHighlight = (total: number, expected: number) => {
             if (total < expected) {
@@ -588,6 +599,11 @@ const AbilityView = forwardRef(
                                 </div>
                             )}
                         </div>
+                        {isLocked && (
+                            <div className={classes.locked}>
+                                <LockIcon />
+                            </div>
+                        )}
                     </div>
                     <div className={classes.refContainer} ref={ref as any} />
                 </div>

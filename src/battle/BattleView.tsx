@@ -29,7 +29,7 @@ import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import Discard from "./Discard";
 import EndTurnButton from "./EndTurnButton";
-import Hand from "./Hand";
+import Hand, { getHandAuraEffects } from "./Hand";
 import AbilityNotification from "./Notification/AbilityNotification";
 import Notification from "./Notification/Notification";
 import TurnAnnouncement from "./Notification/TurnNotification";
@@ -292,7 +292,21 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const selectedAbilityFromHand = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+    const handAuraEffects = getHandAuraEffects(hand);
+
+    const getCardByInstanceId = (id: string | null): CombatAbility => {
+        if (!id) {
+            return;
+        }
+        // With hand aura effects applied
+        const abilityIndex = hand.findIndex(({ instanceId }) => instanceId === id);
+        const ability = hand[abilityIndex];
+        return {
+            ...ability,
+            effects: [...(ability.effects || []), ...(handAuraEffects[abilityIndex] || [])],
+        };
+    };
+    const selectedAbilityFromHand = getCardByInstanceId(selectedAbilityId);
     const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
@@ -339,14 +353,15 @@ const BattlefieldContainer = () => {
         }
 
         setSelectedAllyIndex(null);
-        const ability = hand.find((card: CombatAbility) => card.instanceId === id);
+        const ability = getCardByInstanceId(id);
+
         if (!allowMoveCardFromHandToDeck) {
             if (!canUseAbility(player, ability)) {
                 warnNeedMoreResources(ability);
                 return;
             }
 
-            if (ability.unplayable) {
+            if (ability.unplayable || ability?.effects?.some((e) => e.isLocked)) {
                 warn(battleWarnings.unplayable);
                 return;
             }
