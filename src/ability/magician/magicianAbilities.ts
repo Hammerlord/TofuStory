@@ -358,7 +358,7 @@ export const ping: Ability = {
     name: "Ping",
     resourceCost: 0,
     image: PingProjectileImage,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     description: "<b>Charged:</b> this card enters your hand next turn.",
     actions: [
         {
@@ -1634,7 +1634,7 @@ export const greatestBolt: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 10,
+            damage: 14,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,

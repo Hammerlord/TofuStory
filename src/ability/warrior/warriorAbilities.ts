@@ -392,6 +392,7 @@ export const warBanner: Ability = {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     ability: {
                         name: "Drumbeat of War",
+                        image: FlagImage,
                         actions: [drumOfWar],
                     },
                 },
@@ -2611,7 +2612,7 @@ export const bladeworks: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     depletedOnUse: true,
-    description: "Summon 3 Soul Blades, replacing other summons.",
+    description: "Summon 3 Soul Blades. For each that doesn't fit, a random summon is replaced.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
