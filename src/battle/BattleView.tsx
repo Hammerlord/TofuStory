@@ -964,6 +964,10 @@ const BattlefieldContainer = () => {
                         setSelectedAllyIndex(null);
                         e.preventDefault();
                     }}
+                    onMouseDown={() => {
+                        setSelectedAbilityId(null);
+                        setSelectedAllyIndex(null);
+                    }}
                 >
                     <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.waves}>
@@ -975,7 +979,7 @@ const BattlefieldContainer = () => {
                                     <CombatantView
                                         combatant={enemy}
                                         isEnemy={true}
-                                        onClick={(e) => handleEnemyClick(e, i)}
+                                        onMouseDown={(e) => handleEnemyClick(e, i)}
                                         isSelected={false}
                                         onMouseEnter={() =>
                                             setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i, id: enemy?.id })
@@ -1024,7 +1028,7 @@ const BattlefieldContainer = () => {
                                             <CombatantView
                                                 combatant={ally}
                                                 isEnemy={false}
-                                                onClick={(e) => handleAllyClick(e, i)}
+                                                onMouseDown={(e) => handleAllyClick(e, i)}
                                                 isSelected={selectedAllyIndex === i}
                                                 onMouseEnter={() =>
                                                     setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i, id: ally?.id })

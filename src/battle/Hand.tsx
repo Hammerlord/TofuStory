@@ -105,6 +105,8 @@ const Hand = ({
             setOldHand(hand);
             onAbilityClick(event, id);
         }
+
+        event.stopPropagation(); // Block the click event from going to the battlefield or it will deselect the card
     };
 
     const isCardInHand = (card: CombatAbility, hand: CombatAbility[]): boolean => {

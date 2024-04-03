@@ -290,6 +290,7 @@ const CombatantView = forwardRef(
             combatant,
             isEnemy,
             onClick,
+            onMouseDown,
             isTargeted,
             event,
             events,
@@ -302,7 +303,8 @@ const CombatantView = forwardRef(
         }: {
             combatant?: Combatant | Player;
             isEnemy: boolean;
-            onClick: (event: any) => void;
+            onClick?: (event: any) => void;
+            onMouseDown?: (event: any) => void;
             isTargeted: boolean;
             event: CurrentEvent;
             events: Event[]; // Current event queue
@@ -457,6 +459,7 @@ const CombatantView = forwardRef(
                     "-highlighted": isHighlighted,
                 })}
                 onClick={onClick}
+                onMouseDown={onMouseDown}
                 {...other}
             >
                 <div className={classes.inner}>
