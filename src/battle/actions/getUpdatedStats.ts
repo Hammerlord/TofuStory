@@ -43,6 +43,7 @@ export interface UpdatedCombatantStats {
     mesos?: number;
     removedEffects?: CombatEffect[];
     isArmorDecay?: boolean;
+    failedToApplyEffects?: Effect[]; // Effects that were immuned
 }
 
 export const getUpdatedStats = ({
@@ -166,8 +167,6 @@ export const getUpdatedStats = ({
             });
         };
 
-        const effects: CombatEffect[] = [];
-
         const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
 
         const getEffectDuration = (incomingEffect: Effect) => {
@@ -198,6 +197,9 @@ export const getUpdatedStats = ({
             return incomingEffect.duration + totalBonusDuration;
         };
 
+        const effects: CombatEffect[] = [];
+        const failedToApplyEffects: Effect[] = [];
+
         Array.from({ length: multiplier }).forEach(() => {
             const effectsToAdd = actionEffects
                 .map((effect: String | Effect) => {
@@ -209,7 +211,14 @@ export const getUpdatedStats = ({
 
                     return effect as Effect | CombatEffect;
                 })
-                .filter((effect) => !isImmuneTo(effect))
+                .filter((effect) => {
+                    if (isImmuneTo(effect)) {
+                        failedToApplyEffects.push(effect);
+                        return false;
+                    }
+
+                    return true;
+                })
                 .map((effect: Effect | CombatEffect) => {
                     let overrideObj;
                     if (effect.override) {
@@ -260,6 +269,7 @@ export const getUpdatedStats = ({
             mesos: mesos - stealMesos,
             removedEffects,
             isArmorDecay: decayArmor,
+            failedToApplyEffects,
         };
 
         return [stats, action];

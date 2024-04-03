@@ -17,6 +17,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_EVENT_KEYS,
     EFFECT_TYPES,
+    Effect,
     EffectEventTrigger,
     MORPH_TYPES,
     Minion,
@@ -981,6 +982,7 @@ export const triggerStatChangeEvents =
                 rawResources = 0,
                 removedEffects = [],
                 isArmorDecay = false,
+                failedToApplyEffects = [],
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?: { [key in keyof TriggerSource]? }) => {
                 dispatch(
@@ -1044,6 +1046,10 @@ export const triggerStatChangeEvents =
                         effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
                     })
                 );
+            });
+
+            failedToApplyEffects.forEach((e: Effect) => {
+                dispatchEvent(EFFECT_EVENT_KEYS.onFailedToReceiveEffect, { source: e, type: TRIGGER_SOURCE_TYPES.EFFECT });
             });
 
             if (isDeathBlow) {

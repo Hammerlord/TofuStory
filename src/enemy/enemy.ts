@@ -126,7 +126,18 @@ import {
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, doOtherWave, doWave, enemyHaste, loaf, whomp } from "./abilities";
-import { armorDown, championsRibbon, critical, hardwood, incorporeal, pigHeaded, poisonous, sneaky } from "./effect";
+import {
+    armorDown,
+    championsRibbon,
+    critical,
+    earthen,
+    hardwood,
+    incorporeal,
+    pigHeaded,
+    poisonous,
+    sneaky,
+    temporaryEarthen,
+} from "./effect";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1774,22 +1785,7 @@ export const darkStoneGolem: Minion = {
             ],
         },
     ],
-    effects: [
-        hardy,
-        preventArmorDecay,
-        {
-            name: "Strength",
-            description: "Attacks apply Armor Down.",
-            icon: StoneGolemRubbleImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            canBeSilenced: false,
-            onAttack: {
-                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [armorDown],
-            },
-        },
-    ],
+    effects: [temporaryEarthen, hardy, preventArmorDecay],
 };
 
 export const eventBandit: Minion = {
@@ -2560,6 +2556,7 @@ export const golem: Minion = {
         },
     ],
     effects: [
+        temporaryEarthen,
         hardy,
         preventArmorDecay,
         {

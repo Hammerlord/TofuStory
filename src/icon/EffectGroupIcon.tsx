@@ -13,6 +13,7 @@ import { findCombatantData } from "../battle/actions/actions";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { isTurnToTrigger } from "../battle/utils";
+import Handlebars from "handlebars";
 
 const indicatorSize = 8;
 
@@ -257,6 +258,8 @@ const EffectGroupIcon = ({
         return inner;
     }
 
+    const interpolatedDescription = Handlebars.compile(description || "")(effects[0]);
+
     const tooltipContent = (
         <div className={classes.tooltipContents}>
             <div className={classNames(classes.iconContainer)}>
@@ -275,7 +278,7 @@ const EffectGroupIcon = ({
                         </span>
                     }
                 </div>
-                <div>{description}</div>
+                <div>{interpolatedDescription}</div>
                 <div className={classNames({ [classes.disabled]: disabled })}>
                     {attackPower !== 0 && (
                         <div>

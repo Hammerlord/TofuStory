@@ -8,6 +8,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
+import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AncientFairyImage,
     BatsEffectImage,
@@ -361,6 +362,24 @@ export const earthen: Effect = {
     immunities: {
         type: "effect-class",
         value: [EFFECT_CLASSES.DEBUFF],
+    },
+};
+
+export const temporaryEarthen: Effect = {
+    ...earthen,
+    description: "Immune to the next {{ stacks }} debuffs.",
+    stacks: 3,
+    onFailedToReceiveEffect: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                comparator: "eq",
+            },
+        ],
+        decrementStacks: 1,
     },
 };
 
