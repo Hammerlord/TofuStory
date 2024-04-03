@@ -9,19 +9,20 @@ import {
     KerningCenterImage,
     KerningCityBGImage,
     KerningExitImage,
+    KerningRestImage,
     KerningSewerImage,
     KerningShopImage,
     KerningSwampImage,
     KerningTradingPostImage,
     SwampRegionBGImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLordScene";
 import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 import Tooltip from "../view/Tooltip";
 import Pan from "./Pan";
-import { TOWN_STYLES } from "./constants";
+import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { useState } from "react";
 import TownNode from "./TownNode";
 import Legend from "./Legend";
@@ -105,7 +106,7 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -167,6 +168,12 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownP
         }
     };
 
+    const handleClickCamp = () => {
+        if (checkVisitPlace(KERNING_PLACES.REST)) {
+            onCamp();
+        }
+    };
+
     const caseyNodeEl = (
         <>
             <img src={KerningCaseyImage} alt="Kerning City Crane" />
@@ -198,11 +205,11 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownP
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
                         <br />
                         <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={visited[KERNING_PLACES.CAMPAIGN]}
-                            label={"Campaign"}
-                            nodeImage={KerningSewerImage}
-                            onClick={handleClickCampaign}
+                            icon={CampingIcon}
+                            isVisited={visited[KERNING_PLACES.REST]}
+                            label={"Rest"}
+                            nodeImage={KerningRestImage}
+                            onClick={handleClickCamp}
                         />
 
                         <div className={classNames(classes.townCenter)}>
@@ -227,6 +234,15 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem }: TownP
                         />
 
                         <br />
+
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            isVisited={visited[KERNING_PLACES.CAMPAIGN]}
+                            label={"Campaign"}
+                            nodeImage={KerningSewerImage}
+                            onClick={handleClickCampaign}
+                        />
+
                         <TownNode
                             icon={QuestionMarkIcon}
                             isVisited={visited[KERNING_PLACES.MATCH_CARDS]}

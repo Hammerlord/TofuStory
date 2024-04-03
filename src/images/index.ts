@@ -291,6 +291,7 @@ export { default as KerningCenterImage } from "./KerningCenter.png";
 export { default as KerningCityBGImage } from "./KerningCityBG.jpg";
 export { default as KerningCraneImage } from "./KerningCrane.png";
 export { default as KerningExitImage } from "./KerningExit.png";
+export { default as KerningRestImage } from "./KerningRest.png";
 export { default as KerningSewerImage } from "./KerningSewer.png";
 export { default as KerningSewerFullImage } from "./KerningSewerFull.png";
 export { default as KerningSewerFull2Image } from "./KerningSewerFull2.png";
