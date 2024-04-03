@@ -185,8 +185,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     excludeEffectOwner?: boolean;
     /** Prevent application of certain effects */
     immunities?: {
-        type: "effect-type" | "effect";
-        value: EFFECT_TYPES[] | string[]; // If string[], provide the names of the effects
+        type: "effect-type" | "effect" | "effect-class";
+        value: EFFECT_TYPES[] | EFFECT_CLASSES[] | string[]; // If string[], provide the names of the effects
     };
     preventArmorDecay?: boolean;
     armorReceived?: number; // Increased armor received, that is; ditto for below

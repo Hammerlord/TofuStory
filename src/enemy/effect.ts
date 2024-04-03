@@ -354,13 +354,13 @@ export const poisonous = {
 
 export const earthen: Effect = {
     name: "Earthen",
-    description: "Immune to most debuff types.",
+    description: "Immune to debuffs.",
     icon: MountainIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     immunities: {
-        type: "effect-type",
-        value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.CHILL, EFFECT_TYPES.STUN, EFFECT_TYPES.POISON],
+        type: "effect-class",
+        value: [EFFECT_CLASSES.DEBUFF],
     },
 };
 

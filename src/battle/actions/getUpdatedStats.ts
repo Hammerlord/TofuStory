@@ -159,6 +159,10 @@ export const getUpdatedStats = ({
                 if (type === "effect") {
                     return value.some((name: string) => name === effect.name);
                 }
+
+                if (type === "effect-class") {
+                    return value.some((type: EFFECT_CLASSES) => type === effect.class);
+                }
             });
         };
 
