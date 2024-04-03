@@ -73,63 +73,63 @@ const justSummoned = {
 
 const coalescingMistsWildBoar: Minion = {
     ...coalescingMistsBase,
-    maxHP: 10,
+    maxHP: 15,
     abilities: [getManifestAbility(wildBoar)],
     effects: [justSummoned],
 };
 
 const coalescingMistsAxeStump: Minion = {
     ...coalescingMistsBase,
-    maxHP: 10,
+    maxHP: 15,
     abilities: [getManifestAbility(axeStump)],
     effects: [justSummoned],
 };
 
 const coalescingMistsHornyMushroom: Minion = {
     ...coalescingMistsBase,
-    maxHP: 10,
+    maxHP: 15,
     abilities: [getManifestAbility(elliniaHornyMushroom)],
     effects: [justSummoned],
 };
 
 const coalescingMistsDrake: Minion = {
     ...coalescingMistsBase,
-    maxHP: 20,
+    maxHP: 30,
     abilities: [getManifestAbility(copperDrake)],
     effects: [justSummoned],
 };
 
 const coalescingMistsGolem: Minion = {
     ...coalescingMistsBase,
-    maxHP: 20,
+    maxHP: 30,
     abilities: [getManifestAbility(darkStoneGolem)],
     effects: [justSummoned],
 };
 
 const coalescingMistsZombieLupin: Minion = {
     ...coalescingMistsBase,
-    maxHP: 20,
+    maxHP: 30,
     abilities: [getManifestAbility(zombieLupin)],
     effects: [justSummoned],
 };
 
 const coalescingMistsKargo: Minion = {
     ...coalescingMistsBase,
-    maxHP: 30,
+    maxHP: 50,
     abilities: [getManifestAbility({ ...wildKargo, effects: [critical] })], // No Avenger
     effects: [justSummoned],
 };
 
 const coalescingMistsTauromacis: Minion = {
     ...coalescingMistsBase,
-    maxHP: 30,
+    maxHP: 50,
     abilities: [getManifestAbility({ ...tauromacis, effects: [] })], // No Avenger
     effects: [justSummoned],
 };
 
 const coalescingMistsTauroSpear: Minion = {
     ...coalescingMistsBase,
-    maxHP: 30,
+    maxHP: 50,
     abilities: [getManifestAbility({ ...taurospear, effects: [] })], // No Avenger
     effects: [justSummoned],
 };
