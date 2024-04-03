@@ -863,6 +863,7 @@ export const axeStump: Minion = {
                     effects: [
                         {
                             ...thorns,
+                            name: "Barbs",
                             duration: 2,
                         },
                     ],
