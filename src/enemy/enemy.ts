@@ -729,6 +729,7 @@ export const octopus: Minion = {
                 },
             ],
         },
+        loaf,
         {
             name: "Constrict",
             resourceCost: 3,
