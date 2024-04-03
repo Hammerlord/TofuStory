@@ -1781,7 +1781,7 @@ export const soulBlade: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },
