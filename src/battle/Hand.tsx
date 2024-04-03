@@ -43,6 +43,25 @@ const useStyles = createUseStyles({
         animationIterationCount: 1,
         opacity: 0, // Prevent an issue where the cards would appear to flicker back into their original place when the animation is done
     },
+    "@keyframes slideOutSingle": {
+        from: {
+            transform: "translate(0, 0)",
+            opacity: 1,
+            filter: "saturate(0.5)",
+        },
+        to: {
+            transform: "translate(0, -50%)",
+            opacity: 0,
+            filter: "saturate(0)",
+        },
+    },
+    slideOutSingle: {
+        animation: "$slideOutSingle",
+        transitionTimingFunction: "ease-out",
+        animationDuration: handPlaybackDuration,
+        animationIterationCount: 1,
+        opacity: 0, // Prevent an issue where the cards would appear to flicker back into their original place when the animation is done
+    },
 });
 
 export const getHandAuraEffects = (hand: CombatAbility[]) => {
@@ -143,7 +162,8 @@ const Hand = ({
                     ref={refs[i]}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),
-                        [classes.slideOut]: !isCardInHand(ability, hand),
+                        [classes.slideOut]: !isCardInHand(ability, hand) && handToDisplay.length > 1,
+                        [classes.slideOutSingle]: !isCardInHand(ability, hand) && handToDisplay.length === 1,
                     })}
                 />
             ))}
