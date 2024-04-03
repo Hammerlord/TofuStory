@@ -907,7 +907,7 @@ export const fireBoar: Minion = {
 export const ligator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 25,
+    maxHP: 30,
     mesos: 10,
     abilities: [
         {
@@ -945,7 +945,7 @@ export const eliteLigator: Minion = {
     name: "Ligator",
     image: LigatorImage,
     isElite: true,
-    maxHP: 65,
+    maxHP: 80,
     mesos: 25,
     resources: 1,
     effects: [],
@@ -956,7 +956,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -968,7 +968,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                     effects: [
                         {
                             ...bleed,
