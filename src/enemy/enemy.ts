@@ -138,6 +138,7 @@ import {
     sneaky,
     temporaryEarthen,
 } from "./effect";
+import { sealCard } from "./jrBoogie";
 
 export const snail: Minion = {
     name: "Snail",
@@ -1670,17 +1671,19 @@ export const malady: Minion = {
         },
         {
             name: "Throw Concoction",
+            description: "Poisons the target and adds a Seal card to the player's deck.",
             image: InkSackImage,
             resourceCost: 3,
             dialog: "Have a taste of our medicine!",
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.EFFECT,
-                    effects: [
-                        { ...poison, duration: 2 },
-                        { ...burn, duration: 2 },
-                    ],
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: InkSackImage,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    damage: 5,
+                    effects: [{ ...poison, duration: 3 }],
+                    addCards: [sealCard],
                 },
             ],
         },
@@ -1697,7 +1700,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -1710,7 +1713,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -1723,7 +1726,7 @@ export const malady: Minion = {
                     type: ACTION_TYPES.MOVEMENT,
                 },
                 {
-                    damage: 4,
+                    damage: 5,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
