@@ -195,6 +195,12 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
     },
+    cardsPlayedCounter: {
+        background: "rgba(0, 0, 0, 0.7)",
+        padding: "4px 8px",
+        borderRadius: "4px",
+        color: "white",
+    },
 });
 
 const BATTLEFIELD_SIZE = 5;
@@ -1001,6 +1007,9 @@ const BattlefieldContainer = () => {
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
+                                <div className={classes.cardsPlayedCounter}>
+                                    Cards played: {player.abilityHistory.filter((ability) => (ability as CombatAbility).instanceId).length}
+                                </div>
                                 <div className={classes.deckContainer}>
                                     <Deck
                                         viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}

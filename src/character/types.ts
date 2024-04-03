@@ -1,5 +1,5 @@
 import { PLAYER_CLASSES } from "../Menu/types";
-import { Ability, Minion } from "../ability/types";
+import { Ability, CombatAbility, Minion } from "../ability/types";
 import { BATTLEFIELD_SIDES } from "../battle/types";
 import { Item } from "../item/types";
 import { Action, CombatEffect } from "./../ability/types";
@@ -24,7 +24,7 @@ export interface Combatant extends Minion {
         selectedSide?: BATTLEFIELD_SIDES;
     };
     turnHistory: Action[];
-    abilityHistory: Ability[];
+    abilityHistory: (Ability | CombatAbility)[];
     maxResources?: number;
     resourcesPerTurn?: number;
     items: Item[];
