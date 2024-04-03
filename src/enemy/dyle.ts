@@ -311,7 +311,7 @@ export const dyle: Minion = {
                                             target: TARGET_TYPES.SELF,
                                             icon: WaterBombImage,
                                             animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                                            effects: [{ ...stun, duration: 2, bypassImmunity: true }],
+                                            effects: [{ ...stun, bypassImmunity: true }],
                                             summon: dyleDredgeSummons,
                                         },
                                     ],
