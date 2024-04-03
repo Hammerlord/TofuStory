@@ -1084,7 +1084,7 @@ const BattlefieldContainer = () => {
                     </div>
                 </div>
                 {showWaveClear && (
-                    <ClearOverlay labelText={waves[currentWaveIndex + 2] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
+                    <ClearOverlay labelText={waves[currentWaveIndex + 1] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
                 )}
                 {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
                 {selectCardsPrompt && !events.length && !isWinConditionTriggered && (
