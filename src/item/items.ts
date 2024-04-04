@@ -1982,13 +1982,13 @@ export const starryBandana: Item = {
     image: YellowStarryBandanaImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When you summon a minion, draw a card.",
+    description: "When a minion dies, draw a card.",
     effects: [
         {
             name: "Yellow Starry Bandana Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onFriendlySummon: {
+            onFriendlyDeath: {
                 drawCards: {
                     amount: 1,
                 },
