@@ -1,9 +1,9 @@
-import { makeStyles } from "@material-ui/core/styles";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../../constants";
 import classNames from "classnames";
 import { RARITIES } from "../../item/types";
+import { createUseStyles } from "react-jss";
 
-const useStyles = makeStyles({
+const useStyles = createUseStyles({
     diamond: {
         width: "10px",
         height: "10px",
@@ -39,10 +39,10 @@ const useStyles = makeStyles({
 /**
  * Rarity indicator that appears above a card.
  */
-const RarityTag = ({ rarity }: { rarity: RARITIES }) => {
+const RarityTag = ({ rarity, className }: { rarity: RARITIES; className?: string }) => {
     const classes = useStyles();
     return (
-        <div className={classes.rarityContainer}>
+        <div className={classNames(classes.rarityContainer, className)}>
             <span
                 className={classNames(classes.diamond, {
                     [classes.common]: rarity === RARITIES.COMMON || !rarity,

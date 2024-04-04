@@ -81,7 +81,7 @@ const useStyles = createUseStyles({
         display: "flex",
         alignItems: "end",
         justifyContent: "center",
-        minHeight: "356px",
+        minHeight: "350px",
     },
     cardPlaceholder: {
         width: 168,
@@ -94,8 +94,10 @@ const useStyles = createUseStyles({
         color: "white",
         fontSize: 16,
         transition: "0.25s",
-        filter: "drop-shadow(0 0 3px #45ff61)",
         margin: "0 16",
+        "&:not(:disabled)": {
+            filter: "drop-shadow(0 0 3px #45ff61)",
+        },
         "&:hover&:not(:disabled)": {
             filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
@@ -172,6 +174,9 @@ const useStyles = createUseStyles({
         bottom: 0,
         right: -32,
         borderLeft: 0,
+    },
+    topRarityTag: {
+        marginBottom: 8,
     },
 });
 
@@ -280,7 +285,9 @@ const Transmutation = ({
     };
 
     const handleClickSelectCardButton = () => {
-        setShowingDeck(true);
+        if (!isPlayingAnimation) {
+            setShowingDeck(true);
+        }
     };
 
     const handleClickExit = () => {
@@ -299,7 +306,7 @@ const Transmutation = ({
                 </div>
                 {!transmutationOptions && (
                     <>
-                        <p>Replace a card with 1 of 3 card options.</p>
+                        <p>Replace an ability in your deck with 1 of 3 card options.</p>
 
                         <div className={classes.doneContainer}>
                             <LeaveButton onClick={handleClickExit} text="Leave" />
@@ -334,16 +341,12 @@ const Transmutation = ({
                                 </div>
                                 <div className={classes.rarityPreview}>
                                     {selectedCard && (
-                                        <div>
-                                            <div>
-                                                <RarityTag rarity={selectedCardRarity} />
-                                            </div>
-                                            <div>
-                                                {selectedCardRarity !== RARITIES.RARE && (
-                                                    <RarityTag rarity={rarityStepChart[selectedCardRarity]} />
-                                                )}
-                                            </div>
-                                        </div>
+                                        <>
+                                            {selectedCardRarity !== RARITIES.RARE && (
+                                                <RarityTag rarity={rarityStepChart[selectedCardRarity]} className={classes.topRarityTag} />
+                                            )}
+                                            <RarityTag rarity={selectedCardRarity} />
+                                        </>
                                     )}
 
                                     <div className={classes.resultPlaceholder}>{<Icon icon={QuestionMarkIcon} />}</div>
