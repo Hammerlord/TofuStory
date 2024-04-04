@@ -15,6 +15,7 @@ import Tooltip from "../view/Tooltip";
 import { COMMON_STYLES } from "../constants";
 import { NUM_TRADING_POST_ITEMS, NUM_TRADING_POST_TRADES, TradingPostConfigProperties } from "./constants";
 import { useTradingPostConfig } from "./tradingPostUtils";
+import LeaveButton from "./LeaveButton";
 
 const HEADER_BAR = 72;
 
@@ -312,9 +313,7 @@ const TradingPostView = ({
                 <h2>Trading Post</h2>
             </div>
             <div className={classes.doneContainer}>
-                <Button color="secondary" variant="contained" onClick={handleClickExit}>
-                    Leave Shop
-                </Button>
+                <LeaveButton onClick={handleClickExit} />
             </div>
             <div className={classes.offerSection}>
                 <div className={classes.offerContainer}>{offerElement(selectedPlayerItem, true)}</div>

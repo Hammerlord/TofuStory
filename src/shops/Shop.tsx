@@ -17,6 +17,7 @@ import { getUpgradeCard } from "../Menu/utils";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { useShopConfig } from "./shopUtils";
 import { OnBuyItem, ShopConfigProperties } from "./constants";
+import LeaveButton from "./LeaveButton";
 
 const HEADER_BAR = 72;
 
@@ -277,13 +278,7 @@ const ShopView = ({
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
-                <div className={classes.doneContainer}>
-                    {onExit && (
-                        <Button color="secondary" variant="contained" onClick={handleExitClick}>
-                            Leave Shop
-                        </Button>
-                    )}
-                </div>
+                <div className={classes.doneContainer}>{onExit && <LeaveButton onClick={handleExitClick} />}</div>
                 <div className={classes.refreshContainer}>
                     {numRefreshes > 0 && (
                         <>

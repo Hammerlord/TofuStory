@@ -11,7 +11,7 @@ import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { Player } from "../character/types";
 import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
-import { QuestionMarkIcon } from "../images/icons";
+import { DoorIcon, QuestionMarkIcon } from "../images/icons";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
 import { shuffle } from "../utils";
@@ -20,6 +20,7 @@ import Overlay from "../view/Overlay";
 import Icon from "../icon/Icon";
 import { ElliniaWeaponStoreImage } from "../images";
 import { getUpgradeCard } from "../Menu/utils";
+import LeaveButton from "./LeaveButton";
 
 const HEADER_BAR = 72;
 
@@ -152,7 +153,8 @@ const useStyles = createUseStyles({
     },
     resultPlaceholderExtra: {
         border: "1px solid rgba(255, 255, 255, 0.25)",
-        borderRadius: 4,
+        borderTopRightRadius: 4,
+        borderBottomRightRadius: 4,
         position: "absolute",
         width: 168,
         height: 260,
@@ -162,7 +164,8 @@ const useStyles = createUseStyles({
     },
     resultPlaceholderExtra2: {
         border: "1px solid rgba(255, 255, 255, 0.25)",
-        borderRadius: 4,
+        borderTopRightRadius: 4,
+        borderBottomRightRadius: 4,
         position: "absolute",
         width: 168,
         height: 260,
@@ -299,9 +302,7 @@ const Transmutation = ({
                         <p>Replace a card with 1 of 3 card options.</p>
 
                         <div className={classes.doneContainer}>
-                            <Button color="secondary" variant="contained" onClick={handleClickExit}>
-                                Leave Shop
-                            </Button>
+                            <LeaveButton onClick={handleClickExit} text="Leave" />
                         </div>
                     </>
                 )}
