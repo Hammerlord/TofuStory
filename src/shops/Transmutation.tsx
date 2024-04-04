@@ -78,34 +78,52 @@ const useStyles = createUseStyles({
     },
     transmuteContainerInner: {
         display: "flex",
-        alignItems: "center",
+        alignItems: "end",
         justifyContent: "center",
+        minHeight: "356px",
     },
     cardPlaceholder: {
         width: 168,
         height: 262,
-        border: "1px solid rgba(255, 255, 255, 0.5)",
+        border: "none",
         borderRadius: 4,
         display: "inline-block",
-        background: "none",
+        background: "#4f4f4f",
         padding: 24,
         color: "white",
         fontSize: 16,
         transition: "0.25s",
+        filter: "drop-shadow(0 0 3px #45ff61)",
+        margin: "0 16",
         "&:hover&:not(:disabled)": {
-            filter: "drop-shadow(0 0 4px #45ff61)",
+            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
         },
+    },
+    resultPlaceholder: {
+        width: 168,
+        height: 262,
+        borderRadius: 4,
+        padding: 24,
+        border: "1px solid rgba(255, 255, 255, 0.25)",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
     },
     divider: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        fontSize: "40px",
+        fontSize: "56px",
         margin: "auto 8px",
+        paddingTop: 72,
     },
     rarityPreview: {
         display: "inline-block",
         width: 168,
+        margin: "0 16",
+        position: "relative",
     },
     deckSection: {
         marginTop: 48,
@@ -131,6 +149,26 @@ const useStyles = createUseStyles({
     },
     option: {
         opacity: 0,
+    },
+    resultPlaceholderExtra: {
+        border: "1px solid rgba(255, 255, 255, 0.25)",
+        borderRadius: 4,
+        position: "absolute",
+        width: 168,
+        height: 260,
+        bottom: 0,
+        right: -16,
+        borderLeft: 0,
+    },
+    resultPlaceholderExtra2: {
+        border: "1px solid rgba(255, 255, 255, 0.25)",
+        borderRadius: 4,
+        position: "absolute",
+        width: 168,
+        height: 260,
+        bottom: 0,
+        right: -32,
+        borderLeft: 0,
     },
 });
 
@@ -283,8 +321,11 @@ const Transmutation = ({
                                     </button>
                                 )}
                                 {selectedCard && (
-                                    <div className={classes.abilityContainer} ref={selectedCardRef}>
-                                        <AbilityView ability={selectedCard} onClick={handleClickSelectCardButton} />
+                                    <div className={classes.abilityContainer}>
+                                        <RarityTag rarity={selectedCardRarity} />
+                                        <div ref={selectedCardRef}>
+                                            <AbilityView ability={selectedCard} onClick={handleClickSelectCardButton} />
+                                        </div>
                                     </div>
                                 )}
                                 <div className={classes.divider}>
@@ -292,7 +333,7 @@ const Transmutation = ({
                                 </div>
                                 <div className={classes.rarityPreview}>
                                     {selectedCard && (
-                                        <>
+                                        <div>
                                             <div>
                                                 <RarityTag rarity={selectedCardRarity} />
                                             </div>
@@ -301,9 +342,12 @@ const Transmutation = ({
                                                     <RarityTag rarity={rarityStepChart[selectedCardRarity]} />
                                                 )}
                                             </div>
-                                        </>
+                                        </div>
                                     )}
-                                    {!selectedCard && <Icon icon={QuestionMarkIcon} />}
+
+                                    <div className={classes.resultPlaceholder}>{<Icon icon={QuestionMarkIcon} />}</div>
+                                    <div className={classes.resultPlaceholderExtra} />
+                                    <div className={classes.resultPlaceholderExtra2} />
                                 </div>
                             </div>
                         )}
