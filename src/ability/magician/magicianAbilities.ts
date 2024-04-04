@@ -688,7 +688,7 @@ export const frostBarrier: Ability = {
         {
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
-            armor: 5,
+            armor: 6,
             effects: [
                 {
                     name: "Frost Barrier",
