@@ -1,21 +1,23 @@
-import { useState } from "react";
-import Overlay from "../view/Overlay";
-import Button from "../view/Button";
-import { Item, RARITIES } from "../item/types";
-import { createUseStyles } from "react-jss";
-import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
-import { rollRarity } from "../item/utils";
-import { JOB_CARD_MAP } from "../ability";
-import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { shuffle } from "../utils";
-import { Ability, CombatAbility } from "../ability/types";
-import RarityTag from "../ability/AbilityView/RarityTag";
-import uuid from "uuid";
 import classNames from "classnames";
-import AbilityView from "../ability/AbilityView/AbilityView";
-import CardGrid from "../Menu/CardGrid";
+import { useEffect, useRef, useState } from "react";
+import { createUseStyles } from "react-jss";
+import uuid from "uuid";
 import DeckViewer from "../Menu/DeckViewer";
+import { JOB_CARD_MAP } from "../ability";
+import AbilityView from "../ability/AbilityView/AbilityView";
+import RarityTag from "../ability/AbilityView/RarityTag";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
+import { Ability, CombatAbility } from "../ability/types";
+import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { Player } from "../character/types";
+import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
+import { QuestionMarkIcon } from "../images/icons";
+import { Item, RARITIES } from "../item/types";
+import { rollRarity } from "../item/utils";
+import { shuffle } from "../utils";
+import Button from "../view/Button";
+import Overlay from "../view/Overlay";
+import Icon from "../icon/Icon";
 
 const HEADER_BAR = 72;
 
@@ -110,20 +112,57 @@ const useStyles = createUseStyles({
         marginBottom: "24px",
         minWidth: 400,
     },
+    option: {
+        opacity: 0,
+    },
 });
 
-const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbility[]; onTransmute; player: Player; onExit? }) => {
+const Transmutation = ({
+    deck,
+    onTransmute,
+    player,
+    onExit,
+}: {
+    deck: CombatAbility[];
+    onTransmute: (options: { card: string; for: CombatAbility }) => void;
+    player: Player;
+    onExit?;
+}) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
     const [numTransmutesRemaining, setNumTransmutesRemaining] = useState(2);
+    const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
     const [transmutationOptions, setTransmutationOptions] = useState(null);
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
     const [showDeck, setShowingDeck] = useState(false);
 
     const classes = useStyles();
+    const selectedCardRef = useRef();
+    const optionsRefs = Array.from({ length: 10 }).map(() => useRef());
 
-    const handleTransmute = () => {
+    useEffect(() => {
+        if (!isPlayingAnimation) {
+            return;
+        }
+
+        const animations = playExplodeAnimation({ from: selectedCardRef.current, maxScale: 1.5, playbackTime: 500 });
+        animations[animations.length - 1].onfinish = () => {
+            setIsPlayingAnimation(false);
+            transmute();
+        };
+    }, [isPlayingAnimation]);
+
+    useEffect(() => {
+        if (!transmutationOptions) {
+            return;
+        }
+        transmutationOptions.forEach((_, i) => {
+            playFadeInAnimation({ object: optionsRefs[i].current, shiftUp: true, delay: i * 100, fill: "forwards" });
+        });
+    }, [transmutationOptions]);
+
+    const transmute = () => {
         const { starters, all } = JOB_CARD_MAP[player.class];
         const potentialAbilities = [...all.filter((card) => starters.every(({ name }) => name !== card.name))].concat(NEUTRAL_ABILITIES);
 
@@ -163,7 +202,7 @@ const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbil
         setSelectedOptionIndex(cardIndex);
     };
 
-    const handleSelectClick = () => {
+    const handleConfirmClick = () => {
         onTransmute({ card: selectedCard.instanceId, for: transmutationOptions[selectedOptionIndex] });
         setSelectedCard(null);
         setTransmutationOptions(null);
@@ -213,7 +252,11 @@ const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbil
                                         <span>Select Card</span>
                                     </button>
                                 )}
-                                {selectedCard && <AbilityView ability={selectedCard} onClick={handleClickSelectCardButton} />}
+                                {selectedCard && (
+                                    <div className={classes.abilityContainer} ref={selectedCardRef}>
+                                        <AbilityView ability={selectedCard} onClick={handleClickSelectCardButton} />
+                                    </div>
+                                )}
                                 <div className={classes.divider}>
                                     <span>›</span>
                                 </div>
@@ -230,17 +273,22 @@ const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbil
                                             </div>
                                         </>
                                     )}
+                                    {!selectedCard && <Icon icon={QuestionMarkIcon} />}
                                 </div>
                             </div>
                         )}
 
                         {transmutationOptions && (
                             <>
-                                <h4>Results (Pick One)</h4>
+                                <h4>Results - Pick One</h4>
                                 <div className={classes.transmuteContainerInner}>
                                     <div className={classes.abilitySectionContainer}>
-                                        {transmutationOptions.map((ability: CombatAbility, i) => (
-                                            <div className={classes.abilityContainer} key={ability.instanceId}>
+                                        {transmutationOptions.map((ability: CombatAbility, i: number) => (
+                                            <div
+                                                className={classNames(classes.abilityContainer, classes.option)}
+                                                key={ability.instanceId}
+                                                ref={optionsRefs[i]}
+                                            >
                                                 <RarityTag rarity={ability.rarity} />
                                                 <div
                                                     className={classNames(classes.ability, {
@@ -255,7 +303,7 @@ const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbil
                                     </div>
                                 </div>
                                 <div className={classes.selectContainer}>
-                                    <Button color="primary" disabled={selectedOptionIndex === null} onClick={handleSelectClick}>
+                                    <Button color="primary" disabled={selectedOptionIndex === null} onClick={handleConfirmClick}>
                                         Confirm
                                     </Button>
                                 </div>
@@ -272,7 +320,11 @@ const Transmutation = ({ deck, onTransmute, player, onExit }: { deck: CombatAbil
                                     [classes.highlightAnimation]: selectedCard && numTransmutesRemaining,
                                 })}
                             >
-                                <Button disabled={!selectedCard || !numTransmutesRemaining} onClick={handleTransmute} color="primary">
+                                <Button
+                                    disabled={!selectedCard || !numTransmutesRemaining}
+                                    onClick={() => setIsPlayingAnimation(true)}
+                                    color="primary"
+                                >
                                     Transmute
                                 </Button>
                             </span>
