@@ -2207,13 +2207,13 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "<b>Ward.</b> Every turn, <b>Radiate</b> {{ nestedAbility.actions.0.radiate.damage }} {{{ _damage_ }}} to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
+        "<b>Ward.</b> Every turn, <b>Radiate</b> Attack Down to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
     rarity: RARITIES.RARE,
     resourceCost: 2,
     minion: {
         name: "Guardian Statue",
         image: PinkBeanStatueImage,
-        maxHP: 5,
+        maxHP: 6,
         abilities: [
             {
                 ...attack,
@@ -2244,12 +2244,12 @@ export const guardian: Ability = {
                                 animation: ANIMATION_TYPES.SHOUT,
                                 radiate: {
                                     area: 2,
-                                    damage: 5,
+                                    effects: [{ ...attackDown, duration: 1 }],
                                 },
                                 secondaryAction: {
                                     excludePrimaryTarget: true,
                                     area: 2,
-                                    healing: 2,
+                                    healing: 1,
                                 },
                             },
                         ],
@@ -2267,12 +2267,12 @@ export const guardian: Ability = {
                                 animation: ANIMATION_TYPES.SHOUT,
                                 radiate: {
                                     area: 2,
-                                    damage: 5,
+                                    effects: [{ ...attackDown, duration: 1 }],
                                 },
                                 secondaryAction: {
                                     excludePrimaryTarget: true,
                                     area: 2,
-                                    healing: 2,
+                                    healing: 1,
                                 },
                             },
                         ],
@@ -2285,37 +2285,14 @@ export const guardian: Ability = {
     upgrades: [
         {
             minion: {
-                effects: [
-                    {},
+                maxHP: 1,
+                abilities: [
                     {
-                        onTurnStart: {
-                            ability: {
-                                actions: [
-                                    {
-                                        radiate: {
-                                            damage: 2,
-                                        },
-                                        secondaryAction: {
-                                            healing: 1,
-                                        },
-                                    },
-                                ],
+                        actions: [
+                            {
+                                damage: 1,
                             },
-                        },
-                        onSummoned: {
-                            ability: {
-                                actions: [
-                                    {
-                                        radiate: {
-                                            damage: 2,
-                                        },
-                                        secondaryAction: {
-                                            healing: 1,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
+                        ],
                     },
                 ],
             },

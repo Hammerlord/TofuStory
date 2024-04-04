@@ -670,6 +670,9 @@ export const attackDown = {
     class: EFFECT_CLASSES.DEBUFF,
     icon: AttackDownImage,
     attackPower: -1,
+    duration: 3,
+    maxApplications: 2,
+    description: "Reduces ATT by 1. Max 2 stacks.",
 };
 
 export const directDamageTaken: Effect = {
