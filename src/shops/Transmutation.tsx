@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckViewer from "../Menu/DeckViewer";
+import { getUpgradeCard } from "../Menu/utils";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
@@ -11,15 +12,15 @@ import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { Player } from "../character/types";
 import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
-import { DoorIcon, QuestionMarkIcon } from "../images/icons";
+import { useAppSelector } from "../hooks";
+import Icon from "../icon/Icon";
+import { ElliniaWeaponStoreImage } from "../images";
+import { QuestionMarkIcon } from "../images/icons";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import Icon from "../icon/Icon";
-import { ElliniaWeaponStoreImage } from "../images";
-import { getUpgradeCard } from "../Menu/utils";
 import LeaveButton from "./LeaveButton";
 
 const HEADER_BAR = 72;
@@ -145,7 +146,7 @@ const useStyles = createUseStyles({
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 70%, rgba(0,212,255,0) 100%)",
         padding: "0 96px",
-        margin: 8,
+        marginTop: 32,
         color: "white",
         marginBottom: "24px",
         minWidth: 400,
@@ -180,7 +181,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Transmutation = ({
+export const TransmutationView = ({
     deck,
     onTransmute,
     player,
@@ -191,11 +192,10 @@ const Transmutation = ({
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
     player: Player;
     onExit?;
-    numTransmutations?: number;
+    numTransmutations?: number; // How many transmutations the player can perform for this session
 }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
-    const [numTransmutesRemaining, setNumTransmutesRemaining] = useState(numTransmutations);
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
     const [transmutationOptions, setTransmutationOptions] = useState(null);
@@ -264,7 +264,6 @@ const Transmutation = ({
         });
 
         setTransmutationOptions(choices);
-        setNumTransmutesRemaining((prev) => prev - 1);
     };
 
     const rarityStepChart = {
@@ -321,7 +320,7 @@ const Transmutation = ({
                                     <button
                                         className={classes.cardPlaceholder}
                                         onClick={handleClickSelectCardButton}
-                                        disabled={!numTransmutesRemaining}
+                                        disabled={!numTransmutations}
                                     >
                                         <span className={classes.plus}>+</span>
                                         <br />
@@ -391,15 +390,15 @@ const Transmutation = ({
 
                     {!transmutationOptions && (
                         <>
-                            <div className={classes.transmutesRemainingLabel}>Transmutations remaining: {numTransmutesRemaining}</div>
+                            <div className={classes.transmutesRemainingLabel}>Transmutations remaining: {numTransmutations}</div>
 
                             <span
                                 className={classNames({
-                                    [classes.highlightAnimation]: selectedCard && numTransmutesRemaining,
+                                    [classes.highlightAnimation]: selectedCard && numTransmutations,
                                 })}
                             >
                                 <Button
-                                    disabled={!selectedCard || !numTransmutesRemaining}
+                                    disabled={!selectedCard || !numTransmutations}
                                     onClick={() => setIsPlayingAnimation(true)}
                                     color="primary"
                                 >
@@ -422,6 +421,19 @@ const Transmutation = ({
             </div>
         </Overlay>
     );
+};
+
+const Transmutation = ({
+    ...other
+}: {
+    onTransmute: (options: { card: string; for: CombatAbility }) => void;
+    player: Player;
+    onExit?;
+    numTransmutations?: number;
+}) => {
+    const deck = useAppSelector((state) => state).character.deck;
+
+    return <TransmutationView deck={deck} {...other} />;
 };
 
 export default Transmutation;

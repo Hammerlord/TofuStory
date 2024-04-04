@@ -1,5 +1,5 @@
 import { OnBuyItem } from "../shops/constants";
-import { Ability, Minion } from "../ability/types";
+import { Ability, CombatAbility, Minion } from "../ability/types";
 import { Player } from "../character/types";
 import {
     AltForestBGImage,
@@ -111,4 +111,5 @@ export type TownProperties = {
     onTrade: (options: { playerItem: Item; forItem: Item }) => void;
     onCamp: () => void;
     onBattle: (battleConfig, callback: Function) => void;
+    onTransmute: (options: { card: string; for: CombatAbility }) => void;
 };

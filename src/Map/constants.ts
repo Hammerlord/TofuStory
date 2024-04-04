@@ -5,6 +5,7 @@ export const TOWN_PLACES = {
     CAMPAIGN: "campaign",
     REST: "resting-spot",
     GACHAPON: "gachapon",
+    WORKSHOP: "workshop",
 };
 
 export const TOWN_STYLES = {

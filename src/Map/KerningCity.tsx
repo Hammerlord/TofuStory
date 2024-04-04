@@ -14,7 +14,9 @@ import {
     KerningShopImage,
     KerningSwampImage,
     KerningTradingPostImage,
+    PersonalAnvilImage,
     SwampRegionBGImage,
+    TownTransmuteImage,
 } from "../images";
 import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLordScene";
@@ -37,6 +39,8 @@ import { BATTLE_TYPES } from "../battle/types";
 import { EventScene, SceneEncounter } from "../scene/types";
 import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import TradingPost from "../shops/TradingPost";
+import Transmutation from "../shops/Transmutation";
+import { CombatAbility } from "../ability/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -106,7 +110,7 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp, onTransmute }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -114,6 +118,8 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp 
     const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+    const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
+    const [transmutationsRemaining, setTransmutationsRemaining] = useState(2);
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -143,6 +149,18 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp 
         if (tradingPostConfig.tradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
+    };
+
+    const handleClickWorkshop = () => {
+        if (transmutationsRemaining > 0) {
+            checkVisitPlace(KERNING_PLACES.WORKSHOP);
+            setIsWorkshopOpen(true);
+        }
+    };
+
+    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        setTransmutationsRemaining((prev) => prev - 1);
+        onTransmute(options);
     };
 
     const handleClickShop = () => {
@@ -195,12 +213,22 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp 
             <div className={classes.bg}>
                 <Pan userPosition={screenCentre} disableIntroAnimate={true}>
                     <div className={classes.inner}>
+                        {/**
                         <TownNode
                             icon={DiamondImage}
                             label={"Trading Post"}
                             nodeImage={KerningTradingPostImage}
                             onClick={handleClickTradingPost}
                             isVisited={tradingPostConfig.tradesRemaining === 0}
+                        />
+                         */}
+
+                        <TownNode
+                            icon={PersonalAnvilImage}
+                            label={"Workshop"}
+                            nodeImage={TownTransmuteImage}
+                            onClick={handleClickWorkshop}
+                            isVisited={transmutationsRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
                         <br />
@@ -274,6 +302,14 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp 
                         onExit={() => setIsTradingPostOpen(false)}
                         onTrade={onTrade}
                         tradingPostConfig={tradingPostConfig}
+                    />
+                )}
+                {isWorkshopOpen && (
+                    <Transmutation
+                        player={player}
+                        onExit={() => setIsWorkshopOpen(false)}
+                        onTransmute={handleTransmute}
+                        numTransmutations={transmutationsRemaining}
                     />
                 )}
             </div>

@@ -38,7 +38,7 @@ const boulder: Minion = {
         {
             ...earthen,
             name: "Heavy",
-            description: "Immune to most debuff types. Targets struck by Boulder will have their Attack Power reduced by 1.",
+            description: "Immune to debuffs. Targets struck by Boulder will have their Attack Power reduced by 1.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

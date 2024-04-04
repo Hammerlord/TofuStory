@@ -27,7 +27,7 @@ import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
 import TradingPost from "../shops/TradingPost";
 import { FortuneBox } from "../scene/FortuneBox";
-import Transmutation from "../shops/Transmutation";
+import Transmutation, { TransmutationView } from "../shops/Transmutation";
 import { JOB_CARD_MAP } from "../ability";
 import { PLAYER_CLASSES } from "../Menu/types";
 import uuid from "uuid";
@@ -234,7 +234,7 @@ const DevToolButton = () => {
             )}
             {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
             {isTransmutationOpen && (
-                <Transmutation
+                <TransmutationView
                     deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => {
                         const card = { ...ability, instanceId: uuid.v4() };
                         const upgraded = getUpgradeCard(card);

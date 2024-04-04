@@ -8,8 +8,8 @@ import { REGIONS } from "../Map/regions";
 import { events } from "../Map/routes/eventList";
 import generateTravelRoute from "../Map/routes/generateTravelRoute";
 import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
-import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS } from "../Map/types";
-import { Ability } from "../ability/types";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS, TownProperties } from "../Map/types";
+import { Ability, CombatAbility } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
 import { startBattle } from "../battle/actions/phases";
@@ -509,7 +509,7 @@ const Main = () => {
     };
 
     const getTown = () => {
-        const Town: any = TOWN_MAP[town];
+        const Town = TOWN_MAP[town];
 
         if (!Town) {
             return null;
@@ -528,6 +528,7 @@ const Main = () => {
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
                 onCamp={() => setActivity(ACTIVITIES.CAMP)}
+                onTransmute={handleTransmute}
             />
         );
     };
@@ -547,6 +548,16 @@ const Main = () => {
         }
 
         dispatch(updatePlayer({ weapon: weaponSkin }));
+    };
+
+    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        const { card: cardId, for: forCard } = options || {};
+        const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
+        if (cardIndex > -1) {
+            const newDeck = deck.slice();
+            newDeck[cardIndex] = forCard;
+            handleUpdateDeck(newDeck);
+        }
     };
 
     const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
