@@ -14,6 +14,8 @@ export const ELITE_UNCOMMON_RATE = 0.2;
 
 export const REGULAR_BATTLE_LOOT_CHANCE = 0.2;
 
+export const NUM_CARD_CHOICES = 3;
+
 export const INTRO_PAN_TIME = 2000;
 export const RE_PAN_TIME = 400;
 

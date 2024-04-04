@@ -27,6 +27,10 @@ import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
 import TradingPost from "../shops/TradingPost";
 import { FortuneBox } from "../scene/FortuneBox";
+import Transmutation from "../shops/Transmutation";
+import { JOB_CARD_MAP } from "../ability";
+import { PLAYER_CLASSES } from "../Menu/types";
+import uuid from "uuid";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -98,6 +102,7 @@ const DevToolButton = () => {
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const [isFortuneBoxOpen, setIsFortuneBoxOpen] = useState(false);
+    const [isTransmutationOpen, setIsTransmutationOpen] = useState(false);
     const classes = useStyles();
 
     const handleCardGameDifficultyClick = (difficulty: "easy" | "medium" | "hard") => {
@@ -137,6 +142,7 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
                                 <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
                                 <MenuItem onClick={() => setIsFortuneBoxOpen((prev) => !prev)}>Fortune Box</MenuItem>
+                                <MenuItem onClick={() => setIsTransmutationOpen((prev) => !prev)}>Transmutation</MenuItem>
                             </MenuList>
                             Treasure Box Puzzles
                             <MenuList>
@@ -226,6 +232,13 @@ const DevToolButton = () => {
                 <TradingPost player={defaultCharacterProperties} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
             )}
             {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
+            {isTransmutationOpen && (
+                <Transmutation
+                    deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => ({ ...ability, instanceId: uuid.v4() }))}
+                    player={defaultCharacterProperties}
+                    onTransmute={() => {}}
+                />
+            )}
         </>
     );
 };

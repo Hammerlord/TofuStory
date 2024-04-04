@@ -25,8 +25,22 @@ export const rollRarity = ({
         { bonusUncommonChance: bonuses.uncommon || 0, bonusRareChance: bonuses.rare || 0 }
     );
 
-    const uncommonChance = disableRarities.includes(RARITIES.UNCOMMON) ? 0 : UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
-    const rareChance = disableRarities.includes(RARITIES.RARE) ? 0 : RARE_ITEM_CHANCE + bonusRareChance;
+    let uncommonChance = UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
+    let rareChance = RARE_ITEM_CHANCE + bonusRareChance;
+
+    if (disableRarities.includes(RARITIES.COMMON)) {
+        if (disableRarities.includes(RARITIES.UNCOMMON)) {
+            rareChance = 1;
+        } else {
+            uncommonChance = 1;
+        }
+    } else if (disableRarities.includes(RARITIES.UNCOMMON)) {
+        uncommonChance = 0;
+    }
+
+    if (disableRarities.includes(RARITIES.RARE)) {
+        rareChance = 0;
+    }
 
     if (roll <= rareChance) {
         return RARITIES.RARE;

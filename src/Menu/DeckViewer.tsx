@@ -9,9 +9,9 @@ const useStyles = createUseStyles({
         width: "calc(80vw)",
         height: "calc(80vh)",
         position: "absolute",
-        marginTop: "88px",
+        top: "88px",
         zIndex: 5,
-        borderRadius: "16px",
+        borderRadius: "8px",
         padding: "24px",
         paddingTop: "0",
         left: "50%",
@@ -40,7 +40,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const DeckViewer = ({ deck, onClose }: { deck: CombatAbility[]; onClose; player }) => {
+const DeckViewer = ({
+    deck,
+    onClose,
+    onClickAbility = () => {},
+}: {
+    deck: CombatAbility[];
+    onClose: () => void;
+    onClickAbility?: (card: CombatAbility) => void;
+}) => {
     const classes = useStyles();
     const getResourceCost = (ability: CombatAbility): number => {
         if (ability.resourceCost === "x") {
@@ -65,7 +73,7 @@ const DeckViewer = ({ deck, onClose }: { deck: CombatAbility[]; onClose; player 
                 </button>
                 {deck.map((card: CombatAbility) => (
                     <div className={classes.abilityContainer} key={card.instanceId}>
-                        <AbilityView ability={card} disableGlow={true} disableBattleBonuses={true} />
+                        <AbilityView ability={card} disableGlow={true} disableBattleBonuses={true} onClick={() => onClickAbility(card)} />
                     </div>
                 ))}
             </div>

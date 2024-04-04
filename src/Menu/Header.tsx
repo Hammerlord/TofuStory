@@ -171,7 +171,7 @@ const Header = ({
                 </div>
                 <Inventory player={player} inventory={player.items} onUseItem={onUseItem} />
             </div>
-            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} player={player} />}
+            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
         </>
     );
 };

@@ -8,7 +8,7 @@ import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability, CombatAbility } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { Player } from "../character/types";
-import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
+import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE, NUM_CARD_CHOICES } from "../constants";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
 import { shuffle } from "../utils";
@@ -63,8 +63,6 @@ const useStyles = createUseStyles({
     },
 });
 
-const BASE_NUM_CHOICES = 3;
-
 const CardRewards = ({
     deck,
     player,
@@ -99,7 +97,7 @@ const CardRewards = ({
         ].concat(NEUTRAL_ABILITIES);
 
         const choices = [...cardRewardOptions];
-        const numChoices = BASE_NUM_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
+        const numChoices = NUM_CARD_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
 
         let bonuses = { rare: 0, uncommon: 0 };
         if (rewardType === BATTLE_TYPES.BOSS) {
