@@ -363,7 +363,9 @@ export const TransmutationView = ({
 
                         {transmutationOptions && (
                             <>
-                                <h4>Results - Pick One</h4>
+                                <p>
+                                    Results of transmuting [<Icon icon={selectedCard.image} size="sm" /> {selectedCard.name}] - pick one:
+                                </p>
                                 <div className={classes.transmuteContainerInner}>
                                     <div className={classes.abilitySectionContainer}>
                                         {transmutationOptions.map((ability: CombatAbility, i: number) => (
