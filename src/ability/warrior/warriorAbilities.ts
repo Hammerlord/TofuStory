@@ -443,7 +443,7 @@ export const yell: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.SHOUT,
-            effects: [{ ...taunt, duration: 3 }],
+            effects: [{ ...taunt, duration: 3, maxApplications: 1 }],
             radiate: {
                 area: 2,
                 effects: [{ ...attackDown, duration: 3 }],

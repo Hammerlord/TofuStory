@@ -5,6 +5,7 @@ import {
     BombImage,
     FireMarbleImage,
     GemHeartImage,
+    GreyShieldImage,
     HumilityStoneImage,
     MushroomOmokImage,
     NimbleJewelCImage,
@@ -660,6 +661,7 @@ export const taunt = {
     type: EFFECT_TYPES.TAUNT,
     class: EFFECT_CLASSES.BUFF,
     image: BlackShieldIcon,
+    icon: GreyShieldImage,
 };
 
 export const attackDown = {
