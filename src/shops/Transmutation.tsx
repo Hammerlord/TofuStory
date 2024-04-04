@@ -19,6 +19,7 @@ import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import Icon from "../icon/Icon";
 import { ElliniaWeaponStoreImage } from "../images";
+import { getUpgradeCard } from "../Menu/utils";
 
 const HEADER_BAR = 72;
 
@@ -138,15 +139,17 @@ const Transmutation = ({
     onTransmute,
     player,
     onExit,
+    numTransmutations = 2,
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
     player: Player;
     onExit?;
+    numTransmutations?: number;
 }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
-    const [numTransmutesRemaining, setNumTransmutesRemaining] = useState(2);
+    const [numTransmutesRemaining, setNumTransmutesRemaining] = useState(numTransmutations);
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
     const [transmutationOptions, setTransmutationOptions] = useState(null);
@@ -199,12 +202,22 @@ const Transmutation = ({
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 return (ability.rarity || RARITIES.COMMON) === rarity && noDuplicate;
             });
+
             if (filteredByRarity) {
-                choices.push(filteredByRarity);
+                let cardToAdd = { ...filteredByRarity, level: 1, instanceId: uuid.v4() };
+                while (cardToAdd.level < selectedCard.level) {
+                    const card = getUpgradeCard(cardToAdd);
+                    if (card) {
+                        cardToAdd = card;
+                    } else {
+                        break;
+                    }
+                }
+                choices.push(cardToAdd);
             }
         });
 
-        setTransmutationOptions(choices.map((ability) => ({ ...ability, instanceId: uuid.v4() })));
+        setTransmutationOptions(choices);
         setNumTransmutesRemaining((prev) => prev - 1);
     };
 

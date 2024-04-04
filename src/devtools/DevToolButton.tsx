@@ -31,6 +31,7 @@ import Transmutation from "../shops/Transmutation";
 import { JOB_CARD_MAP } from "../ability";
 import { PLAYER_CLASSES } from "../Menu/types";
 import uuid from "uuid";
+import { getUpgradeCard } from "../Menu/utils";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -234,9 +235,18 @@ const DevToolButton = () => {
             {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
             {isTransmutationOpen && (
                 <Transmutation
-                    deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => ({ ...ability, instanceId: uuid.v4() }))}
+                    deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => {
+                        const card = { ...ability, instanceId: uuid.v4() };
+                        const upgraded = getUpgradeCard(card);
+                        if (upgraded) {
+                            return upgraded;
+                        }
+
+                        return card;
+                    })}
                     player={defaultCharacterProperties}
                     onTransmute={() => {}}
+                    onExit={() => setIsTransmutationOpen(false)}
                 />
             )}
         </>
