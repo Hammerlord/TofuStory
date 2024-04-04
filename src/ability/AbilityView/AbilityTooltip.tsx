@@ -9,6 +9,7 @@ import { immunity } from "../Effects";
 import { enemyNameMap } from "../../enemy";
 import { soulBlade } from "../warrior/warriorAbilities";
 import { GreyShieldImage, NamelessSwordImage } from "../../images";
+import { CactusIcon } from "../../images/icons";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -274,6 +275,12 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     if (stringified.includes("counter")) {
         tooltips.push(
             <AbilityTooltipSection title="Counter" icon={NamelessSwordImage} description={"When attacked, attack back."} key={"counter"} />
+        );
+    }
+
+    if (stringified.includes("thorns")) {
+        tooltips.push(
+            <AbilityTooltipSection title="Thorns" icon={CactusIcon} description={"Deals 1 damage to attackers per stack."} key={"thorns"} />
         );
     }
 

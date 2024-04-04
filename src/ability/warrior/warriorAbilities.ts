@@ -1063,7 +1063,7 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoImage,
-    description: "On attack, cast tornadoes that deal {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} to up to 3 enemies.",
+    description: "On attack, cast {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} tornadoes at up to 3 enemies.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
