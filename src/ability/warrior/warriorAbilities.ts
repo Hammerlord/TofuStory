@@ -2046,7 +2046,7 @@ export const gungnir: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.25,
+                value: 0.3,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
@@ -2526,7 +2526,7 @@ export const bluntForce: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.4,
+                value: 0.5,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
