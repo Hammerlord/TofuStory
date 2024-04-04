@@ -163,6 +163,7 @@ export { default as ElliniaLibraryOutsideImage } from "./ElliniaLibraryOutside.p
 export { default as ElliniaMagicianHallImage } from "./ElliniaMagicianHall.png";
 export { default as ElliniaShopImage } from "./ElliniaShop.png";
 export { default as ElliniaTradingPostImage } from "./ElliniaTradingPost.png";
+export { default as ElliniaWeaponStoreImage } from "./ElliniaWeaponStore.png";
 export { default as ElquinesImage } from "./Elquines.png";
 export { default as EmptySackImage } from "./EmptySack.png";
 export { default as EncroachingDarknessImage } from "./EncroachingDarkness.png";

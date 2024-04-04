@@ -18,6 +18,7 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import Icon from "../icon/Icon";
+import { ElliniaWeaponStoreImage } from "../images";
 
 const HEADER_BAR = 72;
 
@@ -34,6 +35,21 @@ const useStyles = createUseStyles({
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
         background: "rgba(30, 30, 30, 0.99)",
         textAlign: "center",
+    },
+    backdrop: {
+        height: "75%",
+        bottom: 0,
+        width: "100%",
+        maxWidth: "80vw",
+        background: `url(${ElliniaWeaponStoreImage})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain",
+        backgroundPosition: "center center",
+        position: "fixed",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: -1,
+        opacity: 0.2,
     },
     transmutesRemainingLabel: {
         margin: "9px 16px",
@@ -57,7 +73,7 @@ const useStyles = createUseStyles({
         margin: "48px 0",
     },
     transmuteContainer: {
-        margin: "24px 0",
+        margin: "32px 0",
     },
     transmuteContainerInner: {
         display: "flex",
@@ -223,6 +239,7 @@ const Transmutation = ({
     return (
         <Overlay>
             <div className={classes.transmutationRoot}>
+                <div className={classes.backdrop} />
                 <div className={classes.titleContainer}>
                     <h2>Transmute an Ability</h2>
                 </div>
