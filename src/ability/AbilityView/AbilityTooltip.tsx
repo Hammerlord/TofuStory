@@ -8,6 +8,7 @@ import AbilityView from "./AbilityView";
 import { immunity } from "../Effects";
 import { enemyNameMap } from "../../enemy";
 import { soulBlade } from "../warrior/warriorAbilities";
+import { GreyShieldImage, NamelessSwordImage } from "../../images";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -166,7 +167,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const stringified = JSON.stringify(ability).toLowerCase();
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
     const tributeSummon = ability.minionOptions?.tributeSummon;
-    const taunt = ability?.minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -265,13 +265,21 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
-    if (taunt) {
-        tooltips.push(<AbilityTooltipSection title="Taunt" description={"Enemies must attack this target."} key={"taunt"} />);
+    if (stringified.includes("taunt")) {
+        tooltips.push(
+            <AbilityTooltipSection title="Taunt" icon={GreyShieldImage} description={"Enemies must attack this target."} key={"taunt"} />
+        );
+    }
+
+    if (stringified.includes("counter")) {
+        tooltips.push(
+            <AbilityTooltipSection title="Counter" icon={NamelessSwordImage} description={"When attacked, attack back."} key={"counter"} />
+        );
     }
 
     const discover = stringified.includes("discover");
     if (discover) {
-        tooltips.push(<AbilityTooltipSection title="Discover" description={"Pick one of three card options."} key={"discover"} />);
+        tooltips.push(<AbilityTooltipSection title="Discover" description={"Pick 1 of 3 card options."} key={"discover"} />);
     }
 
     return (
