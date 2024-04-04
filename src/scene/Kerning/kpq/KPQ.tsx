@@ -19,13 +19,22 @@ import RopeQuest from "./RopeQuest";
 import SewerEntrance from "./SewerEntrance";
 import SewerEntrance2 from "./SewerEntrance2";
 
+const ligatorBAbilities = [...ligator.abilities];
+ligatorBAbilities.push(ligatorBAbilities.shift());
+
+const ligatorB = {
+    ...ligator,
+    resources: 2,
+    abilities: ligatorBAbilities,
+};
+
 const ligatorFight1: SceneEncounter = {
     waves: [
         {
-            enemies: [null, ligator, null, ligator, null],
+            enemies: [null, ligator, null, ligatorB, null],
         },
         {
-            enemies: [null, ligator, ligator, ligator, null],
+            enemies: [null, ligator, ligatorB, ligator, null],
         },
     ],
 };
@@ -33,7 +42,7 @@ const ligatorFight1: SceneEncounter = {
 const ligatorFight2: SceneEncounter = {
     waves: [
         {
-            enemies: [ligator, null, eliteLigator, null, ligator],
+            enemies: [ligatorB, null, eliteLigator, null, ligatorB],
             generateEliteAffixes: true,
         },
     ],

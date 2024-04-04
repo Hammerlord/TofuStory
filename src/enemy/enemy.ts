@@ -934,6 +934,17 @@ export const ligator: Minion = {
                 },
             ],
         },
+        loaf,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         {
             name: "Chomp",
             resourceCost: 3,
@@ -942,7 +953,7 @@ export const ligator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                     effects: [
                         {
                             ...bleed,
@@ -959,10 +970,10 @@ export const eliteLigator: Minion = {
     name: "Ligator",
     image: LigatorImage,
     isElite: true,
-    maxHP: 80,
+    maxHP: 90,
     mesos: 25,
     resources: 1,
-    effects: [],
+    effects: [elite],
     abilities: [
         {
             ...attack,
@@ -970,7 +981,18 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
+                },
+            ],
+        },
+        loaf,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
                 },
             ],
         },
@@ -982,7 +1004,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
                     effects: [
                         {
                             ...bleed,
