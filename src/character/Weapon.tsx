@@ -186,6 +186,9 @@ const Weapon = ({
     const isGlowing = useMemo(() => wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow"), [wielder?.effects]);
 
     useEffect(() => {
+        if (!action) {
+            return;
+        }
         //@ts-ignore
         animationRefs.current?.forEach((a) => a.cancel());
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {
