@@ -15,6 +15,8 @@ import {
     HenesysRestImage,
     HenesysShopImage,
     HenesysTradingPostImage,
+    PersonalAnvilImage,
+    TownTransmuteImage,
 } from "../images";
 import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
@@ -30,6 +32,8 @@ import { useShopConfig } from "../shops/shopUtils";
 import Shop from "../shops/Shop";
 import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import TradingPost from "../shops/TradingPost";
+import { CombatAbility } from "../ability/types";
+import Transmutation from "../shops/Transmutation";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -71,7 +75,7 @@ const HENESYS_BOSSES = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: TownProperties) => {
+const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onTransmute }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -79,6 +83,8 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
     const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+    const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
+    const [transmutationsRemaining, setTransmutationsRemaining] = useState(2);
 
     const numActivitiesComplete: number = Object.values(HENESYS_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -109,6 +115,13 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
         }
     };
 
+    const handleClickWorkshop = () => {
+        if (transmutationsRemaining > 0) {
+            checkVisitPlace(HENESYS_PLACES.WORKSHOP);
+            setIsWorkshopOpen(true);
+        }
+    };
+
     const handleClickShop = () => {
         checkVisitPlace(HENESYS_PLACES.SHOP);
         setIsShopOpen(true);
@@ -132,6 +145,11 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
         }
     };
 
+    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        setTransmutationsRemaining((prev) => prev - 1);
+        onTransmute(options);
+    };
+
     const boss = useMemo(() => {
         if (Math.random() < 0.5) {
             return HENESYS_BOSSES.ATHENA;
@@ -145,12 +163,21 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
             <div className={classes.bg}>
                 <Pan userPosition={screenCentre} disableIntroAnimate={true}>
                     <div className={classes.inner}>
-                        <TownNode
+                        {/**
+                           <TownNode
                             isVisited={tradingPostConfig.tradesRemaining === 0}
                             icon={DiamondImage}
                             label={"Trading Post"}
                             nodeImage={HenesysTradingPostImage}
                             onClick={handleClickTradingPost}
+                        />
+                        */}
+                        <TownNode
+                            icon={PersonalAnvilImage}
+                            label={"Workshop"}
+                            nodeImage={TownTransmuteImage}
+                            onClick={handleClickWorkshop}
+                            isVisited={transmutationsRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={HenesysShopImage} onClick={handleClickShop} />
                         <br />
@@ -237,6 +264,14 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: T
                         onExit={() => setIsTradingPostOpen(false)}
                         onTrade={onTrade}
                         tradingPostConfig={tradingPostConfig}
+                    />
+                )}
+                {isWorkshopOpen && (
+                    <Transmutation
+                        player={player}
+                        onExit={() => setIsWorkshopOpen(false)}
+                        onTransmute={handleTransmute}
+                        numTransmutations={transmutationsRemaining}
                     />
                 )}
             </div>

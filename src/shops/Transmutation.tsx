@@ -36,7 +36,7 @@ const useStyles = createUseStyles({
         paddingTop: HEADER_BAR,
         bottom: 0,
         maxHeight: `calc(100% - ${HEADER_BAR}px)`,
-        background: "rgba(30, 30, 30, 0.99)",
+        background: "rgba(40, 40, 40, 0.95)",
         textAlign: "center",
     },
     backdrop: {
@@ -52,7 +52,7 @@ const useStyles = createUseStyles({
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: -1,
-        opacity: 0.2,
+        opacity: 0.25,
     },
     transmutesRemainingLabel: {
         margin: "9px 16px",
@@ -96,11 +96,17 @@ const useStyles = createUseStyles({
         fontSize: 16,
         transition: "0.25s",
         margin: "0 16",
+        boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+
         "&:not(:disabled)": {
             filter: "drop-shadow(0 0 3px #45ff61)",
         },
         "&:hover&:not(:disabled)": {
             filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        },
+
+        "&:disabled": {
+            color: "rgba(255, 255, 255, 0.5)",
         },
     },
     resultPlaceholder: {
