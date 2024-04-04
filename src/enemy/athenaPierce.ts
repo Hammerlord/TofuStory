@@ -1,3 +1,4 @@
+import { vengeful } from "./../ability/Effects";
 import { avenger, bleed, hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
@@ -14,6 +15,19 @@ import {
 } from "../images";
 import { TornadoIcon } from "../images/icons";
 import { attack, shoot } from "./abilities";
+
+const weakerAvenger = {
+    ...avenger,
+    onFriendlyDeath: {
+        ...avenger.onFriendlyDeath,
+        effects: [
+            {
+                ...vengeful,
+                attackPower: 2,
+            },
+        ],
+    },
+};
 
 export const guardWolf: Minion = {
     name: "Wolf",
@@ -64,7 +78,7 @@ export const guardWolf: Minion = {
                 },
             },
         },
-        avenger,
+        weakerAvenger,
     ],
 };
 
@@ -208,7 +222,7 @@ export const athena: Minion = {
     ],
     effects: [
         hardy,
-        avenger,
+        weakerAvenger,
         {
             name: "Companion Bond",
             duration: Infinity,
@@ -276,7 +290,7 @@ export const guardHawk: Minion = {
         },
     ],
     effects: [
-        avenger,
+        weakerAvenger,
         /*{
             name: "Sharp Eyes",
             description: "This character can see through stealth.",
