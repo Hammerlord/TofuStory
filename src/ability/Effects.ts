@@ -645,7 +645,7 @@ export const stashCardEffect: Effect = {
     disableDisplayIcon: true,
 };
 
-export const infuriateEffect = {
+export const infuriateEffect: Effect = {
     name: "Infuriate",
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
@@ -656,15 +656,16 @@ export const infuriateEffect = {
     },
 };
 
-export const taunt = {
+export const taunt: Effect = {
     name: "Taunt",
     type: EFFECT_TYPES.TAUNT,
     class: EFFECT_CLASSES.BUFF,
     image: BlackShieldIcon,
     icon: GreyShieldImage,
+    canBeSilenced: true,
 };
 
-export const attackDown = {
+export const attackDown: Effect = {
     name: "Attack Down",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,

@@ -191,6 +191,14 @@ export const isValidTarget = ({
         if (isStealthed(targetedEnemy) && !area) {
             return false;
         }
+        const tauntEnemies = enemySide
+            .filter((combatant) => combatant?.HP)
+            .map((combatant) => findCombatantData(getState, combatant.id))
+            .filter((combatantInfo: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
+        if (tauntEnemies.length && tauntEnemies.every((enemy) => enemy.combatant?.id !== targetedEnemy?.id)) {
+            return false;
+        }
+
         const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
             if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                 return actorData;
