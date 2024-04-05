@@ -19,8 +19,9 @@ import {
     LithTutorialImage,
     NatashaImage,
     SkipLithBackdropImage,
+    SkullPatchImage,
 } from "../images";
-import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ShieldIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { RARITIES } from "../item/types";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
@@ -28,13 +29,16 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import { EventScene } from "../scene/types";
+import { EventScene, SceneEncounter } from "../scene/types";
 import Shop from "../shops/Shop";
 import ScenePlayer from "../scene/ScenePlayer";
 import { REGIONS } from "./regions";
 import Overlay from "../view/Overlay";
 import { halfEatenHotdog } from "../item/consumables";
-import { bigMesoItem, leatherSandals, redHeadband } from "../item/items";
+import { bigMesoItem, leatherSandals, mesoItem, redHeadband } from "../item/items";
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { attack } from "../enemy/abilities";
+import Icon from "../icon/Icon";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -147,30 +151,210 @@ const skipWithHotdogScript: EventScene = {
     ],
 };
 
+const shopkeeper: Minion = {
+    name: "Shopkeeper",
+    image: NatashaImage,
+    maxHP: 15,
+    abilities: [
+        {
+            ...attack,
+        },
+        {
+            name: "Block",
+            dialog: "Uh oh!",
+            image: ShieldIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    armor: 3,
+                    playbackTime: 1000,
+                },
+            ],
+        },
+        {
+            ...attack,
+            dialog: "Shoo!",
+        },
+    ],
+    effects: [
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onWaveStart: {
+                ability: {
+                    name: "",
+                    dialog: "I say, shoo!",
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.NONE,
+                            playbackTime: 1500,
+                        },
+                    ],
+                },
+                removeEffect: true,
+            },
+        },
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onReceiveDamage: {
+                ability: {
+                    name: "",
+                    dialog: "Oof!",
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.NONE,
+                            playbackTime: 1000,
+                        },
+                    ],
+                },
+                removeEffect: true,
+            },
+        },
+    ],
+};
+
+const shopkeeperEncounter: SceneEncounter = {
+    waves: [
+        {
+            enemies: [null, null, shopkeeper, null, null],
+            description: [
+                <>
+                    Certain actions, like mugging NPCs, will increase your <Icon icon={SkullPatchImage} /> Infamy.
+                </>,
+                <>
+                    <Icon icon={SkullPatchImage} /> Infamy increases the chance that vengeful entities will come after you.
+                </>,
+            ],
+        },
+    ],
+    disableCardRewards: true,
+    disableItemRewards: true,
+};
+
 const shopScript: EventScene = {
     id: "lith-shop",
     script: [
         {
             disableBackground: true,
-            speaker: { name: "Natasha", image: NatashaImage },
+            speaker: { name: "Shopkeeper", image: NatashaImage },
             dialog: ["Ahhh! Out, you pest!"],
         },
         {
             disableBackground: true,
-            speaker: { name: "Natasha", image: NatashaImage },
+            speaker: { name: "Shopkeeper", image: NatashaImage },
             dialog: ["How dare your penniless mushroom self barge into my shop??"],
         },
         {
             disableBackground: true,
-            speaker: { name: "Natasha", image: NatashaImage },
+            speaker: { name: "Shopkeeper", image: NatashaImage },
             dialog: [
                 "Leave, now! [Natasha waves the brush-end of a broom menacingly.]",
                 "And if you really want to buy something, come back with some mesos!",
             ],
             responses: [
                 {
-                    text: "",
-                    isExit: true,
+                    text: "Mug the shopkeeper.",
+                    encounter: shopkeeperEncounter,
+                    infamy: 1,
+                    next: [
+                        {
+                            disableBackground: true,
+                            speaker: { name: "Shopkeeper", image: NatashaImage },
+                            dialog: ["Alright, alright, you're not penniless! Yeow!"],
+                            items: {
+                                itemPool: [mesoItem],
+                            },
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: [
+                                "[Your Infamy has increased by 1.",
+                                "Though you mugged this NPC, being amicable to NPCs can be beneficial down the line, if you meet them again.]",
+                            ],
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: ["[In this case, it's just a tutorial, and you'll never see this shopkeeper again.]"],
+                            responses: [
+                                {
+                                    text: "Hey, who's talking to me?",
+                                    next: [
+                                        {
+                                            disableBackground: true,
+                                            dialog: ["[Uh, don't worry about it. Adventure awaits! Let's go!]"],
+                                            responses: [
+                                                {
+                                                    text: "",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    text: "Best not to get into trouble here. I should leave.",
+                    next: [
+                        {
+                            disableBackground: true,
+                            speaker: { name: "Shopkeeper", image: NatashaImage },
+                            dialog: ["Hmph, that's more like it!"],
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: [
+                                "[You've avoided a confrontation.",
+                                "Being amicable to NPCs can be beneficial down the line--if you meet them again.]",
+                            ],
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: [
+                                "[On the other hand, picking hostile options will raise your Infamy, making it more likely that adventurers will come after you during events.",
+                                "Sometimes, NPCs may even seek revenge.",
+                                "In this case, it's just a tutorial, and you'll never see this shopkeeper again.]",
+                            ],
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: ["[Here are the mesos from the other option.]"],
+                            infamy: 1,
+                            items: {
+                                itemPool: [mesoItem],
+                            },
+                        },
+                        {
+                            disableBackground: true,
+                            dialog: ["[You can't spend them here, but you'll find other shops later on.]"],
+                            responses: [
+                                {
+                                    text: "Hey, who's talking to me?",
+                                    next: [
+                                        {
+                                            disableBackground: true,
+
+                                            dialog: ["[Uh, don't worry about it. Adventure awaits!]"],
+                                            responses: [
+                                                {
+                                                    text: "",
+                                                    isExit: true,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         },
@@ -363,6 +547,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                 setIsShopOpen(false);
                                 setIsShopScriptOpen(false);
                             }}
+                            onBattle={onBattle}
                         />
                     </Overlay>
                 )}
