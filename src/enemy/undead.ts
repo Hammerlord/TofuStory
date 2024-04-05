@@ -141,6 +141,7 @@ const agonyCard: Ability = {
 export const undeadMage: Minion = {
     name: "Riche, the Undead Mage",
     maxHP: 300,
+    mesos: 100,
     isBoss: true,
     image: RicheImage,
     abilities: [
