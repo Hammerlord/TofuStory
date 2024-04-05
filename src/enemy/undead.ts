@@ -1,4 +1,4 @@
-import { taunt, thorns } from "../ability/Effects";
+import { eliteThorns, taunt } from "../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -19,7 +19,6 @@ import {
     SkeletonSoldierImage,
     SkullStaffImage,
     SkullStrikerImage,
-    WeaponMasteryImage,
 } from "../images";
 import { ShieldIcon } from "../images/icons";
 import { attackPower } from "./../ability/Effects";
@@ -59,7 +58,7 @@ export const swordSkeletonMinion: Minion = {
     maxHP: 5,
     armor: 50,
     image: OfficerSkeletonImage,
-    effects: [taunt],
+    effects: [taunt, eliteThorns],
     abilities: [
         {
             ...attack,
@@ -78,7 +77,7 @@ const skelegonMinion: Minion = {
     name: "Skelegon",
     image: SkelegonImage,
     maxHP: 10,
-    effects: [thorns],
+    effects: [],
     abilities: [
         {
             name: "Screech",
