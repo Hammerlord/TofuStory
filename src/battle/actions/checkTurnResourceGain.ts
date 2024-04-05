@@ -32,14 +32,18 @@ const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: numb
         };
     }
 
-    const baseResourcesGained =
-        combatant.resourcesPerTurn +
-        getEnabledEffects({ combatantInfo }).reduce((acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn, 0);
+    // Resources per turn caps out at max resources
+    const baseResourcesGained = Math.min(combatant.maxResources - combatant.resources, combatant.resourcesPerTurn);
+    // But you always get resources from effects, even if it overcaps
+    const resourceGainFromEffects = getEnabledEffects({ combatantInfo }).reduce(
+        (acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn,
+        0
+    );
 
-    const resourcesGained = Math.max(0, baseResourcesGained);
+    const resourcesGained = Math.max(0, baseResourcesGained + resourceGainFromEffects);
 
     return {
-        rawResources: resourcesGained,
-        resources: Math.min(combatant.maxResources - combatant.resources, resourcesGained),
+        rawResources: resourcesGained, // TODO clean me up, no different from resources
+        resources: resourcesGained,
     };
 };

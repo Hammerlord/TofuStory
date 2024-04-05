@@ -319,6 +319,20 @@ const enemyUseAbility = (combatantId: string) => {
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers(getState().battle.enemySide));
+        const enemySide = getState().battle.enemySide; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
+        dispatch(
+            updateBattle({
+                enemySide: enemySide.map((combatant: Combatant) => {
+                    if (combatant?.resources > combatant?.maxResources) {
+                        return {
+                            ...combatant,
+                            resources: combatant.maxResources,
+                        };
+                    }
+                    return combatant;
+                }),
+            })
+        );
     };
 };
 

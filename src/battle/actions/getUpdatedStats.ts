@@ -37,7 +37,6 @@ export interface UpdatedCombatantStats {
     armor?: number;
     resources?: number;
     rawResources?: number;
-    overcappedResources?: number;
     effects?: CombatEffect[];
     isDeathBlow?: boolean;
     mesos?: number;
@@ -243,7 +242,7 @@ export const getUpdatedStats = ({
             effects.push(...effectsToAdd);
         });
 
-        const resourcesGained = Math.min(targetCombatant.maxResources - targetCombatant.resources, resources * multiplier);
+        const resourcesGained = resources * multiplier;
         const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
             if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF && effect.dispellable !== false) {
                 return true;
@@ -263,7 +262,6 @@ export const getUpdatedStats = ({
             armor: armorGained,
             resources: resourcesGained,
             rawResources: resources,
-            overcappedResources: resources - resourcesGained,
             effects,
             isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
             mesos: mesos - stealMesos,

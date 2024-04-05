@@ -168,8 +168,21 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
-        const { playerSide } = getState().battle;
-        dispatch(onEndTurnTriggers(playerSide));
+        dispatch(onEndTurnTriggers(getState().battle.playerSide));
+        const playerSide = getState().battle.playerSide; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
+        dispatch(
+            updateBattle({
+                playerSide: playerSide.map((combatant) => {
+                    if (combatant?.resources > combatant?.maxResources) {
+                        return {
+                            ...combatant,
+                            resources: combatant.maxResources,
+                        };
+                    }
+                    return combatant;
+                }),
+            })
+        );
 
         setTimeout(() => {
             const { discard, hand } = getState().battle;

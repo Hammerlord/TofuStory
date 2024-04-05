@@ -24,7 +24,7 @@ const defaultCharacterProperties = {
     HP: 70,
     maxHP: 70,
     resourcesPerTurn: 2,
-    maxResources: 7,
+    maxResources: 3, // Maximum resources that resourcesPerTurn can grant up to
     resources: 0,
     armor: 0,
     turnHistory: [],
@@ -52,7 +52,7 @@ export const wizardProperties = {
     maxHP: 65,
     resourcesPerTurn: 3,
     resources: 0,
-    maxResources: 7,
+    maxResources: 3,
     weapon: OldWoodenStaffImage,
     items: [chargingStone],
     weaponSkins: [
