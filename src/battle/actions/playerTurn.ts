@@ -62,6 +62,12 @@ export const onUsePlayerAbility = ({
             })
         );
 
+        hand.forEach((card: CombatAbility) => {
+            if (card.onAbilityUse?.ability) {
+                dispatch(useAbility({ ability: card.onAbilityUse.ability, actorId: actor?.id, isProc: true }));
+            }
+        });
+
         // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
     };
