@@ -3,6 +3,7 @@ import { CurseImage, DarkSightImage, JrBoogieImage } from "../images";
 import { FireIcon, SpeechBubbleIcon } from "../images/icons";
 import { burn, stealth } from "./../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CONDITION_TARGETS, Minion, TARGET_TYPES } from "./../ability/types";
+import { loaf } from "./abilities";
 
 export const sealCard: Ability = {
     name: "Seal",
@@ -59,7 +60,7 @@ export const jrBoogie: Minion = {
     name: "Jr. Boogie",
     image: JrBoogieImage,
     mesos: 50,
-    maxHP: 150,
+    maxHP: 125,
     isElite: true,
     abilities: [
         {
@@ -68,11 +69,11 @@ export const jrBoogie: Minion = {
             description: "Adds a Seal card to the player's deck.",
             actions: [
                 {
-                    type: ACTION_TYPES.EFFECT,
+                    type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: CurseImage,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    addCardsToDeck: [sealCard],
+                    addCardsToDiscard: [sealCard],
                     damage: 3,
                 },
             ],
@@ -125,6 +126,7 @@ export const jrBoogie: Minion = {
                 },
             ],
         },
+        loaf,
         {
             name: "Curse",
             image: CurseImage,
@@ -135,7 +137,7 @@ export const jrBoogie: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: CurseImage,
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    addCardsToDeck: [curseCard],
+                    addCardsToDiscard: [curseCard],
                     damage: 3,
                 },
             ],
@@ -143,7 +145,7 @@ export const jrBoogie: Minion = {
         {
             name: "Boogie Time",
             image: JrBoogieImage,
-            description: "Casts Boogie Fire. Adds a Seal and Curse card to the player's deck.",
+            description: "Casts Boogie Fire. Adds a Curse card to the player's deck.",
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -156,10 +158,10 @@ export const jrBoogie: Minion = {
                     },
                     area: 2,
                     effects: [{ ...burn, duration: 2 }],
-                    addCardsToDeck: [sealCard, curseCard],
+                    addCardsToDiscard: [curseCard],
                 },
             ],
         },
     ],
-    effects: [{ ...stealth, duration: 2 }],
+    effects: [{ ...stealth, duration: 1 }],
 };
