@@ -663,6 +663,7 @@ export const taunt: Effect = {
     image: BlackShieldIcon,
     icon: GreyShieldImage,
     canBeSilenced: true,
+    description: "Attackers must target this character.",
 };
 
 export const attackDown: Effect = {

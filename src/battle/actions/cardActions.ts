@@ -566,7 +566,7 @@ export const applyAbilityEventEffects = ({
     event: AbilityEvent;
     ability: CombatAbility;
     source?: TriggerSource;
-}) => {
+}): CombatAbility => {
     if (!event) {
         return ability;
     }

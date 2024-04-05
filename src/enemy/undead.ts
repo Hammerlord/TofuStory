@@ -54,7 +54,7 @@ const clubSkeletonMinion: Minion = {
     ],
 };
 
-const swordSkeletonMinion: Minion = {
+export const swordSkeletonMinion: Minion = {
     name: "Officer Skeleton",
     maxHP: 5,
     armor: 50,
@@ -114,7 +114,8 @@ const skelegonMinion: Minion = {
 const agonyCard: Ability = {
     name: "Agony",
     image: SkeletonOfHorrorImage,
-    description: "While this is in your hand, self-inflict {{ onAbilityUse.damage }} {{{ _damage_ }}} for every card you play.",
+    description:
+        "While this is in your hand, self-inflict {{ onAbilityUse.ability.actions.0.damage }} {{{ _damage_ }}} for every card you play.",
     unplayable: true,
     onAbilityUse: {
         ability: {
@@ -141,6 +142,7 @@ const agonyCard: Ability = {
 export const undeadMage: Minion = {
     name: "Riche, the Undead Mage",
     maxHP: 300,
+    isBoss: true,
     image: RicheImage,
     abilities: [
         {
@@ -246,12 +248,15 @@ export const undeadMage: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onBattleStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 ability: {
                     name: "Summon Skeletons",
                     image: SkullStaffImage,
                     dialog: "Arise, minions!",
                     actions: [
                         {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
                             summon: [
                                 {
                                     minion: [swordSkeletonMinion],
@@ -262,6 +267,7 @@ export const undeadMage: Minion = {
                                     tributePossible: true,
                                 },
                             ],
+                            playbackTime: 1500,
                         },
                     ],
                 },
@@ -270,7 +276,7 @@ export const undeadMage: Minion = {
         },
         {
             name: "Reaper",
-            image: SkullStrikerImage,
+            icon: SkullStrikerImage,
             description: "Gains +1 attack power on kill.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
