@@ -551,7 +551,7 @@ export const incense: Item = {
 export const garnetWarrior: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+3 attack power while you have at least 5 Fury.",
+    description: "+{{ effects.0.onResourcesGained.effects.attackPower }} attack power while you have at least 3 Fury.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -567,7 +567,7 @@ export const garnetWarrior: Item = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         property: "resources",
-                        value: 4,
+                        value: 2,
                         comparator: "gt",
                     },
                 ],
@@ -579,14 +579,14 @@ export const garnetWarrior: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: GarnetImage,
                         disableDisplayIcon: true,
-                        attackPower: 3,
+                        attackPower: 1,
                         maxApplications: 1,
                         onAbility: {
                             conditions: [
                                 {
                                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                     property: "resources",
-                                    value: 5,
+                                    value: 3,
                                     comparator: "lt",
                                 },
                             ],
@@ -602,7 +602,7 @@ export const garnetWarrior: Item = {
 export const garnetMagician: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+3 attack power while you have at least 5 Mana.",
+    description: "+{{ effects.0.onResourcesGained.effects.attackPower }} attack power while you have at least 3 Mana.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -618,7 +618,7 @@ export const garnetMagician: Item = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         property: "resources",
-                        value: 7,
+                        value: 2,
                         comparator: "gt",
                     },
                 ],
@@ -630,14 +630,14 @@ export const garnetMagician: Item = {
                         class: EFFECT_CLASSES.BUFF,
                         icon: GarnetImage,
                         disableDisplayIcon: true,
-                        attackPower: 3,
+                        attackPower: 1,
                         maxApplications: 1,
                         onAbility: {
                             conditions: [
                                 {
                                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                     property: "resources",
-                                    value: 8,
+                                    value: 3,
                                     comparator: "lt",
                                 },
                             ],
