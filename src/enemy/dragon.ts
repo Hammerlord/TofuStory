@@ -20,9 +20,11 @@ const soulPain: Ability = {
     resourceCost: 1,
     hideResourceCostIcon: true,
     unplayable: true,
+    description: "Deals {{ onDraw.ability.actions.0.damage }} {{{ _damage_ }}} to you when drawn.",
     onDraw: {
         ability: {
             name: "Pain",
+            image: EncroachingDarknessImage,
             actions: [
                 {
                     damage: 3,
@@ -149,6 +151,7 @@ export const lostDragon: Minion = {
         {
             name: "Soul Pain",
             image: EncroachingDarknessImage,
+            description: "Adds a Soul Pain card to the player's discard.",
             resourceCost: 3,
             actions: [
                 {
@@ -172,6 +175,7 @@ export const lostDragon: Minion = {
         {
             name: "Soul Anguish",
             image: EncroachingDarknessImage,
+            description: "Adds a Soul Pain card to the player's deck and discard.",
             resourceCost: 3,
             actions: [
                 {
@@ -182,7 +186,8 @@ export const lostDragon: Minion = {
                         width: 100,
                         height: 100,
                     },
-                    addCardsToDiscard: [soulPain, soulPain],
+                    addCardsToDeck: [soulPain],
+                    addCardsToDiscard: [soulPain],
                 },
             ],
             conditions: [
