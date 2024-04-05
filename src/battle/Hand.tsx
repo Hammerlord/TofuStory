@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
+import { cardPassesFilterCondition } from "./selectCardUtils";
 
 const handPlaybackDuration = 300; // As much as I'd like it to be a bit slower, it causes cards to get stuck/some responsiveness problems
 const useStyles = createUseStyles({
@@ -71,7 +72,7 @@ export const getHandAuraEffects = (hand: CombatAbility[]) => {
             return;
         }
 
-        const { area = hand.length, effects } = card.aura;
+        const { area = hand.length, effects, filters } = card.aura;
         const start = Math.max(0, i - area);
         const end = Math.min(hand.length - 1, i + area);
         for (let j = start; j <= end; ++j) {
@@ -84,7 +85,10 @@ export const getHandAuraEffects = (hand: CombatAbility[]) => {
                 auraEffects[j] = [];
             }
 
-            auraEffects[j].push(...effects);
+            const cardToAffect = hand[j];
+            if (cardPassesFilterCondition(cardToAffect, filters)) {
+                auraEffects[j].push(...effects);
+            }
         }
     });
 

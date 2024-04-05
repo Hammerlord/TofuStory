@@ -18,6 +18,12 @@ export const sealCard: Ability = {
                 isLocked: true,
             },
         ],
+        filters: [
+            {
+                actionTypes: [ACTION_TYPES.HINDER],
+                comparator: "not",
+            },
+        ],
     },
     actions: [
         {

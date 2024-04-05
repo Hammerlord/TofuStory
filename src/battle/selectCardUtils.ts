@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
-import { AbilityEffect, CombatAbility } from "../ability/types";
+import { AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { Player } from "../character/types";
@@ -41,22 +41,7 @@ const getCardSelection = ({
             cards = cards.filter(({ instanceId }) => instanceId !== selectedAbilityId);
         }
         if (filters?.length) {
-            return cards.filter((card) => {
-                return filters.some((filter) => {
-                    const { actionTypes, hasMinion, primaryActionType } = filter;
-                    if (primaryActionType && card.actions[0]?.type === primaryActionType) {
-                        return true;
-                    }
-
-                    if (actionTypes && card.actions.some((action: Action) => actionTypes.includes(action.type))) {
-                        return true;
-                    }
-
-                    if (hasMinion && card.minion) {
-                        return true;
-                    }
-                });
-            });
+            return cards.filter((card) => cardPassesFilterCondition(card, filters));
         }
         return cards;
     };
@@ -94,6 +79,31 @@ const getCardSelection = ({
     }
 
     return [];
+};
+
+export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFilterCondition[]) => {
+    if (!filters?.length) {
+        return true;
+    }
+    // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
+    return filters.some((filter) => {
+        const { actionTypes, hasMinion, primaryActionType, comparator } = filter;
+        if (primaryActionType && card.actions[0]?.type === primaryActionType) {
+            return comparator !== "not";
+        }
+
+        if (actionTypes) {
+            if (comparator === "not") {
+                return card.actions.every((action: Action) => !actionTypes.includes(action.type));
+            }
+
+            return card.actions.some((action: Action) => actionTypes.includes(action.type));
+        }
+
+        if (hasMinion && card.minion) {
+            return comparator !== "not";
+        }
+    });
 };
 
 export default getCardSelection;

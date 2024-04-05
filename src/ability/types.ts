@@ -403,14 +403,17 @@ export enum MULTIPLIER_TYPES {
     EFFECT_DURATIONS = "effect-durations",
 }
 
+export type CardFilterCondition = {
+    hasMinion?: boolean; // If Ability.summon is populated, this is true
+    actionTypes?: ACTION_TYPES[];
+    primaryActionType?: ACTION_TYPES; // This checks the first action only
+    comparator?: Comparator; // Mostly meant to be used for "not" cases
+};
+
 export interface SelectCards {
     type: SELECT_CARD_TYPES;
     cards?: Ability[];
-    filters?: {
-        hasMinion?: boolean; // If Ability.summon is populated, this is true
-        actionTypes?: ACTION_TYPES[];
-        primaryActionType?: ACTION_TYPES; // This checks the first action only
-    }[];
+    filters?: CardFilterCondition[];
     effects?: AbilityEffect[];
     maxAmount?: number;
 }
@@ -693,6 +696,7 @@ export interface Ability {
     aura?: {
         area?: number; // Eg. if value is 1, effects applies to cards directly adjacent to this one. If not supplied, it will affect all cards
         effects: AbilityEffect[];
+        filters?: CardFilterCondition[];
     };
 }
 
