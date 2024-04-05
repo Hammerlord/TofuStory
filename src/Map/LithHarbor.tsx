@@ -39,6 +39,8 @@ import { bigMesoItem, leatherSandals, mesoItem, redHeadband } from "../item/item
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { attack } from "../enemy/abilities";
 import Icon from "../icon/Icon";
+import { TOWNS } from "./types";
+import { getTownPlaces } from "./utils";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -72,14 +74,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const LITH_PLACES = {
+const LITH_PLACES: any = {
+    ...getTownPlaces(TOWNS.LITH_HARBOR),
     TUTORIAL_BASIC: "tutorial",
     TUTORIAL_ELITE_ENCOUNTER: "tutorial2",
     SHARK: "shark",
 };
 
 const LITH_PREREQUISITES = {
-    [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC, TOWN_PLACES.SHOP],
+    [LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]: [LITH_PLACES.TUTORIAL_BASIC, LITH_PLACES.SHOP],
 };
 
 const { acquireItems } = playerStateSlice.actions;
@@ -132,21 +135,6 @@ const skipScript: EventScene = {
             dialog: [
                 "Hey Mushie! Before you go, here's the stuff you would've gotten from the remaining events in town. Good luck out there!",
             ],
-        },
-    ],
-};
-
-/**
- * If the player is only missing the hotdog, grant it through a dialog option rather than through ItemRewards
- */
-const skipWithHotdogScript: EventScene = {
-    ...skipScript,
-    script: [
-        {
-            ...skipScript.script[0],
-            items: {
-                itemPool: [halfEatenHotdog],
-            },
         },
     ],
 };
@@ -399,6 +387,19 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
         return LITH_PREREQUISITES[eventKey]?.some((prereq: string) => !visited[prereq]);
     };
 
+    const getGrantedItemPool = () => {
+        const itemPool = [];
+        if (!visited[LITH_PLACES.SHARK]) {
+            itemPool.push(halfEatenHotdog);
+        }
+
+        if (!visited[LITH_PLACES.SHOP]) {
+            itemPool.push(mesoItem);
+        }
+
+        return itemPool;
+    };
+
     const handleExitClick = () => {
         if (isFulfilledExitRequirement) {
             onExit();
@@ -408,7 +409,26 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
             (v) => !v
         ).length;
 
-        const script = combatsNotVisited === 0 ? skipWithHotdogScript : skipScript;
+        let script;
+        if (combatsNotVisited === 0) {
+            /**
+             * If the player is missing the hotdog and/or shop mesos, grant it through a dialog option rather than through ItemRewards
+             */
+            script = {
+                ...skipScript,
+                script: [
+                    {
+                        ...skipScript.script[0],
+                        items: {
+                            itemPool: getGrantedItemPool(),
+                        },
+                    },
+                ],
+            };
+        } else {
+            script = skipScript;
+        }
+
         onClickScene(script, () => {
             setIsExiting(true);
             setShowAcquireAbility(combatsNotVisited);
@@ -433,7 +453,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     };
 
     const handleClickShop = () => {
-        if (checkVisitPlace(TOWN_PLACES.SHOP)) {
+        if (checkVisitPlace(LITH_PLACES.SHOP)) {
             setIsShopOpen(true);
             setTimeout(() => {
                 setIsShopScriptOpen(true);
@@ -559,7 +579,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                             dispatch(acquireItems(items));
                         }}
                         onClose={handleCloseAcquireItems}
-                        itemRewards={!visited[LITH_PLACES.SHARK] ? [halfEatenHotdog] : []}
+                        itemRewards={getGrantedItemPool()}
                     />
                 )}
                 {showAcquireAbility > 0 && (
