@@ -57,7 +57,7 @@ const routePerionSleepywood: Route = {
     },
     elites: {
         minions: [stump, elliniaGreenMushroom],
-        single: [fireBoar],
+        single: [fireBoar, jrBoogie],
         duo: [fireBoar],
         trio: [wildBoar, axeStump],
         squad: [elliniaGreenMushroom],
@@ -66,7 +66,6 @@ const routePerionSleepywood: Route = {
             [null, miniKargo, wildKargo, miniKargo, null],
             [null, egg, egg, egg, null],
             [null, tauromacis, null, taurospear, null],
-            [null, jrBoogie, jrBoogie, jrBoogie, null],
         ],
     },
     nodes: [
@@ -100,7 +99,7 @@ export const routeKerningToPerion: Route = {
     id: "kerning-perion",
     elites: {
         minions: [shroom, redSnail, stump],
-        single: [fireBoar, rockyMask],
+        single: [fireBoar, rockyMask, jrBoogie],
         duo: [wildBoar, axeStump],
         trio: [orangeMushroom, octopus, bubbling],
         squad: [redSnail, stump],
@@ -113,7 +112,6 @@ export const routeKerningToPerion: Route = {
                 { ...rockyMask, isElite: true, armor: 150, mesos: 20 },
                 null,
             ],
-            [null, jrBoogie, null, jrBoogie, null],
         ],
     },
     enemies: [
