@@ -548,61 +548,10 @@ export const incense: Item = {
     removeCard: true,
 };
 
-export const garnetWarrior: Item = {
+export const garnet: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+{{ effects.0.onResourcesGained.effects.attackPower }} attack power while you have at least 3 Fury.",
-    type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
-    effects: [
-        {
-            name: "Garnet Effect",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            icon: GarnetImage,
-            disableDisplayIcon: true,
-            // Resources are spent right before using an ability, and we want to retain the attack power that ability even if it brings you below the threshold
-            onResourcesGained: {
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        property: "resources",
-                        value: 2,
-                        comparator: "gt",
-                    },
-                ],
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Garnet",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: GarnetImage,
-                        disableDisplayIcon: true,
-                        attackPower: 1,
-                        maxApplications: 1,
-                        onAbility: {
-                            conditions: [
-                                {
-                                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                    property: "resources",
-                                    value: 3,
-                                    comparator: "lt",
-                                },
-                            ],
-                            removeEffect: true,
-                        },
-                    },
-                ],
-            },
-        },
-    ],
-};
-
-export const garnetMagician: Item = {
-    name: "Garnet",
-    image: GarnetImage,
-    description: "+{{ effects.0.onResourcesGained.effects.attackPower }} attack power while you have at least 3 Mana.",
+    description: "+{{ effects.0.onResourcesGained.effects.0.attackPower }} attack power while you have at least 3 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [

@@ -37,7 +37,7 @@ import {
     fairyWing,
     fishSpear,
     flamingFeather,
-    garnetWarrior,
+    garnet,
     greenBambooHat,
     guideBook,
     ironMace,
@@ -86,7 +86,6 @@ import {
     opal,
     yellowHat,
     arcStaff,
-    garnetMagician,
     blackCrystal,
     hardwoodWand,
     starryBandana,
@@ -189,9 +188,10 @@ export const ITEMS = [
     arcStaff,
     hardwoodWand,
     starryBandana,
+    garnet,
 ];
 
 export const CLASS_ITEMS = {
-    [PLAYER_CLASSES.WARRIOR]: [bloodMask, garnetWarrior],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, garnetMagician],
+    [PLAYER_CLASSES.WARRIOR]: [bloodMask],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings],
 };
