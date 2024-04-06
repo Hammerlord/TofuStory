@@ -1202,8 +1202,13 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 }
 
                 const existingMinionIndices = mutableFriendly.reduce((acc, combatant, i) => {
+                    if (!combatant) {
+                        return acc;
+                    }
+
+                    const { id, isPlayer } = combatant;
                     // Do not replace any of the minions summoned in the current action
-                    if (!combatant?.isPlayer && minionsSummoned.every((minion) => minion.id !== combatant?.id)) {
+                    if (!isPlayer && id !== actorId && minionsSummoned.every((minion) => minion.id !== id)) {
                         acc.push(i);
                     }
 
