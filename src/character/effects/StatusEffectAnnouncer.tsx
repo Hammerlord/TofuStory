@@ -12,7 +12,7 @@ const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
         {
             opacity: 0.5,
             easing: "ease-out",
-            transform: "translateY(-50px)",
+            transform: "translateY(-25px)",
         },
         {
             opacity: 1,
@@ -46,6 +46,9 @@ const useStyles = createUseStyles({
     faded: {
         color: "#555",
         fontStyle: "italic",
+    },
+    fadedIcon: {
+        filter: "saturate(0)",
     },
 });
 
@@ -88,7 +91,7 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
                 return newRemovedEffects;
             });
         }
-    }, [getStringified(newEffects), getStringified(newRemovedEffects)]);
+    }, [newEffects, newRemovedEffects]);
 
     useEffect(() => {
         effects.map((e, i) => {
@@ -121,12 +124,13 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
         <div>
             {effects.map((e, i) => (
                 <div key={e.id} className={classes.effectItem} ref={itemRefs[i]}>
-                    + <Icon icon={e.icon} /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
+                    + <Icon icon={e.icon} size="sm" /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
                 </div>
             ))}
             {removedEffects.map((e, i) => (
                 <div key={e.id} className={classNames(classes.effectItem, classes.faded)} ref={itemRefs[effects.length + i]}>
-                    <Icon icon={e.icon} /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined} faded
+                    <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}{" "}
+                    faded
                 </div>
             ))}
         </div>
