@@ -809,10 +809,11 @@ export const checkEventTrigger = ({
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
             const canTriggerFromProcs = !source?.isProc || !effectEvent?.disableTriggerFromProcs;
+            const isBattleStartEffect = [EFFECT_EVENT_KEYS.onBattleStart, EFFECT_EVENT_KEYS.onWaveStart].includes(effectEventKey);
 
             if (
                 !alreadyTriggered &&
-                isTurnToTrigger({ turnsTriggerFrequency, uptime }) &&
+                (isTurnToTrigger({ turnsTriggerFrequency, uptime }) || isBattleStartEffect) &&
                 meetsTriggerTimes &&
                 notTriggeringSameEffect &&
                 canTriggerFromProcs
