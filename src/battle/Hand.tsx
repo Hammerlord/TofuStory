@@ -116,12 +116,7 @@ const Hand = ({
             setOldHand(hand);
             // Bit faster so that the animation doesn't reset before eg. the card leaves
         }, handPlaybackDuration - 10);
-
-        return () => {
-            clearTimeout(timeout);
-            setOldHand(hand);
-        };
-    }, [hand]);
+    }, [JSON.stringify(hand.map((card) => card.instanceId))]);
 
     const handleAbilityMouseDown = (event, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
