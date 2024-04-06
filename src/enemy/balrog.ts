@@ -1,4 +1,13 @@
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Effect,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import {
     BrutalClawImage,
     DarkThunderBoltProjectileImage,
@@ -233,6 +242,34 @@ export const balrog: Minion = {
                         },
                     ],
                 },
+            },
+        },
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onDeath: {
+                ability: {
+                    name: "",
+                    dialog: "Argh! Impossible! Nobody's ever been able to build this deck!",
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.EFFECT,
+                            playbackTime: 2000,
+                            resurrect: true, // Hack: this is to allow Balrog to cast the action on itself when it's dead
+                        },
+                    ],
+                },
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.BATTLE,
+                        property: "round",
+                        value: 4,
+                        comparator: "lt",
+                    },
+                ],
+                removeEffect: true,
             },
         },
     ],

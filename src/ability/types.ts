@@ -40,6 +40,7 @@ export enum CONDITION_TARGETS {
     TARGET = "target",
     ACTOR = "actor",
     TRIGGER_SOURCE = "trigger-source", // The proccing ability, effect, etc. to compare to the condition
+    BATTLE = "battle", // The battle object.
 }
 
 // Who should receive the proc that was triggered?

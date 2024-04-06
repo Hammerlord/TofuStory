@@ -567,7 +567,7 @@ const onEffectEventTrigger = ({
             ...other
         } = effectEvent;
 
-        const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES): string[] => {
+        const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS): string[] => {
             const targetIds =
                 {
                     [TRIGGER_TARGET_TYPES.EFFECT_OWNER]: [ownerId],
@@ -579,7 +579,10 @@ const onEffectEventTrigger = ({
             return targetIds.filter((v) => v);
         };
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo[] => {
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS): CombatantInfo[] | BattleState => {
+            if (targetType === CONDITION_TARGETS.BATTLE) {
+                return getState().battle;
+            }
             return getCalculationTargetIds(targetType).map((id) => findCombatantData(getState, id));
         };
 
@@ -2377,7 +2380,10 @@ export const useAbility = ({
 
             const { side, index } = selection;
 
-            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): CombatantInfo => {
+            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): CombatantInfo | BattleState => {
+                if (calculationTarget === CONDITION_TARGETS.BATTLE) {
+                    return getState().battle;
+                }
                 if (calculationTarget === CONDITION_TARGETS.ACTOR) {
                     return findCombatantData(getState, actorId);
                 }

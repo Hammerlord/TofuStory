@@ -13,6 +13,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { Combatant } from "../character/types";
+import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 
@@ -60,7 +61,7 @@ export const passesConditions = ({
 }: {
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[] | CombatAbility | undefined;
+    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | undefined;
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
@@ -160,6 +161,16 @@ export const passesConditions = ({
                 );
                 return false;
             }
+        }
+
+        if (calculationTarget === CONDITION_TARGETS.BATTLE) {
+            if (property !== undefined) {
+                const battle = getCalculationTarget(calculationTarget) as BattleState;
+                return passesValueComparison({ val: battle[property], otherVal: value, comparator });
+            }
+
+            console.warn(`property must be configured for calculation target BATTLE to work properly. None was configured.`);
+            return false;
         }
 
         // TRIGGER_SOURCE already handled above
