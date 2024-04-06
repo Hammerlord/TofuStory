@@ -914,14 +914,14 @@ export const redHeadband: Item = {
     rarity: RARITIES.COMMON,
     effects: [
         {
-            name: "Red Headband",
+            name: "Red Headband Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
-                        name: "Red Headband - Extra Resource",
+                        name: "Red Headband",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         icon: RedHeadbandImage,
