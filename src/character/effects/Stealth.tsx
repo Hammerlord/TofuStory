@@ -23,7 +23,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         width: "100%",
         height: "100%",
-        bottom: "50%",
+        top: -80,
     },
 });
 
