@@ -28,6 +28,7 @@ import { Combatant, Player } from "./types";
 import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { SUMMON_DELAY } from "../battle/constants";
+import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -278,6 +279,12 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
     },
+    statusEffectAnnouncerContainer: {
+        position: "absolute",
+        bottom: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
 });
 
 interface CurrentEvent extends Event {
@@ -509,6 +516,9 @@ const CombatantView = forwardRef(
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
+                                    <div className={classes.statusEffectAnnouncerContainer}>
+                                        <StatusEffectAnnouncer statChanges={statChanges} />
+                                    </div>
                                 </>
                             )}
                         </div>
