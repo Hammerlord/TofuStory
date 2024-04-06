@@ -12,7 +12,7 @@ const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
         {
             opacity: 0.5,
             easing: "ease-out",
-            transform: "translateY(-25px)",
+            transform: "translateY(-50px)",
         },
         {
             opacity: 1,
