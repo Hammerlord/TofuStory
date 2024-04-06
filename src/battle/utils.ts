@@ -28,8 +28,20 @@ import { ATTACK_POWER_COEFF } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
 
-export const getCharacterStatChanges = ({ oldCharacter, newCharacter }: { oldCharacter: Combatant; newCharacter: Combatant }) => {
-    const updatedStatChanges = {} as any;
+export type StatChange = {
+    damage: number;
+    healing: number;
+    armor: number;
+};
+
+export const getCharacterStatChanges = ({
+    oldCharacter,
+    newCharacter,
+}: {
+    oldCharacter: Combatant;
+    newCharacter: Combatant;
+}): StatChange => {
+    const updatedStatChanges = {} as StatChange;
     if (!oldCharacter || !newCharacter || oldCharacter?.id !== newCharacter?.id) {
         return updatedStatChanges;
     }
