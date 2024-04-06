@@ -22,7 +22,11 @@ const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.action
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
-        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills } = getState().battle;
+        const battle = getState().battle;
+        if (!battle) {
+            return;
+        }
+        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills } = battle;
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
