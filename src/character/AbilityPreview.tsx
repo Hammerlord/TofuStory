@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
         animationFillMode: "forwards",
         display: "flex",
-        top: 20,
+        top: 30,
         "&.nondeterministic": {
             background: "rgba(100, 70, 70, 0.8)",
         },

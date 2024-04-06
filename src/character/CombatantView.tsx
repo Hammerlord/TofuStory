@@ -522,10 +522,6 @@ const CombatantView = forwardRef(
                                 </>
                             )}
                         </div>
-
-                        {oldState?.HP > 0 && (
-                            <AbilityPreview previewStatUpdate={previewStatUpdate} HP={oldState.HP} armor={oldState.armor} />
-                        )}
                         {oldState?.HP > 0 && (
                             <>
                                 {!isTargeted && !event?.id && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} />}
@@ -550,6 +546,8 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                 </div>
+
+                {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} HP={oldState.HP} armor={oldState.armor} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
             </div>
         );
