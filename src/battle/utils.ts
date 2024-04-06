@@ -32,6 +32,8 @@ export type StatChange = {
     damage: number;
     healing: number;
     armor: number;
+    effects: CombatEffect[];
+    removedEffects: CombatEffect[];
 };
 
 export const getCharacterStatChanges = ({
@@ -56,6 +58,23 @@ export const getCharacterStatChanges = ({
     if (newCharacter.armor > oldCharacter.armor) {
         updatedStatChanges.armor = newCharacter.armor - oldCharacter.armor;
     }
+
+    const oldEffectIdMap = oldCharacter.effects.reduce((acc, effect: CombatEffect) => {
+        acc[effect.id] = effect;
+        return acc;
+    }, {});
+
+    const newEffectIdMap = newCharacter.effects.reduce((acc, effect: CombatEffect) => {
+        acc[effect.id] = effect;
+        return acc;
+    }, {});
+
+    const effects = newCharacter.effects.filter((e) => !oldEffectIdMap[e.id]);
+    // These are effects that are gone for any reason, dispelled or ended
+    const removedEffects = oldCharacter.effects.filter((e) => !newEffectIdMap[e.id]);
+
+    updatedStatChanges.effects = effects;
+    updatedStatChanges.removedEffects = removedEffects;
 
     return updatedStatChanges;
 };

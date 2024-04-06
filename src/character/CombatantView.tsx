@@ -354,7 +354,10 @@ const CombatantView = forwardRef(
                     const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
                     if (isKillingBlow && !willPerformActions) {
                         playDyingAnimation({ object: characterImageRef.current });
-                    } else if (statChanges?.damage > 0) {
+                    } else if (
+                        statChanges?.damage > 0 ||
+                        statChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
+                    ) {
                         const baseDelta = statChanges.damage || 1;
                         // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
                         const delta = isEnemy ? baseDelta : -baseDelta;
