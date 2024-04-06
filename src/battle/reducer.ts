@@ -103,7 +103,9 @@ export const battleStateSlice = createSlice({
             state.eventQueue.push(action.payload);
         },
         popEventQueue: (state) => {
-            state.eventQueue.shift();
+            if (state?.eventQueue) {
+                state.eventQueue.shift();
+            }
         },
         closeBattle: () => {
             return null;
