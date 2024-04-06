@@ -366,7 +366,7 @@ const CombatantView = forwardRef(
                         statChanges?.damage > 0 ||
                         statChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
                     ) {
-                        const baseDelta = statChanges.damage || 1;
+                        const baseDelta = Math.min(100, statChanges.damage) || 1;
                         // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
                         const delta = isEnemy ? baseDelta : -baseDelta;
                         playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
@@ -421,7 +421,7 @@ const CombatantView = forwardRef(
                 [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && oldState?.HP > 0,
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-                [classes.dead]: !action && oldState?.HP === 0,
+                [classes.dead]: !action && oldState?.HP === 0 && !willPerformActions,
                 [classes.applyingEffect]: isApplyingEffect,
                 [classes.casting]: oldState?.casting && !(fadeInOut || fadeInOutFromEffect),
                 [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
