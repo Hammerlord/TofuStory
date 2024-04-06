@@ -218,7 +218,7 @@ const useStyles = createUseStyles({
     effectsContainer: {
         position: "absolute",
         top: "100%",
-        width: "90%",
+        width: "98%",
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 0,

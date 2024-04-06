@@ -1,19 +1,19 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, EFFECT_CLASSES, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatEffect, EFFECT_CLASSES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant, Player } from "../character/types";
-import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon, SpeechBubbleIcon } from "../images/icons";
+import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../images/icons";
 
+import Handlebars from "handlebars";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
+import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { findCombatantData } from "../battle/actions/actions";
+import { isTurnToTrigger } from "../battle/utils";
+import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
+import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
-import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
-import { useAppSelector } from "../hooks";
-import { findCombatantData } from "../battle/actions/actions";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
-import { isTurnToTrigger } from "../battle/utils";
-import Handlebars from "handlebars";
 
 const indicatorSize = 8;
 
@@ -21,7 +21,14 @@ const useStyles = createUseStyles({
     iconRoot: {
         position: "relative",
         display: "inline-block",
-        margin: "4px 2px",
+        margin: "4px 3px",
+        border: `1px solid ${BUFF_COLOUR}`,
+        borderRadius: "2px",
+        background: "rgba(0, 0, 0, 0.65)",
+        padding: "1px",
+        "&.debuff": {
+            borderColor: DEBUFF_COLOUR,
+        },
     },
     iconText: {
         position: "absolute",
@@ -34,13 +41,14 @@ const useStyles = createUseStyles({
     },
     stacks: {
         bottom: -1,
-        left: 2,
+        left: 1,
         fontSize: "14px",
     },
     duration: {
         position: "absolute",
-        top: -2,
-        right: -4,
+        top: -5,
+        right: -6,
+        filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 1)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.75))",
     },
     tooltipContents: {
         display: "flex",
@@ -117,7 +125,7 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7))",
         position: "absolute",
         left: -1,
-        top: -3,
+        top: -1,
     },
     downCorner: {
         borderLeft: `${indicatorSize / 1.25}px solid transparent`,
@@ -230,7 +238,11 @@ const EffectGroupIcon = ({
     );
 
     const inner = (
-        <span className={classes.iconRoot}>
+        <span
+            className={classNames(classes.iconRoot, {
+                debuff: effectClass === EFFECT_CLASSES.DEBUFF,
+            })}
+        >
             <Icon
                 icon={icon}
                 className={classNames({
