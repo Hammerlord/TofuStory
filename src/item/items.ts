@@ -296,6 +296,9 @@ export const leatherSandals: Item = {
                         icon: LeatherSandalsImage,
                         drawCardsPerTurn: 2,
                         duration: 1,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
                     },
                 ],
             },
