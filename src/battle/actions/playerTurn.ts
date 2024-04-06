@@ -237,6 +237,12 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 amount: drawCardsAmount,
             })
         );
+    };
+};
+
+export const initiatePlayerTurnInProgress = () => {
+    return (dispatch, getState) => {
+        const { playerSide } = getState().battle;
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {

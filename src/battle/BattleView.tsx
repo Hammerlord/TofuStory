@@ -41,7 +41,7 @@ import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, enemyMoves, startEnemyTurn } from "./actions/enemyTurn";
 import { getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
-import { onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
+import { initiatePlayerTurnInProgress, onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
@@ -645,6 +645,8 @@ const BattlefieldContainer = () => {
         if (battleState === BATTLE_STATES.TURN_IN_PROGRESS) {
             if (!isPlayerTurn) {
                 dispatch(enemyMoves());
+            } else {
+                dispatch(initiatePlayerTurnInProgress());
             }
 
             return;
