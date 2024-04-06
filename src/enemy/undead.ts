@@ -26,7 +26,7 @@ import { attack, loaf } from "./abilities";
 
 const clubSkeletonMinion: Minion = {
     name: "Skeleton Soldier",
-    maxHP: 15,
+    maxHP: 25,
     image: SkeletonSoldierImage,
     abilities: [
         {
@@ -76,7 +76,7 @@ export const swordSkeletonMinion: Minion = {
 const skelegonMinion: Minion = {
     name: "Skelegon",
     image: SkelegonImage,
-    maxHP: 10,
+    maxHP: 20,
     effects: [],
     abilities: [
         {
@@ -230,7 +230,7 @@ export const undeadMage: Minion = {
                             tributePossible: true,
                         },
                         {
-                            minion: [clubSkeletonMinion, swordSkeletonMinion, skelegonMinion],
+                            minion: [clubSkeletonMinion, skelegonMinion],
                             tributePossible: true,
                         },
                         {
