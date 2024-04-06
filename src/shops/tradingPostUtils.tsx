@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
+import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
 import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { MusicIcon, XIcon } from "../images/icons";
-import { REGIONS } from "../Map/regions";
+import { REGIONS } from "../map/regions";
 
 const musicMap = {
     [REGIONS.LITH_HARBOR]: [

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
+import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
 import { Player } from "../character/types";
 import Icon from "../icon/Icon";
 import { KerningTowerImage, MoonBunnyImage } from "../images";

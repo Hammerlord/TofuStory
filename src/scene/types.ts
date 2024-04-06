@@ -3,7 +3,7 @@ import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ActivityHistoryLog } from "../character/playerReducer";
 import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
-import { REGIONS } from "../Map/regions";
+import { REGIONS } from "../map/regions";
 
 export enum SCENE_CONDITION_TYPES {
     INFAMY = "infamy",

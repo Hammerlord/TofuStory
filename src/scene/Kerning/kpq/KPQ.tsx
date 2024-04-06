@@ -3,7 +3,7 @@ import { BATTLE_TYPES } from "../../../battle/types";
 import { eliteLigator, greenMushroom, hornyMushroom, ligator } from "../../../enemy/enemy";
 import { kingSlimeEnemy } from "../../../enemy/kingSlime";
 import { KerningCityBGImage, SleepywoodRegionBGImage, SwampRegionBGImage } from "../../../images";
-import { REGIONS } from "../../../Map/regions";
+import { REGIONS } from "../../../map/regions";
 import { EventScene, SceneEncounter } from "../../types";
 import Barrels from "./Barrels";
 import Barrels2 from "./Barrels2";

@@ -2,13 +2,13 @@ import classNames from "classnames";
 import { clamp } from "ramda";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import Camp from "../Map/Camp";
-import Map from "../Map/Map";
-import { REGIONS } from "../Map/regions";
-import { events } from "../Map/routes/eventList";
-import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../Map/routes/routes";
-import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS, TownProperties } from "../Map/types";
+import Camp from "../map/Camp";
+import Map from "../map/Map";
+import { REGIONS } from "../map/regions";
+import { events } from "../map/routes/eventList";
+import generateTravelRoute from "../map/routes/generateTravelRoute";
+import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../map/routes/routes";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS, TownProperties } from "../map/types";
 import { Ability, CombatAbility } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
@@ -40,12 +40,12 @@ import Shop from "../shops/Shop";
 import Sound from "./Sound";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { TOWN_MAP } from "../Map/townMap";
+import { TOWN_MAP } from "../map/townMap";
 import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
 import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
-import { OVERWORLD_BOSS_ID_MAP } from "../Map/routes/overworldBosses";
-import { generateElites, generateWaves } from "../Map/encounters";
+import { OVERWORLD_BOSS_ID_MAP } from "../map/routes/overworldBosses";
+import { generateElites, generateWaves } from "../map/encounters";
 
 const TRANSITION_TIME = 0.25; // Seconds
 

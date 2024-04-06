@@ -1,8 +1,8 @@
 import { partition } from "ramda";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import uuid from "uuid";
-import generateTravelRoute from "../Map/routes/generateTravelRoute";
-import { NODE_TYPES, TOWNS } from "../Map/types";
+import generateTravelRoute from "../map/routes/generateTravelRoute";
+import { NODE_TYPES, TOWNS } from "../map/types";
 import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
@@ -10,7 +10,7 @@ import { BATTLE_TYPES } from "../battle/types";
 import { calculateMesoGain, getMaxHP } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
-import { toLith } from "./../Map/routes/routes";
+import { toLith } from "./../map/routes/routes";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 

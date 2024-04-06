@@ -6,7 +6,7 @@ import Popper from "@material-ui/core/Popper";
 
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import Map from "../Map/Map";
+import Map from "../map/Map";
 import Shop from "../shops/Shop";
 import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
 import CardMatchingGame from "../scene/CardMatchingGame";

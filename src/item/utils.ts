@@ -1,4 +1,4 @@
-import { CLASS_ITEMS, ITEMS } from "../Map/routes/eventList";
+import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
 import { Player } from "../character/types";
 import { RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../constants";
 import { ITEM_TYPES, Item, RARITIES } from "./types";

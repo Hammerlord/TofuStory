@@ -1,7 +1,7 @@
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { getUpgradeCard } from "./utils";
-import { CLASS_ITEMS } from "../Map/routes/eventList";
+import { CLASS_ITEMS } from "../map/routes/eventList";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";

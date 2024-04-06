@@ -1,4 +1,4 @@
-import { REGIONS } from "../../Map/regions";
+import { REGIONS } from "../../map/regions";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
 import { CAMPAIGN_BOSS_MUSIC } from "../../battle/constants";
 import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
