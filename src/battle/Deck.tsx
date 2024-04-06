@@ -86,12 +86,12 @@ const DECK_SIZE_CHANGE_SPEED = 50; // ms
 
 const Deck = ({
     viewDeckInOrder,
-    onClickDeck,
+    onMouseDown,
     highlightDeck,
     deckRef,
 }: {
     viewDeckInOrder: boolean;
-    onClickDeck: (event: any) => void;
+    onMouseDown?: (event: any) => void;
     highlightDeck: boolean;
     deckRef;
 }) => {
@@ -189,7 +189,7 @@ const Deck = ({
                         className={classNames(classes.deckContainerInner, {
                             [classes.highlight]: highlightDeck,
                         })}
-                        onClick={onClickDeck}
+                        onMouseDown={onMouseDown}
                         ref={deckRef}
                     >
                         <svg viewBox="0 0 100 100" className={classes.svg}>

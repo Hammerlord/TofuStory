@@ -1013,7 +1013,7 @@ const BattlefieldContainer = () => {
                                 <div className={classes.deckContainer}>
                                     <Deck
                                         viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
-                                        onClickDeck={handleClickDeck}
+                                        onMouseDown={handleClickDeck}
                                         highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
                                         deckRef={deckRef}
                                     />
