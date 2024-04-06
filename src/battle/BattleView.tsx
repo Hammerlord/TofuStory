@@ -1079,22 +1079,22 @@ const BattlefieldContainer = () => {
                             </div>
                         </div>
                     </div>
-                    {animationCanvas}
-                    <div className={classes.abilityContainer}>
-                        {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && (
-                            <div className={classes.clickIndicator}>
-                                Click <br />
-                                <Icon icon={ClickIndicatorImage} />
-                            </div>
-                        )}
-                        <Hand
-                            className={classes.abilities}
-                            hand={hand}
-                            refs={abilityRefs}
-                            selectedAbilityId={selectedAbilityId}
-                            onAbilityClick={handleAbilityClick}
-                        />
-                    </div>
+                </div>
+                {animationCanvas}
+                <div className={classes.abilityContainer}>
+                    {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && (
+                        <div className={classes.clickIndicator}>
+                            Click <br />
+                            <Icon icon={ClickIndicatorImage} />
+                        </div>
+                    )}
+                    <Hand
+                        className={classes.abilities}
+                        hand={hand}
+                        refs={abilityRefs}
+                        selectedAbilityId={selectedAbilityId}
+                        onAbilityClick={handleAbilityClick}
+                    />
                 </div>
                 {showWaveClear && (
                     <ClearOverlay labelText={waves[currentWaveIndex + 1] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
