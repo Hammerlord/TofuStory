@@ -457,7 +457,9 @@ const BattlefieldContainer = () => {
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
             } else {
-                if (!canUseAbility(player, selectedAbilityFromHand)) {
+                if (selectedAbilityFromHand.unplayable || selectedAbilityFromHand.effects?.some((e) => e.isLocked)) {
+                    warn(battleWarnings.unplayable);
+                } else if (!canUseAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
                 }
                 setSelectedAbilityId(null);
