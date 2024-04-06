@@ -284,6 +284,7 @@ const useStyles = createUseStyles({
         bottom: 0,
         left: "50%",
         transform: "translateX(-50%)",
+        zIndex: 1,
     },
 });
 
@@ -516,9 +517,6 @@ const CombatantView = forwardRef(
                                     <span className={classes.center}>
                                         <HitIcon statChanges={statChanges} />
                                     </span>
-                                    <div className={classes.statusEffectAnnouncerContainer}>
-                                        <StatusEffectAnnouncer statChanges={statChanges} />
-                                    </div>
                                 </>
                             )}
                         </div>
@@ -549,6 +547,9 @@ const CombatantView = forwardRef(
 
                 {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} HP={oldState.HP} armor={oldState.armor} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
+                <div className={classes.statusEffectAnnouncerContainer}>
+                    <StatusEffectAnnouncer statChanges={statChanges} />
+                </div>
             </div>
         );
     }
