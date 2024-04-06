@@ -29,6 +29,9 @@ const useStyles = createUseStyles({
         "&.debuff": {
             borderColor: DEBUFF_COLOUR,
         },
+        "&.disabled": {
+            background: "rgba(0, 0, 0, 0.15)",
+        },
     },
     iconText: {
         position: "absolute",
@@ -241,6 +244,7 @@ const EffectGroupIcon = ({
         <span
             className={classNames(classes.iconRoot, {
                 debuff: effectClass === EFFECT_CLASSES.DEBUFF,
+                disabled,
             })}
         >
             <Icon
