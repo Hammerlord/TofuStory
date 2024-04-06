@@ -69,26 +69,46 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
         return JSON.stringify(effects.map((e) => e.id));
     };
 
+    const aggregate = (effects) => {
+        const aggregated = effects.reduce((acc, effect) => {
+            if (!acc[effect.name]) {
+                acc[effect.name] = {
+                    ...effect,
+                    stacks: 1,
+                };
+            } else {
+                acc[effect.name].stacks += 1;
+            }
+
+            return acc;
+        }, {});
+
+        return Object.values(aggregated);
+    };
+
     const animatedEffectsRef: any = useRef({});
 
     useEffect(() => {
         if (newEffects.length) {
             setEffects((prev) => {
-                if (getStringified(prev) === getStringified(newEffects)) {
+                const aggregated = aggregate(newEffects);
+                if (getStringified(prev) === getStringified(aggregated)) {
                     return prev;
                 }
 
-                return newEffects;
+                return aggregated;
             });
         }
 
         if (newRemovedEffects.length) {
             setRemovedEffects((prev) => {
-                if (getStringified(prev) === getStringified(newRemovedEffects)) {
+                const aggregated = aggregate(newRemovedEffects);
+
+                if (getStringified(prev) === getStringified(aggregated)) {
                     return prev;
                 }
 
-                return newRemovedEffects;
+                return aggregated;
             });
         }
     }, [newEffects, newRemovedEffects]);
