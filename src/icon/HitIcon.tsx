@@ -5,6 +5,7 @@ import Icon from "./Icon";
 import { LightbeamImage } from "../images";
 import { playExplodeAnimation } from "../character/animations";
 import { getRandomInt } from "../utils";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     root: {
@@ -56,6 +57,21 @@ const useStyles = createUseStyles({
         animationDuration: 200,
         animationDelay: 50,
         opacity: 0,
+        "&.hide": {
+            display: "none",
+        },
+        "&.small": {
+            width: "50%",
+            height: "50%",
+        },
+        "&.medium": {
+            width: "100%",
+            height: "100%",
+        },
+        "&.large": {
+            width: "150%",
+            height: "150%",
+        },
     },
 });
 
@@ -91,7 +107,15 @@ const HitIcon = ({ statChanges }) => {
 
     return (
         <span className={classes.root} ref={ref}>
-            <img src={LightbeamImage} className={classes.lightBeam} />
+            <img
+                src={LightbeamImage}
+                className={classNames(classes.lightBeam, {
+                    hide: !oldStatChanges.damage || oldStatChanges.damage < 5,
+                    small: oldStatChanges.damage >= 5,
+                    medium: oldStatChanges.damage >= 10,
+                    large: oldStatChanges.damage > 20,
+                })}
+            />
             <Icon icon={<BoomIcon />} text={oldStatChanges.damage} />
         </span>
     );
