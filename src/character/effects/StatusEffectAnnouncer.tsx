@@ -50,6 +50,11 @@ const useStyles = createUseStyles({
     fadedIcon: {
         filter: "saturate(0)",
     },
+    effectClassContainer: {
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
 });
 
 /**
@@ -142,17 +147,21 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
 
     return (
         <div>
-            {effects.map((e, i) => (
-                <div key={e.id} className={classes.effectItem} ref={itemRefs[i]}>
-                    + <Icon icon={e.icon} size="sm" /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
-                </div>
-            ))}
-            {removedEffects.map((e, i) => (
-                <div key={e.id} className={classNames(classes.effectItem, classes.faded)} ref={itemRefs[effects.length + i]}>
-                    <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}{" "}
-                    faded
-                </div>
-            ))}
+            <div className={classes.effectClassContainer}>
+                {effects.map((e, i) => (
+                    <div key={e.id} className={classes.effectItem} ref={itemRefs[i]}>
+                        + <Icon icon={e.icon} size="sm" /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
+                    </div>
+                ))}
+            </div>
+            <div className={classes.effectClassContainer}>
+                {removedEffects.map((e, i) => (
+                    <div key={e.id} className={classNames(classes.effectItem, classes.faded)} ref={itemRefs[effects.length + i]}>
+                        <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}{" "}
+                        faded
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
