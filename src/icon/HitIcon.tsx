@@ -13,12 +13,18 @@ const useStyles = createUseStyles({
         width: "100%",
         display: "none",
         "& .icon": {
-            width: "350%",
-            height: "350%",
-            margin: "-105%",
-            marginLeft: "-35px",
+            width: "250%",
+            height: "250%",
+            position: "absolute",
+            top: "50%",
+            left: "46%",
+            transform: "translateX(-50%) translateY(-50%)",
         },
         "& .text": {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translateX(-50%) translateY(-50%)",
             fontSize: "22px",
             textShadow: Array.from({ length: 10 })
                 .map(() => "0 0 3px black")
