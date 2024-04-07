@@ -2594,11 +2594,12 @@ export const shieldCharge: Ability = {
     resourceCost: 1,
     reusable: true,
     rarity: RARITIES.UNCOMMON,
-    description: "When you gain {{{ _armor_ }}}, this costs 1 less until used or discarded.",
+    description: "The next use is free when you gain {{{ _armor_ }}}.",
     onReceiveArmor: {
         abilityEffects: [
             {
                 resourceCost: -1,
+                removeOnDiscard: false,
             },
         ],
     },
