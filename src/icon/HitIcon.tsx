@@ -2,6 +2,9 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BoomIcon } from "../images/icons";
 import Icon from "./Icon";
+import { LightbeamImage } from "../images";
+import { playExplodeAnimation } from "../character/animations";
+import { getRandomInt } from "../utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -16,8 +19,8 @@ const useStyles = createUseStyles({
             width: "250%",
             height: "250%",
             position: "absolute",
-            top: "50%",
-            left: "46%",
+            top: "55%",
+            left: "42%",
             transform: "translateX(-50%) translateY(-50%)",
         },
         "& .text": {
@@ -30,6 +33,29 @@ const useStyles = createUseStyles({
                 .map(() => "0 0 3px black")
                 .join(", "),
         },
+    },
+    "@keyframes flash": {
+        from: {
+            filter: `brightness(0.8)`,
+            transform: "translateX(-50%) translateY(-50%) scale(0.5)",
+            opacity: 1,
+        },
+        to: {
+            filter: `brightness(1.25) drop-shadow(0 0 3px #fffee8)`,
+            transform: "translateX(-50%) translateY(-50%) scale(1.75)",
+            opacity: 0.5,
+        },
+    },
+    lightBeam: {
+        top: "50%",
+        left: "50%",
+        transform: "translateX(-50%) translateY(-50%)",
+        position: "absolute",
+        animation: "$flash",
+        transitionTimingFunction: "ease-out",
+        animationDuration: 200,
+        animationDelay: 50,
+        opacity: 0,
     },
 });
 
@@ -63,7 +89,12 @@ const HitIcon = ({ statChanges }) => {
         }
     }, [statChanges]);
 
-    return <Icon icon={<BoomIcon />} className={classes.root} text={oldStatChanges.damage} ref={ref} />;
+    return (
+        <span className={classes.root} ref={ref}>
+            <img src={LightbeamImage} className={classes.lightBeam} />
+            <Icon icon={<BoomIcon />} text={oldStatChanges.damage} />
+        </span>
+    );
 };
 
 export default HitIcon;

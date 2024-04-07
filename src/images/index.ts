@@ -315,6 +315,7 @@ export { default as LeetSinImage } from "./LeetSin.png";
 export { default as LenImage } from "./Len.png";
 export { default as LetterImage } from "./Letter.png";
 export { default as LigatorImage } from "./Ligator.gif";
+export { default as LightbeamImage } from "./Lightbeam.png";
 export { default as LightningChargeImage } from "./LightningCharge.png";
 export { default as LightningOrbImage } from "./LightningOrb.png";
 export { default as LightningOrbProjectileImage } from "./LightningOrbProjectile.png";
