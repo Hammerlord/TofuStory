@@ -1569,7 +1569,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals {{ actions.0.damage }} {{{ _damage_ }}} for every attack you made this turn, excluding Combo Fury.",
+    description: "Deals {{ actions.0.damage }} {{{ _damage_ }}} for every attack you made this turn.",
     actions: [
         {
             damage: 2,
@@ -1578,13 +1578,6 @@ export const comboFury: Ability = {
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
-                filters: [
-                    {
-                        property: "name",
-                        value: "Combo Fury",
-                        comparator: "not",
-                    },
-                ],
             },
         },
     ],
