@@ -26,12 +26,16 @@ const useStyles = createUseStyles({
         borderRadius: "2px",
         background: "rgba(0, 0, 0, 0.75)",
         padding: "1px",
+        verticalAlign: "bottom",
         "&.debuff": {
             borderColor: DEBUFF_COLOUR,
         },
         "&.disabled": {
             background: "rgba(0, 0, 0, 0.15)",
         },
+    },
+    iconInner: {
+        display: "inline-block",
     },
     iconText: {
         position: "absolute",
@@ -251,7 +255,7 @@ const EffectGroupIcon = ({
             })}
         >
             <span
-                className={classNames({
+                className={classNames(classes.iconInner, {
                     [classes.disabled]: disabled,
                     [classes.glow]: glow,
                 })}
