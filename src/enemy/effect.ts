@@ -1,4 +1,4 @@
-import { hardy, poison } from "../ability/Effects";
+import { hardy, lupinCurse, poison } from "../ability/Effects";
 import {
     ACTION_TYPES,
     CONDITION_TARGETS,
@@ -508,8 +508,9 @@ export const critical: Effect = {
 /**
  * Lookups used when there are circular references
  */
-export const enemyEffectNameMap = {
+export const effectNameMap = {
     [bats.name]: bats,
     [fairySwarm.name]: fairySwarm,
     [frenziedFairies.name]: frenziedFairies,
+    [lupinCurse.name]: lupinCurse,
 };

@@ -23,7 +23,7 @@ import {
     getMultiplier,
     hasEffectType,
 } from "../utils";
-import { enemyEffectNameMap } from "./../../enemy/effect";
+import { effectNameMap } from "./../../enemy/effect";
 import { CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
@@ -204,7 +204,7 @@ export const getUpdatedStats = ({
                 .map((effect: String | Effect) => {
                     if (typeof effect === "string") {
                         return {
-                            ...enemyEffectNameMap[effect],
+                            ...effectNameMap[effect],
                         };
                     }
 

@@ -1,4 +1,4 @@
-import { bleed, chill, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
+import { bleed, chill, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -869,7 +869,7 @@ export const starfallMagicSquare: Item = {
 export const cursedDoll: Item = {
     name: "Cursed Doll",
     image: CursedDollImage,
-    description: "On wave start, randomly curse an enemy to take damage when you attack other targets.",
+    description: "Curse a random enemy to take damage when its allies are attacked.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -879,7 +879,7 @@ export const cursedDoll: Item = {
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 ability: {
-                    name: "Curse",
+                    name: "Cursed Doll",
                     image: CursedDollImage,
                     actions: [
                         {
@@ -887,20 +887,7 @@ export const cursedDoll: Item = {
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: CursedDollImage,
                             animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                            effects: [
-                                {
-                                    name: "Lupin Curse",
-                                    icon: CursedDollImage,
-                                    description: "Receiving 1 damage for every attack against a target friendly to this character.",
-                                    type: EFFECT_TYPES.NONE,
-                                    class: EFFECT_CLASSES.DEBUFF,
-                                    onFriendlyReceiveAttack: {
-                                        excludeEffectOwner: true,
-                                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                        damage: 1,
-                                    },
-                                },
-                            ],
+                            effects: [lupinCurse],
                         },
                     ],
                 },

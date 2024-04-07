@@ -3,6 +3,7 @@ import {
     AttackDownImage,
     BackpackImage,
     BombImage,
+    CursedDollImage,
     FireMarbleImage,
     GemHeartImage,
     GreyShieldImage,
@@ -716,4 +717,33 @@ export const tributeSummonBuff: Effect = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
     maxHP: 1,
+};
+
+export const lupinCurse: Effect = {
+    name: "Lupin Curse",
+    icon: CursedDollImage,
+    description: "Receiving damage whenever its allies are attacked.",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.DEBUFF,
+    onFriendlyReceiveAttack: {
+        excludeEffectOwner: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        damage: 1,
+    },
+    onDeath: {
+        usableWhileStunned: true,
+        removeEffect: true,
+        ability: {
+            name: "Cursed Doll",
+            image: CursedDollImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.RANDOM_FRIENDLY,
+                    icon: CursedDollImage,
+                    effects: ["Lupin Curse"],
+                },
+            ],
+        },
+    },
 };
