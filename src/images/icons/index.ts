@@ -38,6 +38,7 @@ export { default as PristineRedShieldIcon } from "./PristineRedShield.svg";
 export { default as PristineShieldIcon } from "./PristineShield.svg";
 export { default as QuestionMarkIcon } from "./QuestionMark.svg";
 export { default as RedShieldIcon } from "./RedShield.svg";
+export { default as RockIcon } from "./Rock.svg";
 export { default as ShieldIcon } from "./Shield.svg";
 export { default as SmilingImpIcon } from "./SmilingImp.svg";
 export { default as SnowflakeIcon } from "./Snowflake.svg";

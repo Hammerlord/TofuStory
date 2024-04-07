@@ -22,7 +22,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { attack, shoot } from "./abilities";
-import { earthen } from "./effect";
+import { resist } from "./effect";
 
 const terracottaCrossbowman: Minion = {
     name: "Terracotta Bowman",
@@ -39,7 +39,7 @@ const terracottaCrossbowman: Minion = {
             ],
         },
     ],
-    effects: [earthen],
+    effects: [resist],
 };
 
 const terracottaSwordsman: Minion = {
@@ -58,7 +58,7 @@ const terracottaSwordsman: Minion = {
             ],
         },
     ],
-    effects: [earthen],
+    effects: [resist],
 };
 
 const forgeWarriors: Ability = {

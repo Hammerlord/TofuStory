@@ -130,13 +130,13 @@ import {
     armorDown,
     championsRibbon,
     critical,
-    earthen,
+    resist,
     hardwood,
     incorporeal,
     pigHeaded,
     poisonous,
     sneaky,
-    temporaryEarthen,
+    temporaryResist,
 } from "./effect";
 import { sealCard } from "./jrBoogie";
 
@@ -1812,7 +1812,7 @@ export const darkStoneGolem: Minion = {
             ],
         },
     ],
-    effects: [temporaryEarthen, hardy, preventArmorDecay],
+    effects: [temporaryResist, hardy, preventArmorDecay],
 };
 
 export const eventBandit: Minion = {
@@ -2583,7 +2583,7 @@ export const golem: Minion = {
         },
     ],
     effects: [
-        temporaryEarthen,
+        temporaryResist,
         hardy,
         preventArmorDecay,
         {

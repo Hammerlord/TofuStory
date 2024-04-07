@@ -14,7 +14,7 @@ import { IronHogHoofImage, OmokPigImage, PillagingWildBoarImage, RockImage } fro
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
 import { attackDown, hardy, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
-import { championsRibbon, counterEffect, earthen, pigHeaded } from "./effect";
+import { championsRibbon, counterEffect, resist, pigHeaded } from "./effect";
 
 const boulder: Minion = {
     name: "Boulder",
@@ -36,7 +36,7 @@ const boulder: Minion = {
     ],
     effects: [
         {
-            ...earthen,
+            ...resist,
             name: "Heavy",
             description: "Immune to debuffs. Targets struck by Boulder will have their Attack Power reduced by 1.",
             icon: MountainIcon,

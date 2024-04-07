@@ -28,7 +28,7 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, MountainIcon, MuscleIcon, RedShieldIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
+import { CloudyIcon, LinkIcon, MountainIcon, MuscleIcon, RedShieldIcon, RockIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
 import { defUp, attackPower } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
@@ -353,10 +353,10 @@ export const poisonous = {
     },
 };
 
-export const earthen: Effect = {
-    name: "Earthen",
+export const resist: Effect = {
+    name: "Resistance",
     description: "Immune to debuffs.",
-    icon: MountainIcon,
+    icon: RockIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     immunities: {
@@ -365,8 +365,8 @@ export const earthen: Effect = {
     },
 };
 
-export const temporaryEarthen: Effect = {
-    ...earthen,
+export const temporaryResist: Effect = {
+    ...resist,
     description: "Immune to the next {{ stacks }} debuffs.",
     stacks: 3,
     onFailedToReceiveEffect: {

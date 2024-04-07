@@ -1,3 +1,4 @@
+import { temporaryResist } from "./effect";
 import { attackPower, bleed, hardy, pristineDefense, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
 import {
@@ -286,6 +287,9 @@ export const dyle: Minion = {
                     armor: 100,
                     removeDebuffs: true,
                     effects: [
+                        {
+                            ...temporaryResist,
+                        },
                         {
                             ...pristineDefense,
                             name: "Underwater",
