@@ -1296,6 +1296,7 @@ export const tauromacisHorn: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     description: "+2 HP on kill.",
+    applyEffectsToSummons: true,
     effects: [
         {
             type: EFFECT_TYPES.NONE,
