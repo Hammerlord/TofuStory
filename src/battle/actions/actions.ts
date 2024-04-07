@@ -54,7 +54,7 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
-import { checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
+import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { getUpgradeCard } from "../../Menu/utils";
@@ -846,6 +846,31 @@ export const checkEventTrigger = ({
                 });
             }
         });
+
+        // Trigger hand effects if it is not a proc.
+        if (combatant.isPlayer && !source?.isProc) {
+            const { playerSide, hand } = getState().battle;
+            const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === source?.actorId);
+            if (actorIsPlayer) {
+                hand.forEach((card: CombatAbility) => {
+                    if (card[effectEventKey]?.ability) {
+                        dispatch(useAbility({ ability: card[effectEventKey].ability, actorId: source?.actorId, isProc: true }));
+                    }
+                });
+
+                dispatch(
+                    updateBattle({
+                        hand: getState().battle.hand.map((card: CombatAbility) => {
+                            return applyAbilityEventEffects({
+                                event: card[effectEventKey],
+                                ability: card,
+                                source,
+                            });
+                        }),
+                    })
+                );
+            }
+        }
     };
 };
 

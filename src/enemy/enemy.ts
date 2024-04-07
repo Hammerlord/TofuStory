@@ -2647,7 +2647,7 @@ export const bubbling: Minion = {
                             resourceCost: 2,
                             description: "Reduce cost by 1 for every attack played this turn.",
                             depletedOnUse: true,
-                            onAbilityUse: {
+                            onAbility: {
                                 abilityEffects: [
                                     {
                                         resourceCost: -1,

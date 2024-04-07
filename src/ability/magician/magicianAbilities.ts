@@ -1383,7 +1383,7 @@ export const aurora: Ability = {
     description: "While this card is in hand, its cost reduces by 1 whenever you use another ability.",
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
-    onAbilityUse: {
+    onAbility: {
         abilityEffects: [
             {
                 resourceCost: -1,

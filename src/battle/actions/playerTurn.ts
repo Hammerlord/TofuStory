@@ -41,11 +41,7 @@ export const onUsePlayerAbility = ({
                                 }),
                             };
                         }
-                        return applyAbilityEventEffects({
-                            event: card.onAbilityUse,
-                            ability: card,
-                            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
-                        });
+                        return card;
                     }),
                 })
             );
@@ -61,12 +57,6 @@ export const onUsePlayerAbility = ({
                 actorId: actor?.id,
             })
         );
-
-        hand.forEach((card: CombatAbility) => {
-            if (card.onAbilityUse?.ability) {
-                dispatch(useAbility({ ability: card.onAbilityUse.ability, actorId: actor?.id, isProc: true }));
-            }
-        });
 
         // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
@@ -128,13 +118,7 @@ const handleDiscard = (ability: CombatAbility) => {
 
         dispatch(
             updateBattle({
-                hand: newHand.map((card: CombatAbility) => {
-                    return applyAbilityEventEffects({
-                        event: card.onAbilityUse,
-                        ability: card,
-                        source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
-                    });
-                }),
+                hand: newHand,
                 discard: newDiscard,
                 depleted: newDepleted,
             })

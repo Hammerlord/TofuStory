@@ -114,9 +114,9 @@ const agonyCard: Ability = {
     name: "Agony",
     image: SkeletonOfHorrorImage,
     description:
-        "While this is in your hand, self-inflict {{ onAbilityUse.ability.actions.0.damage }} {{{ _damage_ }}} for every card you play.",
+        "While this is in your hand, self-inflict {{ onAbility.ability.actions.0.damage }} {{{ _damage_ }}} for every card you play.",
     unplayable: true,
-    onAbilityUse: {
+    onAbility: {
         ability: {
             name: "Agony",
             image: SkeletonOfHorrorImage,

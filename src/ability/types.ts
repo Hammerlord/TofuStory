@@ -687,11 +687,12 @@ export interface Ability {
     conditions?: Condition[];
     effectsWhileOwned?: Effect[];
     /** Something that happens when an ability is used (not necessarily this one) */
-    onAbilityUse?: AbilityEvent;
+    onAbility?: AbilityEvent;
     /** Something that happens when you draw this card. Currently does NOT apply abilityEffects */
     onDraw?: AbilityEvent;
     /** Something that happens when this card leaves your hand (not necessarily discarded) */
     onLeaveHand?: AbilityEvent;
+    onReceiveArmor?: AbilityEvent;
     hideResourceCostIcon?: boolean;
     disableConditionGlow?: boolean;
     /** Effects applied on other cards in your hand, based on proximity */
