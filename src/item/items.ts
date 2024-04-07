@@ -1402,7 +1402,7 @@ export const wildKargoEye: Item = {
 
 export const pigIllustrated: Item = {
     name: "Pig Illustrated",
-    description: "When you use an offense ability that costs 2 or more, it has a 50% chance to refund 1 {{ resources }}.",
+    description: "When you use a 2+ cost ability, it has a 50% chance to refund 1 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PigIllustratedImage,
@@ -1411,7 +1411,7 @@ export const pigIllustrated: Item = {
             name: "Pig Illustrated",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onOffensiveAbility: {
+            onAbility: {
                 conditions: [
                     {
                         comparator: "gt",
