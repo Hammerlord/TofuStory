@@ -469,6 +469,7 @@ export type Action = {
     type?: ACTION_TYPES;
     healing?: number;
     armor?: number;
+    maxArmor?: number;
     target?: TARGET_TYPES;
     // If TARGET_TYPES is FRIENDLY_CHARACTER, provide the character's name.
     // Meant for enemies selecting a specific ally to support.

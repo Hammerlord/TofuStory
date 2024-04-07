@@ -1603,17 +1603,28 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "Gain {{{ _armor_ }}} equal to the number of attacks made this turn.",
+    description:
+        "Gain {{ actions.0.armor }} {{{ _armor_ }}} times number of attacks made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
             armor: 1,
+            maxArmor: 10,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 1,
+                },
+            ],
         },
     ],
 };

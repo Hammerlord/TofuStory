@@ -658,7 +658,7 @@ export const calculateArmor = ({
     multiplier = 1,
 }: {
     target?: CombatantInfo;
-    action: { armor?: number };
+    action: { armor?: number; maxArmor?: number };
     multiplier;
 }): number => {
     if (!action.armor) {
@@ -670,8 +670,11 @@ export const calculateArmor = ({
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
             0
         ) || 0;
-    const armor = targetArmorReceived + action.armor * multiplier;
-    return Math.max(0, armor);
+
+    const maxArmor = action.maxArmor || Infinity;
+    const armor = Math.min(maxArmor, action.armor * multiplier);
+    const totalArmor = targetArmorReceived + armor;
+    return Math.max(0, totalArmor);
 };
 
 export const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: { healing?: number } }): number => {
