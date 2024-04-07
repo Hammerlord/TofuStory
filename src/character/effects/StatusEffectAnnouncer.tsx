@@ -12,7 +12,7 @@ const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
         {
             opacity: 0.5,
             easing: "ease-out",
-            transform: "translateY(-50px)",
+            transform: "translateY(-100px)",
         },
         {
             opacity: 1,
@@ -23,7 +23,7 @@ const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
         {
             opacity: 0,
             easing: "ease-in",
-            transform: "translateY(-150px)",
+            transform: "translateY(-200px)",
         },
     ];
 
@@ -54,6 +54,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
+        bottom: 0,
     },
 });
 
