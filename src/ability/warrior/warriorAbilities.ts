@@ -2300,49 +2300,6 @@ export const guardian: Ability = {
     ],
 };
 
-const beatdownEffect: Effect = {
-    name: "Beatdown Ready",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    maxApplications: 1,
-    onApplyEffect: {
-        targetType: TRIGGER_TARGET_TYPES.TARGET,
-        ability: {
-            name: "Beatdown",
-            image: ChanceAttackImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
-                    playbackTime: 500,
-                },
-            ],
-        },
-        conditions: [
-            {
-                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                comparator: "eq",
-            },
-        ],
-        decrementStacks: 1,
-    },
-};
-
-const beatdownUpgrade: any = {
-    onApplyEffect: {
-        ability: {
-            actions: [
-                {
-                    damage: 2,
-                },
-            ],
-        },
-    },
-};
-
 export const beatdown: Ability = {
     name: "Beatdown",
     image: ChanceAttackImage,
@@ -2360,17 +2317,30 @@ export const beatdown: Ability = {
                     duration: 5,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    onTurnStart: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        // cloneDeep because due to the way upgrades work, references will affect each other
-                        effects: [cloneDeep(beatdownEffect)],
-                    },
-                    onAttack: {
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        effects: [cloneDeep(beatdownEffect)],
+                    onApplyEffect: {
+                        targetType: TRIGGER_TARGET_TYPES.TARGET,
+                        ability: {
+                            name: "Beatdown",
+                            image: ChanceAttackImage,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.ATTACK,
+                                    target: TARGET_TYPES.HOSTILE,
+                                    damage: 2,
+                                    playbackTime: 500,
+                                },
+                            ],
+                        },
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                                comparator: "eq",
+                            },
+                        ],
                     },
                 },
-                cloneDeep(beatdownEffect),
             ],
         },
     ],
@@ -2380,14 +2350,16 @@ export const beatdown: Ability = {
                 {
                     effects: [
                         {
-                            onTurnStart: {
-                                effects: [beatdownUpgrade],
-                            },
-                            onAttack: {
-                                effects: [beatdownUpgrade],
+                            onApplyEffect: {
+                                ability: {
+                                    actions: [
+                                        {
+                                            damage: 2,
+                                        },
+                                    ],
+                                },
                             },
                         },
-                        beatdownUpgrade,
                     ],
                 },
             ],
