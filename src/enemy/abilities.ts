@@ -35,6 +35,7 @@ export const shoot: Ability = {
             playbackTime: 400,
             damage: 2,
             animationOptions: {
+                rotateToFaceTarget: true,
                 rotate: -45,
             },
         },
