@@ -33,6 +33,7 @@ import {
     IntrepidSlashImage,
     IronBodyImage,
     IronWillImage,
+    LightningChargeImage,
     LordOfDarknessImage,
     MagicCrashImage,
     MetalAxeImage,
@@ -1626,7 +1627,7 @@ export const ragingBlow: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 9,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1634,7 +1635,7 @@ export const ragingBlow: Ability = {
             },
         },
         {
-            damage: 9,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -2534,10 +2535,10 @@ export const retribute: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 10,
+            damage: 9,
             area: 2,
             bonus: {
-                damage: 3,
+                damage: 5,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -2554,7 +2555,7 @@ export const retribute: Ability = {
                 {
                     damage: 2,
                     bonus: {
-                        damage: 1,
+                        damage: 2,
                     },
                 },
             ],
@@ -2583,6 +2584,39 @@ export const bladeworks: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+export const shieldCharge: Ability = {
+    name: "Shield Charge",
+    image: LightningChargeImage,
+    resourceCost: 1,
+    reusable: true,
+    rarity: RARITIES.UNCOMMON,
+    description: "When you gain {{{ _armor_ }}}, this costs 1 less until used or discarded.",
+    onReceiveArmor: {
+        abilityEffects: [
+            {
+                resourceCost: -1,
+            },
+        ],
+    },
+    actions: [
+        {
+            area: 1,
+            damage: 7,
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };

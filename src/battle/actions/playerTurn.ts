@@ -1,12 +1,11 @@
 import uuid from "uuid";
-import { getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
-import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
+import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
+import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, Event } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCharacters } from "../utils";
-import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, useAbility } from "./actions";
+import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
