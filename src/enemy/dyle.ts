@@ -68,7 +68,7 @@ const dyleBubbleFish: Minion = {
     effects: [
         {
             name: "Flopping",
-            icon: BubbleFishImage,
+            icon: TwinklingOrbImage,
             description: "Drops a usable Air Bubble if it dies.",
             type: EFFECT_TYPES.FEAR,
             class: EFFECT_CLASSES.NONE,
@@ -96,7 +96,7 @@ const garbageCard: Ability = {
 const dyleRealGarbage: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 5,
+    maxHP: 10,
     effects: [
         {
             name: "Garbage",
@@ -123,7 +123,7 @@ export const harpoonCard: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            damage: 5,
+            damage: 3,
             effects: [bleed, bleed],
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -143,7 +143,7 @@ export const harpoonCard: Ability = {
 const dyleUsefulGarbage: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 5,
+    maxHP: 10,
     effects: [
         {
             name: "Garbage",
@@ -166,7 +166,7 @@ const dyleUsefulGarbage2: Minion = {
 const dyleGarbage2: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 5,
+    maxHP: 10,
     effects: [
         {
             name: "Garbage",
@@ -183,7 +183,7 @@ const dyleGarbage2: Minion = {
                         removeAfterTurn: true,
                         actions: [
                             {
-                                armor: 5,
+                                armor: 3,
                                 target: TARGET_TYPES.FRIENDLY,
                                 type: ACTION_TYPES.EFFECT,
                             },
