@@ -1108,7 +1108,7 @@ export const estherShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 9,
+                armor: 5,
             },
         },
     ],
