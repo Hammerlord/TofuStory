@@ -770,7 +770,8 @@ export const checkEventTrigger = ({
             // Dead characters generally cannot trigger effects except in case of killing blows
             const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
 
-            const excludeEffectOwner = effectEvent.excludeEffectOwner && source?.actorId === combatant.id;
+            const excludeEffectOwner =
+                effectEvent.excludeEffectOwner && (source?.actorId === combatantId || source?.targetId === combatantId);
             if (!usable || excludeEffectOwner) {
                 return;
             }
