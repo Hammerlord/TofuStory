@@ -920,14 +920,14 @@ const BattlefieldContainer = () => {
                 });
             });
 
-            // For abilities like Combo Fury which gain damage when you attack
+            // This used to be for Combo Fury which previously gained damage with each attack, but that ability has been changed so this seems redundant now.
             const recentActor = findCombatantData(() => previousCombatantStates, actorId);
             if (recentActor) {
                 const friendly = previousCombatantStates.battle[recentActor.friendlySide];
                 if (friendly?.[recentActor.index]) {
                     friendly[recentActor.index] = {
                         ...recentActor.combatant,
-                        turnHistory: [...(recentActor.combatant.turnHistory || []), action],
+                        turnHistory: [...(recentActor.combatant.turnHistory || []), { ...action, parent: actionParent }],
                     };
                 }
             }

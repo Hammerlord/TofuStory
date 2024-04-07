@@ -437,7 +437,7 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    turnHistory: [...turnHistory, action],
+                    turnHistory: [...turnHistory, { ...action, parent: source?.source }],
                 },
             })
         );
