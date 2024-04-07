@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
         margin: "4px 3px",
         border: `1px solid ${BUFF_COLOUR}`,
         borderRadius: "2px",
-        background: "rgba(0, 0, 0, 0.65)",
+        background: "rgba(0, 0, 0, 0.75)",
         padding: "1px",
         "&.debuff": {
             borderColor: DEBUFF_COLOUR,
@@ -41,6 +41,9 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         zIndex: "3",
         color: "white",
+    },
+    primaryIcon: {
+        filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(0px 0px 1px rgba(0, 0, 0, 1))",
     },
     stacks: {
         bottom: -1,
@@ -247,13 +250,13 @@ const EffectGroupIcon = ({
                 disabled,
             })}
         >
-            <Icon
-                icon={icon}
+            <span
                 className={classNames({
                     [classes.disabled]: disabled,
                     [classes.glow]: glow,
                 })}
             >
+                <Icon icon={icon} className={classNames(classes.primaryIcon)} />
                 <>
                     {duration !== Infinity && (
                         <span className={classes.duration}>
@@ -266,7 +269,7 @@ const EffectGroupIcon = ({
                     {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.upCorner} />}
                     {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.downCorner} />}
                 </>
-            </Icon>
+            </span>
         </span>
     );
 
