@@ -2326,7 +2326,7 @@ export const beatdown: Ability = {
                 {
                     name: "Beatdown",
                     icon: ChanceAttackImage,
-                    duration: 5,
+                    duration: 4,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     onApplyEffect: {
@@ -2366,7 +2366,7 @@ export const beatdown: Ability = {
                                 ability: {
                                     actions: [
                                         {
-                                            damage: 2,
+                                            damage: 1,
                                         },
                                     ],
                                 },
