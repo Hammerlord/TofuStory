@@ -274,13 +274,13 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp,
                             onClick={handleClickCampaign}
                         />
 
-                        <TownNode
+                        {/*<TownNode
                             icon={QuestionMarkIcon}
                             isVisited={visited[KERNING_PLACES.MATCH_CARDS]}
                             label={"Hmm?"}
                             nodeEl={caseyNodeEl}
                             onClick={() => handleClickEvent(KERNING_PLACES.MATCH_CARDS, kerningMatchingCards)}
-                        />
+                        />*/}
                         <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[KERNING_PLACES.DYLE]}
