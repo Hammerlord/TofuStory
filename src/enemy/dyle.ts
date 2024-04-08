@@ -47,7 +47,7 @@ const airBubbleCard: Ability = {
 const dyleBubbleFish: Minion = {
     name: "Bubble Fish",
     image: BubbleFishImage,
-    maxHP: 10,
+    maxHP: 7,
     resources: 2,
     abilities: [
         {
@@ -97,7 +97,7 @@ const garbageCard: Ability = {
 const dyleRealGarbage: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 10,
+    maxHP: 7,
     effects: [
         {
             name: "Garbage",
@@ -106,7 +106,7 @@ const dyleRealGarbage: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onDeath: {
-                addCardsToDeck: [garbageCard],
+                addCardsToDiscard: [garbageCard],
             },
         },
     ],
@@ -144,7 +144,7 @@ export const harpoonCard: Ability = {
 const dyleUsefulGarbage: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 10,
+    maxHP: 7,
     effects: [
         {
             name: "Garbage",
@@ -167,7 +167,7 @@ const dyleUsefulGarbage2: Minion = {
 const dyleGarbage2: Minion = {
     name: "Flotsam",
     image: GarbageImage,
-    maxHP: 10,
+    maxHP: 7,
     effects: [
         {
             name: "Garbage",
@@ -196,6 +196,27 @@ const dyleGarbage2: Minion = {
     ],
 };
 
+const dyleGarbage3: Minion = {
+    name: "Flotsam",
+    image: GarbageImage,
+    maxHP: 7,
+    effects: [
+        {
+            name: "Garbage",
+            description: "It might contain something useful... or not.",
+            icon: GarbageImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            // Adds nothing
+        },
+    ],
+};
+
+const dyleGarbage4: Minion = {
+    ...dyleGarbage3,
+    image: SeaweedImage,
+};
+
 const flotsamWaveAttackAction = {
     type: ACTION_TYPES.EFFECT,
     target: TARGET_TYPES.SELF,
@@ -222,9 +243,9 @@ const flotsamWaveAttackAction = {
 
 const dyleDredgeSummons = [
     { minion: [dyleRealGarbage, dyleUsefulGarbage, dyleGarbage2, dyleBubbleFish] },
-    { minion: [dyleRealGarbage, dyleGarbage2, dyleRealGarbage2, dyleUsefulGarbage2] },
+    { minion: [dyleGarbage3, dyleGarbage2, dyleRealGarbage2, dyleUsefulGarbage2] },
     { minion: [dyleRealGarbage, dyleGarbage2, dyleUsefulGarbage, dyleBubbleFish] },
-    { minion: [dyleRealGarbage, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
+    { minion: [dyleGarbage4, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
 ];
 
 export const dyle: Minion = {
