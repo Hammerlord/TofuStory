@@ -44,7 +44,7 @@ export const rampageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 3,
+                triggerFrequencyFromSum: 5,
                 effects: [
                     infuriateEffect,
                     {
