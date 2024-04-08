@@ -20,4 +20,5 @@ export const battleWarnings = {
     minDepleted: "You haven't Depleted any other cards this battle.",
     targetStealth: "That character is stealthed and cannot be targeted directly.",
     unplayable: "That card cannot be played.",
+    targetTaunt: "You must target the enemy that has Taunt.",
 };

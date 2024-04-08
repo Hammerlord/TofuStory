@@ -1,6 +1,7 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
+import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
@@ -11,6 +12,7 @@ import {
     CombatAbility,
     CombatEffect,
     EFFECT_EVENT_KEYS,
+    EFFECT_TYPES,
     Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
@@ -46,8 +48,7 @@ import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constan
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { calculateDamage, canTargetIfStealthed, canUseAbility, getEnabledEffects, isValidTarget, isWithinAbilityArea } from "./utils";
-import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
+import { canTargetIfStealthed, canUseAbility, hasEffectType, isValidTarget, isWithinAbilityArea } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -493,12 +494,32 @@ const BattlefieldContainer = () => {
         warn(battleWarnings.targetStealth);
     };
 
+    const tauntEnemies = enemySide
+        .filter((combatant) => combatant?.HP)
+        .map((combatant) => findCombatantData(() => state, combatant.id))
+        .filter((combatantInfo: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
+
+    const mustTargetTauntError = (index: number): boolean => {
+        if (tauntEnemies.length === 0) {
+            return false;
+        }
+        const target = enemySide[index];
+        return tauntEnemies.every((enemy) => enemy.combatant.id !== target?.id);
+    };
+
+    const warnTaunt = () => {
+        warn(battleWarnings.targetTaunt);
+    };
+
     const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
             } else if (!canTargetIfStealthed(selectedMinion, enemySide[index])) {
                 warnStealth();
+            } else if (mustTargetTauntError(index)) {
+                warnTaunt();
+                e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
             } else {
                 setSelectedAllyIndex(null);
             }
@@ -515,6 +536,9 @@ const BattlefieldContainer = () => {
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
             } else if (!canTargetIfStealthed(player, enemySide[index])) {
                 warnStealth();
+            } else if (mustTargetTauntError(index)) {
+                warnTaunt();
+                e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
             } else {
                 if (!canUseAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
