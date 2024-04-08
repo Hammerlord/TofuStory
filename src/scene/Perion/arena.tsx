@@ -354,7 +354,24 @@ export const arenaScene: EventScene = {
                                                 "[The crowd leaps to their feet and screams. You can't tell if they're angry or elated.]",
                                             ],
                                         },
-                                        ...manjiScript,
+                                        {
+                                            speaker: announcer,
+                                            dialog: ["Next up!"], // Fix me: This is skipped due to the way conditionalNext is processed
+                                            conditionalNext: [
+                                                {
+                                                    conditions: [
+                                                        {
+                                                            chance: 0.5,
+                                                        },
+                                                    ],
+                                                    next: manjiScript,
+                                                },
+                                                {
+                                                    conditions: [],
+                                                    next: ayanScript,
+                                                },
+                                            ],
+                                        },
                                     ],
                                 },
                             ],
