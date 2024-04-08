@@ -8,11 +8,12 @@ import {
     PerionDummiesPreviewImage,
     PerionExitImage,
     PerionRegionBGImage,
+    PerionRestImage,
     PerionShopImage,
     PerionTradingPostImage,
     PerionWarriorHallImage,
 } from "../images";
-import { JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CampingIcon, JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -105,7 +106,7 @@ export const undeadMageScene: EventScene = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProperties) => {
+const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const [isShopOpen, setIsShopOpen] = useState(false);
@@ -160,6 +161,12 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProper
         }
     };
 
+    const handleClickCamp = () => {
+        if (checkVisitPlace(PERION_PLACES.REST)) {
+            onCamp();
+        }
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
@@ -173,14 +180,13 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProper
                             isVisited={tradingPostConfig.tradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={PerionShopImage} onClick={handleClickShop} />
-
                         <br />
                         <TownNode
-                            icon={MedalIcon}
-                            isVisited={visited[PERION_PLACES.ARENA]}
-                            label={"Arena"}
-                            onClick={() => handleClickEvent(PERION_PLACES.ARENA, arenaScene)}
-                            nodeImage={PerionArenaPreviewImage}
+                            icon={CampingIcon}
+                            isVisited={visited[PERION_PLACES.REST]}
+                            label={"Rest"}
+                            nodeImage={PerionRestImage}
+                            onClick={handleClickCamp}
                         />
 
                         <div className={classNames(classes.townCenter)}>
@@ -205,6 +211,13 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProper
                         />
 
                         <br />
+                        <TownNode
+                            icon={MedalIcon}
+                            isVisited={visited[PERION_PLACES.ARENA]}
+                            label={"Arena"}
+                            onClick={() => handleClickEvent(PERION_PLACES.ARENA, arenaScene)}
+                            nodeImage={PerionArenaPreviewImage}
+                        />
 
                         <TownNode
                             icon={QuestionMarkIcon}

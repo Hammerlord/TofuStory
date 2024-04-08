@@ -422,6 +422,7 @@ export { default as PerionDummiesPreviewImage } from "./PerionDummiesPreview.png
 export { default as PerionExitImage } from "./PerionExit.png";
 export { default as PerionGroundsImage } from "./PerionGrounds.png";
 export { default as PerionRegionBGImage } from "./PerionRegionBG.jpg";
+export { default as PerionRestImage } from "./PerionRest.png";
 export { default as PerionShopImage } from "./PerionShop.png";
 export { default as PerionStreetImage } from "./PerionStreet.png";
 export { default as PerionTradingPostImage } from "./PerionTradingPost.png";
