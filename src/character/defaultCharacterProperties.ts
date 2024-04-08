@@ -23,7 +23,7 @@ const defaultCharacterProperties = {
     image: WarMushImage,
     HP: 70,
     maxHP: 70,
-    resourcesPerTurn: 2,
+    resourcesPerTurn: 3,
     maxResources: 3, // Maximum resources that resourcesPerTurn can grant up to
     resources: 0,
     armor: 0,
