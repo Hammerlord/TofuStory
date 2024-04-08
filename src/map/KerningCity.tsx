@@ -88,6 +88,9 @@ const dyleFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, dyle, null, null],
+            winCondition: {
+                defeatBoss: true,
+            },
         },
     ],
     type: BATTLE_TYPES.BOSS,
