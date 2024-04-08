@@ -1733,7 +1733,7 @@ export const soulBlade: Ability = {
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
-        maxHP: 1,
+        maxHP: 2,
         uncontrollable: true,
         abilities: [
             {
@@ -1742,7 +1742,7 @@ export const soulBlade: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 3,
+                        damage: 2,
                         animationOptions: {
                             rotateToFaceTarget: true,
                         },
