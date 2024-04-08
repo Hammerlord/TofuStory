@@ -196,7 +196,7 @@ const dyleGarbage2: Minion = {
     ],
 };
 
-const dyleGarbage3: Minion = {
+const dyleEmptyGarbage: Minion = {
     name: "Flotsam",
     image: GarbageImage,
     maxHP: 7,
@@ -212,8 +212,8 @@ const dyleGarbage3: Minion = {
     ],
 };
 
-const dyleGarbage4: Minion = {
-    ...dyleGarbage3,
+const dyleEmptyGarbage2: Minion = {
+    ...dyleEmptyGarbage,
     image: SeaweedImage,
 };
 
@@ -242,10 +242,10 @@ const flotsamWaveAttackAction = {
 };
 
 const dyleDredgeSummons = [
-    { minion: [dyleRealGarbage, dyleUsefulGarbage, dyleGarbage2, dyleBubbleFish] },
-    { minion: [dyleGarbage3, dyleGarbage2, dyleRealGarbage2, dyleUsefulGarbage2] },
+    { minion: [dyleUsefulGarbage, dyleGarbage2, dyleBubbleFish] },
+    { minion: [dyleEmptyGarbage, dyleRealGarbage2, dyleUsefulGarbage2] },
     { minion: [dyleRealGarbage, dyleGarbage2, dyleUsefulGarbage, dyleBubbleFish] },
-    { minion: [dyleGarbage4, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
+    { minion: [dyleEmptyGarbage2, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
 ];
 
 export const dyle: Minion = {
