@@ -131,11 +131,11 @@ export const bash: Ability = {
 
 export const charge: Ability = {
     name: "Charge",
-    resourceCost: 0,
+    resourceCost: 1,
     image: WarLeapImage,
     actions: [
         {
-            damage: 0,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             effects: [bleed],
