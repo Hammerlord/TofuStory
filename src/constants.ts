@@ -21,6 +21,10 @@ export const RE_PAN_TIME = 400;
 
 export const DECK_CYCLE_TIME = 1000;
 
+// For displaying on smaller screens
+export const ZOOM_OUT_RESOLUTION = 1100;
+export const ZOOM_AMOUNT = 0.9;
+
 export const COMMON_STYLES = {
     "@keyframes highlightAnimation": {
         from: {

@@ -49,6 +49,7 @@ import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { canTargetIfStealthed, canUseAbility, hasEffectType, isValidTarget, isWithinAbilityArea } from "./utils";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     root: {
@@ -67,6 +68,7 @@ const useStyles = createUseStyles({
     },
     battlefieldContainer: {
         height: "70%",
+        minHeight: "700px",
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
@@ -75,7 +77,8 @@ const useStyles = createUseStyles({
     battlefield: {
         textAlign: "center",
         margin: "auto",
-        width: "95%",
+        width: "96%",
+        minWidth: 1350,
         maxWidth: "87rem",
         height: "100%",
         position: "relative",
@@ -126,10 +129,15 @@ const useStyles = createUseStyles({
     },
     abilityContainer: {
         position: "absolute",
-        bottom: "3.5vh",
         left: "50%",
         transform: "translateX(-50%)",
         textAlign: "center",
+        bottom: "0",
+    },
+    "@media (min-height: 1150px)": {
+        abilityContainer: {
+            bottom: "3.5vh",
+        },
     },
     abilities: {
         display: "flex",

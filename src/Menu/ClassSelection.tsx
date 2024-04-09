@@ -54,6 +54,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         top: "50%",
         left: "50%",
+        minWidth: 750,
         transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
     },

@@ -1,5 +1,6 @@
 import { createRef, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { ZOOM_AMOUNT, ZOOM_OUT_RESOLUTION } from "../constants";
 
 const useStyles = createUseStyles({
     canvas: {
@@ -27,12 +28,18 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
         <div
             onMouseMove={(e) => {
                 if (origination && targetLineRef.current) {
-                    targetLineRef.current.setAttribute("x2", e.clientX.toString());
-                    targetLineRef.current.setAttribute("y2", e.clientY.toString());
-                    bullseyeRef.current.setAttribute("cx", e.clientX.toString());
-                    bullseyeRef.current.setAttribute("cy", e.clientY.toString());
-                    circleRef.current.setAttribute("cx", e.clientX.toString());
-                    circleRef.current.setAttribute("cy", e.clientY.toString());
+                    let { clientX, clientY } = e;
+                    if (window.innerHeight <= ZOOM_OUT_RESOLUTION) {
+                        clientX /= ZOOM_AMOUNT;
+                        clientY /= ZOOM_AMOUNT;
+                    }
+
+                    targetLineRef.current.setAttribute("x2", clientX.toString());
+                    targetLineRef.current.setAttribute("y2", clientY.toString());
+                    bullseyeRef.current.setAttribute("cx", clientX.toString());
+                    bullseyeRef.current.setAttribute("cy", clientY.toString());
+                    circleRef.current.setAttribute("cx", clientX.toString());
+                    circleRef.current.setAttribute("cy", clientY.toString());
                 }
             }}
             {...other}
