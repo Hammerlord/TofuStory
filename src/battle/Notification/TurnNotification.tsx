@@ -84,7 +84,7 @@ const TurnAnnouncement = ({ isPlayerTurn, duration }: { isPlayerTurn: boolean; d
             {
                 opacity: 1,
                 transform: "translateX(0%)",
-                offset: 0.15,
+                offset: 0.1,
                 easing: "ease-in-out",
             },
             {
