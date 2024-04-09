@@ -208,7 +208,7 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
                 </button>
             ))}
             {menuAnchor && (
-                <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu}>
+                <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu} disablePortal={true}>
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.itemName}>

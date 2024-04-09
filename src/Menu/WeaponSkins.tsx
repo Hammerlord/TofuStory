@@ -84,7 +84,7 @@ const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
                 <img src={player.weapon} alt="Currently equipped" />
             </button>
             {weaponSkinInventoryOpen && (
-                <Popper anchorEl={menuAnchor.current} open={true} placement={"bottom-start"} className={classes.menu}>
+                <Popper anchorEl={menuAnchor.current} open={true} placement={"bottom-start"} className={classes.menu} disablePortal={true}>
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
