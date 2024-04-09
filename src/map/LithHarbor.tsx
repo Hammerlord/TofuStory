@@ -5,10 +5,13 @@ import CardRewards from "../Menu/CardRewards";
 import ItemRewards from "../Menu/ItemRewards";
 import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { playerStateSlice } from "../character/playerReducer";
+import { attack } from "../enemy/abilities";
 import { basicDummy } from "../enemy/dummy";
 import { casey, olaf } from "../enemy/enemy";
 import { useAppDispatch } from "../hooks";
+import Icon from "../icon/Icon";
 import {
     LithHarborCenterImage,
     LithHarborCityBGImage,
@@ -22,23 +25,20 @@ import {
     SkullPatchImage,
 } from "../images";
 import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ShieldIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { halfEatenHotdog } from "../item/consumables";
+import { bigMesoItem, leatherSandals, mesoItem, redHeadband } from "../item/items";
 import { RARITIES } from "../item/types";
+import ScenePlayer from "../scene/ScenePlayer";
 import { lithEventsOlaf } from "../scene/olaf";
 import { lithEventsTeoJohn } from "../scene/teojohn";
+import { EventScene, SceneEncounter } from "../scene/types";
+import Shop from "../shops/Shop";
+import Overlay from "../view/Overlay";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import { EventScene, SceneEncounter } from "../scene/types";
-import Shop from "../shops/Shop";
-import ScenePlayer from "../scene/ScenePlayer";
+import { TOWN_STYLES } from "./constants";
 import { REGIONS } from "./regions";
-import Overlay from "../view/Overlay";
-import { halfEatenHotdog } from "../item/consumables";
-import { bigMesoItem, leatherSandals, mesoItem, redHeadband } from "../item/items";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
-import { attack } from "../enemy/abilities";
-import Icon from "../icon/Icon";
 import { TOWNS } from "./types";
 import { getTownPlaces } from "./utils";
 
@@ -362,7 +362,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isShopScriptOpen, setIsShopScriptOpen] = useState(false);
 
-    const exitRequirements = [...Object.values(LITH_PLACES), TOWN_PLACES.SHOP];
+    const exitRequirements = [LITH_PLACES.SHARK, LITH_PLACES.TUTORIAL_BASIC, LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, LITH_PLACES.SHOP];
     const isFulfilledExitRequirement = Object.values(visited).length >= exitRequirements.length;
     const dispatch = useAppDispatch();
 
@@ -389,6 +389,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
 
     const getGrantedItemPool = () => {
         const itemPool = [];
+
         if (!visited[LITH_PLACES.SHARK]) {
             itemPool.push(halfEatenHotdog);
         }
@@ -499,7 +500,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                 />
                                 <TownNode
                                     icon={MoneyBagIcon}
-                                    isVisited={visited[TOWN_PLACES.SHOP]}
+                                    isVisited={visited[LITH_PLACES.SHOP]}
                                     label={"Shop"}
                                     nodeImage={LithHarborShopImage}
                                     onClick={handleClickShop}
