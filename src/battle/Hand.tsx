@@ -6,6 +6,7 @@ import { CombatAbility } from "../ability/types";
 import { cardPassesFilterCondition } from "./selectCardUtils";
 
 const handPlaybackDuration = 300; // As much as I'd like it to be a bit slower, it causes cards to get stuck/some responsiveness problems
+const CARD_WIDTH = 168; // From AbilityView
 const useStyles = createUseStyles({
     "@keyframes slideIn": {
         from: {
@@ -26,12 +27,12 @@ const useStyles = createUseStyles({
     "@keyframes slideOut": {
         from: {
             transform: "translate(0, 0)",
-            width: "150px", // Card width, see AbilityView style root
+            width: CARD_WIDTH,
             opacity: 1,
             filter: "saturate(0.5)",
         },
         to: {
-            transform: "translate(-75px, -50%)", // X is 1/2 card width
+            transform: `translate(-${CARD_WIDTH / 2}px, -50%)`,
             width: "0px",
             opacity: 0,
             filter: "saturate(0)",
@@ -112,10 +113,10 @@ const Hand = ({
     const classes = useStyles();
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
             setOldHand(hand);
             // Bit faster so that the animation doesn't reset before eg. the card leaves
-        }, handPlaybackDuration - 10);
+        }, handPlaybackDuration - 25);
     }, [JSON.stringify(hand)]);
 
     const handleAbilityMouseDown = (event, id: string) => {
