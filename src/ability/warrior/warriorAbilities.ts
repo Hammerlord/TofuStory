@@ -891,7 +891,7 @@ export const rend: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 1,
             effects: [
                 {
                     ...bleed,
@@ -1147,7 +1147,7 @@ export const doubleTime: Ability = {
     ],
     upgrades: [
         {
-            description: "Copy a card in your hand. It is Ephemeral and costs {{ actions.0.selectCards.effects.resourceCost }} less.",
+            description: "Copy a card in your hand. It is Ephemeral and costs {{ actions.0.selectCards.effects.0.resourceCost }} less.",
             actions: [
                 {
                     selectCards: {
@@ -2326,6 +2326,7 @@ export const beatdown: Ability = {
                 {
                     name: "Beatdown",
                     icon: ChanceAttackImage,
+                    description: "When you apply a debuff, attack that target.",
                     duration: 4,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,

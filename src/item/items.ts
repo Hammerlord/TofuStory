@@ -1342,14 +1342,15 @@ export const brick: Item = {
     image: BrickImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When an attack would deal less than 5 damage, it deals 5 damage.",
+    description:
+        "When an attack would deal less than {{ effects.0.minimumAttackDamage }} damage, it deals {{ effects.0.minimumAttackDamage }} damage.",
     applyEffectsToSummons: true,
     effects: [
         {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Brick",
-            minimumAttackDamage: 5,
+            minimumAttackDamage: 4,
         },
     ],
 };
@@ -1402,7 +1403,7 @@ export const wildKargoEye: Item = {
 
 export const pigIllustrated: Item = {
     name: "Pig Illustrated",
-    description: "When you use a 2+ cost ability, it has a 50% chance to refund 1 {{ resources }}.",
+    description: "When you use a 2+ cost card, it has a 50% chance to refund 1 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PigIllustratedImage,
