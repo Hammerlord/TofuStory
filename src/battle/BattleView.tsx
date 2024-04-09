@@ -50,6 +50,7 @@ import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice }
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { canTargetIfStealthed, canUseAbility, hasEffectType, isValidTarget, isWithinAbilityArea } from "./utils";
 import classNames from "classnames";
+import { ZOOM_HEIGHT_MED } from "../constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -72,7 +73,7 @@ const useStyles = createUseStyles({
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
-        marginTop: "9vh",
+        marginTop: "100px",
     },
     battlefield: {
         textAlign: "center",
@@ -108,6 +109,7 @@ const useStyles = createUseStyles({
     combatantContainer: {
         position: "relative",
         height: "19vh",
+        minHeight: "30%",
         margin: "auto",
         maxHeight: 225,
     },
@@ -134,7 +136,7 @@ const useStyles = createUseStyles({
         textAlign: "center",
         bottom: "0",
     },
-    "@media (min-height: 1150px)": {
+    [`@media (min-height: 950px)`]: {
         abilityContainer: {
             bottom: "3.5vh",
         },

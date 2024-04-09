@@ -6,12 +6,17 @@ import DevToolButton from "./devtools/DevToolButton";
 import { useMemo } from "react";
 import classNames from "classnames";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import { ZOOM_AMOUNT, ZOOM_OUT_RESOLUTION } from "./constants";
+import { ZOOM_AMOUNT_MED, ZOOM_AMOUNT_SM, ZOOM_HEIGHT_MED, ZOOM_HEIGHT_SM } from "./constants";
 
 const useStyles = createUseStyles({
-    [`@media screen and (max-height: ${ZOOM_OUT_RESOLUTION}px)`]: {
+    [`@media screen and (max-height: ${ZOOM_HEIGHT_MED}px)`]: {
         app: {
-            zoom: ZOOM_AMOUNT,
+            zoom: ZOOM_AMOUNT_MED,
+        },
+    },
+    [`@media screen and (max-height: ${ZOOM_HEIGHT_SM}px)`]: {
+        app: {
+            zoom: ZOOM_AMOUNT_SM,
         },
     },
     app: {
