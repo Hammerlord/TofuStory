@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
         background:
             "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.8) 70%, rgba(0,212,255,0) 100%)",
 
-        width: "40%",
+        minWidth: "40%",
         color: "white",
         padding: "64px 100px",
     },
@@ -61,10 +61,12 @@ const useStyles = createUseStyles({
         verticalAlign: "bottom",
         marginRight: 8,
     },
+    rewardsList: {
+        marginBottom: "16px",
+    },
     listItem: {
         lineHeight: "28px",
         fontSize: "18px",
-        marginBottom: "16px",
         "& img": {
             verticalAlign: "bottom",
         },
@@ -176,12 +178,16 @@ const ItemRewards = ({
                 </div>
                 <div className={classes.container}>
                     <div className={classes.containerInner}>
-                        {rewards.length > 0 && <div>You obtain</div>}
-                        {rewards.map((item: Item, i) => (
-                            <div className={classes.listItem} key={[item.name, i].join("-")}>
-                                <img src={item.image} /> <span>{item.name}</span>
+                        {rewards.length > 0 && (
+                            <div className={classes.rewardsList}>
+                                <div>You obtain</div>
+                                {rewards.map((item: Item, i) => (
+                                    <div className={classes.listItem} key={[item.name, i].join("-")}>
+                                        <img src={item.image} /> <span>{item.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
                         {rewards.length > 0 && <hr className={classes.border} />}
                         {itemChoices.length > 1 && <h3>Pick an item:</h3>}
                         <div className={classes.itemChoices}>
