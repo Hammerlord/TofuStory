@@ -589,7 +589,7 @@ export const calculateDamage = ({
     let totalAttackPower = 0;
     let totalSkillBonus = 0;
     let minimumDamage = 0;
-    let maximumDamage;
+    let maximumDamage = action.maxDamage;
 
     if (isAttack) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(

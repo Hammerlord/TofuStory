@@ -463,6 +463,7 @@ export type ActionSummon = {
 
 export type Action = {
     damage?: number;
+    maxDamage?: number;
     secondaryDamage?: number;
     flatDamage?: number; // Deal damage that is not affected by any modifiers
     targetMinHP?: number; // Target will stay at this HP if the damage would otherwise bring it below, see Stay of Execution

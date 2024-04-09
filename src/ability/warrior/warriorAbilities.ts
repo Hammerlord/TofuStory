@@ -1569,10 +1569,12 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description: "Deals {{ actions.0.damage }} {{{ _damage_ }}} for every attack you made this turn.",
+    description:
+        "Deals {{ actions.0.damage }} {{{ _damage_ }}} for every attack you made this turn, up to {{ actions.0.maxDamage }} {{{ _damage_ }}}.",
     actions: [
         {
             damage: 2,
+            maxDamage: 20,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
