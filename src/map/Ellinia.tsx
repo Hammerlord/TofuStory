@@ -60,7 +60,7 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const { nodesVisited: visited = {} } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const shopConfig = useShopConfig({ player, onBuyItem });

@@ -1,8 +1,6 @@
-import { partition } from "ramda";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { partition } from "ramda";
 import uuid from "uuid";
-import generateTravelRoute from "../map/routes/generateTravelRoute";
-import { NODE_TYPES, TOWNS } from "../map/types";
 import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
@@ -10,11 +8,50 @@ import { BATTLE_TYPES } from "../battle/types";
 import { calculateMesoGain, getMaxHP } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
-import { toLith } from "./../map/routes/routes";
+import generateTravelRoute from "../map/routes/generateTravelRoute";
+import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
+import { toLith } from "./../map/routes/routes";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
+import { Player } from "./types";
 
-const INITIAL_STATE = {
+export type TownShops = {
+    shop: {
+        abilities: (Ability | null)[]; // null: index has been purchased
+        items: (Item | null)[];
+        numIncensesBought: number;
+    };
+    tradingPost: {
+        items: Item[];
+        numTradesRemaining: number;
+    };
+    workshop: {
+        numTransmutesRemaining: number;
+    };
+};
+
+export type BattleHistory = { totalDamageDealt: number; totalKills: number };
+
+export type CharacterState = {
+    player: null | Player;
+    deck: CombatAbility[];
+    battlesWon: {
+        [BATTLE_TYPES.ENCOUNTER]: number;
+        [BATTLE_TYPES.ELITE_ENCOUNTER]: number;
+        [BATTLE_TYPES.BOSS]: number;
+    };
+    battleHistory: BattleHistory[];
+    activityHistory: ActivityHistoryLog[];
+    visitedEvents: { [eventId: string]: number };
+    infamy: number;
+    currentMapLocation: null | GeneratedRouteNode;
+    currentTown: TOWNS;
+    route;
+    townShops: TownShops;
+    nodesVisited: { [nodeId: string]: true };
+};
+
+const INITIAL_STATE: CharacterState = {
     player: null,
     deck: [],
     battlesWon: {
@@ -29,6 +66,7 @@ const INITIAL_STATE = {
     currentMapLocation: null, // The current location node on the overworld map
     currentTown: null, // The currently visited town (if any)
     route: null, // The generated route that the player is currently on
+    townShops: null, // Logs shop inventory in the recent town. See TownShops type.
     nodesVisited: {}, // The location nodes the player has visited. { [nodeId: string]: true }
 };
 
@@ -52,16 +90,16 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        updatePlayer: (state, action: PayloadAction<object>) => {
+        updatePlayer: (state, action: PayloadAction<{ [key in keyof Player]?: Player[key] }>) => {
             return {
                 ...state,
                 player: {
                     ...(state.player || {}),
                     ...action.payload,
-                },
+                } as Player,
             };
         },
-        onSelectClass: (state, action: PayloadAction<any>) => {
+        onSelectClass: (state, action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>) => {
             const classMap = {
                 [PLAYER_CLASSES.WARRIOR]: defaultCharacterProperties,
                 [PLAYER_CLASSES.MAGICIAN]: wizardProperties,
@@ -225,7 +263,7 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        pushBattleHistory: (state, action: PayloadAction<{ totalDamageDealt: number; totalKills: number }>) => {
+        pushBattleHistory: (state, action: PayloadAction<BattleHistory>) => {
             return {
                 ...state,
                 battleHistory: [...(state?.battleHistory || []), action.payload],

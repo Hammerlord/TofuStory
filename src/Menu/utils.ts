@@ -12,10 +12,10 @@ const copyEffect = (e: Effect) => ({
     uptime: 1,
 });
 
-export const aggregateItemEffects = (items: Item[]): Effect[] => {
-    const effects = [directDamageTakenTrigger]; // Player always has this effect for calculating whether damage was recently taken
+export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
+    const effects: CombatEffect[] = [copyEffect(directDamageTakenTrigger)]; // Player always has this effect for calculating whether damage was recently taken
     items.forEach((item) => {
-        const itemEffects: Effect[] = item?.effects?.map((e: Effect) => ({ ...copyEffect(e), itemSource: item.name })) || [];
+        const itemEffects: CombatEffect[] = item?.effects?.map((e: Effect) => ({ ...copyEffect(e), itemSource: item.name })) || [];
         effects.push(...itemEffects);
     });
     return effects;

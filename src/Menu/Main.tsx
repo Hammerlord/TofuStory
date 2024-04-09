@@ -439,7 +439,7 @@ const Main = () => {
         );
 
         if (type === "ability") {
-            dispatch(updateDeck([...items, ...deck]));
+            dispatch(updateDeck([...(items as Ability[]), ...deck]));
             return;
         }
 
@@ -520,7 +520,6 @@ const Main = () => {
                 player={player}
                 deck={deck}
                 updateDeck={handleUpdateDeck}
-                updatePlayer={updatePlayer}
                 onExit={handleExitTown}
                 onClickScene={handleClickScene}
                 onBuyItem={handleBuyItem}
