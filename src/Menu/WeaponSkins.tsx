@@ -53,7 +53,7 @@ const useStyles = createUseStyles({
         fontFamily: "Barlow",
         zIndex: "1000",
         color: "white",
-        maxWidth: 300,
+        maxWidth: 350,
     },
     menuInner: {
         padding: "16px",
