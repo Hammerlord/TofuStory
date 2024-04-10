@@ -129,7 +129,7 @@ export const getGameFile = () => {
 
         const hydrateTownShops = Object.entries(townShops).reduce((acc, [townName, shopsObj]) => {
             acc[townName] = {};
-            const { shop, tradingPost } = shopsObj as any;
+            const { shop, tradingPost, workshop } = shopsObj as any;
 
             /**
              * See output of flattenShopItem above for the input here.
@@ -165,6 +165,8 @@ export const getGameFile = () => {
                         .filter((v) => v),
                 };
             }
+
+            acc[townName].workshop = workshop;
 
             return acc;
         }, {});
