@@ -152,7 +152,8 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems, onPurchaseConsumable } = playerStateSlice.actions;
+const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems, onPurchaseConsumable, refreshTownItemShop } =
+    playerStateSlice.actions;
 
 const ShopView = ({
     onBuyItem,
@@ -402,13 +403,16 @@ const ShopView = ({
 
 const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
     const { deck, player, townShops } = useAppSelector((state) => state).character;
+
+    // Only used if `town` is not supplied, for temporary merchant shops not found in town
     const [shopState, setShopState] = useState({ ...generateShopInventory({ player }), usedFreeFood: 0, usedNumRefreshes: 0 });
+
     const shopStateRedux = townShops?.[town]?.shop;
     const dispatch = useAppDispatch();
 
     const handleRefresh = () => {
         if (shopStateRedux) {
-            dispatch(updateTownShop);
+            dispatch(refreshTownItemShop(town));
         } else {
             setShopState((prev) => ({ ...prev, ...generateShopInventory({ player }), usedNumRefreshes: prev.usedNumRefreshes + 1 }));
         }
@@ -436,12 +440,20 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
         }
     };
 
+    const handleUpdateShopState = (obj) => {
+        if (shopStateRedux) {
+            dispatch(updateTownShop({ town, shopKey: "shop", shopState: obj }));
+        } else {
+            setShopState((prev) => ({ ...prev, ...obj }));
+        }
+    };
+
     return (
         <ShopView
             {...other}
             shopState={shopStateRedux || shopState}
             onRefresh={handleRefresh}
-            onUpdateShopState={(obj) => setShopState((prev) => ({ ...prev, ...obj }))}
+            onUpdateShopState={handleUpdateShopState}
             onBuyItem={handleBuyItem}
         />
     );

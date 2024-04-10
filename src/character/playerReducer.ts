@@ -406,5 +406,24 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
+        refreshTownItemShop: (state, action: PayloadAction<TOWNS>) => {
+            const town = action.payload;
+            const newState = {
+                ...state,
+                townShops: {
+                    ...state.townShops,
+                    [town]: {
+                        shop: {
+                            ...state.townShops?.[town]?.shop,
+                            ...generateShopInventory({ player: state.player }),
+                            usedNumRefreshes: (state.townShops?.[town]?.shop?.usedNumRefreshes || 0) + 1,
+                        },
+                    },
+                },
+            };
+
+            saveGame(newState);
+            return newState;
+        },
     },
 });
