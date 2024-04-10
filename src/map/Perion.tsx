@@ -105,7 +105,7 @@ export const undeadMageScene: EventScene = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: TownProperties) => {
+const Perion = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const [isShopOpen, setIsShopOpen] = useState(false);
@@ -249,7 +249,7 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: To
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.PERION} />}
+                {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.PERION} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

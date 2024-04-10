@@ -57,7 +57,7 @@ const ELLINIA_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownProperties) => {
+const Ellinia = ({ player, onExit, onClickScene, onTrade }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
@@ -178,7 +178,7 @@ const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownPrope
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.ELLINIA} />}
+                {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.ELLINIA} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

@@ -107,7 +107,7 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp, onTransmute }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -291,7 +291,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp,
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.KERNING} />}
+                {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.KERNING} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

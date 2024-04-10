@@ -74,7 +74,7 @@ const HENESYS_BOSSES = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onTransmute }: TownProperties) => {
+const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
@@ -255,7 +255,7 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onT
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.HENESYS} />}
+                {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.HENESYS} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

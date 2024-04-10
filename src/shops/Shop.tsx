@@ -1,9 +1,11 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { clamp } from "ramda";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
+import { getMaxHP } from "../battle/utils";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -13,7 +15,6 @@ import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
-import { OnBuyItem } from "./constants";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 
 const HEADER_BAR = 72;
@@ -398,12 +399,12 @@ const ShopView = ({
     );
 };
 
-const { updateTownShop } = playerStateSlice.actions;
+const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems } = playerStateSlice.actions;
 
-const Shop = ({ town, ...other }: { town?: TOWNS; player: Player; onBuyItem: OnBuyItem; onExit?: () => void }) => {
-    const { player } = other;
+const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
+    const { deck, player, townShops } = useAppSelector((state) => state).character;
     const [shopState, setShopState] = useState({ ...generateShopInventory({ player }), usedFreeFood: 0, usedNumRefreshes: 0 });
-    const shopStateRedux = useAppSelector((state) => state).character.townShops?.[town]?.shop;
+    const shopStateRedux = townShops?.[town]?.shop;
     const dispatch = useAppDispatch();
 
     const handleRefresh = () => {
@@ -414,12 +415,35 @@ const Shop = ({ town, ...other }: { town?: TOWNS; player: Player; onBuyItem: OnB
         }
     };
 
+    const handleBuyItem = ({ items, mesosSpent, type, statChanges }) => {
+        const { maxHP = 0, HP = 0 } = statChanges || {};
+        const effectiveMaxHP = getMaxHP(player) + maxHP;
+        const newHP = clamp(0, effectiveMaxHP, player.HP + HP);
+        dispatch(updateMesos(-mesosSpent));
+        dispatch(
+            updatePlayer({
+                HP: newHP,
+                maxHP: player.maxHP + maxHP,
+            })
+        );
+
+        if (type === "ability") {
+            dispatch(updateDeck([...(items as Ability[]), ...deck]));
+            return;
+        }
+
+        if (type === "item") {
+            dispatch(acquireItems(items as Item[]));
+        }
+    };
+
     return (
         <ShopView
             {...other}
             shopState={shopStateRedux || shopState}
             onRefresh={handleRefresh}
             onUpdateShopState={(obj) => setShopState((prev) => ({ ...prev, ...obj }))}
+            onBuyItem={handleBuyItem}
         />
     );
 };

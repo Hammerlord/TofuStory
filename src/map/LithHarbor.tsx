@@ -554,7 +554,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                         <Legend />
                     </>
                 )}
-                {isShopOpen && <Shop player={player} onBuyItem={() => {}} />}
+                {isShopOpen && <Shop />}
                 {isShopScriptOpen && (
                     <Overlay>
                         <ScenePlayer

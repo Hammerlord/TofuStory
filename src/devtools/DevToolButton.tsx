@@ -222,13 +222,7 @@ const DevToolButton = () => {
                     </div>
                 </div>
             )}
-            {isShopOpen && (
-                <Shop
-                    player={{ ...defaultCharacterProperties, mesos: 1000 } as any}
-                    onBuyItem={() => {}}
-                    onExit={() => setIsShopOpen(false)}
-                />
-            )}
+            {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} />}
             {isTradingPostOpen && (
                 <TradingPost player={defaultCharacterProperties} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
             )}

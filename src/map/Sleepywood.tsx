@@ -55,7 +55,7 @@ const SLEEPYWOOD_PLACES = {
     REMEMBERER: "rememberer",
 };
 
-const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onBattle }: TownProperties) => {
+const Sleepywood = ({ player, onExit, onClickScene, onTrade, onCamp, onBattle }: TownProperties) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
     const [isShopOpen, setIsShopOpen] = useState(false);
@@ -186,7 +186,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.SLEEPYWOOD} />}
+                {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.SLEEPYWOOD} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

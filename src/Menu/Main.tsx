@@ -416,38 +416,6 @@ const Main = () => {
         );
     }
 
-    const handleBuyItem = ({
-        items,
-        mesosSpent,
-        type,
-        statChanges = {},
-    }: {
-        items: Item[] | Ability[];
-        mesosSpent: number;
-        type: "item" | "ability";
-        statChanges?: { maxHP?: number; HP?: number };
-    }) => {
-        const { maxHP = 0, HP = 0 } = statChanges;
-        const effectiveMaxHP = getMaxHP(player) + maxHP;
-        const newHP = clamp(0, effectiveMaxHP, player.HP + HP);
-        dispatch(updateMesos(-mesosSpent));
-        dispatch(
-            updatePlayer({
-                HP: newHP,
-                maxHP: player.maxHP + maxHP,
-            })
-        );
-
-        if (type === "ability") {
-            dispatch(updateDeck([...(items as Ability[]), ...deck]));
-            return;
-        }
-
-        if (type === "item") {
-            dispatch(acquireItems(items as Item[]));
-        }
-    };
-
     const handleTrade = ({ playerItem, forItem }) => {
         if (!playerItem || !forItem) {
             return;
@@ -522,7 +490,6 @@ const Main = () => {
                 updateDeck={handleUpdateDeck}
                 onExit={handleExitTown}
                 onClickScene={handleClickScene}
-                onBuyItem={handleBuyItem}
                 onTrade={handleTrade}
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
@@ -603,7 +570,7 @@ const Main = () => {
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {activity === ACTIVITIES.SHOP && <Shop player={player} onExit={() => setActivity(null)} onBuyItem={handleBuyItem} />}
+                    {activity === ACTIVITIES.SHOP && <Shop onExit={() => setActivity(null)} />}
                     {cardRewardsOpen && (
                         <CardRewards
                             deck={deck}
