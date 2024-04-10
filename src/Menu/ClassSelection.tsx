@@ -329,9 +329,7 @@ const ClassSelection = ({
                         <>
                             <hr />
                             <div>
-                                <p className={classes.runSavedNotice}>
-                                    A run was saved from your previous session. Continue at the last campsite / town?
-                                </p>
+                                <p className={classes.runSavedNotice}>A run was saved from your previous session. Continue?</p>
                                 <Button
                                     color="secondary"
                                     onClick={() => {
