@@ -46,6 +46,7 @@ import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
 import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 import { OVERWORLD_BOSS_ID_MAP } from "../map/routes/overworldBosses";
 import { generateElites, generateWaves } from "../map/encounters";
+import { saveGame } from "./gameFiles";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -318,6 +319,12 @@ const Main = () => {
             if (encounterVictoryCallback) {
                 encounterVictoryCallback();
                 setEncounterVictoryCallback(null);
+            }
+
+            // Only if we're not in the middle of a scene (which could consist of multiple battles), save the game.
+            // Otherwise, refreshing or crashing in the middle of the scene could cause some content to get locked out.
+            if (!scene) {
+                saveGame(character);
             }
         }
     };
