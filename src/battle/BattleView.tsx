@@ -632,8 +632,8 @@ const BattlefieldContainer = () => {
         } else if (battleState === BATTLE_STATES.TURN_ENDING) {
             setTimeout(() => {
                 dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
-                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, 500);
+                dispatch(updateBattleState(BATTLE_STATES.TURN_STARTING));
+            }, 250);
         }
 
         // Prevent duplicate battle states from triggering consecutively
@@ -647,33 +647,39 @@ const BattlefieldContainer = () => {
             setTimeout(() => {
                 dispatch(onBattleStart());
                 dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
-            }, 500);
+            }, 250);
             return;
         }
 
         if (battleState === BATTLE_STATES.WAVE_START) {
             setTimeout(() => {
                 dispatch(onWaveStart());
+                setShowTurnAnnouncement(true);
+                setTimeout(() => {
+                    setShowTurnAnnouncement(false);
+                    dispatch(updateBattleState(BATTLE_STATES.TURN_START));
+                }, TURN_ANNOUNCEMENT_TIME);
+            }, 250);
+            return;
+        }
+
+        if (battleState === BATTLE_STATES.TURN_STARTING) {
+            setShowTurnAnnouncement(true);
+            setTimeout(() => {
+                setShowTurnAnnouncement(false);
                 dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, 500);
+            }, TURN_ANNOUNCEMENT_TIME);
+
             return;
         }
 
         if (battleState === BATTLE_STATES.TURN_START) {
-            setShowTurnAnnouncement(true);
-            setTimeout(() => {
-                setShowTurnAnnouncement(false);
-
-                if (isPlayerTurn) {
-                    dispatch(startPlayerTurn(prevBattleState === BATTLE_STATES.WAVE_START));
-                } else {
-                    dispatch(startEnemyTurn());
-                }
-
-                dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
-            }, TURN_ANNOUNCEMENT_TIME);
-
-            return;
+            if (isPlayerTurn) {
+                dispatch(startPlayerTurn(prevBattleState === BATTLE_STATES.WAVE_START));
+            } else {
+                dispatch(startEnemyTurn());
+            }
+            dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
         }
 
         if (battleState === BATTLE_STATES.TURN_IN_PROGRESS) {
