@@ -4,7 +4,6 @@ import { createUseStyles } from "react-jss";
 import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
-    DiamondImage,
     GachaponImage,
     HenesysArcherHallImage,
     HenesysCenterImage,
@@ -14,7 +13,6 @@ import {
     HenesysRegionBGImage,
     HenesysRestImage,
     HenesysShopImage,
-    HenesysTradingPostImage,
     PersonalAnvilImage,
     TownTransmuteImage,
 } from "../images";
@@ -22,17 +20,15 @@ import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtB
 import { athenaPierceScene } from "../scene/Henesys/athenaPierceScene";
 import pantry from "../scene/Henesys/pantry";
 import { gachaponEvents } from "../scene/gachapon/Gachapon";
+import Shop from "../shops/Shop";
+import TradingPost from "../shops/TradingPost";
+import Transmutation from "../shops/Transmutation";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
-import Shop from "../shops/Shop";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
-import TradingPost from "../shops/TradingPost";
-import { CombatAbility } from "../ability/types";
-import Transmutation from "../shops/Transmutation";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -74,16 +70,16 @@ const HENESYS_BOSSES = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
+const Henesys = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
-    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+    const { workshop, tradingPost } = townShops[TOWNS.HENESYS] || {};
+
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
-    const [numTradesRemaining, setNumTradesRemaining] = useState(2);
-    const numTransmutesRemaining = townShops[TOWNS.HENESYS]?.workshop?.numTransmutesRemaining || 0;
+    const numTransmutesRemaining = workshop?.numTransmutesRemaining || 0;
 
     const numActivitiesComplete: number = Object.values(HENESYS_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -109,7 +105,7 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperti
 
     const handleClickTradingPost = () => {
         checkVisitPlace(HENESYS_PLACES.TRADING_POST);
-        if (numTradesRemaining > 0) {
+        if (tradingPost?.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
@@ -252,14 +248,7 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperti
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.HENESYS} />}
-                {isTradingPostOpen && (
-                    <TradingPost
-                        player={player}
-                        onExit={() => setIsTradingPostOpen(false)}
-                        onTrade={onTrade}
-                        tradingPostConfig={tradingPostConfig}
-                    />
-                )}
+                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.HENESYS} />}
                 {isWorkshopOpen && <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.HENESYS} />}
             </div>
         </div>

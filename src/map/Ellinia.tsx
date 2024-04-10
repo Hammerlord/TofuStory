@@ -20,7 +20,6 @@ import { grendelScene } from "../scene/Ellinia/grendelScene";
 import { secretGardenScene } from "../scene/Ellinia/secretGarden";
 import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
@@ -57,13 +56,13 @@ const ELLINIA_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Ellinia = ({ player, onExit, onClickScene, onTrade }: TownProperties) => {
+const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {} } = useAppSelector((state) => state).character;
+    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
-    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+    const { tradingPost } = townShops[TOWNS.ELLINIA] || {};
 
     const numActivitiesComplete: number = Object.values(ELLINIA_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -89,7 +88,7 @@ const Ellinia = ({ player, onExit, onClickScene, onTrade }: TownProperties) => {
 
     const handleClickTradingPost = () => {
         checkVisitPlace(ELLINIA_PLACES.TRADING_POST);
-        if (tradingPostConfig.tradesRemaining > 0) {
+        if (tradingPost?.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
@@ -127,7 +126,7 @@ const Ellinia = ({ player, onExit, onClickScene, onTrade }: TownProperties) => {
                             label={"Trading Post"}
                             nodeImage={ElliniaTradingPostImage}
                             onClick={handleClickTradingPost}
-                            isVisited={tradingPostConfig.tradesRemaining === 0}
+                            isVisited={tradingPost.numTradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={ElliniaShopImage} onClick={handleClickShop} />
                         <br />
@@ -179,14 +178,7 @@ const Ellinia = ({ player, onExit, onClickScene, onTrade }: TownProperties) => {
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.ELLINIA} />}
-                {isTradingPostOpen && (
-                    <TradingPost
-                        player={player}
-                        onExit={() => setIsTradingPostOpen(false)}
-                        onTrade={onTrade}
-                        tradingPostConfig={tradingPostConfig}
-                    />
-                )}
+                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.ELLINIA} />}
             </div>
         </div>
     );

@@ -223,9 +223,7 @@ const DevToolButton = () => {
                 </div>
             )}
             {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} />}
-            {isTradingPostOpen && (
-                <TradingPost player={defaultCharacterProperties} onTrade={() => {}} onExit={() => setIsTradingPostOpen(false)} />
-            )}
+            {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} />}
             {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
             {isTransmutationOpen && (
                 <TransmutationView

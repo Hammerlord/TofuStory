@@ -416,15 +416,6 @@ const Main = () => {
         );
     }
 
-    const handleTrade = ({ playerItem, forItem }) => {
-        if (!playerItem || !forItem) {
-            return;
-        }
-
-        dispatch(loseItems([playerItem.name]));
-        dispatch(acquireItems([forItem]));
-    };
-
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
         dispatch(updateMesos(mesos));
         dispatch(acquireItems(items));
@@ -490,7 +481,6 @@ const Main = () => {
                 updateDeck={handleUpdateDeck}
                 onExit={handleExitTown}
                 onClickScene={handleClickScene}
-                onTrade={handleTrade}
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
                 onCamp={() => setActivity(ACTIVITIES.CAMP)}
@@ -632,9 +622,7 @@ const Main = () => {
                             />
                         </Overlay>
                     )}
-                    {activity === ACTIVITIES.TRADING_POST && (
-                        <TradingPost player={player} onExit={() => setActivity(null)} onTrade={handleTrade} />
-                    )}
+                    {activity === ACTIVITIES.TRADING_POST && <TradingPost onExit={() => setActivity(null)} />}
                 </div>
             )}
             {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}

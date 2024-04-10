@@ -16,6 +16,7 @@ import { toLith } from "./../map/routes/routes";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
+import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -362,7 +363,7 @@ export const playerStateSlice = createSlice({
                             usedNumRefreshes: 0,
                         },
                         tradingPost: {
-                            items: [], // !!!TODO!!!
+                            items: generateTradingPostInventory(state.player),
                             numTradesRemaining: 2,
                         },
                         workshop: {

@@ -28,7 +28,6 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { EventScene, SceneEncounter } from "../scene/types";
 import { playerStateSlice } from "../character/playerReducer";
 import Shop from "../shops/Shop";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import TradingPost from "../shops/TradingPost";
 import { undeadMage } from "../enemy/undead";
 import { BATTLE_TYPES } from "../battle/types";
@@ -105,12 +104,12 @@ export const undeadMageScene: EventScene = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Perion = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
+const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
-    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
+    const { tradingPost } = townShops[TOWNS.PERION] || {};
 
     const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -136,7 +135,7 @@ const Perion = ({ player, onExit, onClickScene, onTrade, onCamp }: TownPropertie
 
     const handleClickTradingPost = () => {
         checkVisitPlace(PERION_PLACES.TRADING_POST);
-        if (tradingPostConfig.tradesRemaining > 0) {
+        if (tradingPost?.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
@@ -175,7 +174,7 @@ const Perion = ({ player, onExit, onClickScene, onTrade, onCamp }: TownPropertie
                             label={"Trading Post"}
                             nodeImage={PerionTradingPostImage}
                             onClick={handleClickTradingPost}
-                            isVisited={tradingPostConfig.tradesRemaining === 0}
+                            isVisited={tradingPost?.numTradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={PerionShopImage} onClick={handleClickShop} />
                         <br />
@@ -250,14 +249,7 @@ const Perion = ({ player, onExit, onClickScene, onTrade, onCamp }: TownPropertie
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.PERION} />}
-                {isTradingPostOpen && (
-                    <TradingPost
-                        player={player}
-                        onExit={() => setIsTradingPostOpen(false)}
-                        onTrade={onTrade}
-                        tradingPostConfig={tradingPostConfig}
-                    />
-                )}
+                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.PERION} />}
             </div>
         </div>
     );

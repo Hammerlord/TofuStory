@@ -114,6 +114,7 @@ export const getGameFile = () => {
         const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
         const consumables = [halfEatenHotdog, unagiItem, cakeItem];
         const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables];
+
         const items = player.items.map((item) => {
             const found = itemLookup.find((otherItem) => otherItem.name === item.name);
             if (found) {
@@ -157,7 +158,11 @@ export const getGameFile = () => {
             if (tradingPost) {
                 acc[townName].tradingPost = {
                     ...tradingPost,
-                    items: tradingPost.items.map((item) => item.name),
+                    items: tradingPost.items
+                        .map((itemName: string) => {
+                            return itemLookup.find((otherItem) => otherItem.name === itemName);
+                        })
+                        .filter((v) => v),
                 };
             }
 

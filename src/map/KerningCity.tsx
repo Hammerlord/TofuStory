@@ -27,7 +27,6 @@ import { EventScene, SceneEncounter } from "../scene/types";
 import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
 import Transmutation from "../shops/Transmutation";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import Tooltip from "../view/Tooltip";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -107,15 +106,15 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
-    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
-    const numTransmutesRemaining = townShops[TOWNS.HENESYS].workshop.numTransmutesRemaining;
+    const { workshop, tradingPost } = townShops[TOWNS.KERNING] || {};
+    const numTransmutesRemaining = workshop.numTransmutesRemaining;
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -142,7 +141,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProp
 
     const handleClickTradingPost = () => {
         checkVisitPlace(KERNING_PLACES.TRADING_POST);
-        if (tradingPostConfig.tradesRemaining > 0) {
+        if (tradingPost.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
@@ -287,14 +286,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProp
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.KERNING} />}
-                {isTradingPostOpen && (
-                    <TradingPost
-                        player={player}
-                        onExit={() => setIsTradingPostOpen(false)}
-                        onTrade={onTrade}
-                        tradingPostConfig={tradingPostConfig}
-                    />
-                )}
+                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.KERNING} />}
                 {isWorkshopOpen && <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.KERNING} />}
             </div>
         </div>

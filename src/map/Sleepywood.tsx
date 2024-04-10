@@ -18,12 +18,12 @@ import {
 import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
+import { useAppSelector } from "../hooks";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -55,13 +55,13 @@ const SLEEPYWOOD_PLACES = {
     REMEMBERER: "rememberer",
 };
 
-const Sleepywood = ({ player, onExit, onClickScene, onTrade, onCamp, onBattle }: TownProperties) => {
+const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProperties) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
+    const { townShops } = useAppSelector((state) => state).character;
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
-    const tradingPostConfig = useTradingPostConfig({ player, onTrade });
-
+    const { tradingPost } = townShops[TOWNS.SLEEPYWOOD] || {};
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
 
     /**
@@ -77,7 +77,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onTrade, onCamp, onBattle }:
 
     const handleClickTradingPost = () => {
         checkVisitPlace(TOWN_PLACES.TRADING_POST);
-        if (tradingPostConfig.tradesRemaining > 0) {
+        if (tradingPost.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
@@ -109,7 +109,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onTrade, onCamp, onBattle }:
                             label={"Trading Post"}
                             nodeImage={SleepywoodTradingPostImage}
                             onClick={handleClickTradingPost}
-                            isVisited={tradingPostConfig.tradesRemaining === 0}
+                            isVisited={tradingPost.numTradesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={SleepywoodShopImage} onClick={handleClickShop} />
                         <br />
@@ -187,14 +187,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onTrade, onCamp, onBattle }:
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.SLEEPYWOOD} />}
-                {isTradingPostOpen && (
-                    <TradingPost
-                        player={player}
-                        onExit={() => setIsTradingPostOpen(false)}
-                        onTrade={onTrade}
-                        tradingPostConfig={tradingPostConfig}
-                    />
-                )}
+                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.SLEEPYWOOD} />}
             </div>
         </div>
     );

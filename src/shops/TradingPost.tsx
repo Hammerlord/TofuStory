@@ -1,21 +1,21 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
+import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
+import { COMMON_STYLES } from "../constants";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { KerningTowerImage, MoonBunnyImage } from "../images";
 import ItemView from "../item/ItemView";
-import { bigMesoItem, hugeMesoItem, mesoItem } from "../item/items";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
-import { shuffle } from "../utils";
+import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import Tooltip from "../view/Tooltip";
-import { COMMON_STYLES } from "../constants";
-import { NUM_TRADING_POST_ITEMS, NUM_TRADING_POST_TRADES, TradingPostConfigProperties } from "./constants";
-import { useTradingPostConfig } from "./tradingPostUtils";
 import LeaveButton from "./LeaveButton";
+import { NUM_TRADING_POST_TRADES } from "./constants";
+import { generateTradingPostInventory } from "./tradingPostUtils";
 
 const HEADER_BAR = 72;
 
@@ -124,33 +124,49 @@ const useStyles = createUseStyles({
     },
 });
 
+const { acquireItems, loseItems } = playerStateSlice.actions;
+
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
 // or exchange their starter equipment for an upgraded version of their starter equipment.
 const TradingPostView = ({
     player,
-    tradingPostConfig,
+    onTrade,
     onExit,
+    vendorItems: initVendorItems,
+    tradesRemaining = 2,
 }: {
     player: Player;
-    tradingPostConfig: TradingPostConfigProperties;
+    onTrade;
+    vendorItems: Item[];
+    tradesRemaining: number;
     onExit?: () => void;
 }) => {
     const [vendorDialog, setVendorDialog] = useState("");
     const classes = useStyles();
     const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
-    const {
-        trade,
-        playerItems,
-        vendorItems,
-        tradesRemaining,
-        selectedPlayerItem,
-        setSelectedPlayerItem,
-        selectedVendorItem,
-        setSelectedVendorItem,
-    } = tradingPostConfig;
     const starterItem = player.items.find((item) => item.rarity === RARITIES.STARTER);
+    const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
+    const [selectedVendorItem, setSelectedVendorItem] = useState(null);
     const isSelectedUpgradedStarter = selectedVendorItem?.name === upgradedStarterItem?.name;
     const dialogMemo = useRef([]);
+
+    const playerItems = player.items.filter(
+        (item: Item) =>
+            item.type === ITEM_TYPES.EQUIPMENT &&
+            item.rarity !== RARITIES.STARTER &&
+            item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
+    );
+    // If the player acquired new equipment prior to a revisit, those equipments should not be in the inventory
+    const alreadyObtained = player.items.reduce((acc, item: Item) => {
+        if (item.type === ITEM_TYPES.EQUIPMENT) {
+            acc[item.name] = true;
+        }
+        return acc;
+    }, {});
+
+    const vendorItems = initVendorItems.filter((item) => {
+        return !alreadyObtained[item.name];
+    });
 
     useEffect(() => {
         const getDialog = () => {
@@ -306,6 +322,12 @@ const TradingPostView = ({
         onExit && onExit();
     };
 
+    const handleTrade = () => {
+        setSelectedPlayerItem(null);
+        setSelectedVendorItem(null);
+        onTrade({ selectedPlayerItem, selectedVendorItem });
+    };
+
     return (
         <div className={classes.tradingPostRoot}>
             <div className={classes.tradingPostBackdrop} />
@@ -331,7 +353,7 @@ const TradingPostView = ({
                         [classes.highlightAnimation]: selectedPlayerItem && selectedVendorItem,
                     })}
                 >
-                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={trade}>
+                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
                         Trade
                     </Button>
                 </span>
@@ -383,23 +405,33 @@ const TradingPostView = ({
     );
 };
 
-const TradingPost = ({
-    tradingPostConfig: injectConfig,
-    ...other
-}: {
-    tradingPostConfig?: TradingPostConfigProperties;
-    player: Player;
-    onTrade: (options: { playerItem: Item; forItem: Item }) => void;
-    onExit?: () => void;
-}) => {
-    const { player, onTrade } = other;
-    const config = useTradingPostConfig({ player, onTrade });
+const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) => {
+    const { player, townShops } = useAppSelector((state) => state).character;
+    const [tradesRemaining, setTradesRemaining] = useState(NUM_TRADING_POST_TRADES);
+    const [vendorItems, setVendorItems] = useState(generateTradingPostInventory(player));
+    const townTradingPost = townShops[town]?.tradingPost;
 
-    if (injectConfig) {
-        return <TradingPostView tradingPostConfig={injectConfig} {...other} />;
-    }
+    const dispatch = useAppDispatch();
 
-    return <TradingPostView tradingPostConfig={config} {...other} />;
+    const handleTrade = ({ selectedPlayerItem, selectedVendorItem }) => {
+        if (!selectedPlayerItem || !selectedVendorItem) {
+            return;
+        }
+        setTradesRemaining((prev) => prev - 1);
+        setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
+        dispatch(loseItems([selectedPlayerItem.name]));
+        dispatch(acquireItems([selectedVendorItem]));
+    };
+
+    return (
+        <TradingPostView
+            onExit={onExit}
+            onTrade={handleTrade}
+            player={player}
+            vendorItems={townTradingPost?.items || vendorItems}
+            tradesRemaining={townTradingPost ? townTradingPost.numTradesRemaining : tradesRemaining}
+        />
+    );
 };
 
 export default TradingPost;
