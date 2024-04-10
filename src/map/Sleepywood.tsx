@@ -1,6 +1,9 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { BATTLE_TYPES } from "../battle/types";
+import { balrog } from "../enemy/balrog";
+import { theRememberer } from "../enemy/rememberer";
 import {
     BalrogTombImage,
     DeepDungeonBGImage,
@@ -12,19 +15,15 @@ import {
     SleepywoodShopImage,
     SleepywoodTradingPostImage,
 } from "../images";
-import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import Shop from "../shops/Shop";
+import TradingPost from "../shops/TradingPost";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import { balrog } from "../enemy/balrog";
-import { BATTLE_TYPES } from "../battle/types";
-import { theRememberer } from "../enemy/rememberer";
-import { TownProperties } from "./types";
-import { useShopConfig } from "../shops/shopUtils";
-import Shop from "../shops/Shop";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
-import TradingPost from "../shops/TradingPost";
+import { TOWNS, TownProperties } from "./types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -60,7 +59,6 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
     const classes = useStyles();
     const [visited, setVisited] = useState({});
     const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
 
@@ -188,7 +186,7 @@ const Sleepywood = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, 
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.SLEEPYWOOD} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

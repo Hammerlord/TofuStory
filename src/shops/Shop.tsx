@@ -1,23 +1,20 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
+import { ShopState, playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
-import { MesoCoinImage, NewYearRiceSoupImage, TofuImage } from "../images";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
-import { bigMesoItem, goldenHammer, hugeMesoItem, incense, mesoItem } from "../item/items";
-import { Item, RARITIES } from "../item/types";
-import { rollItemPool, rollRarity } from "../item/utils";
-import { getRandomInt, getRandomItem, shuffle } from "../utils";
+import { ITEM_TYPES, Item } from "../item/types";
+import { TOWNS } from "../map/types";
 import Button from "../view/Button";
-import { getUpgradeCard } from "../Menu/utils";
-import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { useShopConfig } from "./shopUtils";
-import { OnBuyItem, ShopConfigProperties } from "./constants";
 import LeaveButton from "./LeaveButton";
+import { OnBuyItem } from "./constants";
+import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 
 const HEADER_BAR = 72;
 
@@ -154,27 +151,115 @@ const useStyles = createUseStyles({
 });
 
 const ShopView = ({
-    player,
-    shopConfig,
+    onBuyItem,
     onExit,
+    shopState,
+    onUpdateShopState,
+    onRefresh,
 }: {
-    player: Player;
-    shopConfig: ShopConfigProperties;
-    onExit?: () => void; // MUST be provided to get the button to leave the shop
-}) => {
-    const {
-        refresh,
-        buy,
-        selectedAbilityIndex,
-        selectedItemIndex,
-        setSelectedAbilityIndex,
-        setSelectedItemIndex,
-        numRefreshes,
-        abilities,
+    onBuyItem: ({
         items,
-        freeFood,
-        applyDiscount,
-    } = shopConfig;
+        mesosSpent,
+        type,
+    }: {
+        items: Item[] | Ability[];
+        mesosSpent: number;
+        type: "item" | "ability";
+        statChanges?: { maxHP?: number; HP?: number };
+    }) => void;
+    onExit?: () => void; // MUST be provided to get the button to leave the shop
+    shopState: ShopState;
+    onUpdateShopState: (updatedConfig: { [key in keyof ShopState]?: ShopState[key] }) => void;
+    onRefresh: () => void;
+}) => {
+    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
+    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const { player, purchasedConsumables } = useAppSelector((state) => state).character;
+    const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
+
+    // Items like Tofu Special and Shopper's Club Membership should take effect if bought. So regenerate the 'shop customer properties'.
+    const shopOptions = getShopCustomerProperties(player);
+
+    const { discount, numRefreshes: initRefreshes, freeFood: initFreeFood } = shopOptions;
+    const freeFood = initFreeFood - usedFreeFood;
+    const numRefreshes = initRefreshes - usedNumRefreshes;
+
+    const applyDiscount = (price: number) => {
+        return Math.max(0, price - Math.floor(discount * price));
+    };
+
+    // If the player acquired new equipment prior to a revisit, those equipments should not be in the shop inventory
+    const alreadyObtained = player.items.reduce((acc, item: Item) => {
+        if (item.type === ITEM_TYPES.EQUIPMENT) {
+            acc[item.name] = true;
+        }
+        return acc;
+    }, {});
+
+    const items = initialItems.map((item) => {
+        if (!item || !alreadyObtained[item.item?.name]) {
+            return item;
+        }
+
+        return null;
+    });
+
+    const buy = () => {
+        if (abilities[selectedAbilityIndex]) {
+            const { price: initPrice, item } = abilities[selectedAbilityIndex];
+            const price = applyDiscount(initPrice);
+            if (player.mesos >= price) {
+                onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
+                const updatedAbilities = abilities.slice();
+                updatedAbilities[selectedAbilityIndex] = null;
+                onUpdateShopState({ abilities: updatedAbilities });
+                setSelectedAbilityIndex(null);
+            }
+            return;
+        }
+
+        if (items[selectedItemIndex]) {
+            const { price: initPrice, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
+            const price = applyDiscount(initPrice);
+
+            if (isConsumable) {
+                if (isFood) {
+                    if (freeFood) {
+                        onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
+                        onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
+                    } else {
+                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                    }
+
+                    setSelectedItemIndex(null);
+                    return;
+                }
+
+                // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
+                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+                const updatedItems = items.map((other) => {
+                    if (other?.item?.name === item.name) {
+                        return {
+                            ...other,
+                            price: Math.floor(price * 1.2),
+                        };
+                    }
+
+                    return other;
+                });
+                onUpdateShopState({ items: updatedItems });
+                setSelectedItemIndex(null);
+                return;
+            }
+
+            onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+            const updatedItems = items.slice();
+            updatedItems[selectedItemIndex] = null;
+            onUpdateShopState({ items: updatedItems });
+            setSelectedItemIndex(null);
+        }
+    };
+
     const classes = useStyles();
 
     const getShopAbility = (shopItem, i: number) => {
@@ -249,7 +334,7 @@ const ShopView = ({
                             [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
                         })}
                     >
-                        {isFood && freeFood && <span className={classes.free}>FREE</span>}
+                        {isFood && Boolean(freeFood) && <span className={classes.free}>FREE</span>}
                         {(!isFood || !freeFood) && (
                             <>
                                 <img src={MesoCoinImage} alt={"Mesos"} />
@@ -283,7 +368,7 @@ const ShopView = ({
                     {numRefreshes > 0 && (
                         <>
                             <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
-                            <Button color={"secondary"} onClick={refresh}>
+                            <Button color={"secondary"} onClick={onRefresh}>
                                 Refresh Shop
                             </Button>
                         </>
@@ -313,23 +398,30 @@ const ShopView = ({
     );
 };
 
-const Shop = ({
-    shopConfig: injectShopConfig,
-    ...other
-}: {
-    shopConfig?: ShopConfigProperties;
-    player: Player;
-    onBuyItem: OnBuyItem;
-    onExit?: () => void;
-}) => {
-    const { player, onBuyItem } = other;
-    const shopConfig = useShopConfig({ player, onBuyItem });
+const { updateTownShop } = playerStateSlice.actions;
 
-    if (injectShopConfig) {
-        return <ShopView shopConfig={injectShopConfig} {...other} />;
-    }
+const Shop = ({ town, ...other }: { town?: TOWNS; player: Player; onBuyItem: OnBuyItem; onExit?: () => void }) => {
+    const { player } = other;
+    const [shopState, setShopState] = useState({ ...generateShopInventory({ player }), usedFreeFood: 0, usedNumRefreshes: 0 });
+    const shopStateRedux = useAppSelector((state) => state).character.townShops?.[town]?.shop;
+    const dispatch = useAppDispatch();
 
-    return <ShopView shopConfig={shopConfig} {...other} />;
+    const handleRefresh = () => {
+        if (shopStateRedux) {
+            dispatch(updateTownShop);
+        } else {
+            setShopState((prev) => ({ ...prev, ...generateShopInventory({ player }), usedNumRefreshes: prev.usedNumRefreshes + 1 }));
+        }
+    };
+
+    return (
+        <ShopView
+            {...other}
+            shopState={shopStateRedux || shopState}
+            onRefresh={handleRefresh}
+            onUpdateShopState={(obj) => setShopState((prev) => ({ ...prev, ...obj }))}
+        />
+    );
 };
 
 export default Shop;

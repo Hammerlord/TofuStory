@@ -7,6 +7,10 @@ export const NUM_SHOP_ITEMS = 8;
 export const NUM_TRADING_POST_ITEMS = 11;
 export const NUM_TRADING_POST_TRADES = 2;
 
+export const INCENSE_BASE_PRICE = 60;
+export const CONSUMABLE_COST_MULTIPLIER = 1.2;
+export const CONSUMABLE_MULTIPLIER_MAX = 5;
+
 export const ABILITIES_PRICE_RARITY_MAP = {
     [RARITIES.COMMON]: [50, 65],
     [RARITIES.UNCOMMON]: [90, 120],
@@ -30,18 +34,17 @@ export type OnBuyItem = ({
     statChanges?: { maxHP?: number; HP?: number };
 }) => void;
 
-export type ShopConfigProperties = {
-    refresh: Function;
-    buy: OnBuyItem;
-    selectedAbilityIndex: number | null;
-    selectedItemIndex: number | null;
-    setSelectedAbilityIndex: Function;
-    setSelectedItemIndex: Function;
-    items: Item[];
-    abilities: Ability[];
-    numRefreshes: number;
-    freeFood: boolean;
-    applyDiscount: (initPrice: number) => number;
+export type ShopItem = {
+    price: number;
+    item: Item;
+    isConsumable: boolean;
+    isFood: boolean;
+    statChanges?;
+};
+
+export type ShopAbility = {
+    price: number;
+    item: Ability;
 };
 
 export type TradingPostConfigProperties = {

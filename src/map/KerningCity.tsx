@@ -1,10 +1,13 @@
 import classNames from "classnames";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import Icon from "../icon/Icon";
+import { CombatAbility } from "../ability/types";
+import { BATTLE_TYPES } from "../battle/types";
+import { playerStateSlice } from "../character/playerReducer";
+import { dyle } from "../enemy/dyle";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     CaseyImage,
-    DiamondImage,
-    KerningBarImage,
     KerningCaseyImage,
     KerningCenterImage,
     KerningCityBGImage,
@@ -13,34 +16,25 @@ import {
     KerningSewerImage,
     KerningShopImage,
     KerningSwampImage,
-    KerningTradingPostImage,
     PersonalAnvilImage,
     SwampRegionBGImage,
     TownTransmuteImage,
 } from "../images";
 import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLordScene";
-import kerningMatchingCards from "../scene/Kerning/kerningMatchingCards";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
-import Tooltip from "../view/Tooltip";
-import Pan from "./Pan";
-import { TOWN_PLACES, TOWN_STYLES } from "./constants";
-import { useState } from "react";
-import TownNode from "./TownNode";
-import Legend from "./Legend";
-import { TOWNS, TownProperties } from "./types";
-import { getTownPlaces } from "./utils";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { playerStateSlice } from "../character/playerReducer";
-import { useShopConfig } from "../shops/shopUtils";
-import Shop from "../shops/Shop";
-import { dyle } from "../enemy/dyle";
-import { BATTLE_TYPES } from "../battle/types";
 import { EventScene, SceneEncounter } from "../scene/types";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
+import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
 import Transmutation from "../shops/Transmutation";
-import { CombatAbility } from "../ability/types";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
+import Tooltip from "../view/Tooltip";
+import Legend from "./Legend";
+import Pan from "./Pan";
+import TownNode from "./TownNode";
+import { TOWN_STYLES } from "./constants";
+import { TOWNS, TownProperties } from "./types";
+import { getTownPlaces } from "./utils";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -118,7 +112,6 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp,
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
@@ -298,7 +291,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onBuyItem, onCamp,
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.KERNING} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

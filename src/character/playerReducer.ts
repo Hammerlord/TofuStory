@@ -10,17 +10,22 @@ import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
 import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
+import { ShopAbility, ShopItem } from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
 import { Player } from "./types";
+import { generateShopInventory } from "../shops/shopUtils";
+
+export type ShopState = {
+    abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
+    items: (ShopItem | null)[];
+    usedFreeFood: number;
+    usedNumRefreshes: number;
+};
 
 export type TownShops = {
-    shop: {
-        abilities: (Ability | null)[]; // null: index has been purchased
-        items: (Item | null)[];
-        numIncensesBought: number;
-    };
+    shop: ShopState;
     tradingPost: {
         items: Item[];
         numTradesRemaining: number;
@@ -47,8 +52,11 @@ export type CharacterState = {
     currentMapLocation: null | GeneratedRouteNode;
     currentTown: TOWNS;
     route;
-    townShops: TownShops;
     nodesVisited: { [nodeId: string]: true };
+    townShops: { [key in TOWNS]?: TownShops };
+    purchasedConsumables: {
+        [itemName: string]: number; // Number of purchases for a given item name
+    };
 };
 
 const INITIAL_STATE: CharacterState = {
@@ -66,8 +74,9 @@ const INITIAL_STATE: CharacterState = {
     currentMapLocation: null, // The current location node on the overworld map
     currentTown: null, // The currently visited town (if any)
     route: null, // The generated route that the player is currently on
-    townShops: null, // Logs shop inventory in the recent town. See TownShops type.
     nodesVisited: {}, // The location nodes the player has visited. { [nodeId: string]: true }
+    townShops: {}, // Logs shop inventory in the recent town. See TownShops type.
+    purchasedConsumables: {},
 };
 
 export type ActivityHistoryLog = {
@@ -337,9 +346,51 @@ export const playerStateSlice = createSlice({
             };
         },
         setTown: (state, action: PayloadAction<TOWNS>) => {
+            const townName = action.payload;
             const newState = {
                 ...state,
-                currentTown: action.payload,
+                currentTown: townName,
+            };
+
+            if (townName) {
+                newState.townShops = {
+                    ...newState.townShops,
+                    [townName]: {
+                        shop: {
+                            ...generateShopInventory({ player: state.player }),
+                            usedFreeFood: 0,
+                            usedNumRefreshes: 0,
+                        },
+                        tradingPost: {
+                            items: [], // !!!TODO!!!
+                            numTradesRemaining: 2,
+                        },
+                        workshop: {
+                            numTransmutesRemaining: 2,
+                        },
+                    },
+                };
+            }
+
+            saveGame(newState);
+            return newState;
+        },
+        updateTownShop: (state, action: PayloadAction<{ town: TOWNS; shopKey: string; shopState: any }>) => {
+            const { town, shopKey, shopState } = action.payload;
+            if (!shopKey) {
+                return state;
+            }
+            const newState = {
+                ...state,
+                townShops: {
+                    ...state.townShops,
+                    [town]: {
+                        [shopKey]: {
+                            ...state.townShops?.[town]?.[shopKey],
+                            ...shopState,
+                        },
+                    },
+                },
             };
 
             saveGame(newState);

@@ -28,7 +28,6 @@ import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
-import { useShopConfig } from "../shops/shopUtils";
 import Shop from "../shops/Shop";
 import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import TradingPost from "../shops/TradingPost";
@@ -80,7 +79,6 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onT
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
@@ -257,7 +255,7 @@ const Henesys = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp, onT
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.HENESYS} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

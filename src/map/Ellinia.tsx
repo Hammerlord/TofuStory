@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
+import { playerStateSlice } from "../character/playerReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     DiamondImage,
     ElliniaBGImage,
@@ -15,19 +17,16 @@ import {
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
 import { grendelScene } from "../scene/Ellinia/grendelScene";
+import { secretGardenScene } from "../scene/Ellinia/secretGarden";
+import Shop from "../shops/Shop";
+import TradingPost from "../shops/TradingPost";
+import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
-import { secretGardenScene } from "../scene/Ellinia/secretGarden";
-import { getTownPlaces } from "./utils";
 import { TOWNS, TownProperties } from "./types";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { playerStateSlice } from "../character/playerReducer";
-import { useShopConfig } from "../shops/shopUtils";
-import Shop from "../shops/Shop";
-import { useTradingPostConfig } from "../shops/tradingPostUtils";
-import TradingPost from "../shops/TradingPost";
+import { getTownPlaces } from "./utils";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -63,7 +62,6 @@ const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownPrope
     const { nodesVisited: visited = {} } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
 
@@ -180,7 +178,7 @@ const Ellinia = ({ player, onExit, onClickScene, onBuyItem, onTrade }: TownPrope
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.ELLINIA} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}

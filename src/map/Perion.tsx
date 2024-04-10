@@ -27,7 +27,6 @@ import { getTownPlaces } from "./utils";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { EventScene, SceneEncounter } from "../scene/types";
 import { playerStateSlice } from "../character/playerReducer";
-import { useShopConfig } from "../shops/shopUtils";
 import Shop from "../shops/Shop";
 import { useTradingPostConfig } from "../shops/tradingPostUtils";
 import TradingPost from "../shops/TradingPost";
@@ -110,7 +109,6 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: To
     const classes = useStyles();
     const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
     const [isShopOpen, setIsShopOpen] = useState(false);
-    const shopConfig = useShopConfig({ player, onBuyItem });
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
 
@@ -251,7 +249,7 @@ const Perion = ({ player, onExit, onClickScene, onBuyItem, onTrade, onCamp }: To
                     </div>
                 </Pan>
                 <Legend />
-                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} shopConfig={shopConfig} />}
+                {isShopOpen && <Shop player={player} onExit={() => setIsShopOpen(false)} onBuyItem={onBuyItem} town={TOWNS.PERION} />}
                 {isTradingPostOpen && (
                     <TradingPost
                         player={player}
