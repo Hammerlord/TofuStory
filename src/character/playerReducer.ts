@@ -396,5 +396,15 @@ export const playerStateSlice = createSlice({
             saveGame(newState);
             return newState;
         },
+        onPurchaseConsumable: (state, action: PayloadAction<string>) => {
+            const itemName = action.payload;
+            return {
+                ...state,
+                purchasedConsumables: {
+                    ...state.purchasedConsumables,
+                    [itemName]: (state.purchasedConsumables[itemName] || 0) + 1,
+                },
+            };
+        },
     },
 });

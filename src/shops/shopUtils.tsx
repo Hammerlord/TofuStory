@@ -88,14 +88,6 @@ export const generateShopInventory = ({ player }: { player: Player }): { abiliti
         return { price, item, isConsumable: false, isFood: false };
     });
 
-    /*
-    const incensePrice = (() => {
-        const timesMultiplier = Math.min(CONSUMABLE_MULTIPLIER_MAX, (purchasedConsumables[incense.name] || 0) + 1);
-        let price = INCENSE_BASE_PRICE;
-        Array.from({ length: timesMultiplier }).forEach(() => (price *= CONSUMABLE_COST_MULTIPLIER));
-        return price;
-    })();*/
-
     const consumables = [
         {
             item: goldenHammer,

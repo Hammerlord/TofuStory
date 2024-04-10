@@ -16,6 +16,7 @@ import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
+import { CONSUMABLE_COST_MULTIPLIER, CONSUMABLE_MULTIPLIER_MAX } from "./constants";
 
 const HEADER_BAR = 72;
 
@@ -151,6 +152,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems, onPurchaseConsumable } = playerStateSlice.actions;
+
 const ShopView = ({
     onBuyItem,
     onExit,
@@ -177,16 +180,24 @@ const ShopView = ({
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
     const { player, purchasedConsumables } = useAppSelector((state) => state).character;
     const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
+    const dispatch = useAppDispatch();
 
     // Items like Tofu Special and Shopper's Club Membership should take effect if bought. So regenerate the 'shop customer properties'.
     const shopOptions = getShopCustomerProperties(player);
 
-    const { discount, numRefreshes: initRefreshes, freeFood: initFreeFood } = shopOptions;
+    const { discount = 0, numRefreshes: initRefreshes = 0, freeFood: initFreeFood = 0 } = shopOptions;
     const freeFood = initFreeFood - usedFreeFood;
     const numRefreshes = initRefreshes - usedNumRefreshes;
 
     const applyDiscount = (price: number) => {
         return Math.max(0, price - Math.floor(discount * price));
+    };
+
+    const getFinalConsumableItemPrice = (item: Item, initPrice: number): number => {
+        let price = applyDiscount(initPrice);
+        const timesMultiplier = Math.min(CONSUMABLE_MULTIPLIER_MAX, purchasedConsumables[item.name] || 0);
+        Array.from({ length: timesMultiplier }).forEach(() => (price *= CONSUMABLE_COST_MULTIPLIER));
+        return Math.ceil(price);
     };
 
     // If the player acquired new equipment prior to a revisit, those equipments should not be in the shop inventory
@@ -221,7 +232,7 @@ const ShopView = ({
 
         if (items[selectedItemIndex]) {
             const { price: initPrice, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
-            const price = applyDiscount(initPrice);
+            const price = getFinalConsumableItemPrice(item, initPrice);
 
             if (isConsumable) {
                 if (isFood) {
@@ -238,17 +249,7 @@ const ShopView = ({
 
                 // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
                 onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-                const updatedItems = items.map((other) => {
-                    if (other?.item?.name === item.name) {
-                        return {
-                            ...other,
-                            price: Math.floor(price * 1.2),
-                        };
-                    }
-
-                    return other;
-                });
-                onUpdateShopState({ items: updatedItems });
+                dispatch(onPurchaseConsumable(item.name));
                 setSelectedItemIndex(null);
                 return;
             }
@@ -312,7 +313,7 @@ const ShopView = ({
         }
 
         const { item, price: initPrice, isFood } = shopItem;
-        const price = applyDiscount(initPrice);
+        const price = getFinalConsumableItemPrice(item, initPrice);
 
         return (
             <div className={classes.itemContainer} key={[item.name, i].join("-")}>
@@ -398,8 +399,6 @@ const ShopView = ({
         </div>
     );
 };
-
-const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems } = playerStateSlice.actions;
 
 const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
     const { deck, player, townShops } = useAppSelector((state) => state).character;
