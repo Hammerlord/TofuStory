@@ -12,7 +12,7 @@ import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { Player } from "../character/types";
 import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { ElliniaWeaponStoreImage } from "../images";
 import { QuestionMarkIcon } from "../images/icons";
@@ -22,6 +22,9 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import LeaveButton from "./LeaveButton";
+import { TOWNS } from "../map/types";
+import { playerStateSlice } from "../character/playerReducer";
+import { NUM_TRANSMUTATIONS } from "./constants";
 
 const HEADER_BAR = 72;
 
@@ -187,18 +190,20 @@ const useStyles = createUseStyles({
     },
 });
 
+const { updateTownShop, updateDeck } = playerStateSlice.actions;
+
 export const TransmutationView = ({
     deck,
     onTransmute,
     player,
     onExit,
-    numTransmutations = 2,
+    numTransmutations,
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
     player: Player;
     onExit?;
-    numTransmutations?: number; // How many transmutations the player can perform for this session
+    numTransmutations: number; // How many transmutations the player can perform for this session
 }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
@@ -432,17 +437,38 @@ export const TransmutationView = ({
     );
 };
 
-const Transmutation = ({
-    ...other
-}: {
-    onTransmute: (options: { card: string; for: CombatAbility }) => void;
-    player: Player;
-    onExit?;
-    numTransmutations?: number;
-}) => {
-    const deck = useAppSelector((state) => state).character.deck;
+const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
+    const { deck, player, townShops } = useAppSelector((state) => state).character;
+    const dispatch = useAppDispatch();
+    const townWorkshop = townShops[town]?.workshop;
+    const numTownTransmutes = townWorkshop?.numTransmutesRemaining;
+    const [numTransmutes, setNumTransmutes] = useState(NUM_TRANSMUTATIONS);
 
-    return <TransmutationView deck={deck} {...other} />;
+    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        const { card: cardId, for: forCard } = options || {};
+        const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
+        if (cardIndex > -1) {
+            const newDeck = deck.slice();
+            newDeck[cardIndex] = forCard;
+            dispatch(updateDeck(newDeck));
+        }
+
+        if (townWorkshop) {
+            dispatch(updateTownShop({ town, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
+        } else {
+            setNumTransmutes((prev) => prev - 1);
+        }
+    };
+
+    return (
+        <TransmutationView
+            onExit={onExit}
+            deck={deck}
+            player={player}
+            onTransmute={handleTransmute}
+            numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
+        />
+    );
 };
 
 export default Transmutation;

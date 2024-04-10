@@ -74,15 +74,16 @@ const HENESYS_BOSSES = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }: TownProperties) => {
+const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
-    const [transmutationsRemaining, setTransmutationsRemaining] = useState(2);
+    const [numTradesRemaining, setNumTradesRemaining] = useState(2);
+    const numTransmutesRemaining = townShops[TOWNS.HENESYS]?.workshop?.numTransmutesRemaining || 0;
 
     const numActivitiesComplete: number = Object.values(HENESYS_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -108,13 +109,13 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }:
 
     const handleClickTradingPost = () => {
         checkVisitPlace(HENESYS_PLACES.TRADING_POST);
-        if (tradingPostConfig.tradesRemaining > 0) {
+        if (numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
         }
     };
 
     const handleClickWorkshop = () => {
-        if (transmutationsRemaining > 0) {
+        if (numTransmutesRemaining > 0) {
             checkVisitPlace(HENESYS_PLACES.WORKSHOP);
             setIsWorkshopOpen(true);
         }
@@ -141,11 +142,6 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }:
         if (checkVisitPlace(HENESYS_PLACES.REST)) {
             onCamp();
         }
-    };
-
-    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
-        setTransmutationsRemaining((prev) => prev - 1);
-        onTransmute(options);
     };
 
     const boss = useMemo(() => {
@@ -175,7 +171,7 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }:
                             label={"Workshop"}
                             nodeImage={TownTransmuteImage}
                             onClick={handleClickWorkshop}
-                            isVisited={transmutationsRemaining === 0}
+                            isVisited={numTransmutesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={HenesysShopImage} onClick={handleClickShop} />
                         <br />
@@ -264,14 +260,7 @@ const Henesys = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }:
                         tradingPostConfig={tradingPostConfig}
                     />
                 )}
-                {isWorkshopOpen && (
-                    <Transmutation
-                        player={player}
-                        onExit={() => setIsWorkshopOpen(false)}
-                        onTransmute={handleTransmute}
-                        numTransmutations={transmutationsRemaining}
-                    />
-                )}
+                {isWorkshopOpen && <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.HENESYS} />}
             </div>
         </div>
     );

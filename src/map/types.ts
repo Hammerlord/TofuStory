@@ -110,5 +110,4 @@ export type TownProperties = {
     onTrade: (options: { playerItem: Item; forItem: Item }) => void;
     onCamp: () => void;
     onBattle: (battleConfig, callback: Function) => void;
-    onTransmute: (options: { card: string; for: CombatAbility }) => void;
 };

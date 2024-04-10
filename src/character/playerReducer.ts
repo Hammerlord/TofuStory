@@ -385,6 +385,7 @@ export const playerStateSlice = createSlice({
                 townShops: {
                     ...state.townShops,
                     [town]: {
+                        ...state.townShops[town],
                         [shopKey]: {
                             ...state.townShops?.[town]?.[shopKey],
                             ...shopState,
@@ -413,6 +414,7 @@ export const playerStateSlice = createSlice({
                 townShops: {
                     ...state.townShops,
                     [town]: {
+                        ...state.townShops[town],
                         shop: {
                             ...state.townShops?.[town]?.shop,
                             ...generateShopInventory({ player: state.player }),

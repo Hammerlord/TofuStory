@@ -7,6 +7,8 @@ export const NUM_SHOP_ITEMS = 8;
 export const NUM_TRADING_POST_ITEMS = 11;
 export const NUM_TRADING_POST_TRADES = 2;
 
+export const NUM_TRANSMUTATIONS = 2;
+
 export const INCENSE_BASE_PRICE = 60;
 export const CONSUMABLE_COST_MULTIPLIER = 1.2;
 export const CONSUMABLE_MULTIPLIER_MAX = 5;

@@ -107,15 +107,15 @@ export const dyleScene: EventScene = {
     ],
 };
 
-const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmute }: TownProperties) => {
+const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {} } = useAppSelector((state) => state.character);
+    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const tradingPostConfig = useTradingPostConfig({ player, onTrade });
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
-    const [transmutationsRemaining, setTransmutationsRemaining] = useState(2);
+    const numTransmutesRemaining = townShops[TOWNS.HENESYS].workshop.numTransmutesRemaining;
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -148,15 +148,10 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmut
     };
 
     const handleClickWorkshop = () => {
-        if (transmutationsRemaining > 0) {
+        if (numTransmutesRemaining > 0) {
             checkVisitPlace(KERNING_PLACES.WORKSHOP);
             setIsWorkshopOpen(true);
         }
-    };
-
-    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
-        setTransmutationsRemaining((prev) => prev - 1);
-        onTransmute(options);
     };
 
     const handleClickShop = () => {
@@ -224,7 +219,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmut
                             label={"Workshop"}
                             nodeImage={TownTransmuteImage}
                             onClick={handleClickWorkshop}
-                            isVisited={transmutationsRemaining === 0}
+                            isVisited={numTransmutesRemaining === 0}
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
                         <br />
@@ -300,14 +295,7 @@ const KerningCity = ({ player, onExit, onClickScene, onTrade, onCamp, onTransmut
                         tradingPostConfig={tradingPostConfig}
                     />
                 )}
-                {isWorkshopOpen && (
-                    <Transmutation
-                        player={player}
-                        onExit={() => setIsWorkshopOpen(false)}
-                        onTransmute={handleTransmute}
-                        numTransmutations={transmutationsRemaining}
-                    />
-                )}
+                {isWorkshopOpen && <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.KERNING} />}
             </div>
         </div>
     );

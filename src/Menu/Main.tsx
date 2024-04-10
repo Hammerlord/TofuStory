@@ -494,7 +494,6 @@ const Main = () => {
                 onBattle={handleTownBattle}
                 onTransition={handleTransition}
                 onCamp={() => setActivity(ACTIVITIES.CAMP)}
-                onTransmute={handleTransmute}
             />
         );
     };
@@ -514,16 +513,6 @@ const Main = () => {
         }
 
         dispatch(updatePlayer({ weapon: weaponSkin }));
-    };
-
-    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
-        const { card: cardId, for: forCard } = options || {};
-        const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
-        if (cardIndex > -1) {
-            const newDeck = deck.slice();
-            newDeck[cardIndex] = forCard;
-            handleUpdateDeck(newDeck);
-        }
     };
 
     const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
