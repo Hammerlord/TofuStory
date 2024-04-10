@@ -11,7 +11,7 @@ import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
 import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
-import { ShopAbility, ShopItem } from "../shops/constants";
+import { NUM_TRADING_POST_TRADES, NUM_TRANSMUTATIONS, ShopAbility, ShopItem } from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
 import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
@@ -377,10 +377,10 @@ export const playerStateSlice = createSlice({
                         },
                         tradingPost: {
                             items: generateTradingPostInventory(state.player),
-                            numTradesRemaining: 2,
+                            numTradesRemaining: NUM_TRADING_POST_TRADES,
                         },
                         workshop: {
-                            numTransmutesRemaining: 2,
+                            numTransmutesRemaining: NUM_TRANSMUTATIONS,
                         },
                     },
                 };

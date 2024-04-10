@@ -132,6 +132,7 @@ export const stun: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
     maxApplications: 1,
+    maxDuration: 1,
     description: "Stunned targets are unable to act.",
     icon: DizzyIcon,
 };
@@ -164,6 +165,7 @@ export const chill: Effect = {
     duration: 3,
     attackPower: -1,
     maxApplications: 2,
+    maxDuration: 10,
     description: "Reduces ATT by 1. Max 2 stacks.",
 };
 
@@ -173,6 +175,7 @@ export const freeze: Effect = {
     type: EFFECT_TYPES.FREEZE,
     class: EFFECT_CLASSES.DEBUFF,
     maxApplications: 1,
+    maxDuration: 1,
     description: "Frozen targets are unable to act.",
     duration: 1,
 };
@@ -675,6 +678,7 @@ export const attackDown: Effect = {
     attackPower: -1,
     duration: 3,
     maxApplications: 2,
+    maxDuration: 10,
     description: "Reduces ATT by 1. Max 2 stacks.",
 };
 
