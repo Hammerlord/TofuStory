@@ -42,6 +42,8 @@ const yum: Effect = {
     disableDisplayIcon: true,
     attackPower: 1,
     duration: 5,
+    maxDuration: 6,
+    maxApplications: 7,
 };
 
 const yuck: Effect = {
