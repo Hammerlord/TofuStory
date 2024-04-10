@@ -496,7 +496,6 @@ export const toHenesys: Route = {
         duo: [pig, slime, blueMushroom],
         trio: [redSnail, shroom],
         squad: [snail, blueSnail],
-        special: [[blueMushroom, stump, blueMushroom, stump, blueMushroom]],
     },
     nodes: [
         {

@@ -2376,6 +2376,17 @@ export const blueMushroom: Minion = {
                 },
             ],
         },
+        loaf,
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
         doWave,
         doOtherWave,
     ],
