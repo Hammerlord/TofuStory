@@ -358,7 +358,7 @@ const AbilityView = forwardRef(
                             }
                         };
 
-                        return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+                        return combatant?.HP > 0 && conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
                     });
                 }
 
