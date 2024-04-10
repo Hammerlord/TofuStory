@@ -181,6 +181,9 @@ const useStyles = createUseStyles({
             color: "#42f57b",
         },
     },
+    cursed: {
+        filter: "drop-shadow(0px 0px 1px #ff3a3a) drop-shadow(0px 0px 3px #ff3a3a)",
+    },
     glow: {
         filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
     },
@@ -474,6 +477,7 @@ const AbilityView = forwardRef(
             <AbilityTooltip ability={ability}>
                 <div
                     className={classNames(classes.root, className, {
+                        [classes.cursed]: type === ACTION_TYPES.HINDER,
                         "-selected": isSelected,
                         [classes.glow]: isAbilityUsable && !disableGlow && !disableConditionGlow && state.battle && hasBonus,
                     })}
