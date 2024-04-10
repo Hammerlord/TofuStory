@@ -916,9 +916,11 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             const { lowestDuration } = idCountMap[effect.name] || {};
             if (lowestDuration?.id === effect.id) {
                 // This is the effect to extend the duration and/or stacks
+                const newDuration = (updatedEffects[i].duration || Infinity) + (incomingEffect.duration || Infinity);
+                const maxDuration = effect.maxDuration || Infinity;
                 updatedEffects[i] = {
                     ...updatedEffects[i],
-                    duration: (updatedEffects[i].duration || Infinity) + (incomingEffect.duration || Infinity),
+                    duration: Math.min(maxDuration, newDuration),
                     stacks: (updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0),
                 };
             }

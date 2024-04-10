@@ -254,6 +254,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
         amount: number;
         filters?: { property: string; comparator: Comparator; value: any }[];
     };
+    maxDuration?: number;
 };
 
 export type CombatEffect = Effect & {
