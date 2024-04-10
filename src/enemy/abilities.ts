@@ -141,6 +141,7 @@ export const whomp: Ability = {
                     name: "Dazed",
                     image: DizzyIcon,
                     removeAfterTurn: true,
+                    unplayable: true,
                     actions: [
                         {
                             type: ACTION_TYPES.HINDER,
