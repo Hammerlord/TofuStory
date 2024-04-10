@@ -1,3 +1,4 @@
+import { getRandomItem } from "./../utils";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { partition } from "ramda";
 import uuid from "uuid";
@@ -17,6 +18,7 @@ import defaultCharacterProperties, { wizardProperties } from "./defaultCharacter
 import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
+import { RANDOM_BOSSES } from "../map/randomBosses";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -58,6 +60,15 @@ export type CharacterState = {
     purchasedConsumables: {
         [itemName: string]: number; // Number of purchases for a given item name
     };
+    rolledBosses: { [bossId: string]: true };
+};
+
+const getRolledBosses = () => {
+    const bosses = {};
+    const henesysBoss = getRandomItem(RANDOM_BOSSES[TOWNS.HENESYS]);
+    bosses[henesysBoss] = true;
+
+    return bosses;
 };
 
 const INITIAL_STATE: CharacterState = {
@@ -78,6 +89,7 @@ const INITIAL_STATE: CharacterState = {
     nodesVisited: {}, // The location nodes the player has visited. { [nodeId: string]: true }
     townShops: {}, // Logs shop inventory in the recent town. See TownShops type.
     purchasedConsumables: {},
+    rolledBosses: {}, // For randomly generated bosses, set the chosen boss here
 };
 
 export type ActivityHistoryLog = {
@@ -315,6 +327,7 @@ export const playerStateSlice = createSlice({
                 route,
                 currentMapLocation: route,
                 currentTown: null,
+                rolledBosses: getRolledBosses(),
             };
         },
         selectMapNode: (state, action) => {
