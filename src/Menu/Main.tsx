@@ -539,6 +539,7 @@ const Main = () => {
                             onExit={() => {
                                 setScene(null);
                                 setSceneRegion(null);
+                                saveGame(character);
                             }}
                             onBattle={handleSceneBattle}
                             onShop={() => setActivity(ACTIVITIES.SHOP)}
