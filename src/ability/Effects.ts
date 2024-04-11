@@ -593,6 +593,15 @@ export const defUp: Effect = {
     attackDamageReceived: -1,
 };
 
+export const defDown: Effect = {
+    name: "Defense Down",
+    icon: BlackShieldIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.DEBUFF,
+    canBeSilenced: true,
+    attackDamageReceived: 1,
+};
+
 export const pristineDefense: Effect = {
     name: "Pristine Defense Up",
     icon: PristineBlackShieldIcon,

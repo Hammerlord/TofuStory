@@ -12,14 +12,14 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, OmokPigImage, PillagingWildBoarImage, RockImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
-import { attackDown, hardy, stun } from "./../ability/Effects";
+import { defDown, hardy, preventArmorDecay, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
 import { championsRibbon, counterEffect, resist, pigHeaded } from "./effect";
 
 const boulder: Minion = {
     name: "Boulder",
     image: RockImage,
-    maxHP: 20,
+    maxHP: 17,
     uncontrollable: true,
     abilities: [
         {
@@ -38,14 +38,14 @@ const boulder: Minion = {
         {
             ...resist,
             name: "Heavy",
-            description: "Immune to debuffs. Targets struck by Boulder will have their Attack Power reduced by 1.",
+            description: "Immune to debuffs. Targets struck by Boulder will receive +1 damage from attacks.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onAttack: {
                 usableWhileStunned: true,
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
-                effects: [{ ...attackDown, duration: 3 }],
+                effects: [{ ...defDown, duration: 3 }],
             },
         },
     ],
