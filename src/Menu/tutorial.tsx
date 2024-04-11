@@ -36,7 +36,7 @@ export const warriorTutorial: Tutorial = {
                     Cards often cost <Fury /> Fury, limiting how many you can play per turn.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 28 }, null],
+            enemies: [null, null, { ...basicDummy, maxHP: 21 }, null, null],
             presetDeck: [slam, slam, slam],
         },
         {
@@ -58,7 +58,10 @@ export const warriorTutorial: Tutorial = {
                 </>,
             ],
             enemies: [basicDummy2, basicDummy2, basicDummy2, basicDummy2, basicDummy2],
-            presetDeck: [block, block, block, cleave, cleave],
+            presetDeck: [block, block],
+            winCondition: {
+                surviveRounds: 1,
+            },
         },
         {
             description: [
@@ -86,7 +89,7 @@ export const magicianTutorial: Tutorial = {
                     Cards often cost <Mana /> Mana, limiting how many you can play per turn.
                 </>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 22 }, null],
+            enemies: [null, null, { ...basicDummy, maxHP: 18 }, null, null],
             presetDeck: [energyBolt, energyBolt, energyBolt],
         },
         {
@@ -108,7 +111,10 @@ export const magicianTutorial: Tutorial = {
                 </>,
             ],
             enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
-            presetDeck: [magicArmor, magicArmor, magicArmor, magicFang, magicFang],
+            presetDeck: [magicArmor, magicArmor],
+            winCondition: {
+                surviveRounds: 1,
+            },
         },
         {
             description: [

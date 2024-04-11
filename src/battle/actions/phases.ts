@@ -77,6 +77,7 @@ export const nextWave = () => {
             updateBattle({
                 isPlayerTurn: true,
                 currentWaveIndex: currentWaveIndex + 1,
+                round: 0,
                 enemySide: enemies.map(createCombatant),
                 deck: presetDeck ? presetDeck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })) : deck,
                 hand: presetDeck ? [] : hand,
