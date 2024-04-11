@@ -9,7 +9,7 @@ import {
     RespawnTokenImage,
     ShackledHandImage,
 } from "../images";
-import { CloudyIcon, SmilingImpIcon } from "../images/icons";
+import { CloudyIcon, HeartIcon, SmilingImpIcon } from "../images/icons";
 import { hardy, poison, preventArmorDecay, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
@@ -28,7 +28,7 @@ import { bananaPeelCard } from "./enemy";
 
 export const faust: Minion = {
     name: "Faust",
-    maxHP: 300,
+    maxHP: 400,
     image: FaustImage,
     isBoss: true,
     mesos: 50,
@@ -189,7 +189,7 @@ export const ghostlyPuppeteerL: Minion = {
         {
             name: "Ghostly Mending",
             resourceCost: 0,
-            image: HomecomingVictoryGlovesImage,
+            image: HeartIcon,
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -207,7 +207,7 @@ export const ghostlyPuppeteerL: Minion = {
             name: "Stealth",
             icon: CloudyIcon,
             canBeSilenced: true,
-            description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+            description: "Untargetable by attacks. Effect ends if hit by area damage.",
             onReceiveAttack: {
                 removeEffect: true,
             },
@@ -231,7 +231,7 @@ export const ghostlyPuppeteerL: Minion = {
                         name: "Stealth",
                         icon: CloudyIcon,
                         canBeSilenced: true,
-                        description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+                        description: "Untargetable by attacks. Effect ends if hit by area damage.",
                         onReceiveAttack: {
                             removeEffect: true,
                         },
