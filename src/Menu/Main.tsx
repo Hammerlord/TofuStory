@@ -267,7 +267,6 @@ const Main = () => {
         } else if (node.type === NODE_TYPES.ELITE_ENCOUNTER) {
             encounter = generateElites(ROUTE_ID_MAP[node.routeId]);
         } else if (node.type === NODE_TYPES.ENCOUNTER) {
-            console.log("prev encounters", battleHistory);
             encounter = generateWaves({
                 route: ROUTE_ID_MAP[node.routeId],
                 fallbackRoute: ROUTE_ID_MAP[node.previousRouteId],

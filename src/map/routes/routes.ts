@@ -589,7 +589,6 @@ export const routeLith: Route = {
     ],
     multiWaveEnemies: [
         [snail, blueSnail, snail, blueSnail, snail],
-        [snail, null, shroom, null, snail],
         [null, blueSnail, shroom, blueSnail, null],
         [null, shroom, null, shroom, null],
         [null, shroom, null, redSnail, null],

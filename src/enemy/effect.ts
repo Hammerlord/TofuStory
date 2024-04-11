@@ -233,7 +233,7 @@ export const weightedShell: Effect = {
     skillBonus: [
         {
             skill: "Rollout",
-            damage: 3,
+            damage: 2,
         },
     ],
     conditions: [

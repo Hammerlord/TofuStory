@@ -296,6 +296,7 @@ export const slime: Minion = {
                 },
             ],
         },
+        loaf,
     ],
     effects: [
         {

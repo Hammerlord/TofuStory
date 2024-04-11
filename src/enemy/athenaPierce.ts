@@ -1,4 +1,4 @@
-import { vengeful } from "./../ability/Effects";
+import { taunt, vengeful } from "./../ability/Effects";
 import { avenger, bleed, hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
@@ -7,6 +7,7 @@ import {
     CallOfTheWildImage,
     CoveringFireImage,
     FelineBerserkImage,
+    GreyShieldImage,
     HurricaneImage,
     MortalBlowImage,
     SoaringHawkImage,
@@ -39,7 +40,7 @@ export const guardWolf: Minion = {
         attack,
         {
             name: "Protective Howl",
-            description: "Grants 10 armor to allies and dispels negative status effects.",
+            description: "Grants 10 armor to allies and dispels debuffs.",
             castTime: 1,
             resourceCost: 3,
             image: WolfImage,
@@ -51,6 +52,20 @@ export const guardWolf: Minion = {
                     area: 2,
                     armor: 10,
                     removeDebuffs: true,
+                },
+            ],
+        },
+        {
+            name: "Taunting Howl",
+            description: "Taunts for 3 turns.",
+            resourceCost: 3,
+            image: GreyShieldImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    effects: [{ ...taunt, duration: 3 }],
                 },
             ],
         },
@@ -106,6 +121,7 @@ export const athena: Minion = {
                     playbackTime: 400,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                 },
                 {
@@ -162,6 +178,7 @@ export const athena: Minion = {
                     },
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                 },
             ],
@@ -181,6 +198,7 @@ export const athena: Minion = {
                     targetArea: 3,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                     damage: 2,
                 },
@@ -192,6 +210,7 @@ export const athena: Minion = {
                     targetArea: 3,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                     damage: 2,
                 },
@@ -203,6 +222,7 @@ export const athena: Minion = {
                     targetArea: 3,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                     damage: 2,
                 },
@@ -214,6 +234,7 @@ export const athena: Minion = {
                     targetArea: 3,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                     damage: 2,
                 },
@@ -223,7 +244,7 @@ export const athena: Minion = {
     effects: [
         hardy,
         weakerAvenger,
-        {
+        /*{
             name: "Companion Bond",
             duration: Infinity,
             type: EFFECT_TYPES.NONE,
@@ -250,7 +271,7 @@ export const athena: Minion = {
                     ],
                 },
             },
-        },
+        },*/
     ],
 };
 

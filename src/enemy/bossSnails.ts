@@ -161,8 +161,8 @@ export const mutantSnailEnemy: Minion = {
     image: MutantSnailImage,
     isBoss: true,
     maxHP: 75,
-    armor: 75,
-    mesos: 100,
+    armor: 100,
+    mesos: 50,
     effects: [
         preventArmorDecay,
         {
@@ -323,9 +323,9 @@ export const manoEnemy: Minion = {
     name: "Mano",
     image: ManoImage,
     isBoss: true,
-    maxHP: 50,
+    maxHP: 75,
     armor: 100,
-    mesos: 100,
+    mesos: 50,
     abilities: [
         {
             ...attack,
