@@ -26,7 +26,7 @@ export const onBattleEnd = () => {
         if (!battle) {
             return;
         }
-        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills } = battle;
+        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills, waves } = battle;
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -35,6 +35,7 @@ export const onBattleEnd = () => {
             pushBattleHistory({
                 totalDamageDealt,
                 totalKills,
+                waves,
             })
         );
 

@@ -5,7 +5,7 @@ import uuid from "uuid";
 import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
-import { BATTLE_TYPES } from "../battle/types";
+import { BATTLE_TYPES, Wave } from "../battle/types";
 import { calculateMesoGain, getMaxHP } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
@@ -38,7 +38,7 @@ export type TownShops = {
     };
 };
 
-export type BattleHistory = { totalDamageDealt: number; totalKills: number };
+export type BattleHistory = { totalDamageDealt: number; totalKills: number; waves: Wave[] };
 
 export type CharacterState = {
     player: null | Player;
