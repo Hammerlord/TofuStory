@@ -22,6 +22,7 @@ import {
     BloodIcon,
     CactusIcon,
     CloudyIcon,
+    CrossedSwordsIcon,
     DizzyIcon,
     EyeIcon,
     FireIcon,
@@ -549,11 +550,12 @@ export const poison: Effect = {
 };
 
 export const attackPower: Effect = {
-    name: "Attack Power",
-    icon: WeaponMasteryImage,
+    name: "ATT Up",
+    icon: CrossedSwordsIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
+    canBeSilenced: true,
 };
 
 export const armorUp: Effect = {
@@ -680,15 +682,15 @@ export const taunt: Effect = {
 };
 
 export const attackDown: Effect = {
-    name: "Attack Down",
+    name: "ATT Down",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    icon: AttackDownImage,
+    icon: CrossedSwordsIcon,
     attackPower: -1,
     duration: 3,
     maxApplications: 2,
     maxDuration: 10,
-    description: "Reduces ATT by 1. Max 2 stacks.",
+    description: "Reduces attack power by 1. Max 2 stacks.",
 };
 
 export const directDamageTaken: Effect = {
