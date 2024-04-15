@@ -9,11 +9,12 @@ const useStyles = createUseStyles({
     root: {
         fontSize: "0.8rem",
         whiteSpace: "nowrap",
+        verticalAlign: "bottom",
     },
     area: {
         width: "14px",
         height: "15px",
-        backgroundColor: "rgba(0, 0, 0, 0.25)",
+        backgroundColor: ({ secondaryColor = "rgba(0, 0, 0, 0.25)" }: any) => secondaryColor,
         display: "inline-block",
         fontSize: "0.7rem",
         color: "white",
@@ -26,7 +27,7 @@ const useStyles = createUseStyles({
     mainTarget: {
         width: "14px",
         height: "15px",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: ({ primaryColor = "rgba(0, 0, 0, 0.5)" }: any) => primaryColor,
         display: "inline-block",
         marginRight: "4px",
         color: "white",
@@ -84,14 +85,20 @@ export const AreaIndicator = ({
     baseDamage,
     secondaryDamage,
     size,
+    primaryColor,
+    secondaryColor,
+    className,
 }: {
     area: number;
     hasBonus?: boolean;
     baseDamage?: number;
     secondaryDamage?: number;
     size?: "sm";
+    primaryColor?: string;
+    secondaryColor?: string;
+    className?: string;
 }) => {
-    const classes = useStyles();
+    const classes = useStyles({ primaryColor, secondaryColor } as any);
 
     const areaIndicator = Array.from({ length: area }).map((_, i) => (
         <span
@@ -105,7 +112,7 @@ export const AreaIndicator = ({
         </span>
     ));
     return (
-        <div className={classes.root}>
+        <div className={classNames(classes.root, className)}>
             {areaIndicator}
             <span
                 className={classNames(classes.mainTarget, {

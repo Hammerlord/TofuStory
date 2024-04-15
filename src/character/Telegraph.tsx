@@ -1,6 +1,10 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
+import { AreaIndicator } from "../ability/AbilityView/AreaView";
+import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import { ACTION_TYPES } from "../ability/types";
 import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/utils";
@@ -8,9 +12,6 @@ import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
-import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
-import { ACTION_TYPES } from "../ability/types";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -120,6 +121,22 @@ const useStyles = createUseStyles({
     minion: {
         background: GREEN,
     },
+    subContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        verticalAlign: "bottom",
+        whiteSpace: "nowrap",
+    },
+    areaContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: 32,
+    },
+    areaIndicator: {
+        display: "flex",
+        alignItems: "center",
+        marginLeft: 8,
+    },
 });
 
 /**
@@ -168,6 +185,14 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         }
     })();
 
+    const area = ability.actions.reduce((acc, action) => {
+        if (action.area > acc) {
+            return action.area;
+        }
+
+        return acc;
+    }, 0);
+
     return (
         <div className={classes.root}>
             <Tooltip
@@ -178,7 +203,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                                 <Icon icon={image} size="sm" /> {name}{" "}
                                 {isTurnPrevented && <span className={classes.disabled}>(Disabled)</span>}
                             </div>
-                            <div>
+                            <div className={classes.subContainer}>
                                 {abilityType === "offense" && (
                                     <span>
                                         <span className={classNames(classes.diamond, classes.offensive)} />
@@ -196,6 +221,22 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                                         <span className={classNames(classes.diamond, classes.support)} />
                                         Support
                                     </span>
+                                )}
+
+                                {area > 0 && (
+                                    <div className={classes.areaContainer}>
+                                        Area:{" "}
+                                        {area > 3 ? (
+                                            "ALL"
+                                        ) : (
+                                            <AreaIndicator
+                                                area={area}
+                                                primaryColor="rgba(255, 255, 255, 0.5)"
+                                                secondaryColor="rgba(255, 255, 255, 0.25)"
+                                                className={classes.areaIndicator}
+                                            />
+                                        )}
+                                    </div>
                                 )}
                             </div>
                             <div>{interpolatedDescription}</div>

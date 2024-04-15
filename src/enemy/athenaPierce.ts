@@ -40,7 +40,7 @@ export const guardWolf: Minion = {
         attack,
         {
             name: "Protective Howl",
-            description: "Grants 10 armor to allies and dispels debuffs.",
+            description: "Grants 10 armor and dispels debuffs.",
             castTime: 1,
             resourceCost: 3,
             image: WolfImage,
@@ -134,7 +134,7 @@ export const athena: Minion = {
         {
             name: "Combined Assault",
             image: FelineBerserkImage,
-            description: "Commands all targeted allies to attack",
+            description: "Commands all allies to attack.",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -286,7 +286,7 @@ export const guardHawk: Minion = {
         {
             name: "Cyclone",
             image: TornadoIcon,
-            description: "Blasts targets with a cyclone that deals 3 damage and applies a Bleed for 3 turns.",
+            description: "Applies Bleed.",
             resourceCost: 3,
             castTime: 1,
             actions: [
