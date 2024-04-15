@@ -13,6 +13,7 @@ import { JapaneseOgreIcon } from "../images/icons";
 import { attackPower, avenger, bleed, hardy, preventArmorDecay } from "./../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, CONDITION_TARGETS, Effect, MULTIPLIER_TYPES, Minion, TARGET_TYPES } from "./../ability/types";
 import { attack } from "./abilities";
+import { battleTrance } from "./effect";
 
 const tauroAvenger: Effect = {
     ...avenger,
@@ -47,10 +48,10 @@ const tauroAvenger: Effect = {
 
 export const tauromacis: Minion = {
     name: "Tauromacis",
-    maxHP: 150,
+    maxHP: 200,
     image: TauromacisImage,
     isElite: true,
-    mesos: 50,
+    mesos: 40,
     abilities: [
         {
             name: "Stampede",
@@ -157,15 +158,15 @@ export const tauromacis: Minion = {
             ],
         },
     ],
-    effects: [tauroAvenger, hardy],
+    effects: [tauroAvenger, hardy, battleTrance],
 };
 
 export const taurospear: Minion = {
     name: "Taurospear",
-    maxHP: 150,
+    maxHP: 200,
     image: TaurospearImage,
     isElite: true,
-    mesos: 50,
+    mesos: 40,
     abilities: [
         {
             ...attack,
@@ -274,5 +275,5 @@ export const taurospear: Minion = {
             ],
         },
     ],
-    effects: [tauroAvenger, hardy],
+    effects: [tauroAvenger, hardy, battleTrance],
 };
