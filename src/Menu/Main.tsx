@@ -261,16 +261,17 @@ const Main = () => {
     };
 
     const handleBattleNode = (node: GeneratedRouteNode) => {
+        const previousEncounters = battleHistory.map(({ waves }) => waves).filter((v) => v);
         let encounter;
         if (node.type === NODE_TYPES.BOSS && node.encounter) {
             encounter = OVERWORLD_BOSS_ID_MAP[node.encounter]?.waves;
         } else if (node.type === NODE_TYPES.ELITE_ENCOUNTER) {
-            encounter = generateElites(ROUTE_ID_MAP[node.routeId]);
+            encounter = generateElites(ROUTE_ID_MAP[node.routeId], previousEncounters);
         } else if (node.type === NODE_TYPES.ENCOUNTER) {
             encounter = generateWaves({
                 route: ROUTE_ID_MAP[node.routeId],
                 fallbackRoute: ROUTE_ID_MAP[node.previousRouteId],
-                previousEncounters: battleHistory.map(({ waves }) => waves).filter((v) => v),
+                previousEncounters,
             });
         }
 

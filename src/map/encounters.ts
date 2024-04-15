@@ -231,7 +231,7 @@ const generateElite = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAf
     return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
 };
 
-export const generateElites = (route: Route): { enemies: Minion[] }[] => {
+export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] => {
     if (!route) {
         return;
     }
@@ -243,8 +243,28 @@ export const generateElites = (route: Route): { enemies: Minion[] }[] => {
     const getSingle = () => generateElite(eliteProps);
 
     const eliteGenerators = [getSquad, getTriad, getDuo, getSingle];
+
     if (route.elites.special?.length > 0) {
-        eliteGenerators.push(() => getRandomItem(route.elites.special));
+        eliteGenerators.push(() => {
+            const eligibleEnemies = route.elites.special.filter((enemySet: (Minion | null)[]) => {
+                // Do not allow fighting the same enemies close together
+                const lastThreeEncounters = previousEncounters.slice().reverse().slice(0, 3);
+                const recentEnemyLog = lastThreeEncounters.reduce((acc, waves: Wave[]) => {
+                    waves.forEach((wave) => {
+                        wave.enemies.forEach((enemy: Minion | null) => {
+                            if (enemy) {
+                                acc[enemy.name] = true;
+                            }
+                        });
+                    });
+
+                    return acc;
+                }, {});
+
+                return enemySet.every((enemy) => !enemy || !recentEnemyLog[enemy.name]);
+            });
+            return getRandomItem(eligibleEnemies.length ? eligibleEnemies : route.elites.special);
+        });
     }
 
     return [{ enemies: getRandomItem(eliteGenerators)() }];
