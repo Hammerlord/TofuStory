@@ -1,12 +1,13 @@
-import { preventArmorDecay } from "../ability/Effects";
+import { hardy, preventArmorDecay } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { GreenFairiesImage, MossyMushroomImage, MossySnailImage, MushroomOmokImage, RedSnailShellImage } from "../images";
-import { attack } from "./abilities";
+import { attack, loaf, whomp } from "./abilities";
 import { agedShell, weightedShell } from "./effect";
 
 export const mossyMushroom: Minion = {
     name: "Mossy Mushroom",
-    maxHP: 150,
+    maxHP: 200,
+    mesos: 40,
     isElite: true,
     image: MossyMushroomImage,
     resources: 2,
@@ -17,27 +18,25 @@ export const mossyMushroom: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 6,
                 },
             ],
         },
+        loaf,
         {
-            name: "Whomp",
-            image: MushroomOmokImage,
-            resourceCost: 3,
-            castTime: 1,
+            ...attack,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
-                    area: 1,
-                    secondaryDamage: 3,
+                    damage: 6,
                 },
             ],
         },
+        whomp,
     ],
     effects: [
+        hardy,
         {
             name: "Fairies",
             type: EFFECT_TYPES.NONE,
@@ -63,7 +62,8 @@ export const mossyMushroom: Minion = {
 export const mossySnail: Minion = {
     name: "Mossy Snail",
     maxHP: 50,
-    armor: 100,
+    armor: 150,
+    mesos: 40,
     image: MossySnailImage,
     isElite: true,
     abilities: [
@@ -73,10 +73,21 @@ export const mossySnail: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        loaf,
         {
             name: "Rollout",
             image: RedSnailShellImage,
@@ -106,12 +117,7 @@ export const mossySnail: Minion = {
         preventArmorDecay,
         {
             ...weightedShell,
-            skillBonus: [
-                {
-                    skill: "Rollout",
-                    damage: 2,
-                },
-            ],
+            attackPower: 2,
         },
     ],
 };
