@@ -87,7 +87,13 @@ export const getMaxHP = (character: Combatant): number => {
     });
     // Conditional max HP checking can cause an infinite loop
     // For now assume that there are no conditions tied to max HP effects
-    return character.maxHP + enabledEffects.reduce((acc, effect) => acc + (effect.maxHP || 0), 0);
+    return (
+        character.maxHP +
+        enabledEffects.reduce((acc, effect) => {
+            const maxHP = (effect.maxHP || 0) * (effect.stacks || 1);
+            return acc + maxHP;
+        }, 0)
+    );
 };
 
 export const updateHP = (character: Combatant, amount: number): number => {

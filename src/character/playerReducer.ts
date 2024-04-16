@@ -186,7 +186,7 @@ export const playerStateSlice = createSlice({
 
             // Stack consumable/material items
             regularItems.forEach((item: Item) => {
-                if (item.type === ITEM_TYPES.EQUIPMENT) {
+                if (item.type === ITEM_TYPES.EQUIPMENT && !item.isStackable) {
                     newItems.push(item);
                     return;
                 }

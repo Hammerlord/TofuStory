@@ -3,6 +3,7 @@ export enum ITEM_TYPES {
     CONSUMABLE = "consumable",
     MATERIAL = "material",
     EQUIPMENT = "equipment",
+    OTHER = "other",
 }
 
 export enum RARITIES {
@@ -28,6 +29,7 @@ export interface Item {
     abilityChoices?: 1;
     rarity?: RARITIES;
     stacks?: number;
+    isStackable?: boolean;
     // If true, item's `effects` will be appended to summons' effects
     applyEffectsToSummons?: boolean;
     upgradeScreen?: {

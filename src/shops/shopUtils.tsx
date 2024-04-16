@@ -1,6 +1,6 @@
 import { Ability } from "../ability/types";
 import { Player } from "../character/types";
-import { clubMembership } from "../item/items";
+import { clubMembership, tofu, tofuSoup } from "../item/items";
 import { Item } from "../item/types";
 
 import { getUpgradeCard } from "../Menu/utils";
@@ -107,24 +107,13 @@ export const generateShopInventory = ({ player }: { player: Player }): { abiliti
 
     const food = [
         {
-            item: {
-                name: "Tofu",
-                image: TofuImage,
-                description: "Permanently increase max HP by 3.",
-            },
+            item: tofu,
             price: 50,
-            isConsumable: true,
+            isConsumable: false,
             isFood: true,
-            statChanges: {
-                maxHP: 3,
-            },
         },
         {
-            item: {
-                name: "Tofu Soup",
-                image: NewYearRiceSoupImage,
-                description: "Restore 15 HP.",
-            },
+            item: tofuSoup,
             price: 50,
             isConsumable: true,
             isFood: true,

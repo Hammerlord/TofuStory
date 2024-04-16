@@ -51,6 +51,7 @@ import {
     MesoStackImage,
     NamelessSwordImage,
     NewspaperImage,
+    NewYearRiceSoupImage,
     OpalImage,
     PanlidImage,
     PawnChessPieceImage,
@@ -81,6 +82,7 @@ import {
     TauromacisHornImage,
     TaurospearHornImage,
     ThunderSparkImage,
+    TofuImage,
     TopazImage,
     TortieShellImage,
     WeaponMasteryImage,
@@ -475,6 +477,29 @@ export const goldenHammer: Item = {
     type: ITEM_TYPES.MATERIAL,
     image: GoldenHammerImage,
     upgradeCard: true,
+};
+
+export const tofu: Item = {
+    name: "Tofu",
+    image: TofuImage,
+    type: ITEM_TYPES.OTHER, // Equips are unique, and this can stack
+    description: "+3 max HP.",
+    isStackable: true,
+    effects: [
+        {
+            name: "Tofu",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            maxHP: 3,
+        },
+    ],
+};
+
+export const tofuSoup: Item = {
+    name: "Tofu Soup",
+    image: NewYearRiceSoupImage,
+    description: "Restore 15 HP.",
+    type: ITEM_TYPES.CONSUMABLE,
 };
 
 export const pieceOfIce: Item = {

@@ -1,14 +1,16 @@
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
-import { getUpgradeCard } from "./utils";
-import { CLASS_ITEMS } from "../map/routes/eventList";
-import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
-import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
-import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { CharacterState } from "../character/playerReducer";
 import { Ability } from "../ability/types";
+import { CharacterState } from "../character/playerReducer";
+import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
+import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
+import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
 import { Item } from "../item/types";
+import { CLASS_ITEMS } from "../map/routes/eventList";
+import { ShopAbility } from "../shops/constants";
+import { getUpgradeCard } from "./utils";
+import { tofu, tofuSoup } from "../item/items";
 
 export const saveGame = (characterObject: CharacterState) => {
     const { deck, player, townShops } = characterObject;
@@ -56,7 +58,7 @@ export const saveGame = (characterObject: CharacterState) => {
             acc[townName].shop = {
                 ...shop,
                 abilities: shop.abilities.map(flattenShopAbility),
-                item: shop.items.map(flattenShopItem),
+                items: shop.items.map(flattenShopItem),
             };
         }
 
@@ -113,7 +115,8 @@ export const getGameFile = () => {
 
         const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
         const consumables = [halfEatenHotdog, unagiItem, cakeItem];
-        const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables];
+        const other = [tofu, tofuSoup];
+        const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables, ...other];
 
         const items = player.items.map((item) => {
             const found = itemLookup.find((otherItem) => otherItem.name === item.name);
@@ -134,16 +137,21 @@ export const getGameFile = () => {
             /**
              * See output of flattenShopItem above for the input here.
              */
-            const hydrateShopItem = (item: { price: number; item: string } | null) => {
-                if (!item) return item;
-                return {
-                    ...item,
-                    item: itemLookup.find(({ name }) => name === item),
-                };
+            const hydrateShopItem = (shopItem: { price: number; item: string } | null) => {
+                if (!shopItem) return shopItem;
+                const lookup = itemLookup.find(({ name }) => name === shopItem.item);
+                if (lookup) {
+                    return {
+                        ...shopItem,
+                        item: lookup,
+                    };
+                }
+
+                return shopItem;
             };
 
-            const hydrateShopAbility = (item: { price: number; item: { name: string; level?: number } } | null) => {
-                if (!item) return item;
+            const hydrateShopAbility = (item: { price: number; item: { name: string; level?: number } } | null): ShopAbility | null => {
+                if (!item) return item as null;
                 return { ...item, item: hydrateAbility(item.item) };
             };
 
@@ -151,7 +159,7 @@ export const getGameFile = () => {
                 acc[townName].shop = {
                     ...shop,
                     abilities: shop.abilities.map(hydrateShopAbility),
-                    item: shop.items.map(hydrateShopItem),
+                    items: shop.items.map(hydrateShopItem).filter((v) => v),
                 };
             }
 

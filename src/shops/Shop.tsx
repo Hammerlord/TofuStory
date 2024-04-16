@@ -235,19 +235,27 @@ const ShopView = ({
             const { price: initPrice, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
             const price = getFinalConsumableItemPrice(item, initPrice);
 
-            if (isConsumable) {
-                if (isFood) {
-                    if (freeFood) {
-                        onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
+            if (isFood) {
+                if (freeFood) {
+                    onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
+                    if (statChanges) {
                         onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
                     } else {
-                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                        onBuyItem({ items: [item], mesosSpent: 0, type: "item" });
                     }
-
-                    setSelectedItemIndex(null);
-                    return;
+                } else {
+                    if (statChanges) {
+                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                    } else {
+                        onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+                    }
                 }
 
+                setSelectedItemIndex(null);
+                return;
+            }
+
+            if (isConsumable) {
                 // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
                 onBuyItem({ items: [item], mesosSpent: price, type: "item" });
                 dispatch(onPurchaseConsumable(item.name));
