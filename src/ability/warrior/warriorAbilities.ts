@@ -567,7 +567,7 @@ export const hyperBody: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 6,
+            armor: 7,
             drawCards: {
                 amount: 1,
             },
@@ -861,7 +861,7 @@ export const ironBody: Ability = {
     description: "Prevent the next time your armor decays",
     actions: [
         {
-            armor: 6,
+            armor: 7,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
             effects: [
@@ -2427,7 +2427,7 @@ export const honedBlock: Ability = {
     },
     actions: [
         {
-            armor: 6,
+            armor: 7,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
         },
