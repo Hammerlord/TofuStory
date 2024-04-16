@@ -260,6 +260,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     extraDisplayOptions?: {
         container: "left" | "right";
         property: string; // What to display on the icon
+        modulo: string;
     };
 };
 

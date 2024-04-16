@@ -14,6 +14,7 @@ import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
+import _ from "lodash";
 
 const indicatorSize = 8;
 
@@ -258,7 +259,20 @@ const EffectGroupIcon = ({
         { stackCount: 0, displayStacks: false }
     );
 
-    const extraOptionsIconText = Handlebars.compile(extraDisplayOptions?.property || "")(effects[0]);
+    const extraOptionsIconText = (() => {
+        const { property, modulo } = extraDisplayOptions || {};
+        if (!property) {
+            return;
+        }
+
+        const propertyVal = _.get(effects[0], property) || 0;
+        const moduloVal = _.get(effects[0], modulo);
+        if (moduloVal !== undefined) {
+            return propertyVal % moduloVal || undefined;
+        }
+
+        return propertyVal || undefined;
+    })();
 
     const inner = (
         <span

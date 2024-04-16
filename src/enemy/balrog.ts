@@ -177,7 +177,8 @@ export const balrog: Minion = {
             disableDisplayIcon: true, // It is displayed above the attack power instead
             extraDisplayOptions: {
                 container: "right",
-                property: "{{ onPlayerAbility.eventTriggeredTimes }}",
+                property: "onPlayerAbility.eventTriggeredTimes",
+                modulo: "onPlayerAbility.eventTriggerFrequency",
             },
             onPlayerAbility: {
                 disableTriggerFromProcs: true,
