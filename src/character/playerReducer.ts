@@ -171,7 +171,7 @@ export const playerStateSlice = createSlice({
             };
         },
         acquireItems: (state, action: PayloadAction<Item[]>) => {
-            const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.EQUIPMENT];
+            const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.OTHER, ITEM_TYPES.EQUIPMENT];
             let newItems = [...state.player.items];
 
             const regularItems = [];
