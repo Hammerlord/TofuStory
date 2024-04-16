@@ -356,13 +356,15 @@ export const balrog: Minion = {
         {
             name: "Pulverize",
             resourceCost: 3,
+            castTime: 1,
             image: BrutalClawImage,
+            description: "Halves player armor and depletes the top card of the deck.",
             actions: [
                 {
-                    damage: 8,
+                    damage: 10,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.PLAYER,
-                    destroyArmor: 1,
+                    decayArmor: true,
                     moveCards: {
                         from: "deck",
                         to: "deplete",
