@@ -122,7 +122,9 @@ const handleCastTick = (combatantId: string) => {
             updateCombatant({
                 combatantId,
                 newProperties: {
-                    casting: updatedCasting.channelDuration || updatedCasting.castTime ? updatedCasting : null,
+                    // If a character is CCed, channeled abilities lose a tick no matter what, but cast times are merely delayed.
+                    // Fix an issue where the cast time would reset if the enemy was CCed.
+                    casting: updatedCasting.channelDuration || castTime > 0 ? updatedCasting : null,
                 },
             })
         );
