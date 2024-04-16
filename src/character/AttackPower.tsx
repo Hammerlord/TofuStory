@@ -66,11 +66,13 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             };
         }, defaultActionStats) || defaultActionStats;
 
-    const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(({ attackPower = 0, excludeEffectOwner }) => {
-        return !excludeEffectOwner && attackPower !== 0;
-    });
-    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower, skillBonus }) => {
-        const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus });
+    const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(
+        ({ attackPower = 0, excludeEffectOwner, skillBonus }) => {
+            return !excludeEffectOwner && (attackPower !== 0 || skillBonus);
+        }
+    );
+    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower = 0, skillBonus }) => {
+        const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
         return acc + attackPower + skillBonusDamage;
     }, 0);
 
@@ -99,7 +101,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                 </>
             )}
             {Object.entries(
-                attackPowerEffects.reduce((acc, { icon, name, attackPower, skillBonus }) => {
+                attackPowerEffects.reduce((acc, { icon, name, attackPower = 0, skillBonus }) => {
                     if (!acc[name]) {
                         acc[name] = {
                             icon,
@@ -107,7 +109,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         };
                     }
 
-                    const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus });
+                    const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
 
                     acc[name] = {
                         ...acc[name],
