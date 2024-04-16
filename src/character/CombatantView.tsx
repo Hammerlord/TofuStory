@@ -551,7 +551,7 @@ const CombatantView = forwardRef(
                     </div>
                     {(oldState?.HP > 0 || isLifeLinked) && (
                         <div className={classes.effectsContainer}>
-                            <EffectIconsContainer isSilenced={isSilenced} combatant={oldState} event={event} />
+                            <EffectIconsContainer isSilenced={isSilenced} combatant={combatant} event={event} />
                         </div>
                     )}
                 </div>
