@@ -173,7 +173,12 @@ export const balrog: Minion = {
             icon: BrutalClawImage,
             description: "Every 6 cards played, Balrog will attack for 6 damage and discard a card from the player's hand.",
             type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
+            class: EFFECT_CLASSES.NONE,
+            disableDisplayIcon: true, // It is displayed above the attack power instead
+            extraDisplayOptions: {
+                container: "right",
+                property: "{{ onPlayerAbility.eventTriggeredTimes }}",
+            },
             onPlayerAbility: {
                 disableTriggerFromProcs: true,
                 eventTriggerFrequency: 6,

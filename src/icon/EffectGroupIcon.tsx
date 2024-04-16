@@ -60,6 +60,16 @@ const useStyles = createUseStyles({
         right: -6,
         filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 1)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.75))",
     },
+    extraText: {
+        position: "absolute",
+        top: 0,
+        right: 3,
+        color: "white",
+        fontWeight: "bold",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+    },
     tooltipContents: {
         display: "flex",
     },
@@ -190,6 +200,7 @@ const EffectGroupIcon = ({
         turnsTriggerFrequency,
         uptime,
         class: effectClass,
+        extraDisplayOptions,
     } = effects.reduce((acc, cur, i) => {
         if (i === 0) {
             return acc;
@@ -247,6 +258,8 @@ const EffectGroupIcon = ({
         { stackCount: 0, displayStacks: false }
     );
 
+    const extraOptionsIconText = Handlebars.compile(extraDisplayOptions?.property || "")(effects[0]);
+
     const inner = (
         <span
             className={classNames(classes.iconRoot, {
@@ -267,6 +280,7 @@ const EffectGroupIcon = ({
                             <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                         </span>
                     )}
+                    {extraOptionsIconText && <span className={classes.extraText}>{extraOptionsIconText}</span>}
                     {(displayStacks || stackCount > 1) && (
                         <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
                     )}

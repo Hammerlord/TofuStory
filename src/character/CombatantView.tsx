@@ -29,6 +29,7 @@ import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./ani
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { SUMMON_DELAY } from "../battle/constants";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
+import EffectGroupIcon from "../icon/EffectGroupIcon";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -460,6 +461,13 @@ const CombatantView = forwardRef(
             }
         }
 
+        const getExtraContainerIcons = (side: "left" | "right") => {
+            const extraEffects = oldState?.effects.filter((e) => e.extraDisplayOptions?.container === side) || [];
+            return extraEffects.map((effect: CombatEffect) => {
+                return <EffectGroupIcon effects={[effect]} owner={oldState} key={effect.id} />;
+            });
+        };
+
         return (
             <div
                 className={classNames(classes.root, {
@@ -524,11 +532,13 @@ const CombatantView = forwardRef(
                             <>
                                 {!isTargeted && !event?.id && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} />}
                                 <div className={classes.leftContainer}>
+                                    {getExtraContainerIcons("left")}
                                     <Armor amount={oldState.armor} combatantInfo={combatantInfo} />
                                     <Health combatantInfo={combatantInfo} />
                                 </div>
 
                                 <div className={classes.rightContainer}>
+                                    {getExtraContainerIcons("right")}
                                     <AttackPower combatantInfo={combatantInfo} />
                                     {combatant?.isPlayer && <PlayerResources player={combatant as Player} />}
                                 </div>

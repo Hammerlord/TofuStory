@@ -255,6 +255,12 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
         filters?: { property: string; comparator: Comparator; value: any }[];
     };
     maxDuration?: number;
+    // Display a custom counter near the combatant HP/attack power
+    // See Balrog for an example of how this is used.
+    extraDisplayOptions?: {
+        container: "left" | "right";
+        property: string; // What to display on the icon
+    };
 };
 
 export type CombatEffect = Effect & {
