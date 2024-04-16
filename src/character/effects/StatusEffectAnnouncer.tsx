@@ -4,6 +4,7 @@ import { StatChange } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { createUseStyles } from "react-jss";
 import classNames from "classnames";
+import { EFFECT_TYPES } from "../../ability/types";
 
 const PLAYBACK_TIME = 2000;
 
@@ -61,7 +62,7 @@ const useStyles = createUseStyles({
 /**
  * A widget for announcing when status effects have been added or have faded
  */
-const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => {
+const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatChange; combatant: Combatant }) => {
     const classes = useStyles();
     const itemRefs = Array.from({ length: 100 }).map(() => useRef());
     const [effects, setEffects] = useState([]);
@@ -74,6 +75,9 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
     const getStringified = (effects) => {
         return JSON.stringify(effects.map((e) => e.id));
     };
+
+    const isInvalidCombatant =
+        !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
 
     const aggregate = (effects) => {
         const aggregated = effects.reduce((acc, effect) => {
@@ -95,6 +99,9 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
     const animatedEffectsRef: any = useRef({});
 
     useEffect(() => {
+        if (isInvalidCombatant) {
+            return;
+        }
         if (newEffects.length) {
             setEffects((prev) => {
                 const aggregated = aggregate(newEffects);
@@ -120,6 +127,9 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
     }, [newEffects, newRemovedEffects]);
 
     useEffect(() => {
+        if (isInvalidCombatant) {
+            return;
+        }
         effects.map((e, i) => {
             const key = e.id;
             if (!animatedEffectsRef.current[key]) {
@@ -133,6 +143,9 @@ const StatusEffectAnnouncer = ({ statChanges }: { statChanges: StatChange }) => 
     }, [effects]);
 
     useEffect(() => {
+        if (isInvalidCombatant) {
+            return;
+        }
         removedEffects.map((e, i) => {
             i = effects.length + i; // Comes after effects.
             const key = [e.id, "removed"].join("-");
