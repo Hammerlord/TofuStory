@@ -1543,7 +1543,7 @@ export const flamingFeather: Item = {
                             effects: [
                                 {
                                     ...burn,
-                                    duration: 3,
+                                    duration: 1,
                                 },
                             ],
                         },
