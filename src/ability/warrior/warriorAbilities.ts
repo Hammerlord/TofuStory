@@ -819,7 +819,7 @@ export const disrupt: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },

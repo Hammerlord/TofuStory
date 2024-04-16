@@ -78,7 +78,7 @@ export const controlImmune: Effect = {
         type: "effect-type",
         value: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
     },
-    duration: 5,
+    duration: 6,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
 };
