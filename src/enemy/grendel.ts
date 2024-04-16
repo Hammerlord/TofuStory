@@ -16,6 +16,7 @@ import {
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     FireMarbleImage,
+    FlameHazeImage,
     GrendelIdleImage,
     IfritImage,
     MagicArmorImage,
@@ -115,6 +116,7 @@ const iceAge: Ability = {
     actions: [
         {
             damage: 30,
+            area: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             icon: NimbleJewelCImage,
@@ -465,6 +467,27 @@ const grendelTribolt: Ability = {
     actions: [triboltAction, triboltAction, triboltAction],
 };
 
+const grendelMoltenLaser: Ability = {
+    name: "Molten Laser",
+    image: FlameHazeImage,
+    description: "Destroys player's Armor and inflicts Burn.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.PLAYER,
+            animation: ANIMATION_TYPES.BEAM,
+            icon: FireMarbleImage,
+            destroyArmor: 1,
+            effects: [
+                {
+                    ...burn,
+                    duration: 3,
+                },
+            ],
+        },
+    ],
+};
+
 export const grendel: Minion = {
     HP: 450,
     maxHP: 450,
@@ -502,6 +525,7 @@ export const grendel: Minion = {
         },
         grendelMagicClaw,
         grendelTribolt,
+        grendelMoltenLaser,
         stormPulse,
         stormBarrier,
         volcanicBurst,
