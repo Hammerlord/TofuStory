@@ -263,6 +263,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
         property: string; // What to display on the icon
         modulo: string;
     };
+    maxResources?: number;
 };
 
 export type CombatEffect = Effect & {

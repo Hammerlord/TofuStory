@@ -4,6 +4,7 @@ import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import Tooltip from "../view/Tooltip";
 import { Player } from "./types";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
+import { getMaxResources } from "../battle/utils";
 
 const useStyles = createUseStyles({
     "@keyframes animation": {
@@ -50,10 +51,13 @@ const PlayerResources = ({ player }: { player: Player }) => {
             setOldResources(player.resources);
         };
     }, [player.resources]);
+
+    const maxResources = getMaxResources(player);
+
     const tooltipContents = (
         <div>
-            {player.resources} / {player.maxResources} <ResourceIcon size="sm" playerClass={player.class} />{" "}
-            {resourceClassNameMap[player.class]} <br />
+            {player.resources} / {maxResources} <ResourceIcon size="sm" playerClass={player.class} /> {resourceClassNameMap[player.class]}{" "}
+            <br />
             Gaining <ResourceIcon text={player.resourcesPerTurn} size="sm" playerClass={player.class} /> per turn.
         </div>
     );

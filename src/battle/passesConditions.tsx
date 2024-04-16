@@ -15,7 +15,7 @@ import {
 import { Combatant } from "../character/types";
 import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { getMaxHP } from "./utils";
+import { getMaxHP, getMaxResources } from "./utils";
 
 export const passesValueComparison = ({
     val,
@@ -279,7 +279,7 @@ export const passesConditions = ({
             if (resourcePercentage !== undefined) {
                 if (
                     !passesValueComparison({
-                        val: combatant.resources / combatant.maxResources,
+                        val: combatant.resources / getMaxResources(combatant),
                         otherVal: resourcePercentage,
                         comparator,
                     })

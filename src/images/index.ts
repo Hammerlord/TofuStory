@@ -168,6 +168,7 @@ export { default as ElliniaShopImage } from "./ElliniaShop.png";
 export { default as ElliniaTradingPostImage } from "./ElliniaTradingPost.png";
 export { default as ElliniaWeaponStoreImage } from "./ElliniaWeaponStore.png";
 export { default as ElquinesImage } from "./Elquines.png";
+export { default as EmeraldImage } from "./Emerald.png";
 export { default as EmptySackImage } from "./EmptySack.png";
 export { default as EncroachingDarknessImage } from "./EncroachingDarkness.png";
 export { default as EndureImage } from "./Endure.png";

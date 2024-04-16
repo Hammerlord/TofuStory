@@ -4,7 +4,7 @@ import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
-import { clearTurnHistory, getEnabledEffects, updateCharacters } from "../utils";
+import { clearTurnHistory, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
@@ -175,10 +175,16 @@ export const playerEndTurn = () => {
         dispatch(
             updateBattle({
                 playerSide: playerSide.map((combatant) => {
-                    if (combatant?.resources > combatant?.maxResources) {
+                    if (!combatant) {
+                        return combatant;
+                    }
+
+                    const { resources = 0 } = combatant;
+                    const maxResources = getMaxResources(combatant);
+                    if (resources > maxResources) {
                         return {
                             ...combatant,
-                            resources: combatant.maxResources,
+                            resources: maxResources,
                         };
                     }
                     return combatant;

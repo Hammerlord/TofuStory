@@ -6,7 +6,7 @@ import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
 import { BATTLE_TYPES, Wave } from "../battle/types";
-import { calculateMesoGain, getMaxHP } from "../battle/utils";
+import { calculateMesoGain, getMaxHP, getMaxResources } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
@@ -280,7 +280,7 @@ export const playerStateSlice = createSlice({
                 player: {
                     ...player,
                     HP: Math.min(getMaxHP(player), player.HP + healing),
-                    resources: Math.min(player.maxResources, player.resources + resources),
+                    resources: Math.min(getMaxResources(player), player.resources + resources),
                     items: updatedItems,
                 },
             };

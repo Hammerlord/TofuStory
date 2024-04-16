@@ -1,6 +1,6 @@
 import { Combatant } from "../../character/types";
 import { CombatantInfo } from "../types";
-import { getEnabledEffects, isSilenced, isStunnedOrFrozen } from "./../utils";
+import { getEnabledEffects, getMaxResources, isSilenced, isStunnedOrFrozen } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
 export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispatch) => {
@@ -33,7 +33,7 @@ const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: numb
     }
 
     // Resources per turn caps out at max resources
-    const baseResourcesGained = Math.min(combatant.maxResources - combatant.resources, combatant.resourcesPerTurn);
+    const baseResourcesGained = Math.min(getMaxResources(combatant) - combatant.resources, combatant.resourcesPerTurn);
     // But you always get resources from effects, even if it overcaps
     const resourceGainFromEffects = getEnabledEffects({ combatantInfo }).reduce(
         (acc: number, { resourcesPerTurn = 0 }) => acc + resourcesPerTurn,

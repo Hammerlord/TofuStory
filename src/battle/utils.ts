@@ -1,3 +1,4 @@
+import { emerald } from "./../item/items";
 import { AbilityEffect, ActionOptionalProperties } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
@@ -24,7 +25,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { findCombatantData } from "./actions/actions";
-import { ATTACK_POWER_COEFF } from "./constants";
+import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
 
@@ -94,6 +95,17 @@ export const getMaxHP = (character: Combatant): number => {
             return acc + maxHP;
         }, 0)
     );
+};
+
+// We're just going to assume max resource effects always take hold (does not need to pass conditions and cannot be silenced)
+// There is only one example of max resource increase, and it is for the player character only:
+/** @see emerald */
+export const getMaxResources = (character: Combatant): number => {
+    if (!character) {
+        return 0;
+    }
+    const { maxResources: initMaxResources = BASE_MAX_RESOURCES, effects = [] } = character;
+    return effects.reduce((acc, effect) => acc + (effect?.maxResources || 0), initMaxResources);
 };
 
 export const updateHP = (character: Combatant, amount: number): number => {

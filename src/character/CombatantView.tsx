@@ -1,13 +1,15 @@
 import classNames from "classnames";
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
-import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
+import { SUMMON_DELAY } from "../battle/constants";
 import { Event } from "../battle/types";
 import { getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
+import EffectGroupIcon from "../icon/EffectGroupIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
 import { ClickIndicatorImage } from "../images";
@@ -22,14 +24,11 @@ import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 import Telegraph from "./Telegraph";
 import Weapon from "./Weapon";
+import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
-import { Combatant, Player } from "./types";
-import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
-import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
-import { SUMMON_DELAY } from "../battle/constants";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
-import EffectGroupIcon from "../icon/EffectGroupIcon";
+import { Combatant, Player } from "./types";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {

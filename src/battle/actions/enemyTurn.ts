@@ -1,9 +1,9 @@
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, CONDITION_TARGETS, CombatEffect, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
+import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
-import { NORMAL_ACTION_PLAYBACK_SPEED } from "../constants";
+import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import {
@@ -13,7 +13,6 @@ import {
     getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
-    hasTruesight,
     isStunnedOrFrozen,
     isTurnActionPrevented,
     updateCharacters,
@@ -21,16 +20,7 @@ import {
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import {
-    checkEventTrigger,
-    findCombatantData,
-    handleDoTs,
-    onEndTurnTriggers,
-    pickHostileIndex,
-    updateCombatant,
-    useAbility,
-    useItem,
-} from "./actions";
+import { checkEventTrigger, findCombatantData, onEndTurnTriggers, pickHostileIndex, updateCombatant, useAbility, useItem } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -180,7 +170,7 @@ const enemyAction = (combatantId: string) => {
 };
 
 export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
-    const { resources = 0, maxResources = 3, abilities = [] } = actorInfo?.combatant || {};
+    const { resources = 0, maxResources = BASE_MAX_RESOURCES, abilities = [] } = actorInfo?.combatant || {};
 
     const getCalculationTarget = (type: CONDITION_TARGETS) => {
         if (!type || type === CONDITION_TARGETS.ACTOR) {

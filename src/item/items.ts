@@ -29,6 +29,7 @@ import {
     DiamondImage,
     DiamondOreImage,
     DrakeBloodImage,
+    EmeraldImage,
     EstherShieldImage,
     FairyWingImage,
     FishSpearImage,
@@ -2010,6 +2011,22 @@ export const opal: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const emerald: Item = {
+    name: "Emerald",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: EmeraldImage,
+    description: "+1 max {{ resources }}.",
+    effects: [
+        {
+            name: "Emerald Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            maxResources: 1,
         },
     ],
 };
