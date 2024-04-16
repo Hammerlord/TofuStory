@@ -122,7 +122,7 @@ const flamePoison: Effect = {
 // Grants shielding to Balrog
 const shieldingFlame: Minion = {
     name: "Shielding Flame",
-    maxHP: 50,
+    maxHP: 30,
     image: FlameImage,
     effects: [{ ...explosive }, flameShield],
 };
@@ -130,7 +130,7 @@ const shieldingFlame: Minion = {
 // Grants Raging to Balrog
 const ragingFlame: Minion = {
     name: "Raging Flame",
-    maxHP: 50,
+    maxHP: 30,
     image: FlameImage,
     effects: [{ ...explosive }, flameRaging],
 };
@@ -138,7 +138,7 @@ const ragingFlame: Minion = {
 // Grants Poisonous to Balrog
 const poisonousFlame: Minion = {
     name: "Pulsing Flame",
-    maxHP: 50,
+    maxHP: 30,
     image: FlameImage,
     effects: [{ ...explosive }, flamePoison],
 };
@@ -146,7 +146,7 @@ const poisonousFlame: Minion = {
 // Shoots at anything that moves
 const sentryFlame: Minion = {
     name: "Sentry Flame",
-    maxHP: 50,
+    maxHP: 30,
     image: FlameImage,
     effects: [{ ...explosive }, sentry],
 };
@@ -157,7 +157,7 @@ const balrogAttack = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 7,
+            damage: 6,
         },
     ],
 };
@@ -238,7 +238,7 @@ export const balrog: Minion = {
             icon: FlameImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 5,
+            turnsTriggerFrequency: 6,
             disableDisplayIcon: true,
             onTurnStart: {
                 ability: {
@@ -339,13 +339,13 @@ export const balrog: Minion = {
             image: BloodIcon,
             actions: [
                 {
-                    damage: 7,
+                    damage: 6,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
                 },
                 {
-                    damage: 7,
+                    damage: 6,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     effects: [{ ...bleed }],
@@ -360,6 +360,11 @@ export const balrog: Minion = {
             image: BrutalClawImage,
             description: "Halves player armor and depletes the top card of the deck.",
             actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
+                },
                 {
                     damage: 10,
                     type: ACTION_TYPES.ATTACK,
