@@ -1,4 +1,4 @@
-import { attack } from "./abilities";
+import { attack, loaf } from "./abilities";
 /**
  * @file Objects related to the Mini Bean fight
  */
@@ -243,7 +243,7 @@ const picoDrop: Ability = {
 export const miniBean: Minion = {
     name: "Mini Bean, Pantry Raider",
     image: MiniBeanImage,
-    maxHP: 300,
+    maxHP: 350,
     resources: 0,
     mesos: 50,
     isBoss: true,
@@ -270,12 +270,12 @@ export const miniBean: Minion = {
             ],
         },
         picoDrop,
-        suckIn,
+        { ...loaf, name: "Sated" },
         {
             name: "Big Suck",
             image: BigSuckImage,
             resourceCost: 3,
-            channelDuration: 3,
+            channelDuration: 2,
             actions: [...suckIn.actions, ...suckIn.actions],
         },
         throwFood,
@@ -284,10 +284,22 @@ export const miniBean: Minion = {
         hardy,
         {
             name: "Suck In",
+            description: "Periodically sucking in food.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            disableDisplayIcon: true,
+            icon: SuckInImage,
             onWaveStart: {
-                removeEffect: true,
+                ability: suckIn,
+            },
+            extraDisplayOptions: {
+                container: "left",
+                property: "onTurnEnd.eventTriggeredTimes",
+                modulo: "onTurnEnd.eventTriggerFrequency",
+            },
+            onTurnEnd: {
+                usableWhileStunned: true,
+                eventTriggerFrequency: 3,
                 ability: suckIn,
             },
         },
