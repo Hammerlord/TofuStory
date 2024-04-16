@@ -786,11 +786,15 @@ export const applyVacuum = ({
     distance: number;
 }) => {
     const newCharacters = characters.slice();
+    const isValidSlot = (combatant: Combatant | null): Boolean => {
+        return !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
+    };
+
     for (let i = 1; i <= area; ++i) {
         if (newCharacters[index + i]) {
             for (let j = 0; j < i && j < distance; ++j) {
                 const existingCharacter = newCharacters[index + j];
-                if (!existingCharacter || existingCharacter.HP === 0) {
+                if (isValidSlot(existingCharacter)) {
                     newCharacters[index + j] = newCharacters[index + i];
                     newCharacters[index + i] = null;
                 }
@@ -799,7 +803,7 @@ export const applyVacuum = ({
         if (newCharacters[index - i]) {
             for (let j = 0; j < i && j < distance; ++j) {
                 const existingCharacter = newCharacters[index - j];
-                if (!existingCharacter || existingCharacter.HP === 0) {
+                if (isValidSlot(existingCharacter)) {
                     newCharacters[index - j] = newCharacters[index - i];
                     newCharacters[index - i] = null;
                 }
