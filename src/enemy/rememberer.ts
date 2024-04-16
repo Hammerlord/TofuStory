@@ -312,9 +312,13 @@ export const theRememberer: Minion = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
-                        name: "Plus Nightmare Damage",
+                        name: "Growing Nightmare",
+                        description: "+1 Pulsing damage. Increases every turn.",
+                        alwaysDisplayStacks: true,
+                        icon: EncroachingDarknessImage,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.NONE,
+                        maxApplications: 10,
                         skillBonus: [
                             {
                                 skill: "Pulsing Nightmare",
