@@ -1,4 +1,4 @@
-import { bleed, chill, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
+import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -311,7 +311,7 @@ export const leatherSandals: Item = {
 export const adventurerCape: Item = {
     name: "Adventurer Cape",
     description:
-        "Every {{ effects.0.onFriendlyReceiveAttack.eventTriggerFrequency }} times you or an ally are attacked, gain 1 {{ resources }}.",
+        "Every {{ effects.0.onFriendlyReceiveAttack.eventTriggerFrequency }} times you or an ally are attacked, gain 1 {{ resources }} next turn.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdventurerCapeImage,
@@ -319,11 +319,21 @@ export const adventurerCape: Item = {
         {
             name: "Adventurer Cape Effect",
             type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
+            class: EFFECT_CLASSES.NONE,
             onFriendlyReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                eventTriggerFrequency: 6,
-                resources: 1,
+                eventTriggerFrequency: 7,
+                effects: [
+                    {
+                        name: "Adventurer Cape",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        resourcesPerTurn: 1,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
+                    },
+                ],
             },
         },
     ],
