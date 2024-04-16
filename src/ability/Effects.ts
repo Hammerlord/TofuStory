@@ -440,7 +440,6 @@ export const explosive: Effect = {
     icon: BombImage,
     description: "On death, Explodes and applies a Burn that increases Explode damage taken.",
     onDeath: {
-        usableWhileStunned: true,
         ability: {
             name: "Explode",
             image: BombImage,
