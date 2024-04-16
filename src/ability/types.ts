@@ -131,7 +131,8 @@ export enum EFFECT_EVENT_KEYS {
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
     onHostileAbility = "onHostileAbility",
-    onPlayerAbility = "onPlayerAbility",
+    onPlayerAbility = "onPlayerAbility", // This includes any ability from procs
+    onPlayCard = "onPlayCard", // Whenever the player specifically plays a card
     onHostileSupportAbility = "onHostileSupportAbility",
     onHostileSummon = "onHostileSummon", // When a minion hostile to the effect owner is summoned
     onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned

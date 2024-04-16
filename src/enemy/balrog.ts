@@ -1,5 +1,6 @@
 import {
     ACTION_TYPES,
+    ANIMATION_TYPES,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -177,16 +178,22 @@ export const balrog: Minion = {
             disableDisplayIcon: true, // It is displayed above the attack power instead
             extraDisplayOptions: {
                 container: "right",
-                property: "onPlayerAbility.eventTriggeredTimes",
-                modulo: "onPlayerAbility.eventTriggerFrequency",
+                property: "onPlayCard.eventTriggeredTimes",
+                modulo: "onPlayCard.eventTriggerFrequency",
             },
-            onPlayerAbility: {
+            onPlayCard: {
                 disableTriggerFromProcs: true,
                 eventTriggerFrequency: 6,
                 ability: {
                     name: "Brutal Claw",
                     image: BrutalClawImage,
                     actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            icon: BrutalClawImage,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                        },
                         {
                             damage: 6,
                             type: ACTION_TYPES.ATTACK,

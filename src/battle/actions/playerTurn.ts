@@ -3,7 +3,7 @@ import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/t
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event } from "../types";
+import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getEnabledEffects, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
@@ -56,6 +56,25 @@ export const onUsePlayerAbility = ({
                 actorId: actor?.id,
             })
         );
+
+        const { hostile = [], friendly = [] } = findCombatantData(getState, actor.id) || {};
+        hostile.concat(friendly).forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onPlayCard,
+                        source: {
+                            type: TRIGGER_SOURCE_TYPES.ABILITY,
+                            source: ability,
+                            actorId: actor.id,
+                            triggerHistory: [],
+                            isProc: false,
+                        },
+                    })
+                );
+            }
+        });
 
         // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
