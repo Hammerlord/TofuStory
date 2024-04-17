@@ -6,6 +6,7 @@ import { HenesysHuntingGroundImage } from "../images";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 import { SCENE_STYLES } from "./constants";
 import { EventScene, SceneEncounter, ScriptNode } from "./types";
+import { tofu } from "../item/items";
 
 const wanderingBlacksmithFight: SceneEncounter = {
     waves: [
@@ -158,6 +159,31 @@ export const wanderingSmithScene: EventScene = {
             speaker: wanderingBlacksmith,
             dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
             conditionalNext: [
+                {
+                    conditions: [{ items: [tofu.name] }],
+                    next: [
+                        {
+                            speaker: wanderingBlacksmith,
+                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
+                            responses: [
+                                {
+                                    text: "Offer some Tofu.",
+                                    next: [
+                                        {
+                                            dialog: ["You hand over a piece of Tofu."],
+                                            loseItems: [tofu.name],
+                                        },
+                                        ...fedPath,
+                                    ],
+                                },
+                                {
+                                    text: "Don't offer anything.",
+                                    next: noFedPath,
+                                },
+                            ],
+                        },
+                    ],
+                },
                 {
                     conditions: [{ items: [halfEatenHotdog.name] }],
                     next: [

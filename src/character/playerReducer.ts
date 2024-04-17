@@ -1,6 +1,6 @@
 import { getRandomItem } from "./../utils";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { partition } from "ramda";
+import { clamp } from "ramda";
 import uuid from "uuid";
 import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
@@ -154,19 +154,39 @@ export const playerStateSlice = createSlice({
         },
         loseItems: (state, action: PayloadAction<String[]>) => {
             const player = state.player;
-            const [remainingItems, lostItems] = partition((item) => !action.payload.includes(item.name), player.items);
+            const lostItemNames = action.payload;
 
-            const lostItemsMaxHP = aggregateItemEffects(lostItems).reduce((acc, effect: Effect) => {
-                return acc + (effect.maxHP || 0);
-            }, 0);
+            const remainingItems = player.items
+                .map((item) => {
+                    const isLost = lostItemNames.includes(item.name);
+                    if (!isLost) {
+                        return item;
+                    }
+
+                    if (item.stacks > 1) {
+                        return {
+                            ...item,
+                            stacks: item.stacks - 1,
+                        };
+                    }
+                })
+                .filter((v) => v);
+
+            const newPlayer = {
+                ...player,
+                items: remainingItems,
+                effects: aggregateItemEffects(remainingItems),
+            };
+
+            const newEffectiveMaxHP = getMaxHP(newPlayer);
+            const newHP = clamp(1, newEffectiveMaxHP, player.HP); // Losing a max HP item cannot kill you
 
             return {
                 ...state,
                 player: {
-                    ...player,
-                    items: remainingItems,
-                    HP: Math.max(1, player.HP - lostItemsMaxHP), // Losing a max HP item cannot kill you
-                    effects: aggregateItemEffects(remainingItems),
+                    ...newPlayer,
+                    // HP is set, but not maxHP, because maxHP is calculated from an aggregation of effects
+                    HP: newHP,
                 },
             };
         },
