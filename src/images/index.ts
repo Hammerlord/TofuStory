@@ -289,6 +289,8 @@ export { default as IronWillImage } from "./IronWill.png";
 export { default as JohnImage } from "./John.png";
 export { default as JrBalrogImage } from "./JrBalrog.gif";
 export { default as JrBoogieImage } from "./JrBoogie.gif";
+export { default as JrNeckiImage } from "./JrNecki.gif";
+export { default as JrNeckiMoveImage } from "./JrNeckiMove.gif";
 export { default as KargoCardImage } from "./KargoCard.png";
 export { default as KerningBarImage } from "./KerningBar.png";
 export { default as KerningBarFullImage } from "./KerningBarFull.png";

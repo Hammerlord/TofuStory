@@ -10,6 +10,7 @@ import {
     golem,
     greenMushroom,
     ironHog,
+    jrNecki,
     lupin,
     malady,
     miniKargo,
@@ -30,6 +31,7 @@ import {
 import { jrBoogie } from "../../enemy/jrBoogie";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
+import { moveHeadToTail } from "../../utils";
 import { REGIONS } from "../regions";
 import { NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
@@ -428,6 +430,16 @@ export const routeHenesysEllinia: Route = {
         [elliniaGreenMushroom, elliniaGreenMushroom, slime, elliniaGreenMushroom, elliniaGreenMushroom],
         [stump, redSnail, stump, redSnail, stump],
         [blueMushroom, blueSnail, orangeMushroom, blueSnail, blueMushroom],
+        [
+            jrNecki,
+            null,
+            {
+                ...jrNecki,
+                abilities: moveHeadToTail(jrNecki.abilities),
+            },
+            null,
+            jrNecki,
+        ],
     ],
     multiWaveEnemies: [
         [null, elliniaHornyMushroom, null, elliniaHornyMushroom, null],

@@ -33,6 +33,8 @@ import {
     InkSackImage,
     IronHogHitImage,
     IronHogImage,
+    JrNeckiImage,
+    JrNeckiMoveImage,
     KumbiImage,
     LeetSinImage,
     LigatorImage,
@@ -62,6 +64,7 @@ import {
     RibbonPigIdleImage,
     RockyMaskImage,
     RockyWallopImage,
+    SapOfNependeathImage,
     SavageBlowImage,
     ShroomImage,
     SlimeIdleImage,
@@ -116,6 +119,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     MORPH_MINION_MODIFIERS,
     MORPH_TYPES,
     MULTIPLIER_TYPES,
@@ -2695,4 +2699,67 @@ export const casey: Minion = {
     image: CaseyImage,
     maxHP: 300,
     abilities: [],
+};
+
+const neckiIncorporeal: Effect = {
+    ...incorporeal,
+    stacks: 3,
+    maxApplications: 1,
+    onReceiveAttack: {
+        decrementStacks: 1,
+    },
+};
+
+export const jrNecki: Minion = {
+    name: "Jr. Necki",
+    image: JrNeckiImage,
+    mesos: 20,
+    maxHP: 25,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        {
+            name: "Poisonous Bite",
+            image: SapOfNependeathImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    effects: [poison],
+                },
+            ],
+        },
+        {
+            name: "Slither",
+            description: "Gains 2 Incorporeal.",
+            image: JrNeckiMoveImage,
+            actions: [
+                {
+                    movement: 1,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                    effects: [{ ...neckiIncorporeal, stacks: 2 }],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+    effects: [neckiIncorporeal],
 };

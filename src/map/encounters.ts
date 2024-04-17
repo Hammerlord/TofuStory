@@ -15,7 +15,7 @@ import {
     vengeful,
 } from "./../ability/Effects";
 import { attack, tantrum, shoot } from "./../enemy/abilities";
-import { getRandomItem, shuffle } from "./../utils";
+import { getRandomItem, moveHeadToTail, shuffle } from "./../utils";
 import { EliteMap, Route } from "./types";
 
 const findAttackDamage = (minion: Minion): number => {
@@ -97,15 +97,11 @@ const generateEliteSquad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; 
         effects: [...effects, eliteSquad, ...affixes],
     };
 
-    // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
-    const alternateAbilities: Ability[] = enemy.abilities.slice();
-    if (alternateAbilities.length) {
-        alternateAbilities.push(alternateAbilities.shift());
-    }
     const alternate = {
         ...enemy,
         resources: 2,
-        abilities: alternateAbilities,
+        // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
+        abilities: moveHeadToTail(enemy.abilities),
     };
 
     return [enemy, alternate, enemy, alternate, enemy];
@@ -132,15 +128,11 @@ const generateEliteTriad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; 
         effects: [...effects, eliteTrio, ...affixes],
     };
 
-    // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
-    const alternateAbilities: Ability[] = enemy.abilities.slice();
-    if (alternateAbilities.length) {
-        alternateAbilities.push(alternateAbilities.shift());
-    }
     const alternate = {
         ...enemy,
         resources: 2,
-        abilities: alternateAbilities,
+        // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
+        abilities: moveHeadToTail(enemy.abilities),
     };
 
     return getRandomItem([

@@ -39,3 +39,16 @@ export const shuffle = (array: any[]): any[] => {
 
     return array;
 };
+
+/**
+ * Takes the first item of an array and moves it to the end of the queue.
+ * Copies the array to do so.
+ */
+export const moveHeadToTail = (array: any[]): any[] => {
+    if (!array?.length) {
+        return array;
+    }
+    const newArray = array.slice();
+    newArray.push(newArray.shift());
+    return newArray;
+};
