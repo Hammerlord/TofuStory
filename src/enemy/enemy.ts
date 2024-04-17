@@ -1474,8 +1474,8 @@ export const curseEye: Minion = {
 };
 
 export const snailFriend: Minion = {
+    ...snail,
     name: "Snail Friend",
-    maxHP: 10,
     mesos: 0,
     image: SnailImage,
     abilities: [attack],
