@@ -475,11 +475,12 @@ export type Action = {
     damage?: number;
     maxDamage?: number;
     secondaryDamage?: number;
-    flatDamage?: number; // Deal damage that is not affected by any modifiers
+    flatDamage?: number; // Deal damage that is not affected by any modifiers except multiplier
     targetMinHP?: number; // Target will stay at this HP if the damage would otherwise bring it below, see Stay of Execution
     type?: ACTION_TYPES;
     healing?: number;
     armor?: number;
+    flatArmor?: number; // Armor that is not affected by any modifiers except multiplier
     maxArmor?: number;
     target?: TARGET_TYPES;
     // If TARGET_TYPES is FRIENDLY_CHARACTER, provide the character's name.

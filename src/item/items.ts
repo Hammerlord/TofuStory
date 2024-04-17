@@ -229,7 +229,7 @@ export const amethyst: Item = {
             class: EFFECT_CLASSES.BUFF,
             onReceiveOverhealing: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 1,
+                flatArmor: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.OVERHEALING,
                     value: 1,

@@ -676,21 +676,25 @@ export const calculateArmor = ({
     multiplier = 1,
 }: {
     target?: CombatantInfo;
-    action: { armor?: number; maxArmor?: number };
+    action: { armor?: number; maxArmor?: number; flatArmor?: number };
     multiplier;
 }): number => {
-    if (!action.armor) {
+    const { armor: initArmor, maxArmor = Infinity, flatArmor } = action;
+    if (!initArmor && !flatArmor) {
         return 0;
     }
 
+    if (flatArmor) {
+        const armor = Math.min(maxArmor, flatArmor * multiplier);
+        return Math.max(0, armor);
+    }
+
+    const armor = Math.min(maxArmor, initArmor * multiplier);
     const targetArmorReceived =
         getEnabledEffects({ combatantInfo: target }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
             0
         ) || 0;
-
-    const maxArmor = action.maxArmor || Infinity;
-    const armor = Math.min(maxArmor, action.armor * multiplier);
     const totalArmor = targetArmorReceived + armor;
     return Math.max(0, totalArmor);
 };
