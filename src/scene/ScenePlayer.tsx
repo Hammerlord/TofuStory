@@ -624,6 +624,7 @@ const ScenePlayer = ({
             class: classesInterpolation[player.class],
             classPlural: classesPluralInterpolation[player.class],
             totalKills: recentBattle?.totalKills || 0,
+            totalDamage: recentBattle?.totalDamageDealt || 0,
         });
     };
 

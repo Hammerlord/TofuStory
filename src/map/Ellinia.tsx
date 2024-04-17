@@ -12,6 +12,7 @@ import {
     ElliniaMagicianHallImage,
     ElliniaShopImage,
     ElliniaTradingPostImage,
+    ElliniaTreeHoleImage,
     MarrsForestPreviewImage,
 } from "../images";
 import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
@@ -26,6 +27,7 @@ import TownNode from "./TownNode";
 import { TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
+import { crystalScene } from "../scene/crystals/Crystals";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -52,6 +54,7 @@ const store = {
 const ELLINIA_PLACES: any = {
     ...getTownPlaces(TOWNS.ELLINIA),
     SECRET_GARDEN: "secret-garden",
+    CRYSTAL_CAVE: "crystal-cave",
 };
 
 const { selectInTownNode } = playerStateSlice.actions;
@@ -173,6 +176,13 @@ const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
                             label={"Secret Garden"}
                             nodeImage={MarrsForestPreviewImage}
                             onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
+                        />
+                        <TownNode
+                            icon={QuestionMarkIcon}
+                            isVisited={visited[ELLINIA_PLACES.CRYSTAL_CAVE]}
+                            label={"Crystal Cave"}
+                            nodeImage={ElliniaTreeHoleImage}
+                            onClick={() => handleClickEvent(ELLINIA_PLACES.CRYSTAL_CAVE, crystalScene)}
                         />
                     </div>
                 </Pan>
