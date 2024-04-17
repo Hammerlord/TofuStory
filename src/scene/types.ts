@@ -124,6 +124,7 @@ export interface ScriptNode {
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
     conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];
     infamy?: number;
+    id?: string; // Scene ID to track which scenes you have visited
 }
 
 export interface SceneProps {

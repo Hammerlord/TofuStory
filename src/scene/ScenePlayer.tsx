@@ -292,6 +292,7 @@ const ScenePlayer = ({
         conditionalNext,
         infamy,
         disableBackground,
+        id,
     }: ScriptNode = script[dialogIndex] || ({} as any);
 
     const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
@@ -388,6 +389,10 @@ const ScenePlayer = ({
 
         if (infamy) {
             dispatch(addInfamy(infamy));
+        }
+
+        if (id) {
+            dispatch(logVisitedEvent(id));
         }
     }, [script?.[dialogIndex]]);
 

@@ -3,8 +3,15 @@ import { administrator } from "../enemy/administrator";
 import { duoThiefA, duoThiefB, mesoThief } from "../enemy/mesoThieves";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 
+const MESO_THIEF_KEYS = {
+    scene: "meso-thief",
+    beaten: "meso-thief-beaten",
+    escaped: "meso-thief-escaped",
+    duoScene: "duo-meso-thieves",
+};
+
 export const mesoThiefScene: EventScene = {
-    id: "meso-thief",
+    id: MESO_THIEF_KEYS.scene,
     conditions: [
         {
             type: SCENE_CONDITION_TYPES.INFAMY,
@@ -19,10 +26,46 @@ export const mesoThiefScene: EventScene = {
             responses: [
                 {
                     text: "Defend yourself.",
+                    infamy: 1,
                     encounter: {
                         waves: [{ enemies: [null, null, mesoThief, null, null] }],
                         backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
                     },
+                    next: [
+                        { dialog: ["..."] }, // Hack: Need an intermediary node due to how conditionalNext works with battle logging
+                        {
+                            dialog: ["..."],
+                            conditionalNext: [
+                                {
+                                    conditions: [
+                                        {
+                                            battle: {
+                                                totalKills: 0,
+                                            },
+                                            comparator: "gt",
+                                        },
+                                    ],
+                                    next: [
+                                        {
+                                            id: MESO_THIEF_KEYS.beaten,
+                                            speaker: mesoThief,
+                                            dialog: ["OMG hax, REPORTED!!!"],
+                                            infamy: 1,
+                                        },
+                                    ],
+                                },
+                                {
+                                    conditions: [],
+                                    next: [
+                                        {
+                                            id: MESO_THIEF_KEYS.escaped,
+                                            dialog: ["[The thief escaped with some of your mesos.]"],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         },
@@ -30,12 +73,12 @@ export const mesoThiefScene: EventScene = {
 };
 
 export const mesoThievesScene: EventScene = {
-    id: "duo-meso-thieves",
+    id: MESO_THIEF_KEYS.duoScene,
     conditions: [
         {
             type: SCENE_CONDITION_TYPES.VISITED_SCENES,
             comparator: "includes",
-            value: mesoThiefScene.id,
+            value: MESO_THIEF_KEYS.beaten,
         },
     ],
     script: [
@@ -49,6 +92,7 @@ export const mesoThievesScene: EventScene = {
             responses: [
                 {
                     text: "Defend yourself.",
+                    infamy: 1,
                     encounter: {
                         waves: [{ enemies: [null, duoThiefA, null, duoThiefB, null] }],
                         backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
@@ -65,7 +109,7 @@ export const adminScene: EventScene = {
         {
             type: SCENE_CONDITION_TYPES.INFAMY,
             comparator: "gt",
-            value: 20,
+            value: 15,
         },
     ],
     script: [
