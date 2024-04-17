@@ -147,6 +147,8 @@ const handleCastTick = (combatantId: string) => {
                 combatantId,
                 newProperties: {
                     resources: postAbilityActor.resources - resourceCost,
+                    // Continued from the note about CC, if the casted spell finally went through, check its cast time again.
+                    casting: updatedCasting.channelDuration || updatedCasting.castTime > 0 ? updatedCasting : null,
                 },
             })
         );
