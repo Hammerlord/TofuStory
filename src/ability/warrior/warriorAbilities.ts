@@ -1079,6 +1079,7 @@ export const dustDevils: Ability = {
                     icon: TornadoImage,
                     description: "Casting tornadoes on attack.",
                     onAttack: {
+                        disableTriggerFromProcs: true,
                         ability: {
                             name: "Dust Devils",
                             image: TornadoImage,
