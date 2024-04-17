@@ -158,121 +158,54 @@ export const wanderingSmithScene: EventScene = {
         {
             speaker: wanderingBlacksmith,
             dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-            conditionalNext: [
+            responses: [
                 {
                     conditions: [{ items: [tofu.name] }],
+                    text: "Offer some Tofu.",
                     next: [
                         {
-                            speaker: wanderingBlacksmith,
-                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-                            responses: [
-                                {
-                                    text: "Offer some Tofu.",
-                                    next: [
-                                        {
-                                            dialog: ["You hand over a piece of Tofu."],
-                                            loseItems: [tofu.name],
-                                        },
-                                        ...fedPath,
-                                    ],
-                                },
-                                {
-                                    text: "Don't offer anything.",
-                                    next: noFedPath,
-                                },
-                            ],
+                            dialog: ["You hand over a piece of Tofu."],
+                            loseItems: [tofu.name],
                         },
+                        ...fedPath,
                     ],
                 },
                 {
                     conditions: [{ items: [halfEatenHotdog.name] }],
+                    text: "Offer Half-Eaten Hotdog.",
                     next: [
                         {
-                            speaker: wanderingBlacksmith,
-                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-                            responses: [
-                                {
-                                    text: "Offer Half-Eaten Hotdog.",
-                                    next: [
-                                        {
-                                            dialog: ["You hand over the Half-Eaten Hotdog."],
-                                            loseItems: [halfEatenHotdog.name],
-                                        },
-                                        ...fedPath,
-                                    ],
-                                },
-                                {
-                                    text: "Don't offer anything.",
-                                    next: noFedPath,
-                                },
-                            ],
+                            dialog: ["You hand over the Half-Eaten Hotdog."],
+                            loseItems: [halfEatenHotdog.name],
                         },
+                        ...fedPath,
                     ],
                 },
                 {
                     conditions: [{ items: [cakeItem.name] }],
+                    text: "Offer Cake",
                     next: [
                         {
-                            speaker: wanderingBlacksmith,
-                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-                            responses: [
-                                {
-                                    text: "Offer Cake",
-                                    next: [
-                                        {
-                                            dialog: ["You hand over the Cake."],
-                                            loseItems: [cakeItem.name],
-                                        },
-                                        ...fedPath,
-                                    ],
-                                },
-                                {
-                                    text: "Don't offer anything.",
-                                    next: noFedPath,
-                                },
-                            ],
+                            dialog: ["You hand over the Cake."],
+                            loseItems: [cakeItem.name],
                         },
+                        ...fedPath,
                     ],
                 },
                 {
                     conditions: [{ items: [unagiItem.name] }],
+                    text: "Offer Unagi",
                     next: [
                         {
-                            speaker: wanderingBlacksmith,
-                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-                            responses: [
-                                {
-                                    text: "Offer Unagi",
-                                    next: [
-                                        {
-                                            dialog: ["You hand over the Unagi."],
-                                            loseItems: [unagiItem.name],
-                                        },
-                                        ...fedPath,
-                                    ],
-                                },
-                                {
-                                    text: "Don't offer anything.",
-                                    next: noFedPath,
-                                },
-                            ],
+                            dialog: ["You hand over the Unagi."],
+                            loseItems: [unagiItem.name],
                         },
+                        ...fedPath,
                     ],
                 },
                 {
-                    conditions: [],
-                    next: [
-                        {
-                            speaker: wanderingBlacksmith,
-                            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
-                            responses: [
-                                {
-                                    text: "You have nothing...",
-                                    next: noFedPath,
-                                },
-                            ],
-                        },
-                    ],
+                    text: "Don't offer anything.",
+                    next: noFedPath,
                 },
             ],
         },

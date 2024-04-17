@@ -283,7 +283,7 @@ const ScenePlayer = ({
         speaker,
         dialog = [],
         items,
-        responses,
+        responses: initResponses,
         puzzle,
         itemChoices,
         loseItems = [],
@@ -642,6 +642,14 @@ const ScenePlayer = ({
         dispatch(acquireItems(items));
         dispatch(updateMesos(mesos));
     };
+
+    const responses = initResponses?.filter((response: ScriptResponse) => {
+        if (response.conditions?.length) {
+            return passesScriptConditions(response.conditions);
+        }
+
+        return true;
+    });
 
     const canSkip = !responses && !items && !itemChoices && dialogIndex < script.length - 1;
 

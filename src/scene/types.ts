@@ -61,6 +61,7 @@ export interface ScriptConditions {
 }
 
 export interface ScriptResponse {
+    conditions?: ScriptConditions[];
     text: string;
     isExit?: boolean;
     encounter?: SceneEncounter;
