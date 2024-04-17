@@ -146,7 +146,7 @@ import { sealCard } from "./jrBoogie";
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 10,
+    maxHP: 12,
     abilities: [loaf, attack, attack],
     image: SnailImage,
     mesos: 2,
@@ -154,7 +154,7 @@ export const snail: Minion = {
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 12,
+    maxHP: 17,
     image: BlueSnailImage,
     abilities: [
         attack,
@@ -184,7 +184,7 @@ export const blueSnail: Minion = {
 
 export const shroom: Minion = {
     name: "Shroom",
-    maxHP: 12,
+    maxHP: 14,
     image: ShroomImage,
     mesos: 4,
     abilities: [
@@ -217,6 +217,7 @@ export const shroom: Minion = {
                 },
             ],
         },
+        loaf,
         {
             ...attack,
             actions: [
@@ -232,8 +233,8 @@ export const shroom: Minion = {
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 5,
-    armor: 14,
+    maxHP: 7,
+    armor: 20,
     image: RedSnailImage,
     mesos: 5,
     abilities: [
@@ -276,7 +277,7 @@ export const redSnail: Minion = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
-            attackPower: 1,
+            attackPower: 2,
             preventArmorDecay: true,
             icon: PristineRedShieldIcon,
         },
@@ -286,7 +287,7 @@ export const redSnail: Minion = {
 export const slime: Minion = {
     name: "Slime",
     maxHP: 16,
-    armor: 12,
+    armor: 14,
     image: SlimeIdleImage,
     mesos: 10,
     abilities: [
@@ -2554,11 +2555,11 @@ export const rockyMask: Minion = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
-            attackPower: 4,
+            attackPower: 5,
             skillBonus: [
                 {
                     skill: "Rocky Wallop",
-                    damage: 3,
+                    damage: 4,
                 },
             ],
             icon: RedShieldIcon,
