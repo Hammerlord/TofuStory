@@ -60,6 +60,18 @@ const bomb: Minion = {
     ],
 };
 
+const singleShuffle = {
+    name: "Shuffle",
+    image: MasterDummyImage,
+    actions: [
+        {
+            movement: 5,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.MOVEMENT,
+        },
+    ],
+};
+
 const shuffle: Ability = {
     name: "Shuffle",
     image: MasterDummyImage,
@@ -88,6 +100,17 @@ const misdirectionDummy: Minion = {
     maxHP: 30,
     image: MasterDummyImage,
     abilities: [shuffle],
+    effects: [
+        {
+            name: "On Summon",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onSummoned: {
+                ability: singleShuffle,
+                removeEffect: true,
+            },
+        },
+    ],
 };
 
 const realDummy: Minion = {
@@ -96,6 +119,15 @@ const realDummy: Minion = {
     image: MasterDummyImage,
     abilities: [shuffle],
     effects: [
+        {
+            name: "On Summon",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onSummoned: {
+                ability: singleShuffle,
+                removeEffect: true,
+            },
+        },
         {
             name: "Real",
             type: EFFECT_TYPES.NONE,
