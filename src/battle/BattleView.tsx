@@ -914,6 +914,7 @@ const BattlefieldContainer = () => {
                 targetData,
                 battle: state.battle,
                 disableRollExtraTargets: true,
+                source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY },
             });
 
             const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);

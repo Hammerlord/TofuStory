@@ -600,7 +600,14 @@ export const sweepingReach: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: WeaponBoosterImage,
-                    description: "Increases the area of your next offensive ability",
+                    description: "Increases the area of your next offensive ability.",
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            notProc: true,
+                        },
+                    ],
                     attackAreaIncrease: 1,
                     stacks: 1,
                     maxApplications: 1,

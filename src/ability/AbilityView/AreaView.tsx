@@ -3,7 +3,7 @@ import { calculateActionArea } from "../../battle/utils";
 import { Ability, Action } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
 import classNames from "classnames";
-import { CombatantInfo } from "../../battle/types";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -62,7 +62,14 @@ const Area = ({
     discard?: Ability[];
 }) => {
     const { actions = [] } = ability || {};
-    const area = calculateActionArea({ action: actions[0], actor: playerInfo }) || actions[0]?.area || 0;
+    const area =
+        calculateActionArea({
+            action: actions[0],
+            actor: playerInfo,
+            source: { source: ability as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+        }) ||
+        actions[0]?.area ||
+        0;
 
     if (!area) {
         return null;

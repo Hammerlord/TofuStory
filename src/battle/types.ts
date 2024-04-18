@@ -65,7 +65,7 @@ export interface TriggerSource {
     // All targets affected by the action
     allTargetIds?: string[];
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
-    triggerHistory: string[];
+    triggerHistory?: string[];
     isProc?: boolean;
     // Number of eg. resources to add to EffectEventTrigger.triggerSum
     trackSumAmount?: number;

@@ -550,7 +550,6 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        source = { ...source, isProc: true };
         const { canBeSilenced } = effect;
         const {
             removeEffect,
@@ -615,7 +614,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT };
+        const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
         const initialTargetIds = getCalculationTargetIds(targetType);
         const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
         const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
@@ -645,6 +644,7 @@ const onEffectEventTrigger = ({
                 actorData: owner,
                 targetData: initialTargetData,
                 battle: getState().battle,
+                source: procSource,
             });
             const targetIds = targetIndices.map((i: number) => targets[i].id);
             const updated = getUpdatedStats({
@@ -1770,6 +1770,7 @@ export const calculateTargetIndices = ({
     targetData,
     battle,
     disableRollExtraTargets,
+    source,
 }: {
     action: Action;
     selectedIndex: number;
@@ -1778,10 +1779,11 @@ export const calculateTargetIndices = ({
     targetData: CombatantInfo;
     battle: BattleState;
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
+    source: TriggerSource;
 }): number[] => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0 } = action;
 
-    const area = calculateActionArea({ action, actor: actorData, target: targetData });
+    const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
     let extraTargetIndices = getValidTargetIndices(battle[side], {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
@@ -1826,6 +1828,7 @@ export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, so
         actorData,
         targetData: actorData,
         battle,
+        source,
     });
     const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
 
@@ -1916,6 +1919,7 @@ const performAction = ({
             actorData,
             targetData: target,
             battle: getState().battle,
+            source: parentSource,
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
         const isHostileTarget = action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE;
@@ -1959,7 +1963,7 @@ const performAction = ({
             updatedSecondary = triggerSecondaryAction();
         }
 
-        const area = calculateActionArea({ action, actor: actorData, target });
+        const area = calculateActionArea({ action, actor: actorData, target, source });
 
         const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         const movementDisplacements: Displacement = dispatch(

@@ -27,7 +27,7 @@ import {
 import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { useCallback, useRef } from "react";
 
 export type StatChange = {
@@ -200,7 +200,10 @@ export const isValidTarget = ({
     }
 
     const { target } = actions[0] || {};
-    const area = calculateActionArea({ action: actions[0], actor: actorData }) || actions[0]?.area || 0;
+    const area =
+        calculateActionArea({ action: actions[0], actor: actorData, source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY } }) ||
+        actions[0]?.area ||
+        0;
 
     if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
         if (target === TARGET_TYPES.SELF) {
@@ -758,10 +761,12 @@ export const calculateActionArea = ({
     action,
     actor,
     target,
+    source,
 }: {
     action?: Action;
     actor: CombatantInfo;
     target?: CombatantInfo;
+    source: TriggerSource;
 }): number => {
     if (!action) {
         return 0;
@@ -770,10 +775,6 @@ export const calculateActionArea = ({
     const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
     let totalArea = area;
     if (isAttack) {
-        getEnabledEffects({ combatantInfo: actor }).forEach(({ attackAreaIncrease = 0 }) => {
-            totalArea += attackAreaIncrease;
-        });
-
         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
                 return actor;
@@ -783,6 +784,10 @@ export const calculateActionArea = ({
                 return target;
             }
         };
+
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(({ attackAreaIncrease = 0 }) => {
+            totalArea += attackAreaIncrease;
+        });
 
         if (action.bonus) {
             const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
@@ -1025,7 +1030,8 @@ export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex
         return false;
     }
     const action = ability.actions[0];
-    const area = calculateActionArea({ action, actor }) || action?.area || 0;
+    const area =
+        calculateActionArea({ action, actor, source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY } }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
 
