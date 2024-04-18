@@ -78,6 +78,7 @@ import {
     StarfallMagicSquareImage,
     SteelyImage,
     StolenFenceImage,
+    SunflowerImage,
     SunshinePanImage,
     SwordImage,
     TauromacisHornImage,
@@ -1616,7 +1617,8 @@ export const tofuSpecial: Item = {
 
 export const sword: Item = {
     name: "Sword",
-    description: "On wave start, gain +{{ effects.0.onWaveStart.effects.0.attackPower }} attack power for one turn.",
+    description:
+        "On wave start, gain +{{ effects.0.onWaveStart.effects.0.attackPower }} attack power for {{ effects.0.onWaveStart.effects.0.duration }} turns.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SwordImage,
@@ -1680,6 +1682,23 @@ export const blueJeanShorts: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const sunflower: Item = {
+    name: "Sunflower",
+    description: "+2 max HP.",
+    applyEffectsToSummons: true,
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: SunflowerImage,
+    effects: [
+        {
+            name: "Sunflower",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            maxHP: 2,
         },
     ],
 };

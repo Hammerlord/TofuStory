@@ -582,6 +582,7 @@ export { default as StumpyBatImage } from "./StumpyBat.png";
 export { default as SubiImage } from "./Subi.png";
 export { default as SuckInImage } from "./SuckIn.png";
 export { default as SuitcaseImage } from "./Suitcase.png";
+export { default as SunflowerImage } from "./Sunflower.png";
 export { default as SunshinePanImage } from "./SunshinePan.png";
 export { default as SurfingImage } from "./Surfing.png";
 export { default as SwampKPQImage } from "./SwampKPQ.png";
