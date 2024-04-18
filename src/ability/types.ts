@@ -452,6 +452,8 @@ export interface Morph {
         conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
         storeTarget?: true; // This minion takes the place of the target. When killed, the target will reappear in its place. This is for MORPH_TYPES.MAP only at the moment
         storeSummoner?: true; // This minion takes the place of its summoner. When killed, the summoner will reappear in its place.
+        // After this many turns, the original target/summoner will be restored. Requires storeTarget or storeSummoner to be true.
+        turnLimit?: number;
     }[];
     modifiers?: {
         HP?: MORPH_MINION_MODIFIERS;

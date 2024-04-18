@@ -4,6 +4,7 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    Action,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Effect,
@@ -78,62 +79,36 @@ const singleShuffle = {
     ],
 };
 
-const shuffle: Ability = {
-    name: "Shuffle",
-    image: MasterDummyImage,
-    actions: [
-        {
-            movement: 5,
-            movementOptions: {
-                //canSwapCharacterPlaces: true,
-            },
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.MOVEMENT,
-        },
-        {
-            movement: 5,
-            movementOptions: {
-                //canSwapCharacterPlaces: true,
-            },
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.MOVEMENT,
-        },
-    ],
+const shuffleEffect = {
+    name: "Shuffle Effect",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    onSummoned: {
+        ability: singleShuffle,
+    },
+    onTurnStart: {
+        ability: singleShuffle,
+    },
+    onTurnInProgress: {
+        ability: singleShuffle,
+    },
 };
 
 const misdirectionDummy: Minion = {
     name: "Dummy",
     maxHP: 30,
     image: MasterDummyImage,
-    abilities: [shuffle],
-    effects: [
-        {
-            name: "On Summon",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.NONE,
-            onSummoned: {
-                ability: singleShuffle,
-                removeEffect: true,
-            },
-        },
-    ],
+    abilities: [],
+    effects: [shuffleEffect],
 };
 
 const realDummy: Minion = {
     name: "Dummy",
     maxHP: 30,
     image: MasterDummyImage,
-    abilities: [shuffle],
+    abilities: [],
     effects: [
-        {
-            name: "On Summon",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.NONE,
-            onSummoned: {
-                ability: singleShuffle,
-                removeEffect: true,
-            },
-        },
+        shuffleEffect,
         {
             name: "Real",
             type: EFFECT_TYPES.NONE,
@@ -172,10 +147,49 @@ const realDummy: Minion = {
 
 const wanderingFighterName = "Wandering Fighter";
 
+const summonWoodenDummyAction: Action = {
+    type: ACTION_TYPES.EFFECT,
+    target: TARGET_TYPES.SELF,
+    icon: CloudIcon,
+    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+    area: 5,
+    morph: {
+        type: MORPH_TYPES.MAP,
+        minions: [
+            {
+                conditions: [
+                    {
+                        name: bomb.name,
+                        comparator: "eq",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    },
+                ],
+                minion: misdirectionDummy,
+                storeTarget: true,
+                turnLimit: 3,
+            },
+            {
+                conditions: [
+                    {
+                        name: wanderingFighterName,
+                        comparator: "eq",
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                    },
+                ],
+                minion: realDummy,
+                storeTarget: true,
+                turnLimit: 3,
+            },
+        ],
+    },
+    playbackTime: 1250,
+};
+
 const woodenDummyTechnique: Effect = {
     name: "Wooden Dummies",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
+    icon: MasterDummyImage,
     conditions: [
         {
             calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -197,41 +211,7 @@ const woodenDummyTechnique: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [bomb] }, { minion: [bomb] }],
                 },
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    icon: CloudIcon,
-                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    area: 5,
-                    morph: {
-                        type: MORPH_TYPES.MAP,
-                        minions: [
-                            {
-                                conditions: [
-                                    {
-                                        name: bomb.name,
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: misdirectionDummy,
-                                storeTarget: true,
-                            },
-                            {
-                                conditions: [
-                                    {
-                                        name: wanderingFighterName,
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: realDummy,
-                                storeTarget: true,
-                            },
-                        ],
-                    },
-                    playbackTime: 1250,
-                },
+                summonWoodenDummyAction,
             ],
         },
     },
@@ -258,41 +238,7 @@ const woodenDummyTechnique2: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [bomb] }, { minion: [bomb] }, { minion: [bomb] }, { minion: [bomb] }],
                 },
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    icon: CloudIcon,
-                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                    area: 5,
-                    morph: {
-                        type: MORPH_TYPES.MAP,
-                        minions: [
-                            {
-                                conditions: [
-                                    {
-                                        name: bomb.name,
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: misdirectionDummy,
-                                storeTarget: true,
-                            },
-                            {
-                                conditions: [
-                                    {
-                                        name: wanderingFighterName,
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: realDummy,
-                                storeTarget: true,
-                            },
-                        ],
-                    },
-                    playbackTime: 1250,
-                },
+                summonWoodenDummyAction,
             ],
         },
     },

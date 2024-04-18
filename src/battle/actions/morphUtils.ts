@@ -1,5 +1,6 @@
 import uuid from "uuid";
 import {
+    Ability,
     ACTION_TYPES,
     CombatEffect,
     Effect,
@@ -17,38 +18,47 @@ import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
 import { findCombatantData } from "./actions";
+import { CloudIcon, HourglassIcon } from "../../images/icons";
 
-const getStoredTargetEffect = ({ combatant }: { combatant: Combatant }): CombatEffect => {
+const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; duration?: number }): CombatEffect => {
+    const reveal = {
+        usableWhileStunned: true,
+        ability: {
+            name: "Reveal",
+            image: CloudIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    summon: [
+                        {
+                            minion: [
+                                {
+                                    ...combatant,
+                                    effects: combatant.effects.filter((effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF),
+                                },
+                            ],
+                            placement: "on-top",
+                        },
+                    ],
+                },
+            ],
+        } as Ability,
+    };
+
     return {
-        name: "Reveal",
+        name: "Reveal Timer",
+        description: "When destroyed or when this effect ends, the hidden character will be revealed.",
+        icon: HourglassIcon,
         type: EFFECT_TYPES.NONE,
         class: EFFECT_CLASSES.NONE,
         id: uuid.v4(),
         uptime: 1,
         canBeSilenced: false,
-        onDeath: {
-            usableWhileStunned: true,
-            ability: {
-                name: "Reveal",
-                actions: [
-                    {
-                        type: ACTION_TYPES.EFFECT,
-                        target: TARGET_TYPES.SELF,
-                        summon: [
-                            {
-                                minion: [
-                                    {
-                                        ...combatant,
-                                        effects: combatant.effects.filter((effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF),
-                                    },
-                                ],
-                                placement: "on-top",
-                            },
-                        ],
-                    },
-                ],
-            },
-        },
+        duration,
+        onDeath: reveal,
+        onEnd: duration ? reveal : undefined,
+        disableDisplayIcon: !duration,
     };
 };
 
@@ -99,7 +109,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
         return acc;
     }, {});
 
-    for (const { minion, positionIndex, storeSummoner } of minions) {
+    for (const { minion, positionIndex, storeSummoner, turnLimit } of minions) {
         const pos = getSummonPos(positionIndex);
         const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
         if (!minionToSummon) {
@@ -116,7 +126,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
             };
 
             if (storeSummoner && summoner) {
-                combatants[pos].effects.push(getStoredTargetEffect({ combatant: summoner.combatant }));
+                combatants[pos].effects.push(getStoredTargetEffect({ combatant: summoner.combatant, duration: turnLimit }));
             }
 
             summons.push(combatants[pos]);
@@ -165,11 +175,11 @@ export const getMorphMap = ({
         if (minion) {
             const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
             if (minionToSummon) {
-                const { storeTarget } = minionConfig;
+                const { storeTarget, turnLimit } = minionConfig;
 
                 const summon = createCombatant(minionToSummon);
                 if (storeTarget) {
-                    summon.effects.push(getStoredTargetEffect({ combatant }));
+                    summon.effects.push(getStoredTargetEffect({ combatant, duration: turnLimit }));
                 }
 
                 summons.push(summon);
