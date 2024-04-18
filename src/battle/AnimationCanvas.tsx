@@ -231,6 +231,15 @@ const AnimationCanvas = ({
 
     useEffect(() => {
         if (!targetElement || !action || !actorElement) {
+            if (playerSide && enemySide) {
+                // If new combatants popped in due to morph, summon, etc. we should set the battlefield ref to capture that state prior to render and element refs being set.
+                // Issue where the initial displaced summon (eg. Mini Bean food) would appear to "jump" locations.
+                previousBattlefieldRef.current = {
+                    playerSide,
+                    enemySide,
+                };
+            }
+
             return;
         }
 
