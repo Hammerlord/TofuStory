@@ -152,6 +152,12 @@ const Camp = ({
         setNumActivitiesRemaining((prev) => prev - 1);
     };
 
+    const doneTransmute = () => {
+        completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
+        setNumActivitiesRemaining((prev) => prev - 1);
+        setIsTransmutingAbility(false);
+    };
+
     const handleTransmute = (options: { card: string; for: CombatAbility }) => {
         const { card: cardId, for: forCard } = options || {};
         const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
@@ -159,9 +165,7 @@ const Camp = ({
             const newDeck = deck.slice();
             newDeck[cardIndex] = forCard;
             updateDeck(newDeck);
-            completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
-            setNumActivitiesRemaining((prev) => prev - 1);
-            setIsTransmutingAbility(false);
+            doneTransmute();
         }
     };
 
@@ -170,13 +174,13 @@ const Camp = ({
     }
 
     const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
-    console.log(hasTransmutationItem);
     const canTransmuteAbility = !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] && numActivitiesRemaining > 0 && hasTransmutationItem;
 
     if (isTransmutingAbility) {
         return (
             <TransmutationView
                 onTransmute={handleTransmute}
+                onCancel={doneTransmute}
                 deck={deck}
                 player={player}
                 onExit={() => setIsTransmutingAbility(false)}

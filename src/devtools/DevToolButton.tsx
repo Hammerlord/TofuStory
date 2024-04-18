@@ -238,6 +238,7 @@ const DevToolButton = () => {
                     })}
                     player={defaultCharacterProperties}
                     onTransmute={() => {}}
+                    onCancel={() => {}}
                     onExit={() => setIsTransmutationOpen(false)}
                     numTransmutations={2}
                 />

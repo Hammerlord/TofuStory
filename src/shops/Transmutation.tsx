@@ -76,7 +76,8 @@ const useStyles = createUseStyles({
         },
     },
     selectContainer: {
-        margin: "48px 0",
+        marginTop: 48,
+        marginBottom: 84,
     },
     transmuteContainer: {
         margin: "32px 0",
@@ -195,6 +196,7 @@ const { updateTownShop, updateDeck } = playerStateSlice.actions;
 export const TransmutationView = ({
     deck,
     onTransmute,
+    onCancel,
     player,
     onExit,
     numTransmutations,
@@ -202,6 +204,7 @@ export const TransmutationView = ({
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
+    onCancel: () => void;
     player: Player;
     onExit?;
     numTransmutations: number; // How many transmutations the player can perform for this session
@@ -292,6 +295,13 @@ export const TransmutationView = ({
 
     const handleConfirmClick = () => {
         onTransmute({ card: selectedCard.instanceId, for: transmutationOptions[selectedOptionIndex] });
+        setSelectedCard(null);
+        setTransmutationOptions(null);
+        setSelectedOptionIndex(null);
+    };
+
+    const handleCancelClick = () => {
+        onCancel();
         setSelectedCard(null);
         setTransmutationOptions(null);
         setSelectedOptionIndex(null);
@@ -400,6 +410,10 @@ export const TransmutationView = ({
                                         Confirm
                                     </Button>
                                 </div>
+
+                                <div>
+                                    <Button onClick={handleCancelClick}>Keep Original</Button>
+                                </div>
                             </>
                         )}
                     </div>
@@ -446,6 +460,14 @@ const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
     const numTownTransmutes = townWorkshop?.numTransmutesRemaining;
     const [numTransmutes, setNumTransmutes] = useState(NUM_TRANSMUTATIONS);
 
+    const decrementNumTransmutes = () => {
+        if (townWorkshop) {
+            dispatch(updateTownShop({ town, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
+        } else {
+            setNumTransmutes((prev) => prev - 1);
+        }
+    };
+
     const handleTransmute = (options: { card: string; for: CombatAbility }) => {
         const { card: cardId, for: forCard } = options || {};
         const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
@@ -453,12 +475,7 @@ const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
             const newDeck = deck.slice();
             newDeck[cardIndex] = forCard;
             dispatch(updateDeck(newDeck));
-        }
-
-        if (townWorkshop) {
-            dispatch(updateTownShop({ town, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
-        } else {
-            setNumTransmutes((prev) => prev - 1);
+            decrementNumTransmutes();
         }
     };
 
@@ -468,6 +485,7 @@ const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
             deck={deck}
             player={player}
             onTransmute={handleTransmute}
+            onCancel={decrementNumTransmutes}
             numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
         />
     );
