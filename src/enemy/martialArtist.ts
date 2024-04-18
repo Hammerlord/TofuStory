@@ -14,7 +14,7 @@ import {
 } from "../ability/types";
 import { BombImage, MasterDummyImage, PandaImage, PandaSpecialMoveImage, TeleportImage, UrsusPawDefaultImage } from "../images";
 import { hardy } from "../ability/Effects";
-import { MuscleIcon, ShieldIcon } from "../images/icons";
+import { CloudIcon, MuscleIcon, ShieldIcon } from "../images/icons";
 
 const explode: Ability = {
     name: "Explode",
@@ -64,6 +64,12 @@ const singleShuffle = {
     name: "Shuffle",
     image: MasterDummyImage,
     actions: [
+        {
+            // Wait a moment before moving
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.MOVEMENT,
+            playbackTime: 500,
+        },
         {
             movement: 5,
             target: TARGET_TYPES.SELF,
@@ -194,6 +200,8 @@ const woodenDummyTechnique: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
+                    icon: CloudIcon,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     area: 5,
                     morph: {
                         type: MORPH_TYPES.MAP,
@@ -253,6 +261,8 @@ const woodenDummyTechnique2: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
+                    icon: CloudIcon,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     area: 5,
                     morph: {
                         type: MORPH_TYPES.MAP,
