@@ -696,8 +696,8 @@ const onEffectEventTrigger = ({
 
             const actorInfo = findCombatantData(getState, ownerId);
             const actor = actorInfo?.combatant;
-            const canAct =
-                (actor?.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath) && !isTurnActionPrevented(actorInfo);
+            const isPassAliveConditions = actor?.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath;
+            const canAct = isPassAliveConditions && !isTurnActionPrevented(actorInfo, { bypassStun: usableWhileStunned });
 
             // Something could've happened between actions that killed the actor
             if (!canAct) {

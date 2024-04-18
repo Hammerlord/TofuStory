@@ -891,14 +891,14 @@ export const getInducedAttack = (actor: Combatant): Action => {
 };
 
 // This is used to determine whether an enemy should act during its turn. It shouldn't prevent effect events from triggering.
-export const isTurnActionPrevented = (combatantInfo: CombatantInfo): boolean => {
+export const isTurnActionPrevented = (combatantInfo: CombatantInfo, options?: { bypassStun: boolean }): boolean => {
     if (!combatantInfo) {
         return true;
     }
 
     const combatant: Combatant | Player = combatantInfo.combatant;
     const turnPreventedFromEffects = combatant.effects.some(
-        (effect) => effect.preventTurnAction || [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type)
+        (effect) => effect.preventTurnAction || ([EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type) && !options?.bypassStun)
     );
 
     return turnPreventedFromEffects;
