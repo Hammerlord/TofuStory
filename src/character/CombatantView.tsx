@@ -378,21 +378,6 @@ const CombatantView = forwardRef(
                 }
             };
 
-            const { vacuum, movement } = event?.action || {};
-
-            if (isCombatantChanged) {
-                // Morphs/summons should play immediately (except in conjunction with vacuum; vacuum requires a delay to have the correct animation)
-                if (vacuum || movement) {
-                    const timeout = setTimeout(() => {
-                        callback();
-                    }, 1000);
-                    return () => clearTimeout(timeout);
-                } else {
-                    callback();
-                    return;
-                }
-            }
-
             const playbackTime = event?.playbackTime;
 
             const timeout = setTimeout(() => {
