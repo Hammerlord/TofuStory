@@ -57,6 +57,7 @@ import {
     PanlidImage,
     PawnChessPieceImage,
     PeachImage,
+    PersonalAnvilImage,
     PicoPicoHammerImage,
     PieceOfIceImage,
     PigIllustratedImage,
@@ -443,7 +444,7 @@ export const nependeathSap: Item = {
 
 export const coffeePot: Item = {
     name: "Coffee Pot",
-    description: "You can perform an extra activity while camping.",
+    description: "You can perform an extra activity at campsites.",
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: CoffeePotImage,
@@ -474,7 +475,7 @@ export const respawnToken: Item = {
 
 export const sunshinePan: Item = {
     name: "Sunshine Pan",
-    description: "Restore an additional 10 HP when camping.",
+    description: "Restore an additional 10 HP at campsites.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SunshinePanImage,
@@ -1703,6 +1704,17 @@ export const sunflower: Item = {
     ],
 };
 
+export const personalAnvil: Item = {
+    name: "Personal Anvil",
+    description: "You can Transmute an ability at campsites.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: PersonalAnvilImage,
+    camp: {
+        allowTransmute: true,
+    },
+};
+
 export const tShirt: Item = {
     name: "White T-Shirt",
     description: "If you spend a turn without attacking, gain 1 {{ resources }} next turn.",
@@ -1888,7 +1900,7 @@ export const incenseLeaves: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: HerbsImage,
-    description: "You can remove an ability from your deck when camping.",
+    description: "You can remove an ability from your deck at campsites.",
     camp: {
         allowAbilityRemoval: true,
     },

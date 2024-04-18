@@ -91,6 +91,7 @@ import {
     starryBandana,
     emerald,
     sunflower,
+    personalAnvil,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -193,6 +194,7 @@ export const ITEMS = [
     garnet,
     emerald,
     sunflower,
+    personalAnvil,
 ];
 
 export const CLASS_ITEMS = {

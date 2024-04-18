@@ -198,12 +198,14 @@ export const TransmutationView = ({
     player,
     onExit,
     numTransmutations,
+    disableBackdrop,
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
     player: Player;
     onExit?;
     numTransmutations: number; // How many transmutations the player can perform for this session
+    disableBackdrop?: boolean;
 }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
@@ -311,7 +313,7 @@ export const TransmutationView = ({
     return (
         <Overlay>
             <div className={classes.transmutationRoot}>
-                <div className={classes.backdrop} />
+                {!disableBackdrop && <div className={classes.backdrop} />}
                 <div className={classes.titleContainer}>
                     <h2>Transmute an Ability</h2>
                 </div>

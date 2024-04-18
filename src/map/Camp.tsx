@@ -1,16 +1,14 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
-import CardGrid from "../Menu/CardGrid";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
-import { JOB_CARD_MAP } from "../ability";
 import { Ability, CombatAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Player } from "../character/types";
-import { CampfireImage, HerbsImage, PerionCampImage, WeaponMasteryImage } from "../images";
+import { CampfireImage, HerbsImage, PerionCampImage, PersonalAnvilImage, WeaponMasteryImage } from "../images";
 import { Item } from "../item/types";
+import { TransmutationView } from "../shops/Transmutation";
 import Button from "../view/Button";
 
 const useStyles = createUseStyles({
@@ -100,6 +98,13 @@ const useStyles = createUseStyles({
 });
 
 const HEALTH_REGAINED = 0.2;
+
+const CAMP_ACTIVITIES = {
+    REMOVE_CARD: "remove-card",
+    TRANSMUTE_CARD: "transmute-card",
+    UPGRADE_CARD: "upgrade-card",
+};
+
 const Camp = ({
     onExit,
     deck,
@@ -114,12 +119,12 @@ const Camp = ({
     updatePlayer: (updated: any) => void;
 }) => {
     const classes = useStyles();
+
+    // Map of { [activityName: string]: number }, number counting how many times that activity has been performed
+    const [completedActivities, setCompletedActivities] = useState({});
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const [hasRemovedAbility, setHasRemovedAbility] = useState(false);
     const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
-    const [hasUpgradedAbility, setHasUpgradedAbility] = useState(false);
-    const [isLearningAbility, setIsLearningAbility] = useState(false);
-    const [selectedAbilityToLearn, setSelectedAbilityToLearn] = useState(null);
+    const [isTransmutingAbility, setIsTransmutingAbility] = useState(false);
     const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
         1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
     );
@@ -133,49 +138,51 @@ const Camp = ({
         });
     }, []);
 
+    const completeActivity = (activityKey: string) => {
+        setCompletedActivities((prev) => ({
+            ...prev,
+            [activityKey]: (prev[activityKey] || 0) + 1,
+        }));
+    };
+
     const handleRemoveAbility = (updatedDeck: Ability[]) => {
-        setHasRemovedAbility(true);
+        completeActivity(CAMP_ACTIVITIES.REMOVE_CARD);
         setIsRemovingAbility(false);
         updateDeck(updatedDeck);
         setNumActivitiesRemaining((prev) => prev - 1);
     };
 
-    const handleLearnAbility = () => {
-        updateDeck([...deck, selectedAbilityToLearn]);
-        setIsLearningAbility(false);
-        setNumActivitiesRemaining((prev) => prev - 1);
+    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        const { card: cardId, for: forCard } = options || {};
+        const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
+        if (cardIndex > -1) {
+            const newDeck = deck.slice();
+            newDeck[cardIndex] = forCard;
+            updateDeck(newDeck);
+            completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
+            setNumActivitiesRemaining((prev) => prev - 1);
+            setIsTransmutingAbility(false);
+        }
     };
 
     if (isRemovingAbility) {
         return <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} onCancel={() => setIsRemovingAbility(false)} />;
     }
 
-    if (isLearningAbility) {
-        const potentialAbilities = JOB_CARD_MAP[player.class].all
-            .concat(JOB_CARD_MAP[player.secondaryClass]?.all || [])
-            .filter((ability: Ability) => !ability.depletedOnUse)
-            .map((card) => ({ ...card, instanceId: uuid.v4() }));
+    const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
+    console.log(hasTransmutationItem);
+    const canTransmuteAbility = !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] && numActivitiesRemaining > 0 && hasTransmutationItem;
 
+    if (isTransmutingAbility) {
         return (
-            <div className={classes.root}>
-                <div className={classes.inner}>
-                    <h3>Select an ability to learn</h3>
-                    <div className={classes.abilitySection}>
-                        <CardGrid
-                            cards={potentialAbilities}
-                            selectedAbilityIndex={potentialAbilities.findIndex((a) => a.name === selectedAbilityToLearn?.name)}
-                            highlightColour={"#45ff61"}
-                            onClickAbility={(ability) => setSelectedAbilityToLearn(ability)}
-                        />
-                    </div>
-                    <Button variant={"contained"} color={"primary"} onClick={handleLearnAbility}>
-                        Confirm
-                    </Button>{" "}
-                    <Button variant={"contained"} onClick={() => setIsLearningAbility(false)}>
-                        Cancel
-                    </Button>
-                </div>
-            </div>
+            <TransmutationView
+                onTransmute={handleTransmute}
+                deck={deck}
+                player={player}
+                onExit={() => setIsTransmutingAbility(false)}
+                numTransmutations={canTransmuteAbility ? 1 : 0}
+                disableBackdrop={true}
+            />
         );
     }
 
@@ -186,7 +193,7 @@ const Camp = ({
                 onCancel={() => setIsUpgradingAbility(false)}
                 onConfirm={(updatedDeck) => {
                     updateDeck(updatedDeck);
-                    setHasUpgradedAbility(true);
+                    completeActivity(CAMP_ACTIVITIES.UPGRADE_CARD);
                     setIsUpgradingAbility(false);
                     setNumActivitiesRemaining((prev) => prev - 1);
                 }}
@@ -195,7 +202,7 @@ const Camp = ({
     }
 
     const hasMeditateItem = player.items.some((item) => item.camp?.allowAbilityRemoval);
-    const canRemoveAbility = !hasRemovedAbility && numActivitiesRemaining > 0 && hasMeditateItem;
+    const canRemoveAbility = !completedActivities[CAMP_ACTIVITIES.REMOVE_CARD] && numActivitiesRemaining > 0 && hasMeditateItem;
     const canUpgradeAbility = numActivitiesRemaining > 0;
 
     return (
@@ -209,6 +216,24 @@ const Camp = ({
                 </div>
                 <div className={classes.activitySection}>
                     <div className={classes.activityContainer}>
+                        {hasTransmutationItem && (
+                            <div
+                                className={classNames(classes.activity, {
+                                    disabled: !canTransmuteAbility,
+                                })}
+                                onClick={() => {
+                                    if (canTransmuteAbility) {
+                                        setIsTransmutingAbility(true);
+                                    }
+                                }}
+                            >
+                                <div className={classes.iconContainer}>
+                                    <img src={PersonalAnvilImage} />
+                                </div>
+                                <div className={classes.activityName}>TRANSMUTE</div>
+                                Replace an ability with 1 of 3 options.
+                            </div>
+                        )}
                         {hasMeditateItem && (
                             <div
                                 className={classNames(classes.activity, {
