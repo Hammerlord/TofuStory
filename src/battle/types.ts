@@ -33,6 +33,7 @@ export interface Event {
     newCards: Ability[];
     cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
     newCombatants: Combatant[];
+    displacements?: string[]; // IDs of combatants who were displaced
 }
 
 export interface EventGroup {

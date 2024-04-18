@@ -48,6 +48,7 @@ export const playTravelAnimation = ({
     sidewinder = false,
     freezeAxis,
     fadeIn = false,
+    fill,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
@@ -59,7 +60,8 @@ export const playTravelAnimation = ({
     returnToOrigin?: boolean;
     sidewinder?: boolean;
     freezeAxis?: "x" | "y";
-    fadeIn?: boolean;
+    fadeIn?: boolean | "fast";
+    fill?: "forwards";
 }) => {
     if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
@@ -126,10 +128,15 @@ export const playTravelAnimation = ({
         rotation += getRotationToFaceTarget({ x, y, x2: travelCoordinates[0]?.x2, y2: travelCoordinates[0]?.y2 });
     }
 
-    animationFrames.push({
+    const frame = {
         transform: `translateX(${originOffsetX}px) translateY(${originOffsetY}px) rotate(${rotation}deg)`,
         offset: 0,
-    });
+    };
+
+    if (fadeIn === "fast") {
+        (frame as any).opacity = 1;
+    }
+    animationFrames.push(frame);
 
     travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
         let rotation = initialRotation;
@@ -163,6 +170,7 @@ export const playTravelAnimation = ({
         return el.animate(animationFrames, {
             duration: playbackTime,
             delay: i * 50,
+            fill,
         });
     });
 };

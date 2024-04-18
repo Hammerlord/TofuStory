@@ -1610,6 +1610,8 @@ const checkHandleMovement = ({
                 dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onFriendlyMove, source }));
             }
         });
+
+        return [newCharacters[from]?.id, newCharacters[to]?.id].filter((v) => v);
     };
 };
 
@@ -1621,6 +1623,7 @@ const pushPlaybackQueue = ({
     actionParent,
     side,
     source,
+    displacements,
 }: {
     action: Action;
     actorId: string;
@@ -1629,6 +1632,7 @@ const pushPlaybackQueue = ({
     actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
     source: TriggerSource;
+    displacements?: string[];
 }) => {
     return (dispatch, getState) => {
         let playbackTime = action.playbackTime;
@@ -1655,6 +1659,7 @@ const pushPlaybackQueue = ({
                 actionParent,
                 playbackTime,
                 source,
+                displacements,
             } as Event)
         );
     };
@@ -1939,7 +1944,7 @@ const performAction = ({
 
         const area = calculateActionArea({ action, actor: actorData, target });
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        dispatch(checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, source }));
+        const displacements = dispatch(checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, source }));
         const updated = getUpdatedStats(updatedStatsProps);
         dispatch(applyStatChanges(updated.map((update) => update[0])));
         // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
@@ -1970,6 +1975,7 @@ const performAction = ({
                 actionParent: parent,
                 side,
                 source,
+                displacements,
             })
         );
 

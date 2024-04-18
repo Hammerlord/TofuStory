@@ -477,7 +477,13 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                     <div className={classes.combatantContainer} ref={weaponRef}>
-                        <div ref={ref as any} className={classNames(classes.portrait)}>
+                        <div
+                            ref={ref as any}
+                            className={classNames(classes.portrait, {
+                                // Bandaid for issue where displaced combatants would flicker into their new location before being animated
+                                [classes.invisible]: event.displacements?.some((id) => id === combatant?.id),
+                            })}
+                        >
                             {oldState && (
                                 <>
                                     <Tooltip open={Boolean(dialog)} title={dialog} placement="top">

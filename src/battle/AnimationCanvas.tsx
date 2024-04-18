@@ -345,6 +345,8 @@ const AnimationCanvas = ({
                 to: refs[currentIndex]?.current,
                 playbackTime: DISPLACEMENT_SPEED,
                 freezeAxis: "y",
+                fill: "forwards",
+                fadeIn: "fast",
             });
         };
 
