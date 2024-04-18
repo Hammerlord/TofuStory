@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
@@ -49,8 +49,6 @@ import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { canTargetIfStealthed, canUseAbility, hasEffectType, isValidTarget, isWithinAbilityArea } from "./utils";
-import classNames from "classnames";
-import { ZOOM_HEIGHT_MED } from "../constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -986,7 +984,6 @@ const BattlefieldContainer = () => {
                 deckRef={deckRef}
                 discardRef={discardRef}
                 depleteRef={depleteRef}
-                initialBattlefield={{ playerSide, enemySide }}
             />
         ),
         [events[0]?.id]

@@ -33,7 +33,7 @@ export interface Event {
     newCards: Ability[];
     cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
     newCombatants: Combatant[];
-    displacements?: string[]; // IDs of combatants who were displaced
+    displacements?: Displacement;
 }
 
 export interface EventGroup {
@@ -96,3 +96,6 @@ export enum BATTLE_TYPES {
     ELITE_ENCOUNTER = "eliteEncounter",
     BOSS = "bossEncounter",
 }
+
+// Logs combatants who moved or were displaced (eg. by vacuum) during an action. `from` and `to` are the index positions.
+export type Displacement = { [combatantId: string]: { from: number; to: number; side: BATTLEFIELD_SIDES } };

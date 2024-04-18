@@ -33,7 +33,7 @@ import { MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED, SUMMON_DELAY
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
     applyVacuum,
     calculateActionArea,
@@ -1539,25 +1539,34 @@ const checkHandleVacuum = ({
             return;
         }
 
+        const { updatedCharacters, displacements } = applyVacuum({
+            characters: getState().battle[side],
+            index: selectedIndex,
+            area,
+            distance: vacuum,
+            side,
+        });
+
         dispatch(
             updateBattle({
-                [side]: applyVacuum({
-                    characters: getState().battle[side],
-                    index: selectedIndex,
-                    area,
-                    distance: vacuum,
-                }),
+                [side]: updatedCharacters,
             })
         );
 
         // Give the board a bit of time to update. Issue where Close Combat was causing the player character to fly off to (0, 0).
+        // FIX ME: Causes the sprite to flicker
+        /*
         dispatch(
             pushEventQueue({
                 ...getState().battle,
                 id: uuid.v4(),
                 playbackTime: 10,
+                displacements,
             } as Event)
         );
+        */
+
+        return displacements;
     };
 };
 
@@ -1611,7 +1620,15 @@ const checkHandleMovement = ({
             }
         });
 
-        return [newCharacters[from]?.id, newCharacters[to]?.id].filter((v) => v);
+        const displacements = {};
+        if (newCharacters[from]?.id) {
+            displacements[newCharacters[from].id] = { from, to, side };
+        }
+
+        if (newCharacters[to]?.id) {
+            displacements[newCharacters[to].id] = { from: to, to: from, side };
+        }
+        return displacements;
     };
 };
 
@@ -1632,7 +1649,7 @@ const pushPlaybackQueue = ({
     actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
     source: TriggerSource;
-    displacements?: string[];
+    displacements?: Displacement;
 }) => {
     return (dispatch, getState) => {
         let playbackTime = action.playbackTime;
@@ -1943,8 +1960,17 @@ const performAction = ({
         }
 
         const area = calculateActionArea({ action, actor: actorData, target });
-        dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        const displacements = dispatch(checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, source }));
+
+        const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
+        const movementDisplacements: Displacement = dispatch(
+            checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, source })
+        );
+        // At the moment there is never both a vacuum AND a movement in one action. It's either one or the other. So we can 'safely' merge the displacement results of both.
+        const displacements: Displacement = {
+            ...vacuumDisplacements,
+            ...movementDisplacements,
+        };
+
         const updated = getUpdatedStats(updatedStatsProps);
         dispatch(applyStatChanges(updated.map((update) => update[0])));
         // Include life on hit and thorns in the same action playback as the actual attack (con't below*)

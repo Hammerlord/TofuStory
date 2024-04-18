@@ -481,7 +481,7 @@ const CombatantView = forwardRef(
                             ref={ref as any}
                             className={classNames(classes.portrait, {
                                 // Bandaid for issue where displaced combatants would flicker into their new location before being animated
-                                [classes.invisible]: event.displacements?.some((id) => id === combatant?.id),
+                                [classes.invisible]: event.displacements?.[combatant?.id],
                             })}
                         >
                             {oldState && (

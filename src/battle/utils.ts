@@ -27,7 +27,8 @@ import {
 import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TriggerSource } from "./types";
+import { useCallback, useRef } from "react";
 
 export type StatChange = {
     damage: number;
@@ -797,42 +798,63 @@ export const calculateActionArea = ({
 };
 
 export const applyVacuum = ({
-    characters,
+    characters: initCharacters,
     index,
     area,
     distance,
+    side,
 }: {
     characters: (Combatant | null)[];
     index: number;
     area: number;
     distance: number;
-}) => {
-    const newCharacters = characters.slice();
+    side: BATTLEFIELD_SIDES;
+}): {
+    updatedCharacters: (Combatant | null)[];
+    displacements: Displacement;
+} => {
+    const characters = initCharacters.slice();
     const isValidSlot = (combatant: Combatant | null): Boolean => {
         return !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
     };
 
+    const displacements = {};
+
     for (let i = 1; i <= area; ++i) {
-        if (newCharacters[index + i]) {
+        if (characters[index + i]) {
             for (let j = 0; j < i && j < distance; ++j) {
-                const existingCharacter = newCharacters[index + j];
+                const existingCharacter = characters[index + j];
                 if (isValidSlot(existingCharacter)) {
-                    newCharacters[index + j] = newCharacters[index + i];
-                    newCharacters[index + i] = null;
+                    characters[index + j] = characters[index + i];
+                    characters[index + i] = null;
+
+                    displacements[characters[index + j].id] = {
+                        from: index + i,
+                        to: index + j,
+                    };
                 }
             }
         }
-        if (newCharacters[index - i]) {
+        if (characters[index - i]) {
             for (let j = 0; j < i && j < distance; ++j) {
-                const existingCharacter = newCharacters[index - j];
+                const existingCharacter = characters[index - j];
                 if (isValidSlot(existingCharacter)) {
-                    newCharacters[index - j] = newCharacters[index - i];
-                    newCharacters[index - i] = null;
+                    characters[index - j] = characters[index - i];
+                    characters[index - i] = null;
+
+                    displacements[characters[index - j].id] = {
+                        from: index - i,
+                        to: index - j,
+                    };
                 }
             }
         }
     }
-    return newCharacters;
+
+    return {
+        updatedCharacters: characters,
+        displacements,
+    };
 };
 
 export const getInducedAttack = (actor: Combatant): Action => {

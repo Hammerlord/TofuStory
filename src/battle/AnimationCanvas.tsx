@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ANIMATION_TYPES, CombatAbility } from "../ability/types";
 import {
@@ -139,7 +139,6 @@ const AnimationCanvas = ({
     deckRef,
     discardRef,
     depleteRef,
-    initialBattlefield,
 }: {
     event?: Event;
     allyRefs?: any[];
@@ -148,7 +147,6 @@ const AnimationCanvas = ({
     deckRef;
     discardRef;
     depleteRef;
-    initialBattlefield: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] };
 }) => {
     const {
         actorId,
@@ -158,8 +156,9 @@ const AnimationCanvas = ({
         action,
         id: eventId,
         playbackTime,
-        playerSide,
-        enemySide,
+        playerSide = [],
+        enemySide = [],
+        displacements,
     } = event || {};
 
     const { battle } = useAppSelector((state) => state);
@@ -190,7 +189,6 @@ const AnimationCanvas = ({
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
     const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef());
 
-    const previousBattlefieldRef = useRef(initialBattlefield) as MutableRefObject<any>;
     const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {
             return { x: 0, y: 0 };
@@ -231,15 +229,6 @@ const AnimationCanvas = ({
 
     useEffect(() => {
         if (!targetElement || !action || !actorElement) {
-            if (playerSide && enemySide) {
-                // If new combatants popped in due to morph, summon, etc. we should set the battlefield ref to capture that state prior to render and element refs being set.
-                // Issue where the initial displaced summon (eg. Mini Bean food) would appear to "jump" locations.
-                previousBattlefieldRef.current = {
-                    playerSide,
-                    enemySide,
-                };
-            }
-
             return;
         }
 
@@ -320,29 +309,25 @@ const AnimationCanvas = ({
                 ...options,
             });
         }
+    }, [eventId]);
 
+    /**
+     * Side effect for displacement playback
+     */
+    useEffect(() => {
         const checkHandleDisplacement = (combatantId: string) => {
-            let side = BATTLEFIELD_SIDES.PLAYER_SIDE;
-            let currentIndex = playerSide.findIndex((combatant) => combatantId === combatant?.id);
-            if (currentIndex === -1) {
-                currentIndex = enemySide.findIndex((combatant) => combatantId === combatant?.id);
-                side = BATTLEFIELD_SIDES.ENEMY_SIDE;
-            }
-
-            if (currentIndex === -1) {
+            const displacement = displacements?.[combatantId];
+            if (!displacement) {
                 return;
             }
 
-            const prevIndex = previousBattlefieldRef.current[side].findIndex((combatant) => combatantId === combatant?.id);
-            if (prevIndex === -1 || prevIndex === currentIndex) {
-                return;
-            }
+            const { from, to, side } = displacement;
 
             const refs = side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
-            animationRefs.current = playTravelAnimation({
-                object: refs[currentIndex]?.current,
-                from: refs[prevIndex]?.current,
-                to: refs[currentIndex]?.current,
+            playTravelAnimation({
+                object: refs[to]?.current,
+                from: refs[from]?.current,
+                to: refs[to]?.current,
                 playbackTime: DISPLACEMENT_SPEED,
                 freezeAxis: "y",
                 fill: "forwards",
@@ -355,14 +340,7 @@ const AnimationCanvas = ({
                 checkHandleDisplacement(combatant.id);
             }
         });
-
-        setTimeout(() => {
-            previousBattlefieldRef.current = {
-                playerSide,
-                enemySide,
-            };
-        }, DISPLACEMENT_SPEED);
-    }, [eventId]);
+    }, [eventId, allyRefs, enemyRefs]);
 
     useEffect(() => {
         const addedTo = event?.cardsAddedTo;
