@@ -10,6 +10,7 @@ import { bobSnailScene } from "../../scene/bob";
 import { adminScene, mesoThiefScene, mesoThievesScene } from "../../scene/misc";
 import { EventScene } from "../../scene/types";
 import { wanderingSmithScene } from "../../scene/wanderingBlacksmithScene";
+import { wanderingFighterScene } from "../../scene/wanderingFighterScene";
 import {
     adamantiumPlate,
     adventurerCape,
@@ -110,6 +111,7 @@ export const events: EventScene[] = [
     shrineScene,
     fortuneBoxScene,
     adminScene,
+    wanderingFighterScene,
 ];
 
 /**
