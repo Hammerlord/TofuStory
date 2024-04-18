@@ -21,7 +21,11 @@ export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
     return Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
 };
 
-const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }) => {
+const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }): number => {
+    if (!travelCoordinates.length) {
+        return 0;
+    }
+
     let totalTraveldistance = travelCoordinates.reduce((acc, { xDiff, yDiff }) => {
         return acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     }, 0);
@@ -95,6 +99,11 @@ export const playTravelAnimation = ({
 
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
         const { x: toX, y: toY } = getCenterCoords(element);
+        // If the target coordinates are 0,0 (upper left of the screen) then the destination is invalid (probably due to element not having rendered).
+        //  Skip the animation rather than have the character fly to 0,0.
+        if (toX === 0 && toY === 0) {
+            return acc;
+        }
         const x2 = freezeAxis === "x" ? x : toX;
         const y2 = freezeAxis === "y" ? y : toY;
         const xDiff = x2 - x + originOffsetX;
