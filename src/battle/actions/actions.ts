@@ -1622,11 +1622,11 @@ const checkHandleMovement = ({
 
         const displacements = {};
         if (newCharacters[from]?.id) {
-            displacements[newCharacters[from].id] = { from, to, side };
+            displacements[newCharacters[from].id] = { from: to, to: from, side };
         }
 
         if (newCharacters[to]?.id) {
-            displacements[newCharacters[to].id] = { from: to, to: from, side };
+            displacements[newCharacters[to].id] = { from, to, side };
         }
         return displacements;
     };
