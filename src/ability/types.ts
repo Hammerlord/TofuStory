@@ -450,6 +450,7 @@ export interface Morph {
         minion: Minion | string; // Minion object or a string name
         positionIndex?: number; // Only applicable for MORPH_TYPES.MERGE (place the new minion in a specific index on the board)
         conditions?: Condition[]; // Morph x minion to y minion if it meets this condition (otherwise, nothing happens to x minion)
+        storeTarget?: true; // This minion takes the place of the target. When killed, the target will reappear in its place. This is for MORPH_TYPES.MAP only at the moment
         storeSummoner?: true; // This minion takes the place of its summoner. When killed, the summoner will reappear in its place.
     }[];
     modifiers?: {
@@ -463,8 +464,9 @@ export type ActionSummon = {
     minion: (Minion | string)[];
     // Which specific index position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
     positionIndex?: number;
-    // Place the summoned minion next to the summoner if there is space. If not, finds the next closest space.
-    placement?: "adjacent";
+    // adjacent: Place the summoned minion next to the summoner if there is space. If not, finds the next closest space.
+    // on-top: Replaces the summoner
+    placement?: "adjacent" | "on-top";
     // If true, there cannot be more than one minion with the same name on the board
     noDuplicateMinions?: boolean;
     // If true, this can replace (destroy) minions that are on the board, if there is no room
@@ -494,6 +496,9 @@ export type Action = {
     effects?: (string | Effect)[]; // If a string (name of effect) is provided, attempt to look up the corresponding effect
     description?: string;
     movement?: number;
+    movementOptions?: {
+        canSwapCharacterPlaces?: boolean; // Movement abilities can switch the character's position with another character's position
+    };
     resources?: number;
     /** Displaces characters toward the target index */
     vacuum?: number;
@@ -561,7 +566,7 @@ export type Action = {
     // When cast on a combatant, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     induceCombatant?: {
-        mode: "random" | "left-to-right" | "right-to-left";
+        mode?: "random" | "left-to-right" | "right-to-left";
         action: Action;
     };
     mesos?: number;

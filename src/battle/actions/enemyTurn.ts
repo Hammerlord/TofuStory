@@ -61,7 +61,7 @@ const autoPickTarget = ({
         const possibleMoves = getPossibleMoveIndices({
             currentLocationIndex: index,
             friendly,
-            movement: movementAction.movement,
+            action: movementAction,
         });
 
         return {

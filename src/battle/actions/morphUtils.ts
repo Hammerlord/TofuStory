@@ -7,7 +7,6 @@ import {
     EFFECT_TYPES,
     Morph,
     MORPH_MINION_MODIFIERS,
-    MORPH_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
@@ -19,7 +18,7 @@ import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
 import { findCombatantData } from "./actions";
 
-const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; index: number }): CombatEffect => {
+const getStoredTargetEffect = ({ combatant }: { combatant: Combatant }): CombatEffect => {
     return {
         name: "Reveal",
         type: EFFECT_TYPES.NONE,
@@ -43,7 +42,7 @@ const getStoredSummonerEffect = ({ combatant, index }: { combatant: Combatant; i
                                         effects: combatant.effects.filter((effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF),
                                     },
                                 ],
-                                positionIndex: index,
+                                placement: "on-top",
                             },
                         ],
                     },
@@ -117,7 +116,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
             };
 
             if (storeSummoner && summoner) {
-                combatants[pos].effects.push(getStoredSummonerEffect({ combatant: summoner.combatant, index: pos }));
+                combatants[pos].effects.push(getStoredTargetEffect({ combatant: summoner.combatant }));
             }
 
             summons.push(combatants[pos]);
@@ -151,20 +150,28 @@ export const getMorphMap = ({
     }
 
     const summons = [];
-    const combatants = friendly.map((combatant, i) => {
+    const combatants = friendly.map((combatant: Combatant, i) => {
         if (!targetIds.includes(combatant?.id)) {
             return combatant;
         }
 
-        const minion = minions.find((minionConfig) => {
+        const minionConfig = minions.find((minionConfig) => {
             const getCalculationTarget = () => findCombatantData(getState, combatant?.id); // Current combatant will always be the target
             return passesConditions({ getCalculationTarget, proc: minionConfig, source });
-        })?.minion;
+        });
+
+        const minion = minionConfig?.minion;
 
         if (minion) {
             const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
             if (minionToSummon) {
+                const { storeTarget } = minionConfig;
+
                 const summon = createCombatant(minionToSummon);
+                if (storeTarget) {
+                    summon.effects.push(getStoredTargetEffect({ combatant }));
+                }
+
                 summons.push(summon);
                 return summon;
             } else {

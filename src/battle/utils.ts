@@ -888,12 +888,22 @@ export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
     return combatant?.effects.some((effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
 };
 
-export const getPossibleMoveIndices = ({ currentLocationIndex, friendly, movement = 0 }): number[] => {
+export const getPossibleMoveIndices = ({
+    currentLocationIndex,
+    friendly,
+    action,
+}: {
+    currentLocationIndex: number;
+    friendly: (Combatant | null)[];
+    action: Action;
+}): number[] => {
+    const { movement, movementOptions = {} } = action;
+    const { canSwapCharacterPlaces: swapPlaces } = movementOptions;
     const min = Math.max(0, currentLocationIndex - movement);
     const max = Math.min(friendly.length - 1, currentLocationIndex + movement);
     const moveIndices = [];
     for (let i = min; i <= max; ++i) {
-        if (!friendly[i]) {
+        if (!friendly[i]?.HP || swapPlaces) {
             moveIndices.push(i);
         }
     }

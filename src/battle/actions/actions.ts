@@ -1209,7 +1209,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             let pos: number;
             if (typeof positionIndex === "number" && !mutableFriendly[positionIndex]?.HP) {
                 pos = positionIndex;
-            } else if (placement) {
+            } else if (placement === "adjacent") {
                 const validSummonIndices = getPossibleSummonIndices(mutableFriendly);
                 const isValidIndex = (index: number) => validSummonIndices.includes(index);
                 for (let i = 1; i < mutableFriendly.length; ++i) {
@@ -1223,6 +1223,8 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                         break;
                     }
                 }
+            } else if (placement === "on-top") {
+                pos = actorIndex;
             } else {
                 pos = getRandomItem(getPossibleSummonIndices(mutableFriendly));
             }
@@ -1426,9 +1428,19 @@ const checkInduce = ({
                 }
 
                 affectedTargetIds.forEach((id) => {
-                    const { combatant } = findCombatantData(getState, id) || {};
+                    const combatantData = findCombatantData(getState, id);
+                    if (!combatantData) {
+                        return;
+                    }
 
-                    if (!combatant.HP || isStunnedOrFrozen(combatant)) {
+                    const combatant = combatantData.combatant;
+
+                    const getCalculationTarget = (type) => {
+                        if (type === TRIGGER_TARGET_TYPES.ACTOR) {
+                            return combatantData;
+                        }
+                    };
+                    if (!combatant.HP || isStunnedOrFrozen(combatant) || !passesConditions({ getCalculationTarget, proc: action })) {
                         return;
                     }
 
@@ -1549,8 +1561,21 @@ const checkHandleVacuum = ({
     };
 };
 
-const checkHandleMovement = ({ movement, side, selectedIndex: to, actorIndex: from, source }) => {
+const checkHandleMovement = ({
+    action,
+    side,
+    selectedIndex: to,
+    actorIndex: from,
+    source,
+}: {
+    action: Action;
+    side: BATTLEFIELD_SIDES;
+    selectedIndex: number;
+    actorIndex: number;
+    source: TriggerSource;
+}) => {
     return (dispatch, getState) => {
+        const { movement } = action;
         if (!movement) {
             return;
         }
@@ -1560,7 +1585,7 @@ const checkHandleMovement = ({ movement, side, selectedIndex: to, actorIndex: fr
         // It's classified as a "self" ability, so they target themselves when they cast it, hence `to` and `from` indices will be the same for them.
         // Make them move randomly still, if that's the case.
         if (isNaN(to) || to === from) {
-            const moveIndices = getPossibleMoveIndices({ currentLocationIndex: from, friendly: characters, movement });
+            const moveIndices = getPossibleMoveIndices({ currentLocationIndex: from, friendly: characters, action });
             to = getRandomItem(moveIndices);
         }
 
@@ -1860,7 +1885,7 @@ const performAction = ({
         const battleSide = getState().battle[side];
         const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
 
-        const { vacuum, movement, secondaryAction, autoCastAbilities, retreat } = action;
+        const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
         const combatants = getState().battle[side];
         const targetIndices = calculateTargetIndices({
             action,
@@ -1871,9 +1896,11 @@ const performAction = ({
             battle: getState().battle,
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
+        const isHostileTarget = action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE;
 
         // Don't try to target things that are all gone/dead.
-        if (targetIds.length === 0) {
+        // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
+        if (isHostileTarget && targetIds.length === 0) {
             return;
         }
 
@@ -1912,7 +1939,7 @@ const performAction = ({
 
         const area = calculateActionArea({ action, actor: actorData, target });
         dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        dispatch(checkHandleMovement({ movement, side, actorIndex: actorData.index, selectedIndex, source }));
+        dispatch(checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, source }));
         const updated = getUpdatedStats(updatedStatsProps);
         dispatch(applyStatChanges(updated.map((update) => update[0])));
         // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
