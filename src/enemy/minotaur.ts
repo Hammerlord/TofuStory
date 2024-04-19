@@ -48,7 +48,7 @@ const tauroAvenger: Effect = {
 
 export const tauromacis: Minion = {
     name: "Tauromacis",
-    maxHP: 200,
+    maxHP: 250,
     image: TauromacisImage,
     isElite: true,
     mesos: 40,
@@ -163,7 +163,7 @@ export const tauromacis: Minion = {
 
 export const taurospear: Minion = {
     name: "Taurospear",
-    maxHP: 200,
+    maxHP: 250,
     image: TaurospearImage,
     isElite: true,
     mesos: 40,
