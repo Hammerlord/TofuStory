@@ -124,7 +124,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const { acquireItems, loseItems } = playerStateSlice.actions;
+const { acquireItems, loseItems, updateTownShop } = playerStateSlice.actions;
 
 // At the trading post, players can exchange one of their items for an item of equivalent or lower rarity,
 // or exchange their starter equipment for an upgraded version of their starter equipment.
@@ -417,8 +417,22 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
         if (!selectedPlayerItem || !selectedVendorItem) {
             return;
         }
-        setTradesRemaining((prev) => prev - 1);
-        setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
+        if (townTradingPost) {
+            dispatch(
+                updateTownShop({
+                    town,
+                    shopKey: "tradingPost",
+                    shopState: {
+                        numTradesRemaining: townTradingPost.numTradesRemaining - 1,
+                        items: townTradingPost.items.filter((p) => p.name !== selectedVendorItem.name),
+                    },
+                })
+            );
+        } else {
+            setTradesRemaining((prev) => prev - 1);
+            setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
+        }
+
         dispatch(loseItems([selectedPlayerItem.name]));
         dispatch(acquireItems([selectedVendorItem]));
     };
