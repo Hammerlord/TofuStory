@@ -243,10 +243,10 @@ const flotsamWaveAttackAction = {
 };
 
 const dyleDredgeSummons = [
-    { minion: [dyleUsefulGarbage, dyleGarbage2, dyleBubbleFish] },
-    { minion: [dyleEmptyGarbage, dyleRealGarbage2, dyleUsefulGarbage2] },
-    { minion: [dyleRealGarbage, dyleGarbage2, dyleUsefulGarbage, dyleBubbleFish] },
-    { minion: [dyleEmptyGarbage2, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
+    { minion: [dyleUsefulGarbage, dyleGarbage2, dyleUsefulGarbage2] },
+    { minion: [dyleEmptyGarbage, dyleRealGarbage2] },
+    { minion: [dyleRealGarbage, dyleGarbage2, dyleBubbleFish] },
+    { minion: [dyleEmptyGarbage2, dyleGarbage2, dyleBubbleFish] },
 ];
 
 const submergeReady: Effect = {
