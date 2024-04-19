@@ -7,7 +7,6 @@ import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
-import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
@@ -15,8 +14,8 @@ import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
-import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 import { CONSUMABLE_COST_MULTIPLIER, CONSUMABLE_MULTIPLIER_MAX } from "./constants";
+import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 
 const HEADER_BAR = 72;
 

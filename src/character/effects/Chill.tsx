@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
 import { SnowflakeIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
+import { clamp } from "ramda";
 
 const ANIMATION_DURATION = 2;
 
@@ -52,7 +53,8 @@ const Chill = ({ amount }) => {
 
     useEffect(() => {
         if (amount > 0) {
-            const numParticles = 4;
+            const numParticles = clamp(2, 4, amount + 1);
+
             setParticles(
                 Array.from({ length: numParticles }).map((_, i) => {
                     const min = 10;

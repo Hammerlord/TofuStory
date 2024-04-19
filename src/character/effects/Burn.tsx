@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Icon from "../../icon/Icon";
 import { FireIcon } from "../../images/icons";
+import { clamp } from "ramda";
 
 const ANIMATION_DURATION = 2;
 
@@ -51,7 +52,7 @@ const Burn = ({ amount }) => {
 
     useEffect(() => {
         if (amount > 0) {
-            const numParticles = 5;
+            const numParticles = clamp(3, 5, amount + 2);
             setParticles(
                 Array.from({ length: numParticles }).map((_, i) => {
                     const min = 10;
