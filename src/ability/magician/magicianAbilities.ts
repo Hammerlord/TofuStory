@@ -2836,29 +2836,22 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description: "Every turn, Burn a random enemy for 1 turn.",
+    description: "<b>Uncontrollable.</b> On Summon and turn start, Burn a random enemy.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {
         name: "Fire Spirit",
         image: FireSpiritImage,
+        uncontrollable: true,
         maxHP: 5,
         abilities: [
             {
-                name: "Ember",
-                image: FireMarbleImage,
+                ...attack,
                 actions: [
                     {
+                        type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        type: ACTION_TYPES.RANGE_ATTACK,
-                        icon: FireMarbleImage,
-                        damage: 1,
-                        effects: [
-                            {
-                                ...burn,
-                                duration: 1,
-                            },
-                        ],
+                        damage: 0,
                     },
                 ],
             },
@@ -2914,15 +2907,6 @@ export const fireSpirit: Ability = {
         {
             minion: {
                 maxHP: 2,
-                abilities: [
-                    {
-                        actions: [
-                            {
-                                damage: 2,
-                            },
-                        ],
-                    },
-                ],
             },
         },
     ],
