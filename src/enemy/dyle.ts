@@ -8,6 +8,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     Minion,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -248,6 +249,12 @@ const dyleDredgeSummons = [
     { minion: [dyleEmptyGarbage2, dyleGarbage2, dyleRealGarbage2, dyleBubbleFish] },
 ];
 
+const submergeReady: Effect = {
+    name: "Submerge Ready",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+};
+
 export const dyle: Minion = {
     name: "Dyle",
     maxHP: 250,
@@ -294,10 +301,16 @@ export const dyle: Minion = {
             resourceCost: 3,
             description: "Dispels debuffs. Gains 100 Armor.",
             image: WaterBombImage,
+            conditionOperator: "and",
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     armor: 0,
+                    comparator: "eq",
+                },
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: submergeReady.name,
                     comparator: "eq",
                 },
             ],
@@ -307,6 +320,7 @@ export const dyle: Minion = {
                     target: TARGET_TYPES.SELF,
                     armor: 100,
                     removeDebuffs: true,
+                    removeEffects: [submergeReady.name],
                     effects: [
                         {
                             ...temporaryResist,
@@ -438,5 +452,5 @@ export const dyle: Minion = {
             ],
         },
     ],
-    effects: [hardy],
+    effects: [hardy, submergeReady],
 };
