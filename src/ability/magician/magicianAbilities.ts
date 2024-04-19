@@ -2784,12 +2784,6 @@ export const whelp: Ability = {
                 name: "",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    drawCards: {
-                        amount: 1,
-                    },
-                },
                 onDeath: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     drawCards: {
