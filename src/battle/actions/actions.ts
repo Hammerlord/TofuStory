@@ -2156,6 +2156,7 @@ const autoSelectActionTarget = ({
     const { friendly, hostile, friendlySide, hostileSide } = actorData;
     const { targetArea: area = 0, target, targetName } = action;
 
+    let isPlayerHostile;
     if (target === TARGET_TYPES.PLAYER) {
         const friendlyPlayerIndex = friendly.findIndex((combatant) => combatant?.isPlayer);
         if (friendlyPlayerIndex > -1) {
@@ -2169,17 +2170,20 @@ const autoSelectActionTarget = ({
         const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true }).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
+
         if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
             return {
                 index: hostilePlayerIndex,
                 side: hostileSide,
             };
         }
+
+        isPlayerHostile = hostilePlayerIndex > -1;
     }
 
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
-    if (target === TARGET_TYPES.RANDOM_HOSTILE || (target === TARGET_TYPES.HOSTILE && noValidSelection)) {
+    if (target === TARGET_TYPES.RANDOM_HOSTILE || ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && noValidSelection)) {
         return {
             index: pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area }),
             side: hostileSide,
