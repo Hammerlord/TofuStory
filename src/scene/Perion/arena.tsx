@@ -202,6 +202,46 @@ const ayanScript = [
             },
         ],
     },
+    {
+        speaker: ayanEnemy,
+        dialog: ["I've been bested! I still have much to learn."],
+    },
+    {
+        speaker: announcer,
+        dialog: [
+            "Ayan herself has been defeated!! No doubt that's a devastating blow to a warrior's pride!",
+            "The champion today is a mushroom that came from nowhere. What an incredible show!",
+        ],
+    },
+    {
+        speaker: announcer,
+        dialog: ["To the winner goes the spoils!"],
+    },
+    {
+        speaker: announcer,
+        dialog: ["To the winner goes the spoils!"],
+        treasureBox: {
+            isOpen: true,
+            isCursed: true,
+        },
+    },
+    {
+        scene: ArenaBackdrop,
+        speaker: announcer,
+        dialog: [
+            "That's it for today, folks! Come back again for more nail-biting fights among the island's bravest and strongest contestants as they strive to take the championship!",
+        ],
+    },
+    {
+        speaker: crowd,
+        dialog: ["[The crowd roars.]"],
+        responses: [
+            {
+                text: "Time to go.",
+                isExit: true,
+            },
+        ],
+    },
 ];
 
 const manjiScript = [
