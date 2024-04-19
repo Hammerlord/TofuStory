@@ -732,7 +732,7 @@ export const handleDrawOriginalAbility = ({
         }
 
         const { hand, deck, discard, depleted, playerSide, enemySide } = getState().battle;
-        const newHand = hand.slice();
+        let newHand = hand.slice();
         const newDeck = deck.slice();
         const newDiscard = discard.slice();
         const newDeplete = depleted.slice();
@@ -747,6 +747,7 @@ export const handleDrawOriginalAbility = ({
         };
 
         const found = [newDeck, newDiscard, newDeplete].some(lookupPile);
+        let foundCard;
         if (!found) {
             // This card can still enter the hand even if it was supposed to be ephemeral. Look up the player's ability history to see if it's there.
             const player = playerSide.find((combatant) => combatant?.isPlayer);
@@ -756,10 +757,17 @@ export const handleDrawOriginalAbility = ({
             }
             if (newHand.every((ability: CombatAbility) => ability.instanceId !== card.instanceId)) {
                 newHand.push(card);
+                foundCard = card;
             }
         }
 
-        // TODO Hand full check...
+        if (newHand.length > MAX_HAND_SIZE) {
+            newHand = newHand.slice(0, MAX_HAND_SIZE);
+            dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+            if (!foundCard.removeAfterTurn) {
+                newDiscard.unshift(foundCard);
+            }
+        }
 
         dispatch(
             updateBattle({
@@ -769,21 +777,5 @@ export const handleDrawOriginalAbility = ({
                 deplete: newDeplete,
             })
         );
-
-        playerSide.concat(enemySide).forEach((combatant) => {
-            if (combatant) {
-                dispatch(
-                    checkEventTrigger({
-                        combatantId: combatant.id,
-                        effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
-                        source: {
-                            ...source,
-                            isProc: true,
-                            trackSumAmount: 1,
-                        },
-                    })
-                );
-            }
-        });
     };
 };
