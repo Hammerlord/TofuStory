@@ -2492,7 +2492,7 @@ export const useAbility = ({
         const actorInfo = findCombatantData(getState, actorId);
         // Due to morph, the combatant may no longer exist
         if (actorInfo) {
-            dispatch(onUseAbility({ actorInfo, source, ability }));
+            dispatch(onUseAbility({ actorInfo, source, ability, isAutoCast }));
         }
     };
 };
@@ -2543,7 +2543,17 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
 };
 
 const onUseAbility =
-    ({ actorInfo, source, ability }: { actorInfo: CombatantInfo; source: TriggerSource; ability: Ability }) =>
+    ({
+        actorInfo,
+        source,
+        ability,
+        isAutoCast,
+    }: {
+        actorInfo: CombatantInfo;
+        source: TriggerSource;
+        ability: Ability;
+        isAutoCast?: boolean;
+    }) =>
     (dispatch) => {
         if (!actorInfo) {
             return;
@@ -2581,7 +2591,7 @@ const onUseAbility =
             );
         }
 
-        if (ability.depletedOnUse) {
+        if (ability.depletedOnUse && !isAutoCast) {
             dispatch(
                 checkEventTrigger({
                     combatantId: actor.id,
