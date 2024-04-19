@@ -278,7 +278,9 @@ const ShopView = ({
             return <div className={classNames(classes.abilityContainer, classes.abilityPlaceholder)} key={i} />;
         }
 
-        const { item, price } = shopItem;
+        const { item, price: initPrice } = shopItem;
+        const price = applyDiscount(initPrice);
+
         return (
             <div className={classes.abilityContainer} key={[item.name, i].join("-")}>
                 <RarityTag rarity={item.rarity} />
@@ -323,6 +325,7 @@ const ShopView = ({
 
         const { item, price: initPrice, isFood } = shopItem;
         const price = getFinalConsumableItemPrice(item, initPrice);
+        const cannotAfford = (!isFood || !freeFood) && player.mesos < price;
 
         return (
             <div className={classes.itemContainer} key={[item.name, i].join("-")}>
@@ -331,7 +334,7 @@ const ShopView = ({
                         selected: i === selectedItemIndex,
                     })}
                     onClick={() => {
-                        if (player.mesos >= price) {
+                        if (!cannotAfford) {
                             setSelectedAbilityIndex(null);
                             setSelectedItemIndex(i);
                         }
@@ -342,7 +345,7 @@ const ShopView = ({
                 <div className={classes.priceContainer}>
                     <div
                         className={classNames(classes.priceContainerInner, {
-                            [classes.cannotAfford]: (!isFood || !freeFood) && player.mesos < price,
+                            [classes.cannotAfford]: cannotAfford,
                         })}
                     >
                         {isFood && Boolean(freeFood) && <span className={classes.free}>FREE</span>}
