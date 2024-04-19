@@ -134,7 +134,7 @@ const ItemRewards = ({
         }
 
         const itemsToBeRewarded = itemRewards.slice();
-        if ([BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER].includes(rewardType) && !disableAttainConsumable) {
+        if ([BATTLE_TYPES.BOSS].includes(rewardType) && !disableAttainConsumable) {
             if (Math.random() < 0.5) {
                 itemsToBeRewarded.push(goldenHammer);
             } else {
