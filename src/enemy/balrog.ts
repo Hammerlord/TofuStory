@@ -198,7 +198,6 @@ export const balrog: Minion = {
                             damage: 6,
                             type: ACTION_TYPES.ATTACK,
                             target: TARGET_TYPES.PLAYER,
-                            destroyArmor: 1,
                             moveCards: {
                                 from: "hand",
                                 to: "discard",
