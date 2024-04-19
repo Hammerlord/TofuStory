@@ -121,12 +121,13 @@ export const getUpdatedStats = ({
             Math.floor(targetCombatant.armor * destroyArmor) +
             flatDamage * multiplier;
 
-        const totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
-        let updatedTargetArmor = Math.max(0, totalArmor - damage);
+        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
         if (decayArmor) {
             const halveArmorAmount = getHalveArmorAmount(target);
-            updatedTargetArmor += halveArmorAmount;
+            totalArmor += halveArmorAmount;
         }
+
+        const updatedTargetArmor = Math.max(0, totalArmor - damage);
         const armorGained = updatedTargetArmor - targetCombatant.armor;
         const targetApplicableHP = targetCombatant.HP - targetMinHP;
         const healthDamage = Math.min(targetApplicableHP, Math.max(0, damage - totalArmor));
