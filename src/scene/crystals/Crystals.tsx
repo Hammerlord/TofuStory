@@ -34,6 +34,7 @@ const crystalA: Minion = {
             icon: ElementalAdaptationImage,
             onReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                disableTriggerFromProcs: true,
                 effects: [
                     {
                         ...chill,
