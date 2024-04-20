@@ -2197,7 +2197,7 @@ const autoSelectActionTarget = ({
 
         return {
             index: getRandomItem(targetIndices),
-            side: friendlySide,
+            side: hostileSide,
         };
     }
 
