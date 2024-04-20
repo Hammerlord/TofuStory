@@ -265,7 +265,7 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
                     </>
                 )}
                 {!displayPulse && (
-                    <span className={classNames((classes.customEffect, classes.defaultCustomEffectAnimation))}>
+                    <span className={classNames(classes.customEffect, classes.defaultCustomEffectAnimation)}>
                         {getEffectImage(portraitImage)}
                     </span>
                 )}
