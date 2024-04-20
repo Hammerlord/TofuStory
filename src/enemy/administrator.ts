@@ -132,7 +132,7 @@ export const administrator: Minion = {
         {
             ...warding,
             name: "Nimble Feet",
-            image: NimbleFeetImage,
+            portraitImage: NimbleFeetImage,
             description: "Every turn, gains a shield that wards off a single attack.",
             turnsTriggerFrequency: undefined,
             onBattleStart: {

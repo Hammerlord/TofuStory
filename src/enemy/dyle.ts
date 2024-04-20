@@ -329,7 +329,7 @@ export const dyle: Minion = {
                             ...pristineDefense,
                             name: "Underwater",
                             icon: WaterBombImage,
-                            image: WaterBombImage,
+                            portraitImage: WaterBombImage,
                             onReceiveDamage: {
                                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                 conditions: [

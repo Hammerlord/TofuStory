@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { Effect, EFFECT_TYPES } from "../../ability/types";
+import { CombatEffect, Effect, EFFECT_TYPES } from "../../ability/types";
 import Burn from "./Burn";
 import Chill from "./Chill";
 import Healing from "./Healing";
@@ -213,6 +213,20 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
         }
     };
 
+    const getCustomEffectElement = (effect: CombatEffect, i) => {
+        if (!effect.portraitImage) {
+            return null;
+        }
+
+        const { portraitImage, name, id } = effect;
+
+        return (
+            <span className={classes.center} key={id || [name, i].join("-")}>
+                <span className={classes.customEffect}>{getEffectImage(portraitImage)}</span>
+            </span>
+        );
+    };
+
     return (
         <div className={classes.effectsRoot}>
             {
@@ -233,14 +247,7 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
                     <Bleed />
                 </div>
             )}
-            {effects.map(
-                (effect, i) =>
-                    effect.image && (
-                        <span className={classes.center} key={effect.id || [effect.name, i].join("-")}>
-                            <span className={classes.customEffect}>{getEffectImage(effect.image)}</span>
-                        </span>
-                    )
-            )}
+            {effects.map(getCustomEffectElement)}
         </div>
     );
 };

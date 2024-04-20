@@ -33,7 +33,7 @@ export const minionSnail: Minion = {
             name: "Green Shell",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            image: SnailShellImage,
+            portraitImage: SnailShellImage,
             icon: SnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
@@ -67,7 +67,7 @@ const blueMinionSnail: Minion = {
             name: "Blue Shell",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            image: BlueSnailShellImage,
+            portraitImage: BlueSnailShellImage,
             icon: BlueSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
@@ -102,7 +102,7 @@ const redMinionSnail: Minion = {
             name: "Red Shell",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            image: RedSnailShellImage,
+            portraitImage: RedSnailShellImage,
             icon: RedSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {

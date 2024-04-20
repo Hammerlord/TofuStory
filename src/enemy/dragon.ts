@@ -49,7 +49,7 @@ const terriblePower: Effect = {
     name: "Terrible Power",
     description: "Increasing ATT every turn.",
     icon: JapaneseOgreIcon,
-    image: JapaneseOgreIcon,
+    portraitImage: JapaneseOgreIcon,
 };
 
 const reawakening: Effect = {

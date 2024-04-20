@@ -1443,7 +1443,7 @@ export const curseEye: Minion = {
                             name: "Dizzy",
                             description: "Your attacks may randomly hit other targets instead.",
                             icon: DizzyIcon,
-                            image: DizzyIcon,
+                            portraitImage: DizzyIcon,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
                             duration: 2,

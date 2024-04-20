@@ -31,7 +31,7 @@ const balrogName = "Avatar of Balrog";
 const flameShield: Effect = {
     ...warding,
     icon: GemHeartImage,
-    image: GemHeartImage,
+    portraitImage: GemHeartImage,
     description: "Periodically granting Balrog a shield that wards off a single attack.",
     onTurnStart: {
         ability: {
@@ -62,7 +62,7 @@ const flameRaging: Effect = {
     ...raging,
     description: "Periodically increasing Balrog's attack power.",
     icon: AngerIcon,
-    image: AngerIcon,
+    portraitImage: AngerIcon,
     onTurnStart: {
         ability: {
             name: "Raging Flame",
@@ -102,7 +102,7 @@ const flamePoison: Effect = {
     ...poisonous,
     description: "Balrog's attacks inflict poison.",
     icon: SapOfNependeathImage,
-    image: SapOfNependeathImage,
+    portraitImage: SapOfNependeathImage,
     onTurnStart: {
         ability: {
             name: "Poisonous Flame",

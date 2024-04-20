@@ -103,7 +103,7 @@ export const bats: Effect = {
     name: "Bats!",
     description: "Leeching HP to the applier of this effect.",
     icon: StumpyBatImage,
-    image: BatsEffectImage,
+    portraitImage: BatsEffectImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 5,
@@ -127,7 +127,7 @@ export const fairySwarm: Effect = {
     attackDamageReceived: -15,
     duration: 2,
     icon: ShiningFairyImage,
-    image: GreenFairiesImage,
+    portraitImage: GreenFairiesImage,
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         usableWhileStunned: true,
@@ -174,7 +174,7 @@ const frenziedFairies: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: AncientFairyImage,
-    image: PurpleFairiesImage,
+    portraitImage: PurpleFairiesImage,
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         damage: 3,
@@ -407,7 +407,7 @@ export const counterEffect: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: NamelessSwordImage,
-    image: NamelessSwordImage,
+    portraitImage: NamelessSwordImage,
     canBeSilenced: true,
     onReceiveAttack: {
         disableTriggerFromProcs: true,
@@ -492,7 +492,7 @@ export const armorDown: Effect = {
 
 export const critical: Effect = {
     name: "Critical",
-    image: MarksmanshipImage,
+    portraitImage: MarksmanshipImage,
     description: "Gains +1 ATT against debuffed targets.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
