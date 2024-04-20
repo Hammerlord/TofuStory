@@ -81,9 +81,43 @@ const getAdjustedAvenger = (baseEnemy: Minion): Effect => {
     };
 };
 
-const generateEliteSquad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
+const getRecentEnemies = (previousEncounters: Wave[][]) => {
+    // Do not allow fighting the same enemies close together
+    const lastThreeEncounters = previousEncounters.slice().reverse().slice(0, 3);
+    const recentEnemyLog = lastThreeEncounters.reduce((acc, waves: Wave[]) => {
+        waves.forEach((wave) => {
+            wave.enemies.forEach((enemy: Minion | null) => {
+                if (enemy) {
+                    acc[enemy.name] = true;
+                }
+            });
+        });
+
+        return acc;
+    }, {});
+    return recentEnemyLog;
+};
+
+const pickBaseEnemy = ({ elites, previousEncounters }: { elites: Minion[]; previousEncounters: Wave[][] }): Minion => {
+    const recentEnemyLog = getRecentEnemies(previousEncounters);
+    const eligibleEnemies = elites.filter((enemy: Minion) => {
+        return !recentEnemyLog[enemy.name];
+    });
+
+    return getRandomItem(eligibleEnemies.length ? eligibleEnemies : elites);
+};
+
+const generateEliteSquad = ({
+    eliteMap,
+    numAffixes = 1,
+    previousEncounters,
+}: {
+    eliteMap: EliteMap;
+    numAffixes: number;
+    previousEncounters: Wave[][];
+}): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
-    const baseEnemy = getRandomItem(eliteMap.squad);
+    const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 10));
@@ -107,8 +141,16 @@ const generateEliteSquad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; 
     return [enemy, alternate, enemy, alternate, enemy];
 };
 
-const generateEliteTriad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
-    const baseEnemy = getRandomItem(eliteMap.trio);
+const generateEliteTriad = ({
+    eliteMap,
+    numAffixes = 1,
+    previousEncounters,
+}: {
+    eliteMap: EliteMap;
+    numAffixes: number;
+    previousEncounters: Wave[][];
+}): (Minion | null)[] => {
+    const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
     const affixes = shuffle([eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, explosive, lifeLink, sneaky, stoneSkin]).slice(
         0,
         numAffixes
@@ -143,9 +185,18 @@ const generateEliteTriad = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; 
     ]);
 };
 
-const generateEliteDuo = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
+const generateEliteDuo = ({
+    eliteMap,
+    numAffixes = 1,
+    previousEncounters,
+}: {
+    eliteMap: EliteMap;
+    numAffixes: number;
+    previousEncounters: Wave[][];
+}): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
-    const baseEnemy = getRandomItem(eliteMap.duo || eliteMap.trio);
+    const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
+
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
@@ -175,7 +226,15 @@ const generateEliteDuo = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; nu
     ]);
 };
 
-const generateElite = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAffixes: number }): (Minion | null)[] => {
+const generateElite = ({
+    eliteMap,
+    numAffixes = 1,
+    previousEncounters,
+}: {
+    eliteMap: EliteMap;
+    numAffixes: number;
+    previousEncounters: Wave[][];
+}): (Minion | null)[] => {
     const minion = getRandomItem(eliteMap.minions);
     const swarming: Effect = {
         type: EFFECT_TYPES.NONE,
@@ -206,7 +265,7 @@ const generateElite = ({ eliteMap, numAffixes = 1 }: { eliteMap: EliteMap; numAf
         },
     };
     const affixes = shuffle([eliteThorns, raging, warding, eruptive, swarming, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
-    const baseEnemy = getRandomItem(eliteMap.single);
+    const baseEnemy = pickBaseEnemy({ elites: eliteMap.single, previousEncounters });
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 25));
@@ -228,7 +287,7 @@ export const generateElites = (route: Route, previousEncounters: Wave[][]): { en
         return;
     }
 
-    const eliteProps = { eliteMap: route.elites, numAffixes: route.eliteOptions?.numAffixes };
+    const eliteProps = { eliteMap: route.elites, numAffixes: route.eliteOptions?.numAffixes, previousEncounters };
     const getSquad = () => generateEliteSquad(eliteProps);
     const getTriad = () => generateEliteTriad(eliteProps);
     const getDuo = () => generateEliteDuo(eliteProps);
@@ -239,20 +298,7 @@ export const generateElites = (route: Route, previousEncounters: Wave[][]): { en
     if (route.elites.special?.length > 0) {
         eliteGenerators.push(() => {
             const eligibleEnemies = route.elites.special.filter((enemySet: (Minion | null)[]) => {
-                // Do not allow fighting the same enemies close together
-                const lastThreeEncounters = previousEncounters.slice().reverse().slice(0, 3);
-                const recentEnemyLog = lastThreeEncounters.reduce((acc, waves: Wave[]) => {
-                    waves.forEach((wave) => {
-                        wave.enemies.forEach((enemy: Minion | null) => {
-                            if (enemy) {
-                                acc[enemy.name] = true;
-                            }
-                        });
-                    });
-
-                    return acc;
-                }, {});
-
+                const recentEnemyLog = getRecentEnemies(previousEncounters);
                 return enemySet.every((enemy) => !enemy || !recentEnemyLog[enemy.name]);
             });
             return getRandomItem(eligibleEnemies.length ? eligibleEnemies : route.elites.special);
