@@ -423,7 +423,18 @@ export const orangeMushroom: Minion = {
                 },
             ],
         },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
         whomp,
+        loaf,
     ],
 };
 
