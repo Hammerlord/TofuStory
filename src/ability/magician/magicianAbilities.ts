@@ -2549,7 +2549,7 @@ export const ifrit: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.RANGE_ATTACK,
                         icon: FireMarbleImage,
-                        damage: 3,
+                        damage: 2,
                         effects: [
                             {
                                 ...burn,
@@ -2601,7 +2601,7 @@ export const ifrit: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },
@@ -2633,7 +2633,7 @@ export const elquines: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         type: ACTION_TYPES.RANGE_ATTACK,
                         icon: NimbleJewelImage,
-                        damage: 3,
+                        damage: 2,
                         effects: [{ ...chill, duration: 1 }],
                         playbackTime: 500,
                     },
@@ -2676,7 +2676,7 @@ export const elquines: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },
