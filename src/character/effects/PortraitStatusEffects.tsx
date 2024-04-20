@@ -141,13 +141,14 @@ const useStyles = createUseStyles({
         animationName: "$pulse",
         animationDuration: "1s",
         animationIterationCount: "infinite",
+        opacity: 0,
     },
     customEffect: {
         left: "50%",
         width: "100%",
         height: "100%",
         position: "absolute",
-        top: "50%",
+        top: "0",
         transform: "translate(-50%, -50%)",
         maxWidth: "50px",
         "& > *": {
