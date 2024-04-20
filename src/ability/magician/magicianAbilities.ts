@@ -1,11 +1,11 @@
-import { attack } from "./../../enemy/abilities";
-import { cloneDeep } from "lodash";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import {
     AdvancedChargeImage,
     ArcaneAimImage,
     ArcaneOverdriveImage,
     BabyDragonImage,
     BigSnowballImage,
+    BlazingExtinctionImage,
     BlueRushImage,
     CakeTemptationImage,
     ChocolateCupcakeImage,
@@ -104,8 +104,8 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
+import { attack } from "./../../enemy/abilities";
 import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
-import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -2966,6 +2966,63 @@ export const astralRewind: Ability = {
                 {
                     addLastPlayedCards: {
                         amount: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const burst: Ability = {
+    name: "Burst",
+    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} for every unique {{{ _offense_ }}} spell cast this battle.",
+    overrideBodyText: true,
+    image: BlazingExtinctionImage,
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            damage: 3,
+            area: 2,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: FireMarbleImage,
+            animationOptions: {
+                width: 75,
+                height: 75,
+                fadeOut: true,
+                brightness: 1.2,
+                opacity: 0.5,
+            },
+            bonus: {
+                damage: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ABILITIES_USED,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    filters: [
+                        {
+                            property: "actions.0.target",
+                            value: TARGET_TYPES.HOSTILE,
+                            comparator: "eq",
+                        },
+                        {
+                            property: "actions.0.target",
+                            value: TARGET_TYPES.RANDOM_HOSTILE,
+                            comparator: "eq",
+                        },
+                    ],
+                    filterUnique: true,
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: {
+                        damage: 1,
                     },
                 },
             ],

@@ -49,6 +49,7 @@ export { default as BladestormImage } from "./Bladestorm.png";
 export { default as BladeworksImage } from "./Bladeworks.png";
 export { default as BlastImage } from "./Blast.png";
 export { default as BlastExtraStrikeImage } from "./BlastExtraStrike.png";
+export { default as BlazingExtinctionImage } from "./BlazingExtinction.png";
 export { default as BlizzardChargeImage } from "./BlizzardCharge.png";
 export { default as BlockImage } from "./Block.png";
 export { default as BloodMaskImage } from "./BloodMask.png";

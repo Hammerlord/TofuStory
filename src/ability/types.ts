@@ -313,6 +313,8 @@ export interface Multiplier {
     // Eg. Providing a filter can narrow down the number of cards { property: "name", comparator: "includes", value: "bolt" }
     // For ATTACKS_MADE_IN_TURN, this applies to the *action parent* object
     filters?: { property: string; comparator: Comparator; value: any }[];
+    // For ALL_CARDS and EFFECT_DURATIONS: multiplies by cards/effects that are unique, based on their name. (Upgrade level does not count toward uniqueness)
+    filterUnique?: boolean;
 }
 
 export interface Bonus {
@@ -413,6 +415,7 @@ export enum MULTIPLIER_TYPES {
     OVERHEALING = "overhealing",
     ALL_CARDS = "all-cards",
     EFFECT_DURATIONS = "effect-durations",
+    ABILITIES_USED = "abilities-used",
 }
 
 export type CardFilterCondition = {

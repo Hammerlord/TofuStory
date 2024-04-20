@@ -28,6 +28,7 @@ import { findCombatantData } from "./actions/actions";
 import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import _ from "lodash";
 import { useCallback, useRef } from "react";
 
 export type StatChange = {
@@ -328,7 +329,7 @@ export const getMultiplier = ({
         return 1;
     }
 
-    const { value, type, filters } = multiplier;
+    const { value, type, filters, filterUnique } = multiplier;
 
     const numValue = typeof value === "number" ? value : 1;
 
@@ -467,6 +468,30 @@ export const getMultiplier = ({
         }
 
         return buffs.length;
+    }
+
+    if (type === MULTIPLIER_TYPES.ABILITIES_USED) {
+        const abilitiesUsed = combatant.abilityHistory.filter((ability) => {
+            if (filters) {
+                return filters.some(({ property, value, comparator }) => {
+                    const propertyVal = _.get(ability, property) || 0;
+                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                });
+            }
+
+            return true;
+        });
+
+        if (filterUnique) {
+            const abilityMap = abilitiesUsed.reduce((acc, ability) => {
+                acc[ability.name] = true;
+                return acc;
+            }, {});
+
+            return Object.keys(abilityMap).length;
+        }
+
+        return abilitiesUsed.length;
     }
 
     return 1;
