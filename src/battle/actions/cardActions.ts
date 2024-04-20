@@ -13,7 +13,7 @@ import {
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItems, shuffle } from "../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
@@ -96,7 +96,7 @@ export const drawCards = ({
         }
 
         if (handTooFull) {
-            dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+            dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
         }
 
         const newState = {
@@ -366,7 +366,7 @@ export const checkCardActions = ({
 
             if (newHand.length > MAX_HAND_SIZE) {
                 newHand = newHand.slice(0, MAX_HAND_SIZE);
-                dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+                dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
             }
 
             dispatch(
@@ -763,7 +763,7 @@ export const handleDrawOriginalAbility = ({
 
         if (newHand.length > MAX_HAND_SIZE) {
             newHand = newHand.slice(0, MAX_HAND_SIZE);
-            dispatch(setNotification({ text: "Your hand is too full!", severity: "warning", id: uuid.v4() }));
+            dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
             if (!foundCard.removeAfterTurn) {
                 newDiscard.unshift(foundCard);
             }

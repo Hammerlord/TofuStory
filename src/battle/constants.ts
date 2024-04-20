@@ -22,4 +22,5 @@ export const battleWarnings = {
     targetStealth: "That character is stealthed and cannot be targeted directly.",
     unplayable: "That card cannot be played.",
     targetTaunt: "You must target the enemy that has Taunt.",
+    handFull: "Your hand is too full!",
 };
