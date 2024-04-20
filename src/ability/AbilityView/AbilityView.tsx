@@ -244,7 +244,7 @@ interface AbilityViewProps {
     onClick?: (event: any) => void;
     onMouseDown?: (event: any) => void;
     isSelected?: boolean;
-    ability: Ability | CombatAbility;
+    ability: CombatAbility;
     className?: string;
     // Eg. when viewing cards during card reward, the cards should not glow
     disableGlow?: boolean;
@@ -271,6 +271,7 @@ const AbilityView = forwardRef(
             preemptive,
             unplayable,
             disableConditionGlow,
+            effects = [],
         } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets } = actions[0] || {};
         const cardImage = minion?.image || image;
@@ -473,13 +474,16 @@ const AbilityView = forwardRef(
             }
         };
 
+        const shouldGlow =
+            isAbilityUsable && !disableGlow && !disableConditionGlow && state.battle && (hasBonus || effects.some((e) => e.highlightCard));
+
         return (
             <AbilityTooltip ability={ability}>
                 <div
                     className={classNames(classes.root, className, {
                         [classes.cursed]: type === ACTION_TYPES.HINDER,
                         "-selected": isSelected,
-                        [classes.glow]: isAbilityUsable && !disableGlow && !disableConditionGlow && state.battle && hasBonus,
+                        [classes.glow]: shouldGlow,
                     })}
                 >
                     <div

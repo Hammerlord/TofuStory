@@ -2607,14 +2607,14 @@ export const shieldCharge: Ability = {
     name: "Shield Charge",
     image: LightningChargeImage,
     resourceCost: 1,
-    reusable: true,
     rarity: RARITIES.UNCOMMON,
-    description: "The next use is free when you gain {{{ _armor_ }}}.",
+    description: "When you gain {{{ _armor_ }}}, the next use is free and doesn't go to discard.",
     onReceiveArmor: {
         abilityEffects: [
             {
                 resourceCost: -1,
-                removeOnDiscard: false,
+                reusable: true,
+                highlightCard: true,
             },
         ],
     },

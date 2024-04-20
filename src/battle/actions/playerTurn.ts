@@ -26,7 +26,8 @@ export const onUsePlayerAbility = ({
 
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
         const ability: CombatAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
-        if (ability?.reusable) {
+        const isReusable = ability.reusable || ability.effects.some((effect) => effect.reusable);
+        if (isReusable) {
             // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
             dispatch(
                 updateBattle({

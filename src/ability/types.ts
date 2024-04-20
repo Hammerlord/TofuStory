@@ -777,7 +777,9 @@ export interface AbilityEffect {
     maxApplications?: number;
     // Whether this effect should be cleared if the card is discarded. True by default.
     removeOnDiscard?: boolean;
+    reusable?: boolean; // The card becomes reusable while this effect persists.
     isLocked?: boolean; // The card becomes unplayable.
+    highlightCard?: boolean; // A visual effect that gives the card a yellow border (the visual effect for a passing condition).
 }
 
 export enum SELECT_CARD_TYPES {
