@@ -174,6 +174,9 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     disableDisplayIcon?: boolean;
     // The larger, possibly animated effect image to display on top of the combatant portrait
     portraitImage?: string;
+    portraitImageOptions?: {
+        displayMode: "default" | "pulse";
+    };
     weaponAnimation?: "glow";
     // Stacks is the number of this effect but stored on the same effect object, rather than the traditional "n" effect objects representing "n" stacks.
     // See Volatile Magic for usage.

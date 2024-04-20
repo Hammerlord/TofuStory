@@ -1356,6 +1356,9 @@ export const counterattack: Ability = {
                     type: EFFECT_TYPES.TAUNT,
                     class: EFFECT_CLASSES.BUFF,
                     portraitImage: NamelessSwordImage,
+                    portraitImageOptions: {
+                        displayMode: "pulse",
+                    },
                     icon: NamelessSwordImage,
                     duration: 2,
                     onReceiveAttack: {

@@ -675,6 +675,9 @@ export const taunt: Effect = {
     type: EFFECT_TYPES.TAUNT,
     class: EFFECT_CLASSES.BUFF,
     portraitImage: BlackShieldIcon,
+    portraitImageOptions: {
+        displayMode: "pulse",
+    },
     icon: GreyShieldImage,
     canBeSilenced: true,
     description: "Attackers must target this character.",

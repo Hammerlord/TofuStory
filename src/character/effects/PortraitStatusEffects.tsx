@@ -9,6 +9,7 @@ import Stealth from "./Stealth";
 import { getEnabledEffects } from "../../battle/utils";
 import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons";
 import { NimbleJewelCImage } from "../../images";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     effectsRoot: {
@@ -118,23 +119,46 @@ const useStyles = createUseStyles({
             opacity: "0.4",
         },
     },
-    customEffect: {
+    defaultCustomEffectAnimation: {
         animationName: "$custom",
         animationDuration: "3s",
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
+        transformOrigin: "bottom left",
+    },
+    "@keyframes pulse": {
+        from: {
+            transform: "translate(-50%, -25%) scale(1.5)",
+            opacity: 0.3,
+        },
+        to: {
+            transform: "translate(-50%, 25%) scale(3)",
+            opacity: 0,
+            filter: "brightness(0.5)",
+        },
+    },
+    pulseCustomEffectAnimation: {
+        animationName: "$pulse",
+        animationDuration: "1s",
+        animationIterationCount: "infinite",
+    },
+    customEffect: {
         left: "50%",
         width: "100%",
         height: "100%",
         position: "absolute",
-        transform: "translateX(-50%)",
-        transformOrigin: "bottom left",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
         maxWidth: "50px",
         "& > *": {
             left: "50%",
             position: "absolute",
             transform: "translateX(-50%)",
         },
+    },
+    pulseBase: {
+        transform: "translate(-50%, -25%) scale(1.5)",
+        opacity: 0.8,
     },
     freeze: {
         bottom: "-105px",
@@ -218,11 +242,32 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
             return null;
         }
 
-        const { portraitImage, name, id } = effect;
+        const { portraitImage, name, id, portraitImageOptions } = effect;
+        const displayPulse = portraitImageOptions?.displayMode === "pulse";
 
         return (
             <span className={classes.center} key={id || [name, i].join("-")}>
-                <span className={classes.customEffect}>{getEffectImage(portraitImage)}</span>
+                {displayPulse && (
+                    <>
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <span
+                                className={classNames(classes.customEffect, classes.pulseCustomEffectAnimation)}
+                                style={{ animationDelay: `${0.2 * i}s` }}
+                                key={i}
+                            >
+                                {getEffectImage(portraitImage)}
+                            </span>
+                        ))}
+                        <span className={classNames(classes.customEffect, classes.pulseBase)} key={i}>
+                            {getEffectImage(portraitImage)}
+                        </span>
+                    </>
+                )}
+                {!displayPulse && (
+                    <span className={classNames((classes.customEffect, classes.defaultCustomEffectAnimation))}>
+                        {getEffectImage(portraitImage)}
+                    </span>
+                )}
             </span>
         );
     };

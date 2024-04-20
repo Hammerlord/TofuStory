@@ -408,6 +408,9 @@ export const counterEffect: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: NamelessSwordImage,
     portraitImage: NamelessSwordImage,
+    portraitImageOptions: {
+        displayMode: "pulse",
+    },
     canBeSilenced: true,
     onReceiveAttack: {
         disableTriggerFromProcs: true,
