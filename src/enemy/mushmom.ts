@@ -2,7 +2,7 @@ import { hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { MushmomImage, MushmomJumpImage, OrangeMushroomImage } from "../images";
 import { MountainIcon } from "../images/icons";
-import { attack, doOtherWave, doWave, whomp } from "./abilities";
+import { attack, doOtherWave, doWave, loaf, whomp } from "./abilities";
 import { orangeMushroom } from "./enemy";
 
 export const mushmom: Minion = {
@@ -26,6 +26,7 @@ export const mushmom: Minion = {
             ],
         },
         { ...whomp, resourceCost: 0, castTime: undefined },
+        loaf,
         {
             ...attack,
             actions: [
