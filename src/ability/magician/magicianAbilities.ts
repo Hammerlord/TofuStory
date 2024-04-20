@@ -185,7 +185,7 @@ export const empower: Ability = {
     image: ArcaneOverdriveImage,
     description: "This turn, gain +{{ actions.0.effects.0.attackPower }} attack power.",
     overrideBodyText: true,
-    resourceCost: 0,
+    resourceCost: 1,
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -216,7 +216,7 @@ export const energyBolt: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 5,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
