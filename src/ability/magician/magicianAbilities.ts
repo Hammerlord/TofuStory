@@ -2107,7 +2107,7 @@ export const snowball: Ability = {
     name: "Snowball",
     image: SnowballImage,
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2412,7 +2412,7 @@ export const wardBooster: Ability = {
 const icicleMinion: Minion = {
     name: "Icicle",
     image: IcicleMinionImage,
-    description: "On attack: Inflicts Chill and hits itself for 1. Receive attack: Inflicts Chill.",
+    description: "<b>On attack:<b/> Inflicts Chill and hits itself for 1 {{{ _damage_ }}}. <b>Receive attack:</b> Inflicts Chill.",
     maxHP: 1,
     abilities: [
         {
@@ -2462,7 +2462,7 @@ const icicleMinion: Minion = {
 export const icicles: Ability = {
     name: "Icicles",
     image: IciclesPortraitImage,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
     description: "The next {{ actions.0.effects.0.stacks }} times you play a 1+ cost card, summon an Icicle.",
     resourceCost: 1,
@@ -2473,13 +2473,13 @@ export const icicles: Ability = {
             effects: [
                 {
                     name: "Icicles",
-                    description: "When you cast a 1+ cost spell, summon a (3/1) Icicle.",
+                    description: "When you cast a 1+ cost card, summon a (3/1) Icicle.",
                     icon: IcicleMinionImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     maxApplications: 1,
                     stacks: 3,
-                    onAbility: {
+                    onPlayCard: {
                         ability: {
                             name: "Icicle",
                             image: IcicleMinionImage,
