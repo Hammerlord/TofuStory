@@ -72,7 +72,7 @@ export const gachaponEvents: EventScene = {
                                         {
                                             speaker: gachaponMachine,
                                             dialog: [
-                                                "The machine makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
+                                                "You dealt {{ totalDamage }} damage to the gachapon machine. It makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
                                             ],
                                         },
                                         {
@@ -110,7 +110,7 @@ export const gachaponEvents: EventScene = {
                                         {
                                             speaker: gachaponMachine,
                                             dialog: [
-                                                "The machine makes a bunch of clunking sounds, as if something got lodged. The screen lights up with a prompt...",
+                                                "You dealt {{ totalDamage }} damage to the gachapon machine. It makes a bunch of clunking sounds, as if something got lodged. The screen lights up with a prompt...",
                                             ],
                                         },
                                         {
@@ -148,7 +148,7 @@ export const gachaponEvents: EventScene = {
                                         {
                                             speaker: gachaponMachine,
                                             dialog: [
-                                                "The machine makes a clunking sound, then stops, as if something got lodged. The screen lights up with a prompt...",
+                                                "You dealt {{ totalDamage }} damage to the gachapon machine. The machine makes a clunking sound, then stops, as if something got lodged. The screen lights up with a prompt...",
                                             ],
                                         },
                                         {
@@ -174,7 +174,10 @@ export const gachaponEvents: EventScene = {
                                     next: [
                                         {
                                             speaker: gachaponMachine,
-                                            dialog: ["Nothing happens. The machine stands unaffected by your assault."],
+                                            dialog: [
+                                                "You dealt {{ totalDamage }} damage to the gachapon machine.",
+                                                "...Nothing happens. The machine stands unaffected by your assault.",
+                                            ],
                                         },
                                     ],
                                 },
