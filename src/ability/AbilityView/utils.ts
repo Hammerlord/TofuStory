@@ -117,6 +117,12 @@ export const interpolateAbilityDescription = ({ ability }) => {
         return obj;
     };
 
+    const styleObjectToString = (object) => {
+        return Object.entries(object).reduce((acc, entry) => {
+            return acc + entry.join(":") + ";";
+        }, "");
+    };
+
     const cardTypeString = (color) => {
         const properties = {
             width: 7,
@@ -127,20 +133,30 @@ export const interpolateAbilityDescription = ({ ability }) => {
             background: color,
         };
 
-        const styleStr = Object.entries(properties).reduce((acc, entry) => {
-            return acc + entry.join(":") + ";";
-        }, "");
-
+        const styleStr = styleObjectToString(properties);
         return `<span style="${styleStr}"></span>`;
     };
+
+    const iconStyles = {
+        width: 16,
+        height: 16,
+        "vertical-align": "bottom",
+    };
+
+    const iconStyleStr = styleObjectToString(iconStyles);
+
+    const styleStrWithShadow = styleObjectToString({
+        ...iconStyles,
+        filter: "drop-shadow(0 0 1px black)",
+    });
 
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
         _summon_: cardTypeString(GREEN),
-        _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
-        _healing_: `<img src="${HeartImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
-        _armor_: `<img src="${ShieldImage}" alt="Damage" style="width:16;height:16;vertical-align:bottom;"/>`,
+        _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="${styleStrWithShadow}"/>`,
+        _healing_: `<img src="${HeartImage}" alt="Damage" style="${iconStyleStr}"/>`,
+        _armor_: `<img src="${ShieldImage}" alt="Damage" style="${styleStrWithShadow}"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
