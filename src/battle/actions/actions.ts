@@ -2183,10 +2183,21 @@ const autoSelectActionTarget = ({
 
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
-    if (target === TARGET_TYPES.RANDOM_HOSTILE || ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && noValidSelection)) {
+    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && noValidSelection) {
         return {
             index: pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area }),
             side: hostileSide,
+        };
+    }
+
+    if ((target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) && noValidSelection) {
+        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true }).filter((i) => {
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+        });
+
+        return {
+            index: getRandomItem(targetIndices),
+            side: friendlySide,
         };
     }
 
