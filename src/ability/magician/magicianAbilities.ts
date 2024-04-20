@@ -1510,7 +1510,8 @@ export const polymorph: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
-    description: "Sets targets' base attack to 1.",
+    description: "Apply <b>Silence</b> and {{ actions.0.effects.0.attackPower }} ATT Down.",
+    overrideBodyText: true,
     depletedOnUse: true,
     actions: [
         {
@@ -1521,11 +1522,11 @@ export const polymorph: Ability = {
                 {
                     name: "Polymorph",
                     icon: ScarfSnowmanImage,
-                    description: "Transformed into a Snowman!",
+                    description: "Disables certain buffs. Attack power reduced.",
                     duration: 2,
+                    attackPower: -2,
                     override: {
                         portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
-                        damage: 1,
                     },
                     type: EFFECT_TYPES.SILENCE,
                     class: EFFECT_CLASSES.DEBUFF,
