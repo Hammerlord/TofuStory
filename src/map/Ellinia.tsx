@@ -10,12 +10,13 @@ import {
     ElliniaCenterImage,
     ElliniaExitImage,
     ElliniaMagicianHallImage,
+    ElliniaRestImage,
     ElliniaShopImage,
     ElliniaTradingPostImage,
     ElliniaTreeHoleImage,
     MarrsForestPreviewImage,
 } from "../images";
-import { JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
 import { grendelScene } from "../scene/Ellinia/grendelScene";
 import { secretGardenScene } from "../scene/Ellinia/secretGarden";
@@ -59,7 +60,7 @@ const ELLINIA_PLACES: any = {
 
 const { selectInTownNode } = playerStateSlice.actions;
 
-const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
+const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
     const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
@@ -119,6 +120,12 @@ const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
         }
     };
 
+    const handleClickCamp = () => {
+        if (checkVisitPlace(ELLINIA_PLACES.REST)) {
+            onCamp();
+        }
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
@@ -133,12 +140,13 @@ const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
                         />
                         <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={ElliniaShopImage} onClick={handleClickShop} />
                         <br />
+
                         <TownNode
-                            icon={QuestionMarkIcon}
-                            isVisited={visited[ELLINIA_PLACES.CAMPAIGN]}
-                            label={"Campaign"}
-                            nodeImage={ElliniaCampaignImage}
-                            onClick={handleClickCampaign}
+                            icon={CampingIcon}
+                            isVisited={visited[ELLINIA_PLACES.REST]}
+                            label={"Rest"}
+                            nodeImage={ElliniaRestImage}
+                            onClick={handleClickCamp}
                         />
 
                         <div className={classNames(classes.townCenter)}>
@@ -163,12 +171,20 @@ const Ellinia = ({ player, onExit, onClickScene }: TownProperties) => {
                         />
                         <br />
                         <TownNode
+                            icon={QuestionMarkIcon}
+                            isVisited={visited[ELLINIA_PLACES.CAMPAIGN]}
+                            label={"Campaign"}
+                            nodeImage={ElliniaCampaignImage}
+                            onClick={handleClickCampaign}
+                        />
+                        {/**
+                        <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[ELLINIA_PLACES.CLASS_LEADER]}
                             label={"[Test] Grendel"}
                             nodeImage={ElliniaMagicianHallImage}
                             onClick={handleClickClassLeader}
-                        />
+                        /> */}
                         <TownNode
                             icon={JapaneseOgreIcon}
                             isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}

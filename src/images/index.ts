@@ -165,6 +165,7 @@ export { default as ElliniaCenterImage } from "./ElliniaCenter.png";
 export { default as ElliniaExitImage } from "./ElliniaExit.png";
 export { default as ElliniaLibraryOutsideImage } from "./ElliniaLibraryOutside.png";
 export { default as ElliniaMagicianHallImage } from "./ElliniaMagicianHall.png";
+export { default as ElliniaRestImage } from "./ElliniaRest.png";
 export { default as ElliniaShopImage } from "./ElliniaShop.png";
 export { default as ElliniaTradingPostImage } from "./ElliniaTradingPost.png";
 export { default as ElliniaTreeHoleImage } from "./ElliniaTreeHole.png";
