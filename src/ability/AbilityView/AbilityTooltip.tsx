@@ -10,6 +10,7 @@ import { enemyNameMap } from "../../enemy";
 import { soulBlade } from "../warrior/warriorAbilities";
 import { GreyShieldImage, NamelessSwordImage } from "../../images";
 import { CactusIcon } from "../../images/icons";
+import { fireSpirit } from "../magician/magicianAbilities";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -94,8 +95,11 @@ const requiresExplanation = ({ type }): boolean => {
     ].includes(type);
 };
 
+// For filling in the minion card descriptions in the minion preview tooltip because
+// usually this is part of the minion's parent card, not a part of the minion object itself.
 const minionCardLookup = {
     [soulBlade.name]: soulBlade,
+    [fireSpirit.name]: fireSpirit,
 };
 
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
