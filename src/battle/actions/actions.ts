@@ -2190,7 +2190,7 @@ const autoSelectActionTarget = ({
         };
     }
 
-    if ((target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) && noValidSelection) {
+    if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
         const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true }).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
