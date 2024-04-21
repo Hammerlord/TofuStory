@@ -318,6 +318,7 @@ export interface Multiplier {
     filters?: { property: string; comparator: Comparator; value: any }[];
     // For ALL_CARDS and EFFECT_DURATIONS: multiplies by cards/effects that are unique, based on their name. (Upgrade level does not count toward uniqueness)
     filterUnique?: boolean;
+    filterOutProcs?: boolean;
 }
 
 export interface Bonus {

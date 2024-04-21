@@ -329,7 +329,7 @@ export const getMultiplier = ({
         return 1;
     }
 
-    const { value, type, filters, filterUnique } = multiplier;
+    const { value, type, filters, filterUnique, filterOutProcs } = multiplier;
 
     const numValue = typeof value === "number" ? value : 1;
 
@@ -472,6 +472,11 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.ABILITIES_USED) {
         const abilitiesUsed = combatant.abilityHistory.filter((ability) => {
+            // @ts-ignore Procced abilities do not have instance ids, only cards do
+            if (filterOutProcs && !ability.instanceId) {
+                return false;
+            }
+
             if (filters) {
                 return filters.some(({ property, value, comparator }) => {
                     const propertyVal = _.get(ability, property) || 0;

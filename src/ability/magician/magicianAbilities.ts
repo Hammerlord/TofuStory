@@ -3013,6 +3013,7 @@ export const burst: Ability = {
                         },
                     ],
                     filterUnique: true,
+                    filterOutProcs: true,
                 },
             },
         },
