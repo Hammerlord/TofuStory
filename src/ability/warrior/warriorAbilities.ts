@@ -1067,6 +1067,25 @@ export const combatOrders: Ability = {
     ],
 };
 
+export const dustDevilsActiveAbility = {
+    name: "Dust Devils",
+    image: TornadoImage,
+    actions: [
+        {
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animationOptions: {
+                sidewinder: true,
+            },
+            damage: 1,
+            icon: TornadoImage,
+            playbackTime: 350,
+            numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
+            targetArea: 5,
+        },
+    ],
+};
+
 export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
@@ -1087,24 +1106,7 @@ export const dustDevils: Ability = {
                     description: "Casting tornadoes on attack.",
                     onAttack: {
                         disableTriggerFromProcs: true,
-                        ability: {
-                            name: "Dust Devils",
-                            image: TornadoImage,
-                            actions: [
-                                {
-                                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                                    type: ACTION_TYPES.RANGE_ATTACK,
-                                    animationOptions: {
-                                        sidewinder: true,
-                                    },
-                                    damage: 1,
-                                    icon: TornadoImage,
-                                    playbackTime: 350,
-                                    numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
-                                    targetArea: 5,
-                                },
-                            ],
-                        },
+                        ability: dustDevilsActiveAbility,
                     },
                 },
             ],

@@ -81,6 +81,7 @@ export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";
 export { default as BrokenMirrorGlassImage } from "./BrokenMirrorGlass.png";
 export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
+export { default as BroomImage } from "./Broom.png";
 export { default as BrutalClawImage } from "./BrutalClaw.png";
 export { default as BubbleFishImage } from "./BubbleFish.gif";
 export { default as BubblingImage } from "./Bubbling.gif";

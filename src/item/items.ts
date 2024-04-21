@@ -1,4 +1,5 @@
 import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
+import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -22,6 +23,7 @@ import {
     BouquetImage,
     BrickImage,
     BronzeIncenseBurnerImage,
+    BroomImage,
     CactusImage,
     CoffeePotImage,
     CouponImage,
@@ -1519,7 +1521,7 @@ export const flamingFeather: Item = {
                     image: FlamingFeatherImage,
                     actions: [
                         {
-                            type: ACTION_TYPES.RANGE_ATTACK,
+                            type: ACTION_TYPES.EFFECT,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             animation: ANIMATION_TYPES.ONE_WAY,
                             icon: FlamingFeatherImage,
@@ -2163,6 +2165,39 @@ export const hardwoodWand: Item = {
                     notProc: true,
                 },
             ],
+        },
+    ],
+};
+
+export const broom: Item = {
+    name: "Broom",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: BroomImage,
+    description: "Each card played has a 33% chance per {{ resources }} spent to cast Dust Devils.",
+    effects: [
+        {
+            name: "Flaming Feather",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onPlayCard: {
+                disableTriggerFromProcs: true,
+                conditions: [
+                    {
+                        comparator: "gt",
+                        resourceCost: 0,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                chance: 0.334,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+                },
+                ability: dustDevilsActiveAbility,
+            },
         },
     ],
 };
