@@ -13,6 +13,8 @@ export const INCENSE_BASE_PRICE = 60;
 export const CONSUMABLE_COST_MULTIPLIER = 1.2;
 export const CONSUMABLE_MULTIPLIER_MAX = 5;
 
+export const SHOP_REFRESH_COST = 50;
+
 export const ABILITIES_PRICE_RARITY_MAP = {
     [RARITIES.COMMON]: [50, 65],
     [RARITIES.UNCOMMON]: [90, 120],

@@ -14,8 +14,9 @@ import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
-import { CONSUMABLE_COST_MULTIPLIER, CONSUMABLE_MULTIPLIER_MAX } from "./constants";
+import { CONSUMABLE_COST_MULTIPLIER, CONSUMABLE_MULTIPLIER_MAX, SHOP_REFRESH_COST } from "./constants";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
+import Icon from "../icon/Icon";
 
 const HEADER_BAR = 72;
 
@@ -113,6 +114,11 @@ const useStyles = createUseStyles({
     refreshText: {
         color: "rgb(240, 240, 240)",
         marginRight: "16px",
+        verticalAlign: "middle",
+        lineHeight: "30px",
+    },
+    refreshMesos: {
+        verticalAlign: "middle",
     },
     refreshContainer: {
         height: "40px",
@@ -174,7 +180,7 @@ const ShopView = ({
     onExit?: () => void; // MUST be provided to get the button to leave the shop
     shopState: ShopState;
     onUpdateShopState: (updatedConfig: { [key in keyof ShopState]?: ShopState[key] }) => void;
-    onRefresh: () => void;
+    onRefresh: (cost: number) => void;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
@@ -373,19 +379,30 @@ const ShopView = ({
         setSelectedItemIndex(null);
     };
 
+    const shopRefreshCost = numRefreshes > 0 ? 0 : SHOP_REFRESH_COST;
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
                 <div className={classes.doneContainer}>{onExit && <LeaveButton onClick={handleExitClick} />}</div>
                 <div className={classes.refreshContainer}>
-                    {numRefreshes > 0 && (
-                        <>
-                            <span className={classes.refreshText}>Refreshes remaining: {numRefreshes}</span>
-                            <Button color={"secondary"} onClick={onRefresh}>
-                                Refresh Shop
-                            </Button>
-                        </>
-                    )}
+                    <span
+                        className={classNames(classes.refreshText, {
+                            [classes.cannotAfford]: player.mesos < shopRefreshCost,
+                        })}
+                    >
+                        Refresh Shop for{" "}
+                        {shopRefreshCost === 0 ? (
+                            <span className={classes.free}>FREE</span>
+                        ) : (
+                            <>
+                                <img src={MesoCoinImage} alt={"Mesos"} className={classes.refreshMesos} /> {shopRefreshCost}
+                            </>
+                        )}
+                    </span>
+                    <Button color={"secondary"} onClick={() => onRefresh(shopRefreshCost)} disabled={player.mesos < shopRefreshCost}>
+                        Refresh
+                    </Button>
                 </div>
 
                 <div className={classes.container}>
@@ -420,12 +437,14 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
     const shopStateRedux = townShops?.[town]?.shop;
     const dispatch = useAppDispatch();
 
-    const handleRefresh = () => {
+    const handleRefresh = (cost: number) => {
         if (shopStateRedux) {
             dispatch(refreshTownItemShop(town));
         } else {
             setShopState((prev) => ({ ...prev, ...generateShopInventory({ player }), usedNumRefreshes: prev.usedNumRefreshes + 1 }));
         }
+
+        dispatch(updateMesos(-cost));
     };
 
     const handleBuyItem = ({ items, mesosSpent, type, statChanges }) => {

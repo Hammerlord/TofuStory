@@ -1037,7 +1037,7 @@ export const snailStompers: Item = {
 export const clubMembership: Item = {
     name: "Shopper's Club Membership",
     image: CouponImage,
-    description: "You can now refresh a shop once per visit. 20% discount on shop items.",
+    description: "20% discount on shop items. When you visit a shop, the first refresh is free.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     merchant: {
