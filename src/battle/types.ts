@@ -43,6 +43,7 @@ export interface EventGroup {
 
 export enum TRIGGER_SOURCE_TYPES {
     ABILITY = "ability",
+    ACTION = "action",
     ITEM = "item",
     EFFECT = "effect",
     NONE = "none",

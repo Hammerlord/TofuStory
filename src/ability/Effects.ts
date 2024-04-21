@@ -117,11 +117,24 @@ export const stealth: Effect = {
     name: "Stealth",
     icon: CloudyIcon,
     canBeSilenced: true,
-    description: "Untargetable by attacks. Effect ends if this character attacks or is hit by area damage.",
+    description: "Untargetable by single-target abilities. Effect ends if this character attacks or is hit by area damage.",
     onAttack: {
         removeEffect: true,
     },
     onReceiveAttack: {
+        removeEffect: true,
+    },
+    onReceiveDamage: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ACTION,
+                property: "area",
+                comparator: "gt",
+                value: 0,
+                isOffense: true,
+            },
+        ],
         removeEffect: true,
     },
     duration: 3,

@@ -1,18 +1,6 @@
+import _ from "lodash";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import {
-    Ability,
-    Action,
-    Bonus,
-    CombatAbility,
-    CombatEffect,
-    Condition,
-    CONDITION_TARGETS,
-    Effect,
-    EffectEventTrigger,
-    TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
-} from "../ability/types";
-import { Combatant } from "../character/types";
+import { Ability, Action, CONDITION_TARGETS, CombatAbility, Condition, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
@@ -117,6 +105,15 @@ export const passesConditions = ({
 
                 if (isOffense !== undefined) {
                     return isOffense === isOffensiveAbility(sourcePayload as Ability);
+                }
+
+                return true;
+            }
+
+            if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
+                if (property !== undefined) {
+                    const propertyVal = _.get(sourcePayload, property);
+                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
                 }
 
                 return true;

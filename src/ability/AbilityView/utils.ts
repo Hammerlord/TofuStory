@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash";
 import Handlebars from "handlebars";
 import { getUpgradeCard } from "../../Menu/utils";
 import { Combatant } from "../../character/types";
-import { ACTION_TYPES, Ability, AbilityEffect, CombatAbility, Effect, TARGET_TYPES } from "./../types";
+import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 import DamageIcon from "./DamageIcon";
 import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
@@ -38,10 +38,12 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
     }
 };
 
+export const isOffensiveAction = (action: Action): boolean => {
+    return action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE || false;
+};
+
 export const isOffensiveAbility = (ability: Ability): boolean => {
-    return (
-        ability?.actions.some((action) => action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) || false
-    );
+    return (ability?.actions || []).some(isOffensiveAction);
 };
 
 export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: CombatAbility }) => {

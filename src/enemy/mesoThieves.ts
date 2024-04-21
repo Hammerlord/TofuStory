@@ -44,7 +44,7 @@ const thiefDarkSight = {
             effects: [
                 {
                     ...stealth,
-                    description: "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
+                    description: "Untargetable by single-target abilities. When this effect ends, the character will retreat.",
                     preventTurnAction: true,
                     duration: 3,
                     onEnd: {
