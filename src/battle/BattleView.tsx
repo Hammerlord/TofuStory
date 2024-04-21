@@ -440,7 +440,12 @@ const BattlefieldContainer = () => {
         );
     };
 
-    const handleAllyClick = (e: React.ChangeEvent, index: number) => {
+    const handleAllyClick = (e: React.MouseEvent, index: number) => {
+        if (e.button === 2) {
+            // Right click will deselect the ability
+            return;
+        }
+
         if (selectCardsPrompt) {
             warn(battleWarnings.promptFinishSelecting);
             return;
@@ -519,7 +524,12 @@ const BattlefieldContainer = () => {
         warn(battleWarnings.targetTaunt);
     };
 
-    const handleEnemyClick = (e: React.ChangeEvent, index: number) => {
+    const handleEnemyClick = (e: React.MouseEvent, index: number) => {
+        if (e.button === 2) {
+            // Right click will deselect the ability
+            return;
+        }
+
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
