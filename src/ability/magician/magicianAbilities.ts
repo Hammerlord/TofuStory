@@ -183,7 +183,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} attack power.",
+    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} ATT.",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -191,7 +191,7 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, attackPower: 2, duration: 1 }],
+            effects: [{ ...attackPower, attackPower: 3, duration: 1 }],
         },
     ],
     upgrades: [
@@ -331,7 +331,7 @@ export const magicGuard: Ability = {
                     duration: 3,
                     onTurnEnd: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        armor: 2,
+                        armor: 3,
                     },
                 },
             ],
@@ -442,7 +442,7 @@ export const magicArmor: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -466,7 +466,7 @@ export const barrier: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 2,
+                armor: 3,
             },
         },
     ],
@@ -714,7 +714,7 @@ export const frostBarrier: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -1270,7 +1270,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 7,
+            damage: 6,
         },
     ],
     upgrades: [
@@ -1525,6 +1525,7 @@ export const polymorph: Ability = {
                     description: "Disables certain buffs. Attack power reduced.",
                     duration: 2,
                     attackPower: -2,
+                    maxApplications: 1,
                     override: {
                         portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
                     },
@@ -2704,7 +2705,7 @@ export const abominableSnowman: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 7,
+                        damage: 6,
                         area: 1,
                     },
                 ],
@@ -2738,7 +2739,7 @@ export const abominableSnowman: Ability = {
     upgrades: [
         {
             minion: {
-                armor: 5,
+                armor: 3,
                 abilities: [
                     {
                         actions: [
@@ -2838,7 +2839,7 @@ export const fireSpirit: Ability = {
         name: "Fire Spirit",
         image: FireSpiritImage,
         uncontrollable: true,
-        maxHP: 5,
+        maxHP: 6,
         abilities: [
             {
                 ...attack,
@@ -2978,7 +2979,7 @@ export const burst: Ability = {
     description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} for every unique {{{ _offense_ }}} spell cast this battle.",
     overrideBodyText: true,
     image: BlazingExtinctionImage,
-    resourceCost: 2,
+    resourceCost: 3,
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -2996,7 +2997,7 @@ export const burst: Ability = {
                 opacity: 0.5,
             },
             bonus: {
-                damage: 2,
+                damage: 3,
                 multiplier: {
                     type: MULTIPLIER_TYPES.ABILITIES_USED,
                     calculationTarget: CONDITION_TARGETS.ACTOR,
