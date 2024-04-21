@@ -120,7 +120,7 @@ export const events: EventScene[] = [
 export const ITEMS = [
     safetyCharm,
     drakeBlood,
-    nependeathSap,
+    // nependeathSap,
     coffeePot,
     // respawnToken, does this item get consumed or did I nix it again?
     sunshinePan,

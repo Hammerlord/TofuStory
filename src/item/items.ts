@@ -212,7 +212,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Overhealing turns into armor for that amount. Not affected by Armor Up effects.",
+    description: "Overhealing turns into armor for that amount. Not affected by +Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
