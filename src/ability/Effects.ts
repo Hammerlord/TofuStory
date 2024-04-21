@@ -165,9 +165,9 @@ export const chill: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: 3,
     attackPower: -1,
-    maxApplications: 2,
+    maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces ATT by 1. Max 2 stacks.",
+    description: "Reduces ATT by 1, up to {{ maxApplications }} stacks. Can't bring enemy damage below 1.",
 };
 
 export const freeze: Effect = {
@@ -690,9 +690,9 @@ export const attackDown: Effect = {
     icon: CrossedSwordsIcon,
     attackPower: -1,
     duration: 3,
-    maxApplications: 2,
+    maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces attack power by 1. Max 2 stacks.",
+    description: "Reduces ATT by 1, up to {{ maxApplications }} stacks. Can't bring enemy damage below 1.",
 };
 
 export const directDamageTaken: Effect = {

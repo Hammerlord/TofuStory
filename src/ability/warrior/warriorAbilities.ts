@@ -438,7 +438,7 @@ export const yell: Ability = {
     image: WarMushImage,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Gain <b>Taunt</b>. <b>Radiate</b> 2 ATT Down. Lasts {{ actions.0.effects.0.duration }} turns.",
+    description: "Gain <b>Taunt</b>. <b>Radiate</b> ATT Down. Lasts {{ actions.0.effects.0.duration }} turns.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -447,7 +447,7 @@ export const yell: Ability = {
             effects: [{ ...taunt, duration: 3, maxApplications: 1 }],
             radiate: {
                 area: 2,
-                effects: [{ ...attackDown, stacks: 2, duration: 3 }],
+                effects: [{ ...attackDown, duration: 3 }],
             },
         },
     ],

@@ -580,7 +580,13 @@ export const calculateAttackPowerDamage = ({ damage, totalAttackPower }: { damag
     if (!totalAttackPower) {
         return damage;
     }
-    return Math.ceil(damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower);
+    const withAttackPower = Math.ceil(damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower);
+    // Enemy damage cannot be reduced below 1 by ATT down modifiers
+    if (damage && withAttackPower < 1) {
+        return 1;
+    }
+
+    return withAttackPower;
 };
 
 export const calculateDamage = ({
