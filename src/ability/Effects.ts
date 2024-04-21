@@ -71,7 +71,7 @@ export const eliteThorns: Effect = {
 };
 
 export const controlImmune: Effect = {
-    name: "Control Immunity",
+    name: "Stun Immune",
     description: "Target cannot be stunned or frozen.",
     icon: NoStunIcon,
     immunities: {
@@ -589,7 +589,7 @@ export const preventArmorDecayPlayer: Effect = {
 };
 
 export const defUp: Effect = {
-    name: "Defense Up",
+    name: "DEF Up",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -598,7 +598,7 @@ export const defUp: Effect = {
 };
 
 export const defDown: Effect = {
-    name: "Defense Down",
+    name: "DEF Down",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
@@ -607,7 +607,7 @@ export const defDown: Effect = {
 };
 
 export const pristineDefense: Effect = {
-    name: "Pristine Defense Up",
+    name: "Pristine DEF Up",
     icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,

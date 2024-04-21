@@ -128,7 +128,6 @@ export const stolenFence: Item = {
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 7,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 1 }], // Don't want to lose the armor immediately. This does stack with Battle Shield though
             },
         },
     ],
@@ -136,20 +135,19 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
+    description: "On wave start, gain {{ effects.0.onWaveStart.armor }} armor and prevent the next time your armor decays.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
     effects: [
         {
             name: "Battle Shield",
-            description: "On wave start, gain 10 armor and prevent the next time your armor decays.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 10,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }], // Ticks down immediately
+                armor: 7,
+                effects: [{ ...preventArmorDecayPlayer }],
             },
         },
     ],
@@ -179,23 +177,18 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "Gain 1 attack power, but you take 1 damage per turn.",
+    description: "Gain 1 attack power.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     image: DrakeBloodImage,
     effects: [
         {
             name: "Drake Blood",
-            description: "Gaining 1 attack power and taking 1 damage per turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: DrakeBloodImage,
             disableDisplayIcon: true,
             attackPower: 1,
-            onTurnEnd: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 1,
-            },
         },
     ],
 };
@@ -219,7 +212,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Overhealing turns into armor for the overhealed amount.",
+    description: "Overhealing turns into armor for that amount. Not affected by Armor Up effects.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
@@ -742,16 +735,16 @@ export const pigsRibbonItem: Item = {
 export const ballerCane: Item = {
     name: "Baller Cane",
     image: BallerCaneImage,
-    description: "Whenever you use an ability, gain 1 meso.",
+    description: "Whenever you play a card, gain 1 meso.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
             name: "Baller Cane",
-            description: "Gaining 1 meso for every ability used.",
+            description: "Gaining 1 meso for every card played.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAbility: {
+            onPlayCard: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 mesos: 1,
             },
@@ -814,7 +807,7 @@ export const koreanFan: Item = {
 export const risingStar: Item = {
     name: "Rising Star",
     image: RisingStarImage,
-    description: "Once per battle, after attacking 7 times, gain 1 attack power.",
+    description: "Once per battle, when your deck cycles, gain 1 ATT.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -822,19 +815,8 @@ export const risingStar: Item = {
             name: "Rising Star Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAbility: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            onDeckCycle: {
                 removeEffect: true,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: {
-                            type: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
-                            amount: 7,
-                        },
-                        comparator: "modulo",
-                    },
-                ],
                 effects: [
                     {
                         name: "Rising Star",
@@ -968,7 +950,7 @@ export const redHeadband: Item = {
 export const workGloves: Item = {
     name: "Work Gloves",
     image: WorkGlovesImage,
-    description: "Every {{ effects.0.onAbility.conditions.0.numAbilitiesUsed }} abilities you use, gain 1 attack power. Max 3.",
+    description: "Every {{ effects.0.onAbility.triggerFrequencyFromSum }} cards played, gain 1 attack power. Max 3.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     effects: [
@@ -976,15 +958,9 @@ export const workGloves: Item = {
             name: "Work Gloves Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAbility: {
+            onPlayCard: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: 10,
-                        comparator: "modulo",
-                    },
-                ],
+                triggerFrequencyFromSum: 10,
                 effects: [
                     {
                         name: "Work Gloves",
@@ -2022,6 +1998,7 @@ export const opal: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     image: OpalImage,
     description: "Your non-Immunity buffs are extended by 1 turn.",
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Opal Effect",
