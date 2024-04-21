@@ -148,7 +148,7 @@ const useStyles = createUseStyles({
         width: "100%",
         height: "100%",
         position: "absolute",
-        top: "0",
+        bottom: "-35%",
         transform: "translate(-50%, -50%)",
         maxWidth: "50px",
         "& > *": {
