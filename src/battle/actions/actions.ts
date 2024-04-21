@@ -1757,7 +1757,12 @@ const checkHandleAutoCast = ({
 
             // Auto-casted ability costs 0 unless it is a variable cost ability
             const resourceCost = abilityCost !== "x" ? 0 : abilityCost;
-            dispatch(useAbility({ ability: { ...abilityToCast, resourceCost }, actorId: actor.id, isAutoCast: true }));
+
+            // instanceId: undefined -- only "cards" should have ids, not auto casted abilities.
+            // Issue where Astral Rewind was grabbing abilities casted from Metronome.
+            dispatch(
+                useAbility({ ability: { ...abilityToCast, resourceCost, instanceId: undefined }, actorId: actor.id, isAutoCast: true })
+            );
         });
     };
 };
@@ -2415,7 +2420,7 @@ export const useAbility = ({
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
-    ability: CombatAbility;
+    ability: CombatAbility | Ability;
     actorId: string;
     isAutoCast?: boolean;
     isProc?: boolean;
