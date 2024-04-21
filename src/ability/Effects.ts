@@ -194,16 +194,6 @@ export const freeze: Effect = {
     duration: 1,
 };
 
-export const cleave: Effect = {
-    name: "Cleave",
-    basicAttackAreaIncrease: 1,
-    duration: Infinity,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    icon: WeaponBoosterImage,
-    description: "Area of basic attacks increased by 1.",
-};
-
 export const immunity: Effect = {
     name: "Immunity",
     description: "Impervious to harm.",
