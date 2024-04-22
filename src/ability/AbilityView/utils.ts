@@ -6,7 +6,7 @@ import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TA
 import { BLUE, GREEN, GREY, RED } from "./constants";
 import DamageIcon from "./DamageIcon";
 import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
-import { CrossedSwordsImage, HeartImage, ShieldImage } from "../../images";
+import { CrossedSwordsImage, FireEmojiImage, HeartImage, HourglassImage, ShieldImage, SnowflakeEmojiImage } from "../../images";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -157,8 +157,11 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _support_: cardTypeString(BLUE),
         _summon_: cardTypeString(GREEN),
         _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="${styleStrWithShadow}"/>`,
-        _healing_: `<img src="${HeartImage}" alt="Damage" style="${iconStyleStr}"/>`,
-        _armor_: `<img src="${ShieldImage}" alt="Damage" style="${styleStrWithShadow}"/>`,
+        _healing_: `<img src="${HeartImage}" alt="HP" style="${iconStyleStr}"/>`,
+        _armor_: `<img src="${ShieldImage}" alt="Armor" style="${styleStrWithShadow}"/>`,
+        _duration_: `<img src="${HourglassImage}" alt="Turns" style="${styleStrWithShadow}"/>`,
+        _burn_: `<img src="${FireEmojiImage}" alt="Burn" style="${styleStrWithShadow}"/>`,
+        _chill_: `<img src="${SnowflakeEmojiImage}" alt="Chill" style="${styleStrWithShadow}"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));

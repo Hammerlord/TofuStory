@@ -347,7 +347,8 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "Grants {{ minion.effects.1.onTurnStart.ability.actions.0.armor }} {{{ _armor_ }}} and +1 ATT to nearby allies every turn.",
+        "<b>Summon</b> / <b>Turn Start:</b> Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} and <b>+1</b> {{{ _damage_ }}} to nearby allies.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "War Banner",
@@ -438,7 +439,7 @@ export const yell: Ability = {
     image: WarMushImage,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Gain <b>Taunt</b>. <b>Radiate</b> ATT Down. Lasts {{ actions.0.effects.0.duration }} turns.",
+    description: "Radiate ATT Down. Gain Taunt. <br/> </br> <b>{{ actions.0.effects.0.duration }}<b/>{{{ _duration_ }}}",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1090,7 +1091,9 @@ export const dustDevils: Ability = {
     name: "Dust Devils",
     resourceCost: 1,
     image: TornadoImage,
-    description: "On attack, cast {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} tornadoes at up to 3 enemies.",
+    description:
+        "On attack, cast <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} tornadoes at up to 3 enemies. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1250,7 +1253,9 @@ export const bladedArmor: Ability = {
     name: "Bladed Armor",
     resourceCost: 1,
     image: MetalAxeImage,
-    description: "When you lose armor, hurl a sidearm at a random enemy for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}}",
+    description:
+        "When you lose armor, hurl a <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} axe at a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -1437,7 +1442,7 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} to targets with lesser HP.",
+    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} to targets with less HP than you.",
     overrideBodyText: true,
     actions: [
         {
@@ -1612,7 +1617,7 @@ export const parry: Ability = {
     resourceCost: 0,
     image: EndureImage,
     description:
-        "Gain {{ actions.0.armor }} {{{ _armor_ }}} times number of attacks made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
+        "Gain {{ actions.0.armor }} {{{ _armor_ }}} for each attack made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1961,7 +1966,7 @@ export const bloodthirst: Ability = {
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain {{ actions.0.effects.0.lifeOnHit }} Leech for {{ actions.0.effects.0.duration }} turns.",
+    description: "Gain {{ actions.0.effects.0.lifeOnHit }} Leech. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     depletedOnUse: true,
     overrideBodyText: true,
     actions: [
@@ -2008,7 +2013,7 @@ export const battlelord: Ability = {
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "For 3 turns, cards in your hand are Upgraded.",
+    description: "Cards in your hand are Upgraded. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -2064,7 +2069,7 @@ export const gungnir: Ability = {
     resourceCost: 2,
     image: GungnirImage,
     rarity: RARITIES.RARE,
-    description: "Deal damage equal to {{ actions.0.multiplier.value }} of your HP.",
+    description: "Deal damage equal to <b>{{ actions.0.multiplier.value }}</b> of your HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2234,7 +2239,7 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "<b>Ward.</b> Every turn, <b>Radiate</b> Attack Down to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
+        "<b>Ward.</b> Every turn, <b>Radiate</b> ATT Down to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
     rarity: RARITIES.RARE,
     resourceCost: 2,
     minion: {
@@ -2330,7 +2335,9 @@ export const guardian: Ability = {
 export const beatdown: Ability = {
     name: "Beatdown",
     image: ChanceAttackImage,
-    description: "When you apply a debuff, attack that target for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}}.",
+    description:
+        "When you apply a debuff, attack that target for <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}}. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -2492,7 +2499,7 @@ export const moratorium: Ability = {
     name: "Moratorium",
     image: DarkImpaleImage,
     resourceCost: 1,
-    description: "If this is lethal, the target lives with 1 HP.",
+    description: "If lethal, the target lives with 1 HP.",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -2518,7 +2525,7 @@ export const bluntForce: Ability = {
     image: BlastImage,
     resourceCost: 3,
     rarity: RARITIES.UNCOMMON,
-    description: "Deal damage equal to {{ actions.0.multiplier.value }} of your HP.",
+    description: "Deal damage equal to <b>{{ actions.0.multiplier.value }}</b> of your HP.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -2589,7 +2596,7 @@ export const bladeworks: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     depletedOnUse: true,
-    description: "Summon 3 Soul Blades. For each that doesn't fit, a random summon is replaced.",
+    description: "Summon 3 Soul Blades. For each that doesn't fit, a random summon is Tributed.",
     actions: [
         {
             target: TARGET_TYPES.SELF,

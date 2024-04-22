@@ -143,7 +143,7 @@ export const magicFang: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
-    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}",
+    description: "<b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}",
     actions: [
         {
             area: 1,
@@ -185,7 +185,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}}.",
+    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }}</b> {{{ _damage_ }}}.",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -217,7 +217,7 @@ export const energyBolt: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
-    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}",
+    description: "<b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}",
     actions: [
         {
             damage: 4,
@@ -283,7 +283,7 @@ export const magicClaw: Ability = {
     resourceCost: 2,
     image: MagicClawImage,
     overrideBodyText: true,
-    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}. <br/> Hits twice.",
+    description: "Hits twice. <br/> <b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}.",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -460,7 +460,7 @@ export const barrier: Ability = {
     image: MagicArmorImage,
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
-    description: "<b>Charged:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
+    description: "<b>Charged: +{{ actions.0.bonus.armor }}</b> {{{ _armor_ }}}",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -548,7 +548,7 @@ export const mpEater: Ability = {
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "Destroy 1 energy on the target",
+    description: "Destroy 1 energy on the target.",
     actions: [
         {
             damage: 0,
@@ -566,7 +566,7 @@ export const mpEater: Ability = {
     ],
     upgrades: [
         {
-            description: "Destroy 2 energy on the target",
+            description: "Destroy 2 energy on the target.",
             actions: [
                 {
                     resources: -1,
@@ -690,7 +690,9 @@ export const frostBarrier: Ability = {
     image: ElementalAdaptationImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Attackers are Chilled for 2 turns.",
+    description:
+        "Inflicts {{{ _chill_ }}} Chill <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.duration }}</b>{{{ _duration_ }}} on attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -709,7 +711,7 @@ export const frostBarrier: Ability = {
                         effects: [
                             {
                                 ...chill,
-                                duration: 3,
+                                duration: 2,
                             },
                         ],
                     },
@@ -834,7 +836,8 @@ export const wishUponAStar: Ability = {
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
     description:
-        "<b>Draw / Deck Cycle:</b> Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} star at a random enemy.",
+        "<b>On Draw</b> / <b>Deck Cycle:</b> Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} star at a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -895,7 +898,8 @@ export const fireArrow: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Apply Burn. <b>Charged:</b> Burn again.",
+    description:
+        "Apply {{{ _burn_ }}} Burn <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. <br/> <br/> <b>Charged:</b> Burn again.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -909,7 +913,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    duration: 2,
                 },
             ],
             bonus: [
@@ -923,7 +927,7 @@ export const fireArrow: Ability = {
                     effects: [
                         {
                             ...burn,
-                            duration: 3,
+                            duration: 2,
                         },
                     ],
                 },
@@ -1065,7 +1069,9 @@ export const avatarOfTheStars: Ability = {
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 2,
-    description: "When you play a 1+ cost {{{ _offense_ }}} card, add Swift to your hand.",
+    description:
+        "When you play a 1+ cost {{{ _offense_ }}} card, add Swift to your hand. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1111,7 +1117,7 @@ export const greaterBolt: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While you own this card, 'bolt' abilities gain +{{ effectsWhileOwned.0.skillBonus.0.damage }} {{{ _damage_ }}}. Greater Bolt gains +2.",
+        "While you own this card, 'bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2.</b>",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1298,7 +1304,7 @@ export const thunderBolt: Ability = {
     image: ThunderBoltImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    description: "<b>Charged:</b> Cast again for {{ actions.1.damage }} damage.",
+    description: "<b>Charged:</b> Cast again for {{ actions.1.damage }} {{{ _damage_ }}}.",
     actions: [
         {
             damage: 3,
@@ -1519,7 +1525,7 @@ export const polymorph: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
-    description: "Apply <b>Silence</b> and {{ actions.0.effects.0.attackPower }} ATT Down.",
+    description: "Apply Silence and 2 ATT Down. <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     depletedOnUse: true,
     actions: [
@@ -1716,7 +1722,7 @@ export const moltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 6,
+                    duration: 5,
                 },
             ],
         },
@@ -1766,7 +1772,8 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While the target has Burn, gain {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn.",
+        "Apply {{{ _burn_ }}} Burn <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. <br/> While the target has {{{ _burn_ }}}, gain {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
     actions: [
@@ -2158,7 +2165,7 @@ export const moonBolt: Ability = {
     resourceCost: 2,
     image: FullMoonImage,
     overrideBodyText: true,
-    description: "Heal all allies for {{ actions.0.secondaryAction.healing }} {{{ _healing_ }}} each hit.",
+    description: "Heal all allies for <b>{{ actions.0.secondaryAction.healing }}</b> {{{ _healing_ }}} each hit.",
 
     rarity: RARITIES.COMMON,
     actions: [
@@ -2985,7 +2992,7 @@ export const astralRewind: Ability = {
 
 export const burst: Ability = {
     name: "Burst",
-    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} for every unique {{{ _offense_ }}} spell cast this battle.",
+    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique {{{ _offense_ }}} card used this battle.",
     overrideBodyText: true,
     image: BlazingExtinctionImage,
     resourceCost: 3,

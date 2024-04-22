@@ -142,6 +142,7 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         justifyContent: "space-around",
         fontSize: "0.9rem",
+        lineHeight: "1rem",
 
         "& .icon-root": {
             verticalAlign: "bottom",
