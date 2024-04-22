@@ -153,7 +153,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
             }
             if (!animatedEffectsRef.current[key]) {
                 animatedEffectsRef.current[key] = true;
-                const animation = floatAnimation({ object: elementRef, delay: i * 250 });
+                const animation = floatAnimation({ object: elementRef, delay: i * 325 });
                 animation.onfinish = () => {
                     delete animatedEffectsRef.current[key];
                     setQueue((prev) =>
@@ -184,7 +184,6 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                     if (type === "removed") {
                         return (
                             <>
-                                {" "}
                                 <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}{" "}
                                 {e.stacks > 1 ? `x${e.stacks}` : undefined} faded
                             </>
