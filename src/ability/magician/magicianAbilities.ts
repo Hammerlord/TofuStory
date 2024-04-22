@@ -142,6 +142,8 @@ export const magicFang: Ability = {
     image: BlueRushImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}",
     actions: [
         {
             area: 1,
@@ -183,7 +185,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} ATT.",
+    description: "This turn, gain +{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}}.",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -214,6 +216,8 @@ export const energyBolt: Ability = {
     image: OldEnergyBoltImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}",
     actions: [
         {
             damage: 4,
@@ -278,7 +282,8 @@ export const magicClaw: Ability = {
     name: "Magic Claw",
     resourceCost: 2,
     image: MagicClawImage,
-    description: "Hits twice",
+    overrideBodyText: true,
+    description: "<b>Charged:</b> +{{ actions.0.bonus.damage }} {{{ _damage_ }}}. <br/> Hits twice.",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -359,7 +364,7 @@ export const ping: Ability = {
     resourceCost: 0,
     image: PingProjectileImage,
     rarity: RARITIES.COMMON,
-    description: "<b>Charged:</b> this card enters your hand next turn.",
+    description: "<b>Charged:</b> This card enters your hand next turn.",
     actions: [
         {
             damage: 4,
@@ -454,6 +459,8 @@ export const barrier: Ability = {
     resourceCost: 1,
     image: MagicArmorImage,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "<b>Charged:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -887,6 +894,8 @@ export const fireArrow: Ability = {
     image: FireArrowImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description: "Apply Burn. <b>Charged:</b> Burn again.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,

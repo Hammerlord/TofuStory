@@ -191,7 +191,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
             <AbilityTooltipSection
                 title="Charged Ability"
                 icon={chargingStone.image}
-                description={<>Consumes Charged for an extra bonus.</>}
+                description={<>Consumes Charged for a bonus.</>}
                 key={"charged"}
             />
         );

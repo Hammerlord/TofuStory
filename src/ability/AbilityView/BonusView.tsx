@@ -125,14 +125,9 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
 
     return (
         <>
-            {bonusDescriptions.map(({ hasEffect, totalDamage, totalHealing, totalArmor, conditionText, area }, i) => {
+            {bonusDescriptions.map(({ totalDamage, totalHealing, totalArmor, conditionText, area }, i) => {
                 return (
                     <div key={i}>
-                        {hasEffect === "Charged" && (
-                            <>
-                                <Icon icon={AlchemistStoneImage} size={"sm"} />:{" "}
-                            </>
-                        )}
                         {totalDamage > 0 && (
                             <>
                                 Deal <Icon icon={CrossedSwordsIcon} text={`+${totalDamage}`} size={"sm"} />
