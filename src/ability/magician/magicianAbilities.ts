@@ -2429,7 +2429,7 @@ export const wardBooster: Ability = {
 const icicleMinion: Minion = {
     name: "Icicle",
     image: IcicleMinionImage,
-    description: "<b>On attack:<b/> Inflicts Chill and hits itself for 1 {{{ _damage_ }}}. <b>Receive attack:</b> Inflicts Chill.",
+    description: "On attack: Applies Chill and self-inflicts 1 {{{ _damage_ }}}. <br/> Applies Chill to attackers.",
     maxHP: 1,
     abilities: [
         {
@@ -2461,7 +2461,7 @@ const icicleMinion: Minion = {
             icon: IcicleMinionImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            description: "Attack: Inflicts Chill and self-inflicts 1 damage. Counter: Inflicts Chill.",
+            description: "On attack: Applies Chill and self-inflicts 1 damage. <br/> Applies Chill to attackers.",
             onReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
                 usableWhileDead: true,

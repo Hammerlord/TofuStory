@@ -121,7 +121,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
                         } else if (typeof minion === "object") {
                             // Display a "common card" version of the minion which is likely not as comprehensive as the card lookup
                             // But it's something.
-                            acc.push({ name: minion.name, minion, actions: [], overrideBodyText: true });
+                            acc.push({ name: minion.name, description: minion.description, minion, actions: [], overrideBodyText: true });
                         }
                     });
 
