@@ -1,16 +1,16 @@
 import Tooltip from "@material-ui/core/Tooltip";
 import classNames from "classnames";
+import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
 import Icon from "../../icon/Icon";
-import { chargingStone, rageStone } from "../../item/starterItems";
-import { Ability, ActionSummon, Effect, EFFECT_TYPES } from "../types";
-import AbilityView from "./AbilityView";
-import { immunity } from "../Effects";
-import { enemyNameMap } from "../../enemy";
-import { soulBlade } from "../warrior/warriorAbilities";
 import { GreyShieldImage, NamelessSwordImage } from "../../images";
 import { CactusIcon } from "../../images/icons";
+import { chargingStone, rageStone } from "../../item/starterItems";
+import { immunity } from "../Effects";
 import { fireSpirit } from "../magician/magicianAbilities";
+import { Ability, ActionSummon, EFFECT_TYPES, Effect } from "../types";
+import { soulBlade } from "../warrior/warriorAbilities";
+import AbilityView from "./AbilityView";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -148,11 +148,30 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const classes = useTooltipStyles();
 
     const getUniqueEffects = (ability: Ability): Effect[] => {
-        const effects = ability.actions
-            ?.reduce((acc, { effects = [] }) => {
-                return [...acc, ...effects];
-            }, [])
-            .concat(ability.minion?.effects || []);
+        const effects = [];
+
+        const findEffects = (obj) => {
+            if (!obj) {
+                return;
+            }
+            if (obj.effects) {
+                effects.push(...obj.effects);
+            }
+
+            if (Array.isArray(obj)) {
+                obj.forEach(findEffects);
+                return;
+            }
+
+            if (typeof obj === "object") {
+                Object.values(obj).forEach((child) => {
+                    findEffects(child);
+                });
+            }
+        };
+
+        findEffects(ability);
+
         const map = effects.reduce((acc, effect: Effect) => {
             return {
                 ...acc,
@@ -165,7 +184,14 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
 
     const effectsToDisplay = getUniqueEffects(ability).filter(requiresExplanation);
     const tooltips = effectsToDisplay.map((effect) => {
-        return <AbilityTooltipSection icon={effect.icon} title={effect.name} description={effect.description} key={effect.name} />;
+        return (
+            <AbilityTooltipSection
+                icon={effect.icon}
+                title={effect.name}
+                description={Handlebars.compile(effect.description || "")(effect)}
+                key={effect.name}
+            />
+        );
     });
 
     const cardsToAdd = Object.values(cardsToAddMap);
