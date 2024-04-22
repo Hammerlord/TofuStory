@@ -870,9 +870,10 @@ const BattlefieldContainer = () => {
 
     const abilityUsePreviews = ((): { [combatantId: string]: PreviewStatUpdate[] } => {
         const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
-        if (!hoveredCombatant || !selectedAbility) {
+        if (!hoveredCombatant || !selectedAbility || !shouldShowReticle(hoveredCombatant.side, hoveredCombatant.index)) {
             return {};
         }
+
         const result = {};
 
         const previousCombatantStates = {
