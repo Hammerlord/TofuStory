@@ -8,6 +8,15 @@ const useStyles = createUseStyles({
         display: "inline-block",
         borderRadius: "32px",
         verticalAlign: "bottom",
+        "&.min": {
+            width: "12px",
+            height: "12px",
+            minWidth: "12px",
+            minHeight: "12px",
+            "& .text": {
+                fontSize: "8px",
+            },
+        },
         "&.xs": {
             width: "16px",
             height: "16px",
@@ -89,7 +98,7 @@ interface IconInterface {
     background?: string;
     text?: string | number;
     icon: any;
-    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    size?: "min" | "xs" | "sm" | "md" | "lg" | "xl";
     className?: string;
     style?: any;
     children?: JSX.Element;
@@ -100,7 +109,7 @@ interface IconInterface {
 const Icon = forwardRef(
     ({ text, icon, background, size = "md", className, style, children, highlightText, ...other }: IconInterface, ref: any) => {
         const classes = useStyles();
-        size = ["xs", "sm", "md", "lg", "xl"].includes(size) ? size : undefined;
+        size = ["min", "xs", "sm", "md", "lg", "xl"].includes(size) ? size : undefined;
         let iconNode;
 
         if (typeof icon === "string") {

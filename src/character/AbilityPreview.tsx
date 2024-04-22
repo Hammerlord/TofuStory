@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { Action } from "../ability/types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import Icon from "../icon/Icon";
-import { CrossbonesIcon, CrossedSwordsIcon } from "../images/icons";
+import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -17,6 +17,7 @@ const useStyles = createUseStyles({
     previewIconContainer: {
         filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
         margin: "0 4px",
+        position: "relative",
     },
     statUpdatePreview: {
         zIndex: 5,
@@ -33,6 +34,7 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
         animationFillMode: "forwards",
         display: "flex",
+        whiteSpace: "nowrap",
         top: 30,
         "&.nondeterministic": {
             background: "rgba(100, 70, 70, 0.8)",
@@ -52,6 +54,22 @@ const useStyles = createUseStyles({
         verticalAlign: "middle",
         marginLeft: 8,
         marginBottom: 2,
+    },
+    divider: {
+        borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+        marginLeft: "4px",
+        paddingRight: "4px",
+        height: "15px",
+        display: "inline-block",
+    },
+    immuned: {
+        filter: "saturate(0)",
+    },
+    cancelIcon: {
+        left: -3,
+        top: -3,
+        position: "absolute",
+        filter: "brightness(2)",
     },
 });
 
@@ -86,12 +104,9 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                 nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
             })}
         >
-            <div className={classes.previewIconContainer}>
-                <Icon icon={CrossedSwordsIcon} size="sm" />
-            </div>
             {previewStatUpdate.map((preview, i) => {
                 const { action, nondeterministic, statUpdate } = preview || {};
-                const rawDamage = statUpdate?.rawDamage;
+                const { rawDamage = 0, effects = [], failedToApplyEffects = [] } = statUpdate;
                 const isAlreadyDead = effectiveHP <= 0 && !rawDamage;
                 if (isAlreadyDead) {
                     // Prospected killed by a previous hit
@@ -102,20 +117,39 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                 const isLethal = rawDamage > 0 && effectiveHP <= 0;
 
                 return (
-                    <div
-                        className={classNames(classes.statUpdate, {
-                            [classes.negative]: !isLethal && rawDamage < action?.damage,
-                        })}
-                        key={["statUpdate", i].join("-")}
-                    >
-                        {rawDamage || 0}
-                        {nondeterministic && "?"}{" "}
-                        {isLethal && (
-                            <span className={classes.lethalIcon}>
-                                <Icon icon={CrossbonesIcon} size={"xs"} />
+                    <span key={i}>
+                        {effects.map((e, i) => (
+                            <span className={classes.previewIconContainer} key={[e.name, i].join("-")}>
+                                <Icon icon={e.icon} size="sm" />
+                            </span>
+                        ))}
+                        {failedToApplyEffects.map((e, i) => (
+                            <span className={classNames(classes.previewIconContainer)} key={[e.name, i].join("-")}>
+                                <Icon icon={e.icon} className={classes.immuned} size="sm" />
+                                <Icon icon={NoEntryIcon} size="min" className={classes.cancelIcon} />
+                            </span>
+                        ))}
+                        {(effects.length > 0 || failedToApplyEffects.length > 0) && <span className={classes.divider} />}
+                        {i === 0 && (
+                            <span className={classes.previewIconContainer}>
+                                <Icon icon={CrossedSwordsIcon} size="sm" />
                             </span>
                         )}
-                    </div>
+                        <span
+                            className={classNames(classes.statUpdate, {
+                                [classes.negative]: !isLethal && rawDamage < action?.damage,
+                            })}
+                            key={["statUpdate", i].join("-")}
+                        >
+                            {rawDamage || 0}
+                            {nondeterministic && "?"}{" "}
+                            {isLethal && (
+                                <span className={classes.lethalIcon}>
+                                    <Icon icon={CrossbonesIcon} size={"xs"} />
+                                </span>
+                            )}
+                        </span>
+                    </span>
                 );
             })}
         </div>
