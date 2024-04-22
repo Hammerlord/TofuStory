@@ -549,7 +549,7 @@ export const ironWill: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [armorUp, armorUp],
+            effects: [{ ...armorUp, stacks: 2 }],
         },
     ],
     upgrades: [

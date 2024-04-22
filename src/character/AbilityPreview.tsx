@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
         },
     },
     previewIconContainer: {
-        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
+        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
         margin: "0 4px",
         position: "relative",
     },
@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
         display: "inline-block",
         margin: "0 5px",
         whiteSpace: "nowrap",
-        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
+        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
     },
     negative: {
         color: "#ff9b94",
@@ -70,6 +70,15 @@ const useStyles = createUseStyles({
         top: -3,
         position: "absolute",
         filter: "brightness(2)",
+    },
+    stacks: {
+        bottom: -2,
+        left: 0,
+        position: "absolute",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0px 0px 1px black")
+            .join(", "),
+        fontSize: "12px",
     },
 });
 
@@ -128,12 +137,14 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                         {effects.map((e, i) => (
                             <span className={classes.previewIconContainer} key={[e.name, i].join("-")}>
                                 <Icon icon={e.icon} size="sm" />
+                                {e.stacks && <span className={classes.stacks}>{e.stacks}</span>}
                             </span>
                         ))}
                         {failedToApplyEffects.map((e, i) => (
                             <span className={classNames(classes.previewIconContainer)} key={[e.name, i].join("-")}>
                                 <Icon icon={e.icon} className={classes.immuned} size="sm" />
                                 <Icon icon={NoEntryIcon} size="min" className={classes.cancelIcon} />
+                                {e.stacks && <span className={classes.stacks}>{e.stacks}</span>}
                             </span>
                         ))}
                         {showDivider && <span className={classes.divider} />}
