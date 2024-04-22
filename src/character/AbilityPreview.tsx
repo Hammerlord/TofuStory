@@ -117,6 +117,10 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
 
                 const showDamage = action.damage > 0 || rawDamage > 0;
                 const showArmor = action.armor > 0;
+                if (!showDamage && !showArmor && !effects.length && !failedToApplyEffects.length) {
+                    return null;
+                }
+
                 const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
 
                 return (
