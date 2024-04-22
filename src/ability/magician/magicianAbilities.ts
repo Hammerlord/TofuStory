@@ -220,7 +220,7 @@ export const energyBolt: Ability = {
     description: "<b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}",
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -2349,7 +2349,7 @@ export const frostfireBlast: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 4,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
@@ -2361,10 +2361,11 @@ export const frostfireBlast: Ability = {
             effects: [
                 {
                     ...burn,
+                    duration: 2,
                 },
                 {
                     ...chill,
-                    duration: 3,
+                    duration: 2,
                 },
             ],
         },
@@ -2713,7 +2714,7 @@ export const abominableSnowman: Ability = {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
         maxHP: 3,
-        armor: 15,
+        armor: 12,
         abilities: [
             {
                 ...attack,
@@ -2721,7 +2722,7 @@ export const abominableSnowman: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 6,
+                        damage: 5,
                         area: 1,
                     },
                 ],
@@ -2760,7 +2761,7 @@ export const abominableSnowman: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },

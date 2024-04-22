@@ -183,6 +183,7 @@ export const drakeBlood: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: DrakeBloodImage,
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Drake Blood",
