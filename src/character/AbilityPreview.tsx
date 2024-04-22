@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { Action } from "../ability/types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import Icon from "../icon/Icon";
-import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon } from "../images/icons";
+import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon, ShieldIcon } from "../images/icons";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -80,8 +80,7 @@ export interface PreviewStatUpdate {
 }
 
 /**
- * The damage preview that shows up when you hover over an enemy with an offensive card selected.
- * May be expanded to include buffs, debuffs, armor...
+ * The damage/armor preview that shows up when you hover over a combatant with a card selected.
  */
 const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatUpdate: PreviewStatUpdate[]; HP: number; armor }) => {
     const classes = useStyles();
@@ -106,7 +105,7 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
         >
             {previewStatUpdate.map((preview, i) => {
                 const { action, nondeterministic, statUpdate } = preview || {};
-                const { rawDamage = 0, effects = [], failedToApplyEffects = [] } = statUpdate;
+                const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor } = statUpdate;
                 const isAlreadyDead = effectiveHP <= 0 && !rawDamage;
                 if (isAlreadyDead) {
                     // Prospected killed by a previous hit
@@ -115,6 +114,10 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
 
                 effectiveHP -= rawDamage;
                 const isLethal = rawDamage > 0 && effectiveHP <= 0;
+
+                const showDamage = action.damage > 0 || rawDamage > 0;
+                const showArmor = action.armor > 0;
+                const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
 
                 return (
                     <span key={i}>
@@ -129,26 +132,44 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                                 <Icon icon={NoEntryIcon} size="min" className={classes.cancelIcon} />
                             </span>
                         ))}
-                        {(effects.length > 0 || failedToApplyEffects.length > 0) && <span className={classes.divider} />}
-                        {i === 0 && (
-                            <span className={classes.previewIconContainer}>
-                                <Icon icon={CrossedSwordsIcon} size="sm" />
-                            </span>
-                        )}
-                        <span
-                            className={classNames(classes.statUpdate, {
-                                [classes.negative]: !isLethal && rawDamage < action?.damage,
-                            })}
-                            key={["statUpdate", i].join("-")}
-                        >
-                            {rawDamage || 0}
-                            {nondeterministic && "?"}{" "}
-                            {isLethal && (
-                                <span className={classes.lethalIcon}>
-                                    <Icon icon={CrossbonesIcon} size={"xs"} />
+                        {showDivider && <span className={classes.divider} />}
+                        {showDamage && (
+                            <>
+                                <span className={classes.previewIconContainer}>
+                                    <Icon icon={CrossedSwordsIcon} size="sm" />
                                 </span>
-                            )}
-                        </span>
+                                <span
+                                    className={classNames(classes.statUpdate, {
+                                        [classes.negative]: !isLethal && rawDamage < action?.damage,
+                                    })}
+                                    key={["damage-update", i].join("-")}
+                                >
+                                    {rawDamage || 0}
+                                    {nondeterministic && "?"}{" "}
+                                    {isLethal && (
+                                        <span className={classes.lethalIcon}>
+                                            <Icon icon={CrossbonesIcon} size={"xs"} />
+                                        </span>
+                                    )}
+                                </span>
+                            </>
+                        )}
+                        {showArmor && (
+                            <>
+                                <span className={classes.previewIconContainer}>
+                                    <Icon icon={ShieldIcon} size="sm" />
+                                </span>
+                                <span
+                                    className={classNames(classes.statUpdate, {
+                                        [classes.negative]: armor < action?.armor,
+                                    })}
+                                    key={["armor-update", i].join("-")}
+                                >
+                                    {armor || 0}
+                                    {nondeterministic && "?"}{" "}
+                                </span>
+                            </>
+                        )}
                     </span>
                 );
             })}

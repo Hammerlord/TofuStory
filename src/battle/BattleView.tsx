@@ -870,7 +870,7 @@ const BattlefieldContainer = () => {
 
     const abilityUsePreviews = ((): { [combatantId: string]: PreviewStatUpdate[] } => {
         const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
-        if (hoveredCombatant?.side !== BATTLEFIELD_SIDES.ENEMY_SIDE || !selectedAbility) {
+        if (!hoveredCombatant || !selectedAbility) {
             return {};
         }
         const result = {};
@@ -883,10 +883,6 @@ const BattlefieldContainer = () => {
         };
 
         selectedAbility.actions.forEach((action: Action) => {
-            if (![TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target)) {
-                return;
-            }
-
             const actorData = findCombatantData(() => previousCombatantStates, actorId);
             const targetData = findCombatantData(() => previousCombatantStates, hoveredCombatant.id);
 
@@ -927,7 +923,7 @@ const BattlefieldContainer = () => {
                 source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY },
             });
 
-            const targetIds = targetIndices.map((i: number) => enemySide[i]?.id);
+            const targetIds = targetIndices.map((i: number) => previousCombatantStates.battle[hoveredCombatant.side]?.[i]?.id);
 
             const updatedStatsProperties = {
                 actorId,
@@ -1103,6 +1099,7 @@ const BattlefieldContainer = () => {
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 selectedAbility={abilityToUse}
                                                 ref={allyRefs[i]}
+                                                previewStatUpdate={abilityUsePreviews[ally?.id]}
                                             />
                                         );
                                     })}
