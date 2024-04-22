@@ -1117,7 +1117,7 @@ export const greaterBolt: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While you own this card, 'bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2.</b>",
+        "While you own this card, 'bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2</b> {{{ _damage_ }}}.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -2705,7 +2705,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains 3 Armor when it attacks or kills.",
+    description: "Gains 3 {{{ _armor_ }}} when it attacks or kills.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,

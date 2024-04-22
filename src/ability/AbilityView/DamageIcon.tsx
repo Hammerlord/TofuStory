@@ -96,6 +96,9 @@ export const getDamageStatistics = ({
 };
 
 const useStyles = createUseStyles({
+    damageIconRoot: {
+        filter: "drop-shadow(0 0 1px black)",
+    },
     highlightText: {
         "& .text": {
             color: "#42f57b",
@@ -135,7 +138,7 @@ const DamageIcon = ({
         <Icon
             icon={<CrossedSwordsIcon />}
             text={`${baseDamage}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
-            className={classNames({
+            className={classNames(classes.damageIconRoot, {
                 [classes.highlightText]: hasBonus,
             })}
         />

@@ -108,6 +108,9 @@ export const getArmorStatistics = ({
 };
 
 const useStyles = createUseStyles({
+    armorIconRoot: {
+        filter: "drop-shadow(0 0 1px black)",
+    },
     highlightText: {
         "& .text": {
             color: "#42f57b",
@@ -135,7 +138,7 @@ const ArmorIcon = ({ armorStatistics }) => {
         <Icon
             icon={<ShieldIcon />}
             text={`${base}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
-            className={classNames({
+            className={classNames(classes.armorIconRoot, {
                 [classes.highlightText]: hasBonus,
                 [classes.negative]: hasPenalty,
             })}
