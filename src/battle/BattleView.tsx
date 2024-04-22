@@ -939,7 +939,7 @@ const BattlefieldContainer = () => {
                 discard,
             };
 
-            getUpdatedStats(updatedStatsProperties).forEach(([statUpdate, action]) => {
+            getUpdatedStats(updatedStatsProperties).forEach(({ statUpdate, action }) => {
                 const combatantId = statUpdate.combatantId;
                 if (!result[combatantId]) {
                     result[combatantId] = [];

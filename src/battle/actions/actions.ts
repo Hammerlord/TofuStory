@@ -138,10 +138,10 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
 
-            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
             dispatch(
                 triggerStatChangeEvents(
-                    updated.map(([statUpdate, action]) => ({
+                    updated.map(({ statUpdate, action }) => ({
                         statUpdate,
                         source: {
                             source: action,
@@ -190,7 +190,7 @@ const getHitEffects = ({
     action: Action;
     source: TriggerSource;
     getState;
-}): [UpdatedCombatantStats, Action][][] => {
+}): { statUpdate: UpdatedCombatantStats; action: Action }[][] => {
     if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
         return [];
     }
@@ -264,7 +264,7 @@ const getHitEffects = ({
             getCombatantById: (id) => findCombatantData(getState, id),
         });
 
-        const totalMesosGained = updatedTargets.reduce((acc, [statUpdate]) => {
+        const totalMesosGained = updatedTargets.reduce((acc, { statUpdate }) => {
             return acc + Math.abs(statUpdate.mesos);
         }, 0);
 
@@ -375,22 +375,22 @@ const handleOnReceiveAction = ({
     source,
     combatants,
 }: {
-    updatedStats: [UpdatedCombatantStats, Action][];
+    updatedStats: { statUpdate; action }[];
     source?: TriggerSource;
     combatants: (Combatant | null)[];
 }) => {
     return (dispatch) => {
         const isAttack = (action: Action) => [ACTION_TYPES.RANGE_ATTACK, ACTION_TYPES.ATTACK].includes(action.type);
-        updatedStats.forEach(([stats, action]) => {
+        updatedStats.forEach(({ statUpdate, action }) => {
             if (!isAttack(action)) {
                 return;
             }
 
             dispatch(
                 checkEventTrigger({
-                    combatantId: stats.combatantId,
+                    combatantId: statUpdate.combatantId,
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack,
-                    source: { ...source, targetId: stats.combatantId },
+                    source: { ...source, targetId: statUpdate.combatantId },
                 })
             );
         });
@@ -400,7 +400,7 @@ const handleOnReceiveAction = ({
                 return;
             }
 
-            updatedStats.forEach(([stats, action]) => {
+            updatedStats.forEach(({ statUpdate, action }) => {
                 if (!isAttack(action)) {
                     return;
                 }
@@ -409,7 +409,7 @@ const handleOnReceiveAction = ({
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onFriendlyReceiveAttack,
-                        source: { ...source, targetId: stats.combatantId },
+                        source: { ...source, targetId: statUpdate.combatantId },
                     })
                 );
             });
@@ -490,10 +490,10 @@ export const handleDoTs =
                 getCombatantById: (id) => findCombatantData(getState, id),
             });
 
-            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
             dispatch(
                 triggerStatChangeEvents(
-                    updated.map(([statUpdate, action]) => ({
+                    updated.map(({ statUpdate, action }) => ({
                         statUpdate,
                         source: {
                             source: action,
@@ -659,10 +659,10 @@ const onEffectEventTrigger = ({
                 getCombatantById: (id: string) => findCombatantData(getState, id),
             });
 
-            dispatch(applyStatChanges(updated.map(([statUpdate]) => statUpdate)));
+            dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
             dispatch(
                 triggerStatChangeEvents(
-                    updated.map(([statUpdate]) => ({
+                    updated.map(({ statUpdate }) => ({
                         statUpdate,
                         source: procSource,
                     }))
@@ -1861,7 +1861,7 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
             return;
         }
 
-        dispatch(applyStatChanges(updatedSecondary.map(([update]) => update)));
+        dispatch(applyStatChanges(updatedSecondary.map(({ statUpdate }) => statUpdate)));
         if (secondaryAction.returnParentCardToHand) {
             // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
             const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
@@ -1980,10 +1980,11 @@ const performAction = ({
             ...movementDisplacements,
         };
 
-        const updated = getUpdatedStats(updatedStatsProps);
-        dispatch(applyStatChanges(updated.map((update) => update[0])));
+        const updated: { statUpdate: UpdatedCombatantStats; action: Action }[] = getUpdatedStats(updatedStatsProps);
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+
         // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
-        const hitEffects = getHitEffects({
+        const hitEffects: { statUpdate: UpdatedCombatantStats; action: Action }[][] = getHitEffects({
             actorId,
             action,
             affectedTargets: targetIds,
@@ -1991,7 +1992,7 @@ const performAction = ({
             getState,
         });
         hitEffects.forEach((statChanges) => {
-            dispatch(applyStatChanges(statChanges.map(([statUpdate]) => statUpdate)));
+            dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
         });
 
         if (!secondaryAction?.isPriority) {
@@ -2016,7 +2017,7 @@ const performAction = ({
 
         dispatch(
             triggerStatChangeEvents(
-                updated.map(([statUpdate, action]) => ({
+                updated.map(({ statUpdate, action }) => ({
                     statUpdate,
                     source: { ...source, source: action },
                 }))
@@ -2027,7 +2028,7 @@ const performAction = ({
         hitEffects.forEach((statChanges) => {
             dispatch(
                 triggerStatChangeEvents(
-                    statChanges.map(([statUpdate, action]) => ({
+                    statChanges.map(({ statUpdate, action }) => ({
                         statUpdate,
                         source: {
                             ...source,
@@ -2046,7 +2047,7 @@ const performAction = ({
         if (updatedSecondary) {
             dispatch(
                 triggerStatChangeEvents(
-                    updatedSecondary.map(([statUpdate, action]) => ({
+                    updatedSecondary.map(({ statUpdate, action }) => ({
                         statUpdate,
                         source: { ...source, source: action },
                     }))
@@ -2056,8 +2057,8 @@ const performAction = ({
 
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
 
-        // Tricky: Updated is a tuple where the second element is an Action. If eg. a bonus card draw was applied during that action, checkCardActions should consume it.
-        const postUpdateAction = updated?.[0]?.[1] || action;
+        // If eg. a bonus card draw was applied during the stat update action, checkCardActions should consume it.
+        const postUpdateAction = updated?.[0]?.action || action;
         dispatch(checkCardActions({ action: postUpdateAction, source: parentSource, isAutoCast }));
 
         dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));
