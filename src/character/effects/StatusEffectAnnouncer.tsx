@@ -156,17 +156,22 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
         if (isInvalidCombatant) {
             return;
         }
-        queue.forEach((item, i) => {
-            const { effect: e, type } = item;
-            const key = getKey(e, type);
+        queue
+            .filter((item) => {
+                // First filter for queue items that can be animated. (Items already animating should not increase the animation delay of array index `i`.)
+                const { effect: e, type } = item;
+                const key = getKey(e, type);
+                const elementRef = ref.current?.[key];
+                return elementRef && !animatedEffectsRef.current[key];
+            })
+            .forEach((item, i) => {
+                const { effect: e, type } = item;
+                const key = getKey(e, type);
 
-            const elementRef = ref.current?.[key];
-            if (!elementRef) {
-                return;
-            }
-            if (!animatedEffectsRef.current[key]) {
+                const elementRef = ref.current?.[key];
+
                 animatedEffectsRef.current[key] = true;
-                const animation = floatAnimation({ object: elementRef, delay: i * 325 });
+                const animation = floatAnimation({ object: elementRef, delay: i * 350 });
                 animation.onfinish = () => {
                     delete animatedEffectsRef.current[key];
                     setQueue((prev) =>
@@ -176,8 +181,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                         })
                     );
                 };
-            }
-        });
+            });
     }, [queue]);
 
     return (
