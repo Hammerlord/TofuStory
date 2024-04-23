@@ -84,13 +84,14 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
 
     const aggregate = (effects): CombatEffect[] => {
         const aggregated = effects.reduce((acc, effect) => {
+            const stacks = effect.stacks || 1;
             if (!acc[effect.name]) {
                 acc[effect.name] = {
                     ...effect,
-                    stacks: 1,
+                    stacks,
                 };
             } else {
-                acc[effect.name].stacks += 1;
+                acc[effect.name].stacks += stacks;
             }
 
             return acc;
