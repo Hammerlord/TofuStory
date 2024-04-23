@@ -2706,7 +2706,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains 3 {{{ _armor_ }}} when it attacks or kills.",
+    description: "Gains {{ minion.effects.1.onAttack.ability.actions.0.armor }} {{{ _armor_ }}} when it attacks or kills.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,
@@ -2714,7 +2714,7 @@ export const abominableSnowman: Ability = {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
         maxHP: 3,
-        armor: 12,
+        armor: 10,
         abilities: [
             {
                 ...attack,
@@ -3000,7 +3000,7 @@ export const burst: Ability = {
     rarity: RARITIES.RARE,
     actions: [
         {
-            damage: 3,
+            damage: 5,
             area: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -3014,7 +3014,7 @@ export const burst: Ability = {
                 opacity: 0.5,
             },
             bonus: {
-                damage: 3,
+                damage: 2,
                 multiplier: {
                     type: MULTIPLIER_TYPES.ABILITIES_USED,
                     calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -3040,9 +3040,7 @@ export const burst: Ability = {
         {
             actions: [
                 {
-                    bonus: {
-                        damage: 1,
-                    },
+                    damage: 5,
                 },
             ],
         },
