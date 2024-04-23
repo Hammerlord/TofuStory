@@ -60,9 +60,15 @@ const useStyles = createUseStyles({
     },
 });
 
+enum QUEUED_EFFECT_TYPES {
+    ADDED = "added",
+    FADED = "faded",
+    IMMUNED = "immuned",
+}
+
 type EffectQueued = {
     effect: CombatEffect;
-    type: "added" | "removed" | "immuned";
+    type: QUEUED_EFFECT_TYPES;
 };
 
 /**
@@ -95,7 +101,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
 
     const animatedEffectsRef: any = useRef({});
 
-    const getKey = (effect, type) => {
+    const getKey = (effect: CombatEffect, type): string => {
         return [effect.id, type].join("-");
     };
 
@@ -121,20 +127,20 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
 
         const newQueue = [...queue];
         aggregate(effects.filter(isVisible)).forEach((effect) => {
-            if (!isAlreadyQueued(effect, "added")) {
-                newQueue.push({ effect, type: "added" });
+            if (!isAlreadyQueued(effect, QUEUED_EFFECT_TYPES.ADDED)) {
+                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.ADDED });
             }
         });
 
         aggregate(removedEffects.filter(isVisible)).forEach((effect) => {
-            if (!isAlreadyQueued(effect, "removed")) {
-                newQueue.push({ effect, type: "removed" });
+            if (!isAlreadyQueued(effect, QUEUED_EFFECT_TYPES.FADED)) {
+                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.FADED });
             }
         });
 
         aggregate(failedToApplyEffects.filter(isVisible)).forEach((effect) => {
-            if (!isAlreadyQueued(effect, "immuned")) {
-                newQueue.push({ effect, type: "immuned" });
+            if (!isAlreadyQueued(effect, QUEUED_EFFECT_TYPES.IMMUNED)) {
+                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.IMMUNED });
             }
         });
 
@@ -179,7 +185,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                 const { effect: e, type } = item;
 
                 const getInner = () => {
-                    if (type === "added") {
+                    if (type === QUEUED_EFFECT_TYPES.ADDED) {
                         return (
                             <>
                                 + <Icon icon={e.icon} size="sm" /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
@@ -187,7 +193,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                         );
                     }
 
-                    if (type === "removed") {
+                    if (type === QUEUED_EFFECT_TYPES.FADED) {
                         return (
                             <>
                                 <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}{" "}
@@ -196,7 +202,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                         );
                     }
 
-                    if (type === "immuned") {
+                    if (type === QUEUED_EFFECT_TYPES.IMMUNED) {
                         return (
                             <>
                                 Resisted <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}
@@ -210,7 +216,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                     <div
                         key={key}
                         className={classNames(classes.effectItem, {
-                            [classes.faded]: type === "removed" || type === "immuned",
+                            [classes.faded]: [QUEUED_EFFECT_TYPES.FADED, QUEUED_EFFECT_TYPES.IMMUNED].includes(type),
                         })}
                         ref={(element) => {
                             if (element) {
