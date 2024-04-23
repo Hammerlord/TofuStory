@@ -1641,6 +1641,7 @@ const pushPlaybackQueue = ({
     side,
     source,
     displacements,
+    statUpdates,
 }: {
     action: Action;
     actorId: string;
@@ -1650,6 +1651,7 @@ const pushPlaybackQueue = ({
     side: BATTLEFIELD_SIDES;
     source: TriggerSource;
     displacements?: Displacement;
+    statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
 }) => {
     return (dispatch, getState) => {
         let playbackTime = action.playbackTime;
@@ -1677,6 +1679,7 @@ const pushPlaybackQueue = ({
                 playbackTime,
                 source,
                 displacements,
+                statUpdates,
             } as Event)
         );
     };
@@ -2002,6 +2005,12 @@ const performAction = ({
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
 
+        // TODO: does not include hitEffects or secondaryAction, hence is incomplete info
+        const aggregatedStatUpdates = updated.reduce((acc, { statUpdate }) => {
+            acc[statUpdate.combatantId] = statUpdate;
+            return acc;
+        }, {});
+
         dispatch(
             pushPlaybackQueue({
                 action,
@@ -2012,6 +2021,7 @@ const performAction = ({
                 side,
                 source,
                 displacements,
+                statUpdates: aggregatedStatUpdates,
             })
         );
 

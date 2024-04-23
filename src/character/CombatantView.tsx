@@ -346,20 +346,18 @@ const CombatantView = forwardRef(
         const characterImageRef = useRef();
 
         useEffect(() => {
-            const isCombatantChanged = oldState?.id !== combatant?.id;
-            const isDead = combatant?.HP <= 0 && !isLifeLinked;
-
             const statChanges = getCharacterStatChanges({
                 oldCharacter: oldState,
                 newCharacter: combatant,
             });
 
             const callback = () => {
-                setStatChanges(statChanges);
+                const eventStatChanges = event?.statUpdates?.[combatant?.id];
+                setStatChanges({ ...eventStatChanges, ...statChanges });
                 setOldState(combatant);
 
                 if (characterImageRef.current) {
-                    const isKillingBlow = oldState?.HP > 0 && isDead && !isCombatantChanged;
+                    const isKillingBlow = eventStatChanges?.isDeathBlow && !isLifeLinked;
                     if (isKillingBlow && !willPerformActions) {
                         playDyingAnimation({ object: characterImageRef.current });
                     } else if (

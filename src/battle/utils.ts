@@ -29,9 +29,11 @@ import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import _ from "lodash";
-import { useCallback, useRef } from "react";
+import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 
-export type StatChange = {
+// TODO use UpdateCombatantStats from the Event instead of diffing here.
+// However, the Event UpdateCombatantStats has incomplete data, so it isn't a full replacement for this yet.
+export type StatChange = { [key in keyof UpdatedCombatantStats]?: UpdatedCombatantStats[key] } & {
     damage: number;
     healing: number;
     armor: number;

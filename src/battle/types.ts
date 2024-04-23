@@ -34,6 +34,7 @@ export interface Event {
     cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
     newCombatants: Combatant[];
     displacements?: Displacement;
+    statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
 }
 
 export interface EventGroup {

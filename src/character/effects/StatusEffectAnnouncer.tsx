@@ -105,9 +105,9 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
         }
 
         // Only display effects that are visible via icon
-        const { effects = [], removedEffects = [] } = statChanges;
-        const newEffects = effects.filter((e) => e.icon && !e.disableDisplayIcon);
-        const newRemovedEffects = removedEffects.filter((e) => e.icon && !e.disableDisplayIcon);
+        const { effects = [], removedEffects = [], failedToApplyEffects = [] } = statChanges;
+
+        const isVisible = (effect: CombatEffect): boolean => effect.icon && !effect.disableDisplayIcon;
 
         const queuedKeys = queue.reduce((acc, item) => {
             acc[getKey(item.effect, item.type)] = true;
@@ -120,15 +120,21 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
         };
 
         const newQueue = [...queue];
-        aggregate(newEffects).forEach((effect) => {
+        aggregate(effects.filter(isVisible)).forEach((effect) => {
             if (!isAlreadyQueued(effect, "added")) {
                 newQueue.push({ effect, type: "added" });
             }
         });
 
-        aggregate(newRemovedEffects).forEach((effect) => {
+        aggregate(removedEffects.filter(isVisible)).forEach((effect) => {
             if (!isAlreadyQueued(effect, "removed")) {
                 newQueue.push({ effect, type: "removed" });
+            }
+        });
+
+        aggregate(failedToApplyEffects.filter(isVisible)).forEach((effect) => {
+            if (!isAlreadyQueued(effect, "immuned")) {
+                newQueue.push({ effect, type: "immuned" });
             }
         });
 

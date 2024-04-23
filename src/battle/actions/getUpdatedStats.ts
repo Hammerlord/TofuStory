@@ -42,7 +42,7 @@ export interface UpdatedCombatantStats {
     mesos?: number;
     removedEffects?: CombatEffect[];
     isArmorDecay?: boolean;
-    failedToApplyEffects?: Effect[]; // Effects that were immuned
+    failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
 }
 
 export const getUpdatedStats = ({
@@ -198,7 +198,7 @@ export const getUpdatedStats = ({
         };
 
         const effects: CombatEffect[] = [];
-        const failedToApplyEffects: Effect[] = [];
+        const failedToApplyEffects: CombatEffect[] = [];
 
         Array.from({ length: multiplier }).forEach(() => {
             const effectsToAdd = actionEffects
@@ -213,7 +213,8 @@ export const getUpdatedStats = ({
                 })
                 .filter((effect) => {
                     if (isImmuneTo(effect)) {
-                        failedToApplyEffects.push(effect);
+                        // ID for differentiation purposes when announcing that the effect failed to apply
+                        failedToApplyEffects.push({ ...effect, id: uuid.v4(), uptime: 0 });
                         return false;
                     }
 
