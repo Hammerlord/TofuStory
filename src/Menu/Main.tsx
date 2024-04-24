@@ -121,7 +121,7 @@ const {
     selectMapNode: selectNode,
     setRoute,
     setTown,
-    loseItems,
+    setNumNormalEncountersSinceLoot,
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
@@ -159,6 +159,7 @@ const Main = () => {
         nodesVisited,
         currentTown: town,
         battleHistory = [],
+        numNormalEncountersSinceLoot = 0,
     } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
@@ -348,11 +349,21 @@ const Main = () => {
 
         if ([BATTLE_TYPES.ELITE_ENCOUNTER, BATTLE_TYPES.BOSS].includes(battle?.type)) {
             setItemRewardsOptions({ numChoicesOffered: 3, ...itemRewardProps });
-        } else if (Math.random() < REGULAR_BATTLE_LOOT_CHANCE) {
-            setItemRewardsOptions({ numChoicesOffered: 1, ...itemRewardProps });
-        } else {
-            handleExitBattle();
+            return;
         }
+
+        if (numNormalEncountersSinceLoot > 0) {
+            const isCrossedPityThreshold = numNormalEncountersSinceLoot * REGULAR_BATTLE_LOOT_CHANCE >= 1;
+            if (Math.random() < REGULAR_BATTLE_LOOT_CHANCE || isCrossedPityThreshold) {
+                dispatch(setNumNormalEncountersSinceLoot(0));
+                setItemRewardsOptions({ numChoicesOffered: 1, ...itemRewardProps });
+                return;
+            }
+        }
+
+        dispatch(setNumNormalEncountersSinceLoot(numNormalEncountersSinceLoot + 1));
+
+        handleExitBattle();
     };
 
     const handleCloseItemRewards = () => {

@@ -61,6 +61,7 @@ export type CharacterState = {
         [itemName: string]: number; // Number of purchases for a given item name
     };
     rolledBosses: { [bossId: string]: true };
+    numNormalEncountersSinceLoot: number;
 };
 
 const getRolledBosses = () => {
@@ -90,6 +91,7 @@ const INITIAL_STATE: CharacterState = {
     townShops: {}, // Logs shop inventory in the recent town. See TownShops type.
     purchasedConsumables: {},
     rolledBosses: {}, // For randomly generated bosses, set the chosen boss here
+    numNormalEncountersSinceLoot: 0, // To normalize the rate of normal encounter loot drops
 };
 
 export type ActivityHistoryLog = {
@@ -460,6 +462,12 @@ export const playerStateSlice = createSlice({
 
             saveGame(newState);
             return newState;
+        },
+        setNumNormalEncountersSinceLoot: (state, action: PayloadAction<number>) => {
+            return {
+                ...state,
+                numNormalEncountersSinceLoot: action.payload,
+            };
         },
     },
 });
