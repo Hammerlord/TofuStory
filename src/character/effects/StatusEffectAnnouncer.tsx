@@ -6,7 +6,7 @@ import { StatChange } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { Combatant } from "../types";
 
-const PLAYBACK_TIME = 2000;
+const PLAYBACK_TIME = 3000;
 
 const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
     const animationFrames: any[] = [
@@ -171,7 +171,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                 const elementRef = ref.current?.[key];
 
                 animatedEffectsRef.current[key] = true;
-                const animation = floatAnimation({ object: elementRef, delay: i * 350 });
+                const animation = floatAnimation({ object: elementRef, delay: i * 500 });
                 animation.onfinish = () => {
                     delete animatedEffectsRef.current[key];
                     setQueue((prev) =>
