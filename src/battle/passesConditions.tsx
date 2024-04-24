@@ -77,6 +77,7 @@ export const passesConditions = ({
             property,
             value,
             notProc,
+            filters,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
@@ -335,7 +336,18 @@ export const passesConditions = ({
             }
 
             if (numFriendly !== undefined) {
-                const calculatedNumFriendly = friendly.filter((combatant) => combatant?.HP > 0).length;
+                const calculatedNumFriendly = friendly.filter((combatant) => {
+                    if (!combatant?.HP) {
+                        return false;
+                    }
+
+                    if (filters) {
+                        return filters.some((filter) => {
+                            const { property, comparator, value } = filter;
+                            return passesValueComparison({ val: combatant[property], otherVal: value, comparator });
+                        });
+                    }
+                }).length;
 
                 if (
                     !passesValueComparison({

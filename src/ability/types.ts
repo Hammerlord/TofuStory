@@ -230,6 +230,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
     override?: {
         portrait?: string[]; // If an array is provided, a random item will be chosen
         damage?: number;
+        weapon?: string | null;
     };
     viewDeckInOrder?: boolean;
     minimumAttackDamage?: number;
@@ -391,6 +392,13 @@ export interface Condition {
     /** Custom property/value. */
     property?: string;
     value?: any;
+
+    // For filtering array types like numFriendly. (In fact it's only used for numFriendly at the moment.)
+    filters?: {
+        property: string;
+        comparator: Comparator;
+        value: string;
+    }[];
 
     // For source type Ability or Effect. Do not pass the condition if it is a proc
     notProc?: boolean;
@@ -576,7 +584,7 @@ export type Action = {
     induceCombatantAttack?: boolean;
     induceCombatant?: {
         mode?: "random" | "left-to-right" | "right-to-left";
-        action: Action;
+        action: Action | Action[];
     };
     mesos?: number;
     stealMesos?: number;

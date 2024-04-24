@@ -451,6 +451,9 @@ const CombatantView = forwardRef(
             });
         };
 
+        const overrideWeapon = oldState?.effects?.find(({ override }) => override?.weapon !== undefined)?.override?.weapon;
+        const weapon = overrideWeapon !== undefined ? overrideWeapon : oldState?.weapon;
+
         return (
             <div
                 className={classNames(classes.root, {
@@ -499,7 +502,7 @@ const CombatantView = forwardRef(
                                             })}
                                         >
                                             <Weapon
-                                                image={oldState.weapon}
+                                                image={weapon}
                                                 options={oldState.weaponImageOptions}
                                                 action={action}
                                                 target={targetRef}

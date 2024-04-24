@@ -574,6 +574,7 @@ const onEffectEventTrigger = ({
                     [TRIGGER_TARGET_TYPES.ACTOR]: [source?.actorId],
                     [TRIGGER_TARGET_TYPES.TARGET]: [source?.targetId],
                     [TRIGGER_TARGET_TYPES.ALL_TARGETS]: source?.allTargetIds || [],
+                    [TRIGGER_TARGET_TYPES.PLAYER]: [getState().battle.playerSide.find((combatant) => combatant?.isPlayer).id],
                 }[targetType] || [];
             return targetIds.filter((v) => v);
         };
@@ -1419,8 +1420,9 @@ const checkInduce = ({
     return (dispatch, getState) => {
         const { induceCombatant, induceCombatantAttack } = action;
         if (induceCombatant) {
-            const { mode, action } = induceCombatant;
-            if (action) {
+            const { mode, action: actions } = induceCombatant;
+
+            const handleInduceAction = (action) => {
                 if (mode === "random") {
                     affectedTargetIds = shuffle(affectedTargetIds);
                 } else if (mode === "right-to-left") {
@@ -1476,6 +1478,12 @@ const checkInduce = ({
                         );
                     }
                 });
+            };
+
+            if (Array.isArray(actions)) {
+                actions.forEach(handleInduceAction);
+            } else if (actions) {
+                handleInduceAction(actions);
             }
         }
 
