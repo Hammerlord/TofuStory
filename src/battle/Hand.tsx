@@ -101,13 +101,13 @@ const Hand = ({
     onAbilityClick,
     selectedAbilityId,
     className,
-    refs,
+    cardRefs,
 }: {
     hand: CombatAbility[];
     onAbilityClick: Function;
     selectedAbilityId: string;
     className: string;
-    refs;
+    cardRefs;
 }) => {
     const [oldHand, setOldHand] = useState([]);
     const classes = useStyles();
@@ -159,7 +159,13 @@ const Hand = ({
                     isSelected={selectedAbilityId === ability.instanceId}
                     key={ability.instanceId}
                     ability={getAbility(ability, i)}
-                    ref={refs[i]}
+                    ref={(element) => {
+                        if (element) {
+                            cardRefs.current[ability.instanceId] = element;
+                        } else {
+                            delete cardRefs.current[ability.instanceId];
+                        }
+                    }}
                     className={classNames({
                         [classes.slideIn]: !isCardInHand(ability, oldHand),
                         [classes.slideOut]: !isCardInHand(ability, hand) && handToDisplay.length > 1,

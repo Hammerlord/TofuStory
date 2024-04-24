@@ -256,7 +256,7 @@ const BattlefieldContainer = () => {
 
     const allyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
     const enemyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
-    const abilityRefs = Array.from({ length: MAX_HAND_SIZE }).map(() => useRef());
+    const handRef = useRef({});
     const battlefieldRef: React.RefObject<HTMLDivElement> = useRef();
     const deckRef: React.RefObject<HTMLDivElement> = useRef();
     const discardRef: React.RefObject<HTMLDivElement> = useRef();
@@ -814,14 +814,12 @@ const BattlefieldContainer = () => {
         return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
     };
 
-    const abilityIndex = hand.findIndex(({ instanceId }) => selectedAbilityId === instanceId);
-
     const origination = useMemo(() => {
         if (disableActions) {
             return null;
         }
-        return allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current;
-    }, [disableActions, selectedAllyIndex, selectedAbilityId, allyRefs[selectedAllyIndex]?.current || abilityRefs[abilityIndex]?.current]);
+        return allyRefs[selectedAllyIndex]?.current || handRef.current?.[selectedAbilityId];
+    }, [disableActions, selectedAllyIndex, selectedAbilityId]);
 
     const showMovementAbility =
         allowFriendlyMovement &&
@@ -1125,7 +1123,7 @@ const BattlefieldContainer = () => {
                     <Hand
                         className={classes.abilities}
                         hand={hand}
-                        refs={abilityRefs}
+                        cardRefs={handRef}
                         selectedAbilityId={selectedAbilityId}
                         onAbilityClick={handleAbilityClick}
                     />
