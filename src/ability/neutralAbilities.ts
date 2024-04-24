@@ -262,12 +262,6 @@ const exiledOneArmEffect: Effect = {
         },
     },
     onTurnEnd: {
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.PLAYER,
-                hasEffect: "Avatar of the Exiled One",
-            },
-        ],
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         induceCombatantAttack: true,
     },
@@ -301,7 +295,7 @@ export const firstExiledArm: Ability = {
                             width: 100,
                             height: 100,
                         },
-                        damage: 0,
+                        damage: 3,
                     },
                 ],
             },
