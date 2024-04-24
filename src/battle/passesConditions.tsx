@@ -347,6 +347,8 @@ export const passesConditions = ({
                             return passesValueComparison({ val: combatant[property], otherVal: value, comparator });
                         });
                     }
+
+                    return true;
                 }).length;
 
                 if (
