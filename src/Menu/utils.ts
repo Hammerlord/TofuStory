@@ -5,6 +5,9 @@ import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
 import { Item } from "../item/types";
 import { AbilityUpgrade } from "./../ability/types";
 import { directDamageTakenTrigger } from "../ability/Effects";
+import { JOB_CARD_MAP } from "../ability";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
+import { Player } from "../character/types";
 
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
@@ -153,4 +156,27 @@ export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: 
         level: (card.level || 1) + 1,
         instanceId: card.instanceId || uuid.v4(),
     };
+};
+
+export const getCardPool = (player: Player, deck: CombatAbility[]) => {
+    const { starters, all } = JOB_CARD_MAP[player.class];
+
+    const ownedUniqueCards = deck.reduce((acc, ability) => {
+        if (ability.isUnique) {
+            acc[ability.name] = true;
+        }
+
+        return acc;
+    }, {});
+
+    return [
+        ...all.map((card) => {
+            if (starters.some(({ name }) => name === card.name)) {
+                return getUpgradeCard(card) || card;
+            }
+            return card;
+        }),
+    ]
+        .concat(NEUTRAL_ABILITIES)
+        .filter((ability) => !ownedUniqueCards[ability.name]);
 };

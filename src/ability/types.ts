@@ -736,6 +736,7 @@ export interface Ability {
         effects: AbilityEffect[];
         filters?: CardFilterCondition[];
     };
+    isUnique?: boolean; // Player cannot obtain more than one of this card
 }
 
 /**

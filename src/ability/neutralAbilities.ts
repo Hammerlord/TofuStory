@@ -222,7 +222,10 @@ const exiledOneArmEffect: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    resources: 3,
+                    resources: 1,
+                    drawCards: {
+                        amount: 2,
+                    },
                     effects: [
                         {
                             name: "Avatar of the Exiled One",
@@ -275,6 +278,7 @@ export const firstExiledArm: Ability = {
     image: ZakumArmLeftImage,
     description: "<b>Uncontrollable. Incorporeal.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
     overrideBodyText: true,
+    isUnique: true,
     rarity: RARITIES.RARE,
     minion: {
         name: "First Arm of the Exiled One",

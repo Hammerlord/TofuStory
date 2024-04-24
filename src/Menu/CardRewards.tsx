@@ -14,7 +14,7 @@ import { rollRarity } from "../item/utils";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { getUpgradeCard } from "./utils";
+import { getCardPool, getUpgradeCard } from "./utils";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 const useStyles = createUseStyles({
@@ -85,17 +85,7 @@ const CardRewards = ({
     disableIgnoreButton?: boolean;
 }) => {
     const rolledAbilities = useMemo(() => {
-        const { starters, all } = JOB_CARD_MAP[player.class];
-
-        const potentialAbilities = [
-            ...all.map((card) => {
-                if (starters.some(({ name }) => name === card.name)) {
-                    return getUpgradeCard(card) || card;
-                }
-                return card;
-            }),
-        ].concat(NEUTRAL_ABILITIES);
-
+        const potentialAbilities = getCardPool(player, deck);
         const choices = [...cardRewardOptions];
         const numChoices = NUM_CARD_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
 

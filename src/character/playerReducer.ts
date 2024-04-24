@@ -391,7 +391,7 @@ export const playerStateSlice = createSlice({
                     ...newState.townShops,
                     [townName]: {
                         shop: {
-                            ...generateShopInventory({ player: state.player }),
+                            ...generateShopInventory({ player: state.player, deck: state.deck }),
                             usedFreeFood: 0,
                             usedNumRefreshes: 0,
                         },
@@ -451,7 +451,7 @@ export const playerStateSlice = createSlice({
                         ...state.townShops[town],
                         shop: {
                             ...state.townShops?.[town]?.shop,
-                            ...generateShopInventory({ player: state.player }),
+                            ...generateShopInventory({ player: state.player, deck: state.deck }),
                             usedNumRefreshes: (state.townShops?.[town]?.shop?.usedNumRefreshes || 0) + 1,
                         },
                     },

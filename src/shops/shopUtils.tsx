@@ -1,9 +1,9 @@
-import { Ability } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { Player } from "../character/types";
 import { clubMembership, tofu, tofuSoup } from "../item/items";
 import { Item } from "../item/types";
 
-import { getUpgradeCard } from "../Menu/utils";
+import { getCardPool, getUpgradeCard } from "../Menu/utils";
 import { JOB_CARD_MAP } from "../ability";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { NewYearRiceSoupImage, TofuImage } from "../images";
@@ -47,17 +47,15 @@ export const getShopCustomerProperties = (player: Player) => {
     };
 };
 
-export const generateShopInventory = ({ player }: { player: Player }): { abilities: ShopAbility[]; items: ShopItem[] } => {
+export const generateShopInventory = ({
+    player,
+    deck,
+}: {
+    player: Player;
+    deck: CombatAbility[];
+}): { abilities: ShopAbility[]; items: ShopItem[] } => {
     // Abilities
-    const potentialAbilities = JOB_CARD_MAP[player.class].all
-        .map((ability: Ability) => {
-            if (JOB_CARD_MAP[player.class].starters.includes(ability) && ability.upgrades?.length > 0) {
-                return getUpgradeCard(ability);
-            }
-
-            return ability;
-        })
-        .concat(NEUTRAL_ABILITIES);
+    const potentialAbilities = getCardPool(player, deck);
 
     const rolledAbilities = [];
     Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
