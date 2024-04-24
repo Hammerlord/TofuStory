@@ -171,7 +171,7 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatCh
                 const elementRef = ref.current?.[key];
 
                 animatedEffectsRef.current[key] = true;
-                const animation = floatAnimation({ object: elementRef, delay: i * 500 });
+                const animation = floatAnimation({ object: elementRef, delay: i * (PLAYBACK_TIME / 5) });
                 animation.onfinish = () => {
                     delete animatedEffectsRef.current[key];
                     setQueue((prev) =>
