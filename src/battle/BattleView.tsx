@@ -48,7 +48,7 @@ import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constan
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { canTargetIfStealthed, canUseAbility, hasEffectType, isValidTarget, isWithinAbilityArea } from "./utils";
+import { canTargetIfStealthed, canUseAbility, hasEffectType, isUntargetable, isValidTarget, isWithinAbilityArea } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -475,6 +475,8 @@ const BattlefieldContainer = () => {
                     warn(battleWarnings.unplayable);
                 } else if (!canUseAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
+                } else if (isUntargetable(playerSide[index])) {
+                    warn(battleWarnings.untargetable);
                 }
                 setSelectedAbilityId(null);
             }

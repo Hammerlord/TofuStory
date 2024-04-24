@@ -197,6 +197,7 @@ const exiledOneArmEffect: Effect = {
     name: "Vestige of the Exiled One",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    untargetable: true,
     immunities: {
         type: "effect-class",
         value: [EFFECT_CLASSES.DEBUFF],
@@ -276,7 +277,7 @@ export const firstExiledArm: Ability = {
     name: "First Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
-    description: "<b>Uncontrollable. Incorporeal.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
+    description: "<b>Uncontrollable. Can't be targeted.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
     overrideBodyText: true,
     isUnique: true,
     rarity: RARITIES.RARE,

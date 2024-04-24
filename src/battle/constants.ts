@@ -23,4 +23,5 @@ export const battleWarnings = {
     unplayable: "That card cannot be played.",
     targetTaunt: "You must target the enemy that has Taunt.",
     handFull: "Your hand is too full!",
+    untargetable: "That character cannot be targeted.",
 };

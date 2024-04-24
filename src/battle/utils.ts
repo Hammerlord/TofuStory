@@ -132,6 +132,13 @@ export const isStealthed = (character?: Combatant): boolean => {
     return character.effects?.some(({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced));
 };
 
+export const isUntargetable = (character?: Combatant): boolean => {
+    if (!character) {
+        return false;
+    }
+    return character.effects?.some(({ untargetable }) => untargetable);
+};
+
 export const hasTruesight = (character?: Combatant): boolean => {
     if (!character) {
         return false;
@@ -214,6 +221,9 @@ export const isValidTarget = ({
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
+            if (isUntargetable(playerSide[index])) {
+                return false;
+            }
             const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
                 if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                     return actorData;
@@ -247,6 +257,10 @@ export const isValidTarget = ({
         if (isStealthed(targetedEnemy) && !area) {
             return false;
         }
+        if (isUntargetable(targetedEnemy)) {
+            return false;
+        }
+
         const tauntEnemies = enemySide
             .filter((combatant) => combatant?.HP)
             .map((combatant) => findCombatantData(getState, combatant.id))
@@ -781,7 +795,8 @@ export const getValidTargetIndices = (
         if (character?.HP > 0) {
             const notStealth = !excludeStealth || !isStealthed(character);
             const notExcluded = excludeIndex !== i;
-            if (notStealth && notExcluded) {
+            const untargetable = isUntargetable(character);
+            if (notStealth && notExcluded && !untargetable) {
                 indices.push(i);
             }
         }
