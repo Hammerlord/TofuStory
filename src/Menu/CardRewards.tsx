@@ -106,7 +106,8 @@ const CardRewards = ({
             const selectedRarity = rollRarity({ player, bonuses, disableRarities });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
-                return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate;
+                const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);
+                return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate && noExclusive;
             });
             if (filteredByRarity) {
                 choices.push(filteredByRarity);

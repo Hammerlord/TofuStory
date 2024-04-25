@@ -256,6 +256,7 @@ const exiledOneArmEffect: Effect = {
 
 export const firstExiledArm: Ability = {
     name: "First Arm of the Exiled One",
+    exclusive: "Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
     description: "<b>Uncontrollable. Can't be targeted.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",

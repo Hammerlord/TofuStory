@@ -690,6 +690,7 @@ export interface AbilityEvent {
 export interface Ability {
     name: string;
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
+    exclusive?: string; // Eg. you cannot get more than one "Arm of the Exiled One" in any card selection screen
     actions: Action[];
     minion?: Minion;
     minionOptions?: {

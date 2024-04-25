@@ -268,7 +268,8 @@ export const TransmutationView = ({
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 const notSameAsSelection = ability.name !== selectedCard.name;
-                return (ability.rarity || RARITIES.COMMON) === rarity && noDuplicate && notSameAsSelection;
+                const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);
+                return (ability.rarity || RARITIES.COMMON) === rarity && noDuplicate && notSameAsSelection && noExclusive;
             });
 
             if (filteredByRarity) {
