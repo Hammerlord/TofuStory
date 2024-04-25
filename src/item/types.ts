@@ -1,4 +1,5 @@
-import { Effect } from "./../ability/types";
+import { BATTLE_TYPES } from "../battle/types";
+import { Ability, Effect } from "./../ability/types";
 export enum ITEM_TYPES {
     CONSUMABLE = "consumable",
     MATERIAL = "material",
@@ -26,7 +27,12 @@ export interface Item {
     effects?: Effect[];
     upgradeCard?: boolean;
     removeCard?: boolean;
-    abilityChoices?: 1;
+    // Card reward screens grant an extra option
+    abilityChoices?: {
+        battleTypes?: BATTLE_TYPES[]; // If not supplied, this applies to all battle types
+        amount: number;
+        abilities?: Ability[]; // Specific abilities to grant. If amount < abilities.length, a random one is chosen.
+    };
     rarity?: RARITIES;
     stacks?: number;
     isStackable?: boolean;

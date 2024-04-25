@@ -1,6 +1,7 @@
 import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
+import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
-import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
     AdventurerCapeImage,
@@ -96,6 +97,7 @@ import {
     WorkGlovesImage,
     YellowHatImage,
     YellowStarryBandanaImage,
+    ZakumHelmetImage,
 } from "../images";
 import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import {
@@ -344,14 +346,9 @@ export const guideBook: Item = {
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    abilityChoices: 1,
-    effects: [
-        {
-            name: "Guide Book",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-        },
-    ],
+    abilityChoices: {
+        amount: 1,
+    },
 };
 
 export const panlid: Item = {
@@ -2198,6 +2195,43 @@ export const broom: Item = {
                     type: MULTIPLIER_TYPES.RESOURCES_SPENT,
                 },
                 ability: dustDevilsActiveAbility,
+            },
+        },
+    ],
+};
+
+export const zakumHelmet: Item = {
+    name: "Zakum Helmet",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: ZakumHelmetImage,
+    description: "Wave start: +1 {{ resources }} and card draw. Elites and bosses offer an Arm of the Exiled One.",
+    abilityChoices: {
+        battleTypes: [BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER],
+        amount: 1,
+        abilities: [firstExiledArm, secondExiledArm, thirdExiledArm, fourthExiledArm],
+    },
+    effects: [
+        {
+            name: "Zakum Helmet Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Zakum Helmet",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: ZakumHelmetImage,
+                        resourcesPerTurn: 1,
+                        drawCardsPerTurn: 1,
+                        duration: 0,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
+                    },
+                ],
             },
         },
     ],

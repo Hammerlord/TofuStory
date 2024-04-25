@@ -675,6 +675,7 @@ export { default as ZakumArmLeftImage } from "./ZakumArmLeft.png";
 export { default as ZakumArmLeft2Image } from "./ZakumArmLeft2.png";
 export { default as ZakumArmRightImage } from "./ZakumArmRight.png";
 export { default as ZakumArmRight2Image } from "./ZakumArmRight2.png";
+export { default as ZakumHelmetImage } from "./ZakumHelmet.png";
 export { default as ZingyKebabImage } from "./ZingyKebab.png";
 export { default as ZombieLupinDeathImage } from "./ZombieLupinDeath.gif";
 export { default as ZombieLupinJumpImage } from "./ZombieLupinJump.gif";

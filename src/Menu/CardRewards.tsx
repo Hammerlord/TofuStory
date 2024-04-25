@@ -11,10 +11,10 @@ import { Player } from "../character/types";
 import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE, NUM_CARD_CHOICES } from "../constants";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
-import { shuffle } from "../utils";
+import { getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { getCardPool, getUpgradeCard } from "./utils";
+import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "./utils";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 const useStyles = createUseStyles({
@@ -86,9 +86,15 @@ const CardRewards = ({
 }) => {
     const rolledAbilities = useMemo(() => {
         const potentialAbilities = getCardPool(player, deck);
-        const choices = [...cardRewardOptions];
-        const numChoices = NUM_CARD_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
+        const { numChoices: numChoicesFromItems, choices: choicesFromItems } = getCardChoicesFromItems({
+            player,
+            deck,
+            battleType: rewardType,
+        });
 
+        const choices = [...cardRewardOptions, ...choicesFromItems];
+
+        const numChoices = NUM_CARD_CHOICES + numChoicesFromItems;
         let bonuses = { rare: 0, uncommon: 0 };
         if (rewardType === BATTLE_TYPES.BOSS) {
             bonuses = { rare: BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
@@ -96,7 +102,7 @@ const CardRewards = ({
             bonuses = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         }
 
-        Array.from({ length: numChoices - cardRewardOptions.length }).forEach(() => {
+        Array.from({ length: numChoices - choices.length }).forEach(() => {
             const selectedRarity = rollRarity({ player, bonuses, disableRarities });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);

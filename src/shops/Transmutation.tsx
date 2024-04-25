@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import DeckViewer from "../Menu/DeckViewer";
-import { getCardPool, getUpgradeCard } from "../Menu/utils";
+import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "../Menu/utils";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
@@ -247,8 +247,13 @@ export const TransmutationView = ({
         const { starters } = JOB_CARD_MAP[player.class];
         const potentialAbilities = getCardPool(player, deck).filter((card) => starters.every(({ name }) => name !== card.name));
 
-        const choices = [];
-        const numChoices = NUM_CARD_CHOICES + player.items.reduce((acc, item: Item) => item.abilityChoices || 0 + acc, 0);
+        const { numChoices: numChoicesFromItems, choices: choicesFromItems } = getCardChoicesFromItems({
+            player,
+            deck,
+        });
+
+        const choices = [...choicesFromItems];
+        const numChoices = NUM_CARD_CHOICES + numChoicesFromItems;
 
         Array.from({ length: numChoices }).forEach(() => {
             let rarity;

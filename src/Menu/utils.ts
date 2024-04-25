@@ -8,6 +8,8 @@ import { directDamageTakenTrigger } from "../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Player } from "../character/types";
+import { getRandomItem } from "../utils";
+import { BATTLE_TYPES } from "../battle/types";
 
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
@@ -179,4 +181,45 @@ export const getCardPool = (player: Player, deck: CombatAbility[]) => {
     ]
         .concat(NEUTRAL_ABILITIES)
         .filter((ability) => !ownedUniqueCards[ability.name]);
+};
+
+export const getCardChoicesFromItems = ({
+    deck,
+    player,
+    battleType,
+}: {
+    deck: CombatAbility[];
+    player: Player;
+    battleType?: BATTLE_TYPES;
+}) => {
+    const ownedUniqueCards = deck.reduce((acc, ability) => {
+        if (ability.isUnique) {
+            acc[ability.name] = true;
+        }
+
+        return acc;
+    }, {});
+
+    const { choices, numChoices } = player.items.reduce(
+        (acc, item: Item) => {
+            const { amount = 0, battleTypes, abilities: initAbilities = [] } = item.abilityChoices || {};
+            if (battleTypes && !battleTypes.includes(battleType)) {
+                return acc;
+            }
+
+            const { choices, numChoices } = acc;
+            const abilities = initAbilities.filter((ability) => !ownedUniqueCards[ability.name]);
+            if (abilities.length) {
+                choices.push(getRandomItem(abilities));
+            }
+
+            return {
+                choices,
+                numChoices: numChoices + amount,
+            };
+        },
+        { choices: [], numChoices: 0 }
+    );
+
+    return { choices, numChoices };
 };
