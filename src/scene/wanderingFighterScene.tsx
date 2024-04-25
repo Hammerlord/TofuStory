@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
         left: 377,
     },
     other: {
-        top: 253,
+        top: 276,
         left: 500,
     },
 });

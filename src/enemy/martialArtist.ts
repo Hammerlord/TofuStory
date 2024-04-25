@@ -236,7 +236,7 @@ const woodenDummyTechnique2: Effect = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [bomb] }, { minion: [bomb] }, { minion: [bomb] }, { minion: [bomb] }],
+                    summon: [{ minion: [bomb] }, { minion: [bomb] }],
                 },
                 summonWoodenDummyAction,
             ],
