@@ -2,7 +2,7 @@ import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../../ability";
-import { getAbilityUpgradedFromEffects, isOffensiveAbility } from "../../ability/AbilityView/utils";
+import { getAbilityUpgradedFromEffects, isOffensiveAbility, isSupportAbility } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -2625,6 +2625,14 @@ const onUseAbility =
                 checkEventTrigger({
                     combatantId: actor.id,
                     effectEventKey: EFFECT_EVENT_KEYS.onOffensiveAbility,
+                    source: source,
+                })
+            );
+        } else if (isSupportAbility(ability)) {
+            dispatch(
+                checkEventTrigger({
+                    combatantId: actor.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onSupportAbility,
                     source: source,
                 })
             );

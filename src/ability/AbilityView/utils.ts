@@ -46,6 +46,16 @@ export const isOffensiveAbility = (ability: Ability): boolean => {
     return (ability?.actions || []).some(isOffensiveAction);
 };
 
+export const isSupportAction = (action: Action): boolean => {
+    return [TARGET_TYPES.SELF, TARGET_TYPES.FRIENDLY, TARGET_TYPES.RANDOM_FRIENDLY, TARGET_TYPES.FRIENDLY_CHARACTER].includes(
+        action.target
+    );
+};
+
+export const isSupportAbility = (ability: Ability): boolean => {
+    return (ability?.actions || []).some(isSupportAction);
+};
+
 export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: CombatAbility }) => {
     if (!ability) {
         return ability;

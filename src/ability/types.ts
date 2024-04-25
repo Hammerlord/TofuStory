@@ -102,6 +102,7 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
 export enum EFFECT_EVENT_KEYS {
     onAbility = "onAbility",
     onOffensiveAbility = "onOffensiveAbility",
+    onSupportAbility = "onSupportAbility",
     onDepleteAbility = "onDepleteAbility",
     onAttack = "onAttack",
     onDeath = "onDeath",

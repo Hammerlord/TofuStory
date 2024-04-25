@@ -1636,7 +1636,7 @@ export const rabbitFoot: Item = {
 
 export const blueJeanShorts: Item = {
     name: "Blue Jean Shorts",
-    description: "When you play {{ effects.0.onAbility.conditions.0.numAbilitiesUsed.amount }} support abilities, gain 1 {{ resources }}.",
+    description: "When you play {{ effects.0.onSupportAbility.triggerFrequencyFromSum }} support cards, gain 1 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     image: BlueJeanShortsImage,
     effects: [
@@ -1645,19 +1645,11 @@ export const blueJeanShorts: Item = {
             description: "When you play 9 support abilities, gain 1 resource.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAbility: {
+            onSupportAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        numAbilitiesUsed: {
-                            amount: 9,
-                            type: [ACTION_TYPES.EFFECT],
-                        },
-                        comparator: "modulo",
-                    },
-                ],
+                triggerFrequencyFromSum: 9,
+                disableTriggerFromProcs: true,
             },
         },
     ],
@@ -2205,7 +2197,7 @@ export const zakumHelmet: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: ZakumHelmetImage,
-    description: "Wave start: +1 {{ resources }} and card draw. Elites and bosses offer an Arm of the Exiled One.",
+    description: "On wave start, gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
     abilityChoices: {
         battleTypes: [BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER],
         amount: 1,
