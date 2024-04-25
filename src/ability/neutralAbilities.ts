@@ -223,6 +223,7 @@ const exiledOneArmEffect: Effect = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
+                    animation: ANIMATION_TYPES.SHOUT,
                     resources: 1,
                     drawCards: {
                         amount: 2,
@@ -240,28 +241,14 @@ const exiledOneArmEffect: Effect = {
                             resourcesPerTurn: 1,
                             type: EFFECT_TYPES.RAGE,
                             class: EFFECT_CLASSES.BUFF,
+                            maxApplications: 1,
                         },
                     ],
-                },
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    area: 2,
-                    excludePrimaryTarget: true,
-                    effects: [
-                        {
-                            name: "Unleashed Power",
-                            attackPower: 5,
-                            type: EFFECT_TYPES.RAGE,
-                            class: EFFECT_CLASSES.BUFF,
-                        },
-                    ],
-                    induceCombatantAttack: true,
                 },
             ],
         },
     },
-    onTurnEnd: {
+    onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         induceCombatantAttack: true,
     },
