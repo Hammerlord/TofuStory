@@ -174,7 +174,7 @@ export const JOB_CARD_MAP = {
             temporalBag,
             greatestBolt,
             copySpell,
-            volatileMagic,
+            //volatileMagic,
             bagFromBeyond,
             moltenLaser,
             combust,

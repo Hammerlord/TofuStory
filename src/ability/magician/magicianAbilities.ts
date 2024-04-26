@@ -1078,6 +1078,7 @@ export const avatarOfTheStars: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            addCards: [{ ...swift, removeAfterTurn: true }],
             effects: [
                 {
                     name: "Avatar Of The Stars",

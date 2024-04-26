@@ -583,7 +583,7 @@ const AbilityView = forwardRef(
                                     </div>
                                 )}
                                 {!overrideBodyText && <Buffs ability={ability} player={player} />}
-                                <CardsToAdd ability={ability} />
+                                {!overrideBodyText && <CardsToAdd ability={ability} />}
                                 {!overrideBodyText && (
                                     <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
                                 )}
