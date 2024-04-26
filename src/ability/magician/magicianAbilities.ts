@@ -121,7 +121,6 @@ export const lesserBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: EnergyBoltProjectileImage,
-            playbackTime: 400,
             animationOptions: {
                 rotate: -45,
                 rotateToFaceTarget: true,
@@ -154,7 +153,6 @@ export const magicFang: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: MagicFangProjectileImage,
-            playbackTime: 400,
             animationOptions: {
                 rotateToFaceTarget: true,
                 width: 100,
@@ -227,7 +225,6 @@ export const energyBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: EnergyBoltProjectileImage,
-            playbackTime: 400,
             animationOptions: {
                 rotate: -45,
                 rotateToFaceTarget: true,
@@ -268,7 +265,6 @@ const magicClawAction: Action = {
         height: 100,
     },
     icon: MagicClawProjectileImage,
-    playbackTime: 400,
     bonus: {
         conditions: [
             {
@@ -374,7 +370,6 @@ export const ping: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             icon: PingProjectileImage,
-            playbackTime: 400,
             secondaryAction: {
                 effects: [
                     {
@@ -526,7 +521,6 @@ const triboltAction: Action = {
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
     icon: EnergyBoltProjectileImage,
-    playbackTime: 400,
     animationOptions: {
         rotate: -45,
         rotateToFaceTarget: true,
@@ -829,7 +823,6 @@ const fallingStar: Action = {
     target: TARGET_TYPES.RANDOM_HOSTILE,
     icon: StarImage,
     damage: 2,
-    playbackTime: 400,
 };
 
 export const wishUponAStar: Ability = {
@@ -1147,7 +1140,6 @@ export const greaterBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: EnergyBoltProjectileImage,
-            playbackTime: 400,
             animationOptions: {
                 rotate: -45,
                 rotateToFaceTarget: true,
@@ -1180,7 +1172,6 @@ export const throwTheBook: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             icon: PurpleFlyingBookImage,
-            playbackTime: 400,
             animationOptions: {
                 rotateToFaceTarget: true,
                 width: 300,
@@ -1659,7 +1650,6 @@ export const greatestBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: PurpleEnergyBoltProjectileImage,
-            playbackTime: 400,
             animationOptions: {
                 rotate: -45,
                 rotateToFaceTarget: true,
@@ -1986,7 +1976,6 @@ export const icyDraft: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
-            playbackTime: 500,
             icon: IcicleImage,
             animationOptions: {
                 rotateToFaceTarget: true,
@@ -2133,7 +2122,6 @@ export const snowball: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-            playbackTime: 500,
             icon: SnowballImage,
             animationOptions: {
                 width: 40,
@@ -2295,7 +2283,6 @@ export const zap: Ability = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY,
-                    playbackTime: 500,
                     icon: ThunderSparkImage,
                     animationOptions: {
                         rotateToFaceTarget: true,
@@ -2312,7 +2299,6 @@ export const zap: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
-            playbackTime: 500,
             icon: ThunderSparkImage,
             animationOptions: {
                 rotateToFaceTarget: true,
@@ -2356,7 +2342,6 @@ export const frostfireBlast: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-            playbackTime: 500,
             icon: FrostfireProjectileImage,
             animationOptions: {
                 flash: 500,
@@ -2656,7 +2641,6 @@ export const elquines: Ability = {
                         icon: NimbleJewelImage,
                         damage: 2,
                         effects: [{ ...chill, duration: 1 }],
-                        playbackTime: 500,
                     },
                 ],
             },
@@ -2796,7 +2780,6 @@ export const whelp: Ability = {
                         animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
                         damage: 2,
-                        playbackTime: 500,
                     },
                 ],
             },
@@ -3070,7 +3053,6 @@ export const fireworks: Ability = {
             },
             damage: 5,
             icon: RocketImage,
-            playbackTime: 700,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
             effects: [burn],

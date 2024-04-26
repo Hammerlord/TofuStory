@@ -8,6 +8,7 @@ export const MARCH_MUSIC = "https://vgmtreasurechest.com/soundtracks/maplestory-
 export const ATTACK_POWER_COEFF = 10; // every attack power grants 1 damage for every 10 damage dealt, minimum 1
 export const MULTI_ACTION_PLAYBACK_SPEED = 600;
 export const NORMAL_ACTION_PLAYBACK_SPEED = 750;
+export const RANGED_ACTION_PLAYBACK_SPEED = 650;
 export const CARD_ADDED_PLAYBACK_SPEED = 1500;
 export const CARD_DEPLETED_PLAYBACK_SPEED = 1000;
 

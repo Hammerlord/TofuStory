@@ -1080,7 +1080,6 @@ export const dustDevilsActiveAbility = {
             },
             damage: 1,
             icon: TornadoImage,
-            playbackTime: 350,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
         },
@@ -1279,7 +1278,6 @@ export const bladedArmor: Ability = {
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
                                     icon: MetalAxeImage,
                                     damage: 2,
-                                    playbackTime: 400,
                                 },
                             ],
                         },

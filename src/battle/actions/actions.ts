@@ -29,7 +29,7 @@ import { Combatant, Player } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
-import { MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED, SUMMON_DELAY } from "../constants";
+import { MULTI_ACTION_PLAYBACK_SPEED, NORMAL_ACTION_PLAYBACK_SPEED, RANGED_ACTION_PLAYBACK_SPEED, SUMMON_DELAY } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
@@ -1668,6 +1668,8 @@ const pushPlaybackQueue = ({
                 playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 3) * Math.max(3, allTargetIndices.length);
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
+            } else if (action.type === ACTION_TYPES.RANGE_ATTACK) {
+                playbackTime = RANGED_ACTION_PLAYBACK_SPEED;
             } else {
                 playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
             }
