@@ -1,19 +1,11 @@
 import _ from "lodash";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, Condition, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Ability, Action, CONDITION_TARGETS, CombatAbility, Comparator, Condition, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
 
-export const passesValueComparison = ({
-    val,
-    otherVal,
-    comparator,
-}: {
-    val: any;
-    otherVal: any;
-    comparator: "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
-}): boolean => {
+export const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: Comparator }): boolean => {
     switch (comparator) {
         case "eq":
             return val === otherVal;
@@ -35,6 +27,18 @@ export const passesValueComparison = ({
                 }
 
                 return val.includes(otherVal);
+            }
+        }
+        case "not-includes": {
+            if (typeof val === "string" && typeof otherVal === "string") {
+                return !val.toLowerCase().includes(otherVal.toLowerCase());
+            }
+            if (Array.isArray(val)) {
+                if (Array.isArray(otherVal)) {
+                    return val.every((item) => !otherVal.includes(item));
+                }
+
+                return !val.includes(otherVal);
             }
         }
         default:

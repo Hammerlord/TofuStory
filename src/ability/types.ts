@@ -308,7 +308,7 @@ export interface Minion {
     uncontrollable?: boolean;
 }
 
-type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes";
+export type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes" | "not-includes";
 
 export interface Multiplier {
     type: MULTIPLIER_TYPES;
