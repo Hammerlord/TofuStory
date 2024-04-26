@@ -6,7 +6,7 @@ import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TA
 import { BLUE, GREEN, GREY, RED } from "./constants";
 import DamageIcon from "./DamageIcon";
 import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
-import { CrossedSwordsImage, FireEmojiImage, HeartImage, HourglassImage, ShieldImage, SnowflakeEmojiImage } from "../../images";
+import { CrossedSwordsImage, FireEmojiImage, HeartImage, HourglassImage, ManaImage, ShieldImage, SnowflakeEmojiImage } from "../../images";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -162,6 +162,8 @@ export const interpolateAbilityDescription = ({ ability }) => {
         filter: "drop-shadow(0 0 1px black)",
     });
 
+    const manaStyleStr = styleObjectToString({ ...iconStyles, width: 12 });
+
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
@@ -172,6 +174,7 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _duration_: `<img src="${HourglassImage}" alt="Turns" style="${styleStrWithShadow}"/>`,
         _burn_: `<img src="${FireEmojiImage}" alt="Burn" style="${styleStrWithShadow}"/>`,
         _chill_: `<img src="${SnowflakeEmojiImage}" alt="Chill" style="${styleStrWithShadow}"/>`,
+        _mana_: `<img src="${ManaImage}" alt="Mana" style="${manaStyleStr}"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));

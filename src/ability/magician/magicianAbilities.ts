@@ -693,7 +693,7 @@ export const frostBarrier: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Inflicts {{{ _chill_ }}} Chill <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.duration }}</b>{{{ _duration_ }}} on attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "Inflicts {{{ _chill_ }}} <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.duration }}</b>{{{ _duration_ }}} on attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -901,7 +901,7 @@ export const fireArrow: Ability = {
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description:
-        "Apply {{{ _burn_ }}} Burn <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. <br/> <br/> <b>Charged:</b> Burn again.",
+        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> <b>Charged:</b> <b>+</b> {{{ _burn_ }}} <b>{{ actions.0.bonus.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1435,7 +1435,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ actions.0.secondaryAction.resources }} Mana but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
+        "Gain {{ actions.0.secondaryAction.resources }} {{{ _mana_ }}} but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
     actions: [
         {
             damage: 0,
@@ -1775,7 +1775,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply {{{ _burn_ }}} Burn <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. <br/> While the target has {{{ _burn_ }}}, gain {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} Mana per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -3057,7 +3057,7 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend your mana to deal {{ actions.0.damage }} {{{ _damage_ }}} and apply <br/> {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _mana_ }}} to deal <br/> {{ actions.0.damage }} {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
 
     performXTimes: true,
     actions: [
