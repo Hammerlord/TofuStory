@@ -1014,7 +1014,7 @@ const BattlefieldContainer = () => {
                         setSelectedAllyIndex(null);
                     }}
                 >
-                    <ParticleCanvas event={events[0]} battlefieldRef={battlefieldRef} allyRefs={allyRefs} enemyRefs={enemyRefs} />
+                    <ParticleCanvas event={events[0]} allyRefs={allyRefs} enemyRefs={enemyRefs} />
 
                     <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.waves}>

@@ -16,49 +16,73 @@ const useStyles = createUseStyles({
         bottom: 0,
         right: 0,
         zIndex: 1,
+        filter: "drop-shadow(0 0 1px rgba(255, 255, 200, 0.5)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.75)) brightness(1.25)",
     },
 });
 
-const ParticleCanvas = ({
-    event,
-    allyRefs = [],
-    enemyRefs = [],
-    battlefieldRef,
-}: {
-    event?: Event;
-    allyRefs?: any[];
-    enemyRefs?: any[];
-    battlefieldRef;
-}) => {
-    const { targetSide, allTargetIndices = [], action, id: eventId, playbackTime } = event || {};
+const fireworksSettings = {
+    particles: 15,
+    hue: { min: 0, max: 45 },
+    lineWidth: { explosion: { min: 2, max: 4 } },
+    gravity: 1.5,
+    friction: 0.97,
+    decay: { min: 0.015, max: 0.03 },
+};
+
+const hitSettings = {
+    ...fireworksSettings,
+    particles: 8,
+    gravity: 0,
+    friction: 0.92,
+    hue: { min: 0, max: 25 },
+    decay: { min: 0.045, max: 0.05 },
+};
+
+const ParticleCanvas = ({ event, allyRefs = [], enemyRefs = [] }: { event?: Event; allyRefs?: any[]; enemyRefs?: any[] }) => {
+    const { targetSide, allTargetIndices = [], action, id: eventId, playbackTime, statUpdates, playerSide, enemySide } = event || {};
     const container = useRef<HTMLDivElement>(null);
-    const fireworks = useRef<any>(null);
-    const hitParticles = useRef<any>(null);
+    const particles = useRef<any>(null);
     const classes = useStyles();
 
     useEffect(() => {
-        if (!fireworks.current) {
-            fireworks.current = new Fireworks(container.current!, {
-                particles: 15,
-                hue: { min: 0, max: 45 },
-                brightness: { min: 80, max: 90 },
-                lineWidth: { explosion: { min: 2, max: 4 } },
-            });
+        if (!particles.current) {
+            particles.current = new Fireworks(container.current!, hitSettings);
         }
+
         return () => {
-            fireworks.current!.stop();
+            particles.current!.stop();
         };
     }, []);
 
     useEffect(() => {
+        const targetElements = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
+
         if (action?.animation === ANIMATION_TYPES.FIREWORKS) {
-            const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
-            const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v);
+            const allTargets = allTargetIndices.map((i) => targetElements[i]?.current).filter((v) => v);
             setTimeout(() => {
+                particles.current.updateOptions(fireworksSettings);
                 allTargets.forEach((element) => {
-                    fireworks.current!.launch(getCenterCoords(element));
+                    particles.current!.launch(getCenterCoords(element));
                 });
             }, playbackTime / 2);
+        } else if (statUpdates) {
+            const sideCombatants = event[targetSide];
+            const hitIndices = sideCombatants
+                .map((combatant, i) => {
+                    if (statUpdates[combatant?.id]?.rawDamage) {
+                        return i;
+                    }
+                })
+                .filter((v) => typeof v === "number");
+
+            if (hitIndices.length) {
+                setTimeout(() => {
+                    particles.current.updateOptions(hitSettings);
+                    hitIndices.forEach((index) => {
+                        particles.current!.launch(getCenterCoords(targetElements[index]?.current));
+                    });
+                }, playbackTime / 2);
+            }
         }
     }, [eventId]);
 
