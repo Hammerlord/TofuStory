@@ -226,6 +226,8 @@ const Main = () => {
                         return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });
                     case SCENE_CONDITION_TYPES.MESOS:
                         return passesValueComparison({ val: player.mesos, otherVal: value, comparator });
+                    case SCENE_CONDITION_TYPES.ITEMS:
+                        return passesValueComparison({ val: player.items.map(({ name }) => name), otherVal: value, comparator });
                 }
             });
         };

@@ -1,4 +1,5 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
+import { cultistScene } from "../../scene/CultistScene";
 import { cursedChestScene } from "../../scene/CursedTreasureScene";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { fortuneBoxScene } from "../../scene/FortuneBox";
@@ -114,6 +115,7 @@ export const events: EventScene[] = [
     fortuneBoxScene,
     adminScene,
     wanderingFighterScene,
+    cultistScene,
 ];
 
 /**

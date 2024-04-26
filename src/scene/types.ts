@@ -1,4 +1,4 @@
-import { Ability } from "../ability/types";
+import { Ability, Comparator } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ActivityHistoryLog } from "../character/playerReducer";
 import { Combatant, Player } from "../character/types";
@@ -11,12 +11,12 @@ export enum SCENE_CONDITION_TYPES {
     VISITED_SCENES = "visited-scenes",
     PLAYER_CLASS = "player-class",
     MESOS = "mesos",
+    ITEMS = "items",
 }
 
 export interface SceneCondition {
     type: SCENE_CONDITION_TYPES;
-    // Includes is for array values
-    comparator: "lt" | "gt" | "eq" | "includes";
+    comparator: Comparator;
     // The value of what the player class, etc. needs to be
     value: any;
 }
@@ -121,6 +121,7 @@ export interface ScriptNode {
     region?: REGIONS;
     loseItems?: string[];
     loseMesos?: number;
+    loseHP?: number;
     // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
     conditionalNext?: { conditions: ScriptConditions[]; next: ScriptNode[] }[];
