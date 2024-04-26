@@ -27,6 +27,7 @@ import {
     FireArrowProjectileImage,
     FireMarbleImage,
     FireSpiritImage,
+    FireworksImage,
     FlameHazeImage,
     FrostfireProjectileImage,
     FullMoonImage,
@@ -67,6 +68,7 @@ import {
     PurpleFlyingBookIconImage,
     PurpleFlyingBookImage,
     PurpleInfinityImage,
+    RocketImage,
     ScarfSnowmanImage,
     ShimmeringStarsImage,
     SnowballImage,
@@ -3040,7 +3042,45 @@ export const burst: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const fireworks: Ability = {
+    name: "Fireworks",
+    resourceCost: "x",
+    rarity: RARITIES.RARE,
+    image: FireworksImage,
+    overrideBodyText: true,
+    description:
+        "Expend your mana to deal {{ actions.0.damage }} {{{ _damage_ }}} and apply <br/> {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
+
+    performXTimes: true,
+    actions: [
+        {
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                width: 25,
+                height: 50,
+            },
+            damage: 3,
+            icon: RocketImage,
+            playbackTime: 500,
+            numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
+            targetArea: 5,
+            effects: [burn, { ...chill, duration: 1 }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
                 },
             ],
         },

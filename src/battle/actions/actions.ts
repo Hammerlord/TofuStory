@@ -2446,7 +2446,7 @@ export const useAbility = ({
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
-        const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
+        const { resourceCost = 0, actions = [], effects = [], performXTimes } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant, friendlySide } = findCombatantData(getState, actorId) || {};
         const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
             return acc + (e.resourceCost || 0);
@@ -2526,7 +2526,13 @@ export const useAbility = ({
             }
         };
 
-        actions.forEach(handleAction);
+        if (performXTimes && resourceCost === "x") {
+            Array.from({ length: totalResourceCost }).forEach(() => {
+                actions.forEach(handleAction);
+            });
+        } else {
+            actions.forEach(handleAction);
+        }
 
         const actorInfo = findCombatantData(getState, actorId);
         // Due to morph, the combatant may no longer exist

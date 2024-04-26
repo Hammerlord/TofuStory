@@ -546,7 +546,7 @@ const AbilityView = forwardRef(
                                 <SelectCards ability={ability} />
                                 {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}
                                 {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
-                                {numTargets > 0 && (
+                                {!overrideBodyText && numTargets > 0 && (
                                     <div>
                                         Hits up to +{numTargets} targets{" "}
                                         {secondaryDamage && (
