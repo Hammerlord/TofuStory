@@ -66,7 +66,7 @@ const Chill = ({ amount }) => {
                         left: `${getRandomInt(currentMin, currentMax)}%`,
                         bottom: `${getRandomInt(5, 75)}%`,
                         animationDelay: `${getRandomArbitrary(0, 1.5)}s`,
-                        width: getRandomArbitrary(24, 40),
+                        width: getRandomArbitrary(24, 32),
                     };
                 })
             );
@@ -78,7 +78,7 @@ const Chill = ({ amount }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<SnowflakeIcon />} className={classes.icon} style={style} />
+                <Icon key={i} icon={<SnowflakeIcon />} className={classes.icon} style={style} size="sm" />
             ))}
         </div>
     );

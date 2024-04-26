@@ -64,7 +64,7 @@ const Burn = ({ amount }) => {
                         left: `${getRandomInt(currentMin, currentMax)}%`,
                         bottom: `${getRandomInt(-5, 10)}px`,
                         animationDelay: `${getRandomArbitrary(0, 1.5)}s`,
-                        width: getRandomArbitrary(20, 32),
+                        width: getRandomArbitrary(16, 24),
                     };
                 })
             );
@@ -76,7 +76,7 @@ const Burn = ({ amount }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<FireIcon />} className={classes.icon} style={style} />
+                <Icon key={i} icon={<FireIcon />} className={classes.icon} style={style} size="sm" />
             ))}
         </div>
     );
