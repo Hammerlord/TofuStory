@@ -1715,7 +1715,7 @@ export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
     image: RisingRageImage,
-    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} {{{ _damage_ }}} for each Fury.",
+    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} {{{ _damage_ }}} X times.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {

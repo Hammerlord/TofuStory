@@ -170,7 +170,7 @@ export const canUseAbility = (character, ability: CombatAbility | undefined): bo
 
     const { resourceCost = 0, effects = [] } = ability;
     if (resourceCost === "x") {
-        return true;
+        return character.resources > 0;
     }
 
     const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {

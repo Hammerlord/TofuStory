@@ -3058,8 +3058,6 @@ export const fireworks: Ability = {
     overrideBodyText: true,
     description:
         "Expend all {{{ _mana_ }}} to deal <br/> {{ actions.0.damage }} {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
-
-    performXTimes: true,
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,
