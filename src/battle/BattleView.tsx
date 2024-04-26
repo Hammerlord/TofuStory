@@ -49,6 +49,7 @@ import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { canTargetIfStealthed, canUseAbility, hasEffectType, isUntargetable, isValidTarget, isWithinAbilityArea } from "./utils";
+import ParticleCanvas from "./ParticleCanvas";
 
 const useStyles = createUseStyles({
     root: {
@@ -1000,6 +1001,7 @@ const BattlefieldContainer = () => {
                         <AbilityNotification ability={events[0].actionParent} />
                     </div>
                 )}
+
                 <div
                     className={classes.battlefieldContainer}
                     onContextMenu={(e) => {
@@ -1012,6 +1014,8 @@ const BattlefieldContainer = () => {
                         setSelectedAllyIndex(null);
                     }}
                 >
+                    <ParticleCanvas event={events[0]} battlefieldRef={battlefieldRef} allyRefs={allyRefs} enemyRefs={enemyRefs} />
+
                     <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.waves}>
                             <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />

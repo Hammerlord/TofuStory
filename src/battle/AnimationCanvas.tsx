@@ -132,6 +132,9 @@ const projectileElementCount = 100;
 
 const { updateBattle } = battleStateSlice.actions;
 
+/**
+ * Component that controls animations such as moving an attacker to its target, or a projectile
+ */
 const AnimationCanvas = ({
     event,
     allyRefs = [],
@@ -165,8 +168,6 @@ const AnimationCanvas = ({
     const { battle } = useAppSelector((state) => state);
     const { deck, deckCycled } = battle;
     const dispatch = useAppDispatch();
-    const container = useRef<HTMLDivElement>(null);
-    const fireworks = useRef<any>(null);
 
     const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
         if (!characterId) {
@@ -313,29 +314,7 @@ const AnimationCanvas = ({
                 ...options,
             });
         }
-
-        if (animation === ANIMATION_TYPES.FIREWORKS) {
-            setTimeout(() => {
-                allTargets.forEach((element) => {
-                    fireworks.current!.launch(getCenterCoords(element));
-                });
-            }, playbackTime / 2);
-        }
     }, [eventId]);
-
-    useEffect(() => {
-        if (!fireworks.current) {
-            fireworks.current = new Fireworks(container.current!, {
-                particles: 15,
-                hue: { min: 0, max: 45 },
-                brightness: { min: 80, max: 90 },
-                lineWidth: { explosion: { min: 2, max: 4 } },
-            });
-        }
-        return () => {
-            fireworks.current!.stop();
-        };
-    }, []);
 
     /**
      * Side effect for displacement playback
@@ -470,7 +449,7 @@ const AnimationCanvas = ({
     const numProjectiles = projectileTargets.filter((val) => val).length * beamProjectileMultiplier;
 
     return (
-        <div className={classNames("animation-canvas", classes.root)} ref={container}>
+        <div className={classNames("animation-canvas", classes.root)}>
             {Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}
             <div className={classes.center}>
                 {event?.newCards?.map((ability: CombatAbility, i) => (
