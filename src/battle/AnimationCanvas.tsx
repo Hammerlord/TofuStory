@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { battleStateSlice } from "./reducer";
 import { MapleLeavesImage } from "../images";
 import { DECK_CYCLE_TIME } from "../constants";
+import { Fireworks } from "../fireworks/fireworks";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -164,6 +165,8 @@ const AnimationCanvas = ({
     const { battle } = useAppSelector((state) => state);
     const { deck, deckCycled } = battle;
     const dispatch = useAppDispatch();
+    const container = useRef<HTMLDivElement>(null);
+    const fireworks = useRef<any>(null);
 
     const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
         if (!characterId) {
@@ -276,6 +279,7 @@ const AnimationCanvas = ({
                         returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                         fadeIn: animation === ANIMATION_TYPES.BEAM,
                         ...options,
+                        playbackTime: playbackTime - 250,
                     });
 
                     if (animations?.length) {
@@ -309,7 +313,29 @@ const AnimationCanvas = ({
                 ...options,
             });
         }
+
+        if (animation === ANIMATION_TYPES.FIREWORKS) {
+            setTimeout(() => {
+                allTargets.forEach((element) => {
+                    fireworks.current!.launch(getCenterCoords(element));
+                });
+            }, playbackTime / 2);
+        }
     }, [eventId]);
+
+    useEffect(() => {
+        if (!fireworks.current) {
+            fireworks.current = new Fireworks(container.current!, {
+                particles: 15,
+                hue: { min: 0, max: 45 },
+                brightness: { min: 80, max: 90 },
+                lineWidth: { explosion: { min: 2, max: 4 } },
+            });
+        }
+        return () => {
+            fireworks.current!.stop();
+        };
+    }, []);
 
     /**
      * Side effect for displacement playback
@@ -444,7 +470,7 @@ const AnimationCanvas = ({
     const numProjectiles = projectileTargets.filter((val) => val).length * beamProjectileMultiplier;
 
     return (
-        <div className={classNames("animation-canvas", classes.root)}>
+        <div className={classNames("animation-canvas", classes.root)} ref={container}>
             {Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}
             <div className={classes.center}>
                 {event?.newCards?.map((ability: CombatAbility, i) => (

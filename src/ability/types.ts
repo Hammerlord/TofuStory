@@ -779,6 +779,7 @@ export enum ANIMATION_TYPES {
     ACTION_EXPLODE = "action-image-explode",
     SPIN = "spin", // Spin in place
     CONSUMABLE = "consumable", // Eat a consumable
+    FIREWORKS = "fireworks",
 }
 
 /**

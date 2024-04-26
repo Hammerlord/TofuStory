@@ -3057,22 +3057,23 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend all {{{ _mana_ }}} to deal <br/> {{ actions.0.damage }} {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _mana_ }}} to deal <br/> {{ actions.0.damage }} {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.FIREWORKS,
             animationOptions: {
                 rotateToFaceTarget: true,
                 width: 25,
                 height: 50,
             },
-            damage: 3,
+            damage: 5,
             icon: RocketImage,
-            playbackTime: 500,
+            playbackTime: 700,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
-            effects: [burn, { ...chill, duration: 1 }],
+            effects: [burn],
         },
     ],
     upgrades: [
