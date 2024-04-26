@@ -2676,7 +2676,7 @@ const onUseAbility =
                     );
                 }
 
-                if (!isOffensiveAbility(ability)) {
+                if (isSupportAbility(ability)) {
                     dispatch(
                         checkEventTrigger({
                             combatantId: combatant.id,
@@ -2708,7 +2708,7 @@ const onUseAbility =
                     );
                 }
 
-                if (!isOffensiveAbility(ability)) {
+                if (isSupportAbility(ability)) {
                     dispatch(
                         checkEventTrigger({
                             combatantId: combatant.id,
