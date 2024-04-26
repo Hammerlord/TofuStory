@@ -3,6 +3,7 @@ import {
     BlueSnailShellImage,
     BounceImage,
     ComboSynergyImage,
+    CynicalOrangeMushroomJumpImage,
     EncroachingDarknessImage,
     RedSnailShellImage,
     SnailShellImage,
@@ -24,7 +25,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./types";
-import { stealth } from "./Effects";
+import { stealth, taunt } from "./Effects";
 import { incorporeal } from "../enemy/effect";
 
 export const shellThrowRed: Ability = {
@@ -329,4 +330,29 @@ export const fourthExiledArm: Ability = {
     },
 };
 
-export const NEUTRAL_ABILITIES = [shellThrow, bounce, reinforce, firstExiledArm, secondExiledArm, thirdExiledArm, fourthExiledArm];
+export const provoke: Ability = {
+    name: "Provoke",
+    resourceCost: 1,
+    image: CynicalOrangeMushroomJumpImage,
+    description: "Grants Taunt for the next turn.",
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
+            effects: [{ ...taunt, duration: 2 }],
+            armor: 7,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const NEUTRAL_ABILITIES = [shellThrow, bounce, reinforce, firstExiledArm, secondExiledArm, thirdExiledArm, fourthExiledArm, provoke];
