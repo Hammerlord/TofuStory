@@ -312,7 +312,7 @@ const enemyUseAbility = (combatantId: string) => {
 
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
-        dispatch(onEndTurnTriggers(getState().battle.enemySide));
+        dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
         const enemySide = getState().battle.enemySide; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
         dispatch(
             updateBattle({

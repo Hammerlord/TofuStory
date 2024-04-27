@@ -171,7 +171,7 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
-        dispatch(onEndTurnTriggers(getState().battle.playerSide));
+        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
         const playerSide = getState().battle.playerSide; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
         dispatch(
             updateBattle({

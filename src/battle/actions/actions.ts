@@ -450,63 +450,88 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
  * @param combatantId - Combatant UUID
  */
 export const handleDoTs =
-    ({ combatantId, dotType, source }: { combatantId: string; dotType: EFFECT_TYPES; source?: TriggerSource }) =>
+    ({ combatantIds, side }: { combatantIds: string[]; side: BATTLEFIELD_SIDES }) =>
     (dispatch, getState) => {
-        const combatantInfo = findCombatantData(getState, combatantId);
-        const { combatant, index } = combatantInfo || {};
-        if (!combatant?.HP) {
-            return;
-        }
-
         const dotDamageMap = {
             [EFFECT_TYPES.BLEED]: 1,
             [EFFECT_TYPES.POISON]: 2,
             [EFFECT_TYPES.BURN]: 3,
         };
 
-        const activeEffects = getEnabledEffects({ combatantInfo });
-        const matchingDoTs = activeEffects.reduce((acc, effect) => {
-            if (effect.type === dotType) {
-                acc.push(effect);
-            }
-            return acc;
-        }, []);
+        [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
+            const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action }[] = [];
 
-        const damage = matchingDoTs.length * dotDamageMap[dotType];
+            combatantIds.forEach((combatantId) => {
+                // Perform another lookup on combatant info as it may have changed between effect triggers
+                const combatantInfo = findCombatantData(getState, combatantId);
+                const { combatant, index } = combatantInfo || {};
+                if (!combatant?.HP) {
+                    return;
+                }
+                const activeEffects = getEnabledEffects({ combatantInfo });
+                const matchingDoTs = activeEffects.reduce((acc, effect) => {
+                    if (effect.type === dotType) {
+                        acc.push(effect);
+                    }
+                    return acc;
+                }, []);
 
-        if (damage) {
-            // Hack: If multiple characters applied DoT stacks, randomly pick one of them to attribute the full stack of damage to.
-            const actorId = getRandomItem(matchingDoTs.map((dot: CombatEffect) => dot.applierId));
+                const damage = matchingDoTs.length * dotDamageMap[dotType];
 
-            const updated = getUpdatedStats({
-                ...getState().battle,
-                targetIds: [combatantId],
-                actorId,
-                selectedIndex: index,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    damage,
-                },
-                getCombatantById: (id) => findCombatantData(getState, id),
+                if (!damage) {
+                    return;
+                }
+
+                // Hack: If multiple characters applied DoT stacks, randomly pick one of them to attribute the full stack of damage to.
+                const actorId = getRandomItem(matchingDoTs.map((dot: CombatEffect) => dot.applierId));
+
+                const updated = getUpdatedStats({
+                    ...getState().battle,
+                    targetIds: [combatantId],
+                    actorId,
+                    selectedIndex: index,
+                    action: {
+                        type: ACTION_TYPES.EFFECT,
+                        damage,
+                    },
+                    getCombatantById: (id) => findCombatantData(getState, id),
+                });
+
+                dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+                updatedStats.push(...updated);
             });
 
-            dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+            if (!updatedStats.length) {
+                return;
+            }
+            const aggregatedStatUpdates = updatedStats.reduce((acc, stats: { statUpdate: UpdatedCombatantStats; action: Action }) => {
+                const { statUpdate } = stats;
+                acc[statUpdate.combatantId] = statUpdate;
+                return acc;
+            }, {});
+
+            dispatch(
+                pushPlaybackQueue({
+                    side,
+                    statUpdates: aggregatedStatUpdates,
+                })
+            );
+
             dispatch(
                 triggerStatChangeEvents(
-                    updated.map(({ statUpdate, action }) => ({
+                    updatedStats.map(({ statUpdate, action }) => ({
                         statUpdate,
                         source: {
                             source: action,
                             type: TRIGGER_SOURCE_TYPES.EFFECT,
-                            actorId,
-                            targetId: combatantId,
+                            targetId: statUpdate.combatantId,
                             statUpdate,
                             triggerHistory: [],
                         },
                     }))
                 )
             );
-        }
+        });
     };
 
 const checkRemoveEffect =
@@ -1151,18 +1176,21 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
     };
 };
 
-export const onEndTurnTriggers = (side: (Combatant | null)[]) => {
+export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant | null)[]; side: BATTLEFIELD_SIDES }) => {
     return (dispatch) => {
-        side.forEach((combatant: Combatant | null) => {
-            if (!combatant) {
-                return;
+        combatants.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
             }
+        });
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
-            [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].forEach((dotType: EFFECT_TYPES) => {
-                dispatch(handleDoTs({ combatantId: combatant.id, dotType }));
-            });
-            dispatch(tickDownStatusEffects(combatant.id));
+        const combatantIds = combatants.map((combatant) => combatant?.id).filter((v) => v);
+        dispatch(handleDoTs({ combatantIds, side }));
+
+        combatants.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(tickDownStatusEffects(combatant.id));
+            }
         });
     };
 };
@@ -1651,19 +1679,19 @@ const pushPlaybackQueue = ({
     displacements,
     statUpdates,
 }: {
-    action: Action;
-    actorId: string;
-    selectedIndex: number;
-    allTargetIndices: number[];
+    action?: Action;
+    actorId?: string;
+    selectedIndex?: number;
+    allTargetIndices?: number[];
     actionParent?: Ability | Item;
     side: BATTLEFIELD_SIDES;
-    source: TriggerSource;
+    source?: TriggerSource;
     displacements?: Displacement;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
 }) => {
     return (dispatch, getState) => {
-        let playbackTime = action.playbackTime;
-        if (!playbackTime) {
+        let playbackTime = action?.playbackTime;
+        if (action && !playbackTime) {
             if (action.animationOptions?.ricochet) {
                 playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 3) * Math.max(3, allTargetIndices.length);
             } else if ((actionParent as Ability)?.actions?.length > 1) {
@@ -1673,6 +1701,8 @@ const pushPlaybackQueue = ({
             } else {
                 playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
             }
+        } else {
+            playbackTime = NORMAL_ACTION_PLAYBACK_SPEED / 2;
         }
 
         dispatch(
