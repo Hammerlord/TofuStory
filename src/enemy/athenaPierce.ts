@@ -118,7 +118,6 @@ export const athena: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: AvengersArrowImage,
-                    playbackTime: 400,
                     animationOptions: {
                         rotate: -45,
                         rotateToFaceTarget: true,
@@ -163,7 +162,6 @@ export const athena: Minion = {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
-                    playbackTime: 400,
                     icon: AvengersArrowImage,
                     destroyArmor: 1,
                     bonus: {

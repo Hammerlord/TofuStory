@@ -259,6 +259,7 @@ export const redSnail: Minion = {
                     },
                     numTargets: 2,
                     targetArea: 2,
+                    playbackTime: 750,
                 },
             ],
         },

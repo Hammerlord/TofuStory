@@ -32,7 +32,6 @@ export const shoot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            playbackTime: 400,
             damage: 2,
             animationOptions: {
                 rotateToFaceTarget: true,

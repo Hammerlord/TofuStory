@@ -102,7 +102,7 @@ export const mossySnail: Minion = {
                     animationOptions: {
                         ricochet: true,
                     },
-                    playbackTime: 600,
+                    playbackTime: 750,
                     description: "Bounces to 2 other targets for 3 damage.",
                     damage: 6,
                     secondaryDamage: 3,
