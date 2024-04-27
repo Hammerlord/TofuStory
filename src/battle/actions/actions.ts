@@ -59,6 +59,8 @@ import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { getUpgradeCard } from "../../Menu/utils";
 import { tributeSummonBuff } from "../../ability/Effects";
+import { BloodIcon, FireIcon } from "../../images/icons";
+import { PoisonImage } from "../../images";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -458,6 +460,24 @@ export const handleDoTs =
             [EFFECT_TYPES.BURN]: 3,
         };
 
+        const dotAbilityMap = {
+            [EFFECT_TYPES.BLEED]: {
+                name: "Bleed",
+                image: BloodIcon,
+                actions: [],
+            },
+            [EFFECT_TYPES.POISON]: {
+                name: "Poison",
+                image: PoisonImage,
+                actions: [],
+            },
+            [EFFECT_TYPES.BURN]: {
+                name: "Burn",
+                image: FireIcon,
+                actions: [],
+            },
+        };
+
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
             const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action }[] = [];
 
@@ -514,6 +534,8 @@ export const handleDoTs =
                 pushPlaybackQueue({
                     side,
                     statUpdates: aggregatedStatUpdates,
+                    // Hack: this is for displaying the dot type in the ability notification banner
+                    actionParent: dotAbilityMap[dotType],
                 })
             );
 
