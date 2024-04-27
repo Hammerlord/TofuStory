@@ -2,8 +2,14 @@ import { hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { MushmomImage, MushmomJumpImage, OrangeMushroomImage } from "../images";
 import { MountainIcon } from "../images/icons";
+import { moveTailToHead } from "../utils";
 import { attack, doOtherWave, doWave, loaf, whomp } from "./abilities";
 import { orangeMushroom } from "./enemy";
+
+const mushroomMinion = {
+    ...orangeMushroom,
+    abilities: moveTailToHead(orangeMushroom.abilities),
+};
 
 export const mushmom: Minion = {
     name: "Mushmom",
@@ -19,8 +25,8 @@ export const mushmom: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     summon: [
-                        { minion: [orangeMushroom], placement: "adjacent" },
-                        { minion: [orangeMushroom], placement: "adjacent" },
+                        { minion: [mushroomMinion], placement: "adjacent" },
+                        { minion: [mushroomMinion], placement: "adjacent" },
                     ],
                 },
             ],

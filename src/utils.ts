@@ -52,3 +52,12 @@ export const moveHeadToTail = (array: any[]): any[] => {
     newArray.push(newArray.shift());
     return newArray;
 };
+
+export const moveTailToHead = (array: any[]): any[] => {
+    if (!array?.length) {
+        return array;
+    }
+    const newArray = array.slice();
+    newArray.unshift(newArray.pop());
+    return newArray;
+};
