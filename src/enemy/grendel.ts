@@ -323,7 +323,6 @@ const grendelMagicClaw: Ability = {
                 height: 100,
             },
             icon: MagicClawProjectileImage,
-            playbackTime: 400,
         },
         {
             damage: 6,
@@ -337,7 +336,6 @@ const grendelMagicClaw: Ability = {
                 mirrorX: true,
             },
             icon: MagicClawProjectileImage,
-            playbackTime: 400,
         },
     ],
 };
@@ -359,7 +357,6 @@ export const introGrendel: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: EnergyBoltProjectileImage,
-                    playbackTime: 400,
                     animationOptions: {
                         width: 100,
                         height: 100,
@@ -445,7 +442,6 @@ const triboltAction: Action = {
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
     icon: EnergyBoltProjectileImage,
-    playbackTime: 400,
     animationOptions: {
         rotate: 135,
         rotateToFaceTarget: true,
@@ -513,7 +509,6 @@ export const grendel: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: EnergyBoltProjectileImage,
-                    playbackTime: 400,
                     animationOptions: {
                         width: 100,
                         height: 100,

@@ -164,7 +164,6 @@ export const adventurerIceWizard = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.ONE_WAY,
                     icon: EnergyBoltProjectileImage,
-                    playbackTime: 400,
                     animationOptions: {
                         rotate: 135,
                         rotateToFaceTarget: true,

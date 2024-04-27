@@ -1683,7 +1683,6 @@ export const malady: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
                     icon: KumbiImage,
-                    playbackTime: 400,
                 },
             ],
         },
@@ -1747,7 +1746,6 @@ export const malady: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
                     icon: KumbiImage,
-                    playbackTime: 400,
                 },
                 {
                     movement: 2,
@@ -1760,7 +1758,6 @@ export const malady: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
                     icon: KumbiImage,
-                    playbackTime: 400,
                 },
                 {
                     movement: 2,
@@ -1773,7 +1770,6 @@ export const malady: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
                     icon: KumbiImage,
-                    playbackTime: 400,
                 },
             ],
         },

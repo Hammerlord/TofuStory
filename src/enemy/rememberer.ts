@@ -242,7 +242,6 @@ const pulsingNightmare: Ability = {
             },
             damage: 5,
             area: 1,
-            playbackTime: 400,
         },
     ],
     conditions: [
@@ -294,7 +293,6 @@ export const theRememberer: Minion = {
                             icon: EncroachingDarknessImage,
                             damage: 3,
                             area: 1,
-                            playbackTime: 400,
                             animationOptions: {
                                 width: 75,
                                 height: 75,

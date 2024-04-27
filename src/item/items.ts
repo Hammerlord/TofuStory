@@ -794,7 +794,6 @@ export const koreanFan: Item = {
                             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: KoreanFanImage,
-                            playbackTime: 600,
                             effects: [{ ...bleed, duration: 1 }],
                         },
                     ],
@@ -876,7 +875,6 @@ export const starfallMagicSquare: Item = {
                                 damage: 3,
                                 icon: StarfallMagicSquareImage,
                                 animation: ANIMATION_TYPES.BEAM,
-                                playbackTime: 400,
                             },
                         },
                     ],
@@ -1253,7 +1251,6 @@ export const steely: Item = {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
-                            playbackTime: 500,
                             animationOptions: {
                                 rotate: 135,
                                 rotateToFaceTarget: true,
@@ -2079,7 +2076,6 @@ export const arcStaff: Item = {
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             animation: ANIMATION_TYPES.ONE_WAY,
-                            playbackTime: 500,
                             icon: ThunderSparkImage,
                             animationOptions: {
                                 rotateToFaceTarget: true,

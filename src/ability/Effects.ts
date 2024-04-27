@@ -253,7 +253,6 @@ export const raging: Effect = {
                             },
                         },
                     ],
-                    playbackTime: 500,
                 },
             ],
         },

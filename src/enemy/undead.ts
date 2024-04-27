@@ -203,7 +203,6 @@ export const undeadMage: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
                     icon: KumbiImage,
-                    playbackTime: 400,
                 },
             ],
         },

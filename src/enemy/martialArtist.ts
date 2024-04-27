@@ -69,7 +69,6 @@ const singleShuffle = {
             // Wait a moment before moving
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.MOVEMENT,
-            playbackTime: 500,
         },
         {
             movement: 5,
@@ -291,7 +290,6 @@ export const martialArtist: Minion = {
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    playbackTime: 400,
                     destroyArmor: 1,
                     bonus: {
                         damage: 10,

@@ -2360,7 +2360,6 @@ export const beatdown: Ability = {
                                     type: ACTION_TYPES.ATTACK,
                                     target: TARGET_TYPES.HOSTILE,
                                     damage: 2,
-                                    playbackTime: 500,
                                 },
                             ],
                         },

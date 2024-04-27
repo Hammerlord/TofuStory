@@ -199,13 +199,11 @@ export const doOtherWave: Ability = {
                         disableScreenShake: true,
                     },
                     armor: 7,
-                    playbackTime: 600,
                 },
             },
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             area: 5,
-            playbackTime: 400,
         },
     ],
 };

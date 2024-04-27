@@ -131,7 +131,6 @@ export const harpoonCard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            playbackTime: 400,
             animationOptions: {
                 width: 75,
                 height: 75,
