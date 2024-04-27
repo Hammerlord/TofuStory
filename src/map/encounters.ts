@@ -107,7 +107,7 @@ const pickBaseEnemy = ({ elites, previousEncounters }: { elites: Minion[]; previ
     return getRandomItem(eligibleEnemies.length ? eligibleEnemies : elites);
 };
 
-const generateEliteSquad = ({
+export const generateEliteSquad = ({
     eliteMap,
     numAffixes = 1,
     previousEncounters,
@@ -117,6 +117,7 @@ const generateEliteSquad = ({
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
+
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
@@ -136,6 +137,14 @@ const generateEliteSquad = ({
         resources: 2,
         // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
         abilities: moveHeadToTail(enemy.abilities),
+        // Same with effects: the enemies eg. don't all stealth at once
+        effects: enemy.effects.map((e) => {
+            return {
+                ...e,
+                uptime: 2,
+                onWaveStart: undefined,
+            };
+        }),
     };
 
     return [enemy, alternate, enemy, alternate, enemy];
