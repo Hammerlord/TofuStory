@@ -921,7 +921,7 @@ export const getInducedAttack = (actor: Combatant): Action => {
     const attackAbility = actor.abilities.find((ability) => ability.name === attack.name || ability.name === shoot.name);
     // If there is an ability called "Attack" or "Shoot", just grab it
     if (attackAbility) {
-        return { ...attackAbility.actions[0], playbackTime: 500 };
+        return { ...attackAbility.actions[0] };
     }
 
     for (const ability of actor.abilities) {
@@ -939,7 +939,6 @@ export const getInducedAttack = (actor: Combatant): Action => {
         damage: basicAttackDamage || 1,
         target: TARGET_TYPES.HOSTILE,
         type: ACTION_TYPES.ATTACK,
-        playbackTime: 500,
     };
 };
 

@@ -174,13 +174,11 @@ export const doWave: Ability = {
                             duration: 3,
                         },
                     ],
-                    playbackTime: 600,
                 },
             },
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             area: 5,
-            playbackTime: 400,
         },
     ],
 };
