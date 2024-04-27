@@ -65,13 +65,13 @@ export const guardWolf: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
-                    effects: [{ ...taunt, duration: 3 }],
+                    effects: [{ ...taunt, duration: 2 }],
                 },
             ],
         },
     ],
     effects: [
-        {
+        /**{
             name: "Vital Hunter",
             description: "Immediately attacks summoned enemy minions.",
             icon: VitalHunterImage,
@@ -92,7 +92,7 @@ export const guardWolf: Minion = {
                     ],
                 },
             },
-        },
+        },**/
         weakerAvenger,
     ],
 };
