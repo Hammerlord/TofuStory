@@ -1,6 +1,7 @@
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CARD_PILE_TYPES,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -10,6 +11,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import {
+    AshesImage,
     BrutalClawImage,
     DarkThunderBoltProjectileImage,
     FireMarbleImage,
@@ -199,8 +201,8 @@ export const balrog: Minion = {
                             type: ACTION_TYPES.ATTACK,
                             target: TARGET_TYPES.PLAYER,
                             moveCards: {
-                                from: "hand",
-                                to: "discard",
+                                from: CARD_PILE_TYPES.HAND,
+                                to: CARD_PILE_TYPES.DISCARD,
                                 amount: 1,
                             },
                         },
@@ -356,7 +358,7 @@ export const balrog: Minion = {
             name: "Pulverize",
             resourceCost: 3,
             castTime: 1,
-            image: BrutalClawImage,
+            image: AshesImage,
             description: "Halves player armor and depletes the top card of the deck.",
             actions: [
                 {
@@ -370,8 +372,8 @@ export const balrog: Minion = {
                     target: TARGET_TYPES.PLAYER,
                     decayArmor: true,
                     moveCards: {
-                        from: "deck",
-                        to: "deplete",
+                        from: CARD_PILE_TYPES.DECK,
+                        to: CARD_PILE_TYPES.DEPLETED,
                         amount: 1,
                     },
                 },

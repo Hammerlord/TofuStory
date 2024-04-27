@@ -1,5 +1,5 @@
 import { Combatant, Player } from "./../character/types";
-import { Ability, Action, ActionOptionalProperties, CombatEffect, Minion } from "./../ability/types";
+import { Ability, Action, ActionOptionalProperties, CARD_PILE_TYPES, CombatEffect, Minion } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 export interface BattleNotification {
@@ -31,7 +31,7 @@ export interface Event {
     source?: TriggerSource;
     // Cards which have been added to hand/deck/discard/deplete, for animation purposes.
     newCards: Ability[];
-    cardsAddedTo: "hand" | "deck" | "discard" | "deplete";
+    cardsAddedTo: CARD_PILE_TYPES;
     newCombatants: Combatant[];
     displacements?: Displacement;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };

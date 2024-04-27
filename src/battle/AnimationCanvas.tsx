@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, ANIMATION_TYPES, CombatAbility } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CombatAbility } from "../ability/types";
 import {
     playExplodeAnimation,
     getCenterCoords,
@@ -351,17 +351,17 @@ const AnimationCanvas = ({
         const addedTo = event?.cardsAddedTo;
         addCardRefs.forEach((ref) => {
             let props;
-            if (addedTo === "deplete") {
+            if (addedTo === CARD_PILE_TYPES.DEPLETED) {
                 props = {
                     to: depleteRef.current,
                     desaturate: true,
                     darken: true,
                 };
-            } else if (addedTo === "deck") {
+            } else if (addedTo === CARD_PILE_TYPES.DECK) {
                 props = {
                     to: deckRef.current,
                 };
-            } else if (addedTo === "discard") {
+            } else if (addedTo === CARD_PILE_TYPES.DISCARD) {
                 props = {
                     to: discardRef.current,
                     desaturate: true,

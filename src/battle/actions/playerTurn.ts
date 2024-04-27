@@ -1,5 +1,5 @@
 import uuid from "uuid";
-import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -130,7 +130,7 @@ const handleDiscard = (ability: CombatAbility) => {
                     id: uuid.v4(),
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
-                    cardsAddedTo: "deplete",
+                    cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
                 } as Event)
             );
         }

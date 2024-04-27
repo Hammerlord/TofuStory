@@ -103,6 +103,7 @@ import { armorUp, burn, preventArmorDecayPlayer } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CARD_PILE_TYPES,
     CONDITION_TARGETS,
     Effect,
     EFFECT_CLASSES,
@@ -1884,7 +1885,7 @@ export const toyHammer: Item = {
             class: EFFECT_CLASSES.NONE,
             onTurnInProgress: {
                 applyAbilityEffects: {
-                    pile: "hand",
+                    pile: CARD_PILE_TYPES.HAND,
                     amount: 1,
                     abilityEffects: [
                         {

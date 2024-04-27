@@ -493,6 +493,13 @@ export type ActionSummon = {
     tributePossible?: boolean;
 };
 
+export enum CARD_PILE_TYPES {
+    HAND = "hand",
+    DECK = "deck",
+    DISCARD = "discard",
+    DEPLETED = "depleted",
+}
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -527,7 +534,7 @@ export type Action = {
         // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
         // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
         amount?: number;
-        pile: "hand" | "deck" | "discard" | "deplete";
+        pile: CARD_PILE_TYPES;
         abilityEffects: AbilityEffect[];
     };
     /** Adds cards to your current hand */
@@ -541,8 +548,8 @@ export type Action = {
         abilityEffects?: AbilityEffect[];
     };
     moveCards?: {
-        from: "hand" | "deck" | "discard" | "deplete";
-        to: "hand" | "deck" | "discard" | "deplete";
+        from: CARD_PILE_TYPES;
+        to: CARD_PILE_TYPES;
         amount: number;
     };
     discardCardsFromHand?: {

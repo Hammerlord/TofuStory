@@ -6,6 +6,7 @@ import {
     AbilityEffect,
     AbilityEvent,
     Action,
+    CARD_PILE_TYPES,
     CombatAbility,
     CombatEffect,
     EFFECT_EVENT_KEYS,
@@ -204,7 +205,7 @@ const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent
 const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1 } = moveCards;
-        const validKeys = ["hand", "deck", "discard", "deplete"];
+        const validKeys = Object.values(CARD_PILE_TYPES);
         if (!validKeys.includes(from) || !validKeys.includes(to)) {
             return;
         }
@@ -221,7 +222,7 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
         toPile.unshift(
             ...cardsToMove.filter((card) => {
                 // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
-                if (card.removeAfterTurn && to === "discard") {
+                if (card.removeAfterTurn && to === CARD_PILE_TYPES.DISCARD) {
                     return false;
                 }
                 return true;
@@ -245,7 +246,7 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
             })
         );
 
-        if (to === "hand") {
+        if (to === CARD_PILE_TYPES.HAND) {
             triggerAddCardsToHandEvent(cardsToMove.length);
         }
     };
@@ -534,7 +535,7 @@ export const depleteAbilities =
                 id: uuid.v4(),
                 playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                 newCards: abilities,
-                cardsAddedTo: "deplete",
+                cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
             } as Event)
         );
 

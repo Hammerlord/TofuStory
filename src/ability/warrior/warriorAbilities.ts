@@ -92,6 +92,7 @@ import {
     Ability,
     AbilityEffect,
     Action,
+    CARD_PILE_TYPES,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -723,7 +724,7 @@ export const berserk: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             applyAbilityEffects: {
-                pile: "hand",
+                pile: CARD_PILE_TYPES.HAND,
                 amount: 4,
                 abilityEffects: [
                     {
@@ -2019,7 +2020,7 @@ export const battlelord: Ability = {
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.STOMP,
             applyAbilityEffects: {
-                pile: "hand",
+                pile: CARD_PILE_TYPES.HAND,
                 abilityEffects: [battlelordAbilityEffect],
             },
             effects: [
@@ -2035,19 +2036,19 @@ export const battlelord: Ability = {
                     maxApplications: 1,
                     onTurnInProgress: {
                         applyAbilityEffects: {
-                            pile: "hand",
+                            pile: CARD_PILE_TYPES.HAND,
                             abilityEffects: [battlelordAbilityEffect],
                         },
                     },
                     onAddCardToHand: {
                         applyAbilityEffects: {
-                            pile: "hand",
+                            pile: CARD_PILE_TYPES.HAND,
                             abilityEffects: [battlelordAbilityEffect],
                         },
                     },
                     onDrawCard: {
                         applyAbilityEffects: {
-                            pile: "hand",
+                            pile: CARD_PILE_TYPES.HAND,
                             abilityEffects: [battlelordAbilityEffect],
                         },
                     },
@@ -2210,7 +2211,7 @@ export const forgehammer: Ability = {
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             icon: SquareHammerImage,
             applyAbilityEffects: {
-                pile: "hand",
+                pile: CARD_PILE_TYPES.HAND,
                 amount: 1,
                 abilityEffects: [
                     {
