@@ -53,6 +53,7 @@ import {
     OctopusLegImage,
     OlafImage,
     OmokPigImage,
+    OrangeMushroomDefendImage,
     OrangeMushroomIdleImage,
     OwlTowerImage,
     PigIdleImage,
@@ -93,6 +94,7 @@ import {
     FireIcon,
     MuscleIcon,
     PristineRedShieldIcon,
+    PristineShieldIcon,
     RedShieldIcon,
     ShieldIcon,
     SpeechBubbleIcon,
@@ -116,6 +118,7 @@ import {
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    Ability,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -407,6 +410,51 @@ export const ribbonPig: Minion = {
     effects: [championsRibbon, pigHeaded],
 };
 
+const burrowing: Effect = {
+    ...preventArmorDecay,
+    name: "Burrow",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Heals 3 HP per turn while armor holds.",
+    icon: PristineShieldIcon,
+    preventTurnAction: true,
+    canBeSilenced: false,
+    duration: 5,
+    override: {
+        portrait: OrangeMushroomDefendImage,
+    },
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        healing: 3,
+    },
+    onReceiveDamage: {
+        usableWhileStunned: true,
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 0,
+                comparator: "eq",
+            },
+        ],
+        removeEffect: true,
+    },
+};
+
+const burrow: Ability = {
+    name: "Burrow",
+    image: ShieldIcon,
+    resourceCost: 3,
+    description: "Gains 14 Armor and Burrows to heal while armor holds.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            armor: 14,
+            effects: [burrowing],
+        },
+    ],
+};
+
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
     maxHP: 55,
@@ -435,6 +483,7 @@ export const orangeMushroom: Minion = {
             ],
         },
         whomp,
+        burrow,
         loaf,
     ],
 };
