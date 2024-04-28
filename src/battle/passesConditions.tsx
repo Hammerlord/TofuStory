@@ -153,6 +153,11 @@ export const passesConditions = ({
                     }
                 }
 
+                if (property !== undefined) {
+                    const propertyVal = _.get(sourcePayload, property);
+                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                }
+
                 return true;
             }
 

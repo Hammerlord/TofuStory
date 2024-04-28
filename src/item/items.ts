@@ -1,4 +1,4 @@
-import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, thorns } from "../ability/Effects";
+import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, taunt, thorns } from "../ability/Effects";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -91,6 +91,7 @@ import {
     TofuImage,
     TopazImage,
     TortieShellImage,
+    VikingHelmImage,
     WeaponMasteryImage,
     WhiteUndershirtImage,
     WildKargoEyeImage,
@@ -2211,6 +2212,48 @@ export const zakumHelmet: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const vikingHelm: Item = {
+    name: "Viking Helm",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When you Taunt, gain Thorns. When you gain Thorns, you Taunt. Both last till next turn.",
+    image: VikingHelmImage,
+    effects: [
+        {
+            name: "Viking Helm Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onReceiveEffect: [
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                            hasEffectType: [EFFECT_TYPES.TAUNT],
+                            comparator: "eq",
+                        },
+                    ],
+                    effects: [{ ...thorns, duration: 2 }],
+                },
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                            property: "name",
+                            comparator: "eq",
+                            value: thorns.name,
+                        },
+                    ],
+                    effects: [{ ...taunt, duration: 2 }],
+                },
+            ],
         },
     ],
 };

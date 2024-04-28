@@ -226,10 +226,6 @@ const EffectGroupIcon = ({
         return null;
     }
 
-    const { armor, healing } = onTurnStart || {};
-    const { healing: healthPerResourcesSpent } = onResourcesSpent || {};
-    const { damage: thorns } = onReceiveAttack || {};
-
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
             calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => state, owner?.id) : undefined,
@@ -355,28 +351,11 @@ const EffectGroupIcon = ({
                             ◆ {attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`} damage taken from attacks
                         </div>
                     )}
-                    {armor > 0 && (
-                        <div>
-                            <Icon icon={<ShieldIcon />} text={armor} /> per turn
-                        </div>
-                    )}
-                    {healing > 0 && (
-                        <div>
-                            <Icon icon={<HeartIcon />} text={healing} /> per turn
-                        </div>
-                    )}
-                    {healthPerResourcesSpent > 0 && (
-                        <div>
-                            <Icon icon={<HeartIcon />} text={healthPerResourcesSpent} /> per{" "}
-                            <ResourceIcon playerClass={(owner as any)?.class} /> spent
-                        </div>
-                    )}
                     {lifeOnHit > 0 && (
                         <div>
                             Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
                         </div>
                     )}
-                    {thorns > 0 && <div>Reflects {thorns} damage to attackers</div>}
                     {armorReceived !== 0 && (
                         <div>
                             Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}

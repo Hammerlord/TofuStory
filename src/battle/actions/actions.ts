@@ -809,12 +809,8 @@ export const checkEventTrigger = ({
             return;
         }
 
-        combatant.effects.forEach((effect: CombatEffect) => {
-            const { [effectEventKey]: effectEvent, uptime, turnsTriggerFrequency, id } = effect;
-            if (!effectEvent) {
-                return;
-            }
-
+        const triggerEffectEvent = ({ effect, effectEvent }) => {
+            const { uptime, turnsTriggerFrequency, id } = effect;
             // Dead characters generally cannot trigger effects except in case of killing blows
             const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
 
@@ -842,10 +838,22 @@ export const checkEventTrigger = ({
                                 return e;
                             }
 
+                            const effectEvent = e[effectEventKey];
+                            if (Array.isArray(effectEvent)) {
+                                return {
+                                    ...e,
+                                    [effectEventKey]: effectEvent.map((effectEvent) => ({
+                                        ...effectEvent,
+                                        eventTriggeredTimes,
+                                        triggerSum,
+                                    })),
+                                };
+                            }
+
                             return {
                                 ...e,
                                 [effectEventKey]: {
-                                    ...e[effectEventKey],
+                                    ...effectEvent,
                                     eventTriggeredTimes,
                                     triggerSum,
                                 },
@@ -884,7 +892,7 @@ export const checkEventTrigger = ({
                         onEffectEventTrigger({
                             effectEvent,
                             effect,
-                            effectEventKey: effectEventKey,
+                            effectEventKey,
                             ownerId: combatant.id,
                             source: {
                                 ...source,
@@ -893,6 +901,19 @@ export const checkEventTrigger = ({
                         })
                     );
                 });
+            }
+        };
+
+        combatant.effects.forEach((effect: CombatEffect) => {
+            const effectEvents = effect[effectEventKey];
+            if (!effectEvents) {
+                return;
+            }
+
+            if (Array.isArray(effectEvents)) {
+                effectEvents.forEach((effectEvent) => triggerEffectEvent({ effect, effectEvent }));
+            } else {
+                triggerEffectEvent({ effect, effectEvent: effectEvents });
             }
         });
 
@@ -1118,14 +1139,21 @@ export const triggerStatChangeEvents =
             });
 
             removedEffects.forEach((e: CombatEffect) => {
-                dispatch(
-                    onEffectEventTrigger({
-                        ownerId: combatantId,
-                        effectEvent: e.onRemoved,
-                        effect: e,
-                        effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
-                    })
-                );
+                if (!e.onRemoved) {
+                    return;
+                }
+
+                const removedEvents = Array.isArray(e.onRemoved) ? e.onRemoved : [e.onRemoved];
+                removedEvents.forEach((effectEvent) => {
+                    dispatch(
+                        onEffectEventTrigger({
+                            ownerId: combatantId,
+                            effectEvent,
+                            effect: e,
+                            effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
+                        })
+                    );
+                });
             });
 
             failedToApplyEffects.forEach((e: Effect) => {
@@ -1191,9 +1219,21 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
         );
 
         effectsEnded.forEach((effect: CombatEffect) => {
-            dispatch(
-                onEffectEventTrigger({ ownerId: combatantId, effectEvent: effect.onEnd, effect, effectEventKey: EFFECT_EVENT_KEYS.onEnd })
-            );
+            if (!effect.onEnd) {
+                return;
+            }
+
+            const events = Array.isArray(effect.onEnd) ? effect.onEnd : [effect.onEnd];
+            events.forEach((effectEvent) => {
+                dispatch(
+                    onEffectEventTrigger({
+                        ownerId: combatantId,
+                        effectEvent,
+                        effect,
+                        effectEventKey: EFFECT_EVENT_KEYS.onEnd,
+                    })
+                );
+            });
         });
     };
 };

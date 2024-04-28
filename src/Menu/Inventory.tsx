@@ -143,7 +143,10 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
             return;
         }
 
-        const { triggerSum, triggerFrequencyFromSum, eventTriggeredTimes, eventTriggerFrequency } = relatedEffectEvent;
+        const { triggerSum, triggerFrequencyFromSum, eventTriggeredTimes, eventTriggerFrequency } = Array.isArray(relatedEffectEvent)
+            ? relatedEffectEvent[0]
+            : relatedEffectEvent;
+
         if (triggerSum && triggerFrequencyFromSum) {
             return triggerSum % triggerFrequencyFromSum;
         }

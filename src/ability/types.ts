@@ -161,7 +161,7 @@ export interface AbilityDamageReceived {
     type: SCALING_VALUE_TYPES;
 }
 
-export type Effect = { [key in effectEventKeys]?: EffectEventTrigger } & {
+export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEventTrigger[] } & {
     name: string;
     type: EFFECT_TYPES;
     class: EFFECT_CLASSES;

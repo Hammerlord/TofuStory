@@ -649,6 +649,7 @@ export { default as UpMATTImage } from "./UpMATT.png";
 export { default as UrsusPawImage } from "./UrsusPaw.png";
 export { default as UrsusPawDefaultImage } from "./UrsusPawDefault.png";
 export { default as VictoriaIslandImage } from "./VictoriaIsland.png";
+export { default as VikingHelmImage } from "./VikingHelm.png";
 export { default as VitalHunterImage } from "./VitalHunter.png";
 export { default as WarLeapImage } from "./WarLeap.png";
 export { default as WarMushImage } from "./WarMush.png";

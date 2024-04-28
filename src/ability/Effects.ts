@@ -683,6 +683,8 @@ export const taunt: Effect = {
     icon: GreyShieldImage,
     canBeSilenced: true,
     description: "Attackers must target this character.",
+    maxApplications: 1,
+    maxDuration: 5,
 };
 
 export const attackDown: Effect = {
