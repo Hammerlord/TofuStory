@@ -184,7 +184,7 @@ const Camp = ({
                 deck={deck}
                 player={player}
                 onExit={() => setIsTransmutingAbility(false)}
-                numTransmutations={canTransmuteAbility ? 1 : 0}
+                numTransmutations={canTransmuteAbility ? 2 : 0}
                 disableBackdrop={true}
             />
         );
