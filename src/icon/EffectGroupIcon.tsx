@@ -268,7 +268,7 @@ const EffectGroupIcon = ({
         const propertyVal = _.get(effects[0], property) || 0;
         const moduloVal = _.get(effects[0], modulo);
         if (moduloVal !== undefined) {
-            return propertyVal % moduloVal || undefined;
+            return moduloVal - (propertyVal % moduloVal) || undefined;
         }
 
         return propertyVal || undefined;
@@ -294,7 +294,7 @@ const EffectGroupIcon = ({
                             <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                         </span>
                     )}
-                    {extraOptionsIconText && <span className={classes.extraText}>{extraOptionsIconText}</span>}
+                    {extraOptionsIconText && !glow && <span className={classes.extraText}>{extraOptionsIconText}</span>}
                     {(displayStacks || stackCount > 1) && (
                         <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
                     )}
