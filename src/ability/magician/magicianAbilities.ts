@@ -1642,6 +1642,7 @@ export const greatestBolt: Ability = {
     rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
     description: "+2 {{{ _damage_ }}} for every other 'bolt' card you own.",
+    disableConditionGlow: true,
     overrideBodyText: true,
     actions: [
         {
@@ -2982,6 +2983,7 @@ export const burst: Ability = {
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique {{{ _offense_ }}} card used this battle.",
     overrideBodyText: true,
     image: BlazingExtinctionImage,
+    disableConditionGlow: true,
     resourceCost: 3,
     rarity: RARITIES.RARE,
     actions: [
