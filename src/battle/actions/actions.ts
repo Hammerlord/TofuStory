@@ -1753,8 +1753,10 @@ const pushPlaybackQueue = ({
 }) => {
     return (dispatch, getState) => {
         let playbackTime = action?.playbackTime;
-        if (action && !playbackTime) {
-            if (action.animationOptions?.ricochet) {
+        if (!playbackTime) {
+            if (!action) {
+                playbackTime = NORMAL_ACTION_PLAYBACK_SPEED / 2;
+            } else if (action.animationOptions?.ricochet) {
                 playbackTime = (NORMAL_ACTION_PLAYBACK_SPEED / 3) * Math.max(3, allTargetIndices.length);
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
@@ -1763,8 +1765,6 @@ const pushPlaybackQueue = ({
             } else {
                 playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
             }
-        } else {
-            playbackTime = NORMAL_ACTION_PLAYBACK_SPEED / 2;
         }
 
         dispatch(

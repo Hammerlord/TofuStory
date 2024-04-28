@@ -25,7 +25,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { findCombatantData } from "./actions/actions";
-import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES } from "./constants";
+import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import _ from "lodash";
@@ -921,7 +921,7 @@ export const getInducedAttack = (actor: Combatant): Action => {
     const attackAbility = actor.abilities.find((ability) => ability.name === attack.name || ability.name === shoot.name);
     // If there is an ability called "Attack" or "Shoot", just grab it
     if (attackAbility) {
-        return { ...attackAbility.actions[0] };
+        return { ...attackAbility.actions[0], playbackTime: INDUCED_ACTION_PLAYBACK_SPEED };
     }
 
     for (const ability of actor.abilities) {
@@ -939,6 +939,7 @@ export const getInducedAttack = (actor: Combatant): Action => {
         damage: basicAttackDamage || 1,
         target: TARGET_TYPES.HOSTILE,
         type: ACTION_TYPES.ATTACK,
+        playbackTime: INDUCED_ACTION_PLAYBACK_SPEED,
     };
 };
 
