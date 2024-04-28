@@ -151,7 +151,7 @@ export const battleShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onWaveStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 7,
+                armor: 5,
                 effects: [{ ...preventArmorDecayPlayer }],
             },
         },
@@ -182,7 +182,7 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "Gain 1 attack power.",
+    description: "+1 attack power.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: DrakeBloodImage,
@@ -354,17 +354,17 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "+2 armor from armor sources.",
+    description: "+1 armor from armor sources.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     applyEffectsToSummons: true,
-    effects: [armorUp, armorUp],
+    effects: [armorUp],
 };
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Your summoned minions gain 1 attack power.",
+    description: "Your summons gain 1 attack power.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -544,12 +544,21 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "+1 armor from armor sources.",
+    description: "On wave start, prevent the next 2 times your armor decays.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AquamarineImage,
-    applyEffectsToSummons: true,
-    effects: [armorUp],
+    effects: [
+        {
+            name: "Aquamarine",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }],
+            },
+        },
+    ],
 };
 
 export const boneHelm: Item = {
@@ -1034,7 +1043,7 @@ export const snailStompers: Item = {
 export const clubMembership: Item = {
     name: "Shopper's Club Membership",
     image: CouponImage,
-    description: "20% discount on shop items. When you visit a shop, the first refresh is free.",
+    description: "20% discount on shop items. Each shop visit, the first refresh is free.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     merchant: {
@@ -1136,7 +1145,6 @@ export const redHeartedEarrings: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     description: "When you deplete a card, heal 1 HP.",
-    applyEffectsToSummons: true,
     effects: [
         {
             name: "Red-Hearted Earrings",
@@ -1205,27 +1213,8 @@ export const blueSaunaRobe: Item = {
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "Every {{ effects.0.turnsTriggerFrequency }} turns, gain +1 armor from armor sources.",
-    effects: [
-        {
-            name: "Blue Sauna Robe Item",
-            description: "Every 3 turns, gain +1 armor from armor sources.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 3,
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [
-                    {
-                        name: "Blue Sauna Robe",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        armorReceived: 1,
-                    },
-                ],
-            },
-        },
-    ],
+    description: "+2 armor from armor sources.",
+    effects: [armorUp, armorUp],
 };
 
 export const steely: Item = {
@@ -1353,7 +1342,7 @@ export const brick: Item = {
     name: "Brick",
     image: BrickImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description:
         "When an attack would deal less than {{ effects.0.minimumAttackDamage }} damage, it deals {{ effects.0.minimumAttackDamage }} damage.",
     applyEffectsToSummons: true,
@@ -1443,7 +1432,7 @@ export const pigIllustrated: Item = {
 
 export const deckOfCards: Item = {
     name: "Deck of Playing Cards",
-    description: "On your first turn in battle, you may choose cards to discard, then draw that many.",
+    description: "On battle start, you may choose cards to discard, then draw that many.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: ASetOfMemoryCardsImage,
