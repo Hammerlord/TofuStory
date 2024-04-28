@@ -20,6 +20,7 @@ import { battleStateSlice } from "./reducer";
 import { MapleLeavesImage } from "../images";
 import { DECK_CYCLE_TIME } from "../constants";
 import { Fireworks } from "../fireworks/fireworks";
+import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./constants";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -356,21 +357,24 @@ const AnimationCanvas = ({
                     to: depleteRef.current,
                     desaturate: true,
                     darken: true,
+                    playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                 };
             } else if (addedTo === CARD_PILE_TYPES.DECK) {
                 props = {
                     to: deckRef.current,
+                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 };
             } else if (addedTo === CARD_PILE_TYPES.DISCARD) {
                 props = {
                     to: discardRef.current,
                     desaturate: true,
+                    playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                 };
             }
 
             // No animation for added to hand -- having the hand gain cards will suffice
             if (ref.current && props) {
-                animationRefs.current.push(sendToPile({ object: ref.current, playbackTime, ...props }));
+                animationRefs.current.push(sendToPile({ object: ref.current, ...props }));
             }
         });
     }, [eventId]);
