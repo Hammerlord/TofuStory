@@ -51,6 +51,7 @@ import {
     LeatherSandalsImage,
     LetterImage,
     LuckSackImage,
+    MedicineWithWeirdVibesImage,
     MesoCoinImage,
     MesoImage,
     MesoStackImage,
@@ -2255,6 +2256,25 @@ export const goldenPride: Item = {
                     effects: [{ ...taunt, duration: 2 }],
                 },
             ],
+        },
+    ],
+};
+
+export const medicineWithWeirdVibes: Item = {
+    name: "Medicine with Weird Vibes",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "Heal 1 HP every turn.",
+    image: MedicineWithWeirdVibesImage,
+    effects: [
+        {
+            name: "Medicine with Weird Vibes",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                healing: 1,
+            },
         },
     ],
 };

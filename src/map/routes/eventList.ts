@@ -97,6 +97,7 @@ import {
     broom,
     zakumHelmet,
     goldenPride,
+    medicineWithWeirdVibes,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -203,6 +204,7 @@ export const ITEMS = [
     sunflower,
     personalAnvil,
     zakumHelmet,
+    medicineWithWeirdVibes,
 ];
 
 export const CLASS_ITEMS = {

@@ -372,6 +372,7 @@ export { default as MarrsForestPreviewImage } from "./MarrsForestPreview.png";
 export { default as MasterDummyImage } from "./MasterDummy.gif";
 export { default as MattyImage } from "./Matty.png";
 export { default as MayaImage } from "./Maya.png";
+export { default as MedicineWithWeirdVibesImage } from "./MedicineWithWeirdVibes.png";
 export { default as MesoImage } from "./Meso.png";
 export { default as MesoBagImage } from "./MesoBag.png";
 export { default as MesoCoinImage } from "./MesoCoin.png";
