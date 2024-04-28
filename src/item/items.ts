@@ -1148,6 +1148,7 @@ export const redHeartedEarrings: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     description: "When you deplete a card, heal 1 HP.",
+    applyEffectsToSummons: true,
     effects: [
         {
             name: "Red-Hearted Earrings",

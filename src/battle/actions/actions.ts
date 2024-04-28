@@ -2738,16 +2738,6 @@ const onUseAbility =
             );
         }
 
-        if (ability.depletedOnUse && !isAutoCast) {
-            dispatch(
-                checkEventTrigger({
-                    combatantId: actor.id,
-                    effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
-                    source: source,
-                })
-            );
-        }
-
         actorInfo.hostile.forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -2805,6 +2795,18 @@ const onUseAbility =
                         checkEventTrigger({
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onFriendlySupportAbility,
+                            source: source,
+                        })
+                    );
+                }
+
+                // Only the player character depletes abilities.
+                // Friendly: used to activate Red Hearted Earrings for minions
+                if (ability.depletedOnUse && !isAutoCast) {
+                    dispatch(
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
                             source: source,
                         })
                     );
