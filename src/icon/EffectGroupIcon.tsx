@@ -15,6 +15,8 @@ import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import _ from "lodash";
+import { useEffect, useRef } from "react";
+import { playExpandContractAnimation } from "../character/animations";
 
 const indicatorSize = 8;
 
@@ -274,6 +276,14 @@ const EffectGroupIcon = ({
         return propertyVal || undefined;
     })();
 
+    const extraOptionsIconRef = useRef();
+
+    useEffect(() => {
+        if (extraOptionsIconRef.current) {
+            playExpandContractAnimation({ object: extraOptionsIconRef.current });
+        }
+    }, [extraOptionsIconText]);
+
     const inner = (
         <span
             className={classNames(classes.iconRoot, {
@@ -294,7 +304,11 @@ const EffectGroupIcon = ({
                             <Icon icon={<HourglassIcon />} size="sm" text={durationDisplay} />
                         </span>
                     )}
-                    {extraOptionsIconText && !glow && <span className={classes.extraText}>{extraOptionsIconText}</span>}
+                    {extraOptionsIconText && !glow && (
+                        <span className={classes.duration} ref={extraOptionsIconRef}>
+                            <Icon icon={<HourglassIcon />} size="sm" text={extraOptionsIconText} />
+                        </span>
+                    )}
                     {(displayStacks || stackCount > 1) && (
                         <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
                     )}

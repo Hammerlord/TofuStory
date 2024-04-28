@@ -544,3 +544,23 @@ export const playFadeInAnimation = ({
         fill,
     });
 };
+
+export const playExpandContractAnimation = ({ object, playbackTime = 300 }) => {
+    const animationFrames: any[] = [
+        {
+            scale: 1,
+            easing: "ease-out",
+        },
+        {
+            scale: 2,
+        },
+        {
+            scale: 1,
+            easing: "ease-in",
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+    });
+};

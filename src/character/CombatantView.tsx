@@ -447,7 +447,7 @@ const CombatantView = forwardRef(
             const extraEffects = combatant?.effects.filter((e) => e.extraDisplayOptions?.container === side) || [];
             return extraEffects.map((effect: CombatEffect) => {
                 const shouldGlow = effect.id === (event?.source?.source as CombatEffect)?.id;
-                return <EffectGroupIcon effects={[effect]} owner={oldState} key={effect.id} glow={shouldGlow} />;
+                return <EffectGroupIcon effects={[effect]} owner={combatant} key={effect.id} glow={shouldGlow} />;
             });
         };
 
