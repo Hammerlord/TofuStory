@@ -203,52 +203,58 @@ const exiledOneArmEffect: Effect = {
         type: "effect-class",
         value: [EFFECT_CLASSES.DEBUFF],
     },
-    onSummoned: {
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                comparator: "eq",
-                numFriendly: 4, // Including itself
-                filters: [
-                    {
-                        property: "name",
-                        comparator: "includes",
-                        value: "of the Exiled One",
-                    },
-                ],
-            },
-        ],
-        targetType: TRIGGER_TARGET_TYPES.PLAYER,
-        induceCombatant: {
-            action: [
+    onSummoned: [
+        {
+            conditions: [
                 {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    animation: ANIMATION_TYPES.SHOUT,
-                    resources: 1,
-                    drawCards: {
-                        amount: 2,
-                    },
-                    effects: [
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    comparator: "eq",
+                    numFriendly: 4, // Including itself
+                    filters: [
                         {
-                            name: "Avatar of the Exiled One",
-                            icon: ZakumImage,
-                            override: {
-                                portrait: ZakumImage,
-                                weapon: null,
-                            },
-                            attackPower: 5,
-                            drawCardsPerTurn: 1,
-                            resourcesPerTurn: 1,
-                            type: EFFECT_TYPES.RAGE,
-                            class: EFFECT_CLASSES.BUFF,
-                            maxApplications: 1,
+                            property: "name",
+                            comparator: "includes",
+                            value: "of the Exiled One",
                         },
                     ],
                 },
             ],
+            targetType: TRIGGER_TARGET_TYPES.PLAYER,
+            induceCombatant: {
+                action: [
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        target: TARGET_TYPES.SELF,
+                        animation: ANIMATION_TYPES.SHOUT,
+                        resources: 1,
+                        drawCards: {
+                            amount: 2,
+                        },
+                        effects: [
+                            {
+                                name: "Avatar of the Exiled One",
+                                icon: ZakumImage,
+                                override: {
+                                    portrait: ZakumImage,
+                                    weapon: null,
+                                },
+                                attackPower: 5,
+                                drawCardsPerTurn: 1,
+                                resourcesPerTurn: 1,
+                                type: EFFECT_TYPES.RAGE,
+                                class: EFFECT_CLASSES.BUFF,
+                                maxApplications: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
         },
-    },
+        {
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            induceCombatantAttack: true,
+        },
+    ],
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         induceCombatantAttack: true,
