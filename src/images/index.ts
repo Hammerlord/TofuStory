@@ -229,6 +229,7 @@ export { default as GiganticSledgeImage } from "./GiganticSledge.png";
 export { default as GlisteningStarImage } from "./GlisteningStar.png";
 export { default as GoldBarImage } from "./GoldBar.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";
+export { default as GoldenPrideImage } from "./GoldenPride.png";
 export { default as GoldRichieImage } from "./GoldRichie.png";
 export { default as GreenBambooHatImage } from "./GreenBambooHat.png";
 export { default as GreenCheeseImage } from "./GreenCheese.png";

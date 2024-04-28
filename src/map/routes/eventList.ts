@@ -96,7 +96,7 @@ import {
     personalAnvil,
     broom,
     zakumHelmet,
-    vikingHelm,
+    goldenPride,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -206,6 +206,6 @@ export const ITEMS = [
 ];
 
 export const CLASS_ITEMS = {
-    [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, vikingHelm],
+    [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride],
     [PLAYER_CLASSES.MAGICIAN]: [starEarrings],
 };

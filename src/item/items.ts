@@ -39,6 +39,7 @@ import {
     FlamingFeatherImage,
     GarnetImage,
     GoldenHammerImage,
+    GoldenPrideImage,
     GreenBambooHatImage,
     GuidebookImage,
     HardwoodWandImage,
@@ -2216,15 +2217,15 @@ export const zakumHelmet: Item = {
     ],
 };
 
-export const vikingHelm: Item = {
-    name: "Viking Helm",
+export const goldenPride: Item = {
+    name: "Golden Pride",
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "When you Taunt, gain Thorns. When you gain Thorns, you Taunt. Both last till next turn.",
-    image: VikingHelmImage,
+    description: "When you Taunt, gain Thorns. When you gain Thorns, Taunt.",
+    image: GoldenPrideImage,
     effects: [
         {
-            name: "Viking Helm Effect",
+            name: "Golden Pride Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onReceiveEffect: [
