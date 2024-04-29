@@ -682,18 +682,18 @@ export const calculateDamage = ({
                 }
             }
         );
-
-        getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).forEach((effect: CombatEffect) => {
-            const { maxDamageTaken, excludeEffectOwner } = effect;
-            if (excludeEffectOwner) {
-                return;
-            }
-
-            if ((maxDamageTaken && isNaN(maximumDamage)) || maximumDamage < maxDamageTaken) {
-                maximumDamage = maxDamageTaken;
-            }
-        });
     }
+
+    getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).forEach((effect: CombatEffect) => {
+        const { maxDamageTaken, excludeEffectOwner } = effect;
+        if (excludeEffectOwner) {
+            return;
+        }
+
+        if ((maxDamageTaken && isNaN(maximumDamage)) || maximumDamage < maxDamageTaken) {
+            maximumDamage = maxDamageTaken;
+        }
+    });
 
     const applyAbilityDamageReceived = (damage: number): number => {
         const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).reduce(
@@ -722,7 +722,7 @@ export const calculateDamage = ({
     const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
     const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
     let total = withAttackPower;
-    // Between minimum and maximum damage, minimum damage wins. There aren't that many effects that use this atm, just Brick and Steel Ore
+    // Between minimum and maximum damage, minimum damage wins (arbitrarily).
     if (typeof maximumDamage === "number") {
         total = Math.min(total, maximumDamage);
     }
