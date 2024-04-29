@@ -2849,13 +2849,11 @@ export const stirge: Minion = {
             image: MegaphoneImage,
             actions: [
                 {
-                    target: TARGET_TYPES.SELF,
+                    target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
-                    radiate: {
-                        area: 2,
-                        effects: [{ ...armorDown, duration: 3 }],
-                    },
+                    effects: [{ ...armorDown, duration: 3 }],
+                    area: 5,
                 },
             ],
         },
