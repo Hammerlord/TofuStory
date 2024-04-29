@@ -579,7 +579,7 @@ export const hyperBody: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -884,7 +884,7 @@ export const ironBody: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
@@ -2455,7 +2455,7 @@ export const honedBlock: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },

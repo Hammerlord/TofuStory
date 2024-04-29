@@ -354,7 +354,7 @@ export const provoke: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 3,
                 },
             ],
         },
