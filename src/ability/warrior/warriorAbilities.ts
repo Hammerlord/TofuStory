@@ -312,6 +312,7 @@ export const spikes: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
+            armor: 3,
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
@@ -1423,7 +1424,7 @@ export const counterattack: Ability = {
 
 export const poundOfNails: Ability = {
     name: "Pound Of Nails",
-    resourceCost: 2,
+    resourceCost: 1,
     image: BundleOfNailsImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
@@ -1436,7 +1437,15 @@ export const poundOfNails: Ability = {
     ],
     upgrades: [
         {
-            resourceCost: -1,
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
@@ -2119,7 +2128,7 @@ export const ironMaiden: Ability = {
             },
             radiate: {
                 area: 2,
-                damage: 3,
+                damage: 4,
                 bonus: {
                     damage: 1,
                     multiplier: {
