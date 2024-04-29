@@ -2448,7 +2448,7 @@ export const copperDrake: Minion = {
     name: "Copper Drake",
     image: CopperDrakeImage,
     isElite: true,
-    maxHP: 100,
+    maxHP: 150,
     mesos: 20,
     abilities: [
         {
@@ -2475,7 +2475,7 @@ export const copperDrake: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -2485,7 +2485,7 @@ export const copperDrake: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -2530,6 +2530,7 @@ export const egg: Minion = {
             },
             onDeath: {
                 target: TARGET_TYPES.SELF,
+                usableWhileDead: true,
                 ability: {
                     name: "Hatch",
                     image: DragonEggImage,

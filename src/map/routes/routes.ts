@@ -68,7 +68,7 @@ const routePerionSleepywood: Route = {
         special: [
             [null, owlTower, null, owlTower, null],
             [null, miniKargo, wildKargo, miniKargo, null],
-            [null, egg, egg, egg, null],
+            [egg, egg, egg, egg, egg],
             [null, tauromacis, null, taurospear, null],
         ],
     },
