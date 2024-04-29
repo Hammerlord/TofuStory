@@ -463,7 +463,7 @@ export const explosive: Effect = {
                         },
                     },
 
-                    effects: [{ ...burn, duration: 2 }],
+                    effects: [{ ...burn, duration: 1 }],
                 },
             ],
         },
