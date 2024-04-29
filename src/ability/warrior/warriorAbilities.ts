@@ -1352,7 +1352,8 @@ export const counterattack: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Until next turn, <b>Taunt</b> and <b>Counter</b> for {{ nestedAbility.actions.0.damage }} {{{ _damage_ }}} + Bleed.",
+    description:
+        "Until next turn, <b>Taunt</b> and <b>Counter</b> for <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} + {{{ _bleed_ }}} <b>{{ actions.0.effects.0.onReceiveAttack.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}}.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
