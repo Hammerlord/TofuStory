@@ -11,6 +11,7 @@ import {
     ZakumArmLeftImage,
     ZakumArmRight2Image,
     ZakumArmRightImage,
+    ZakumHelmetImage,
     ZakumImage,
 } from "../images";
 import { RARITIES } from "../item/types";
@@ -266,7 +267,12 @@ export const firstExiledArm: Ability = {
     exclusive: "Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
-    description: "<b>Can't be controlled or targeted.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
+    description: "<b>Incorporeal.</b> Immune to debuffs. Can't be controlled or targeted.",
+    tooltip: {
+        title: "Arm of the Exiled One",
+        icon: ZakumHelmetImage,
+        description: "Assemble the Four Arms to tap into a forbidden power.",
+    },
     overrideBodyText: true,
     isUnique: true,
     rarity: RARITIES.RARE,

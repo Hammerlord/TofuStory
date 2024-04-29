@@ -11,6 +11,7 @@ import { fireSpirit } from "../magician/magicianAbilities";
 import { Ability, ActionSummon, EFFECT_TYPES, Effect } from "../types";
 import { soulBlade } from "../warrior/warriorAbilities";
 import AbilityView from "./AbilityView";
+import { incorporeal } from "../../enemy/effect";
 
 const useSectionStyles = createUseStyles({
     section: {
@@ -197,7 +198,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const cardsToAdd = Object.values(cardsToAddMap);
     const stringified = JSON.stringify(ability).toLowerCase();
     const isReusable = cardsToAdd.some((ability: Ability) => ability.reusable) || ability.reusable;
-    const tributeSummon = ability.minionOptions?.tributeSummon;
 
     if (cardsToAdd.length > 0) {
         tooltips.push(
@@ -257,11 +257,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         cardsToAdd.some((ability: Ability) => ability.removeAfterTurn) || ability.removeAfterTurn || stringified.includes("ephemeral");
     if (ephemeral) {
         tooltips.push(
-            <AbilityTooltipSection
-                title="Ephemeral"
-                description={"Ephemeral abilities disappear at the end of your turn."}
-                key={"ephemeral"}
-            />
+            <AbilityTooltipSection title="Ephemeral" description={"Ability disappears at the end of your turn."} key={"ephemeral"} />
         );
     }
 
@@ -286,6 +282,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         );
     }
 
+    const tributeSummon = ability.minionOptions?.tributeSummon || stringified.includes("tribute");
     if (tributeSummon) {
         tooltips.push(
             <AbilityTooltipSection
@@ -317,6 +314,16 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const discover = stringified.includes("discover");
     if (discover) {
         tooltips.push(<AbilityTooltipSection title="Discover" description={"Pick 1 of 3 card options."} key={"discover"} />);
+    }
+
+    const isIncorporeal = stringified.includes("incorporeal");
+    if (isIncorporeal) {
+        tooltips.push(<AbilityTooltipSection title="Incorporeal" {...incorporeal} key={"incorporeal"} />);
+    }
+
+    if (ability.tooltip) {
+        const { title, description, icon } = ability.tooltip;
+        tooltips.push(<AbilityTooltipSection title={title} description={description} icon={icon} key={title} />);
     }
 
     return (

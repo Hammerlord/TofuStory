@@ -701,6 +701,11 @@ export interface Ability {
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
     exclusive?: string; // Eg. you cannot get more than one "Arm of the Exiled One" in any card selection screen
     actions: Action[];
+    tooltip?: {
+        title: string;
+        icon: string;
+        description: string;
+    };
     minion?: Minion;
     minionOptions?: {
         // Enables playing a minion directly over top of another minion, killing the previous one.
