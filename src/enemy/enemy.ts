@@ -149,6 +149,7 @@ import {
     poisonous,
     sneaky,
     temporaryResist,
+    burrowing,
 } from "./effect";
 import { sealCard } from "./jrBoogie";
 
@@ -415,36 +416,6 @@ export const ribbonPig: Minion = {
     effects: [championsRibbon, pigHeaded],
 };
 
-const burrowing: Effect = {
-    ...preventArmorDecay,
-    name: "Burrow",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    description: "Heals 3 HP per turn while armor holds.",
-    icon: PristineShieldIcon,
-    preventTurnAction: true,
-    canBeSilenced: false,
-    duration: 5,
-    override: {
-        portrait: OrangeMushroomDefendImage,
-    },
-    onTurnEnd: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        healing: 3,
-    },
-    onReceiveDamage: {
-        usableWhileStunned: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 0,
-                comparator: "eq",
-            },
-        ],
-        removeEffect: true,
-    },
-};
-
 const burrow: Ability = {
     name: "Burrow",
     image: ShieldIcon,
@@ -462,7 +433,7 @@ const burrow: Ability = {
 
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 55,
+    maxHP: 60,
     image: OrangeMushroomIdleImage,
     mesos: 15,
     effects: [hardy],
@@ -489,6 +460,7 @@ export const orangeMushroom: Minion = {
         },
         whomp,
         burrow,
+        whomp,
         loaf,
     ],
 };

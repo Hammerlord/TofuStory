@@ -18,6 +18,7 @@ import {
     MarksmanshipImage,
     NamelessSwordImage,
     OmokPigImage,
+    OrangeMushroomDefendImage,
     PigsHeadImage,
     PigsRibbonImage,
     PurpleFairiesImage,
@@ -28,8 +29,19 @@ import {
     StumpyBatImage,
     TreeBranchImage,
 } from "../images";
-import { CloudyIcon, LinkIcon, MountainIcon, MuscleIcon, RedShieldIcon, RockIcon, ShieldIcon, SmilingImpIcon } from "../images/icons";
-import { defUp, attackPower } from "./../ability/Effects";
+import {
+    CloudyIcon,
+    CrossedSwordsIcon,
+    LinkIcon,
+    MountainIcon,
+    MuscleIcon,
+    PristineShieldIcon,
+    RedShieldIcon,
+    RockIcon,
+    ShieldIcon,
+    SmilingImpIcon,
+} from "../images/icons";
+import { defUp, attackPower, preventArmorDecay } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
 export const pigHeaded: Effect = {
@@ -506,6 +518,55 @@ export const critical: Effect = {
             calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
         },
     ],
+};
+
+export const burrowing: Effect = {
+    ...preventArmorDecay,
+    name: "Burrow",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Heals 3 HP per turn while armor holds. After the full effect duration, this character gains +1 ATT.",
+    icon: PristineShieldIcon,
+    preventTurnAction: true,
+    canBeSilenced: false,
+    resourcesPerTurn: -1,
+    duration: 4,
+    override: {
+        portrait: OrangeMushroomDefendImage,
+    },
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        healing: 3,
+    },
+    onReceiveDamage: {
+        usableWhileStunned: true,
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 0,
+                comparator: "eq",
+            },
+        ],
+        removeEffect: true,
+    },
+    onEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        ability: {
+            name: "Pop!",
+            image: CrossedSwordsIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [
+                        {
+                            ...attackPower,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
 };
 
 /**
