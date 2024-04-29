@@ -1,6 +1,8 @@
+import { shoot } from "./../../enemy/abilities";
 import { cloneDeep } from "lodash";
 import {
     AdvancedWeaponMasteryImage,
+    AvengersArrowImage,
     BallistaImage,
     BladestormImage,
     BladeworksImage,
@@ -2665,13 +2667,20 @@ export const ballista: Ability = {
         maxHP: 6,
         abilities: [
             {
-                ...attack,
+                name: "Shoot",
+                image: AvengersArrowImage,
                 actions: [
                     {
-                        type: ACTION_TYPES.ATTACK,
+                        type: ACTION_TYPES.RANGE_ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 3,
+                        animation: ANIMATION_TYPES.ONE_WAY,
+                        icon: AvengersArrowImage,
+                        damage: 2,
                         effects: [bleed],
+                        animationOptions: {
+                            rotateToFaceTarget: true,
+                            rotate: -45,
+                        },
                     },
                 ],
             },
