@@ -896,10 +896,21 @@ export const stump: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+        loaf,
     ],
     effects: [hardwood],
 };
@@ -2829,7 +2840,7 @@ export const stirge: Minion = {
     name: "Stirge",
     maxHP: 21,
     image: StirgeImage,
-    mesos: 5,
+    mesos: 3,
     abilities: [
         attack,
         {
