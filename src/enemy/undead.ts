@@ -56,7 +56,7 @@ const clubSkeletonMinion: Minion = {
 export const swordSkeletonMinion: Minion = {
     name: "Officer Skeleton",
     maxHP: 5,
-    armor: 50,
+    armor: 30,
     image: OfficerSkeletonImage,
     effects: [taunt, eliteThorns],
     abilities: [
@@ -209,6 +209,7 @@ export const undeadMage: Minion = {
         {
             name: "Arise, Minions!",
             image: SkullStaffImage,
+            description: "Fills Riche's side of the board with new summons, Tributing any existing minions.",
             resourceCost: 3,
             castTime: 1,
             channelDuration: 3,

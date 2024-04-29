@@ -81,6 +81,9 @@ const undeadMageFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, undeadMage, null, null],
+            winCondition: {
+                defeatBoss: true,
+            },
         },
     ],
     type: BATTLE_TYPES.BOSS,
