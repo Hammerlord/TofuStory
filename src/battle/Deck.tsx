@@ -103,6 +103,7 @@ const Deck = ({
     useEffect(() => {
         // animationCanvas.ts is playing the deck recycle animation. Don't update the deck until it's done.
         if (deckCycled) {
+            setDeckSize(0);
             return;
         }
 
