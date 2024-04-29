@@ -49,6 +49,7 @@ import {
     PunctureImage,
     RageImage,
     RagingBlowImage,
+    RedBoxingGloveImage,
     RedFistOfFuryImage,
     RisingRageImage,
     RockImage,
@@ -2716,6 +2717,45 @@ export const ballista: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+const pummelAction = {
+    damage: 7,
+    targetArea: 5,
+    type: ACTION_TYPES.ATTACK,
+    target: TARGET_TYPES.RANDOM_HOSTILE,
+    secondaryAction: {
+        damage: 2,
+    },
+    drawCards: {
+        amount: 1,
+    },
+};
+
+export const pummel: Ability = {
+    name: "Pummel",
+    rarity: RARITIES.RARE,
+    image: RedBoxingGloveImage,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description:
+        "Hit a random enemy, x3. Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}} and draw a card each time.",
+    actions: [pummelAction, pummelAction, pummelAction],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };

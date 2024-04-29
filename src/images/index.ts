@@ -482,6 +482,7 @@ export { default as PurpleInfinityImage } from "./PurpleInfinity.png";
 export { default as RabbitFootImage } from "./RabbitFoot.png";
 export { default as RageImage } from "./Rage.png";
 export { default as RagingBlowImage } from "./RagingBlow.png";
+export { default as RedBoxingGloveImage } from "./RedBoxingGlove.png";
 export { default as RedDrakeImage } from "./RedDrake.gif";
 export { default as RedFistOfFuryImage } from "./RedFistOfFury.png";
 export { default as RedHeadbandImage } from "./RedHeadband.png";
