@@ -40,6 +40,7 @@ import {
     LigatorImage,
     LupinImage,
     MaladyImage,
+    MegaphoneImage,
     MesoImage,
     MiniKargoImage,
     MonkeyBananaImage,
@@ -72,6 +73,8 @@ import {
     SnailImage,
     SnailShellImage,
     SquishyLiquidImage,
+    StirgeBackImage,
+    StirgeImage,
     StoneGolemImage,
     StoneGolemRubbleImage,
     StumpImage,
@@ -2820,4 +2823,68 @@ export const jrNecki: Minion = {
         },
     ],
     effects: [neckiIncorporeal],
+};
+
+export const stirge: Minion = {
+    name: "Stirge",
+    maxHP: 21,
+    image: StirgeImage,
+    mesos: 5,
+    abilities: [
+        attack,
+        {
+            name: "Supersonic Screech",
+            description: "Applies Armor Down for 3 turns.",
+            image: MegaphoneImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    radiate: {
+                        area: 2,
+                        effects: [{ ...armorDown, duration: 3 }],
+                    },
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Flock",
+            description: "Summons a Stirge when it dies.",
+            icon: StirgeBackImage,
+            class: EFFECT_CLASSES.NONE,
+            type: EFFECT_TYPES.NONE,
+            onDeath: {
+                target: TARGET_TYPES.SELF,
+                ability: {
+                    image: StirgeBackImage,
+                    name: "Summon Stirge",
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            resurrect: true,
+                            summon: [
+                                {
+                                    minion: ["Stirge"],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };

@@ -24,6 +24,7 @@ import {
     shroom,
     slime,
     snail,
+    stirge,
     stump,
     wildBoar,
     wildKargo,
@@ -104,7 +105,7 @@ export const routeKerningToPerion: Route = {
         single: [fireBoar, rockyMask, jrBoogie],
         duo: [wildBoar, axeStump],
         trio: [orangeMushroom, octopus, bubbling],
-        squad: [redSnail, stump],
+        squad: [redSnail, stump, stirge],
         special: [
             [null, egg, null, egg, null],
             [
@@ -129,6 +130,13 @@ export const routeKerningToPerion: Route = {
         [null, axeStump, null, axeStump, null],
         [null, rockyMask, null, rockyMask, null],
         [null, bubbling, null, bubbling, null],
+        [
+            stirge,
+            { ...stirge, abilities: moveHeadToTail(stirge.abilities) },
+            stirge,
+            { ...stirge, abilities: moveHeadToTail(stirge.abilities) },
+            stirge,
+        ],
     ],
     multiWaveEnemies: [
         [null, stump, stump, stump, null],
@@ -141,6 +149,7 @@ export const routeKerningToPerion: Route = {
         [null, orangeMushroom, null, orangeMushroom, null],
         [null, stump, octopus, stump, null],
         [null, octopus, null, octopus, null],
+        [stirge, null, { ...stirge, abilities: moveHeadToTail(stirge.abilities) }, null, stirge],
     ],
     nodes: [
         {

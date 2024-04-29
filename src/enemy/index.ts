@@ -1,6 +1,6 @@
 import { balsaDummy, mapleDummy } from "../scene/Perion/perionDummies";
 import { boarStanceAbility } from "./dancesWithBalrog";
-import { ironHog, snailFriend } from "./enemy";
+import { ironHog, snailFriend, stirge } from "./enemy";
 import { kingSlimeEnemy, slimeGlobule } from "./kingSlime";
 import { mutantRibbonPig } from "./strangePig";
 
@@ -14,6 +14,7 @@ export const enemyNameMap = {
     [balsaDummy.name]: balsaDummy,
     [mapleDummy.name]: mapleDummy,
     [ironHog.name]: ironHog,
+    [stirge.name]: { ...stirge, effects: [] },
 };
 
 export const abilityNameMap = {
