@@ -1751,7 +1751,8 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward. Uncontrollable.</b> Attacks when Summoned and when you play a {{{ _offense_ }}} card.",
+    description:
+        "<b>Ward {{ minion.effects.0.duration}}{{{ _duration_ }}}. Can't be controlled.</b> Attacks immediately and when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -1775,7 +1776,7 @@ export const soulBlade: Ability = {
             },
         ],
         effects: [
-            ward,
+            { ...ward, duration: 3 },
             {
                 name: "Soul Blade Effect",
                 icon: BurningSoulBladeMinionImage,
@@ -1970,7 +1971,8 @@ export const bloodthirst: Ability = {
     resourceCost: 1,
     image: DarkThirstImage,
     rarity: RARITIES.RARE,
-    description: "Gain {{ actions.0.effects.0.lifeOnHit }} Leech. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description:
+        "Gain {{ actions.0.effects.0.lifeOnHit }} Life on Hit. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     depletedOnUse: true,
     overrideBodyText: true,
     actions: [
@@ -1984,7 +1986,7 @@ export const bloodthirst: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     lifeOnHit: 1,
-                    duration: 2,
+                    duration: 3,
                     maxApplications: 1,
                 },
             ],
@@ -1992,15 +1994,7 @@ export const bloodthirst: Ability = {
     ],
     upgrades: [
         {
-            actions: [
-                {
-                    effects: [
-                        {
-                            duration: 1,
-                        },
-                    ],
-                },
-            ],
+            resourceCost: -1,
         },
     ],
 };
@@ -2658,7 +2652,7 @@ export const ballista: Ability = {
     resourceCost: 1,
     image: BallistaImage,
     description:
-        "<b>Uncontrollable.</b> Every turn, inflict {{{ _bleed_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on a random enemy.",
+        "<b>Can't be controlled.</b> Every turn, inflict {{{ _bleed_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on a random enemy.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {

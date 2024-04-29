@@ -1,4 +1,16 @@
-import { attackPower, bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, taunt, thorns } from "../ability/Effects";
+import {
+    attackPower,
+    bleed,
+    chill,
+    directDamageTakenTrigger,
+    infuriateEffect,
+    lupinCurse,
+    poison,
+    stashCardEffect,
+    stun,
+    taunt,
+    thorns,
+} from "../ability/Effects";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -713,7 +725,7 @@ const pigsRibbonCounter: Effect = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 1,
                 },
             ],
         },
@@ -726,7 +738,7 @@ const pigsRibbonCounter: Effect = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, gain Counter for 2 damage.",
+    description: "Once per turn, gain Counter for 1 damage.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
@@ -1355,7 +1367,7 @@ export const brick: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Brick",
-            minimumAttackDamage: 4,
+            minimumAttackDamage: 3,
         },
     ],
 };
@@ -2308,7 +2320,7 @@ export const medicineWithWeirdVibes: Item = {
     name: "Medicine with Weird Vibes",
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "Heal 1 HP every turn.",
+    description: "If you take unblocked damage, heal 1 HP next turn.",
     image: MedicineWithWeirdVibesImage,
     effects: [
         {
@@ -2318,6 +2330,13 @@ export const medicineWithWeirdVibes: Item = {
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 1,
+                conditions: [
+                    {
+                        hasEffect: directDamageTakenTrigger.name,
+                        comparator: "eq",
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    },
+                ],
             },
         },
     ],

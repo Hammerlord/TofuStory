@@ -266,7 +266,7 @@ export const firstExiledArm: Ability = {
     exclusive: "Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
-    description: "<b>Uncontrollable. Can't be targeted.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
+    description: "<b>Can't be controlled or targeted.</b> <br/> Assemble the Four Arms to tap into the Exiled One's power.",
     overrideBodyText: true,
     isUnique: true,
     rarity: RARITIES.RARE,
