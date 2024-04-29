@@ -28,6 +28,7 @@ import {
     stump,
     wildBoar,
     wildKargo,
+    wraith,
 } from "../../enemy/enemy";
 import { jrBoogie } from "../../enemy/jrBoogie";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
@@ -103,7 +104,7 @@ export const routeKerningToPerion: Route = {
     elites: {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask, jrBoogie],
-        duo: [wildBoar, axeStump],
+        duo: [wildBoar, axeStump, wraith],
         trio: [orangeMushroom, octopus, bubbling],
         squad: [redSnail, stump, stirge],
         special: [
@@ -149,6 +150,7 @@ export const routeKerningToPerion: Route = {
             { ...stirge, abilities: moveHeadToTail(stirge.abilities) },
             stirge,
         ],
+        [null, wraith, { ...wraith, abilities: moveHeadToTail(wraith.abilities) }, wraith, null],
     ],
     multiWaveEnemies: [
         [null, stump, stump, stump, null],

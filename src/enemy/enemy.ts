@@ -79,12 +79,14 @@ import {
     StoneGolemRubbleImage,
     StumpImage,
     SubiImage,
+    TableclothImage,
     TeleportImage,
     TreasureChestImage,
     WeaponMasteryImage,
     WildBoarImage,
     WildKargoImage,
     WoodenClubImage,
+    WraithImage,
     ZombieLupinJumpImage,
 } from "../images";
 import {
@@ -2896,4 +2898,50 @@ export const stirge: Minion = {
             },
         },
     ],
+};
+
+export const wraith: Minion = {
+    name: "Wraith",
+    maxHP: 15,
+    image: WraithImage,
+    abilities: [
+        {
+            name: "Swathe",
+            image: TableclothImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    addCardsToDiscard: [
+                        {
+                            name: "Swathed",
+                            image: TableclothImage,
+                            depletedOnUse: true,
+                            resourceCost: 1,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.HINDER,
+                                    target: TARGET_TYPES.SELF,
+                                    animation: ANIMATION_TYPES.SPIN,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                },
+            ],
+        },
+        loaf,
+    ],
+    effects: [{ ...incorporeal, duration: 5 }],
 };
