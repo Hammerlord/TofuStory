@@ -376,7 +376,7 @@ export const ping: Ability = {
                         name: "Draw Ping",
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.NONE,
-                        onTurnInProgress: {
+                        onTurnDraw: {
                             drawOriginalAbility: true,
                             removeEffect: true,
                         },

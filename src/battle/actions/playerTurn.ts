@@ -246,6 +246,12 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 amount: drawCardsAmount,
             })
         );
+
+        playerSide.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw }));
+            }
+        });
     };
 };
 

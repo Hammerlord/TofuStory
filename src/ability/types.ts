@@ -146,6 +146,7 @@ export enum EFFECT_EVENT_KEYS {
     onMoveCardFromHandToDeck = "onMoveCardFromHandToDeck",
     onFriendlyMove = "onFriendlyMove",
     onArmorDecay = "onArmorDecay",
+    onTurnDraw = "onTurnDraw", // After the player has drawn cards for the turn
 }
 
 type effectEventKeys = keyof typeof EFFECT_EVENT_KEYS;
