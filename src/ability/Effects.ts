@@ -147,6 +147,7 @@ export const stun: Effect = {
     duration: 1,
     maxApplications: 1,
     maxDuration: 1,
+    persistsWhenDead: true,
     description: "Stunned targets are unable to act.",
     icon: DizzyIcon,
 };
@@ -192,6 +193,7 @@ export const freeze: Effect = {
     maxDuration: 1,
     description: "Frozen targets are unable to act.",
     duration: 1,
+    persistsWhenDead: true,
 };
 
 export const immunity: Effect = {
