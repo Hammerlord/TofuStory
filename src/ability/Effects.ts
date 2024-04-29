@@ -442,7 +442,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "On death, Explodes and applies a Burn that increases Explode damage taken.",
+    description: "On death, Explodes and applies a Burn.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -463,23 +463,7 @@ export const explosive: Effect = {
                         },
                     },
 
-                    effects: [
-                        {
-                            name: "Explosive - Burn",
-                            description: "Burning and taking 30% increased damage from Explode.",
-                            icon: FireIcon,
-                            type: EFFECT_TYPES.BURN,
-                            class: EFFECT_CLASSES.DEBUFF,
-                            duration: 1,
-                            abilityDamageReceived: [
-                                {
-                                    abilityName: "Explode",
-                                    damage: 1.3,
-                                    type: SCALING_VALUE_TYPES.PERCENTAGE,
-                                },
-                            ],
-                        },
-                    ],
+                    effects: [{ ...burn, duration: 2 }],
                 },
             ],
         },
