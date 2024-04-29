@@ -1,6 +1,6 @@
 import { burrowing } from "./effect";
 import { hardy } from "../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { MushmomBurrowImage, MushmomImage, MushmomJumpImage, OrangeMushroomImage } from "../images";
 import { MountainIcon, ShieldIcon } from "../images/icons";
 import { moveTailToHead } from "../utils";
@@ -12,26 +12,27 @@ const mushroomMinion = {
     abilities: moveTailToHead(orangeMushroom.abilities),
 };
 
+const callMushrooms: Ability = {
+    name: "Call Mushroom",
+    image: OrangeMushroomImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            summon: [
+                { minion: [mushroomMinion], placement: "adjacent" },
+                { minion: [mushroomMinion], placement: "adjacent" },
+            ],
+        },
+    ],
+};
+
 export const mushmom: Minion = {
     name: "Mushmom",
     image: MushmomImage,
     isBoss: true,
     maxHP: 250,
     abilities: [
-        {
-            name: "Call Mushroom",
-            image: OrangeMushroomImage,
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    summon: [
-                        { minion: [mushroomMinion], placement: "adjacent" },
-                        { minion: [mushroomMinion], placement: "adjacent" },
-                    ],
-                },
-            ],
-        },
         { ...whomp, resourceCost: 0, castTime: undefined },
         loaf,
         {
@@ -65,12 +66,13 @@ export const mushmom: Minion = {
             name: "Burrow",
             image: ShieldIcon,
             resourceCost: 3,
-            description: "Gains {{ actions.0.armor }} Armor and Burrows to heal while armor holds.",
+            description: "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 21,
+                    armor: 30,
+                    removeDebuffs: true,
                     effects: [
                         {
                             ...burrowing,
@@ -99,5 +101,28 @@ export const mushmom: Minion = {
             ],
         },
     ],
-    effects: [hardy],
+    effects: [
+        hardy,
+        {
+            name: "Call Mushrooms",
+            description: "After the countdown, summons 2 mushrooms.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            disableDisplayIcon: true,
+            icon: OrangeMushroomImage,
+            onWaveStart: {
+                ability: callMushrooms,
+            },
+            extraDisplayOptions: {
+                container: "left",
+                property: "onTurnEnd.eventTriggeredTimes",
+                modulo: "onTurnEnd.eventTriggerFrequency",
+            },
+            onTurnEnd: {
+                usableWhileStunned: true,
+                eventTriggerFrequency: 5,
+                ability: callMushrooms,
+            },
+        },
+    ],
 };

@@ -420,11 +420,12 @@ const burrow: Ability = {
     name: "Burrow",
     image: ShieldIcon,
     resourceCost: 3,
-    description: "Gains 14 Armor and Burrows to heal while armor holds.",
+    description: "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            removeDebuffs: true,
             armor: 14,
             effects: [burrowing],
         },
