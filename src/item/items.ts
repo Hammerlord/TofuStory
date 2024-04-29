@@ -1,4 +1,4 @@
-import { bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, taunt, thorns } from "../ability/Effects";
+import { attackPower, bleed, chill, infuriateEffect, lupinCurse, poison, stashCardEffect, stun, taunt, thorns } from "../ability/Effects";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -1975,6 +1975,7 @@ export const scrollForClawForAtt: Item = {
     },
 };
 
+/* Old opal: way too strong! consider only extending non-proc buffs if we want to restore this
 export const opal: Item = {
     name: "Opal",
     rarity: RARITIES.RARE,
@@ -1999,6 +2000,48 @@ export const opal: Item = {
                         property: "type",
                         comparator: "not",
                         value: EFFECT_TYPES.IMMUNITY,
+                    },
+                ],
+            },
+        },
+    ],
+};
+*/
+
+export const opal: Item = {
+    name: "Opal",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: OpalImage,
+    description: "Gain +1 ATT on turn one, then +1 Armor Up on turn two. The effects alternate between turns.",
+    effects: [
+        {
+            name: "Opal - Attack Power",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            turnsTriggerFrequency: 2,
+            uptime: 2,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        ...attackPower,
+                        duration: 1,
+                    },
+                ],
+            },
+        },
+        {
+            name: "Opal - Armor Up",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            turnsTriggerFrequency: 2,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        ...armorUp,
+                        duration: 1,
                     },
                 ],
             },

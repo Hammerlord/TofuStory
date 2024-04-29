@@ -14,7 +14,7 @@ import { BATTLE_TYPES } from "../battle/types";
 const copyEffect = (e: Effect) => ({
     ...cloneDeep(e),
     id: uuid.v4(),
-    uptime: 1,
+    uptime: e.uptime || 1,
 });
 
 export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
