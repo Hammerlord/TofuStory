@@ -68,17 +68,18 @@ export const rally: Ability = {
 
 export const tantrum: Ability = {
     name: "Tantrum",
+    description: "Randomly hits a target 2 times.",
     image: JapaneseOgreIcon,
     resourceCost: 3,
     channelDuration: 1,
     castTime: 1,
     actions: [
         {
-            target: TARGET_TYPES.HOSTILE,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
         {
-            target: TARGET_TYPES.HOSTILE,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
     ],

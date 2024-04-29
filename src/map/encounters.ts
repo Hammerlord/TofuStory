@@ -46,17 +46,17 @@ const generateTantrumAttack = (baseEnemy: Minion): Ability => {
         ...tantrum,
         actions: [
             {
-                target: TARGET_TYPES.HOSTILE,
+                target: TARGET_TYPES.RANDOM_HOSTILE,
                 type: ACTION_TYPES.ATTACK,
                 damage: Math.ceil(attackDamage * 1.2),
             },
             {
-                target: TARGET_TYPES.HOSTILE,
+                target: TARGET_TYPES.RANDOM_HOSTILE,
                 type: ACTION_TYPES.ATTACK,
                 damage: Math.ceil(attackDamage * 1.2),
             },
             {
-                target: TARGET_TYPES.HOSTILE,
+                target: TARGET_TYPES.RANDOM_HOSTILE,
                 type: ACTION_TYPES.ATTACK,
                 damage: Math.ceil(attackDamage * 1.2),
             },

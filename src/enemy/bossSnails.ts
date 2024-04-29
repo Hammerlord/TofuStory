@@ -268,24 +268,24 @@ export const mutantSnailEnemy: Minion = {
         {
             name: "Frenzied Tantrum",
             image: JapaneseOgreIcon,
-            description: "{{ caster }} will tantrum, dealing 3 hits per move.",
+            description: "Randomly hits a target 3 times.",
             resourceCost: 3,
             channelDuration: 2,
             castTime: 1,
             actions: [
                 {
                     damage: 3,
-                    target: TARGET_TYPES.HOSTILE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
                     damage: 3,
-                    target: TARGET_TYPES.HOSTILE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
                     damage: 3,
-                    target: TARGET_TYPES.HOSTILE,
+                    target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
