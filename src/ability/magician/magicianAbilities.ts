@@ -2836,7 +2836,7 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description: "<b>Uncontrollable.</b> On Summon and turn start, Burn a random enemy.",
+    description: "<b>Can't be controlled.</b> On Summon and turn start, Burn a random enemy.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {

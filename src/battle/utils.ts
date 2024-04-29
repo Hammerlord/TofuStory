@@ -425,21 +425,24 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
-        return (
-            combatant.turnHistory.filter(({ type, parent }) => {
-                if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(type)) {
-                    return false;
-                }
+        return combatant.turnHistory.filter(({ type, parent }) => {
+            if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(type)) {
+                return false;
+            }
 
-                if (filters) {
-                    return filters.some(({ property, value, comparator }) =>
-                        passesValueComparison({ val: parent[property], otherVal: value, comparator })
-                    );
-                }
+            // @ts-ignore Procced abilities do not have instance ids, only cards do
+            if (filterOutProcs && !parent?.instanceId) {
+                return false;
+            }
 
-                return true;
-            }).length + 1
-        );
+            if (filters) {
+                return filters.some(({ property, value, comparator }) =>
+                    passesValueComparison({ val: parent[property], otherVal: value, comparator })
+                );
+            }
+
+            return true;
+        }).length;
     }
 
     if (type === MULTIPLIER_TYPES.ARMOR) {

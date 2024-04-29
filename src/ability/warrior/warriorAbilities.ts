@@ -1592,16 +1592,17 @@ export const comboFury: Ability = {
     resourceCost: 0,
     image: ComboFuryImage,
     description:
-        "Deals {{ actions.0.damage }} {{{ _damage_ }}} for every attack you made this turn, up to {{ actions.0.maxDamage }} {{{ _damage_ }}}.",
+        "Deals {{ actions.0.damage }} {{{ _damage_ }}} for each attack you made this turn, up to {{ actions.0.maxDamage }} {{{ _damage_ }}}.",
     actions: [
         {
             damage: 2,
-            maxDamage: 20,
+            maxDamage: 10,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
+                filterOutProcs: true,
             },
         },
     ],
@@ -1621,17 +1622,18 @@ export const parry: Ability = {
     resourceCost: 0,
     image: EndureImage,
     description:
-        "Gain {{ actions.0.armor }} {{{ _armor_ }}} for each attack made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
+        "Gain {{ actions.0.armor }} {{{ _armor_ }}} for each attack you made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            armor: 1,
+            armor: 2,
             maxArmor: 10,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             multiplier: {
                 type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
+                filterOutProcs: true,
             },
         },
     ],
