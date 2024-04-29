@@ -2738,7 +2738,7 @@ export const pummel: Ability = {
     overrideBodyText: true,
     description:
         "Hit a random enemy, x3. Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}} and draw a card each time.",
-    actions: [pummelAction, pummelAction, pummelAction],
+    actions: [{ ...pummelAction }, { ...pummelAction }, { ...pummelAction }],
     upgrades: [
         {
             actions: [
