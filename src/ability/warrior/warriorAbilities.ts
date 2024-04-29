@@ -245,9 +245,9 @@ export const shieldStrike: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     secondaryAction: {
-                        armor: 2,
+                        armor: 3,
                     },
                 },
             ],
@@ -1247,7 +1247,7 @@ export const sledge: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 7,
                 },
             ],
         },
@@ -1681,7 +1681,7 @@ export const ragingBlow: Ability = {
     ],
     upgrades: [
         {
-            actions: [{ damage: 2 }, { damage: 2 }],
+            actions: [{ damage: 3 }, { damage: 3 }],
         },
     ],
 };
@@ -1719,7 +1719,7 @@ export const worldReaver: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 5,
                 },
             ],
         },
@@ -2158,7 +2158,7 @@ export const ironMaiden: Ability = {
                 {},
                 {
                     radiate: {
-                        damage: 2,
+                        damage: 3,
                     },
                 },
             ],
@@ -2589,7 +2589,7 @@ export const retribute: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     bonus: {
                         damage: 2,
                     },

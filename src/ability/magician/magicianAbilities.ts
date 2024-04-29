@@ -754,8 +754,8 @@ export const chainLightning: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
-                    secondaryDamage: 2,
+                    damage: 3,
+                    secondaryDamage: 3,
                 },
             ],
         },
@@ -933,7 +933,7 @@ export const fireArrow: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -1260,7 +1260,7 @@ export const glacier: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -1670,7 +1670,7 @@ export const greatestBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -2065,7 +2065,7 @@ const avalanche: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -2187,7 +2187,7 @@ export const moonBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -2702,7 +2702,7 @@ export const abominableSnowman: Ability = {
         name: "Abominable Snowman",
         image: GiantSnowmanImage,
         maxHP: 3,
-        armor: 10,
+        armor: 7,
         abilities: [
             {
                 ...attack,
@@ -2937,7 +2937,7 @@ export const flareBolt: Ability = {
     ],
     upgrades: [
         {
-            actions: [{ damage: 3 }],
+            actions: [{ damage: 5 }],
         },
     ],
 };
@@ -2984,7 +2984,7 @@ export const burst: Ability = {
     overrideBodyText: true,
     image: BlazingExtinctionImage,
     disableConditionGlow: true,
-    resourceCost: 3,
+    resourceCost: 2,
     rarity: RARITIES.RARE,
     actions: [
         {
