@@ -748,6 +748,7 @@ export const closeCombat: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            damage: 0,
             vacuum: 2,
             area: 2,
             effects: [stun],

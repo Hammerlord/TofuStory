@@ -418,7 +418,7 @@ const AbilityView = forwardRef(
             }, {}) as any;
 
         const cornerIcon = (() => {
-            if (baseDamage > 0) {
+            if (baseDamage !== undefined) {
                 return <DamageIcon ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />;
             }
 
