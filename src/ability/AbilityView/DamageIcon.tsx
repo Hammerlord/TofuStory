@@ -4,7 +4,7 @@ import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { Ability, Action, TARGET_TYPES } from "../types";
+import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../types";
 
 export const getDamageStatistics = ({
     ability,
@@ -22,8 +22,9 @@ export const getDamageStatistics = ({
 } => {
     const { actions = [] } = ability;
     const damageActions = actions.filter(
-        (action) => action.damage !== undefined || action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE
+        (action) => action.damage !== undefined || action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK
     );
+
     if (damageActions.length === 0) {
         return {
             baseDamage: undefined,

@@ -548,7 +548,7 @@ export const mpEater: Ability = {
     actions: [
         {
             damage: 0,
-            type: ACTION_TYPES.RANGE_ATTACK,
+            type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             icon: WizMushImage,
             animation: ANIMATION_TYPES.BEAM,
@@ -1424,7 +1424,6 @@ export const feedback: Ability = {
         "Gain {{ actions.0.secondaryAction.resources }} {{{ _mana_ }}} but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
     actions: [
         {
-            damage: 0,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
