@@ -5,6 +5,7 @@ import { fireSpirit } from "../magician/magicianAbilities";
 import { Ability, ActionSummon } from "../types";
 import { soulBlade } from "../warrior/warriorAbilities";
 import AbilityView from "./AbilityView";
+import { chargingStone } from "../../item/starterItems";
 
 const useTooltipStyles = createUseStyles({
     tooltip: {
@@ -84,6 +85,15 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
     const classes = useTooltipStyles();
 
     const tooltips = [];
+
+    if (JSON.stringify(ability).includes("Charged")) {
+        const chargedTooltip = {
+            title: "Charged Ability",
+            icon: chargingStone.image,
+            description: "Consumes Charged for a bonus.",
+        };
+        tooltips.push(<TooltipSection {...chargedTooltip} key={chargedTooltip.title} />);
+    }
 
     const cardsToAdd = Object.values(cardsToAddMap);
     if (cardsToAdd.length > 0) {

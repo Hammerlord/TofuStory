@@ -27,12 +27,6 @@ import { chargingStone } from "../item/starterItems";
 import Handlebars from "handlebars";
 
 const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
-    {
-        name: "Charged Ability",
-        icon: chargingStone.image,
-        description: "Consumes Charged for a bonus.",
-        keys: ["Charged"],
-    },
     infuriateEffect,
     {
         ...ward,
