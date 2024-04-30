@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
         zIndex: 5,
         fontSize: "18px",
         fontWeight: "bold",
-        background: "rgba(100, 40, 40, 0.9)",
+        background: "rgba(50, 60, 100, 0.9)",
         padding: "8px",
         position: "absolute",
         left: "50%",
@@ -41,6 +41,9 @@ const useStyles = createUseStyles({
         top: 30,
         "&.nondeterministic": {
             background: "rgba(100, 70, 70, 0.8)",
+        },
+        "&.enemyPreview": {
+            background: "rgba(100, 40, 40, 0.9)",
         },
     },
     statUpdate: {
@@ -100,7 +103,15 @@ export interface PreviewStatUpdate {
 /**
  * The damage/armor preview that shows up when you hover over a combatant with a card selected.
  */
-const AbilityPreview = ({ previewStatUpdate, combatant }: { previewStatUpdate: PreviewStatUpdate[]; combatant: Combatant }) => {
+const AbilityPreview = ({
+    previewStatUpdate,
+    combatant,
+    isEnemy,
+}: {
+    previewStatUpdate: PreviewStatUpdate[];
+    combatant: Combatant;
+    isEnemy: boolean;
+}) => {
     const classes = useStyles();
 
     if (!previewStatUpdate || !combatant) {
@@ -120,6 +131,7 @@ const AbilityPreview = ({ previewStatUpdate, combatant }: { previewStatUpdate: P
         <div
             className={classNames(classes.statUpdatePreview, {
                 nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
+                enemyPreview: isEnemy,
             })}
         >
             {previewStatUpdate.map((preview, i) => {

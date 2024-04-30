@@ -547,7 +547,7 @@ const CombatantView = forwardRef(
                     )}
                 </div>
 
-                {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} />}
+                {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} isEnemy={isEnemy} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
                 <div className={classes.statusEffectAnnouncerContainer}>
                     <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
