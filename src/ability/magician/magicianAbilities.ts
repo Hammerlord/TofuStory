@@ -2396,10 +2396,12 @@ export const wardBooster: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: HolyMagicShellImage,
     depletedOnUse: true,
+    description: "<b>+1 {{{ _armor_ }}} Armor Up</b>",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             armor: 3,
             effects: [armorUp],
         },
@@ -2689,7 +2691,7 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains {{ minion.effects.1.onAttack.ability.actions.0.armor }} {{{ _armor_ }}} when it attacks or kills.",
+    description: "Gains {{ minion.effects.1.onAttack.ability.actions.0.armor }} {{{ _armor_ }}} when it attacks.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,
@@ -2715,7 +2717,7 @@ export const abominableSnowman: Ability = {
             taunt,
             {
                 name: "Abomination",
-                description: "Gains 3 Armor when it attacks or kills.",
+                description: "Gains 3 Armor when it attacks.",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onAttack: {
@@ -2831,7 +2833,7 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description: "<b>Can't be controlled.</b> On Summon and turn start, Burn a random enemy.",
+    description: "<b>Can't be controlled.</b> Every turn, Burn a random enemy.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {

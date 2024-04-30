@@ -40,7 +40,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         name: "Ephemeral",
         description: "Ability disappears at the end of your turn.",
-        keys: ["removeAfterTurn"],
+        keys: ["removeAfterTurn", "Ephemeral"],
     },
     {
         name: "Radiate",
@@ -53,6 +53,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         name: "Tribute",
         description: "Replacing an existing summon with another one grants the new summon +1 HP and ATT.",
+        keys: ["Tribute"],
     },
     {
         name: "Reusable",

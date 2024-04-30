@@ -540,7 +540,7 @@ export const ironWill: Ability = {
     image: IronWillImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "+2 armor from armor sources",
+    description: "<b>+2 {{{ _armor_ }}} Armor Up</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -643,12 +643,7 @@ export const sharpen: Ability = {
             area: 1,
             effects: [
                 {
-                    name: "Sharpen",
-                    disableDisplayIcon: true,
-                    icon: WeaponMasteryImage,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
+                    ...attackPower,
                     duration: 3,
                 },
             ],
@@ -863,7 +858,7 @@ export const ironBody: Ability = {
     image: IronBodyImage,
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
-    description: "Prevent the next time your armor decays",
+    description: "Gain <b>1 Pristine.</b>",
     actions: [
         {
             armor: 7,
