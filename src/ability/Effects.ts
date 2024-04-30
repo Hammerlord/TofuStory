@@ -181,7 +181,7 @@ export const chill: Effect = {
     attackPower: -1,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces ATT by 1, up to {{ maxApplications }} stacks. Can't bring enemy damage below 1.",
+    description: "Reduces ATT by 1, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
 };
 
 export const freeze: Effect = {
@@ -209,7 +209,7 @@ export const ward: Effect = {
     ...immunity,
     type: EFFECT_TYPES.ATTACK_IMMUNITY,
     name: "Ward",
-    description: "Wards off the next attack.",
+    description: "Deflects the next attack.",
     duration: Infinity,
     onReceiveAttack: { removeEffect: true },
 };
@@ -538,6 +538,7 @@ export const poison: Effect = {
 
 export const attackPower: Effect = {
     name: "ATT Up",
+    description: "Each ATT increases attack damage by 1 + 10%.",
     icon: CrossedSwordsIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -547,6 +548,7 @@ export const attackPower: Effect = {
 
 export const armorUp: Effect = {
     name: "Armor Up",
+    description: "Gain +1 Armor from Armor sources.",
     icon: ShieldIcon,
     class: EFFECT_CLASSES.BUFF,
     type: EFFECT_TYPES.NONE,
@@ -555,6 +557,7 @@ export const armorUp: Effect = {
 
 export const preventArmorDecay: Effect = {
     name: "Pristine Armor",
+    description: "Armor doesn't decay by half on turn start.",
     icon: PristineShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -575,6 +578,7 @@ export const preventArmorDecayPlayer: Effect = {
 
 export const defUp: Effect = {
     name: "DEF Up",
+    description: "Reduces damage taken from attacks by 1.",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -584,6 +588,7 @@ export const defUp: Effect = {
 
 export const defDown: Effect = {
     name: "DEF Down",
+    description: "Increases damage taken from attacks by 1.",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
@@ -593,6 +598,7 @@ export const defDown: Effect = {
 
 export const pristineDefense: Effect = {
     name: "Pristine DEF Up",
+    description: "Prevents Armor decay and reduces damage taken from attacks by 1.",
     icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -649,6 +655,7 @@ export const stashCardEffect: Effect = {
 
 export const infuriateEffect: Effect = {
     name: "Infuriate",
+    description: "Gain 1 Fury next turn.",
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: HumilityStoneImage,
@@ -682,7 +689,7 @@ export const attackDown: Effect = {
     duration: 3,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces ATT by 1, up to {{ maxApplications }} stacks. Can't bring enemy damage below 1.",
+    description: "Reduces ATT by 1, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
 };
 
 export const directDamageTaken: Effect = {

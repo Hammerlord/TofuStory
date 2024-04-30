@@ -576,12 +576,7 @@ export const mpEater: Ability = {
 };
 
 const arcaneAimingAttackPower: Effect = {
-    name: "Arcane Aiming",
-    icon: ArcaneAimImage,
-    disableDisplayIcon: true,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    attackPower: 1,
+    ...attackPower,
     duration: 0,
     maxApplications: 10,
 };

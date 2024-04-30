@@ -499,6 +499,7 @@ export const incorporeal: Effect = {
 export const armorDown: Effect = {
     name: "Armor Down",
     icon: ShieldIcon,
+    description: "Armor from Armor sources reduced by 1.",
     class: EFFECT_CLASSES.DEBUFF,
     type: EFFECT_TYPES.NONE,
     armorReceived: -1,
