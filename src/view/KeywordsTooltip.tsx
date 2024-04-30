@@ -95,7 +95,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...burn,
-        keys: ["Burn"],
+        keys: ['"Burn"'], // Bandaid for Soul Blade showing Burn in its tooltip
     },
     bleed,
     poison,
