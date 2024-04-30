@@ -9,7 +9,8 @@ export const NUM_TRADING_POST_TRADES = 2;
 
 export const NUM_TRANSMUTATIONS = 2;
 
-export const INCENSE_BASE_PRICE = 60;
+export const HAMMER_BASE_PRICE = 50;
+export const INCENSE_BASE_PRICE = 75;
 export const CONSUMABLE_COST_MULTIPLIER = 1.2;
 export const CONSUMABLE_MULTIPLIER_MAX = 5;
 
@@ -22,9 +23,9 @@ export const ABILITIES_PRICE_RARITY_MAP = {
 };
 
 export const ITEMS_PRICE_RARITY_MAP = {
-    [RARITIES.COMMON]: [60, 75],
-    [RARITIES.UNCOMMON]: [130, 150],
-    [RARITIES.RARE]: [180, 210],
+    [RARITIES.COMMON]: [75, 90],
+    [RARITIES.UNCOMMON]: [140, 160],
+    [RARITIES.RARE]: [210, 230],
 };
 
 export type OnBuyItem = ({

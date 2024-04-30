@@ -10,6 +10,7 @@ import { rollItemPool, rollRarity } from "../item/utils";
 import { getRandomInt, getRandomItem, shuffle } from "../utils";
 import {
     ABILITIES_PRICE_RARITY_MAP,
+    HAMMER_BASE_PRICE,
     INCENSE_BASE_PRICE,
     ITEMS_PRICE_RARITY_MAP,
     NUM_SHOP_ABILITIES,
@@ -86,7 +87,7 @@ export const generateShopInventory = ({
     const consumables = [
         {
             item: goldenHammer,
-            price: 40,
+            price: HAMMER_BASE_PRICE,
             isConsumable: true,
             isFood: false,
         },
