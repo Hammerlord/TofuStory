@@ -1784,8 +1784,19 @@ export const leechingFlame: Ability = {
                     duration: 3,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
-                        resources: 1,
-                        healing: 1,
+                        effects: [
+                            {
+                                name: "Leeching Flame Regen",
+                                type: EFFECT_TYPES.NONE,
+                                class: EFFECT_CLASSES.BUFF,
+                                resourcesPerTurn: 1,
+                                onTurnStart: {
+                                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                                    healing: 1,
+                                    removeEffect: true,
+                                },
+                            },
+                        ],
                         conditions: [
                             {
                                 calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
