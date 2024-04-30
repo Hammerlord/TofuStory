@@ -277,7 +277,7 @@ export const undeadMage: Minion = {
         {
             name: "Reaper",
             icon: SkullStrikerImage,
-            description: "Gains +1 attack power on kill.",
+            description: "Gains +1 ATT on kill.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onKill: {

@@ -79,6 +79,7 @@ import { RARITIES } from "../../item/types";
 import {
     armorUp,
     attackDown,
+    attackPower,
     bleed,
     directDamageTaken,
     immunity,
@@ -329,23 +330,13 @@ export const spikes: Ability = {
     ],
 };
 
-const drumOfWarAttackPower: Effect = {
-    name: "War Banner - Attack Power",
-    icon: WeaponMasteryImage,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    attackPower: 1,
-    duration: 1,
-    disableDisplayIcon: true,
-};
-
 const drumOfWar: Action = {
     type: ACTION_TYPES.EFFECT,
     target: TARGET_TYPES.SELF,
     excludePrimaryTarget: true,
     armor: 2,
     area: 1,
-    effects: [drumOfWarAttackPower],
+    effects: [{ ...attackPower, duration: 1 }],
 };
 
 export const warBanner: Ability = {

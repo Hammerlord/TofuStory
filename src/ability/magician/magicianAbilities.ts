@@ -1531,7 +1531,7 @@ export const polymorph: Ability = {
                 {
                     name: "Polymorph",
                     icon: ScarfSnowmanImage,
-                    description: "Disables certain buffs. Attack power reduced.",
+                    description: "Disables certain buffs. ATT reduced.",
                     duration: 2,
                     attackPower: -2,
                     maxApplications: 1,

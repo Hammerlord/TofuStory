@@ -134,7 +134,7 @@ import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "On wave start, gain 7 armor.",
+    description: "Wave start: gain {{ effects.0.onWaveStart.armor }} Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: StolenFenceImage,
@@ -155,7 +155,7 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "On wave start, gain {{ effects.0.onWaveStart.armor }} armor and prevent the next time your armor decays.",
+    description: "Wave start: gain {{ effects.0.onWaveStart.armor }} Armor and 1 Pristine Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
@@ -197,7 +197,7 @@ export const safetyCharm: Item = {
 
 export const drakeBlood: Item = {
     name: "Drake Blood",
-    description: "+1 attack power.",
+    description: "+1 ATT.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: DrakeBloodImage,
@@ -233,7 +233,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Overhealing turns into armor for that amount. Not affected by +Armor.",
+    description: "Overhealing grants Armor for that amount. Not affected by Armor Up.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
@@ -274,7 +274,7 @@ export const redWhip: Item = {
 
 export const topaz: Item = {
     name: "Topaz",
-    description: "Every {{ effects.0.onReceiveDamage.eventTriggerFrequency }} times you receive damage, gain Thorns.",
+    description: "Every {{ effects.0.onReceiveDamage.eventTriggerFrequency }} times you take damage, gain Thorns.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: TopazImage,
@@ -295,7 +295,7 @@ export const topaz: Item = {
 
 export const leatherSandals: Item = {
     name: "Leather Sandals",
-    description: "On wave start, draw {{ effects.0.onWaveStart.effects.0.drawCardsPerTurn }} extra cards.",
+    description: "Draw {{ effects.0.onWaveStart.effects.0.drawCardsPerTurn }} extra cards at the start of a wave.",
     flavourText: "The quintessential footwear of aspiring adventurers.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -358,7 +358,7 @@ export const adventurerCape: Item = {
 
 export const guideBook: Item = {
     name: "Guide Book",
-    description: "Card reward selections now offer another card to choose from.",
+    description: "Card reward selections offer an extra card choice.",
     image: GuidebookImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -369,7 +369,7 @@ export const guideBook: Item = {
 
 export const panlid: Item = {
     name: "Pan Lid",
-    description: "+1 armor from armor sources.",
+    description: "+1 Armor Up.",
     image: PanlidImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
@@ -379,7 +379,7 @@ export const panlid: Item = {
 
 export const alligatorTube: Item = {
     name: "Alligator Tube",
-    description: "Your summons gain 1 attack power.",
+    description: "Your summons gain +1 ATT.",
     image: AlligatorTubeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -390,16 +390,7 @@ export const alligatorTube: Item = {
             class: EFFECT_CLASSES.BUFF,
             onFriendlySummon: {
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
-                effects: [
-                    {
-                        name: "Attack Power Increase",
-                        disableDisplayIcon: true,
-                        icon: WeaponMasteryImage,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        attackPower: 1,
-                    },
-                ],
+                effects: [attackPower],
             },
         },
     ],
@@ -559,7 +550,7 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "On wave start, prevent the next 2 times your armor decays.",
+    description: "Gain 2 Pristine Armor at the start of a wave.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AquamarineImage,
@@ -610,7 +601,7 @@ export const incense: Item = {
 export const garnet: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+{{ effects.0.onResourcesGained.effects.0.attackPower }} attack power while you have at least 3 {{ resources }}.",
+    description: "+{{ effects.0.onResourcesGained.effects.0.attackPower }} ATT while you have at least 3 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -661,7 +652,7 @@ export const garnet: Item = {
 export const ironMace: Item = {
     name: "Iron Mace",
     image: IronMaceImage,
-    description: "Gain +1 attack power against elite enemies and bosses.",
+    description: "+1 ATT against elite enemies and bosses.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
@@ -684,7 +675,7 @@ export const ironMace: Item = {
 export const fishSpear: Item = {
     name: "Fish Spear",
     image: FishSpearImage,
-    description: "Gain +1 attack power against common enemies.",
+    description: "+1 ATT against common enemies.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
@@ -706,7 +697,7 @@ export const fishSpear: Item = {
 
 const pigsRibbonCounter: Effect = {
     ...counterEffect,
-    name: "Retaliation",
+    name: "Counter",
     description: "Countering on the next attack",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -780,7 +771,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect from an ability, gain {{ effects.0.onReceiveEffect.armor }} armor.",
+    description: "When you receive a status effect from an ability, gain {{ effects.0.onReceiveEffect.armor }} Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -942,7 +933,7 @@ export const cursedDoll: Item = {
 export const redHeadband: Item = {
     name: "Red Headband",
     image: RedHeadbandImage,
-    description: "On wave start, gain an extra {{ resources }}.",
+    description: "Gain an extra {{ resources }} at the start of a wave.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -973,7 +964,7 @@ export const redHeadband: Item = {
 export const workGloves: Item = {
     name: "Work Gloves",
     image: WorkGlovesImage,
-    description: "Every {{ effects.0.onAbility.triggerFrequencyFromSum }} cards played, gain 1 attack power. Max 3.",
+    description: "Every {{ effects.0.onAbility.triggerFrequencyFromSum }} cards played, gain +1 ATT. Max 3.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     effects: [
@@ -1034,7 +1025,7 @@ export const unsignedLetter: Item = {
 export const snailStompers: Item = {
     name: "Snail Stompers",
     image: SnowshoesImage,
-    description: "+3 attack power against enemies with 15 or less HP.",
+    description: "+3 ATT against enemies with 15 or less HP.",
     applyEffectsToSummons: true,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -1097,7 +1088,7 @@ export const tortieShell: Item = {
     image: TortieShellImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When you end your turn without armor, gain {{ effects.0.onTurnEnd.armor }} armor.",
+    description: "When you end your turn without Armor, gain {{ effects.0.onTurnEnd.armor }} Armor.",
     effects: [
         {
             name: "Tortie Shell",
@@ -1123,7 +1114,7 @@ export const estherShield: Item = {
     image: EstherShieldImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When your deck cycles, gain {{ effects.0.onDeckCycle.armor }} armor.",
+    description: "When your deck cycles, gain {{ effects.0.onDeckCycle.armor }} Armor.",
     applyEffectsToSummons: true,
     effects: [
         {
@@ -1159,7 +1150,7 @@ export const redHeartedEarrings: Item = {
     image: RedHeartedEarringsImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
-    description: "When you deplete a card, heal 1 HP.",
+    description: "When you Deplete a card, heal 1 HP.",
     applyEffectsToSummons: true,
     effects: [
         {
@@ -1179,7 +1170,7 @@ export const fairyWing: Item = {
     image: FairyWingImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "On wave start, you are immune to Bleed, Burn, and Poison for 5 turns.",
+    description: "You are immune to Bleed, Burn, and Poison for 5 turns on wave start.",
     effects: [
         {
             name: "Fairy Wing Item",
@@ -1229,7 +1220,7 @@ export const blueSaunaRobe: Item = {
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "+2 armor from armor sources.",
+    description: "+2 Armor Up.",
     effects: [armorUp, armorUp],
 };
 
@@ -1239,7 +1230,7 @@ export const steely: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     description:
-        "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards you draw, fling knives that deal 3 damage and apply Bleed to all targets.",
+        "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards drawn, fling knives that deal 3 damage + Bleed to all targets.",
     effects: [
         {
             name: "Steely",
@@ -1397,7 +1388,7 @@ export const adamantiumPlate: Item = {
 
 export const wildKargoEye: Item = {
     name: "Wild Kargo Eye",
-    description: "Gain 1 attack power against debuffed targets.",
+    description: "+1 ATT against debuffed targets.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: WildKargoEyeImage,
@@ -1586,7 +1577,7 @@ export const plunger: Item = {
 
 export const tofuSpecial: Item = {
     name: "Tofu Special",
-    description: "The first Tofu OR Tofu Soup you purchase at a merchant shop is free.",
+    description: "The first Tofu OR Tofu Soup you buy at a shop is free.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: NewspaperImage,
@@ -1598,7 +1589,7 @@ export const tofuSpecial: Item = {
 export const sword: Item = {
     name: "Sword",
     description:
-        "On wave start, gain +{{ effects.0.onWaveStart.effects.0.attackPower }} attack power for {{ effects.0.onWaveStart.effects.0.duration }} turns.",
+        "+{{ effects.0.onWaveStart.effects.0.attackPower }} ATT for the first {{ effects.0.onWaveStart.effects.0.duration }} turns of a wave.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SwordImage,
@@ -1616,8 +1607,8 @@ export const sword: Item = {
                         disableDisplayIcon: true,
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
-                        attackPower: 2,
-                        duration: 2,
+                        attackPower: 1,
+                        duration: 3,
                     },
                 ],
             },
@@ -1627,7 +1618,7 @@ export const sword: Item = {
 
 export const rabbitFoot: Item = {
     name: "Rabbit Foot",
-    description: "Improves your luck at finding higher rarity equipment.",
+    description: "Improves your luck at finding rarer equipment.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: RabbitFootImage,
@@ -1764,7 +1755,7 @@ export const hugeMesoItem: Item = {
 
 export const theBackpack: Item = {
     name: "The Backpack",
-    description: "Once per turn, when you select a card in your hand, you may move it to the top of your deck.",
+    description: "Once per turn, you may move a selected card to the top of your deck.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: BackpackImage,
@@ -1937,7 +1928,7 @@ export const ironBall: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: IronBallImage,
-    description: "Gain 1 attack power against Armored targets.",
+    description: "+1 ATT against Armored targets.",
     applyEffectsToSummons: true,
     effects: [
         {
@@ -2025,7 +2016,7 @@ export const opal: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: OpalImage,
-    description: "Gain +1 ATT on turn one, then +1 Armor Up on turn two. The effects alternate between turns.",
+    description: "Gain +1 ATT on one turn, then +1 Armor Up on the next, alternating turns.",
     effects: [
         {
             name: "Opal - Attack Power",
@@ -2181,7 +2172,7 @@ export const hardwoodWand: Item = {
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: HardwoodWandImage,
-    description: "Your 0-cost attacks deal 3 more damage.",
+    description: "Your 0-cost attacks deal +3 damage.",
     effects: [
         {
             name: "Hardwood Wand Effect",
@@ -2212,7 +2203,7 @@ export const broom: Item = {
     description: "Each card played has a 33% chance per {{ resources }} spent to cast Dust Devils.",
     effects: [
         {
-            name: "Flaming Feather",
+            name: "Broom",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onPlayCard: {
@@ -2242,7 +2233,7 @@ export const zakumHelmet: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: ZakumHelmetImage,
-    description: "On wave start, gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
+    description: "Wave start: gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
     abilityChoices: {
         battleTypes: [BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER],
         amount: 1,

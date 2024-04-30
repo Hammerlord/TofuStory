@@ -1816,11 +1816,11 @@ export const malady: Minion = {
         hardy,
         {
             name: "Dark Knowledge",
-            description: "While this character has Stealth, its attack power is increased.",
+            description: "+{{ attackPower }} ATT while Stealthed.",
             icon: BlackManualImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackPower: 2,
+            attackPower: 3,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

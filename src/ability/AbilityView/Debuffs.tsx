@@ -37,8 +37,7 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
                         {/** Chill's attack power decrease is explained in a tooltip */}
                         {attackPower && type !== EFFECT_TYPES.CHILL && (
                             <>
-                                <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />{" "}
-                                attack power{" "}
+                                <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} /> ATT{" "}
                             </>
                         )}
                         {/** Bleed's attack damage received increase is explained in a tooltip */}

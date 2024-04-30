@@ -62,7 +62,7 @@ const flameShield: Effect = {
 
 const flameRaging: Effect = {
     ...raging,
-    description: "Periodically increasing Balrog's attack power.",
+    description: "Periodically giving +ATT to Balrog.",
     icon: AngerIcon,
     portraitImage: AngerIcon,
     onTurnStart: {
