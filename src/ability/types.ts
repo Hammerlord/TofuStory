@@ -553,6 +553,7 @@ export type Action = {
         from: CARD_PILE_TYPES;
         to: CARD_PILE_TYPES;
         amount: number;
+        moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
     };
     discardCardsFromHand?: {
         amount: number; // If n is less than the number of cards in hand, random cards are chosen

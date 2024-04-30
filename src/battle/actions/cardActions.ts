@@ -204,7 +204,7 @@ const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent
 
 const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
     return (dispatch, getState) => {
-        const { from, to, amount = 1 } = moveCards;
+        const { from, to, amount = 1, moveType } = moveCards;
         const validKeys = Object.values(CARD_PILE_TYPES);
         if (!validKeys.includes(from) || !validKeys.includes(to)) {
             return;
@@ -219,15 +219,19 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
             cardsToMove.push(fromPile.shift());
         }
 
-        toPile.unshift(
-            ...cardsToMove.filter((card) => {
-                // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
-                if (card.removeAfterTurn && to === CARD_PILE_TYPES.DISCARD) {
-                    return false;
-                }
-                return true;
-            })
-        );
+        const filteredCardsToMove = cardsToMove.filter((card) => {
+            // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
+            if (card.removeAfterTurn && to === CARD_PILE_TYPES.DISCARD) {
+                return false;
+            }
+            return true;
+        });
+
+        if (moveType === "append") {
+            toPile.push(...filteredCardsToMove);
+        } else {
+            toPile.unshift(...filteredCardsToMove);
+        }
 
         dispatch(
             pushEventQueue({

@@ -595,6 +595,7 @@ export { default as StefaRopeImage } from "./StefaRope.png";
 export { default as StirgeImage } from "./Stirge.gif";
 export { default as StirgeBackImage } from "./StirgeBack.png";
 export { default as StolenFenceImage } from "./StolenFence.png";
+export { default as StompImage } from "./Stomp.png";
 export { default as StoneGolemImage } from "./StoneGolem.gif";
 export { default as StoneGolemIconImage } from "./StoneGolemIcon.png";
 export { default as StoneGolemRubbleImage } from "./StoneGolemRubble.png";

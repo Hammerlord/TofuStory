@@ -85,7 +85,7 @@ export const tantrum: Ability = {
     ],
 };
 
-export const stomp: Ability = {
+export const enemyStomp: Ability = {
     name: "Stomp",
     image: IronHogHoofImage,
     actions: [

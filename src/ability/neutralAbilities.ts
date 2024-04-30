@@ -7,6 +7,7 @@ import {
     EncroachingDarknessImage,
     RedSnailShellImage,
     SnailShellImage,
+    StompImage,
     ZakumArmLeft2Image,
     ZakumArmLeftImage,
     ZakumArmRight2Image,
@@ -19,6 +20,7 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CARD_PILE_TYPES,
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -189,6 +191,36 @@ export const reinforce: Ability = {
                             },
                         ],
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const stomp: Ability = {
+    name: "Stomp",
+    image: StompImage,
+    resourceCost: 1,
+    description: "Move the top card of your discard to your hand.",
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 8,
+            moveCards: {
+                from: CARD_PILE_TYPES.DISCARD,
+                to: CARD_PILE_TYPES.HAND,
+                amount: 1,
+                moveType: "append",
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },
@@ -367,4 +399,14 @@ export const provoke: Ability = {
     ],
 };
 
-export const NEUTRAL_ABILITIES = [shellThrow, bounce, reinforce, firstExiledArm, secondExiledArm, thirdExiledArm, fourthExiledArm, provoke];
+export const NEUTRAL_ABILITIES = [
+    shellThrow,
+    bounce,
+    reinforce,
+    firstExiledArm,
+    secondExiledArm,
+    thirdExiledArm,
+    fourthExiledArm,
+    provoke,
+    stomp,
+];
