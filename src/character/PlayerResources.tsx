@@ -35,6 +35,19 @@ const useStyles = createUseStyles({
         left: 4,
         bottom: 0,
     },
+    maxResources: {
+        color: "white",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 3px black")
+            .join(", "),
+        fontSize: "15px",
+        right: -1,
+        bottom: -1,
+        position: "absolute",
+    },
+    bold: {
+        fontWeight: "bold",
+    },
 });
 
 const PlayerResources = ({ player }: { player: Player }) => {
@@ -54,11 +67,15 @@ const PlayerResources = ({ player }: { player: Player }) => {
 
     const maxResources = getMaxResources(player);
 
+    const resourceElement = <ResourceIcon size="sm" playerClass={player.class} />;
+
     const tooltipContents = (
         <div>
-            {player.resources} / {maxResources} <ResourceIcon size="sm" playerClass={player.class} /> {resourceClassNameMap[player.class]}{" "}
-            <br />
-            Gaining <ResourceIcon text={player.resourcesPerTurn} size="sm" playerClass={player.class} /> per turn.
+            {player.resources} / {maxResources} {resourceElement} {resourceClassNameMap[player.class]} <br />
+            Restoring up to {player.resourcesPerTurn}
+            {resourceElement} per turn.
+            <hr />
+            {resourceElement} gained from effects can go over the cap, but the excess will be lost at turn end.
         </div>
     );
     return (
@@ -66,6 +83,9 @@ const PlayerResources = ({ player }: { player: Player }) => {
             <div>
                 <ResourceIcon text={player.resources} size="lg" playerClass={player.class} />
                 {player.resources > oldResources && <span className={classes.resourceGainText}>+{player.resources - oldResources}</span>}
+                <span className={classes.maxResources}>
+                    /<span className={classes.bold}>{maxResources}</span>
+                </span>
             </div>
         </Tooltip>
     );
