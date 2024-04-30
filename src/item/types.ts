@@ -18,6 +18,12 @@ export interface Item {
     name: string;
     description?: string;
     flavourText?: string;
+    tooltip?: {
+        title: string;
+        icon?: string;
+        description: string;
+    };
+    overrideTooltip?: true;
     /** HP restored when consuming this item */
     healing?: number;
     /** Resources gained when consuming this item */

@@ -7,6 +7,7 @@ import { PLAYER_CLASSES } from "../Menu/types";
 import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
 import { MushroomOmokImage } from "../images";
 import Tooltip from "../view/Tooltip";
+import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
 
 const useStyles = createUseStyles({
     item: {
@@ -67,6 +68,13 @@ const useStyles = createUseStyles({
         display: "inline-block",
         margin: "8px",
     },
+    tooltip: {
+        "&&": {
+            maxWidth: "400px",
+            background: "none",
+            minHeight: "200px",
+        },
+    },
 });
 
 const ItemView = ({
@@ -88,36 +96,47 @@ const ItemView = ({
         resources: resourceClassNameMap[playerClass] || "resource",
     });
 
+    let tooltips;
+    if (item.overrideTooltip) {
+        if (item.tooltip) {
+            tooltips = <TooltipSection {...item.tooltip} />;
+        }
+    } else {
+        tooltips = KeywordsTooltips({ object: item });
+    }
+
     return (
-        <div
-            key={item.name}
-            className={classNames(classes.item, className, {
-                [classes.highlight]: highlight,
-            })}
-            onClick={onClick}
-        >
-            <img src={item.image} className={classes.itemImage} />
-            <div>{item.name}</div>
-            {item.applyEffectsToSummons && (
-                <Tooltip title="Your summons also gain this effect.">
-                    <span className={classNames(classes.affectsSummons)} />
-                </Tooltip>
-            )}
-            <div className={classes.rarityContainer}>
-                <hr />
-                <div>
-                    <span
-                        className={classNames(classes.diamond, {
-                            [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
-                            [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
-                            [classes.rare]: item.rarity === RARITIES.RARE,
-                        })}
-                    />{" "}
+        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500}>
+            <div
+                key={item.name}
+                className={classNames(classes.item, className, {
+                    [classes.highlight]: highlight,
+                })}
+                onClick={onClick}
+            >
+                <img src={item.image} className={classes.itemImage} />
+                <div>{item.name}</div>
+                {item.applyEffectsToSummons && (
+                    <Tooltip title="Your summons also gain this effect.">
+                        <span className={classNames(classes.affectsSummons)} />
+                    </Tooltip>
+                )}
+                <div className={classes.rarityContainer}>
+                    <hr />
+                    <div>
+                        <span
+                            className={classNames(classes.diamond, {
+                                [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
+                                [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
+                                [classes.rare]: item.rarity === RARITIES.RARE,
+                            })}
+                        />{" "}
+                    </div>
+                    <hr />
                 </div>
-                <hr />
+                <div>{interpolatedDescription}</div>
             </div>
-            <div>{interpolatedDescription}</div>
-        </div>
+        </Tooltip>
     );
 };
 

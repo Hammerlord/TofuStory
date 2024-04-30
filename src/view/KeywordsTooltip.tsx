@@ -70,7 +70,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...attackPower,
-        keys: ["+ATT", "ATT Up"],
+        keys: ["+ATT", "ATT Up", "+1 ATT"],
     },
     {
         ...attackDown,

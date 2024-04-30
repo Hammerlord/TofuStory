@@ -1,18 +1,10 @@
 import Tooltip from "@material-ui/core/Tooltip";
-import classNames from "classnames";
-import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
-import Icon from "../../icon/Icon";
-import { GreyShieldImage, NamelessSwordImage } from "../../images";
-import { CactusIcon } from "../../images/icons";
-import { chargingStone, rageStone } from "../../item/starterItems";
-import { immunity } from "../Effects";
+import { KeywordsTooltips, TooltipSection } from "../../view/KeywordsTooltip";
 import { fireSpirit } from "../magician/magicianAbilities";
-import { Ability, ActionSummon, EFFECT_TYPES, Effect } from "../types";
+import { Ability, ActionSummon } from "../types";
 import { soulBlade } from "../warrior/warriorAbilities";
 import AbilityView from "./AbilityView";
-import { incorporeal } from "../../enemy/effect";
-import { KeywordsTooltips, TooltipSection } from "../../view/KeywordsTooltip";
 
 const useTooltipStyles = createUseStyles({
     tooltip: {

@@ -2137,6 +2137,11 @@ export const blackCrystal: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     image: BlackCrystalImage,
     description: "The non-Stun debuffs you apply are extended by 1 turn.",
+    overrideTooltip: true,
+    tooltip: {
+        title: "Debuff",
+        description: "A negative status effect, such as Stun or Bleed.",
+    },
     applyEffectsToSummons: true,
     effects: [
         {
@@ -2233,6 +2238,12 @@ export const zakumHelmet: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: ZakumHelmetImage,
+    tooltip: {
+        title: "Arm of the Exiled One",
+        icon: ZakumHelmetImage,
+        description: "Assemble the Four Arms to tap into a forbidden power.",
+    },
+    overrideTooltip: true,
     description: "Wave start: gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
     abilityChoices: {
         battleTypes: [BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER],
