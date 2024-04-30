@@ -177,10 +177,6 @@ const EffectGroupIcon = ({
 }) => {
     const extraOptionsIconRef = useRef();
 
-    if (!effects?.length) {
-        return null;
-    }
-
     const classes = useStyles();
     const state = useAppSelector((state) => state);
 
@@ -223,10 +219,6 @@ const EffectGroupIcon = ({
 
         return updated;
     }, effects[0]);
-
-    if (!icon) {
-        return null;
-    }
 
     const passedConditions = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
@@ -279,6 +271,10 @@ const EffectGroupIcon = ({
             playExpandContractAnimation({ object: extraOptionsIconRef.current });
         }
     }, [extraOptionsIconText]);
+
+    if (!icon) {
+        return null;
+    }
 
     const inner = (
         <span
