@@ -175,6 +175,8 @@ const EffectGroupIcon = ({
     glow?: boolean;
     disableTooltip?: boolean;
 }) => {
+    const extraOptionsIconRef = useRef();
+
     if (!effects?.length) {
         return null;
     }
@@ -271,8 +273,6 @@ const EffectGroupIcon = ({
 
         return propertyVal || undefined;
     })();
-
-    const extraOptionsIconRef = useRef();
 
     useEffect(() => {
         if (extraOptionsIconRef.current) {
