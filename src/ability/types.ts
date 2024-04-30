@@ -502,6 +502,13 @@ export enum CARD_PILE_TYPES {
     DEPLETED = "depleted",
 }
 
+export type MoveCards = {
+    from: CARD_PILE_TYPES;
+    to: CARD_PILE_TYPES;
+    amount: number;
+    moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
+};
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -549,12 +556,7 @@ export type Action = {
         amount?: number;
         abilityEffects?: AbilityEffect[];
     };
-    moveCards?: {
-        from: CARD_PILE_TYPES;
-        to: CARD_PILE_TYPES;
-        amount: number;
-        moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
-    };
+    moveCards?: MoveCards;
     discardCardsFromHand?: {
         amount: number; // If n is less than the number of cards in hand, random cards are chosen
         effects?: AbilityEffect[];

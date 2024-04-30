@@ -10,6 +10,7 @@ import {
     CombatAbility,
     CombatEffect,
     EFFECT_EVENT_KEYS,
+    MoveCards,
     SELECT_CARD_TYPES,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
@@ -202,7 +203,15 @@ const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent
     };
 };
 
-const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
+const handleMoveCards = ({
+    moveCards,
+    triggerAddCardsToHandEvent,
+    source,
+}: {
+    moveCards: MoveCards;
+    triggerAddCardsToHandEvent;
+    source: TriggerSource;
+}) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1, moveType } = moveCards;
         const validKeys = Object.values(CARD_PILE_TYPES);
@@ -213,11 +222,14 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
         const battle = getState().battle;
         const fromPile: CombatAbility[] = battle[from]?.slice() || [];
         const toPile: CombatAbility[] = battle[to]?.slice() || [];
-        const cardsToMove = [];
-        // If there are no cards in the `from` pile, just whiff
-        for (let i = 0; i < amount && fromPile.length > 0; ++i) {
-            cardsToMove.push(fromPile.shift());
-        }
+
+        const parentCardId = (source?.source as CombatAbility)?.instanceId;
+
+        // If there are not enough cards in the `from` pile, just whiff the rest
+        const cardsToMove = fromPile
+            // Card cannot move itself (eg. if it was played and went to discard, it cannot move itself from the discard pile)
+            .filter((card) => parentCardId !== card.instanceId)
+            .slice(0, amount);
 
         const filteredCardsToMove = cardsToMove.filter((card) => {
             // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
@@ -245,7 +257,7 @@ const handleMoveCards = ({ moveCards, triggerAddCardsToHandEvent }) => {
 
         dispatch(
             updateBattle({
-                [from]: fromPile,
+                [from]: fromPile.filter((card) => cardsToMove.every((movedCard) => movedCard.instanceId !== card.instanceId)),
                 [to]: toPile,
             })
         );
@@ -466,7 +478,7 @@ export const checkCardActions = ({
         }
 
         if (moveCards) {
-            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent }));
+            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent, source }));
         }
 
         if (addLastPlayedCards) {
