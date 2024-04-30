@@ -892,7 +892,7 @@ export const rend: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 1,
+            damage: 0,
             effects: [
                 {
                     ...bleed,
@@ -2668,7 +2668,7 @@ export const ballista: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         animation: ANIMATION_TYPES.ONE_WAY,
                         icon: AvengersArrowImage,
-                        damage: 2,
+                        damage: 1,
                         effects: [bleed],
                         animationOptions: {
                             rotateToFaceTarget: true,
