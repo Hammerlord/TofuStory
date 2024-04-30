@@ -4,6 +4,9 @@ import { Action } from "../ability/types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import Icon from "../icon/Icon";
 import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon, ShieldIcon } from "../images/icons";
+import { Combatant, Player } from "./types";
+import PlayerResources from "./PlayerResources";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -44,6 +47,12 @@ const useStyles = createUseStyles({
         display: "inline-block",
         margin: "0 5px",
         whiteSpace: "nowrap",
+        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
+    },
+    resourceUpdate: {
+        display: "inline-block",
+        whiteSpace: "nowrap",
+        marginLeft: "5px",
         filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 1px black)",
     },
     negative: {
@@ -91,10 +100,10 @@ export interface PreviewStatUpdate {
 /**
  * The damage/armor preview that shows up when you hover over a combatant with a card selected.
  */
-const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatUpdate: PreviewStatUpdate[]; HP: number; armor }) => {
+const AbilityPreview = ({ previewStatUpdate, combatant }: { previewStatUpdate: PreviewStatUpdate[]; combatant: Combatant }) => {
     const classes = useStyles();
 
-    if (!previewStatUpdate) {
+    if (!previewStatUpdate || !combatant) {
         return null;
     }
 
@@ -104,6 +113,7 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
         previewStatUpdate = previewStatUpdate.slice(0, 1);
     }
 
+    const { HP, armor } = combatant;
     let effectiveHP = HP + armor;
 
     return (
@@ -114,7 +124,7 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
         >
             {previewStatUpdate.map((preview, i) => {
                 const { action, nondeterministic, statUpdate } = preview || {};
-                const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor } = statUpdate;
+                const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor, resources = 0 } = statUpdate;
                 const isAlreadyDead = effectiveHP <= 0 && !rawDamage;
                 if (isAlreadyDead) {
                     // Prospected killed by a previous hit
@@ -126,7 +136,8 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
 
                 const showDamage = action.damage > 0 || rawDamage > 0;
                 const showArmor = action.armor > 0;
-                if (!showDamage && !showArmor && !effects.length && !failedToApplyEffects.length) {
+                const nothingToShow = !showDamage && !showArmor && !effects.length && !failedToApplyEffects.length && !resources;
+                if (nothingToShow) {
                     return null;
                 }
 
@@ -182,6 +193,14 @@ const AbilityPreview = ({ previewStatUpdate, HP = 0, armor = 0 }: { previewStatU
                                 >
                                     {armor || 0}
                                     {nondeterministic && "?"}{" "}
+                                </span>
+                            </>
+                        )}
+                        {resources > 0 && combatant.isPlayer && (
+                            <>
+                                <span className={classNames(classes.resourceUpdate)}>+{resources}</span>
+                                <span className={classes.previewIconContainer}>
+                                    <ResourceIcon size="sm" playerClass={(combatant as Player).class} />
                                 </span>
                             </>
                         )}
