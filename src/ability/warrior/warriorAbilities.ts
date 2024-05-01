@@ -2436,11 +2436,13 @@ export const honedBlock: Ability = {
     name: "Honed Block",
     image: SilverAquilaImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it Upgrades for the rest of battle.",
+    description: "<b>Play:</b> Upgrade for the rest of battle. (Once.)",
     rarity: RARITIES.COMMON,
-    onLeaveHand: {
+    onUse: {
         abilityEffects: [
             {
+                name: "Hone",
+                maxApplications: 1,
                 removeOnDiscard: false,
                 upgradedByLevels: 1,
             },
@@ -2468,11 +2470,13 @@ export const honedStrike: Ability = {
     name: "Honed Strike",
     image: BurningSoulBladeImage,
     resourceCost: 1,
-    description: "Whenever this card leaves your hand, it Upgrades for the rest of battle.",
+    description: "<b>Play:</b> Upgrade for the rest of battle. (Once.)",
     rarity: RARITIES.COMMON,
-    onLeaveHand: {
+    onUse: {
         abilityEffects: [
             {
+                name: "Hone",
+                maxApplications: 1,
                 removeOnDiscard: false,
                 upgradedByLevels: 1,
             },

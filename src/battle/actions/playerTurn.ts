@@ -33,6 +33,10 @@ export const onUsePlayerAbility = ({
                 updateBattle({
                     hand: hand.map((card: CombatAbility) => {
                         if (card.instanceId === selectedAbilityId) {
+                            card = applyAbilityEventEffects({
+                                event: card.onUse,
+                                ability: card,
+                            });
                             return {
                                 ...card,
                                 effects: (card.effects || []).filter((effect: AbilityEffect) => {
@@ -120,7 +124,14 @@ const handleDiscard = (ability: CombatAbility) => {
             newDepleted.push(ability);
         } else if (!minion && !removeAfterTurn) {
             // Minions go into a special bucket rather than immediately to discard; see useAbility
-            newDiscard.push(...prepareForDiscard([ability]));
+            const discarded = prepareForDiscard([ability]).map((card) => {
+                return applyAbilityEventEffects({
+                    event: card.onUse,
+                    ability: card,
+                });
+            });
+
+            newDiscard.push(...discarded);
         }
 
         if (depletedOnUse) {
