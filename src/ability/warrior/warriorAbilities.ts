@@ -344,7 +344,7 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "<b>Summon</b> / <b>Turn Start:</b> Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} and <b>+1</b> {{{ _damage_ }}} to nearby allies.",
+        "<b>Stealth.</b> Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _damage_ }}} to nearby allies every turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -742,7 +742,8 @@ export const closeCombat: Ability = {
     name: "Close Combat",
     resourceCost: 1,
     image: CloseCombatImage,
-    description: "Pulls enemies toward the selected target",
+    description: "Apply {{{ _stun_ }}} and pull enemies toward the target.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -807,6 +808,8 @@ export const disrupt: Ability = {
     resourceCost: 1,
     image: MagicCrashImage,
     depletedOnUse: true,
+    description: "Apply {{{ _silence_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _stun_ }}}",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -887,6 +890,8 @@ export const rend: Ability = {
     name: "Rend",
     resourceCost: 1,
     image: BlastExtraStrikeImage,
+    description: "Apply {{{ _bleed_ }}}{{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -921,6 +926,8 @@ export const whirlwind: Ability = {
     image: PanicImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
+    description: "Apply {{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -950,6 +957,8 @@ export const rightInTheKisser: Ability = {
     name: "Right In The Kisser",
     resourceCost: 1,
     image: RedFistOfFuryImage,
+    overrideBodyText: true,
+    description: "Apply {{{ _stun_ }}}",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1830,7 +1839,7 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Heal 1 {{{ _healing_ }}} for every enemy hit.",
+    description: "Heal 1 {{{ _healing_ }}} each hit.",
     actions: [
         {
             damage: 6,

@@ -185,7 +185,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }}</b> {{{ _damage_ }}}.",
+    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}} ATT.</b>",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -626,6 +626,8 @@ export const thunderclap: Ability = {
     image: TeleportMasteryImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "Apply {{{ _stun_ }}}",
     actions: [
         {
             area: 2,
@@ -652,6 +654,8 @@ export const ignite: Ability = {
     image: IgniteImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     actions: [
         {
             area: 1,
@@ -1229,6 +1233,8 @@ export const glacier: Ability = {
     image: ColdBeamImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
+    description: "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _freeze_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1513,7 +1519,7 @@ export const polymorph: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
-    description: "Apply Silence and 2 ATT Down. <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description: "Apply {{{ _silence_ }}} and <b>2 ATT Down.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     depletedOnUse: true,
     actions: [
@@ -1550,7 +1556,9 @@ export const goutOfFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: DoTPunisherImage,
-    description: "When drawn, Burn a random enemy.",
+    overrideBodyText: true,
+    description:
+        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> When drawn, {{{ _burn_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} a random enemy.",
     onDraw: {
         ability: {
             name: "Flame Gout",
@@ -1760,7 +1768,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.resources }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -1927,7 +1935,7 @@ export const bagFromBeyond: Ability = {
 export const arcaneWard: Ability = {
     name: "Arcane Ward",
     image: ElementalAdaptationFPImage,
-    description: "Prevent the next time your armor decays.",
+    description: "Gain <b>1 Pristine.</b>",
     overrideBodyText: true,
     resourceCost: 1,
     depletedOnUse: true,
@@ -1956,7 +1964,9 @@ export const icyDraft: Ability = {
     image: IcicleImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    description: "When drawn, Chill a random enemy.",
+    overrideBodyText: true,
+    description:
+        "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> When drawn, {{{ _freeze_ }}} a random enemy.",
     onDraw: {
         ability: {
             name: "Chilling Draft",
@@ -2278,7 +2288,7 @@ export const zap: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
-    description: "When drawn, Stun a random enemy.",
+    description: "When drawn, {{{ _stun_ }}} a random enemy.",
     rarity: RARITIES.COMMON,
     onDraw: {
         ability: {
@@ -2342,6 +2352,9 @@ export const frostfireBlast: Ability = {
     resourceCost: 1,
     image: AdvancedChargeImage,
     rarity: RARITIES.COMMON,
+    description:
+        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             damage: 3,
@@ -2359,7 +2372,7 @@ export const frostfireBlast: Ability = {
                 },
                 {
                     ...chill,
-                    duration: 2,
+                    duration: 1,
                 },
             ],
         },
@@ -3049,7 +3062,7 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend all {{{ _mana_ }}} to deal <br/> {{ actions.0.damage }} {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _mana_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,

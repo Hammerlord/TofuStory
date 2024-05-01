@@ -13,8 +13,11 @@ import {
     HeartImage,
     HourglassImage,
     ManaImage,
+    NimbleJewelCImage,
+    SealImage,
     ShieldImage,
     SnowflakeEmojiImage,
+    StunImage,
 } from "../../images";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
@@ -185,6 +188,9 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _chill_: `<img src="${SnowflakeEmojiImage}" alt="Chill" style="${styleStrWithShadow}"/>`,
         _mana_: `<img src="${ManaImage}" alt="Mana" style="${manaStyleStr}"/>`,
         _bleed_: `<img src="${BloodEmojiImage}" alt="Bleed" style="${styleStrWithShadow}"/>`,
+        _stun_: `<img src="${StunImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
+        _silence_: `<img src="${SealImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
+        _freeze_: `<img src="${NimbleJewelCImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
