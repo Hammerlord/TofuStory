@@ -736,9 +736,10 @@ const BattlefieldContainer = () => {
             return;
         }
 
+        const betweenActionDelay = 100;
         setTimeout(() => {
             dispatch(popEventQueue());
-        }, events[0].playbackTime);
+        }, events[0].playbackTime + betweenActionDelay);
     }, [events[0]?.id]);
 
     useEffect(() => {
