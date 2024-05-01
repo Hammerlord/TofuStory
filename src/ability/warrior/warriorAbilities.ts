@@ -1732,10 +1732,6 @@ export const risingRage: Ability = {
         {
             area: 1,
             damage: 7,
-            multiplier: {
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                type: MULTIPLIER_TYPES.RESOURCES_SPENT,
-            },
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
