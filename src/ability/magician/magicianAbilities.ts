@@ -193,7 +193,7 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, attackPower: 3, duration: 1 }],
+            effects: [{ ...attackPower, attackPower: 2, duration: 1 }],
         },
     ],
     upgrades: [
@@ -516,7 +516,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction: Action = {
-    damage: 4,
+    damage: 3,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -1336,7 +1336,7 @@ export const thunderBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 2,
                 },
                 {
                     damage: 1,
