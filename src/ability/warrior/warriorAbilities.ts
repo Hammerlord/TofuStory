@@ -636,6 +636,8 @@ export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 0,
     image: WeaponMasteryLGImage,
+    description: "Gain <b>+1 {{{ _damage_ }}} ATT {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
