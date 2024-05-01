@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect } from "../ability/types";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
 import { Combatant } from "./types";
+import { Event } from "../battle/types";
 
 const WEAPON_DEFAULT_ROTATION = 45; // This is a MapleStory thing where weapon sprites are at 45 degree angles
 
@@ -156,32 +157,33 @@ const spin = ({ object, playbackTime = 1000, startingPoint }) => {
 const Weapon = ({
     image,
     options,
-    action,
     wielder,
     wielderRef,
     target,
+    event,
 }: {
     image?: string;
     options?: { transform?: string };
-    action?: Action;
     wielder?: Combatant;
     wielderRef: HTMLElement;
     target?: HTMLElement;
+    event?: Event;
 }) => {
     const classes = useStyles(options as any);
+    const { action } = event || {};
     const { type, area } = action || {};
     const weaponRef = useRef();
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef());
     const animationRefs = useRef([]);
 
     const rotation = useMemo(() => {
-        if (type !== ACTION_TYPES.ATTACK || !target || !wielderRef || !action || area) {
+        if (type !== ACTION_TYPES.ATTACK || !target || !wielderRef || area) {
             return;
         }
 
         // Single target rotates the weapon to face the target
         return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
-    }, [action, target]);
+    }, [event?.id, target]);
 
     const isGlowing = useMemo(() => wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow"), [wielder?.effects]);
 
@@ -210,7 +212,7 @@ const Weapon = ({
                 }),
             ];
         }
-    }, [action]);
+    }, [event?.id]);
 
     if (!image) {
         return null;
