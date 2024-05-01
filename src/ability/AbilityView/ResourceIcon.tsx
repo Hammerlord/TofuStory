@@ -74,17 +74,19 @@ export const ResourceIcon = ({
     text,
     playerClass,
     size,
+    className,
 }: {
     text?: string | number;
     playerClass: PLAYER_CLASSES;
     size?: "xl" | "lg" | "md" | "sm";
+    className?: string;
 }) => {
     const Icon =
         {
             [PLAYER_CLASSES.WARRIOR]: Fury,
             [PLAYER_CLASSES.MAGICIAN]: Mana,
         }[playerClass] || Fury;
-    return <Icon text={text} size={size} />;
+    return <Icon text={text} size={size} className={className} />;
 };
 
 export default AbilityResourceIcon;

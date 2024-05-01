@@ -5,6 +5,7 @@ import Tooltip from "../view/Tooltip";
 import { Player } from "./types";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { getMaxResources } from "../battle/utils";
+import classNames from "classnames";
 
 const useStyles = createUseStyles({
     "@keyframes animation": {
@@ -40,13 +41,23 @@ const useStyles = createUseStyles({
         textShadow: Array.from({ length: 10 })
             .map(() => "0 0 3px black")
             .join(", "),
-        fontSize: "15px",
-        right: -1,
-        bottom: -1,
+        fontSize: "14px",
+        right: -2,
+        bottom: -3,
         position: "absolute",
     },
     bold: {
         fontWeight: "bold",
+    },
+    negative: {
+        "& .text": {
+            color: "#ff9b94",
+        },
+    },
+    excess: {
+        "& .text": {
+            color: "rgb(240, 220, 0)",
+        },
     },
 });
 
@@ -72,8 +83,7 @@ const PlayerResources = ({ player }: { player: Player }) => {
     const tooltipContents = (
         <div>
             {player.resources} / {maxResources} {resourceElement} {resourceClassNameMap[player.class]} <br />
-            Restoring up to {player.resourcesPerTurn}
-            {resourceElement} per turn.
+            Restoring up to {player.resourcesPerTurn} {resourceElement} per turn.
             <hr />
             {resourceElement} gained from effects can go over the cap, but the excess will be lost at turn end.
         </div>
@@ -81,7 +91,15 @@ const PlayerResources = ({ player }: { player: Player }) => {
     return (
         <Tooltip title={tooltipContents}>
             <div>
-                <ResourceIcon text={player.resources} size="lg" playerClass={player.class} />
+                <ResourceIcon
+                    text={player.resources}
+                    size="lg"
+                    playerClass={player.class}
+                    className={classNames({
+                        [classes.negative]: player.resources === 0,
+                        [classes.excess]: player.resources > maxResources,
+                    })}
+                />
                 {player.resources > oldResources && <span className={classes.resourceGainText}>+{player.resources - oldResources}</span>}
                 <span className={classes.maxResources}>
                     /<span className={classes.bold}>{maxResources}</span>
