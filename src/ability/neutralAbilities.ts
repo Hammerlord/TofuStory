@@ -325,8 +325,8 @@ export const firstExiledArm: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         icon: EncroachingDarknessImage,
                         animationOptions: {
-                            width: 100,
-                            height: 100,
+                            width: 150,
+                            height: 150,
                         },
                         damage: 3,
                     },
