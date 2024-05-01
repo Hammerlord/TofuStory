@@ -52,7 +52,7 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                     const y = origination.top + origination.height / 2;
                     const y2 = clientY;
 
-                    const offset = (clientX - x) / 3;
+                    const offset = (x - clientX) / 3;
                     const c1 = (x + x2) / 2 + offset;
                     const c2 = (y + y2) / 1.75;
 
