@@ -18,11 +18,21 @@ const useStyles = createUseStyles({
  */
 const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
     const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
-    const targetLineRef: React.RefObject<SVGLineElement> = useRef();
+    const targetLineRef: React.RefObject<SVGPathElement> = useRef();
     const circleRef: React.RefObject<SVGCircleElement> = useRef();
     const bullseyeRef: React.RefObject<SVGCircleElement> = useRef();
 
     const classes = useStyles();
+
+    const getInitialLine = () => {
+        const x = origination.left + origination.width / 2;
+        // TODO: x2 and y2 same as x and y, should grab the coordinates from the initial card click mouse event instead
+        const x2 = origination.left + origination.width / 2;
+        const y = origination.top + origination.height / 2;
+        const y2 = origination.top + origination.height / 2;
+
+        return `M ${x} ${y} Q ${x2} ${y2} ${x2} ${y2}`;
+    };
 
     return (
         <div
@@ -37,8 +47,19 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                         clientY /= ZOOM_AMOUNT_MED;
                     }
 
-                    targetLineRef.current.setAttribute("x2", clientX.toString());
-                    targetLineRef.current.setAttribute("y2", clientY.toString());
+                    const x = origination.left + origination.width / 2;
+                    const x2 = clientX;
+                    const y = origination.top + origination.height / 2;
+                    const y2 = clientY;
+
+                    const offset = (clientX - x) / 3;
+                    const c1 = (x + x2) / 2 + offset;
+                    const c2 = (y + y2) / 1.75;
+
+                    const d = `M ${x} ${y} Q ${c1} ${c2} ${x2} ${y2}`;
+                    targetLineRef.current.setAttribute("d", d);
+                    targetLineRef.current.setAttribute("qx", clientX.toString());
+                    targetLineRef.current.setAttribute("qy", clientY.toString());
                     bullseyeRef.current.setAttribute("cx", clientX.toString());
                     bullseyeRef.current.setAttribute("cy", clientY.toString());
                     circleRef.current.setAttribute("cx", clientX.toString());
@@ -52,15 +73,14 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                 {/** 0, 0 happens sometimes when you select cards too quickly */}
                 {origination && origination.x !== 0 && origination.y !== 0 && (
                     <svg width="100%" height="100%">
-                        <line
+                        <path
                             ref={targetLineRef}
-                            x1={origination.left + origination.width / 2}
-                            y1={origination.top + origination.height / 2}
-                            x2={origination.left + origination.width / 2}
-                            y2={origination.top + origination.height / 2}
+                            d={getInitialLine()}
                             stroke={color}
-                            strokeDasharray="10"
+                            strokeDasharray="14"
                             strokeWidth="5"
+                            strokeLinecap="round"
+                            fill="none"
                         />
                         <circle
                             ref={bullseyeRef}
