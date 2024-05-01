@@ -170,7 +170,7 @@ const Weapon = ({
     event?: Event;
 }) => {
     const classes = useStyles(options as any);
-    const { action } = event || {};
+    const { action } = (event?.actorId === wielder?.id && event) || {};
     const { type, area } = action || {};
     const weaponRef = useRef();
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef());
@@ -188,14 +188,10 @@ const Weapon = ({
     const isGlowing = useMemo(() => wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow"), [wielder?.effects]);
 
     useEffect(() => {
-        if (!action) {
-            return;
-        }
-        //@ts-ignore
-        animationRefs.current?.forEach((a) => a.cancel());
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {
             return;
         }
+        animationRefs.current?.forEach((a) => a.cancel());
         if (area === 1) {
             animationRefs.current = [
                 swing({ object: weaponRef.current }),
