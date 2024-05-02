@@ -6,7 +6,7 @@ import Handlebars from "handlebars";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
 import { MushroomOmokImage } from "../images";
-import Tooltip from "../view/Tooltip";
+import Tooltip from "@material-ui/core/Tooltip";
 import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
 
 const useStyles = createUseStyles({
@@ -102,7 +102,7 @@ const ItemView = ({
             tooltips = <TooltipSection {...item.tooltip} />;
         }
     } else {
-        tooltips = KeywordsTooltips({ object: item });
+        tooltips = <KeywordsTooltips object={item} />;
     }
 
     return (

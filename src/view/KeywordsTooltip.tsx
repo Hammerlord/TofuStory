@@ -163,7 +163,11 @@ export const KeywordsTooltips = ({ object }) => {
         });
     }, [object]);
 
-    return tooltipConfigs.map((config) => (
-        <TooltipSection icon={config.icon} title={config.name} description={config.description} key={config.name} />
-    ));
+    return (
+        <div>
+            {tooltipConfigs.map((config) => (
+                <TooltipSection icon={config.icon} title={config.name} description={config.description} key={config.name} />
+            ))}
+        </div>
+    );
 };
