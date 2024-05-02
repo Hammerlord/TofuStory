@@ -131,7 +131,7 @@ const handleDiscard = (ability: CombatAbility) => {
                 });
             });
 
-            newDiscard.push(...discarded);
+            newDiscard.unshift(...discarded);
         }
 
         if (depletedOnUse) {
