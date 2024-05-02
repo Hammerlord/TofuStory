@@ -157,6 +157,7 @@ export const lostDragon: Minion = {
                 {
                     damage: 7,
                     type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.PLAYER,
                     icon: EncroachingDarknessImage,
                     animationOptions: {
                         width: 100,
@@ -181,6 +182,7 @@ export const lostDragon: Minion = {
                 {
                     damage: 10,
                     type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.PLAYER,
                     icon: EncroachingDarknessImage,
                     animationOptions: {
                         width: 100,
