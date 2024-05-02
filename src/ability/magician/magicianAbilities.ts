@@ -597,7 +597,7 @@ export const arcaneAim: Ability = {
     name: "Arcane Aim",
     image: ArcaneAimImage,
     resourceCost: 0,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     description: "This turn only, gain <b>+1 {{{ _damage_ }}}</b> whenever you attack.",
     overrideBodyText: true,
     actions: [
