@@ -233,7 +233,6 @@ export const getUpdatedStats = ({
                         ...cloneDeep(effect),
                         duration: getEffectDuration(effect),
                         override: overrideObj,
-                        // @ts-ignore
                         uptime: effect.uptime || 1,
                         id: uuid.v4(),
                         applierId: actorId,

@@ -31,8 +31,8 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, T
 import _ from "lodash";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 
-// TODO use UpdateCombatantStats from the Event instead of diffing here.
-// However, the Event UpdateCombatantStats has incomplete data, so it isn't a full replacement for this yet.
+// TODO use UpdatedCombatantStats from the Event instead of diffing here.
+// However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
 export type StatChange = { [key in keyof UpdatedCombatantStats]?: UpdatedCombatantStats[key] } & {
     damage: number;
     healing: number;

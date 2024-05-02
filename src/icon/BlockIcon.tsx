@@ -1,9 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BoomImage } from "../images";
-import Icon from "./Icon";
-import { getRandomInt } from "../utils";
 import { StatChange } from "../battle/utils";
+import { ShieldImage } from "../images";
 
 const useStyles = createUseStyles({
     root: {
@@ -13,44 +11,44 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%) translateY(-50%)",
         display: "none",
         filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
-        width: "30px",
-        height: "30px",
-        minWidth: "30px",
-        minHeight: "30px",
     },
     icon: {
-        width: "225%",
-        height: "225%",
         position: "absolute",
-        top: "45%",
-        left: "42%",
+        top: "50%",
+        left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
         margin: "auto",
+        width: "40px",
+        height: "40px",
     },
     text: {
         position: "absolute",
         color: "white",
         fontWeight: "bold",
-        top: "40%",
+        top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        fontSize: "22px",
+        fontSize: "20px",
         textShadow: Array.from({ length: 10 })
             .map(() => "0 0 3px black")
             .join(", "),
     },
 });
 
-const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
-    const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
-    const [pos, setPos] = useState({ x: 50, y: 50 });
+/**
+ * To display damage that was blocked by Armor.
+ */
+const BlockIcon = ({ statChanges }: { statChanges: StatChange }) => {
+    const [oldBlockedDamage, setOldBlockedDamage] = useState(0);
     const classes = useStyles();
     const rootRef: MutableRefObject<HTMLSpanElement> = useRef();
     const iconRef: MutableRefObject<HTMLImageElement> = useRef();
     const animationRefs: MutableRefObject<any> = useRef([]);
 
     useEffect(() => {
-        if (!statChanges.damage) {
+        const { rawDamage = 0, healthDamage = 0 } = statChanges || {};
+        const blockedDamage = rawDamage - healthDamage;
+        if (!blockedDamage) {
             return;
         }
 
@@ -60,46 +58,26 @@ const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
             const rootAnimation = rootRef.current.animate(
                 [
                     {
-                        opacity: 1,
-                        offset: 0.8,
+                        opacity: 0.75,
                         display: "block",
+                        offset: 0.8,
                     },
-
                     { opacity: 0, display: "block" },
                 ],
                 1500
             );
 
             animationRefs.current.push(rootAnimation);
-
-            const iconAnimation = iconRef.current.animate(
-                [
-                    {
-                        scale: 0.5,
-                        transform: "translateX(-75%) translateY(-75%)",
-                    },
-                    {
-                        scale: 1,
-                    },
-                ],
-                {
-                    duration: 150,
-                    fill: "forwards",
-                }
-            );
-            animationRefs.current.push(iconAnimation);
-
-            setPos({ x: getRandomInt(30, 70), y: getRandomInt(30, 70) });
-            setOldStatChanges(statChanges);
+            setOldBlockedDamage(blockedDamage);
         }
     }, [statChanges]);
 
     return (
-        <span className={classes.root} ref={rootRef} style={{ transform: `translateX(-${pos.x}%) translateY(-${pos.y}%)` }}>
-            <img src={BoomImage} className={classes.icon} ref={iconRef} />
-            <span className={classes.text}>{oldStatChanges.damage}</span>
+        <span className={classes.root} ref={rootRef}>
+            <img src={ShieldImage} className={classes.icon} ref={iconRef} />
+            <span className={classes.text}>{oldBlockedDamage}</span>
         </span>
     );
 };
 
-export default HitIcon;
+export default BlockIcon;

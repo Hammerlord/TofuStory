@@ -6,7 +6,7 @@ import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EF
 import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
 import { Event } from "../battle/types";
-import { getCharacterStatChanges } from "../battle/utils";
+import { StatChange, getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
 import EffectGroupIcon from "../icon/EffectGroupIcon";
@@ -29,6 +29,7 @@ import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
+import BlockIcon from "../icon/BlockIcon";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -327,7 +328,7 @@ const CombatantView = forwardRef(
         ref
     ) => {
         const state = useAppSelector((state) => state);
-        const [statChanges, setStatChanges]: [any, Function] = useState({});
+        const [statChanges, setStatChanges]: [StatChange, Function] = useState({} as StatChange);
         const [oldState, setOldState] = useState(combatant);
 
         const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
@@ -515,6 +516,7 @@ const CombatantView = forwardRef(
                                         <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
                                     <span className={classes.center}>
+                                        <BlockIcon statChanges={statChanges} />
                                         <HitIcon statChanges={statChanges} />
                                     </span>
                                 </>
