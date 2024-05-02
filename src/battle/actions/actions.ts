@@ -2696,7 +2696,7 @@ const onUseAbility =
     }: {
         actorInfo: CombatantInfo;
         source: TriggerSource;
-        ability: Ability;
+        ability: CombatAbility;
         isAutoCast?: boolean;
     }) =>
     (dispatch) => {
@@ -2725,6 +2725,12 @@ const onUseAbility =
                 source: source,
             })
         );
+
+        ability?.effects?.forEach((effect) => {
+            if (effect.onUse?.ability) {
+                dispatch(useAbility({ ability: effect.onUse?.ability, actorId: source?.actorId, isProc: true }));
+            }
+        });
 
         if (isOffensiveAbility(ability)) {
             dispatch(

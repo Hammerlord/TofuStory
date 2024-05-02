@@ -4,7 +4,7 @@ import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
-import { clearTurnHistory, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
+import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
 import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
@@ -25,7 +25,8 @@ export const onUsePlayerAbility = ({
         const { playerSide, hand } = getState().battle;
 
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const ability: CombatAbility = hand.find(({ instanceId }) => instanceId === selectedAbilityId);
+        // Why not just pass ability object from BattleView instead of performing a lookup again?
+        const ability: CombatAbility = getCardByInstanceId(hand, selectedAbilityId);
         const isReusable = ability.reusable || ability.effects?.some((effect) => effect.reusable);
         if (isReusable) {
             // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.

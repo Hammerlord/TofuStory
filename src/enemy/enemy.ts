@@ -1,3 +1,4 @@
+import { berserkingRelic } from "../ability/neutralAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AxeStumpImage,
@@ -1080,17 +1081,32 @@ export const mimic: Minion = {
         filter: "brightness(0.4) drop-shadow(0 0 5px purple) drop-shadow(0 0 3px purple)",
     },
     isElite: true,
-    maxHP: 150,
+    maxHP: 200,
     mesos: 50,
     effects: [thorns],
     abilities: [
+        {
+            name: "Cursed Chalice",
+            description: "Adds a Berserking Relic to your deck.",
+            image: EvilCupImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    icon: EvilCupImage,
+                    damage: 3,
+                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                    addCardsToDeck: [berserkingRelic],
+                },
+            ],
+        },
         {
             ...attack,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -1146,53 +1162,7 @@ export const mimic: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
-                },
-            ],
-        },
-        {
-            name: "Cursed Chalice",
-            image: EvilCupImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: EvilCupImage,
-                    damage: 3,
-                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    addCardsToDeck: [
-                        {
-                            name: "Cursed Chalice",
-                            description: "When drawn, Poisons you for 1 turn.",
-                            image: EvilCupImage,
-                            depletedOnUse: true,
-                            resourceCost: 1,
-                            onDraw: {
-                                ability: {
-                                    name: "Poison",
-                                    image: PoisonImage,
-                                    actions: [
-                                        {
-                                            type: ACTION_TYPES.EFFECT,
-                                            target: TARGET_TYPES.SELF,
-                                            effects: [
-                                                {
-                                                    ...poison,
-                                                    duration: 1,
-                                                },
-                                            ],
-                                        },
-                                    ],
-                                },
-                            },
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.HINDER,
-                                    target: TARGET_TYPES.SELF,
-                                },
-                            ],
-                        },
-                    ],
+                    damage: 5,
                 },
             ],
         },
@@ -1200,6 +1170,7 @@ export const mimic: Minion = {
             name: "Chomp",
             image: BloodIcon,
             resourceCost: 3,
+            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,

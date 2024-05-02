@@ -5,7 +5,9 @@ import {
     ComboSynergyImage,
     CynicalOrangeMushroomJumpImage,
     EncroachingDarknessImage,
+    EvilCupImage,
     RedSnailShellImage,
+    SkeletonOfHorrorImage,
     SnailShellImage,
     StompImage,
     ZakumArmLeft2Image,
@@ -399,6 +401,42 @@ export const provoke: Ability = {
     ],
 };
 
+export const berserkingRelic: Ability = {
+    name: "Berserking Relic",
+    resourceCost: 1,
+    image: EvilCupImage,
+    description:
+        "Reduces the cost of adjacent cards by 1, but playing them damages you for <b>{{ aura.effects.0.onUse.ability.actions.0.damage }}</b> {{{ _damage_ }}}.",
+    aura: {
+        area: 1,
+        effects: [
+            {
+                resourceCost: -1,
+                onUse: {
+                    ability: {
+                        name: "Madness",
+                        image: SkeletonOfHorrorImage,
+                        actions: [
+                            {
+                                type: ACTION_TYPES.HINDER,
+                                target: TARGET_TYPES.SELF,
+                                animation: ANIMATION_TYPES.SPIN,
+                                damage: 3,
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.HINDER,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+};
+
 export const NEUTRAL_ABILITIES = [
     shellThrow,
     bounce,
@@ -409,4 +447,5 @@ export const NEUTRAL_ABILITIES = [
     fourthExiledArm,
     provoke,
     stomp,
+    berserkingRelic,
 ];

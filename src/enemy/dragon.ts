@@ -47,7 +47,6 @@ const soulPain: Ability = {
 const terriblePower: Effect = {
     ...raging,
     name: "Terrible Power",
-    description: "Increasing ATT every turn.",
     icon: JapaneseOgreIcon,
     portraitImage: JapaneseOgreIcon,
 };

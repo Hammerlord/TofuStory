@@ -30,6 +30,7 @@ import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import _ from "lodash";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
+import { getHandAuraEffects } from "./Hand";
 
 // TODO use UpdatedCombatantStats from the Event instead of diffing here.
 // However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
@@ -1097,4 +1098,23 @@ export const calculateMesoGain = ({ player, mesos = 0 }: { player: Player; mesos
     }, 1);
 
     return Math.max(0, player.mesos + Math.floor(mesos * mesosGainedMultiplier));
+};
+
+/** Returns a card with aura effects applied, if any. */
+export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): CombatAbility => {
+    if (!id) {
+        return;
+    }
+
+    const handAuraEffects = getHandAuraEffects(hand);
+    // With hand aura effects applied
+    const abilityIndex = hand.findIndex(({ instanceId }) => instanceId === id);
+    const ability = hand[abilityIndex];
+    if (!ability) {
+        return;
+    }
+    return {
+        ...ability,
+        effects: [...(ability.effects || []), ...(handAuraEffects[abilityIndex] || [])],
+    };
 };

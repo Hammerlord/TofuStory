@@ -817,6 +817,7 @@ export interface AbilityEffect {
     reusable?: boolean; // The card becomes reusable while this effect persists.
     isLocked?: boolean; // The card becomes unplayable.
     highlightCard?: boolean; // A visual effect that gives the card a yellow border (the visual effect for a passing condition).
+    onUse?: AbilityEvent;
 }
 
 export enum SELECT_CARD_TYPES {

@@ -48,7 +48,15 @@ import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constan
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { canTargetIfStealthed, canUseAbility, hasEffectType, isUntargetable, isValidTarget, isWithinAbilityArea } from "./utils";
+import {
+    canTargetIfStealthed,
+    canUseAbility,
+    getCardByInstanceId,
+    hasEffectType,
+    isUntargetable,
+    isValidTarget,
+    isWithinAbilityArea,
+} from "./utils";
 import ParticleCanvas from "./ParticleCanvas";
 
 const useStyles = createUseStyles({
@@ -308,25 +316,8 @@ const BattlefieldContainer = () => {
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide[selectedAllyIndex];
-    const handAuraEffects = getHandAuraEffects(hand);
 
-    /** Returns a card with aura effects applied, if any. */
-    const getCardByInstanceId = (id: string | null): CombatAbility => {
-        if (!id) {
-            return;
-        }
-        // With hand aura effects applied
-        const abilityIndex = hand.findIndex(({ instanceId }) => instanceId === id);
-        const ability = hand[abilityIndex];
-        if (!ability) {
-            return;
-        }
-        return {
-            ...ability,
-            effects: [...(ability.effects || []), ...(handAuraEffects[abilityIndex] || [])],
-        };
-    };
-    const selectedAbilityFromHand = getCardByInstanceId(selectedAbilityId);
+    const selectedAbilityFromHand = getCardByInstanceId(hand, selectedAbilityId);
     const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
     const actorId: string | undefined = (selectedMinion || player)?.id;
@@ -343,7 +334,7 @@ const BattlefieldContainer = () => {
 
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
-        (!hand.length || hand.every((ability: CombatAbility) => !canUseAbility(player, getCardByInstanceId(ability.instanceId))));
+        (!hand.length || hand.every((ability: CombatAbility) => !canUseAbility(player, getCardByInstanceId(hand, ability.instanceId))));
 
     const warn = (text: string | JSX.Element) => {
         dispatch(
@@ -374,7 +365,7 @@ const BattlefieldContainer = () => {
         }
 
         setSelectedAllyIndex(null);
-        const ability = getCardByInstanceId(id);
+        const ability = getCardByInstanceId(hand, id);
 
         if (!allowMoveCardFromHandToDeck) {
             if (ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
