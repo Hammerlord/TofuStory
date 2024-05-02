@@ -37,21 +37,6 @@ export const lostGuardEcho: Minion = {
     ...lostEcho,
     abilities: [
         {
-            resourceCost: 3,
-            name: "Echo of Rallying",
-            image: ShieldIcon,
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    area: 1,
-                    armor: 10,
-                    excludePrimaryTarget: true,
-                },
-            ],
-        },
-        {
-            resourceCost: 3,
             name: "Echo of Rallying",
             image: WeaponMasteryImage,
             actions: [
@@ -61,6 +46,19 @@ export const lostGuardEcho: Minion = {
                     area: 1,
                     excludePrimaryTarget: true,
                     effects: [attackPower],
+                },
+            ],
+        },
+        {
+            name: "Echo of Rallying",
+            image: ShieldIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    area: 1,
+                    armor: 10,
+                    excludePrimaryTarget: true,
                 },
             ],
         },
