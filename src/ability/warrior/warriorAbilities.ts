@@ -636,7 +636,7 @@ export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 0,
     image: WeaponMasteryLGImage,
-    description: "Gain <b>+1 {{{ _damage_ }}} ATT {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
+    description: "Gain <b>+1 {{{ _damage_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1538,6 +1538,8 @@ export const puncture: Ability = {
     name: "Puncture",
     resourceCost: 1,
     image: PunctureImage,
+    description: "Apply {{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             damage: 5,
@@ -1757,7 +1759,7 @@ export const soulBlade: Ability = {
     image: BurningSoulBladeImage,
     overrideBodyText: true,
     description:
-        "<b>Ward {{ minion.effects.0.duration}}{{{ _duration_ }}}. Can't be controlled.</b> Attacks immediately and when you play a {{{ _offense_ }}} card.",
+        "<b>Ward {{ minion.effects.0.duration}}{{{ _duration_ }}}</b> <br/> <b>Auto:</b> Attacks when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -2661,7 +2663,7 @@ export const ballista: Ability = {
     resourceCost: 1,
     image: BallistaImage,
     description:
-        "<b>Can't be controlled.</b> Every turn, inflict {{{ _bleed_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on a random enemy.",
+        "<b>Auto:</b> Apply {{{ _bleed_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on an enemy every turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {

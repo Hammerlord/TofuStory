@@ -301,7 +301,7 @@ export const firstExiledArm: Ability = {
     exclusive: "Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
-    description: "<b>Incorporeal.</b> Immune to debuffs. Can't be controlled or targeted.",
+    description: "<b>Incorporeal. Untargetable.</b> Immune to debuffs. <b>Auto:</b> Attack every turn.",
     tooltip: {
         title: "Arm of the Exiled One",
         icon: ZakumHelmetImage,

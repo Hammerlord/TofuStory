@@ -185,7 +185,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}} ATT.</b>",
+    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}}</b>",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -598,13 +598,13 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "This turn only, gain +1 ATT whenever you attack.",
+    description: "This turn only, gain <b>+1 {{{ _damage_ }}}</b> whenever you attack.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [arcaneAiming, arcaneAimingAttackPower],
+            effects: [arcaneAiming],
         },
     ],
     upgrades: [
@@ -2856,7 +2856,8 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description: "<b>Can't be controlled.</b> Every turn, Burn a random enemy.",
+    description:
+        "<b>Auto:</b> Apply {{{ _burn_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on an enemy every turn.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {
@@ -2866,12 +2867,20 @@ export const fireSpirit: Ability = {
         maxHP: 6,
         abilities: [
             {
-                ...attack,
+                name: "Ember",
+                image: FireMarbleImage,
                 actions: [
                     {
-                        type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 0,
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        icon: FireMarbleImage,
+                        damage: 1,
+                        effects: [
+                            {
+                                ...burn,
+                                duration: 1,
+                            },
+                        ],
                     },
                 ],
             },
@@ -2882,42 +2891,12 @@ export const fireSpirit: Ability = {
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
                 onSummoned: {
-                    ability: {
-                        name: "Ember",
-                        image: FireMarbleImage,
-                        actions: [
-                            {
-                                target: TARGET_TYPES.RANDOM_HOSTILE,
-                                type: ACTION_TYPES.RANGE_ATTACK,
-                                icon: FireMarbleImage,
-                                effects: [
-                                    {
-                                        ...burn,
-                                        duration: 1,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
                 },
                 onTurnStart: {
-                    ability: {
-                        name: "Ember",
-                        image: FireMarbleImage,
-                        actions: [
-                            {
-                                target: TARGET_TYPES.RANDOM_HOSTILE,
-                                type: ACTION_TYPES.RANGE_ATTACK,
-                                icon: FireMarbleImage,
-                                effects: [
-                                    {
-                                        ...burn,
-                                        duration: 1,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
                 },
             },
         ],

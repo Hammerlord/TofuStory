@@ -56,6 +56,10 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         keys: ["Tribute"],
     },
     {
+        name: "Auto",
+        description: "Summon can't be controlled to attack directly. Its ability is triggered another way.",
+    },
+    {
         name: "Reusable",
         description: "Ability stays in your hand when used.",
     },
