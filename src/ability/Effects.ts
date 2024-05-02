@@ -223,7 +223,7 @@ export const raging: Effect = {
     icon: AngerIcon,
     description: "Ramping ATT. ATT stacks are removed if stunned or frozen.",
     turnsTriggerFrequency: 2,
-    onTurnStart: {
+    onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         ability: {
             name: "Raging",
