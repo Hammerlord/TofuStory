@@ -113,7 +113,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
         tooltips.push(<TooltipSection title={title} description={description} icon={icon} key={title} />);
     }
 
-    tooltips.push(<KeywordsTooltips object={ability} />);
+    tooltips.push(<KeywordsTooltips object={ability} key={"keywords-tooltips"} />);
 
     return (
         <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500}>
