@@ -72,6 +72,7 @@ import {
     ScarfSnowmanImage,
     ShimmeringStarsImage,
     SnowballImage,
+    SnowflakeEmojiImage,
     StarHairPinImage,
     StarImage,
     StarfallMagicSquareImage,
@@ -3057,6 +3058,36 @@ export const fireworks: Ability = {
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
             effects: [burn],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const blizzard: Ability = {
+    name: "Blizzard",
+    resourceCost: "x",
+    rarity: RARITIES.UNCOMMON,
+    image: SnowflakeEmojiImage,
+    description:
+        "Expend all {{{ _mana_ }}} to inflict {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}, X times.",
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            icon: SnowflakeEmojiImage,
+            damage: 3,
+            effects: [{ ...chill, duration: 1 }],
+            area: 2,
         },
     ],
     upgrades: [
