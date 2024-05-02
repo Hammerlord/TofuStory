@@ -70,7 +70,7 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         position: "absolute",
         width: "100%",
-        zIndex: 3,
+        zIndex: 1,
     },
     inner: {
         height: "100%",
@@ -285,7 +285,10 @@ const useStyles = createUseStyles({
         bottom: 0,
         left: "50%",
         transform: "translateX(-50%)",
-        zIndex: 5,
+        zIndex: 1,
+    },
+    statChangeContainer: {
+        zIndex: 2,
     },
 });
 
@@ -515,7 +518,10 @@ const CombatantView = forwardRef(
                                     {(oldState.HP > 0 || isLifeLinked) && (
                                         <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
-                                    <span className={classes.center}>
+                                    <div className={classes.statusEffectAnnouncerContainer}>
+                                        <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
+                                    </div>
+                                    <span className={classNames(classes.center, classes.statChangeContainer)}>
                                         <BlockIcon statChanges={statChanges} />
                                         <HitIcon statChanges={statChanges} />
                                     </span>
@@ -551,9 +557,6 @@ const CombatantView = forwardRef(
 
                 {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} isEnemy={isEnemy} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
-                <div className={classes.statusEffectAnnouncerContainer}>
-                    <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
-                </div>
             </div>
         );
     }
