@@ -30,7 +30,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     infuriateEffect,
     {
         ...ward,
-        keys: ["Ward"],
+        keys: ['"Ward"'], // Bandaid for Ward Booster showing Ward in its tooltip
     },
     {
         name: "Pre-emptive",
