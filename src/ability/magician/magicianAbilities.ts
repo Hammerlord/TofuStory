@@ -3053,7 +3053,7 @@ export const fireworks: Ability = {
                 width: 25,
                 height: 50,
             },
-            damage: 5,
+            damage: 3,
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
