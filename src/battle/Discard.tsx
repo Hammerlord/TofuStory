@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
 import classNames from "classnames";
-import { getAbilityMap } from "./deckDisplayUtils";
+import { getAbilityLevel, getAbilityMap } from "./deckDisplayUtils";
 import { AshesImage } from "../images";
 import Icon from "../icon/Icon";
 
@@ -104,15 +104,14 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
         return imageNode;
     };
 
-    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: CombatAbility } }) => {
+    const getInOrderTooltip = (abilities: CombatAbility[]) => {
         return (
             <ul className={classes.abilityList}>
-                {Object.entries(abilityMap).map(([abilityName, { ability, count }]) => {
+                {abilities.map((ability, i) => {
                     const imageNode = getImage(ability);
-
                     return (
-                        <li key={abilityName} className={classes.abilityItem}>
-                            {imageNode} {abilityName} {count > 1 && `x${count}`}
+                        <li key={ability.instanceId || i} className={classes.abilityItem}>
+                            {imageNode} {ability.name} {getAbilityLevel(ability)}
                         </li>
                     );
                 })}
@@ -120,8 +119,8 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
         );
     };
 
-    const discardCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(discard), [discard]);
-    const depletedCount = useMemo(() => compose(getAbilityMapTooltip, getAbilityMap)(depleted), [depleted]);
+    const discardCount = useMemo(() => getInOrderTooltip(discard), [discard]);
+    const depletedCount = useMemo(() => getInOrderTooltip(depleted), [depleted]);
 
     const getCardColor = (i: number): string => {
         const isLast = i === discardSize - 1;
