@@ -265,6 +265,7 @@ const useStyles = createUseStyles({
         animationDuration: "0.5s",
         zIndex: -1,
         maxWidth: "100%",
+        opacity: 0,
     },
     "@keyframes upAndDown": {
         from: {
