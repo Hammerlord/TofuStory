@@ -2794,4 +2794,13 @@ export const outrage: Ability = {
             },
         },
     ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
+                },
+            ],
+        },
+    ],
 };
