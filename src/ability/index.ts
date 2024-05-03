@@ -136,6 +136,7 @@ import {
     shieldCharge,
     ballista,
     pummel,
+    outrage,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -280,6 +281,7 @@ export const JOB_CARD_MAP = {
             shieldCharge,
             ballista,
             pummel,
+            outrage,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },

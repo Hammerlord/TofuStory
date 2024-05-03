@@ -545,6 +545,8 @@ export type Action = {
         amount?: number;
         pile: CARD_PILE_TYPES;
         abilityEffects: AbilityEffect[];
+        // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
+        mode?: "random-pick";
     };
     /** Adds cards to your current hand */
     addCards?: Ability[];
@@ -698,6 +700,8 @@ export interface AbilityEvent {
     abilityEffects?: AbilityEffect[];
     ability?: Ability;
     conditions?: Condition[];
+    // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
+    mode?: "random-pick";
 }
 
 export interface Ability {

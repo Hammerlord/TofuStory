@@ -40,6 +40,7 @@ import {
     LordOfDarknessImage,
     MagicCrashImage,
     MetalAxeImage,
+    MushmomAngryImage,
     NamelessSwordImage,
     NightShadeExplosionImage,
     PanicImage,
@@ -2761,6 +2762,36 @@ export const pummel: Ability = {
                     damage: 2,
                 },
             ],
+        },
+    ],
+};
+
+export const outrage: Ability = {
+    name: "Outrage",
+    resourceCost: 2,
+    description: "Hits x3. Cards in your hand cost <b>+1</b> or <b>-1 Fury</b>, randomly chosen.",
+    image: MushmomAngryImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
+        },
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
+        },
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
+            applyAbilityEffects: {
+                pile: CARD_PILE_TYPES.HAND,
+                abilityEffects: [{ resourceCost: 1 }, { resourceCost: -1 }],
+                mode: "random-pick",
+            },
         },
     ],
 };

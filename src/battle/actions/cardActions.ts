@@ -14,7 +14,7 @@ import {
     SELECT_CARD_TYPES,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
-import { getRandomItems, shuffle } from "../../utils";
+import { getRandomItem, getRandomItems, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
@@ -588,7 +588,9 @@ export const applyAbilityEventEffects = ({
         return ability;
     }
 
-    const { abilityEffects = [] } = event || {};
+    const { abilityEffects = [], mode } = event || {};
+    const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
+
     const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
     if (!passesConditions({ source, getCalculationTarget, proc: event })) {
         return ability;
@@ -596,7 +598,7 @@ export const applyAbilityEventEffects = ({
 
     const effects = [...(ability.effects || [])];
 
-    abilityEffects.forEach((e: AbilityEffect) => {
+    effectsToApply.forEach((e: AbilityEffect) => {
         const countMap = effects.reduce((acc, e: AbilityEffect) => {
             if (e.name) {
                 acc[e.name] = (acc[e.name] || 0) + 1;
