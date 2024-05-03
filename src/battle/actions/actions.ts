@@ -28,7 +28,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
-import { getRandomItem, shuffle } from "../../utils";
+import { getRandomInt, getRandomItem, shuffle } from "../../utils";
 import {
     MULTI_ACTION_PLAYBACK_SPEED,
     NORMAL_ACTION_PLAYBACK_SPEED,
@@ -2553,6 +2553,7 @@ export const useAbility = ({
         const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
             return acc + (e.resourceCost || 0);
         }, 0);
+
         const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + resourceCostFromEffects);
         ability = {
             ...ability,
@@ -2560,9 +2561,13 @@ export const useAbility = ({
         };
 
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [], isProc };
-        const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
-        dispatch(applyStatChanges([resourceSpend]));
-        dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
+
+        if (!isAutoCast) {
+            const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
+            dispatch(applyStatChanges([resourceSpend]));
+            dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
+        }
+
         dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source, isAutoCast }));
 
         const { target: initialTarget } = actions[0] || {};
@@ -2629,7 +2634,8 @@ export const useAbility = ({
         };
 
         if (resourceCost === "x") {
-            Array.from({ length: totalResourceCost }).forEach(() => {
+            const numTimesToCast = isAutoCast ? getRandomInt(1, 3) : totalResourceCost;
+            Array.from({ length: numTimesToCast }).forEach(() => {
                 actions.forEach(handleAction);
             });
         } else {
