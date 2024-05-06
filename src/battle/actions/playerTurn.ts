@@ -125,9 +125,8 @@ const handleDiscard = (ability: CombatAbility) => {
     return (dispatch, getState) => {
         const { removeAfterTurn, depletedOnUse, minion } = ability;
 
-        const { hand, discard, depleted } = getState().battle;
+        const { discard, depleted } = getState().battle;
         const newDiscard = discard.slice();
-        const newHand = hand.slice();
         const newDepleted = depleted.slice();
         if (depletedOnUse) {
             newDepleted.push(ability);
@@ -157,7 +156,6 @@ const handleDiscard = (ability: CombatAbility) => {
 
         dispatch(
             updateBattle({
-                hand: newHand,
                 discard: newDiscard,
                 depleted: newDepleted,
             })
