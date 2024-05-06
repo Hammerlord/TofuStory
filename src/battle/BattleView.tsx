@@ -43,7 +43,7 @@ import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, enemyMoves, startEnemyTurn } from "./actions/enemyTurn";
 import { getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, onUsePlayerAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
+import { initiatePlayerTurnInProgress, onSummonAttack, useHandAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
 import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { passesConditions } from "./passesConditions";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
@@ -391,13 +391,13 @@ const BattlefieldContainer = () => {
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         setSelectedAbilityId(null);
-        dispatch(onUsePlayerAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
+        dispatch(useHandAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
     };
 
     const handleSelectCardFromPrompt = () => {
         handleCancelSelectCard();
         if (selectCardsPrompt.abilityQueued) {
-            dispatch(onUsePlayerAbility(selectCardsPrompt.abilityQueued));
+            dispatch(useHandAbility(selectCardsPrompt.abilityQueued));
         }
     };
 

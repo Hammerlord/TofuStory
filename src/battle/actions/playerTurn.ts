@@ -12,7 +12,7 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
-export const onUsePlayerAbility = ({
+export const useHandAbility = ({
     selectedTargetIndex,
     selectedTargetSide,
     selectedAbilityId,
@@ -22,9 +22,8 @@ export const onUsePlayerAbility = ({
     selectedAbilityId: string;
 }) => {
     return (dispatch, getState) => {
-        const { playerSide, hand } = getState().battle;
+        const { hand } = getState().battle;
 
-        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
         // Why not just pass ability object from BattleView instead of performing a lookup again?
         const ability: CombatAbility = getCardByInstanceId(hand, selectedAbilityId);
         const isReusable = ability.reusable || ability.effects?.some((effect) => effect.reusable);
@@ -53,6 +52,15 @@ export const onUsePlayerAbility = ({
         } else {
             dispatch(removeAbilityFromHand(selectedAbilityId));
         }
+
+        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability }));
+    };
+};
+
+export const usePlayerAbility = ({ selectedTargetIndex, selectedTargetSide, ability }) => {
+    return (dispatch, getState) => {
+        const { playerSide } = getState().battle;
+        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
         dispatch(
             useAbility({
