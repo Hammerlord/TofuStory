@@ -5,7 +5,7 @@ import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
-import { checkEventTrigger, findCombatantData, onEndTurnTriggers, useAbility } from "./actions";
+import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
@@ -227,6 +227,9 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 playerSide: updateCharacters(playerSide, clearTurnHistory),
             })
         );
+
+        const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
 
         const getPlayerSideInfo = () => getState().battle.playerSide.map((combatant) => findCombatantData(getState, combatant?.id));
 

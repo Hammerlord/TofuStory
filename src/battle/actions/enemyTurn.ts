@@ -20,7 +20,17 @@ import {
 import { TARGET_TYPES } from "./../../ability/types";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
-import { checkEventTrigger, findCombatantData, onEndTurnTriggers, pickHostileIndex, updateCombatant, useAbility, useItem } from "./actions";
+import {
+    checkEventTrigger,
+    findCombatantData,
+    handleDoTs,
+    onEndTurnTriggers,
+    pickHostileIndex,
+    tickDownStatusEffects,
+    updateCombatant,
+    useAbility,
+    useItem,
+} from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
@@ -339,6 +349,9 @@ export const startEnemyTurn = () => {
                 enemySide: updateCharacters(enemySide, clearTurnHistory),
             })
         );
+
+        const combatantIds = enemySide.map((combatant) => combatant?.id).filter((v) => v);
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
 
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {

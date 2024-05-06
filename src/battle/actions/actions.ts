@@ -1254,9 +1254,6 @@ export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant
             }
         });
 
-        const combatantIds = combatants.map((combatant) => combatant?.id).filter((v) => v);
-        dispatch(handleDoTs({ combatantIds, side }));
-
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(tickDownStatusEffects(combatant.id));
@@ -1763,7 +1760,7 @@ const pushPlaybackQueue = ({
         let playbackTime = action?.playbackTime;
         if (!playbackTime) {
             if (!action) {
-                playbackTime = NORMAL_ACTION_PLAYBACK_SPEED / 2;
+                playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
             } else if (action.animationOptions?.ricochet) {
                 playbackTime = RICOCHET_ACTION_PLAYBACK_SPEED + (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length;
             } else if ((actionParent as Ability)?.actions?.length > 1) {
