@@ -219,15 +219,13 @@ export const playerEndTurn = () => {
             })
         );
 
-        setTimeout(() => {
-            const { discard, hand } = getState().battle;
-            dispatch(
-                updateBattle({
-                    discard: [...prepareForDiscard(hand), ...discard],
-                    hand: [],
-                })
-            );
-        }, 500);
+        const { discard, hand } = getState().battle;
+        dispatch(
+            updateBattle({
+                discard: [...prepareForDiscard(hand), ...discard],
+                hand: [],
+            })
+        );
     };
 };
 
