@@ -2868,7 +2868,7 @@ export const fireSpirit: Ability = {
         maxHP: 6,
         abilities: [
             {
-                name: "Ember",
+                name: "Shoot", // Must be named "Shoot"/"Attack" to get picked up by induceCombatantAttack... great
                 image: FireMarbleImage,
                 actions: [
                     {
