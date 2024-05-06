@@ -2073,20 +2073,22 @@ export const yellowHat: Item = {
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: YellowHatImage,
-    description:
-        "Every {{ effects.0.onFriendlyAbility.eventTriggerFrequency }} times your summons use an ability, gain 1 {{ resources }} and draw a card.",
+    description: "On battle start, play a random minion from your deck.",
     effects: [
         {
             name: "Yellow Hat Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onFriendlyAbility: {
-                excludeEffectOwner: true,
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                eventTriggerFrequency: 8,
-                resources: 1,
-                drawCards: {
+            onBattleStart: {
+                playCards: {
                     amount: 1,
+                    filters: [
+                        {
+                            property: "minion",
+                            value: undefined,
+                            comparator: "not",
+                        },
+                    ],
                 },
             },
         },

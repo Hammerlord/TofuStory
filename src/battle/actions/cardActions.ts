@@ -23,8 +23,9 @@ import { ping } from "./../../ability/magician/magicianAbilities";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
-import { prepareForDiscard } from "./playerTurn";
-import { passesConditions } from "../passesConditions";
+import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
+import { passesConditions, passesValueComparison } from "../passesConditions";
+import _ from "lodash";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -329,7 +330,38 @@ export const checkCardActions = ({
             moveCards,
             addLastPlayedCards,
             discardCardsFromHand,
+            playCards,
         } = action;
+
+        if (playCards) {
+            const { amount, filters } = playCards;
+            const { deck } = getState().battle;
+            const cardsToPlay = deck
+                .filter((card) => {
+                    return (
+                        !filters ||
+                        filters.some((filter) => {
+                            const { property, value, comparator } = filter;
+                            const propertyVal = _.get(card, property);
+                            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                        })
+                    );
+                })
+                .slice(0, amount);
+
+            dispatch(
+                updateBattle({
+                    deck: deck.filter((card: CombatAbility) =>
+                        cardsToPlay.every((otherCard: CombatAbility) => card.instanceId !== otherCard.instanceId)
+                    ),
+                })
+            );
+
+            cardsToPlay.forEach((ability) => {
+                dispatch(usePlayerAbility({ ability }));
+                dispatch(handleDiscard(ability));
+            });
+        }
 
         if (cardsToDraw) {
             dispatch(drawCards({ ...cardsToDraw, source }));

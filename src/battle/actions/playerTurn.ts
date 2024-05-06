@@ -57,7 +57,15 @@ export const useHandAbility = ({
     };
 };
 
-export const usePlayerAbility = ({ selectedTargetIndex, selectedTargetSide, ability }) => {
+export const usePlayerAbility = ({
+    selectedTargetIndex,
+    selectedTargetSide,
+    ability,
+}: {
+    selectedTargetIndex?: number;
+    selectedTargetSide?: BATTLEFIELD_SIDES;
+    ability: CombatAbility;
+}) => {
     return (dispatch, getState) => {
         const { playerSide } = getState().battle;
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
@@ -121,7 +129,7 @@ const removeAbilityFromHand = (abilityId: string) => {
     };
 };
 
-const handleDiscard = (ability: CombatAbility) => {
+export const handleDiscard = (ability: CombatAbility) => {
     return (dispatch, getState) => {
         const { removeAfterTurn, depletedOnUse, minion } = ability;
 

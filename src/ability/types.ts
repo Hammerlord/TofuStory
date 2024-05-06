@@ -569,6 +569,11 @@ export type Action = {
         effects?: AbilityEffect[];
         filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
     };
+    // Auto-play the top `amount` cards from your deck/discard
+    playCards?: {
+        amount: number;
+        filters?: { property: string; comparator: Comparator; value: any }[];
+    };
     selectCards?: SelectCards;
     retrieveDepletedCards?: {
         amount: number;
