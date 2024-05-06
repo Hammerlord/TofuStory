@@ -442,7 +442,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "On death, Explodes and applies a Burn.",
+    description: "Explodes when it dies.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -459,11 +459,9 @@ export const explosive: Effect = {
                         multiplier: {
                             type: MULTIPLIER_TYPES.MAX_HP,
                             calculationTarget: CONDITION_TARGETS.ACTOR,
-                            value: 0.05,
+                            value: 0.1,
                         },
                     },
-
-                    effects: [{ ...burn, duration: 1 }],
                 },
             ],
         },
