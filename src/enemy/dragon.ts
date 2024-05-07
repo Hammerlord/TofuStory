@@ -93,7 +93,7 @@ export const lostDragon: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: FireMarbleImage,
-                    effects: [{ ...burn, duration: 1 }],
+                    effects: [{ ...burn, stacks: 2 }],
                 },
             ],
         },

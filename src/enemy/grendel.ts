@@ -51,7 +51,7 @@ export const grendelIfrit: Minion = {
                     effects: [
                         {
                             ...burn,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -74,7 +74,7 @@ export const grendelIfrit: Minion = {
                     effects: [
                         {
                             ...burn,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },

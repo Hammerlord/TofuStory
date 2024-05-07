@@ -37,7 +37,7 @@ const explosiveBarrel: Minion = {
                             animation: ANIMATION_TYPES.EXPLODE,
                             damage: 5,
                             area: 2,
-                            effects: [{ ...burn, duration: 2 }],
+                            effects: [{ ...burn, stacks: 2 }],
                         },
                     ],
                 },

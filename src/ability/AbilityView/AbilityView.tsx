@@ -590,7 +590,7 @@ const AbilityView = forwardRef(
                                 {!overrideBodyText && (
                                     <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
                                 )}
-                                {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
+                                {!overrideBodyText && destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                                 {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
                             </div>
                             <div className={classes.footer}>

@@ -167,9 +167,14 @@ export const burn: Effect = {
     name: "Burn",
     type: EFFECT_TYPES.BURN,
     class: EFFECT_CLASSES.DEBUFF,
-    duration: 3,
+    duration: Infinity,
     icon: FireIcon,
-    description: "Take 3 damage at turn start.",
+    description: "On turn start, take 3 damage per stack, and reduce stacks by 1.",
+    maxApplications: 1,
+    stacks: 3,
+    onTurnStart: {
+        decrementStacks: 1,
+    },
 };
 
 export const chill: Effect = {

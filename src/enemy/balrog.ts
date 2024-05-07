@@ -302,7 +302,7 @@ export const balrog: Minion = {
                     effects: [
                         {
                             ...burn,
-                            duration: 3,
+                            stacks: 2,
                         },
                     ],
                 },

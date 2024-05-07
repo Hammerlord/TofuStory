@@ -502,7 +502,11 @@ export const handleDoTs =
                     return acc;
                 }, []);
 
-                const damage = matchingDoTs.length * dotDamageMap[dotType];
+                const dotStacks = matchingDoTs.reduce((acc, cur) => {
+                    return acc + (cur.stacks || 1);
+                }, 0);
+
+                const damage = dotStacks * dotDamageMap[dotType];
 
                 if (!damage) {
                     return;

@@ -212,7 +212,7 @@ const meteor = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    stacks: 2,
                 },
             ],
         },

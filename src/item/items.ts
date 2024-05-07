@@ -1486,7 +1486,7 @@ export const flamingFeather: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: FlamingFeatherImage,
-    description: "When you use an offense card, you have a 50% chance for each {{ resources }} to Burn an enemy.",
+    description: "When you use an offense card, you have a 50% chance for each {{ resources }} to cast 1 Burn.",
     effects: [
         {
             name: "Flaming Feather",
@@ -1526,7 +1526,7 @@ export const flamingFeather: Item = {
                             effects: [
                                 {
                                     ...burn,
-                                    duration: 1,
+                                    stacks: 1,
                                 },
                             ],
                         },

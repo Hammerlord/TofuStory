@@ -656,7 +656,7 @@ export const ignite: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
-    description: "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}",
     actions: [
         {
             area: 1,
@@ -665,7 +665,7 @@ export const ignite: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    stacks: 3,
                 },
             ],
         },
@@ -894,7 +894,7 @@ export const fireArrow: Ability = {
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description:
-        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> <b>Charged:</b> <b>+</b> {{{ _burn_ }}} <b>{{ actions.0.bonus.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> <b>Charged:</b> <b>+ {{ actions.0.bonus.0.effects.0.stacks }}</b> {{{ _burn_ }}}",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -908,7 +908,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 2,
+                    stacks: 3,
                 },
             ],
             bonus: [
@@ -922,7 +922,7 @@ export const fireArrow: Ability = {
                     effects: [
                         {
                             ...burn,
-                            duration: 2,
+                            stacks: 3,
                         },
                     ],
                 },
@@ -1559,7 +1559,7 @@ export const goutOfFlame: Ability = {
     image: DoTPunisherImage,
     overrideBodyText: true,
     description:
-        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> When drawn, {{{ _burn_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} a random enemy.",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> When drawn, <b>{{ onDraw.ability.actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} an enemy.",
     onDraw: {
         ability: {
             name: "Flame Gout",
@@ -1573,7 +1573,7 @@ export const goutOfFlame: Ability = {
                     effects: [
                         {
                             ...burn,
-                            duration: 3,
+                            stacks: 3,
                         },
                     ],
                 },
@@ -1589,7 +1589,7 @@ export const goutOfFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    stacks: 3,
                 },
             ],
         },
@@ -1709,6 +1709,8 @@ export const moltenLaser: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
+    description: "Destroy all armor and apply {{ actions.0.effects.0.stacks }} {{{ _burn_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1719,7 +1721,7 @@ export const moltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 5,
+                    stacks: 5,
                 },
             ],
         },
@@ -1769,7 +1771,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -1781,7 +1783,6 @@ export const leechingFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
                 },
                 {
                     name: "Leeching Flame",
@@ -1823,10 +1824,10 @@ export const leechingFlame: Ability = {
                 {
                     effects: [
                         {
-                            duration: 1,
+                            stacks: 1,
                         },
                         {
-                            duration: 2,
+                            duration: 1,
                         },
                     ],
                 },
@@ -2354,7 +2355,7 @@ export const frostfireBlast: Ability = {
     image: AdvancedChargeImage,
     rarity: RARITIES.COMMON,
     description:
-        "Apply {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} + {{{ _chill_ }}} <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -2369,7 +2370,6 @@ export const frostfireBlast: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 2,
                 },
                 {
                     ...chill,
@@ -2581,7 +2581,7 @@ export const ifrit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                duration: 1,
+                                stacks: 1,
                             },
                         ],
                     },
@@ -2609,7 +2609,7 @@ export const ifrit: Ability = {
                                     effects: [
                                         {
                                             ...burn,
-                                            duration: 3,
+                                            stacks: 3,
                                         },
                                     ],
                                 },
@@ -2857,8 +2857,7 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description:
-        "<b>Auto:</b> Apply {{{ _burn_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on an enemy every turn.",
+    description: "<b>Auto:</b> Apply <b>{{ minion.abilities.0.actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} on an enemy every turn.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {
@@ -2879,7 +2878,7 @@ export const fireSpirit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                duration: 1,
+                                stacks: 1,
                             },
                         ],
                     },
@@ -3042,7 +3041,7 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend all {{{ _mana_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}}  {{{ _burn_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _mana_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} + <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} to up to 3 enemies, X times.",
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -3057,7 +3056,7 @@ export const fireworks: Ability = {
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
-            effects: [burn],
+            effects: [{ ...burn, stacks: 3 }],
         },
     ],
     upgrades: [

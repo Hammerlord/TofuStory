@@ -956,7 +956,7 @@ export const fireBoar: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 7,
-                    effects: [{ ...burn, duration: 1 }],
+                    effects: [{ ...burn, stacks: 1 }],
                 },
                 {
                     type: ACTION_TYPES.EFFECT,
