@@ -620,6 +620,7 @@ const onEffectEventTrigger = ({
             chance = 1,
             decrementStacks = 0,
             drawOriginalAbility = false,
+            multiplier: multiplierConfig,
             ...other
         } = effectEvent;
 
@@ -682,7 +683,12 @@ const onEffectEventTrigger = ({
 
         const owner = findCombatantData(getState, ownerId);
         if (owner?.combatant?.isPlayer) {
-            dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any }));
+            const multiplier = getMultiplier({
+                multiplier: multiplierConfig,
+                actor: owner,
+                ...getState().battle,
+            });
+            dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any, multiplier }));
         }
 
         $applyStatChanges: {
@@ -1800,10 +1806,12 @@ const checkHandleAutoCast = ({
     autoCastAbilities,
     actor,
     parentAbility,
+    multiplier = 1,
 }: {
     autoCastAbilities: AutoCastAbility;
     actor: any; // This is expected to be the player
     parentAbility?: CombatAbility;
+    multiplier?: number;
 }) => {
     return (dispatch, getState) => {
         if (!autoCastAbilities || !actor.class) {
@@ -1832,7 +1840,7 @@ const checkHandleAutoCast = ({
             return;
         }
 
-        Array.from({ length: amount }).forEach(() => {
+        Array.from({ length: amount * multiplier }).forEach(() => {
             let abilityToCast: CombatAbility = getRandomItem(cards);
             Array.from({ length: upgradeLevels }).forEach(() => {
                 const upgrade = getUpgradeCard(abilityToCast, { ignoreMaxLevel: true });
@@ -2029,7 +2037,7 @@ const performAction = ({
         const battleSide = getState().battle[side];
         const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
 
-        const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
+        const { vacuum, secondaryAction, autoCastAbilities, retreat, multiplier: multiplierConfig } = action;
         const combatants = getState().battle[side];
         const targetIndices = calculateTargetIndices({
             action,
@@ -2182,7 +2190,12 @@ const performAction = ({
         const postUpdateAction = updated?.[0]?.action || action;
         dispatch(checkCardActions({ action: postUpdateAction, source: parentSource, isAutoCast }));
 
-        dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any }));
+        const multiplier = getMultiplier({
+            multiplier: action.multiplier,
+            actor: actorData,
+            ...getState().battle,
+        });
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any, multiplier }));
         dispatch(
             onAction({
                 action,

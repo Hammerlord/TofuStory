@@ -348,6 +348,7 @@ export { default as LithStreetImage } from "./LithStreet.png";
 export { default as LithTutorialImage } from "./LithTutorial.png";
 export { default as LithTutorial2Image } from "./LithTutorial2.png";
 export { default as LordOfDarknessImage } from "./LordOfDarkness.png";
+export { default as LucidDreamImage } from "./LucidDream.png";
 export { default as LuckSackImage } from "./LuckSack.png";
 export { default as LunarPiecesImage } from "./LunarPieces.png";
 export { default as LupinImage } from "./Lupin.gif";

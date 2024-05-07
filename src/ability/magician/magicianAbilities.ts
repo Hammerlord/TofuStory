@@ -44,6 +44,7 @@ import {
     InkSackImage,
     LightningOrbImage,
     LightningOrbProjectileImage,
+    LucidDreamImage,
     LunarPiecesImage,
     MPEaterImage,
     MagicArmorImage,
@@ -3097,6 +3098,50 @@ export const blizzard: Ability = {
                     damage: 2,
                 },
             ],
+        },
+    ],
+};
+
+export const lucidDream: Ability = {
+    name: "Lucid Dream",
+    resourceCost: 1,
+    image: LucidDreamImage,
+    rarity: RARITIES.RARE,
+    removeAfterTurn: true,
+    description: "Cast a random spell for every unique {{{ _offense_ }}} card played this battle.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: LucidDreamImage,
+            autoCastAbilities: {
+                type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
+                amount: 1,
+            },
+            multiplier: {
+                type: MULTIPLIER_TYPES.ABILITIES_USED,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                filters: [
+                    {
+                        property: "actions.0.target",
+                        value: TARGET_TYPES.HOSTILE,
+                        comparator: "eq",
+                    },
+                    {
+                        property: "actions.0.target",
+                        value: TARGET_TYPES.RANDOM_HOSTILE,
+                        comparator: "eq",
+                    },
+                ],
+                filterUnique: true,
+                filterOutProcs: true,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };

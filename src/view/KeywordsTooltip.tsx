@@ -58,6 +58,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         name: "Auto",
         description: "Summon can't be controlled to attack directly. Its ability is triggered another way.",
+        keys: ['"Auto"'],
     },
     {
         name: "Reusable",
