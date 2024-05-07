@@ -2798,7 +2798,13 @@ export const outrage: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
                 },
             ],
         },
