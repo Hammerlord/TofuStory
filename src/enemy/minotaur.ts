@@ -116,7 +116,7 @@ export const tauromacis: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 8,
-                    effects: [bleed],
+                    effects: [{ ...bleed, stacks: 2 }],
                     secondaryAction: {
                         healing: 10,
                     },
@@ -232,7 +232,7 @@ export const taurospear: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 8,
-                    effects: [bleed],
+                    effects: [{ ...bleed, stacks: 2 }],
                     secondaryAction: {
                         armor: 10,
                     },

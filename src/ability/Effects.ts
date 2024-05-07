@@ -156,11 +156,15 @@ export const bleed: Effect = {
     name: "Bleed",
     type: EFFECT_TYPES.BLEED,
     class: EFFECT_CLASSES.DEBUFF,
-    duration: 3,
+    duration: Infinity,
+    stacks: 3,
     attackDamageReceived: 1,
-    maxApplications: 5,
+    maxApplications: 1,
     icon: BloodIcon,
-    description: "Take 1 damage at turn start and receive +1 damage from attacks. Max 5.",
+    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Receiving +1 damage from attacks per stack.",
+    onTurnStart: {
+        decrementStacks: 1,
+    },
 };
 
 export const burn: Effect = {

@@ -127,7 +127,7 @@ export const lostDragon: Minion = {
                     damage: 7,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    effects: [{ ...bleed }],
+                    effects: [{ ...bleed, stacks: 2 }],
                 },
             ],
         },

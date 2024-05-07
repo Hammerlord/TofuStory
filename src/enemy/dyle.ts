@@ -126,7 +126,7 @@ export const harpoonCard: Ability = {
     actions: [
         {
             damage: 3,
-            effects: [bleed, bleed],
+            effects: [bleed],
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -272,7 +272,7 @@ export const dyle: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },

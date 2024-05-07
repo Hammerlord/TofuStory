@@ -291,7 +291,6 @@ export const guardHawk: Minion = {
                 {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
-                    damage: 3,
                     area: 4,
                     icon: TornadoIcon,
                     animationOptions: {
@@ -301,7 +300,7 @@ export const guardHawk: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 2,
+                            stacks: 2,
                         },
                     ],
                 },

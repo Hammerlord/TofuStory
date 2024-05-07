@@ -1014,7 +1014,7 @@ export const ligator: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1065,7 +1065,7 @@ export const eliteLigator: Minion = {
                     effects: [
                         {
                             ...bleed,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },

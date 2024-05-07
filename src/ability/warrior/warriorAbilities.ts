@@ -140,12 +140,14 @@ export const charge: Ability = {
     name: "Charge",
     resourceCost: 1,
     image: WarLeapImage,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}",
+    overrideBodyText: true,
     actions: [
         {
-            damage: 3,
+            damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [bleed],
+            effects: [{ ...bleed, stacks: 3 }],
         },
     ],
     upgrades: [
@@ -893,7 +895,7 @@ export const rend: Ability = {
     name: "Rend",
     resourceCost: 1,
     image: BlastExtraStrikeImage,
-    description: "Apply {{{ _bleed_ }}}{{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -904,11 +906,7 @@ export const rend: Ability = {
             effects: [
                 {
                     ...bleed,
-                    duration: 3,
-                },
-                {
-                    ...bleed,
-                    duration: 3,
+                    stacks: 4,
                 },
             ],
         },
@@ -929,7 +927,7 @@ export const whirlwind: Ability = {
     image: PanicImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Apply {{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -940,7 +938,7 @@ export const whirlwind: Ability = {
             effects: [
                 {
                     ...bleed,
-                    duration: 3,
+                    stacks: 2,
                 },
             ],
         },
@@ -1356,7 +1354,7 @@ export const counterattack: Ability = {
     rarity: RARITIES.RARE,
     overrideBodyText: true,
     description:
-        "Until next turn, <b>Taunt</b> and <b>Counter</b> for <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} + {{{ _bleed_ }}} <b>{{ actions.0.effects.0.onReceiveAttack.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}}.",
+        "Until next turn, <b>Taunt</b> and <b>Counter</b> for <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} + <b>{{ actions.0.effects.0.onReceiveAttack.ability.actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1385,6 +1383,7 @@ export const counterattack: Ability = {
                                     effects: [
                                         {
                                             ...bleed,
+                                            stacks: 2,
                                         },
                                     ],
                                 },
@@ -1539,7 +1538,7 @@ export const puncture: Ability = {
     name: "Puncture",
     resourceCost: 1,
     image: PunctureImage,
-    description: "Apply {{{ _bleed_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -1549,7 +1548,7 @@ export const puncture: Ability = {
             effects: [
                 {
                     ...bleed,
-                    duration: 3,
+                    stacks: 2,
                 },
             ],
             area: 1,
@@ -2663,8 +2662,7 @@ export const ballista: Ability = {
     name: "Ballista",
     resourceCost: 1,
     image: BallistaImage,
-    description:
-        "<b>Auto:</b> Apply {{{ _bleed_ }}} <b>{{ minion.abilities.0.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} on an enemy every turn.",
+    description: "<b>Auto:</b> Apply <b>{{ minion.abilities.0.actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}} every turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -2683,7 +2681,7 @@ export const ballista: Ability = {
                         animation: ANIMATION_TYPES.ONE_WAY,
                         icon: AvengersArrowImage,
                         damage: 1,
-                        effects: [bleed],
+                        effects: [{ ...bleed, stacks: 1 }],
                         animationOptions: {
                             rotateToFaceTarget: true,
                             rotate: -45,

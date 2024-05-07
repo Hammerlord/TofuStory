@@ -302,6 +302,7 @@ export const darkLord: Minion = {
                     effects: [
                         {
                             ...bleed,
+                            stacks: 2,
                         },
                     ],
                 },

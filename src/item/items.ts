@@ -791,7 +791,7 @@ export const greenBambooHat: Item = {
 export const koreanFan: Item = {
     name: "Korean Fan",
     image: KoreanFanImage,
-    description: "Every 3 turns, hurl a fan that inflicts a 1-turn Bleed.",
+    description: "Every 3 turns, hurl a fan that inflicts 1 Bleed.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -810,7 +810,7 @@ export const koreanFan: Item = {
                             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: KoreanFanImage,
-                            effects: [{ ...bleed, duration: 1 }],
+                            effects: [{ ...bleed, stacks: 1 }],
                         },
                     ],
                 },
