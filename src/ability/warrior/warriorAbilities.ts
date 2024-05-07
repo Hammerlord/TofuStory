@@ -1759,8 +1759,7 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description:
-        "<b>Ward {{ minion.effects.0.duration}}{{{ _duration_ }}}</b> <br/> <b>Auto:</b> Attacks when you play a {{{ _offense_ }}} card.",
+    description: "<b>Ward.</b> <br/> <b>Summon:</b> Attack. <b>Auto:</b> 50% chance to attack whenever you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -1784,7 +1783,7 @@ export const soulBlade: Ability = {
             },
         ],
         effects: [
-            { ...ward, duration: 3 },
+            { ...ward },
             {
                 name: "Soul Blade Effect",
                 icon: BurningSoulBladeMinionImage,
@@ -1798,6 +1797,7 @@ export const soulBlade: Ability = {
                 onFriendlyAbility: {
                     conditionOperator: "and",
                     disableTriggerFromProcs: true,
+                    chance: 0.5,
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
@@ -2208,7 +2208,7 @@ export const forgehammer: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
