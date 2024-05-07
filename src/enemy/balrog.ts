@@ -328,7 +328,7 @@ export const balrog: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 1,
+                            stacks: 2,
                         },
                     ],
                 },

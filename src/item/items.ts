@@ -433,7 +433,7 @@ export const nependeathSap: Item = {
                             disableTriggerFromProcs: true,
                             removeEffect: true,
                             targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                            effects: [{ ...poison, duration: 1 }],
+                            effects: [{ ...poison, stacks: 1 }],
                         },
                     },
                 ],

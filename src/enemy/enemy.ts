@@ -221,7 +221,7 @@ export const shroom: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1238,7 +1238,7 @@ export const greenMushroom: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1311,7 +1311,7 @@ export const elliniaGreenMushroom: Minion = {
                     effects: [
                         {
                             ...poison,
-                            duration: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1732,7 +1732,7 @@ export const malady: Minion = {
                     icon: InkSackImage,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 5,
-                    effects: [{ ...poison, duration: 3 }],
+                    effects: [{ ...poison, stacks: 2 }],
                     addCards: [sealCard],
                 },
             ],
@@ -2752,7 +2752,7 @@ export const jrNecki: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    effects: [poison],
+                    effects: [{ ...poison, stacks: 1 }],
                 },
             ],
         },

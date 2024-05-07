@@ -70,7 +70,7 @@ export const faust: Minion = {
                     animationOptions: {
                         sidewinder: true,
                     },
-                    effects: [poison],
+                    effects: [{ ...poison, stacks: 2 }],
                 },
             ],
         },
@@ -85,6 +85,7 @@ export const faust: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: MonkeyBananaImage,
+                    area: 2,
                     animationOptions: {
                         width: 100,
                         height: 100,

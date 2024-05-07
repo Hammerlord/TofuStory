@@ -63,7 +63,7 @@ const realShadow: Minion = {
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     damage: 1,
                     icon: KumbiImage,
-                    effects: [{ ...poison, duration: 1 }],
+                    effects: [{ ...poison, stacks: 1 }],
                 },
             ],
         },
@@ -319,7 +319,7 @@ export const darkLord: Minion = {
             icon: SapOfNependeathImage,
             onAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [{ ...poison, duration: 1 }],
+                effects: [{ ...poison, stacks: 1 }],
             },
         },
         {

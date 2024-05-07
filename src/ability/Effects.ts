@@ -161,7 +161,7 @@ export const bleed: Effect = {
     attackDamageReceived: 1,
     maxApplications: 1,
     icon: BloodIcon,
-    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Receiving +1 damage from attacks per stack.",
+    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Each stack increases damage received from attacks by +1.",
     onTurnStart: {
         decrementStacks: 1,
     },
@@ -537,10 +537,15 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Take 2 damage at turn start. Healing received reduced by 1.",
+    description: "On turn start, take 2 damage per stack, and reduce stacks by 1. Healing received reduced by 1 per stack.",
     icon: PoisonImage,
-    duration: 3,
+    duration: Infinity,
+    maxApplications: 1,
     healingReceived: -1,
+    stacks: 2,
+    onTurnStart: {
+        decrementStacks: 1,
+    },
 };
 
 export const attackPower: Effect = {
