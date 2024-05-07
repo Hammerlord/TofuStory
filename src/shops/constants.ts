@@ -2,7 +2,7 @@ import { Ability } from "../ability/types";
 import { Item, RARITIES } from "../item/types";
 
 export const NUM_SHOP_ABILITIES = 8;
-export const NUM_SHOP_ITEMS = 8;
+export const NUM_SHOP_ITEMS = 4;
 
 export const NUM_TRADING_POST_ITEMS = 11;
 export const NUM_TRADING_POST_TRADES = 2;
