@@ -2370,6 +2370,7 @@ export const frostfireBlast: Ability = {
             effects: [
                 {
                     ...burn,
+                    stacks: 1,
                 },
                 {
                     ...chill,
