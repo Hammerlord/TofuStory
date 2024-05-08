@@ -192,7 +192,7 @@ const ShopView = ({
     const shopOptions = getShopCustomerProperties(player);
 
     const { discount = 0, numRefreshes: initRefreshes = 0, freeFood: initFreeFood = 0 } = shopOptions;
-    const freeFood = initFreeFood - usedFreeFood;
+    const hasFreeFood: boolean = initFreeFood - usedFreeFood > 0;
     const numRefreshes = initRefreshes - usedNumRefreshes;
 
     const applyDiscount = (price: number) => {
@@ -241,7 +241,7 @@ const ShopView = ({
             const price = getFinalConsumableItemPrice(item, initPrice);
 
             if (isFood) {
-                if (freeFood) {
+                if (hasFreeFood) {
                     onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
                     if (statChanges) {
                         onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
@@ -330,7 +330,7 @@ const ShopView = ({
 
         const { item, price: initPrice, isFood } = shopItem;
         const price = getFinalConsumableItemPrice(item, initPrice);
-        const cannotAfford = (!isFood || !freeFood) && player.mesos < price;
+        const cannotAfford = (!isFood || !hasFreeFood) && player.mesos < price;
 
         return (
             <div className={classes.itemContainer} key={[item.name, i].join("-")}>
@@ -353,8 +353,8 @@ const ShopView = ({
                             [classes.cannotAfford]: cannotAfford,
                         })}
                     >
-                        {isFood && Boolean(freeFood) && <span className={classes.free}>FREE</span>}
-                        {(!isFood || !freeFood) && (
+                        {isFood && hasFreeFood && <span className={classes.free}>FREE</span>}
+                        {(!isFood || !hasFreeFood) && (
                             <>
                                 <img src={MesoCoinImage} alt={"Mesos"} />
                                 <span className={classes.priceLabel}>{price}</span>
