@@ -1,3 +1,4 @@
+import { useAbility } from "./../../battle/actions/actions";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import {
     AdvancedChargeImage,
@@ -33,6 +34,7 @@ import {
     FullMoonImage,
     GiantSnowmanImage,
     GlisteningStarImage,
+    GlowingOrbImage,
     HighWisdomImage,
     HolyMagicShellImage,
     IcicleImage,
@@ -3181,6 +3183,39 @@ export const picoPicoHammerAbility: Ability = {
                 {
                     damage: 2,
                 },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const waningBlast: Ability = {
+    name: "Waning Blast",
+    rarity: RARITIES.COMMON,
+    resourceCost: 0,
+    image: GlowingOrbImage,
+    description: "<b>Play:</b> Reduce this card's {{{ _damage_ }}} by <b>2.</b>",
+    onUse: {
+        abilityEffects: [
+            {
+                removeOnDiscard: false,
+                damage: -2,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 10,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: GlowingOrbImage,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
                 {
                     damage: 2,
                 },

@@ -229,6 +229,7 @@ export { default as GiantCentipedeMarbleImage } from "./GiantCentipedeMarble.png
 export { default as GiantSnowmanImage } from "./GiantSnowman.gif";
 export { default as GiganticSledgeImage } from "./GiganticSledge.png";
 export { default as GlisteningStarImage } from "./GlisteningStar.png";
+export { default as GlowingOrbImage } from "./GlowingOrb.png";
 export { default as GoldBarImage } from "./GoldBar.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";
 export { default as GoldenPrideImage } from "./GoldenPride.png";

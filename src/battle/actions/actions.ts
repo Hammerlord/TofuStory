@@ -2037,7 +2037,7 @@ const performAction = ({
         const battleSide = getState().battle[side];
         const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
 
-        const { vacuum, secondaryAction, autoCastAbilities, retreat, multiplier: multiplierConfig } = action;
+        const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
         const combatants = getState().battle[side];
         const targetIndices = calculateTargetIndices({
             action,

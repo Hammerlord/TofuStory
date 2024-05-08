@@ -624,7 +624,7 @@ export const calculateDamage = ({
     targetIndex?: number;
     selectedIndex?: number;
     action: Action | ActionOptionalProperties;
-    actionParent?: Ability | Item;
+    actionParent?: CombatAbility | Item; // TODO can this just be from `source` (source.source should probably be equivalent to this object) instead of having this separate param?
     multiplier?: number;
     source?: TriggerSource;
 }): number => {
@@ -634,7 +634,7 @@ export const calculateDamage = ({
         return 0;
     }
 
-    const baseDamage: number = (() => {
+    let baseDamage: number = (() => {
         if (action.secondaryDamage && targetIndex !== selectedIndex) {
             return action.secondaryDamage;
         }
@@ -650,6 +650,16 @@ export const calculateDamage = ({
 
         return damage;
     })();
+
+    const parentEffects = (actionParent as CombatAbility)?.effects;
+    if (parentEffects?.length) {
+        baseDamage += parentEffects.reduce((acc, effect: AbilityEffect) => {
+            return acc + effect.damage || 0;
+        }, 0);
+
+        baseDamage = Math.max(0, baseDamage);
+    }
+
     if (!actor) {
         return baseDamage;
     }
