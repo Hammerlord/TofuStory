@@ -666,7 +666,7 @@ export const ignite: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 3,
+                    stacks: 2,
                 },
             ],
         },
@@ -909,7 +909,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 3,
+                    stacks: 2,
                 },
             ],
             bonus: [
@@ -923,7 +923,7 @@ export const fireArrow: Ability = {
                     effects: [
                         {
                             ...burn,
-                            stacks: 3,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -1574,7 +1574,7 @@ export const goutOfFlame: Ability = {
                     effects: [
                         {
                             ...burn,
-                            stacks: 3,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1590,7 +1590,7 @@ export const goutOfFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 3,
+                    stacks: 2,
                 },
             ],
         },
@@ -2611,7 +2611,7 @@ export const ifrit: Ability = {
                                     effects: [
                                         {
                                             ...burn,
-                                            stacks: 3,
+                                            stacks: 2,
                                         },
                                     ],
                                 },
@@ -3058,7 +3058,7 @@ export const fireworks: Ability = {
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
-            effects: [{ ...burn, stacks: 3 }],
+            effects: [{ ...burn, stacks: 2 }],
         },
     ],
     upgrades: [
