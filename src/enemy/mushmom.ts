@@ -20,8 +20,8 @@ const callMushrooms: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [mushroomMinion], placement: "adjacent" },
-                { minion: [mushroomMinion], placement: "adjacent" },
+                { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },
+                { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },
             ],
         },
     ],
@@ -31,7 +31,7 @@ export const mushmom: Minion = {
     name: "Mushmom",
     image: MushmomImage,
     isBoss: true,
-    maxHP: 250,
+    maxHP: 225,
     abilities: [
         { ...whomp, resourceCost: 0, castTime: undefined },
         loaf,
@@ -71,7 +71,7 @@ export const mushmom: Minion = {
                 {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
-                    armor: 30,
+                    armor: 50,
                     removeDebuffs: true,
                     effects: [
                         {
