@@ -1688,7 +1688,7 @@ export const copySpell: Ability = {
     image: CakeTemptationImage,
     resourceCost: 1,
     rarity: RARITIES.RARE,
-    description: "Create a copy of a card in your hand.",
+    description: "Create a copy of a non-summon card in your hand.",
     depletedOnUse: true,
     actions: [
         {
@@ -1696,6 +1696,12 @@ export const copySpell: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+                filters: [
+                    {
+                        hasMinion: true,
+                        comparator: "not",
+                    },
+                ],
             },
         },
     ],

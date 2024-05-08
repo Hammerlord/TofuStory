@@ -1145,7 +1145,7 @@ export const doubleTime: Ability = {
     name: "Double Time",
     image: DoubleTimeImage,
     resourceCost: 1,
-    description: "Copy a card in your hand. It is Ephemeral.",
+    description: "Copy a non-summon card in your hand. It is Ephemeral.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1153,6 +1153,12 @@ export const doubleTime: Ability = {
             target: TARGET_TYPES.SELF,
             selectCards: {
                 type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+                filters: [
+                    {
+                        hasMinion: true,
+                        comparator: "not",
+                    },
+                ],
                 effects: [
                     {
                         removeParentCardAfterTurn: true,

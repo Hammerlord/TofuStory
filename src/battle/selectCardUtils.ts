@@ -100,9 +100,13 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
             return card.actions.some((action: Action) => actionTypes.includes(action.type));
         }
 
-        if (hasMinion && card.minion) {
-            return comparator !== "not";
+        if (hasMinion !== undefined) {
+            if ((hasMinion && card.minion) || (!hasMinion && !card.minion)) {
+                return comparator !== "not";
+            }
         }
+
+        return true;
     });
 };
 
