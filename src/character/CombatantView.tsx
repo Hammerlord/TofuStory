@@ -283,7 +283,7 @@ const useStyles = createUseStyles({
     },
     statusEffectAnnouncerContainer: {
         position: "absolute",
-        bottom: 0,
+        bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 1,
@@ -519,9 +519,6 @@ const CombatantView = forwardRef(
                                     {(oldState.HP > 0 || isLifeLinked) && (
                                         <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
-                                    <div className={classes.statusEffectAnnouncerContainer}>
-                                        <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
-                                    </div>
                                     <span className={classNames(classes.center, classes.statChangeContainer)}>
                                         <BlockIcon statChanges={statChanges} />
                                         <HitIcon statChanges={statChanges} />
@@ -546,6 +543,9 @@ const CombatantView = forwardRef(
                                 {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
                                 )}
+                                <div className={classes.statusEffectAnnouncerContainer}>
+                                    <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
+                                </div>
                             </>
                         )}
                     </div>
