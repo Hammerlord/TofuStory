@@ -550,7 +550,7 @@ export const poison: Effect = {
 
 export const attackPower: Effect = {
     name: "ATT Up",
-    description: "Increases attack damage by 1 + 10%.",
+    description: "Increases attack damage by 10% (rounded up).",
     icon: CrossedSwordsIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
