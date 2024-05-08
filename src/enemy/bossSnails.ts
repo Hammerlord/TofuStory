@@ -37,6 +37,7 @@ export const minionSnail: Minion = {
             icon: SnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
+                usableWhileStunned: true,
                 addCards: [
                     {
                         name: "Green Shell",
@@ -70,6 +71,7 @@ const blueMinionSnail: Minion = {
             icon: BlueSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
+                usableWhileStunned: true,
                 addCards: [
                     {
                         name: "Blue Shell",
@@ -104,6 +106,7 @@ const redMinionSnail: Minion = {
             icon: RedSnailShellImage,
             description: "Drops a throwable shell when it dies.",
             onDeath: {
+                usableWhileStunned: true,
                 addCards: [
                     {
                         name: "Red Shell",
