@@ -62,6 +62,7 @@ import {
     ParalyzeImage,
     ParfaitCupcakeImage,
     PepeRollingASnowballImage,
+    PicoPicoHammerImage,
     PieceOfBirthdayCakeImage,
     PingProjectileImage,
     PurpleEnergyBoltImage,
@@ -3141,6 +3142,49 @@ export const lucidDream: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+export const picoPicoHammerAbility: Ability = {
+    name: "Pico Pico Hammer",
+    resourceCost: 1,
+    image: PicoPicoHammerImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer at the main target.",
+    actions: [
+        {
+            damage: 4,
+            area: 1,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: PicoPicoHammerImage,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+        },
+        {
+            damage: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: PicoPicoHammerImage,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };

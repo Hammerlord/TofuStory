@@ -676,7 +676,7 @@ export const rush: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 6,
+            damage: 5,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
