@@ -518,11 +518,11 @@ export const checkCardActions = ({
             const { hand, playerSide } = getState().battle;
             const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
-            // Procced abilities do not have instanceIds, only actual cards do. Do not copy procs.
+            // Procced abilities do not have instanceIds, only actual cards do. Do not copy procs or unique abilities.
             const historyPile = player.abilityHistory
                 .slice()
                 .reverse()
-                .filter((ability) => ability.instanceId);
+                .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique);
 
             const cardsToHand = historyPile.slice(0, amount).map((card) =>
                 applyAbilityEventEffects({

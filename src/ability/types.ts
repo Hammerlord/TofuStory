@@ -553,7 +553,7 @@ export type Action = {
     addCardsToDeck?: Ability[];
     /** Adds cards to your current discard pile */
     addCardsToDiscard?: Ability[];
-    /** Add the player's last n played cards to the hand. */
+    /** Add the player's last n played cards to the hand. Cannot copy `unique` cards. */
     addLastPlayedCards?: {
         amount?: number;
         abilityEffects?: AbilityEffect[];
