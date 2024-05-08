@@ -1033,17 +1033,16 @@ const pieceOfCake: Ability = {
 export const conjureTreat: Ability = {
     name: "Conjure Treat",
     resourceCost: 1,
-    description: "Conjure a treat.",
+    description: "Add 3 treats to your deck.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     image: ParfaitCupcakeImage,
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.PRESET_CARDS,
-                cards: [parfaitCupcake, chocolateCupcake, pieceOfCake],
-            },
+            addCardsToDeck: [parfaitCupcake, chocolateCupcake, pieceOfCake],
         },
     ],
     upgrades: [
