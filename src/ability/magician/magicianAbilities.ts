@@ -2219,7 +2219,7 @@ export const moonBolt: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 6,
+            damage: 8,
             targetArea: 3,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
