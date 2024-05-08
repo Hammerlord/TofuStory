@@ -1065,6 +1065,11 @@ export const calculateBonus = ({
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
                 const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;
 
+                const totalBonusEffects = bonusEffects.map((effect) => ({
+                    ...effect,
+                    stacks: (effect.stacks || 1) * multiplier,
+                }));
+
                 return {
                     ...acc,
                     area: area + (bonus.area || 0),
@@ -1072,7 +1077,7 @@ export const calculateBonus = ({
                     secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
                     healing: healing + (bonus.healing || 0) * multiplier,
                     armor: armor + (bonus.armor || 0) * multiplier,
-                    effects: [...effects, ...bonusEffects],
+                    effects: [...effects, ...totalBonusEffects],
                     drawCards: drawCardsObj,
                 } as Action;
             }

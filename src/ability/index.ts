@@ -141,6 +141,7 @@ import {
     pummel,
     outrage,
     smack,
+    wallOfSpikes,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -247,7 +248,6 @@ export const JOB_CARD_MAP = {
             rightInTheKisser,
             cross,
             bladestorm,
-            //combatOrders, warrior does not have enough minions to justify including this now
             dustDevils,
             doubleTime,
             arsenal,
@@ -290,6 +290,7 @@ export const JOB_CARD_MAP = {
             pummel,
             outrage,
             smack,
+            wallOfSpikes,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },

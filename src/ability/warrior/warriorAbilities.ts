@@ -56,6 +56,7 @@ import {
     RockImage,
     RushImage,
     SelfRecoveryImage,
+    SharpSpikedPauldronImage,
     ShieldMasteryImage,
     ShieldRedImage,
     ShoutImage,
@@ -2812,6 +2813,59 @@ export const smack: Ability = {
             actions: [
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const wallOfSpikes: Ability = {
+    name: "Wall of Spikes",
+    image: SharpSpikedPauldronImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Thorns</b>. Until your next turn, double your Thorns.",
+    overrideBodyText: true,
+    resourceCost: 1,
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            effects: [{ ...thorns, stacks: 1 }],
+            type: ACTION_TYPES.EFFECT,
+        },
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            bonus: {
+                effects: [{ ...thorns, stacks: 1, duration: 2, onTurnStart: { removeEffect: true } }],
+                multiplier: {
+                    type: MULTIPLIER_TYPES.BUFFS,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    filters: [
+                        {
+                            property: "name",
+                            comparator: "eq",
+                            value: thorns.name,
+                        },
+                    ],
+                },
+                conditions: [
+                    {
+                        hasEffect: "Thorns",
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                    },
+                ],
+            },
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
