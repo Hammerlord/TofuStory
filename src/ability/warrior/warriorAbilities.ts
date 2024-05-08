@@ -61,6 +61,7 @@ import {
     ShoutImage,
     SilverAquilaImage,
     SlashBlastImage,
+    SmackdownFistImage,
     SpearSweepImage,
     SpikeBallImage,
     SpikedMaceImage,
@@ -2801,6 +2802,32 @@ export const outrage: Ability = {
                 {
                     damage: 2,
                 },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const smack: Ability = {
+    name: "Smack",
+    resourceCost: 0,
+    description: "Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}}",
+    image: SmackdownFistImage,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 7,
+            secondaryAction: {
+                damage: 1,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
                 {
                     damage: 2,
                 },

@@ -567,6 +567,7 @@ export { default as SlimeImage } from "./Slime.png";
 export { default as SlimeBubbleImage } from "./SlimeBubble.png";
 export { default as SlimeIdleImage } from "./SlimeIdle.gif";
 export { default as SlimeOmokImage } from "./SlimeOmok.png";
+export { default as SmackdownFistImage } from "./SmackdownFist.png";
 export { default as SmallTreeStumpImage } from "./SmallTreeStump.png";
 export { default as SnailImage } from "./Snail.png";
 export { default as SnailShellImage } from "./SnailShell.gif";
