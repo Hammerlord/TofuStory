@@ -2,6 +2,7 @@ import { attack } from "./../enemy/abilities";
 import {
     BlueSnailShellImage,
     BounceImage,
+    CombatOrdersImage,
     ComboSynergyImage,
     CynicalOrangeMushroomJumpImage,
     EncroachingDarknessImage,
@@ -437,6 +438,30 @@ export const berserkingRelic: Ability = {
     ],
 };
 
+export const combatOrders: Ability = {
+    name: "Combat Orders",
+    resourceCost: 1,
+    image: CombatOrdersImage,
+    description: "Commands targeted allies to attack.",
+    actions: [
+        {
+            area: 1,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            induceCombatantAttack: true,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    area: 1,
+                },
+            ],
+        },
+    ],
+};
+
 export const NEUTRAL_ABILITIES = [
     shellThrow,
     bounce,
@@ -448,4 +473,5 @@ export const NEUTRAL_ABILITIES = [
     provoke,
     stomp,
     berserkingRelic,
+    combatOrders,
 ];

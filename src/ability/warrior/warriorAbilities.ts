@@ -1048,30 +1048,6 @@ export const bladestorm: Ability = {
     ],
 };
 
-export const combatOrders: Ability = {
-    name: "Combat Orders",
-    resourceCost: 1,
-    image: CombatOrdersImage,
-    description: "Commands targeted allies to attack.",
-    actions: [
-        {
-            area: 1,
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            induceCombatantAttack: true,
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    area: 1,
-                },
-            ],
-        },
-    ],
-};
-
 export const dustDevilsActiveAbility = {
     name: "Dust Devils",
     image: TornadoImage,
