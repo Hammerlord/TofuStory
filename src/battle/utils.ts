@@ -924,14 +924,14 @@ export const applyVacuum = ({
 
 export const getInducedAttack = (actor: Combatant): Action => {
     let basicAttackDamage = 0;
-
-    const attackAbility = actor.abilities.find((ability) => ability.name === attack.name || ability.name === shoot.name);
+    const abilities = actor.abilities || [];
+    const attackAbility = abilities?.find((ability) => ability.name === attack.name || ability.name === shoot.name);
     // If there is an ability called "Attack" or "Shoot", just grab it
     if (attackAbility) {
         return { ...attackAbility.actions[0], playbackTime: INDUCED_ACTION_PLAYBACK_SPEED };
     }
 
-    for (const ability of actor.abilities) {
+    for (const ability of abilities) {
         if (!ability.resourceCost) {
             for (const action of ability.actions) {
                 if (action.damage) {
