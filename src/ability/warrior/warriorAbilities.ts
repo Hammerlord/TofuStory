@@ -149,7 +149,7 @@ export const charge: Ability = {
             damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [{ ...bleed, stacks: 3 }],
+            effects: [{ ...bleed, stacks: 2 }],
         },
     ],
     upgrades: [
@@ -908,7 +908,7 @@ export const rend: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 4,
+                    stacks: 3,
                 },
             ],
         },
