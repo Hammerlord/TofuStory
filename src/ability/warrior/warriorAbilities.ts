@@ -940,7 +940,7 @@ export const whirlwind: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 2,
+                    stacks: 1,
                 },
             ],
         },
