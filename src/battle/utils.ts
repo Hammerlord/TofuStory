@@ -389,7 +389,7 @@ export const getMultiplier = ({
         return Math.floor(filtered * multValue);
     }
 
-    if (type === MULTIPLIER_TYPES.EFFECT_DURATIONS) {
+    if (type === MULTIPLIER_TYPES.EFFECT_STACKS) {
         if (!combatant) {
             return 0;
         }
@@ -404,14 +404,7 @@ export const getMultiplier = ({
                 return acc;
             }
 
-            let calcDuration = effect.duration;
-            // 0 duration effects count as 1 duration because the effect is technically still hanging around
-            if (calcDuration === 0) {
-                calcDuration = 1;
-            } else if (!calcDuration || calcDuration === -1) {
-                calcDuration = Infinity; // Hmmmm infinite duration = infinite damage?
-            }
-            return acc + calcDuration;
+            return acc + (effect.stacks || 1);
         }, 0);
     }
 

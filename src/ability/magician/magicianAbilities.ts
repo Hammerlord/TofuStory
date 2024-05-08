@@ -1746,7 +1746,7 @@ export const combust: Ability = {
     image: ParalyzeImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals damage equal to pending Burn damage on the target.",
+    description: "Deals <b>{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each {{{ _burn_ }}} on the target.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -1757,7 +1757,7 @@ export const combust: Ability = {
                 damage: 3,
                 multiplier: {
                     calculationTarget: CONDITION_TARGETS.TARGET,
-                    type: MULTIPLIER_TYPES.EFFECT_DURATIONS,
+                    type: MULTIPLIER_TYPES.EFFECT_STACKS,
                     filters: [{ property: "name", value: "Burn", comparator: "eq" }],
                 },
             },
