@@ -686,6 +686,7 @@ export interface AbilityUpgrade {
         area?: number;
 
         selectCards?;
+        addCards?;
         bonus?: { [key in keyof Bonus]?: Bonus[key] };
         radiate?;
         multiplier?;

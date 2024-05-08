@@ -1274,16 +1274,45 @@ export const glacier: Ability = {
 export const reboundingShard: Ability = {
     name: "Rebounding Shard",
     image: NimbleJewelImage,
+    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    reusable: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 6,
+            damage: 7,
+            addCards: [
+                {
+                    name: "Rebounding Shard",
+                    image: NimbleJewelImage,
+                    level: 1,
+                    resourceCost: 1,
+                    removeAfterTurn: true,
+                    rarity: RARITIES.COMMON,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
+                            icon: NimbleJewelImage,
+                            animation: ANIMATION_TYPES.YOYO,
+                            damage: 7,
+                        },
+                    ],
+                    upgrades: [
+                        {
+                            actions: [
+                                {
+                                    damage: 3,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
         },
     ],
     upgrades: [
@@ -1291,6 +1320,9 @@ export const reboundingShard: Ability = {
             actions: [
                 {
                     damage: 3,
+                    addCardOptions: {
+                        upgradeLevels: 1,
+                    },
                 },
             ],
         },
