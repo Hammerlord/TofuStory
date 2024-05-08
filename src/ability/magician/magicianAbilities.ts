@@ -737,8 +737,7 @@ export const chainLightning: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 8,
-            secondaryDamage: 6,
+            damage: 9,
             targetArea: 5,
             numTargets: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
