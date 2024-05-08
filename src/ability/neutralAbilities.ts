@@ -423,6 +423,7 @@ export const berserkingRelic: Ability = {
                                 target: TARGET_TYPES.SELF,
                                 animation: ANIMATION_TYPES.SPIN,
                                 damage: 3,
+                                playbackTime: 400,
                             },
                         ],
                     },
