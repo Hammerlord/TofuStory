@@ -154,10 +154,10 @@ export const routeKerningToPerion: Route = {
     ],
     multiWaveEnemies: [
         [null, stump, stump, stump, null],
-        [null, redSnail, stump, redSnail, null],
-        [null, blueSnail, wildBoar, blueSnail, null],
+        [blueSnail, redSnail, stump, redSnail, blueSnail],
+        [null, redSnail, wildBoar, redSnail, null],
         [null, null, fireBoar, null, null],
-        [null, blueSnail, axeStump, blueSnail, null],
+        [null, redSnail, axeStump, redSnail, null],
         [null, stump, null, axeStump, null],
         [null, stump, null, wildBoar, null],
         [null, orangeMushroom, null, orangeMushroom, null],
