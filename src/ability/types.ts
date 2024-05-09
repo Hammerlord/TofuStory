@@ -506,6 +506,7 @@ export type MoveCards = {
     from: CARD_PILE_TYPES;
     to: CARD_PILE_TYPES;
     amount: number;
+    filters?: { property: string; comparator: Comparator; value: any }[];
     moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
 };
 

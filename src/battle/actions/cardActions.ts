@@ -214,7 +214,7 @@ const handleMoveCards = ({
     source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
-        const { from, to, amount = 1, moveType } = moveCards;
+        const { from, to, amount = 1, moveType, filters } = moveCards;
         const validKeys = Object.values(CARD_PILE_TYPES);
         if (!validKeys.includes(from) || !validKeys.includes(to)) {
             return;
@@ -228,8 +228,22 @@ const handleMoveCards = ({
 
         // If there are not enough cards in the `from` pile, just whiff the rest
         const cardsToMove = fromPile
-            // Card cannot move itself (eg. if it was played and went to discard, it cannot move itself from the discard pile)
-            .filter((card) => parentCardId !== card.instanceId)
+            .filter((card) => {
+                // Card cannot move itself (eg. if it was played and went to discard, it cannot move itself from the discard pile)
+                if (parentCardId === card.instanceId) {
+                    return false;
+                }
+
+                if (filters) {
+                    return filters.some((filter) => {
+                        const { value, property, comparator } = filter;
+                        const propertyVal = _.get(card, property);
+                        return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                    });
+                }
+
+                return true;
+            })
             .slice(0, amount);
 
         const filteredCardsToMove = cardsToMove.filter((card) => {
