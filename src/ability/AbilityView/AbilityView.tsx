@@ -609,7 +609,7 @@ const AbilityView = forwardRef(
                                             {minionHostileEffect && (
                                                 <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
                                             )}
-                                            {minionHostileAction.area > 0 && (
+                                            {minionHostileAction?.area > 0 && (
                                                 <span className={classes.minionAbilityArea}>
                                                     <AreaIndicator {...minionHostileAction} size="sm" />
                                                 </span>

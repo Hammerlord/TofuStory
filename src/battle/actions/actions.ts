@@ -710,7 +710,9 @@ const onEffectEventTrigger = ({
                 battle: getState().battle,
                 source: procSource,
             });
-            const targetIds = targetIndices.map((i: number) => targets[i].id);
+
+            const targetIds = targetIndices.map((i: number) => targets[i]?.id).filter((v) => v !== undefined);
+
             const updated = getUpdatedStats({
                 ...getState().battle,
                 targetIds,

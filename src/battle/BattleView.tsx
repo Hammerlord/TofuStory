@@ -323,7 +323,7 @@ const BattlefieldContainer = () => {
     const actorId: string | undefined = (selectedMinion || player)?.id;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable) {
+        if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable || !ally.abilities?.length) {
             return false;
         }
 
@@ -917,7 +917,9 @@ const BattlefieldContainer = () => {
                 source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY },
             });
 
-            const targetIds = targetIndices.map((i: number) => previousCombatantStates.battle[hoveredCombatant.side]?.[i]?.id);
+            const targetIds = targetIndices
+                .map((i: number) => previousCombatantStates.battle[hoveredCombatant.side]?.[i]?.id)
+                .filter((v) => v !== undefined);
 
             const updatedStatsProperties = {
                 actorId,

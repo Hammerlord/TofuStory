@@ -187,7 +187,7 @@ const AnimationCanvas = ({
 
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
     const targetElement = targets[selectedIndex]?.current;
-    const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v);
+    const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v !== undefined);
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
     const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef() as any);

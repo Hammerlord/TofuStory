@@ -59,7 +59,8 @@ const ParticleCanvas = ({ event, allyRefs = [], enemyRefs = [] }: { event?: Even
         const targetElements = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
         if (action?.animation === ANIMATION_TYPES.FIREWORKS) {
-            const allTargets = allTargetIndices.map((i) => targetElements[i]?.current).filter((v) => v);
+            const allTargets = allTargetIndices.map((i) => targetElements[i]?.current).filter((v) => v !== undefined);
+
             setTimeout(() => {
                 particles.current.updateOptions(fireworksSettings);
                 allTargets.forEach((element) => {
