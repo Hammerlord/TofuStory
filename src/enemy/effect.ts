@@ -379,7 +379,7 @@ export const resist: Effect = {
 
 export const temporaryResist: Effect = {
     ...resist,
-    description: "Immune to the next {{ stacks }} debuffs.",
+    description: "Immune to the next {{ stacks }} debuff applications.",
     stacks: 3,
     onFailedToReceiveEffect: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

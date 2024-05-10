@@ -218,7 +218,7 @@ export const ward: Effect = {
     ...immunity,
     type: EFFECT_TYPES.ATTACK_IMMUNITY,
     name: "Ward",
-    description: "Deflects the next attack.",
+    description: "Deflects damage from the next attack.",
     duration: Infinity,
     onReceiveAttack: { removeEffect: true },
 };
