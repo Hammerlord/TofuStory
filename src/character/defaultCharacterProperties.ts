@@ -35,7 +35,7 @@ const defaultCharacterProperties = {
     weapon: OldGladiusImage,
     effects: [],
     items: [rageStone],
-    drawCardsPerTurn: 3,
+    drawCardsPerTurn: 4,
     weaponSkins: [
         { name: "Old Gladius", image: OldGladiusImage },
         { name: "Pico Pico", image: PicoPicoHammerImage },
