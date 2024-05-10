@@ -258,6 +258,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     hitRandomTarget?: boolean;
     portraitAnimationOptions?: {
         fadeInOut?: boolean; // Exclusive with combatant portrait animations (you can only have one animation).
+        filter?: string;
     };
     // Treated as true by default. If false, eg. removeDebuffs has no effect
     dispellable?: boolean;
