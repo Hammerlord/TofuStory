@@ -22,6 +22,7 @@ export const balsaDummy: Minion = {
             type: EFFECT_TYPES.NONE,
             onDeath: {
                 target: TARGET_TYPES.SELF,
+                usableWhileStunned: true,
                 ability: {
                     image: basicDummy.image,
                     name: "Reinforcement!",
@@ -64,6 +65,7 @@ export const mapleDummy: Minion = {
             type: EFFECT_TYPES.NONE,
             onDeath: {
                 target: TARGET_TYPES.SELF,
+                usableWhileStunned: true,
                 ability: {
                     image: basicDummy.image,
                     name: "Reinforcement!",
