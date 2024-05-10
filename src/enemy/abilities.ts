@@ -9,6 +9,7 @@ import {
 } from "../images";
 import { CrossedSwordsIcon, DizzyIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
 import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+import { dazedCurse } from "./curseCards";
 
 export const attack: Ability = {
     name: "Attack",
@@ -136,20 +137,7 @@ export const whomp: Ability = {
             damage: 5,
             area: 1,
             secondaryDamage: 3,
-            addCardsToDiscard: [
-                {
-                    name: "Dazed",
-                    image: DizzyIcon,
-                    removeAfterTurn: true,
-                    unplayable: true,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.HINDER,
-                            target: TARGET_TYPES.SELF,
-                        },
-                    ],
-                },
-            ],
+            addCardsToDiscard: [dazedCurse],
         },
     ],
 };

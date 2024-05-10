@@ -139,6 +139,7 @@ import {
 } from "./../ability/types";
 import { bash, block, cleave } from "./../ability/warrior/warriorAbilities";
 import { attack, doOtherWave, doWave, enemyHaste, loaf, whomp } from "./abilities";
+import { gooCurse, sealCard } from "./curseCards";
 import {
     armorDown,
     championsRibbon,
@@ -152,7 +153,6 @@ import {
     temporaryResist,
     burrowing,
 } from "./effect";
-import { sealCard } from "./jrBoogie";
 
 export const snail: Minion = {
     name: "Snail",
@@ -2675,36 +2675,7 @@ export const bubbling: Minion = {
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    addCardsToDiscard: [
-                        {
-                            name: "Goo",
-                            image: SquishyLiquidImage,
-                            resourceCost: 2,
-                            description: "Reduce cost by 1 for every attack played this turn.",
-                            depletedOnUse: true,
-                            onAbility: {
-                                abilityEffects: [
-                                    {
-                                        resourceCost: -1,
-                                    },
-                                ],
-                                conditions: [
-                                    {
-                                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                                        isOffense: true,
-                                        comparator: "eq",
-                                    },
-                                ],
-                            },
-                            actions: [
-                                {
-                                    type: ACTION_TYPES.HINDER,
-                                    target: TARGET_TYPES.SELF,
-                                },
-                            ],
-                        },
-                    ],
+                    addCardsToDiscard: [gooCurse],
                 },
             ],
         },
