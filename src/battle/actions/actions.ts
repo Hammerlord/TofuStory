@@ -1353,7 +1353,9 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
                     const { id, isPlayer } = combatant;
                     // Do not replace any of the minions summoned in the current action
-                    if (!isPlayer && id !== actorId && minionsSummoned.every((minion) => minion.id !== id)) {
+                    const isNotNewlySummonedMinion = minionsSummoned.every((minion) => minion.id !== id);
+                    const isTributable = !combatant.disableTribute; // TODO minionToSummon bypassDisableTribute
+                    if (!isPlayer && id !== actorId && isNotNewlySummonedMinion && isTributable) {
                         acc.push(i);
                     }
 

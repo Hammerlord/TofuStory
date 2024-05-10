@@ -201,12 +201,13 @@ export const isValidTarget = ({
     }
 
     // Get the first action target to determine whether a valid target has been clicked.
-    const { actions = [], minion, minionOptions } = ability;
+    const { actions = [], minion } = ability;
     const actorData = findCombatantData(getState, actorId);
     const { friendly: playerSide, hostile: enemySide } = actorData || {};
 
     if (minion) {
-        const isValidSpot = !playerSide[index]?.isPlayer;
+        const { isPlayer, disableTribute } = playerSide[index] || {};
+        const isValidSpot = !isPlayer && (!disableTribute || minion.bypassDisableTribute);
         return side === BATTLEFIELD_SIDES.PLAYER_SIDE && Boolean(isValidSpot);
     }
 

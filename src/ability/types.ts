@@ -310,6 +310,10 @@ export interface Minion {
         transform?: string;
     };
     uncontrollable?: boolean;
+    // If true, the minion cannot be targeted for Tribute Summon.
+    disableTribute?: boolean;
+    // If true, the minion can be played over another minion with disableTribute: true
+    bypassDisableTribute?: boolean;
 }
 
 export type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes" | "not-includes";
