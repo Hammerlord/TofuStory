@@ -2,7 +2,7 @@ import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
 import uuid from "uuid";
 import { JOB_CARD_MAP } from "../../ability";
-import { getAbilityUpgradedFromEffects, isOffensiveAbility, isSupportAbility } from "../../ability/AbilityView/utils";
+import { getAbilityUpgradedFromEffects, isOffensiveAbility, isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -1908,7 +1908,7 @@ export const calculateTargetIndices = ({
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
     source: TriggerSource;
 }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0 } = action;
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0, targetName } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
     let extraTargetIndices = getValidTargetIndices(battle[side], {
@@ -1927,6 +1927,10 @@ export const calculateTargetIndices = ({
         const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
         if (excludePrimaryTarget) {
             return inArea && i !== selectedIndex;
+        }
+
+        if (targetName === combatant?.name) {
+            return true;
         }
 
         return inArea;
@@ -2049,11 +2053,10 @@ const performAction = ({
             source: parentSource,
         });
         const targetIds = targetIndices.map((i: number) => combatants[i].id);
-        const isHostileTarget = action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE;
 
         // Don't try to target things that are all gone/dead.
         // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
-        if (isHostileTarget && targetIds.length === 0) {
+        if (isOffensiveAction(action) && targetIds.length === 0) {
             return;
         }
 
@@ -2365,6 +2368,16 @@ const autoSelectActionTarget = ({
             return {
                 index,
                 side: friendlySide,
+            };
+        }
+    }
+
+    if (target === TARGET_TYPES.HOSTILE_CHARACTER) {
+        const index = hostile.findIndex((ally) => ally?.name === targetName);
+        if (index > -1) {
+            return {
+                index,
+                side: hostileSide,
             };
         }
     }

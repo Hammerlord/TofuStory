@@ -1,4 +1,4 @@
-import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 
 export enum TARGET_TYPES {
@@ -8,6 +8,7 @@ export enum TARGET_TYPES {
     RANDOM_HOSTILE = "random-hostile",
     RANDOM_FRIENDLY = "random-friendly",
     FRIENDLY_CHARACTER = "friendly-character",
+    HOSTILE_CHARACTER = "hostile-character",
     MOVE = "move",
     PLAYER = "player",
 }

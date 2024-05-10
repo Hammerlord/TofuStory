@@ -51,7 +51,7 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
 };
 
 export const isOffensiveAction = (action: Action): boolean => {
-    return action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE || false;
+    return [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE, TARGET_TYPES.HOSTILE_CHARACTER].includes(action.target);
 };
 
 export const isOffensiveAbility = (ability: Ability): boolean => {
