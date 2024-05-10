@@ -77,12 +77,14 @@ export const lordBalrog: Minion = {
     isBoss: true,
     image: BalrogImage,
     imageOptions: {
-        minWidth: "200%",
-        minHeight: "125%",
-        position: "absolute",
-        left: "-45%",
-        bottom: "-35px",
-        maxHeight: "unset",
+        styles: {
+            minWidth: "200%",
+            minHeight: "125%",
+            position: "absolute",
+            left: "-45%",
+            bottom: "-35px",
+            maxHeight: "unset",
+        },
     },
     abilities: [
         {

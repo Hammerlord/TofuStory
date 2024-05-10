@@ -426,12 +426,14 @@ const CombatantView = forwardRef(
                 oldState?.effects?.find(({ portraitAnimationOptions }) => portraitAnimationOptions?.filter)?.portraitAnimationOptions ||
                 {};
 
+            const customStyles = oldState?.imageOptions?.styles;
+
             if (typeof portrait === "string") {
                 return (
                     <img
                         src={portrait}
                         {...props}
-                        style={{ ...oldState?.imageOptions, filter, ...props?.style }}
+                        style={{ ...customStyles, filter, ...props?.style }}
                         draggable="false"
                         ref={characterImageRef}
                     />
@@ -439,7 +441,7 @@ const CombatantView = forwardRef(
             } else if (typeof portrait === "function") {
                 const ImageNode = portrait as Function;
                 return (
-                    <div {...props} style={{ ...oldState?.imageOptions, filter, ...props?.style }} ref={characterImageRef}>
+                    <div {...props} style={{ ...customStyles, filter, ...props?.style }} ref={characterImageRef}>
                         <ImageNode />
                     </div>
                 );

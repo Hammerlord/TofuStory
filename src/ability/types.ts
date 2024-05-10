@@ -292,12 +292,7 @@ export interface Minion {
         filter?: string;
         animation?: "float";
         fadeInOut?: boolean;
-        minWidth?: string;
-        minHeight?: string;
-        position?: string;
-        left?: string;
-        bottom?: string;
-        maxHeight?: string;
+        styles?: any; // Custom CSS styles to be applied onto the image
     };
     maxHP: number;
     HP?: number;
