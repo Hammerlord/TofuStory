@@ -70,7 +70,7 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         position: "absolute",
         width: "100%",
-        zIndex: 1,
+        zIndex: 2,
     },
     inner: {
         height: "100%",
@@ -427,11 +427,19 @@ const CombatantView = forwardRef(
                 {};
 
             if (typeof portrait === "string") {
-                return <img src={portrait} {...props} style={{ filter, ...props?.style }} draggable="false" ref={characterImageRef} />;
+                return (
+                    <img
+                        src={portrait}
+                        {...props}
+                        style={{ ...oldState?.imageOptions, filter, ...props?.style }}
+                        draggable="false"
+                        ref={characterImageRef}
+                    />
+                );
             } else if (typeof portrait === "function") {
                 const ImageNode = portrait as Function;
                 return (
-                    <div {...props} style={{ filter, ...props?.style }} ref={characterImageRef}>
+                    <div {...props} style={{ ...oldState?.imageOptions, filter, ...props?.style }} ref={characterImageRef}>
                         <ImageNode />
                     </div>
                 );
@@ -501,7 +509,11 @@ const CombatantView = forwardRef(
 
                                     {animation === ANIMATION_TYPES.SHOUT &&
                                         Array.from({ length: 3 }).map((_, i) =>
-                                            getImageNode({ key: i, className: classes.shouting, style: { animationDelay: `${0.1 * i}s` } })
+                                            getImageNode({
+                                                key: i,
+                                                className: classes.shouting,
+                                                style: { animationDelay: `${0.1 * i}s` },
+                                            })
                                         )}
                                     {oldState.HP > 0 && (
                                         <div
