@@ -882,6 +882,7 @@ export const checkEventTrigger = ({
             );
 
             const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
+            // TODO this is causing an insidious bug where if the effect name is the same as its parent/source name, it doesn't proc
             const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
             const historyKey = [effectEventKey, id].join("-");
             const history = source?.triggerHistory || [];
@@ -1937,7 +1938,7 @@ export const calculateTargetIndices = ({
             return inArea && i !== selectedIndex;
         }
 
-        if (targetName === combatant?.name) {
+        if (targetName && targetName === combatant?.name) {
             return true;
         }
 
