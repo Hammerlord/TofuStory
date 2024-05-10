@@ -2052,7 +2052,8 @@ const performAction = ({
             battle: getState().battle,
             source: parentSource,
         });
-        const targetIds = targetIndices.map((i: number) => combatants[i].id);
+
+        const targetIds = targetIndices.map((i: number) => combatants[i]?.id).filter((v) => v !== undefined);
 
         // Don't try to target things that are all gone/dead.
         // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
