@@ -1307,18 +1307,21 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
-        const { friendly, friendlySide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
+        const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
         const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
+        const mutableHostile = hostile.slice();
 
         for (const summon of action.summon) {
-            const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false } = summon;
+            const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false, side } = summon;
+            const mutableSide = side === hostileSide ? mutableHostile : mutableFriendly;
+
             let pos: number;
-            if (typeof positionIndex === "number" && !mutableFriendly[positionIndex]?.HP) {
+            if (typeof positionIndex === "number" && !mutableSide[positionIndex]?.HP) {
                 pos = positionIndex;
             } else if (placement === "adjacent") {
-                const validSummonIndices = getPossibleSummonIndices(mutableFriendly);
+                const validSummonIndices = getPossibleSummonIndices(mutableSide);
                 const isValidIndex = (index: number) => validSummonIndices.includes(index);
-                for (let i = 1; i < mutableFriendly.length; ++i) {
+                for (let i = 1; i < mutableSide.length; ++i) {
                     if (isValidIndex(actorIndex - i)) {
                         pos = actorIndex - i;
                         break;
@@ -1332,7 +1335,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             } else if (placement === "on-top") {
                 pos = actorIndex;
             } else {
-                pos = getRandomItem(getPossibleSummonIndices(mutableFriendly));
+                pos = getRandomItem(getPossibleSummonIndices(mutableSide));
             }
 
             let isTributeKill = false;
@@ -1341,7 +1344,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                     break;
                 }
 
-                const existingMinionIndices = mutableFriendly.reduce((acc, combatant, i) => {
+                const existingMinionIndices = mutableSide.reduce((acc, combatant, i) => {
                     if (!combatant) {
                         return acc;
                     }
@@ -1365,7 +1368,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             const availableMinions = minion.filter((minion: Minion | string) => {
                 if (noDuplicateMinions) {
                     const minionName = typeof minion === "string" ? minion : minion?.name;
-                    return mutableFriendly.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
+                    return mutableSide.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
                 }
 
                 return true;
@@ -1391,7 +1394,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
             if (summonedMinion) {
                 minionsSummoned.push(summonedMinion);
-                mutableFriendly[pos] = summonedMinion;
+                mutableSide[pos] = summonedMinion;
 
                 if (isTributeKill) {
                     tributeSummonedMinions.push(summonedMinion.id);
@@ -1403,6 +1406,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             dispatch(
                 updateBattle({
                     [friendlySide]: mutableFriendly,
+                    [hostileSide]: mutableHostile,
                 })
             );
 

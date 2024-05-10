@@ -484,6 +484,7 @@ export interface Morph {
 }
 
 export type ActionSummon = {
+    // Using this property, something can be summoned on the opposite side of the battlefield
     side?: BATTLEFIELD_SIDES;
     // If more than one minion is provided, chooses one randomly.
     minion: (Minion | string)[];
