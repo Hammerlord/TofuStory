@@ -423,7 +423,7 @@ const CombatantView = forwardRef(
             const portrait = oldState?.effects?.find(({ override }) => override?.portrait)?.override?.portrait || oldState?.image;
             const { filter } =
                 oldState?.imageOptions ||
-                oldState?.effects?.find(({ portraitAnimationOptions }) => portraitAnimationOptions.filter)?.portraitAnimationOptions ||
+                oldState?.effects?.find(({ portraitAnimationOptions }) => portraitAnimationOptions?.filter)?.portraitAnimationOptions ||
                 {};
 
             if (typeof portrait === "string") {

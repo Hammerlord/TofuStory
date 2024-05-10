@@ -484,6 +484,7 @@ export interface Morph {
 }
 
 export type ActionSummon = {
+    side?: BATTLEFIELD_SIDES;
     // If more than one minion is provided, chooses one randomly.
     minion: (Minion | string)[];
     // Which specific index position on the friendly side of the board to summon the minion. If the slot is occupied, this will fail quietly. If not provided, a random valid slot will be chosen.
