@@ -110,7 +110,7 @@ const skelegonMinion: Minion = {
     ],
 };
 
-const agonyCard: Ability = {
+export const agonyCard: Ability = {
     name: "Agony",
     image: SkeletonOfHorrorImage,
     description:
