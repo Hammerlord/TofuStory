@@ -504,7 +504,7 @@ const CombatantView = forwardRef(
                             {oldState && (
                                 <>
                                     <Tooltip open={Boolean(dialog)} title={dialog} placement="top">
-                                        <div>{imageNode}</div>
+                                        {imageNode}
                                     </Tooltip>
 
                                     {animation === ANIMATION_TYPES.SHOUT &&
