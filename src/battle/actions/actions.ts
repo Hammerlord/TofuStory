@@ -566,12 +566,31 @@ export const handleDoTs =
         });
     };
 
-const checkRemoveEffect =
-    ({ effect, effectEvent, source, ownerId }) =>
+/**
+ * Handles updating effect lifecycle properties
+ * Restores its duration based on the effect event configuration
+ * And/or removes the effect if it has run out of stacks/was flagged for removal by the effect event
+ */
+const checkUpdateEffectLifecycle =
+    ({
+        effect,
+        effectEvent,
+        source,
+        ownerId,
+    }: {
+        effect: CombatEffect;
+        effectEvent: EffectEventTrigger;
+        source: TriggerSource;
+        ownerId: string;
+    }) =>
     (dispatch, getState) => {
-        const { removeEffect, decrementStacks = 0 } = effectEvent;
+        const { removeEffect, decrementStacks = 0, resetDuration } = effectEvent;
 
-        const updatedEffect = { ...effect, stacks: (effect.stacks || 1) - (decrementStacks || 0) };
+        const updatedEffect = {
+            ...effect,
+            stacks: (effect.stacks || 1) - (decrementStacks || 0),
+            duration: resetDuration ? effect.originalDuration : effect.duration,
+        };
         const { combatant } = findCombatantData(getState, ownerId) || {};
 
         if (removeEffect || updatedEffect.stacks === 0) {
@@ -581,7 +600,10 @@ const checkRemoveEffect =
 
             dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, source }]));
             dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-        } else if (decrementStacks && updatedEffect.stacks > 0) {
+            return;
+        }
+
+        if ((decrementStacks && updatedEffect.stacks > 0) || resetDuration) {
             const newEffects = combatant.effects.map((e: CombatEffect) => {
                 return e.id === effect.id ? updatedEffect : e;
             });
@@ -662,7 +684,7 @@ const onEffectEventTrigger = ({
         const chanceCheckPass = Math.random() < chance * chanceMultiplier;
 
         if (conditionsPassed && chanceCheckPass) {
-            dispatch(checkRemoveEffect({ effect, effectEvent, source, ownerId }));
+            dispatch(checkUpdateEffectLifecycle({ effect, effectEvent, source, ownerId }));
         } else {
             return;
         }

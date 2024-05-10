@@ -364,6 +364,12 @@ const revive: EffectEventTrigger = {
                     ],
                 },
             },
+            onFriendlyDeath: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                resetDuration: true,
+                usableWhileStunned: true,
+                usableWhileDead: true,
+            },
         },
     ],
 };
