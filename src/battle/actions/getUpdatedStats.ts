@@ -229,14 +229,16 @@ export const getUpdatedStats = ({
                             portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
                         };
                     }
+                    const duration = getEffectDuration(effect);
                     return {
                         ...cloneDeep(effect),
-                        duration: getEffectDuration(effect),
+                        duration,
                         override: overrideObj,
                         uptime: effect.uptime || 1,
                         id: uuid.v4(),
                         applierId: actorId,
                         originalAbilityId: (actionParent as CombatAbility)?.instanceId,
+                        originalDuration: duration,
                     };
                 });
 

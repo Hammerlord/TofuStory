@@ -98,6 +98,7 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
     disableTriggerFromProcs?: boolean;
     excludeEffectOwner?: boolean; // For onFriendlyAttacked/onFriendly<event>s, if true, do not include the effect owner in the event triggers
     drawOriginalAbility?: boolean; // Draw the ability that applied this effect. See CombatEffect.originalAbilityId. See Magician ability Ping for an example of how this is used.
+    resetDuration?: boolean; // If this event occurs, set the duration back to its original duration
 };
 
 export enum EFFECT_EVENT_KEYS {
@@ -282,6 +283,7 @@ export type CombatEffect = Effect & {
     uptime: number;
     applierId?: string; // The id of the combatant that applied this, if applicable
     originalAbilityId?: string; // The id of the CombatAbility that applied this, if applicable
+    originalDuration?: number;
 };
 
 export interface Minion {
