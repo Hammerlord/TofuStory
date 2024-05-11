@@ -124,6 +124,7 @@ const Camp = ({
     const [completedActivities, setCompletedActivities] = useState({});
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
+    const [numTransmutations, setNumTransmutations] = useState(2);
     const [isTransmutingAbility, setIsTransmutingAbility] = useState(false);
     const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
         1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
@@ -152,10 +153,12 @@ const Camp = ({
         setNumActivitiesRemaining((prev) => prev - 1);
     };
 
-    const doneTransmute = () => {
+    const doneTransmute = (closeTransmutationWindow?: boolean) => {
         completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
         setNumActivitiesRemaining((prev) => prev - 1);
-        setIsTransmutingAbility(false);
+        if (closeTransmutationWindow) {
+            setIsTransmutingAbility(false);
+        }
     };
 
     const handleTransmute = (options: { card: string; for: CombatAbility }) => {
@@ -165,7 +168,9 @@ const Camp = ({
             const newDeck = deck.slice();
             newDeck[cardIndex] = forCard;
             updateDeck(newDeck);
-            doneTransmute();
+            const newTransmutations = numTransmutations - 1;
+            setNumTransmutations(newTransmutations);
+            doneTransmute(newTransmutations === 0);
         }
     };
 
@@ -174,7 +179,8 @@ const Camp = ({
     }
 
     const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
-    const canTransmuteAbility = !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] && numActivitiesRemaining > 0 && hasTransmutationItem;
+    const canTransmuteAbility =
+        !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] && numActivitiesRemaining > 0 && hasTransmutationItem && numTransmutations > 0;
 
     if (isTransmutingAbility) {
         return (
@@ -184,7 +190,7 @@ const Camp = ({
                 deck={deck}
                 player={player}
                 onExit={() => setIsTransmutingAbility(false)}
-                numTransmutations={canTransmuteAbility ? 2 : 0}
+                numTransmutations={numTransmutations}
                 disableBackdrop={true}
             />
         );
@@ -235,7 +241,7 @@ const Camp = ({
                                     <img src={PersonalAnvilImage} />
                                 </div>
                                 <div className={classes.activityName}>TRANSMUTE</div>
-                                Replace an ability with 1 of 3 options.
+                                Replace an ability with 1 of 3 options. (Up to 2 times.)
                             </div>
                         )}
                         {hasMeditateItem && (
