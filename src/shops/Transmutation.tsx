@@ -11,7 +11,7 @@ import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { Player } from "../character/types";
-import { COMMON_STYLES, NUM_CARD_CHOICES } from "../constants";
+import { CARD_CHOICE_UPGRADE_RATE, COMMON_STYLES, NUM_CARD_CHOICES, RARE_CARD_CHOICE_UPGRADE_RATE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { ElliniaWeaponStoreImage } from "../images";
@@ -25,6 +25,7 @@ import LeaveButton from "./LeaveButton";
 import { TOWNS } from "../map/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { NUM_TRANSMUTATIONS } from "./constants";
+import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 
 const HEADER_BAR = 72;
 
@@ -282,7 +283,14 @@ export const TransmutationView = ({
                         break;
                     }
                 }
-                choices.push(cardToAdd);
+
+                const upgradeRate = rarity === RARITIES.RARE ? RARE_CARD_CHOICE_UPGRADE_RATE : CARD_CHOICE_UPGRADE_RATE;
+                const isRandomlyUpgraded = cardToAdd.level < DEFAULT_CARD_MAX_LEVEL && Math.random() <= upgradeRate;
+                if (isRandomlyUpgraded) {
+                    choices.push(getUpgradeCard(cardToAdd) || cardToAdd);
+                } else {
+                    choices.push(cardToAdd);
+                }
             }
         });
 

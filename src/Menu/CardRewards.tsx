@@ -8,7 +8,14 @@ import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability, CombatAbility } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { Player } from "../character/types";
-import { BOSS_RARE_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE, NUM_CARD_CHOICES } from "../constants";
+import {
+    BOSS_RARE_RATE,
+    CARD_CHOICE_UPGRADE_RATE,
+    ELITE_RARE_RATE,
+    ELITE_UNCOMMON_RATE,
+    NUM_CARD_CHOICES,
+    RARE_CARD_CHOICE_UPGRADE_RATE,
+} from "../constants";
 import { Item, RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
 import { getRandomItem, shuffle } from "../utils";
@@ -110,7 +117,9 @@ const CardRewards = ({
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate && noExclusive;
             });
             if (filteredByRarity) {
-                choices.push(filteredByRarity);
+                const upgradeRate = selectedRarity === RARITIES.RARE ? RARE_CARD_CHOICE_UPGRADE_RATE : CARD_CHOICE_UPGRADE_RATE;
+                const upgradeCard = Math.random() <= upgradeRate && getUpgradeCard(filteredByRarity);
+                choices.push(upgradeCard || filteredByRarity);
             }
         });
 
