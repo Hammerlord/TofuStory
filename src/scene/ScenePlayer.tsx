@@ -288,6 +288,7 @@ const ScenePlayer = ({
         itemChoices,
         loseItems = [],
         loseMesos,
+        mesos,
         loseHP,
         treasureBox,
         conditionalNext,
@@ -369,6 +370,12 @@ const ScenePlayer = ({
         if (loseMesos) {
             updatePlayer({
                 mesos: Math.max(0, player.mesos - loseMesos),
+            });
+        }
+
+        if (mesos) {
+            updatePlayer({
+                mesos: Math.max(0, player.mesos + mesos),
             });
         }
 

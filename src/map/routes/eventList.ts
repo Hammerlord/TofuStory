@@ -9,6 +9,7 @@ import { shrineScene } from "../../scene/Shrine";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
 import { bobSnailScene } from "../../scene/bob";
 import { adminScene, mesoThiefScene, mesoThievesScene } from "../../scene/misc";
+import { snailRaceScene } from "../../scene/snailRace";
 import { EventScene } from "../../scene/types";
 import { wanderingSmithScene } from "../../scene/wanderingBlacksmithScene";
 import { wanderingFighterScene } from "../../scene/wanderingFighterScene";
@@ -118,6 +119,7 @@ export const events: EventScene[] = [
     adminScene,
     wanderingFighterScene,
     cultistScene,
+    snailRaceScene,
 ];
 
 /**

@@ -121,6 +121,7 @@ export interface ScriptNode {
     region?: REGIONS;
     loseItems?: string[];
     loseMesos?: number;
+    mesos?: number; // Mesos given to the player
     loseHP?: number;
     // Select the batch of script nodes depending on which one passes conditions. The first one that passes is the one chosen.
     // TRICKY: If this is to compare the recent battle, this must come after the fight has concluded so that we can actually track that fight's metrics.
