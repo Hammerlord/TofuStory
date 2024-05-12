@@ -115,14 +115,8 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
-        const { type, source, actorId } = triggerSource;
-        let killedByInfo: CombatantInfo;
-        if (type === TRIGGER_SOURCE_TYPES.EFFECT) {
-            killedByInfo = findCombatantData(getState, (source as CombatEffect)?.applierId);
-        } else if (type === TRIGGER_SOURCE_TYPES.ABILITY) {
-            killedByInfo = findCombatantData(getState, actorId);
-        }
-
+        const { actorId } = triggerSource;
+        const killedByInfo = findCombatantData(getState, actorId);
         const { combatant: killedBy, index, friendly } = killedByInfo || {};
         if (!killedBy || killedBy.HP <= 0) {
             return;
@@ -485,7 +479,7 @@ export const handleDoTs =
         };
 
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
-            const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action }[] = [];
+            const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] = [];
 
             combatantIds.forEach((combatantId) => {
                 // Perform another lookup on combatant info as it may have changed between effect triggers
@@ -495,30 +489,22 @@ export const handleDoTs =
                     return;
                 }
                 const activeEffects = getEnabledEffects({ combatantInfo });
-                const matchingDoTs = activeEffects.reduce((acc, effect) => {
-                    if (effect.type === dotType) {
-                        acc.push(effect);
-                    }
-                    return acc;
-                }, []);
+                const matchingDoT = activeEffects.find((effect) => effect.type === dotType);
+                if (!matchingDoT) {
+                    return;
+                }
 
-                const dotStacks = matchingDoTs.reduce((acc, cur) => {
-                    return acc + (cur.stacks || 1);
-                }, 0);
-
+                const dotStacks = matchingDoT.stacks || 1;
                 const damage = dotStacks * dotDamageMap[dotType];
 
                 if (!damage) {
                     return;
                 }
 
-                // Hack: If multiple characters applied DoT stacks, randomly pick one of them to attribute the full stack of damage to.
-                const actorId = getRandomItem(matchingDoTs.map((dot: CombatEffect) => dot.applierId));
-
                 const updated = getUpdatedStats({
                     ...getState().battle,
                     targetIds: [combatantId],
-                    actorId,
+                    actorId: matchingDoT.applierId,
                     selectedIndex: index,
                     action: {
                         type: ACTION_TYPES.EFFECT,
@@ -551,7 +537,7 @@ export const handleDoTs =
 
             dispatch(
                 triggerStatChangeEvents(
-                    updatedStats.map(({ statUpdate, action }) => ({
+                    updatedStats.map(({ statUpdate, action, actorId }) => ({
                         statUpdate,
                         source: {
                             source: action,
@@ -559,7 +545,8 @@ export const handleDoTs =
                             targetId: statUpdate.combatantId,
                             statUpdate,
                             triggerHistory: [],
-                        },
+                            actorId,
+                        } as TriggerSource,
                     }))
                 )
             );

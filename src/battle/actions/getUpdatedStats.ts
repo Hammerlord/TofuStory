@@ -69,7 +69,7 @@ export const getUpdatedStats = ({
     deck: CombatAbility[];
     hand: CombatAbility[];
     discard: CombatAbility[];
-}): { statUpdate: UpdatedCombatantStats; action: Action }[] => {
+}): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
     const actor = getCombatantById(actorId);
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
@@ -276,6 +276,7 @@ export const getUpdatedStats = ({
         return {
             statUpdate,
             action,
+            actorId,
         };
     });
 };
