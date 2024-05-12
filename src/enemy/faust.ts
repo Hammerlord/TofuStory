@@ -131,6 +131,7 @@ export const faust: Minion = {
 
 const puppeteerRevive: EffectEventTrigger = {
     usableWhileStunned: true,
+    affectsDeadCharacters: true,
     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
     conditions: [
         {

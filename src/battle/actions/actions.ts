@@ -1928,7 +1928,7 @@ export const calculateTargetIndices = ({
     disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
     source: TriggerSource;
 }): number[] => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, targetArea = 0, targetName } = action;
+    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
     let extraTargetIndices = getValidTargetIndices(battle[side], {
@@ -1941,8 +1941,7 @@ export const calculateTargetIndices = ({
     }
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
-        const livingOrResurrecting =
-            combatant && (combatant.HP > 0 || resurrect || combatant.effects.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK));
+        const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect || affectsDeadCharacters);
 
         const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
         if (excludePrimaryTarget) {

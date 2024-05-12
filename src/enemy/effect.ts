@@ -266,6 +266,7 @@ export const lifeLink: Effect = {
     icon: LinkIcon,
     onDeath: {
         usableWhileStunned: true,
+        affectsDeadCharacters: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
             {

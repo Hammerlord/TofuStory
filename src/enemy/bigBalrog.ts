@@ -331,6 +331,7 @@ export const lordBalrog: Minion = {
 
 const revive: EffectEventTrigger = {
     usableWhileStunned: true,
+    affectsDeadCharacters: true,
     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
     effects: [
         {
