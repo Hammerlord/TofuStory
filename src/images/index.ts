@@ -326,6 +326,8 @@ export { default as KerningShopImage } from "./KerningShop.png";
 export { default as KerningSwampImage } from "./KerningSwamp.png";
 export { default as KerningTowerImage } from "./KerningTower.png";
 export { default as KerningTradingPostImage } from "./KerningTradingPost.png";
+export { default as KerningWorkshopImage } from "./KerningWorkshop.png";
+export { default as KerningWorkshopBGImage } from "./KerningWorkshopBG.png";
 export { default as KingSlimeImage } from "./KingSlime.png";
 export { default as KittenBarrelsImage } from "./KittenBarrels.png";
 export { default as KoreanFanImage } from "./KoreanFan.png";

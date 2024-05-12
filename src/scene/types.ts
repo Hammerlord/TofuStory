@@ -71,6 +71,7 @@ export interface ScriptResponse {
     camp?: boolean;
     removeAbility?: boolean;
     upgradeCards?: number; // Number of cards to upgrade. Eligible cards will be chosen randomly.
+    transmutation?: boolean; // Opens the transmutation window
     id?: string; // Scene ID to track which scenes you have visited
 }
 

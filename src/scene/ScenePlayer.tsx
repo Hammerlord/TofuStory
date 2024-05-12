@@ -235,6 +235,7 @@ const ScenePlayer = ({
     onBattle,
     onExit,
     onShop,
+    onWorkshop,
     onTransition,
     deck,
     updateDeck,
@@ -258,6 +259,7 @@ const ScenePlayer = ({
     ) => void;
     onExit: Function;
     onShop?: Function;
+    onWorkshop?: Function;
     onTransition: Function;
     deck: CombatAbility[];
     updateDeck?: (newDeck: CombatAbility[]) => void;
@@ -501,7 +503,18 @@ const ScenePlayer = ({
         setUpgradedCards(upgraded);
     };
 
-    const handleClickResponse = ({ next, encounter, isExit, shop, camp, removeAbility, id, infamy, upgradeCards }: ScriptResponse) => {
+    const handleClickResponse = ({
+        next,
+        encounter,
+        isExit,
+        shop,
+        camp,
+        removeAbility,
+        id,
+        infamy,
+        upgradeCards,
+        transmutation,
+    }: ScriptResponse) => {
         const callback = () => {
             if (id) {
                 dispatch(logVisitedEvent(id));
@@ -514,6 +527,11 @@ const ScenePlayer = ({
 
             if (shop) {
                 onShop(shop);
+                if (!next) {
+                    handleExit(true);
+                }
+            } else if (transmutation) {
+                onWorkshop();
                 if (!next) {
                     handleExit(true);
                 }

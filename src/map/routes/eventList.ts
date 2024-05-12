@@ -7,6 +7,7 @@ import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../..
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { shrineScene } from "../../scene/Shrine";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
+import { workshopScene } from "../../scene/abandonedWorkshop";
 import { bobSnailScene } from "../../scene/bob";
 import { adminScene, mesoThiefScene, mesoThievesScene } from "../../scene/misc";
 import { snailRaceScene } from "../../scene/snailRace";
@@ -120,6 +121,7 @@ export const events: EventScene[] = [
     wanderingFighterScene,
     cultistScene,
     snailRaceScene,
+    workshopScene,
 ];
 
 /**

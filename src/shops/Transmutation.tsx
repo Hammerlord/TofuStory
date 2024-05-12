@@ -43,12 +43,12 @@ const useStyles = createUseStyles({
         background: "rgba(40, 40, 40, 0.95)",
         textAlign: "center",
     },
-    backdrop: {
+    backdrop: ({ backdrop }: any) => ({
         height: "75%",
         bottom: 0,
         width: "100%",
         maxWidth: "80vw",
-        background: `url(${ElliniaWeaponStoreImage})`,
+        background: `url(${backdrop || ElliniaWeaponStoreImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "contain",
         backgroundPosition: "center center",
@@ -57,7 +57,7 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         zIndex: -1,
         opacity: 0.25,
-    },
+    }),
     transmutesRemainingLabel: {
         margin: "9px 16px",
         display: "inline-block",
@@ -202,6 +202,7 @@ export const TransmutationView = ({
     onExit,
     numTransmutations,
     disableBackdrop,
+    backdrop,
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
@@ -209,7 +210,8 @@ export const TransmutationView = ({
     player: Player;
     onExit?;
     numTransmutations: number; // How many transmutations the player can perform for this session
-    disableBackdrop?: boolean;
+    disableBackdrop?: boolean; // Disable background image
+    backdrop?: string; // Custom background image
 }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
@@ -219,7 +221,7 @@ export const TransmutationView = ({
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
     const [showDeck, setShowingDeck] = useState(false);
 
-    const classes = useStyles();
+    const classes = useStyles({ backdrop } as any);
     const selectedCardRef = useRef();
     const optionsRefs = Array.from({ length: 10 }).map(() => useRef());
 
@@ -467,7 +469,7 @@ export const TransmutationView = ({
     );
 };
 
-const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
+const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; backdrop?: string }) => {
     const { deck, player, townShops } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const townWorkshop = townShops[town]?.workshop;
@@ -501,6 +503,7 @@ const Transmutation = ({ town, onExit }: { town: TOWNS; onExit? }) => {
             onTransmute={handleTransmute}
             onCancel={decrementNumTransmutes}
             numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
+            backdrop={backdrop}
         />
     );
 };

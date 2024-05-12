@@ -1,32 +1,38 @@
 import classNames from "classnames";
-import { clamp } from "ramda";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import Camp from "../map/Camp";
-import Map from "../map/Map";
-import { REGIONS } from "../map/regions";
-import { events } from "../map/routes/eventList";
-import generateTravelRoute from "../map/routes/generateTravelRoute";
-import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../map/routes/routes";
-import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode, TOWNS, TownProperties } from "../map/types";
-import { Ability, CombatAbility } from "../ability/types";
+import { Ability } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
 import { startBattle } from "../battle/actions/phases";
 import { passesValueComparison } from "../battle/passesConditions";
 import { BATTLE_STATES, battleStateSlice } from "../battle/reducer";
 import { BATTLE_TYPES } from "../battle/types";
-import { getMaxHP } from "../battle/utils";
 import { playerStateSlice } from "../character/playerReducer";
 import { INTRO_PAN_TIME, REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { VictoriaIslandImage } from "../images";
+import { KerningWorkshopImage, VictoriaIslandImage } from "../images";
 import { Item, RARITIES } from "../item/types";
+import Camp from "../map/Camp";
+import Map from "../map/Map";
+import { generateElites, generateWaves } from "../map/encounters";
+import { REGIONS } from "../map/regions";
+import { events } from "../map/routes/eventList";
+import generateTravelRoute from "../map/routes/generateTravelRoute";
+import { OVERWORLD_BOSS_ID_MAP } from "../map/routes/overworldBosses";
+import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../map/routes/routes";
+import { TOWN_MAP } from "../map/townMap";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
 import ScenePlayer from "../scene/ScenePlayer";
-import TradingPost from "../shops/TradingPost";
+import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
+import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
+import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
 import TreasureBox from "../scene/TreasureBox/TreasureBox";
 import { introScene, startJourneyScene } from "../scene/misc";
 import { EventScene, SCENE_CONDITION_TYPES, SceneCondition } from "../scene/types";
+import Shop from "../shops/Shop";
+import TradingPost from "../shops/TradingPost";
+import Transmutation from "../shops/Transmutation";
 import { getRandomItem } from "../utils";
 import Overlay from "../view/Overlay";
 import CardRemovalGrid from "./CardRemovalGrid";
@@ -36,17 +42,10 @@ import ClassSelection from "./ClassSelection";
 import GameOver from "./GameOver";
 import Header from "./Header";
 import ItemRewards from "./ItemRewards";
-import Shop from "../shops/Shop";
 import Sound from "./Sound";
+import { saveGame } from "./gameFiles";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { TOWN_MAP } from "../map/townMap";
-import ReelLockPuzzle from "../scene/TreasureBox/ReelLockPuzzle";
-import OnOffPuzzle from "../scene/TreasureBox/OnOffPuzzle";
-import RowPuzzle from "../scene/TreasureBox/RowPuzzle";
-import { OVERWORLD_BOSS_ID_MAP } from "../map/routes/overworldBosses";
-import { generateElites, generateWaves } from "../map/encounters";
-import { saveGame } from "./gameFiles";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -130,6 +129,7 @@ enum ACTIVITIES {
     SHOP = "shop",
     CAMP = "camp",
     TRADING_POST = "trading-post",
+    WORKSHOP = "workshop",
 }
 
 // Used to prevent re-renders of the element when going from class selection to the main UI.
@@ -558,6 +558,7 @@ const Main = () => {
                             }}
                             onBattle={handleSceneBattle}
                             onShop={() => setActivity(ACTIVITIES.SHOP)}
+                            onWorkshop={() => setActivity(ACTIVITIES.WORKSHOP)}
                             onTransition={handleTransition}
                             onChangeRegion={setSceneRegion}
                             region={sceneRegion || currentLocation?.region}
@@ -573,6 +574,7 @@ const Main = () => {
                         />
                     )}
                     {activity === ACTIVITIES.SHOP && <Shop onExit={() => setActivity(null)} />}
+                    {activity === ACTIVITIES.WORKSHOP && <Transmutation onExit={() => setActivity(null)} backdrop={KerningWorkshopImage} />}
                     {cardRewardsOpen && (
                         <CardRewards
                             deck={deck}
