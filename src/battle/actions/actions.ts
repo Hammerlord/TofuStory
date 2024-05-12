@@ -1021,6 +1021,8 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
                     ...updatedEffects[i],
                     duration: Math.min(maxDuration, newDuration),
                     stacks: (updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0),
+                    // The last character who applies the DoT gets the applier attribution, eg. for effects like Tauromacis Horn.
+                    applierId: incomingEffect.applierId || effect.applierId,
                 };
             }
         });
