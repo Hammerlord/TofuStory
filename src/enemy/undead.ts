@@ -210,10 +210,10 @@ export const undeadMage: Minion = {
         {
             name: "Arise, Minions!",
             image: SkullStaffImage,
-            description: "Fills Riche's side of the board with new summons, Tributing any existing minions.",
+            description: "Summons 3 skeletons. For each that doesn't fit, an existing minion is Tributed.",
             resourceCost: 3,
             castTime: 1,
-            channelDuration: 3,
+            channelDuration: 2,
             dialog: "Arise, minions!!!",
             actions: [
                 {
@@ -227,15 +227,11 @@ export const undeadMage: Minion = {
                             tributePossible: true,
                         },
                         {
-                            minion: [swordSkeletonMinion],
-                            tributePossible: true,
-                        },
-                        {
                             minion: [clubSkeletonMinion, skelegonMinion],
                             tributePossible: true,
                         },
                         {
-                            minion: [clubSkeletonMinion, swordSkeletonMinion],
+                            minion: [swordSkeletonMinion],
                             tributePossible: true,
                         },
                     ],
