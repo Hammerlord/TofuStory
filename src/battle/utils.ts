@@ -360,7 +360,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.OVERHEALING) {
-        return (source.statUpdate?.overhealing || 1) * numValue;
+        return (source?.statUpdate?.overhealing || 1) * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.ALL_CARDS) {
