@@ -109,14 +109,14 @@ const pickBaseEnemy = ({ elites, previousEncounters }: { elites: Minion[]; previ
 
 export const generateEliteSquad = ({
     eliteMap,
-    options = {},
+    options,
     previousEncounters,
 }: {
     eliteMap: EliteMap;
-    options: EliteOptions;
+    options?: EliteOptions;
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
-    const { numAffixes = 1, damageModifier = 0 } = options;
+    const { numAffixes = 1, damageModifier = 0 } = options || {};
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
@@ -157,10 +157,10 @@ const generateEliteTriad = ({
     previousEncounters,
 }: {
     eliteMap: EliteMap;
-    options: EliteOptions;
+    options?: EliteOptions;
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
-    const { numAffixes = 1, damageModifier = 0 } = options;
+    const { numAffixes = 1, damageModifier = 0 } = options || {};
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
     const affixes = shuffle([eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, explosive, lifeLink, sneaky, stoneSkin]).slice(
@@ -203,10 +203,10 @@ const generateEliteDuo = ({
     previousEncounters,
 }: {
     eliteMap: EliteMap;
-    options: EliteOptions;
+    options?: EliteOptions;
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
-    const { numAffixes = 1, damageModifier = 0 } = options;
+    const { numAffixes = 1, damageModifier = 0 } = options || {};
     const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
 
@@ -245,10 +245,10 @@ const generateElite = ({
     previousEncounters,
 }: {
     eliteMap: EliteMap;
-    options: EliteOptions;
+    options?: EliteOptions;
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
-    const { numAffixes = 1, damageModifier = 0 } = options;
+    const { numAffixes = 1, damageModifier = 0 } = options || {};
     const minion = getRandomItem(eliteMap.minions);
     const swarming: Effect = {
         type: EFFECT_TYPES.NONE,
