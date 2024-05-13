@@ -311,13 +311,15 @@ const AbilityView = forwardRef(
             return battle;
         })();
 
-        const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = getDamageStatistics({
+        const damageStatistics = getDamageStatistics({
             ability,
             actorInfo: playerInfo,
             deck,
             hand,
             discard,
         });
+
+        const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = damageStatistics;
 
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
 
@@ -350,7 +352,6 @@ const AbilityView = forwardRef(
                     return;
                 }
 
-                // FIX ME: This is passing for targets that are dead
                 if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
                     return battle?.enemySide.some((combatant) => {
                         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
@@ -419,7 +420,7 @@ const AbilityView = forwardRef(
 
         const cornerIcon = (() => {
             if (baseDamage !== undefined) {
-                return <DamageIcon ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />;
+                return <DamageIcon damageStatistics={damageStatistics} />;
             }
 
             if (armorTotal > 0) {

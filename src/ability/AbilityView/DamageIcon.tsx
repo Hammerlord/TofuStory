@@ -110,26 +110,8 @@ const useStyles = createUseStyles({
 /**
  * The damage icon that displays on the top left of an ability card
  */
-const DamageIcon = ({
-    ability,
-    playerInfo,
-    deck,
-    hand,
-    discard,
-}: {
-    ability: Ability;
-    playerInfo: CombatantInfo;
-    deck: Ability[];
-    hand: Ability[];
-    discard: Ability[];
-}) => {
-    const { baseDamage, hasMultiplier, isAdditive, hasBonus } = getDamageStatistics({
-        ability,
-        actorInfo: playerInfo,
-        deck,
-        hand,
-        discard,
-    });
+const DamageIcon = ({ damageStatistics }) => {
+    const { baseDamage, hasMultiplier, isAdditive, hasBonus } = damageStatistics || {};
     const classes = useStyles();
 
     if (baseDamage === undefined) {
