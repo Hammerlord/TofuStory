@@ -639,6 +639,7 @@ const onEffectEventTrigger = ({
                     [TRIGGER_TARGET_TYPES.EFFECT_OWNER]: [ownerId],
                     [TRIGGER_TARGET_TYPES.EFFECT_APPLIER]: [effect?.applierId],
                     [TRIGGER_TARGET_TYPES.ACTOR]: [source?.actorId],
+                    // This is the PRIMARY target only:
                     [TRIGGER_TARGET_TYPES.TARGET]: [source?.targetId],
                     [TRIGGER_TARGET_TYPES.ALL_TARGETS]: source?.allTargetIds || [],
                     [TRIGGER_TARGET_TYPES.PLAYER]: [getState().battle.playerSide.find((combatant) => combatant?.isPlayer).id],
@@ -697,7 +698,17 @@ const onEffectEventTrigger = ({
             dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any, multiplier }));
         }
 
-        const initialTargetIds = getCalculationTargetIds(targetType);
+        const initialTargetIds = getCalculationTargetIds(targetType).filter((id) => {
+            const secondaryGetCalculationTarget = (targetType) => {
+                if ([TRIGGER_TARGET_TYPES.TARGET, TRIGGER_TARGET_TYPES.ALL_TARGETS].includes(targetType)) {
+                    return findCombatantData(getState, id);
+                }
+
+                return getCalculationTarget(targetType);
+            };
+            return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, source });
+        });
+
         const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
         const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
@@ -714,7 +725,7 @@ const onEffectEventTrigger = ({
             const targetIds = [];
 
             // This calculates `action.area` for the effect event trigger
-            getCalculationTargetIds(targetType)
+            initialTargetIds
                 .map((id) => findCombatantData(getState, id))
                 .map((data) =>
                     calculateTargetIndices({

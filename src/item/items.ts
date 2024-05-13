@@ -1,4 +1,5 @@
 import {
+    attackDown,
     attackPower,
     bleed,
     chill,
@@ -2134,6 +2135,9 @@ export const arcStaff: Item = {
     ],
 };
 
+/**
+ * Ever since the change with DoTs to use stacks instead of duration, this version of Black Crystalhas become very weak/niche
+ *
 export const blackCrystal: Item = {
     name: "Black Crystal",
     rarity: RARITIES.RARE,
@@ -2148,7 +2152,7 @@ export const blackCrystal: Item = {
     applyEffectsToSummons: true,
     effects: [
         {
-            name: "Opal Effect",
+            name: "Black Crystal Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             extendEffectDuration: {
@@ -2168,6 +2172,38 @@ export const blackCrystal: Item = {
                         property: "type",
                         comparator: "not",
                         value: EFFECT_TYPES.STUN,
+                    },
+                ],
+            },
+        },
+    ],
+};
+*/
+
+export const blackCrystal: Item = {
+    name: "Black Crystal",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: BlackCrystalImage,
+    description: "The first time a target is hit by you, it is afflicted with 1 Bleed and 1 ATT Down.",
+    applyEffectsToSummons: true,
+    effects: [
+        {
+            name: "Black Crystal Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [
+                    { ...bleed, stacks: 1 },
+                    { ...attackDown, duration: 1 },
+                    { name: "Black Crystal Triggered", type: EFFECT_TYPES.NONE, class: EFFECT_CLASSES.NONE },
+                ],
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                        hasEffect: "Black Crystal Triggered",
+                        comparator: "not",
                     },
                 ],
             },
