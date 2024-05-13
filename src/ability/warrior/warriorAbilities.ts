@@ -27,6 +27,7 @@ import {
     EndureImage,
     EnrageImage,
     FlagImage,
+    FlameChargeImage,
     GiganticSledgeImage,
     GungnirImage,
     HammerImage,
@@ -115,6 +116,30 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { attack } from "../../enemy/abilities";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+
+export const furiousStrikeCard: Ability = {
+    name: "Furious Strike",
+    resourceCost: 0,
+    removeAfterTurn: true,
+    image: FlameChargeImage,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 2,
+            damage: 3,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
+                },
+            ],
+        },
+    ],
+};
 
 export const bash: Ability = {
     name: "Bash",

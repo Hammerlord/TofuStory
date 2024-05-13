@@ -1,17 +1,17 @@
-import { getUpgradeCard } from "./../Menu/utils";
-import { PLAYER_CLASSES } from "../Menu/types";
 import { JOB_CARD_MAP } from "../ability";
-import { infuriateEffect } from "../ability/Effects";
 import { AlchemistStoneImage, HumilityStoneImage } from "../images";
+import { PLAYER_CLASSES } from "../Menu/types";
 import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
 import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { getUpgradeCard } from "./../Menu/utils";
 
-import { Item, ITEM_TYPES, RARITIES } from "./types";
+import { furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const rageStone: Item = {
     name: "Rage Stone",
-    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, gain 1 next turn.",
+    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, add Furious Strike to your hand.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -24,7 +24,7 @@ export const rageStone: Item = {
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 triggerFrequencyFromSum: 5,
-                effects: [infuriateEffect],
+                addCards: [furiousStrikeCard],
             },
         },
     ],
@@ -32,8 +32,7 @@ export const rageStone: Item = {
 
 export const rampageStone: Item = {
     name: "Rampage Stone",
-    description:
-        "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, gain 1 next turn. +1 card draw while active.",
+    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, add Furious Strike to your hand.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -44,28 +43,8 @@ export const rampageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 5,
-                effects: [
-                    infuriateEffect,
-                    {
-                        name: "Rage Stone - Card Draw",
-                        type: EFFECT_TYPES.RAGE,
-                        class: EFFECT_CLASSES.BUFF,
-                        icon: HumilityStoneImage,
-                        drawCardsPerTurn: 1,
-                        maxApplications: 1,
-                        disableDisplayIcon: true,
-                        onTurnInProgress: {
-                            removeEffect: true,
-                        },
-                        conditions: [
-                            {
-                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                hasEffect: infuriateEffect.name,
-                            },
-                        ],
-                    },
-                ],
+                triggerFrequencyFromSum: 4,
+                addCards: [furiousStrikeCard],
             },
         },
     ],
