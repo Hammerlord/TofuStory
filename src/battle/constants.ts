@@ -1,5 +1,6 @@
 export const MAX_HAND_SIZE = 9;
-export const BASE_MAX_RESOURCES = 3;
+export const BASE_RESOURCES_PER_TURN = 3;
+export const BASE_MAX_RESOURCES = 4;
 export const BOSS_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm14/DragonNest";
 export const CLASS_LEADER_MUSIC = "https://vgmtreasurechest.com/soundtracks/maplestory-music/ofdbhseojv/79.%20Hontale.mp3";
 export const STRANGE_ENCOUNTER_MUSIC = "https://vgmtreasurechest.com/soundtracks/maplestory-music/ycfxgoahya/47.%20Plot%20of%20Pixie.mp3";

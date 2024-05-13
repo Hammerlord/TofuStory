@@ -1,6 +1,6 @@
 import uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { BASE_MAX_RESOURCES } from "../battle/constants";
+import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";
 import {
     BlueUmbrellaImage,
     FrozenTunaImage,
@@ -24,9 +24,9 @@ const defaultCharacterProperties = {
     image: WarMushImage,
     HP: 70,
     maxHP: 70,
-    resourcesPerTurn: 2,
+    resourcesPerTurn: BASE_RESOURCES_PER_TURN,
     maxResources: BASE_MAX_RESOURCES, // Maximum resources that resourcesPerTurn can grant up to
-    resources: 1,
+    resources: 0,
     armor: 0,
     turnHistory: [],
     abilityHistory: [],
@@ -51,9 +51,6 @@ export const wizardProperties = {
     image: WizMushImage,
     HP: 65,
     maxHP: 65,
-    resourcesPerTurn: 3,
-    maxResources: 4,
-    resources: 0,
     weapon: OldWoodenStaffImage,
     items: [chargingStone],
     weaponSkins: [
