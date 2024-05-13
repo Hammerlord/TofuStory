@@ -2608,10 +2608,9 @@ export const useAbility = ({
         };
 
         const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [], isProc };
+        const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
 
         if (!isAutoCast) {
-            const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
-            dispatch(applyStatChanges([resourceSpend]));
             dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
         }
 
@@ -2687,6 +2686,11 @@ export const useAbility = ({
             });
         } else {
             actions.forEach(handleAction);
+        }
+
+        // Resource spend events triggered down here due to Bounce otherwise causing Furious Strike to be discarded
+        if (!isAutoCast) {
+            dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
         }
 
         const actorInfo = findCombatantData(getState, actorId);
