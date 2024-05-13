@@ -264,7 +264,7 @@ export const shieldStrike: Ability = {
     image: ShieldRedImage,
     actions: [
         {
-            damage: 8,
+            damage: 9,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             secondaryAction: {
@@ -991,7 +991,7 @@ export const rightInTheKisser: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 8,
+            damage: 9,
             effects: [stun],
         },
     ],
@@ -1675,7 +1675,7 @@ export const ragingBlow: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1683,7 +1683,7 @@ export const ragingBlow: Ability = {
             },
         },
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -2497,7 +2497,7 @@ export const honedStrike: Ability = {
     },
     actions: [
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
