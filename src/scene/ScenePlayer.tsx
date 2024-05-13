@@ -30,6 +30,7 @@ import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptRes
 import { PuzzleCompletionPayload } from "./TreasureBox/types";
 import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
 import { partition } from "ramda";
+import UpgradedCardsView from "./UpgradedCards";
 
 const useStyles = createUseStyles({
     root: {
@@ -204,13 +205,6 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0 0 2px #ff3a3a) drop-shadow(0 0 2px #ff3a3a)",
         marginRight: 8,
     },
-    abilityContainer: {
-        display: "inline-block",
-        margin: 8,
-    },
-    abilityUpgradeSection: {
-        marginBottom: 64,
-    },
     hide: {
         visibility: "hidden",
     },
@@ -277,7 +271,7 @@ const ScenePlayer = ({
     const [showCamp, setShowCamp] = useState(false);
     const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const [upgradedCards, setUpgradedCards] = useState(null);
+    const [upgradedCards, setUpgradedCards]: [{ original: CombatAbility[]; upgraded: CombatAbility[] }, Function] = useState(null);
 
     const classes = useStyles();
 
@@ -490,17 +484,18 @@ const ScenePlayer = ({
 
     const handleUpgradeCards = (numCards: number) => {
         const eligibleCards = deck.filter((card: CombatAbility) => !card.level || card.level === 1);
-        const upgraded = shuffle(eligibleCards)
-            .slice(0, numCards)
-            .map((card) => getUpgradeCard(card))
-            .filter((v) => v);
+        const candidates = shuffle(eligibleCards)
+            .filter((card) => getUpgradeCard(card))
+            .slice(0, numCards);
+
+        const upgraded = candidates.map((card) => getUpgradeCard(card));
 
         const updatedDeck = deck.map((card: CombatAbility) => {
-            return upgraded.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
+            return candidates.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
         });
 
         updateDeck(updatedDeck);
-        setUpgradedCards(upgraded);
+        setUpgradedCards({ original: candidates, upgraded });
     };
 
     const handleClickResponse = ({
@@ -794,19 +789,7 @@ const ScenePlayer = ({
                 {upgradedCards && (
                     <Overlay>
                         <div className={classes.inner}>
-                            <h3>The following cards were upgraded</h3>
-                            <div className={classes.abilityUpgradeSection}>
-                                {upgradedCards
-                                    .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
-                                    .map((ability: CombatAbility) => (
-                                        <div className={classes.abilityContainer} key={ability.instanceId}>
-                                            <AbilityView ability={ability} />
-                                        </div>
-                                    ))}
-                            </div>
-                            <Button color="secondary" onClick={() => setUpgradedCards(null)}>
-                                Continue
-                            </Button>
+                            <UpgradedCardsView {...upgradedCards} onExit={() => setUpgradedCards(null)} />
                         </div>
                     </Overlay>
                 )}
