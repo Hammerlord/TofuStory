@@ -2480,6 +2480,7 @@ export const egg: Minion = {
             class: EFFECT_CLASSES.NONE,
             duration: 3,
             onEnd: {
+                usableWhileStunned: true,
                 target: TARGET_TYPES.SELF,
                 ability: {
                     name: "Hatch",
@@ -2503,6 +2504,7 @@ export const egg: Minion = {
             onDeath: {
                 target: TARGET_TYPES.SELF,
                 usableWhileDead: true,
+                usableWhileStunned: true,
                 ability: {
                     name: "Hatch",
                     image: DragonEggImage,
