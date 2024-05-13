@@ -12,6 +12,7 @@ import { useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { JOB_CARD_MAP } from "../ability";
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -116,12 +117,6 @@ const CardUpgradeGrid = ({
     const state = useAppSelector((state) => state);
     const { character } = state;
     const { player } = character || {};
-    const upgradeLevelBonus =
-        player?.items?.reduce((acc, item: Item) => {
-            const upgradeLevel = item?.upgradeScreen?.maxUpgradeLevel || 0;
-            return acc + upgradeLevel;
-        }, 0) || 0;
-
     const classes = useGridStyles();
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
@@ -132,7 +127,21 @@ const CardUpgradeGrid = ({
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const upgrade = (card: CombatAbility) => {
         const isStarter = JOB_CARD_MAP[player?.class]?.starters.some(({ name }) => name === card.name);
-        const maxUpgradeLevel = isStarter ? STARTER_CARD_MAX_LEVEL : DEFAULT_CARD_MAX_LEVEL + upgradeLevelBonus;
+        let maxUpgradeLevel;
+        if (isStarter) {
+            maxUpgradeLevel = STARTER_CARD_MAX_LEVEL;
+        } else {
+            const upgradeLevelBonus =
+                player?.items?.reduce((acc, item: Item) => {
+                    const { maxUpgradeLevel = 0, filters } = item.upgradeScreen || {};
+
+                    if (maxUpgradeLevel && (!filters || filters.some((filter) => Boolean(filter.isOffense) === isOffensiveAbility(card)))) {
+                        return acc + maxUpgradeLevel;
+                    }
+                    return acc;
+                }, 0) || 0;
+            maxUpgradeLevel = DEFAULT_CARD_MAX_LEVEL + upgradeLevelBonus;
+        }
         return getUpgradeCard(card, { maxLevel: maxUpgradeLevel });
     };
 

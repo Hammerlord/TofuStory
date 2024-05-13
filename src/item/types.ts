@@ -46,6 +46,9 @@ export interface Item {
     applyEffectsToSummons?: boolean;
     upgradeScreen?: {
         maxUpgradeLevel: number;
+        filters: {
+            isOffense?: boolean;
+        }[];
     };
     camp?: {
         abilityChoices?: number;

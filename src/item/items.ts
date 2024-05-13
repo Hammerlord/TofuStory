@@ -1972,9 +1972,10 @@ export const scrollForClawForAtt: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: ScrollImage,
-    description: "Cards may be upgraded to level 3 on the Upgrade screen.",
+    description: "Offense cards may be upgraded to level 3.",
     upgradeScreen: {
         maxUpgradeLevel: 1,
+        filters: [{ isOffense: true }],
     },
 };
 
