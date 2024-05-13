@@ -683,9 +683,6 @@ const onEffectEventTrigger = ({
         }
 
         const procSource = { ...source, source: effect, type: TRIGGER_SOURCE_TYPES.EFFECT, isProc: true };
-        const initialTargetIds = getCalculationTargetIds(targetType);
-        const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
-        const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, source }));
         dispatch(checkCardActions({ action: other, source })); // Why does this use original source when there is procSource?
@@ -700,6 +697,10 @@ const onEffectEventTrigger = ({
             dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any, multiplier }));
         }
 
+        const initialTargetIds = getCalculationTargetIds(targetType);
+        const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
+        const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
+
         $applyStatChanges: {
             if (!targets) {
                 break $applyStatChanges;
@@ -710,17 +711,30 @@ const onEffectEventTrigger = ({
                 type: ACTION_TYPES.EFFECT,
             };
 
-            const targetIndices = calculateTargetIndices({
-                action,
-                selectedIndex: i,
-                side: friendlySide,
-                actorData: owner,
-                targetData: initialTargetData,
-                battle: getState().battle,
-                source: procSource,
-            });
+            const targetIds = [];
 
-            const targetIds = targetIndices.map((i: number) => targets[i]?.id).filter((v) => v !== undefined);
+            // This calculates `action.area` for the effect event trigger
+            getCalculationTargetIds(targetType)
+                .map((id) => findCombatantData(getState, id))
+                .map((data) =>
+                    calculateTargetIndices({
+                        action,
+                        selectedIndex: data.index,
+                        side: data.friendlySide,
+                        actorData: owner,
+                        targetData: data,
+                        battle: getState().battle,
+                        source: procSource,
+                    })
+                )
+                .map((indices: number[]) => {
+                    indices.forEach((i) => {
+                        const id = targets[i]?.id;
+                        if (id && !targetIds.includes(id)) {
+                            targetIds.push(id);
+                        }
+                    });
+                });
 
             const updated = getUpdatedStats({
                 ...getState().battle,
