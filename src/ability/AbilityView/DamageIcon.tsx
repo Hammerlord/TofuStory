@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { calculateBonus, calculateDamage, getMultiplier } from "../../battle/utils";
+import { calculateBonus, calculateDamage, getAbilityResourceCost, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
 import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../types";
@@ -59,28 +59,41 @@ export const getDamageStatistics = ({
             discard,
         });
 
+        const resourceCost = getAbilityResourceCost({
+            combatant: actorInfo.combatant,
+            effects: ability.effects,
+            resourceCost: ability.resourceCost,
+        });
+
+        const parent = {
+            ...ability,
+            resourceCost,
+        };
         const damageProps = {
             actor: actorInfo,
             action,
-            actionParent: ability,
+            actionParent: parent,
             multiplier,
-            source: { source: ability, triggerHistory: [], type: TRIGGER_SOURCE_TYPES.ABILITY },
+            source: { source: parent, triggerHistory: [], type: TRIGGER_SOURCE_TYPES.ABILITY },
         };
+
         let secondaryDamage = action.secondaryDamage || 0;
         if (actorInfo?.combatant && secondaryDamage) {
             secondaryDamage = calculateDamage({ ...damageProps, targetIndex: 1, selectedIndex: 2 });
         }
+
         return {
             damage: actorInfo?.combatant ? calculateDamage(damageProps) : action.damage || 0,
             secondaryDamage,
         };
     });
 
+    const firstActionDamage = damageActions[0].damage || 0;
     // This is the potential to have a multiplier; false when a bonus is being applied
-    const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && damageActions[0].damage === withAttackPower[0].damage;
+    const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && firstActionDamage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
-    const hasUnfulfilledBonus = withBonus[0].damage === damageActions[0].damage && damageActions.some(({ bonus }) => bonus);
+    const hasUnfulfilledBonus = withBonus[0].damage === firstActionDamage && damageActions.some(({ bonus }) => bonus);
     const hasAdditiveDamage = withAttackPower.some(({ secondaryDamage, damage }) => {
         return secondaryDamage > 0 || (damage && damage !== withAttackPower[0].damage);
     });
@@ -90,8 +103,8 @@ export const getDamageStatistics = ({
         baseDamage: withAttackPower[0].damage,
         secondaryDamage: withAttackPower[0].secondaryDamage,
         hasMultiplier: hasAttackMultiplier || isMultiHit,
-        hasConditionFulfilled: withBonus[0].damage > damageActions[0].damage,
-        hasBonus: withAttackPower[0].damage > damageActions[0].damage,
+        hasConditionFulfilled: withBonus[0].damage > firstActionDamage,
+        hasBonus: withAttackPower[0].damage > firstActionDamage,
         isAdditive,
     };
 };

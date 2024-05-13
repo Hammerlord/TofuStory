@@ -51,6 +51,7 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerS
 import {
     canTargetIfStealthed,
     canUseAbility,
+    getAbilityResourceCost,
     getCardByInstanceId,
     hasEffectType,
     isUntargetable,
@@ -890,9 +891,15 @@ const BattlefieldContainer = () => {
                 }
             };
 
+            const resourceCost = getAbilityResourceCost({
+                combatant: selectedMinion || player,
+                resourceCost: selectedAbility.resourceCost,
+                // @ts-ignore
+                effects: selectedAbility.effects || [],
+            });
             const actionParent = {
                 ...selectedAbility,
-                resourceCost: selectedAbility.resourceCost === "x" ? player.resources : selectedAbility.resourceCost,
+                resourceCost,
             };
             const source: TriggerSource = { source: actionParent, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
 

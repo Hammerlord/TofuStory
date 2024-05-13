@@ -44,6 +44,7 @@ import {
     applyVacuum,
     calculateActionArea,
     canTargetIfStealthed,
+    getAbilityResourceCost,
     getEnabledEffects,
     getInducedAttack,
     getMultiplier,
@@ -2622,11 +2623,8 @@ export const useAbility = ({
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant, friendlySide } = findCombatantData(getState, actorId) || {};
-        const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
-            return acc + (e.resourceCost || 0);
-        }, 0);
 
-        const totalResourceCost = resourceCost === "x" ? combatant.resources || 0 : Math.max(0, resourceCost + resourceCostFromEffects);
+        const totalResourceCost = getAbilityResourceCost({ combatant, resourceCost, effects });
         ability = {
             ...ability,
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier

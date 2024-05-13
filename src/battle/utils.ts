@@ -1127,3 +1127,22 @@ export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): C
         effects: [...(ability.effects || []), ...(handAuraEffects[abilityIndex] || [])],
     };
 };
+
+export const getAbilityResourceCost = ({
+    combatant,
+    effects,
+    resourceCost,
+}: {
+    combatant: Combatant | Player;
+    effects: AbilityEffect[];
+    resourceCost: number | "x";
+}) => {
+    if (resourceCost === "x") {
+        return combatant?.resources || 0;
+    }
+    const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
+        return acc + (e.resourceCost || 0);
+    }, 0);
+
+    return Math.max(0, resourceCost + resourceCostFromEffects);
+};

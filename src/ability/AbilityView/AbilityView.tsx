@@ -4,14 +4,24 @@ import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { canUseAbility, getMultiplier } from "../../battle/utils";
+import { canUseAbility, getAbilityResourceCost, getMultiplier } from "../../battle/utils";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { ACTION_TYPES, Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import {
+    ACTION_TYPES,
+    Ability,
+    AbilityEffect,
+    Action,
+    CONDITION_TARGETS,
+    CombatAbility,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TARGET_TYPES,
+} from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area, { AreaIndicator } from "./AreaView";
