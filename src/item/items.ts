@@ -1230,8 +1230,7 @@ export const steely: Item = {
     image: SteelyImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description:
-        "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards drawn, fling knives that deal 3 damage + Bleed to all targets.",
+    description: "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards drawn, fling knives that apply 1 Bleed to all targets.",
     effects: [
         {
             name: "Steely",
@@ -1245,7 +1244,6 @@ export const steely: Item = {
                     actions: [
                         {
                             area: 5,
-                            damage: 3,
                             type: ACTION_TYPES.RANGE_ATTACK,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: SteelyImage,
@@ -1256,7 +1254,7 @@ export const steely: Item = {
                             effects: [
                                 {
                                     ...bleed,
-                                    duration: 3,
+                                    stacks: 1,
                                 },
                             ],
                         },
