@@ -58,6 +58,7 @@ const routePerionSleepywood: Route = {
     eliteOptions: {
         numElites: 3,
         numAffixes: 2,
+        damageModifier: 1,
     },
     elites: {
         minions: [stump, elliniaGreenMushroom],
@@ -291,6 +292,7 @@ export const routeElliniaSleepywood: Route = {
     eliteOptions: {
         numElites: 3,
         numAffixes: 2,
+        damageModifier: 1,
     },
     elites: {
         minions: [elliniaGreenMushroom, stump],

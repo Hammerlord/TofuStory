@@ -56,6 +56,14 @@ export interface EliteMap {
     special?: (Minion | null)[][]; // Elite encounters as-is, no affixes added
 }
 
+export type EliteOptions = {
+    /** How many elites are on this route. If not provided, it's 1 (if elites are configured). */
+    numElites?: number;
+    /** If not provided, it's 1 (if elites are configured). */
+    numAffixes?: number;
+    damageModifier?: number; // 0: no change, 1: +1 attack power or more for elites
+};
+
 export interface Route {
     id: string; // Unique identifier for this route
     /** Value up to 1. 1 = 100%. If not provided, the chance is 0. */
@@ -75,12 +83,7 @@ export interface Route {
     }[];
     /** If not provided, the route will not have elites */
     elites?: EliteMap;
-    eliteOptions?: {
-        /** How many elites are on this route. If not provided, it's 1 (if elites are configured). */
-        numElites?: number;
-        /** If not provided, it's 1 (if elites are configured). */
-        numAffixes?: number;
-    };
+    eliteOptions?: EliteOptions;
     next?: Route[];
 }
 
