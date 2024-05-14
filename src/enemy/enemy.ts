@@ -978,7 +978,7 @@ export const fireBoar: Minion = {
 export const ligator: Minion = {
     name: "Ligator",
     image: LigatorImage,
-    maxHP: 30,
+    maxHP: 40,
     mesos: 10,
     abilities: [
         {
@@ -1222,7 +1222,7 @@ export const mimic: Minion = {
 export const greenMushroom: Minion = {
     name: "Green Mushroom",
     image: GreenMushroomImage,
-    maxHP: 20,
+    maxHP: 30,
     mesos: 5,
     abilities: [
         attack,

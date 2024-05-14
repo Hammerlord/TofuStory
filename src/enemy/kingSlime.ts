@@ -26,7 +26,7 @@ export const slimeGlobule: Minion = {
             name: "Vulnerable",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.DEBUFF,
-            attackDamageReceived: 3,
+            attackDamageReceived: 1,
             canBeSilenced: false,
         },
     ],
@@ -75,7 +75,7 @@ export const kingSlimeEnemy: Minion = {
     image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
-    armor: 30,
+    armor: 35,
     mesos: 100,
     effects: [
         hardy,
