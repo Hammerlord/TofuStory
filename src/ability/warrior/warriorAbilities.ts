@@ -1606,7 +1606,7 @@ export const puncture: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 2,
+                    stacks: 1,
                 },
             ],
             area: 1,
