@@ -2634,7 +2634,7 @@ export const useAbility = ({
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
 
         if (!isAutoCast) {
-            dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
+            dispatch(applyStatChanges([resourceSpend]));
         }
 
         dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentSource: source, isAutoCast }));

@@ -1130,8 +1130,8 @@ export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): C
 
 export const getAbilityResourceCost = ({
     combatant,
-    effects,
-    resourceCost,
+    effects = [],
+    resourceCost = 0,
 }: {
     combatant: Combatant | Player;
     effects: AbilityEffect[];
