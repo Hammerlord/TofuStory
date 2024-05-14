@@ -35,12 +35,11 @@ const UpgradedCardsView = ({
     useEffect(() => {
         const elements: HTMLElement[] = Object.values(cardRefs.current);
         setTimeout(() => {
-            const animations = playExplodeAnimation({ object: elements, maxScale: 1, playbackTime: 500 });
-            if (animations[animations.length - 1]) {
-                animations[animations.length - 1].onfinish = () => {
-                    setIsAnimationFinished(true);
-                };
-            }
+            const playbackTime = 1000;
+            playExplodeAnimation({ object: elements, maxScale: 1, playbackTime, delay: 0 });
+            setTimeout(() => {
+                setIsAnimationFinished(true);
+            }, playbackTime / 2);
         }, 500);
     }, []);
 

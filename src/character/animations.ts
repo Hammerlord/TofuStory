@@ -193,12 +193,14 @@ export const playExplodeAnimation = ({
     playbackTime,
     maxScale = 7,
     translateX = 0,
+    delay = 50,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from?: HTMLElement;
     playbackTime: number;
     maxScale?: number;
     translateX?: number;
+    delay?: number;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
@@ -222,7 +224,7 @@ export const playExplodeAnimation = ({
         if (el) {
             return el.animate(animationFrames, {
                 duration: playbackTime,
-                delay: i * 50,
+                delay: i * delay,
             });
         }
     });
