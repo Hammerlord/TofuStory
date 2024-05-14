@@ -78,7 +78,7 @@ const useStyles = createUseStyles({
         width: "250px",
         margin: "16px",
         background: "#666",
-        padding: "24px",
+        padding: "32px 24px",
         borderRadius: "8px",
         fontSize: "1.1rem",
         cursor: "pointer",
@@ -303,8 +303,7 @@ const ClassSelection = ({
                             <img src={ClassWarriorImage} />
                         </span>
                         <br />
-                        <span className={classes.classTitle}>WARRIOR</span> <hr />A close-quarters fighter specializing in defenses and
-                        focused area attacks
+                        <span className={classes.classTitle}>WARRIOR</span>
                     </button>
                     <button
                         onClick={() => setSelectedClass(PLAYER_CLASSES.MAGICIAN)}
@@ -316,8 +315,7 @@ const ClassSelection = ({
                             <img src={ClassMagicianImage} />
                         </span>
                         <br />
-                        <span className={classes.classTitle}>MAGICIAN</span> <hr />A ranged caster capable of bombarding enemies with magic
-                        spells
+                        <span className={classes.classTitle}>MAGICIAN</span>
                     </button>
                 </div>
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
