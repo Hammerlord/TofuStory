@@ -204,7 +204,7 @@ export const cleave: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -226,7 +226,7 @@ export const slam: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },
@@ -301,7 +301,7 @@ export const block: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 4,
                 },
             ],
         },
@@ -343,7 +343,7 @@ export const spikes: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 3,
+            armor: 5,
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
@@ -703,7 +703,7 @@ export const rush: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 5,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -1609,18 +1609,19 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
-    description:
-        "Deals {{ actions.0.damage }} {{{ _damage_ }}} for each attack you made this turn, up to {{ actions.0.maxDamage }} {{{ _damage_ }}}.",
+    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     actions: [
         {
-            damage: 2,
-            maxDamage: 10,
+            damage: 1,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                filterOutProcs: true,
+            bonus: {
+                damage: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    filterOutProcs: true,
+                },
             },
         },
     ],
@@ -1628,7 +1629,7 @@ export const comboFury: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -1639,19 +1640,20 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description:
-        "Gain {{ actions.0.armor }} {{{ _armor_ }}} for each attack you made this turn, up to {{ actions.0.maxArmor }} {{{ _armor_ }}}.",
+    description: "<b>+{{ actions.0.bonus.armor }}</b> {{{ _armor_ }}} for each attack you made this turn.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            armor: 2,
-            maxArmor: 10,
+            armor: 1,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            multiplier: {
-                type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
-                calculationTarget: CONDITION_TARGETS.ACTOR,
-                filterOutProcs: true,
+            bonus: {
+                armor: 2,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    filterOutProcs: true,
+                },
             },
         },
     ],
@@ -1659,7 +1661,7 @@ export const parry: Ability = {
         {
             actions: [
                 {
-                    armor: 1,
+                    armor: 2,
                 },
             ],
         },
@@ -2521,7 +2523,7 @@ export const moratorium: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 11,
+            damage: 12,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             targetMinHP: 1,
@@ -2821,23 +2823,19 @@ export const outrage: Ability = {
 export const smack: Ability = {
     name: "Smack",
     resourceCost: 0,
-    description: "Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}}",
     image: SmackdownFistImage,
     actions: [
         {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             damage: 7,
-            secondaryAction: {
-                damage: 1,
-            },
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },

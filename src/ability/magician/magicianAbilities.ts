@@ -249,7 +249,7 @@ export const energyBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     bonus: {
                         damage: 1,
                     },
