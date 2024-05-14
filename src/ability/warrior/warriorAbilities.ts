@@ -1,4 +1,3 @@
-import { shoot } from "./../../enemy/abilities";
 import { cloneDeep } from "lodash";
 import {
     AdvancedWeaponMasteryImage,
@@ -534,13 +533,13 @@ export const bunchOBricks: Ability = {
 export const hammerang: Ability = {
     name: "Hammerang",
     resourceCost: 1,
-    reusable: true, // Hmm... beware of any ability that reduces resource cost
+    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    overrideBodyText: true,
     image: HammerImage,
     rarity: RARITIES.COMMON,
     actions: [
         {
             damage: 7,
-            secondaryDamage: 5,
             targetArea: 2,
             numTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -550,6 +549,48 @@ export const hammerang: Ability = {
             },
             animation: ANIMATION_TYPES.YOYO,
             icon: HammerImage,
+            addCards: [
+                {
+                    name: "Hammerang",
+                    resourceCost: 1,
+                    overrideBodyText: true,
+                    removeAfterTurn: true,
+                    image: HammerImage,
+                    rarity: RARITIES.COMMON,
+                    actions: [
+                        {
+                            damage: 7,
+                            targetArea: 2,
+                            numTargets: 2,
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
+                            animationOptions: {
+                                ricochet: true,
+                            },
+                            animation: ANIMATION_TYPES.YOYO,
+                            icon: HammerImage,
+                        },
+                    ],
+                    upgrades: [
+                        {
+                            actions: [
+                                {
+                                    damage: 2,
+                                    addCards: [
+                                        {
+                                            actions: [
+                                                {
+                                                    damage: 2,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
         },
     ],
     upgrades: [
@@ -557,7 +598,15 @@ export const hammerang: Ability = {
             actions: [
                 {
                     damage: 2,
-                    secondaryDamage: 2,
+                    addCards: [
+                        {
+                            actions: [
+                                {
+                                    damage: 2,
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         },
