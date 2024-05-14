@@ -1658,6 +1658,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
+    overrideBodyText: true,
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     actions: [
         {
@@ -1690,6 +1691,7 @@ export const parry: Ability = {
     resourceCost: 0,
     image: EndureImage,
     description: "<b>+{{ actions.0.bonus.armor }}</b> {{{ _armor_ }}} for each attack you made this turn.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
