@@ -263,10 +263,14 @@ interface AbilityViewProps {
     disableBattleBonuses?: boolean;
     // If true, the backside of the card is shown
     flipped?: boolean;
+    style?: any;
 }
 
 const AbilityView = forwardRef(
-    ({ onClick, onMouseDown, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped }: AbilityViewProps, ref) => {
+    (
+        { onClick, onMouseDown, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped, ...other }: AbilityViewProps,
+        ref
+    ) => {
         const classes = useStyles();
         const state = useAppSelector((state) => state);
         const { character, battle } = state;
@@ -497,6 +501,7 @@ const AbilityView = forwardRef(
                         "-selected": isSelected,
                         [classes.glow]: shouldGlow,
                     })}
+                    {...other}
                 >
                     <div
                         className={classNames({

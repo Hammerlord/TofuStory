@@ -128,7 +128,13 @@ const Hand = ({
         event.stopPropagation(); // Block the click event from going to the battlefield or it will deselect the card
     };
 
-    const isCardInHand = (card: CombatAbility, hand: CombatAbility[]): boolean => {
+    const isCardInHand = (card: CombatAbility, hand: CombatAbility[], position?: number): boolean => {
+        if (typeof position === "number") {
+            if (hand[position]?.instanceId !== card?.instanceId) {
+                return false;
+            }
+        }
+
         return hand.some((c) => c.instanceId === card.instanceId);
     };
 
@@ -167,10 +173,11 @@ const Hand = ({
                         }
                     }}
                     className={classNames({
-                        [classes.slideIn]: !isCardInHand(ability, oldHand),
-                        [classes.slideOut]: !isCardInHand(ability, hand) && handToDisplay.length > 1,
-                        [classes.slideOutSingle]: !isCardInHand(ability, hand) && handToDisplay.length === 1,
+                        [classes.slideIn]: !isCardInHand(ability, oldHand, i),
+                        [classes.slideOut]: !isCardInHand(ability, hand, i) && handToDisplay.length > 1,
+                        [classes.slideOutSingle]: !isCardInHand(ability, hand, i) && handToDisplay.length === 1,
                     })}
+                    style={{ animationDelay: i * 50 }}
                 />
             ))}
         </div>
