@@ -2003,6 +2003,11 @@ export const shockGuard: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
+            armor: 0,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
             bonus: {
                 armor: 1,
                 multiplier: {
@@ -2021,16 +2026,11 @@ export const shockGuard: Ability = {
     ],
     upgrades: [
         {
-            addActions: {
-                prepend: true,
-                actions: [
-                    {
-                        armor: 1,
-                        target: TARGET_TYPES.SELF,
-                        type: ACTION_TYPES.EFFECT,
-                    },
-                ],
-            },
+            actions: [
+                {
+                    armor: 1,
+                },
+            ],
         },
     ],
 };
