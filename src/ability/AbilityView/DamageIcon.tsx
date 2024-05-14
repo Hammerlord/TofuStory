@@ -60,7 +60,7 @@ export const getDamageStatistics = ({
         });
 
         const resourceCost = getAbilityResourceCost({
-            combatant: actorInfo.combatant,
+            combatant: actorInfo?.combatant,
             effects: ability.effects,
             resourceCost: ability.resourceCost,
         });

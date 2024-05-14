@@ -1133,7 +1133,7 @@ export const getAbilityResourceCost = ({
     effects = [],
     resourceCost = 0,
 }: {
-    combatant: Combatant | Player;
+    combatant?: Combatant | Player;
     effects: AbilityEffect[];
     resourceCost: number | "x";
 }) => {
