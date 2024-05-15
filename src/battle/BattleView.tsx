@@ -59,6 +59,7 @@ import {
     isWithinAbilityArea,
 } from "./utils";
 import ParticleCanvas from "./ParticleCanvas";
+import getAbilityPreviews from "../character/getAbilityPreviews";
 
 const useStyles = createUseStyles({
     root: {
@@ -868,108 +869,14 @@ const BattlefieldContainer = () => {
             return {};
         }
 
-        const result = {};
-
-        const previousCombatantStates = {
-            battle: {
-                playerSide: [...playerSide],
-                enemySide: [...enemySide],
-            },
-        };
-
-        selectedAbility.actions.forEach((action: Action) => {
-            const actorData = findCombatantData(() => previousCombatantStates, actorId);
-            const targetData = findCombatantData(() => previousCombatantStates, hoveredCombatant.id);
-
-            const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
-                if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
-                    return actorData;
-                }
-
-                if (calculationTarget === TRIGGER_TARGET_TYPES.TARGET) {
-                    return targetData;
-                }
-            };
-
-            const resourceCost = getAbilityResourceCost({
-                combatant: selectedMinion || player,
-                resourceCost: selectedAbility.resourceCost,
-                // @ts-ignore
-                effects: selectedAbility.effects || [],
-            });
-            const actionParent = {
-                ...selectedAbility,
-                resourceCost,
-            };
-            const source: TriggerSource = { source: actionParent, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
-
-            if (
-                !passesConditions({
-                    getCalculationTarget,
-                    proc: action,
-                    source,
-                })
-            ) {
-                return;
-            }
-
-            const targetIndices = calculateTargetIndices({
-                action,
-                selectedIndex: hoveredCombatant.index,
-                side: hoveredCombatant.side,
-                actorData,
-                targetData,
-                battle: state.battle,
-                disableRollExtraTargets: true,
-                source: { source: selectedAbility, type: TRIGGER_SOURCE_TYPES.ABILITY },
-            });
-
-            const targetIds = targetIndices
-                .map((i: number) => previousCombatantStates.battle[hoveredCombatant.side]?.[i]?.id)
-                .filter((v) => v !== undefined);
-
-            const updatedStatsProperties = {
-                actorId,
-                targetIds,
-                selectedIndex: hoveredCombatant.index,
-                action,
-                getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
-                actionParent,
-                source,
-                hand,
-                deck,
-                discard,
-            };
-
-            getUpdatedStats(updatedStatsProperties).forEach(({ statUpdate, action }) => {
-                const combatantId = statUpdate.combatantId;
-                if (!result[combatantId]) {
-                    result[combatantId] = [];
-                }
-
-                const combatantInfo = findCombatantData(() => previousCombatantStates, combatantId);
-                if (!combatantInfo?.combatant) {
-                    return;
-                }
-
-                const { index, combatant, friendlySide } = combatantInfo;
-                const hasRandomSecondaryTargets = action.numTargets && hoveredCombatant.index !== index;
-
-                const staging = stageStatChanges(statUpdate, combatant);
-                // If it's a multi-hit attack being previewed, we want to update the previous combatant state so we can get a more accurate preview of the proceeding hits
-                previousCombatantStates.battle[friendlySide][index] = staging;
-                const targetsRandomly =
-                    action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget);
-
-                result[combatantId].push({
-                    statUpdate,
-                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
-                    action,
-                });
-            });
+        return getAbilityPreviews({
+            ability: selectedAbility,
+            playerSide,
+            enemySide,
+            actor: selectedMinion || player,
+            target: hoveredCombatant,
+            battle: state.battle,
         });
-
-        return result;
     })();
 
     const animationCanvas = useMemo(
