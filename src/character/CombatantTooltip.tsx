@@ -1,9 +1,19 @@
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { JapaneseOgreIcon, MilitaryMedalIcon } from "../images/icons";
-import Tooltip from "../view/Tooltip";
+import { getEffectGroups } from "./effects/EffectIcons";
+import { TooltipSection } from "../view/KeywordsTooltip";
+import { Tooltip } from "@material-ui/core";
+import Handlebars from "handlebars";
 
 const useStyles = createUseStyles({
+    tooltip: {
+        "&&": {
+            maxWidth: "325px",
+            background: "none",
+            minHeight: "200px",
+        },
+    },
     tooltipIcon: {
         verticalAlign: "bottom",
         marginRight: "4px",
@@ -28,7 +38,7 @@ const useStyles = createUseStyles({
 });
 
 const CombatantTooltip = ({ combatant, isEnemy }) => {
-    const { isBoss, isElite, isPlayer, name } = combatant || {};
+    const { isBoss, isElite, isPlayer, name, effects = [] } = combatant || {};
     const classes = useStyles();
 
     if (!combatant || isPlayer) {
@@ -58,15 +68,27 @@ const CombatantTooltip = ({ combatant, isEnemy }) => {
 
         return "◆ Common";
     };
+
+    const getEffectSectionProps = (effects, i) => {
+        return {
+            title: effects[0]?.name,
+            icon: effects[0]?.icon,
+            description: Handlebars.compile(effects[0]?.description || "")(effects[0]),
+            key: effects[0]?.name || i,
+        };
+    };
+
     const combatantTooltip = (
         <div>
-            <span className={classes.name}>{name}</span> <br />
-            {getDifficultyLabel()}
+            <TooltipSection title={name} description={getDifficultyLabel()} />
+            {getEffectGroups(effects).map((effects, i) => (
+                <TooltipSection {...getEffectSectionProps(effects, i)} />
+            ))}
         </div>
     );
 
     return (
-        <Tooltip title={combatantTooltip}>
+        <Tooltip title={combatantTooltip} classes={{ tooltip: classes.tooltip }}>
             <div className={classes.tooltipAnchor} />
         </Tooltip>
     );

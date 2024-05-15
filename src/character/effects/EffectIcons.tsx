@@ -31,6 +31,22 @@ const useStyles = createUseStyles({
     },
 });
 
+export const getEffectGroups = (effects: CombatEffect[]) => {
+    const map = effects.reduce((acc, effect: Effect) => {
+        const { name, type, disableDisplayIcon, icon } = effect;
+        if (disableDisplayIcon || !icon) {
+            return acc;
+        }
+
+        const key = [name, type].join("-"); // If it has the same name and type, it's *probably* the same effect
+        return {
+            ...acc,
+            [key]: [...(acc[key] || []), effect],
+        };
+    }, {});
+    return Object.values(map);
+};
+
 /**
  * Status effect icons to display below the combatant portrait
  */
@@ -41,21 +57,6 @@ const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Com
     }
 
     const [buffs, debuffs] = partition((e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF, combatant.effects);
-    const getEffectGroups = (effects: CombatEffect[]) => {
-        const map = effects.reduce((acc, effect: Effect) => {
-            const { name, type, disableDisplayIcon } = effect;
-            if (disableDisplayIcon) {
-                return acc;
-            }
-
-            const key = [name, type].join("-"); // If it has the same name and type, it's *probably* the same effect
-            return {
-                ...acc,
-                [key]: [...(acc[key] || []), effect],
-            };
-        }, {});
-        return Object.values(map);
-    };
 
     const shouldGlow = (effects: CombatEffect[]) => {
         return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);

@@ -161,7 +161,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const EffectGroupTooltipContent = ({
+export const EffectGroupTooltipContent = ({
     effects,
     owner,
     isSilenced,
