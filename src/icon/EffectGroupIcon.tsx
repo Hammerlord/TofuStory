@@ -6,17 +6,16 @@ import { Combatant, Player } from "../character/types";
 import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../images/icons";
 
 import Handlebars from "handlebars";
-import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
+import _ from "lodash";
+import { useEffect, useRef } from "react";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { findCombatantData } from "../battle/actions/actions";
 import { isTurnToTrigger } from "../battle/utils";
+import { playExpandContractAnimation } from "../character/animations";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
-import _ from "lodash";
-import { useEffect, useRef } from "react";
-import { playExpandContractAnimation } from "../character/animations";
 
 const indicatorSize = 8;
 
@@ -162,6 +161,124 @@ const useStyles = createUseStyles({
     },
 });
 
+const EffectGroupTooltipContent = ({
+    effects,
+    owner,
+    isSilenced,
+    allSameDuration,
+    stackCount,
+    disabled,
+}: {
+    effects: CombatEffect[];
+    owner: Combatant | Player;
+    isSilenced: boolean;
+    allSameDuration: boolean;
+    stackCount: number;
+    disabled: boolean;
+}) => {
+    const {
+        name,
+        icon,
+        attackPower = 0,
+        attackDamageReceived = 0,
+        skillBonus = [],
+        description,
+        duration = Infinity,
+        canBeSilenced,
+        lifeOnHit = 0,
+        armorReceived = 0,
+        drawCardsPerTurn = 0,
+        resourcesPerTurn = 0,
+        preventArmorDecay,
+        class: effectClass,
+    } = effects[0];
+
+    const interpolatedDescription = Handlebars.compile(description || "")(effects[0]);
+    const classes = useStyles();
+
+    const tooltipContent = (
+        <div className={classes.tooltipContents}>
+            <div className={classNames(classes.iconContainer)}>
+                <Icon icon={icon} size={"lg"} />
+            </div>
+            <div className={classes.container}>
+                <div className={classes.tooltipTitle}>
+                    {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.up} />}
+                    {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.down} />}
+                    {name}
+                    {stackCount > 1 ? ` x${stackCount}` : ""}{" "}
+                    {
+                        <span className={classes.silenced}>
+                            {isSilenced && "(Silenced)"}
+                            {!isSilenced && disabled && "(Inactive)"}
+                        </span>
+                    }
+                </div>
+                <div>{interpolatedDescription}</div>
+                <div className={classNames({ [classes.disabled]: disabled })}>
+                    {attackPower !== 0 && (
+                        <div>
+                            <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
+                        </div>
+                    )}
+                    {attackDamageReceived !== 0 && (
+                        <div>
+                            ◆ {attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`} damage taken from attacks
+                        </div>
+                    )}
+                    {lifeOnHit > 0 && (
+                        <div>
+                            Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
+                        </div>
+                    )}
+                    {armorReceived !== 0 && (
+                        <div>
+                            Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
+                            from armor sources
+                        </div>
+                    )}
+                    {drawCardsPerTurn !== 0 && (
+                        <div>
+                            {drawCardsPerTurn < 0 ? "-" : "+"}
+                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw
+                        </div>
+                    )}
+                    {resourcesPerTurn !== 0 && (
+                        <div>
+                            {resourcesPerTurn < 0 ? "-" : "+"}
+                            {resourcesPerTurn}{" "}
+                            {resourceClassNameMap[(owner as Player)?.class] || resourcesPerTurn === 1 ? "resource" : "resources"}{" "}
+                            {"per turn"}
+                        </div>
+                    )}
+                    {skillBonus.map(({ skill, damage = 0, comparator }) => (
+                        <div key={skill}>
+                            {comparator === "includes" ? `Cards with '${skill}' in their name gain` : skill}{" "}
+                            {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
+                        </div>
+                    ))}
+                </div>
+                {preventArmorDecay && <div>Prevents armor decay</div>}
+                {canBeSilenced && <div>◆ Can be silenced</div>}
+                {allSameDuration && duration !== Infinity && (
+                    <span>
+                        <Icon icon={<HourglassIcon />} text={duration} /> turn{duration !== 1 ? "s" : ""} remaining
+                    </span>
+                )}
+                {!allSameDuration && (
+                    <span>
+                        {effects.map((e, i) => (
+                            <Icon key={i} icon={<HourglassIcon />} text={isNaN(e.duration) || e.duration === Infinity ? "∞" : e.duration} />
+                        ))}{" "}
+                        turn{duration !== 1 ? "s" : ""} remaining
+                    </span>
+                )}
+            </div>
+        </div>
+    );
+    return tooltipContent;
+};
+
 const EffectGroupIcon = ({
     effects,
     isSilenced,
@@ -181,52 +298,23 @@ const EffectGroupIcon = ({
     const state = useAppSelector((state) => state);
 
     const {
-        name,
         icon,
-        attackPower = 0,
-        attackDamageReceived = 0,
-        skillBonus = [],
         onlyVisibleWhenProcced,
-        onTurnStart,
-        onResourcesSpent,
-        onReceiveAttack,
-        description,
         duration = Infinity,
         canBeSilenced,
-        lifeOnHit = 0,
-        armorReceived = 0,
-        drawCardsPerTurn = 0,
-        resourcesPerTurn = 0,
-        preventArmorDecay,
         turnsTriggerFrequency,
         uptime,
         class: effectClass,
         extraDisplayOptions,
-    } = effects.reduce((acc, cur, i) => {
-        if (i === 0) {
-            return acc;
-        }
-        const updated = {
-            ...acc,
-        };
+    } = effects[0];
 
-        for (const property in cur) {
-            // Duration should just be a singular effect's duration so we can display '*' (if some are not the same) or the time (if all are the same)
-            if (typeof cur[property] === "number" && property !== "duration") {
-                updated[property] += cur[property];
-            }
-        }
-
-        return updated;
-    }, effects[0]);
-
-    const passedConditions = passesConditions({
+    const isConditionsPassed = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
             calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => state, owner?.id) : undefined,
         proc: effects[0],
     });
 
-    if (!passedConditions && onlyVisibleWhenProcced) {
+    if (!isConditionsPassed && onlyVisibleWhenProcced) {
         return null;
     }
 
@@ -239,7 +327,7 @@ const EffectGroupIcon = ({
     }
 
     const silenced = isSilenced && canBeSilenced && effectClass === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
-    const disabled = silenced || !passedConditions || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
+    const disabled = silenced || !isConditionsPassed || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
 
     const { stackCount, displayStacks } = effects.reduce(
         (acc, effect: CombatEffect) => {
@@ -315,89 +403,22 @@ const EffectGroupIcon = ({
         return inner;
     }
 
-    const interpolatedDescription = Handlebars.compile(description || "")(effects[0]);
-
-    const tooltipContent = (
-        <div className={classes.tooltipContents}>
-            <div className={classNames(classes.iconContainer)}>
-                <Icon icon={icon} size={"lg"} />
-            </div>
-            <div className={classes.container}>
-                <div className={classes.tooltipTitle}>
-                    {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.up} />}
-                    {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.down} />}
-                    {name}
-                    {stackCount > 1 ? ` x${stackCount}` : ""}{" "}
-                    {
-                        <span className={classes.silenced}>
-                            {silenced && "(Silenced)"}
-                            {!silenced && disabled && "(Inactive)"}
-                        </span>
-                    }
-                </div>
-                <div>{interpolatedDescription}</div>
-                <div className={classNames({ [classes.disabled]: disabled })}>
-                    {attackPower !== 0 && (
-                        <div>
-                            <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
-                        </div>
-                    )}
-                    {attackDamageReceived !== 0 && (
-                        <div>
-                            ◆ {attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`} damage taken from attacks
-                        </div>
-                    )}
-                    {lifeOnHit > 0 && (
-                        <div>
-                            Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
-                        </div>
-                    )}
-                    {armorReceived !== 0 && (
-                        <div>
-                            Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
-                            from armor sources
-                        </div>
-                    )}
-                    {drawCardsPerTurn !== 0 && (
-                        <div>
-                            {drawCardsPerTurn < 0 ? "-" : "+"}
-                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw
-                        </div>
-                    )}
-                    {resourcesPerTurn !== 0 && (
-                        <div>
-                            {resourcesPerTurn < 0 ? "-" : "+"}
-                            {resourcesPerTurn}{" "}
-                            {resourceClassNameMap[(owner as Player)?.class] || resourcesPerTurn === 1 ? "resource" : "resources"}{" "}
-                            {"per turn"}
-                        </div>
-                    )}
-                    {skillBonus.map(({ skill, damage = 0, comparator }) => (
-                        <div key={skill}>
-                            {comparator === "includes" ? `Cards with '${skill}' in their name gain` : skill}{" "}
-                            {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
-                        </div>
-                    ))}
-                </div>
-                {preventArmorDecay && <div>Prevents armor decay</div>}
-                {canBeSilenced && <div>◆ Can be silenced</div>}
-                {allSameDuration && duration !== Infinity && (
-                    <span>
-                        <Icon icon={<HourglassIcon />} text={duration} /> turn{duration !== 1 ? "s" : ""} remaining
-                    </span>
-                )}
-                {!allSameDuration && (
-                    <span>
-                        {effects.map((e, i) => (
-                            <Icon key={i} icon={<HourglassIcon />} text={isNaN(e.duration) || e.duration === Infinity ? "∞" : e.duration} />
-                        ))}{" "}
-                        turn{duration !== 1 ? "s" : ""} remaining
-                    </span>
-                )}
-            </div>
-        </div>
+    return (
+        <Tooltip
+            title={
+                <EffectGroupTooltipContent
+                    effects={effects}
+                    owner={owner}
+                    isSilenced={silenced}
+                    allSameDuration={allSameDuration}
+                    stackCount={stackCount}
+                    disabled={disabled}
+                />
+            }
+        >
+            {inner}
+        </Tooltip>
     );
-    return <Tooltip title={tooltipContent}>{inner}</Tooltip>;
 };
 
 export default EffectGroupIcon;
