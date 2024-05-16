@@ -1506,13 +1506,25 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
         // The player summoned this unit. Rearrange the enemy targeting.
         if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
-            getState().battle.enemySide.forEach((enemy) => {
-                if (!enemy?.HP) {
-                    return;
-                }
+            dispatch(updateEnemyTargetingAfterSummon(minionsSummoned));
+        }
+    };
+};
 
-                const enemyInfo = findCombatantData(getState, enemy.id);
-                const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
+const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[]) => {
+    return (dispatch, getState) => {
+        const battle = getState().battle;
+        battle.enemySide.forEach((enemy) => {
+            if (!enemy?.HP) {
+                return;
+            }
+
+            const enemyInfo = findCombatantData(getState, enemy.id);
+            const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
+            const { index, side } = targeting;
+
+            // Only switch if it rolled one of the summoned minions
+            if (minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id)) {
                 dispatch(
                     updateCombatant({
                         combatantId: enemy.id,
@@ -1521,8 +1533,8 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                         },
                     })
                 );
-            });
-        }
+            }
+        });
     };
 };
 
@@ -2649,22 +2661,7 @@ const checkSummonMinion = ({
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
-        getState().battle.enemySide.forEach((enemy) => {
-            if (!enemy?.HP) {
-                return;
-            }
-
-            const enemyInfo = findCombatantData(getState, enemy.id);
-            const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
-            dispatch(
-                updateCombatant({
-                    combatantId: enemy.id,
-                    newProperties: {
-                        targeting,
-                    },
-                })
-            );
-        });
+        dispatch(updateEnemyTargetingAfterSummon([summonedMinion]));
     };
 };
 
