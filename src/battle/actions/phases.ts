@@ -208,6 +208,19 @@ export const onBattleStart = () => {
                 })
             );
         }
+        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
+        });
+    };
+};
+
+export const onWaveStart = () => {
+    return (dispatch, getState) => {
+        const { playerSide, enemySide } = getState().battle;
+        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
+        });
+
         enemySide.forEach((combatant: Combatant | null) => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
@@ -221,18 +234,6 @@ export const onBattleStart = () => {
                     );
                 }
             }
-        });
-        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
-        });
-    };
-};
-
-export const onWaveStart = () => {
-    return (dispatch, getState) => {
-        const { playerSide, enemySide } = getState().battle;
-        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
         });
     };
 };
