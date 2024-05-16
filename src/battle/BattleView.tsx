@@ -53,6 +53,7 @@ import {
     canUseAbility,
     getCardByInstanceId,
     hasEffectType,
+    isTurnActionPrevented,
     isUntargetable,
     isValidTarget,
     isWithinAbilityArea,
@@ -878,8 +879,9 @@ const BattlefieldContainer = () => {
         const targetMap = {};
 
         enemySide.forEach((enemy) => {
-            const { targeting, id } = enemy || {};
-            if (!targeting) {
+            const { targeting, id, HP } = enemy || {};
+
+            if (!targeting || HP === 0 || isTurnActionPrevented(findCombatantData(() => state, id))) {
                 return;
             }
 

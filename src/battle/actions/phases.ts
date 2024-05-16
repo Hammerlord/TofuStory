@@ -209,7 +209,7 @@ export const onBattleStart = () => {
             );
         }
         enemySide.forEach((combatant: Combatant | null) => {
-            if (combatant.id) {
+            if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
                 const ability = getNextTelegraphedAbility(actor);
                 if (ability) {
