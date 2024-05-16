@@ -30,6 +30,10 @@ const getAbilityPreviews = ({
     };
 
     ability.actions.forEach((action: Action) => {
+        if (action.target === TARGET_TYPES.SELF && actor.id !== target.id) {
+            return;
+        }
+
         const actorData = findCombatantData(() => previousCombatantStates, actor.id);
         const targetData = findCombatantData(() => previousCombatantStates, target.id);
 
