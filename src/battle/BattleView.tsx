@@ -939,7 +939,7 @@ const BattlefieldContainer = () => {
                         return cloneDeep(preview);
                     }
 
-                    return traverseAndAggregate(preview, acc);
+                    return traverseAndAggregate(cloneDeep(preview), acc);
                 }, targetMap[combatantId]);
 
                 targetMap[combatantId] = aggregated;
