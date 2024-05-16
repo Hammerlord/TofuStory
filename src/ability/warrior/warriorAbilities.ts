@@ -1929,24 +1929,67 @@ export const divineCharge: Ability = {
 
 export const shieldMastery: Ability = {
     name: "Shield Mastery",
-    resourceCost: 0,
+    resourceCost: 1,
     image: ShieldMasteryImage,
     rarity: RARITIES.UNCOMMON,
-    depletedOnUse: true,
+    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            addCards: [block, block, block].map((card) => ({ ...getUpgradeCard(card), removeAfterTurn: true })),
+            armor: 7,
+            addCards: [
+                {
+                    name: "Shield Mastery",
+                    resourceCost: 1,
+                    image: ShieldMasteryImage,
+                    rarity: RARITIES.UNCOMMON,
+                    removeAfterTurn: true,
+                    overrideBodyText: true,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            armor: 7,
+                        },
+                    ],
+                    upgrades: [
+                        {
+                            actions: [
+                                {
+                                    armor: 3,
+                                    addCards: [
+                                        {
+                                            actions: [
+                                                {
+                                                    armor: 3,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    addCardOptions: {
-                        upgradeLevels: 1,
-                    },
+                    armor: 3,
+                    addCards: [
+                        {
+                            actions: [
+                                {
+                                    armor: 3,
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         },
