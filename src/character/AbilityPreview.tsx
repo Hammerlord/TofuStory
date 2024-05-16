@@ -23,6 +23,9 @@ const useStyles = createUseStyles({
         display: "flex",
         whiteSpace: "nowrap",
         top: 25,
+        animationName: "$fadeIn",
+        animationDuration: "0.25s",
+        animationFillMode: "forwards",
     },
     "@keyframes fadeIn": {
         "0%": {
@@ -30,6 +33,7 @@ const useStyles = createUseStyles({
         },
         "100%": {
             opacity: 1,
+            transform: "translateX(-50%) translateY(10px)",
         },
     },
     previewIconContainer: {
@@ -48,9 +52,6 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         color: "white",
         borderRadius: "4px",
-        animationName: "$fadeIn",
-        animationDuration: "0.5s",
-        animationFillMode: "forwards",
         display: "flex",
         whiteSpace: "nowrap",
         top: -5,
