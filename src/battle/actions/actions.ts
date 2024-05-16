@@ -386,15 +386,20 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                 }
 
                 const enemyInfo = findCombatantData(getState, enemy.id);
-                const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
-                dispatch(
-                    updateCombatant({
-                        combatantId: enemy.id,
-                        newProperties: {
-                            targeting,
-                        },
-                    })
-                );
+
+                const ability = getNextTelegraphedAbility(enemyInfo);
+
+                if (ability) {
+                    const targeting = autoPickTarget({ ability, actor: enemyInfo });
+                    dispatch(
+                        updateCombatant({
+                            combatantId: enemy.id,
+                            newProperties: {
+                                targeting,
+                            },
+                        })
+                    );
+                }
             });
         }
     };
@@ -1520,19 +1525,23 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[]) => {
             }
 
             const enemyInfo = findCombatantData(getState, enemy.id);
-            const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
-            const { index, side } = targeting;
+            const ability = getNextTelegraphedAbility(enemyInfo);
 
-            // Only switch if it rolled one of the summoned minions
-            if (minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id)) {
-                dispatch(
-                    updateCombatant({
-                        combatantId: enemy.id,
-                        newProperties: {
-                            targeting,
-                        },
-                    })
-                );
+            if (ability) {
+                const targeting = autoPickTarget({ ability, actor: enemyInfo });
+                const { index, side } = targeting;
+
+                // Only switch if it rolled one of the summoned minions
+                if (minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id)) {
+                    dispatch(
+                        updateCombatant({
+                            combatantId: enemy.id,
+                            newProperties: {
+                                targeting,
+                            },
+                        })
+                    );
+                }
             }
         });
     };

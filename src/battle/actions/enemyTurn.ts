@@ -259,15 +259,18 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
     );
 
     const postUpdateActorInfo = findCombatantData(getState, combatantId);
-    const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(postUpdateActorInfo), actor: postUpdateActorInfo });
-    dispatch(
-        updateCombatant({
-            combatantId,
-            newProperties: {
-                targeting,
-            },
-        })
-    );
+    const ability = getNextTelegraphedAbility(postUpdateActorInfo);
+    if (ability) {
+        const targeting = autoPickTarget({ ability, actor: postUpdateActorInfo });
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    targeting,
+                },
+            })
+        );
+    }
 };
 
 const enemyUseAbility = (combatantId: string) => {
