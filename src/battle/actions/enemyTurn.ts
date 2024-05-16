@@ -1,5 +1,6 @@
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, getRandomItem, shuffle } from "../../utils";
@@ -247,13 +248,22 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
     const updatedAbilities = [...actor.abilities];
     const [used] = updatedAbilities.splice(abilityIndex, 1);
     updatedAbilities.push(used);
-    const targeting = autoPickTarget({ ability: updatedAbilities[0], actor: actorInfo });
 
     dispatch(
         updateCombatant({
             combatantId,
             newProperties: {
                 abilities: updatedAbilities,
+            },
+        })
+    );
+
+    const postUpdateActorInfo = findCombatantData(getState, combatantId);
+    const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(postUpdateActorInfo), actor: postUpdateActorInfo });
+    dispatch(
+        updateCombatant({
+            combatantId,
+            newProperties: {
                 targeting,
             },
         })
