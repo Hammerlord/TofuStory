@@ -294,7 +294,7 @@ const getHitEffects = ({
 
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
-        const { friendly, hostile, combatant, friendlySide } = findCombatantData(getState, combatantId) || {};
+        const { friendly, hostile, combatant, friendlySide, index } = findCombatantData(getState, combatantId) || {};
         if (isActorPlayerSide({ side: getState().battle.playerSide, source: triggerSource })) {
             dispatch(
                 updateBattle({
@@ -371,6 +371,31 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                     discard: [...discard, playerSummonsInPlay[combatantId]],
                 })
             );
+        }
+
+        // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
+        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            getState().battle.enemySide.forEach((enemy) => {
+                if (!enemy?.HP) {
+                    return;
+                }
+
+                const { index: targetingIndex, side } = enemy.targeting;
+                if (index !== targetingIndex || side !== friendlySide) {
+                    return;
+                }
+
+                const enemyInfo = findCombatantData(getState, enemy.id);
+                const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
+                dispatch(
+                    updateCombatant({
+                        combatantId: enemy.id,
+                        newProperties: {
+                            targeting,
+                        },
+                    })
+                );
+            });
         }
     };
 };
