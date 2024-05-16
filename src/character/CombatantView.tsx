@@ -293,7 +293,7 @@ const useStyles = createUseStyles({
         zIndex: 2,
     },
     previewAttacked: {
-        top: 0,
+        top: -15,
     },
 });
 
