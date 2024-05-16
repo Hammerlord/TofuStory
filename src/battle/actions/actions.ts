@@ -68,6 +68,8 @@ import { getUpgradeCard } from "../../Menu/utils";
 import { tributeSummonBuff } from "../../ability/Effects";
 import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
+import { autoPickTarget } from "./enemyTurn";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -1476,6 +1478,26 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 })
             );
         });
+
+        // The player summoned this unit. Rearrange the enemy targeting.
+        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            getState().battle.enemySide.forEach((enemy) => {
+                if (!enemy?.HP) {
+                    return;
+                }
+
+                const enemyInfo = findCombatantData(getState, enemy.id);
+                const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
+                dispatch(
+                    updateCombatant({
+                        combatantId: enemy.id,
+                        newProperties: {
+                            targeting,
+                        },
+                    })
+                );
+            });
+        }
     };
 };
 
@@ -2601,6 +2623,23 @@ const checkSummonMinion = ({
             dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill }));
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
+
+        getState().battle.enemySide.forEach((enemy) => {
+            if (!enemy?.HP) {
+                return;
+            }
+
+            const enemyInfo = findCombatantData(getState, enemy.id);
+            const targeting = autoPickTarget({ ability: getNextTelegraphedAbility(enemyInfo), actor: enemyInfo });
+            dispatch(
+                updateCombatant({
+                    combatantId: enemy.id,
+                    newProperties: {
+                        targeting,
+                    },
+                })
+            );
+        });
     };
 };
 
