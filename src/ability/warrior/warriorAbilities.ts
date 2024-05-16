@@ -522,7 +522,7 @@ export const bunchOBricks: Ability = {
             actions: [
                 {
                     addCardOptions: {
-                        appendCards: 1,
+                        upgradeLevels: 1,
                     },
                 },
             ],
