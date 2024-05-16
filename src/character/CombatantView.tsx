@@ -330,7 +330,7 @@ const CombatantView = forwardRef(
             isHighlighted: boolean;
             showReticle: boolean;
             previewStatUpdate?: PreviewStatUpdate[];
-            previewTargetedBy?: PreviewStatUpdate[];
+            previewTargetedBy?: PreviewStatUpdate;
             selectedAbility?: Ability | CombatAbility;
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
@@ -580,7 +580,7 @@ const CombatantView = forwardRef(
                 </div>
                 {previewTargetedBy && !isEnemy && state?.battle?.isPlayerTurn && (
                     <AbilityPreview
-                        previewStatUpdate={previewTargetedBy}
+                        previewStatUpdate={[previewTargetedBy]}
                         combatant={combatant}
                         isEnemy={true}
                         className={classes.previewAttacked}

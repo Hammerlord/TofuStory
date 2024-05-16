@@ -1,4 +1,5 @@
-import React, { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { cloneDeep } from "lodash";
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
@@ -8,7 +9,6 @@ import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/Abili
 import {
     ACTION_TYPES,
     Ability,
-    Action,
     CombatAbility,
     CombatEffect,
     EFFECT_EVENT_KEYS,
@@ -16,10 +16,11 @@ import {
     Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { PreviewStatUpdate } from "../character/AbilityPreview";
 import CombatantView from "../character/CombatantView";
+import { getNextTelegraphedAbility } from "../character/Telegraph";
+import getAbilityPreviews from "../character/getAbilityPreviews";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import EffectGroupIcon from "../icon/EffectGroupIcon";
@@ -31,36 +32,31 @@ import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import Discard from "./Discard";
 import EndTurnButton from "./EndTurnButton";
-import Hand, { getHandAuraEffects } from "./Hand";
+import Hand from "./Hand";
 import AbilityNotification from "./Notification/AbilityNotification";
 import Notification from "./Notification/Notification";
 import TurnAnnouncement from "./Notification/TurnNotification";
+import ParticleCanvas from "./ParticleCanvas";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { calculateTargetIndices, checkEventTrigger, findCombatantData, stageStatChanges, useAbility } from "./actions/actions";
+import { checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
 import { applyAbilityEventEffects } from "./actions/cardActions";
 import { endEnemyTurn, enemyMoves, startEnemyTurn } from "./actions/enemyTurn";
-import { getUpdatedStats } from "./actions/getUpdatedStats";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, useHandAbility, playerEndTurn, startPlayerTurn } from "./actions/playerTurn";
-import { MAX_HAND_SIZE, TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
-import { passesConditions } from "./passesConditions";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "./actions/playerTurn";
+import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event } from "./types";
 import {
     canTargetIfStealthed,
     canUseAbility,
-    getAbilityResourceCost,
     getCardByInstanceId,
     hasEffectType,
     isUntargetable,
     isValidTarget,
     isWithinAbilityArea,
 } from "./utils";
-import ParticleCanvas from "./ParticleCanvas";
-import getAbilityPreviews from "../character/getAbilityPreviews";
-import { getNextTelegraphedAbility } from "../character/Telegraph";
 
 const useStyles = createUseStyles({
     root: {
@@ -900,10 +896,53 @@ const BattlefieldContainer = () => {
             });
 
             Object.entries(abilityPreviews).forEach(([combatantId, previews]) => {
-                if (!targetMap[combatantId]) {
-                    targetMap[combatantId] = [];
-                }
-                targetMap[combatantId].push(...previews);
+                const traverseAndAggregate = (obj: any, otherObj: any) => {
+                    if (!obj || !otherObj) {
+                        return;
+                    }
+
+                    Object.entries(obj).forEach(([key, val]) => {
+                        if (typeof otherObj[key] === "undefined") {
+                            otherObj[key] = val;
+                            return;
+                        }
+
+                        if (typeof val === "number") {
+                            otherObj[key] = (otherObj[key] || 0) + val;
+                            return;
+                        }
+
+                        if (Array.isArray(val)) {
+                            val.forEach((v, i) => {
+                                if (!otherObj[key][i]) {
+                                    otherObj[key][i] = v;
+                                } else {
+                                    traverseAndAggregate(v, otherObj[key][i]);
+                                }
+                            });
+                            return;
+                        }
+
+                        if (typeof val === "object") {
+                            traverseAndAggregate(val, otherObj[key]);
+                            return;
+                        }
+
+                        otherObj[key] = val;
+                    });
+
+                    return otherObj;
+                };
+
+                const aggregated = previews.reduce((acc, preview: PreviewStatUpdate) => {
+                    if (!acc) {
+                        return cloneDeep(preview);
+                    }
+
+                    return traverseAndAggregate(preview, acc);
+                }, targetMap[combatantId]);
+
+                targetMap[combatantId] = aggregated;
             });
         });
 
