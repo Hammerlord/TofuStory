@@ -287,7 +287,7 @@ const useStyles = createUseStyles({
         bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
-        zIndex: 1,
+        zIndex: 5,
     },
     statChangeContainer: {
         zIndex: 2,
@@ -566,9 +566,6 @@ const CombatantView = forwardRef(
                                 {animation === ANIMATION_TYPES.SNOOZE && (
                                     <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />
                                 )}
-                                <div className={classes.statusEffectAnnouncerContainer}>
-                                    <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
-                                </div>
                             </>
                         )}
                     </div>
@@ -588,6 +585,11 @@ const CombatantView = forwardRef(
                 )}
                 {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} isEnemy={isEnemy} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
+                {oldState?.HP > 0 && (
+                    <div className={classes.statusEffectAnnouncerContainer}>
+                        <StatusEffectAnnouncer statChanges={statChanges} combatant={combatant} />
+                    </div>
+                )}
             </div>
         );
     }
