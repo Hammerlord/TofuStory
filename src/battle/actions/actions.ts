@@ -380,7 +380,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                     return;
                 }
 
-                const { index: targetingIndex, side } = enemy.targeting;
+                const { index: targetingIndex, side } = enemy.targeting || {};
                 if (index !== targetingIndex || side !== friendlySide) {
                     return;
                 }
