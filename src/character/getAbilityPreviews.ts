@@ -7,28 +7,25 @@ import { getAbilityResourceCost } from "../battle/utils";
 import { Combatant, Player } from "./types";
 import { BattleState } from "../battle/reducer";
 import { getUpdatedStats } from "../battle/actions/getUpdatedStats";
+import { PreviewStatUpdate } from "./AbilityPreview";
 
 const getAbilityPreviews = ({
     ability,
-    playerSide,
-    enemySide,
     actor,
     target,
     battle,
 }: {
     ability: CombatAbility | Ability;
-    playerSide: (Combatant | Player | null)[];
-    enemySide: (Combatant | null)[];
     actor: Combatant;
     target: { side: BATTLEFIELD_SIDES; index: number; id: string };
     battle: BattleState;
-}) => {
+}): { [combatantId: string]: PreviewStatUpdate[] } => {
     const result = {};
 
     const previousCombatantStates = {
         battle: {
-            playerSide: [...playerSide],
-            enemySide: [...enemySide],
+            playerSide: [...battle.playerSide],
+            enemySide: [...battle.enemySide],
         },
     };
 

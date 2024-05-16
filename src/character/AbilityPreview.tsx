@@ -1,12 +1,11 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
+import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { Action } from "../ability/types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import Icon from "../icon/Icon";
 import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon, ShieldIcon } from "../images/icons";
 import { Combatant, Player } from "./types";
-import PlayerResources from "./PlayerResources";
-import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -107,10 +106,12 @@ const AbilityPreview = ({
     previewStatUpdate,
     combatant,
     isEnemy,
+    className,
 }: {
     previewStatUpdate: PreviewStatUpdate[];
     combatant: Combatant;
     isEnemy: boolean;
+    className?: string;
 }) => {
     const classes = useStyles();
 
@@ -129,7 +130,7 @@ const AbilityPreview = ({
 
     return (
         <div
-            className={classNames(classes.statUpdatePreview, {
+            className={classNames(classes.statUpdatePreview, className, {
                 nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
                 enemyPreview: isEnemy,
             })}

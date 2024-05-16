@@ -5,8 +5,8 @@ import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
-import { Event } from "../battle/types";
-import { StatChange, getCharacterStatChanges } from "../battle/utils";
+import { BATTLEFIELD_SIDES, Event } from "../battle/types";
+import { StatChange, getCharacterStatChanges, isWithinAbilityArea } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
 import EffectGroupIcon from "../icon/EffectGroupIcon";
@@ -22,7 +22,7 @@ import Health from "./HealthView";
 import PlayerResources from "./PlayerResources";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
-import Telegraph from "./Telegraph";
+import Telegraph, { getNextTelegraphedAbility } from "./Telegraph";
 import Weapon from "./Weapon";
 import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import EffectIconsContainer from "./effects/EffectIcons";
@@ -30,6 +30,7 @@ import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
 import BlockIcon from "../icon/BlockIcon";
+import getAbilityPreviews from "./getAbilityPreviews";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -291,6 +292,9 @@ const useStyles = createUseStyles({
     statChangeContainer: {
         zIndex: 2,
     },
+    previewAttacked: {
+        top: 0,
+    },
 });
 
 interface CurrentEvent extends Event {
@@ -311,6 +315,7 @@ const CombatantView = forwardRef(
             isHighlighted,
             showReticle,
             previewStatUpdate,
+            previewTargetedBy,
             selectedAbility,
             ...other
         }: {
@@ -325,6 +330,7 @@ const CombatantView = forwardRef(
             isHighlighted: boolean;
             showReticle: boolean;
             previewStatUpdate?: PreviewStatUpdate[];
+            previewTargetedBy?: PreviewStatUpdate[];
             selectedAbility?: Ability | CombatAbility;
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
@@ -572,7 +578,14 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                 </div>
-
+                {previewTargetedBy && !isEnemy && state?.battle?.isPlayerTurn && (
+                    <AbilityPreview
+                        previewStatUpdate={previewTargetedBy}
+                        combatant={combatant}
+                        isEnemy={true}
+                        className={classes.previewAttacked}
+                    />
+                )}
                 {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} isEnemy={isEnemy} />}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
             </div>

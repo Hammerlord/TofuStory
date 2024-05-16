@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { AreaIndicator } from "../ability/AbilityView/AreaView";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { ACTION_TYPES } from "../ability/types";
+import { ACTION_TYPES, Ability } from "../ability/types";
 import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/utils";
@@ -139,6 +139,12 @@ const useStyles = createUseStyles({
     },
 });
 
+export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo): Ability | null => {
+    const { combatant } = combatantInfo || {};
+    const { ability: castingAbility } = combatant?.casting || {};
+    return castingAbility || combatant?.abilities[getUseAbilityIndex(combatantInfo)];
+};
+
 /**
  * Tells the player what this combatant wants to do next.
  */
@@ -151,8 +157,8 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return null;
     }
 
-    const { ability: castingAbility, channelDuration, castTime: castingCastTime } = combatant?.casting || {};
-    const ability = castingAbility || combatant?.abilities[getUseAbilityIndex(combatantInfo)];
+    const { channelDuration, castTime: castingCastTime } = combatant?.casting || {};
+    const ability = getNextTelegraphedAbility(combatantInfo);
 
     if (!ability) {
         return null;

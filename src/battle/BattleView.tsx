@@ -60,6 +60,7 @@ import {
 } from "./utils";
 import ParticleCanvas from "./ParticleCanvas";
 import getAbilityPreviews from "../character/getAbilityPreviews";
+import { getNextTelegraphedAbility } from "../character/Telegraph";
 
 const useStyles = createUseStyles({
     root: {
@@ -871,12 +872,42 @@ const BattlefieldContainer = () => {
 
         return getAbilityPreviews({
             ability: selectedAbility,
-            playerSide,
-            enemySide,
             actor: selectedMinion || player,
             target: hoveredCombatant,
             battle: state.battle,
         });
+    })();
+
+    const targetedByEnemyAbilities = (() => {
+        const targetMap = {};
+
+        enemySide.forEach((enemy) => {
+            const { targeting, id } = enemy || {};
+            if (!targeting) {
+                return;
+            }
+
+            const ability = getNextTelegraphedAbility(findCombatantData(() => state, id));
+
+            const { index, side } = enemy.targeting;
+            const targetId = state.battle[side]?.[index]?.id;
+
+            const abilityPreviews = getAbilityPreviews({
+                ability,
+                actor: enemy,
+                target: { index, side, id: targetId },
+                battle: state.battle,
+            });
+
+            Object.entries(abilityPreviews).forEach(([combatantId, previews]) => {
+                if (!targetMap[combatantId]) {
+                    targetMap[combatantId] = [];
+                }
+                targetMap[combatantId].push(...previews);
+            });
+        });
+
+        return targetMap;
     })();
 
     const animationCanvas = useMemo(
@@ -947,6 +978,7 @@ const BattlefieldContainer = () => {
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         previewStatUpdate={abilityUsePreviews[enemy?.id]}
+                                        previewTargetedBy={targetedByEnemyAbilities[enemy?.id]}
                                         selectedAbility={abilityToUse}
                                         ref={enemyRefs[i]}
                                     />
@@ -1001,6 +1033,7 @@ const BattlefieldContainer = () => {
                                                 selectedAbility={abilityToUse}
                                                 ref={allyRefs[i]}
                                                 previewStatUpdate={abilityUsePreviews[ally?.id]}
+                                                previewTargetedBy={targetedByEnemyAbilities[ally?.id]}
                                             />
                                         );
                                     })}

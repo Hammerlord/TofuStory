@@ -34,6 +34,10 @@ export interface Combatant extends Minion {
     items: Item[];
     mesos?: number;
     weapon?: string; // Weapon image
+    targeting?: {
+        side: BATTLEFIELD_SIDES;
+        index?: number;
+    };
 }
 
 export interface Player extends Combatant {

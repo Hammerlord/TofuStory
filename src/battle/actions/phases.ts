@@ -13,9 +13,11 @@ import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
 import { calculateMesoGain } from "../utils";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
-import { checkEventTrigger } from "./actions";
+import { checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions";
 import { prepareForDiscard } from "./playerTurn";
+import { autoPickTarget } from "./enemyTurn";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -206,6 +208,20 @@ export const onBattleStart = () => {
                 })
             );
         }
+        enemySide.forEach((combatant: Combatant | null) => {
+            if (combatant.id) {
+                const actor = findCombatantData(getState, combatant.id);
+                const ability = getNextTelegraphedAbility(actor);
+                if (ability) {
+                    dispatch(
+                        updateCombatant({
+                            combatantId: combatant.id,
+                            newProperties: { targeting: autoPickTarget({ ability, actor: findCombatantData(getState, combatant.id) }) },
+                        })
+                    );
+                }
+            }
+        });
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
         });

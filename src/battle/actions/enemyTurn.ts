@@ -40,7 +40,7 @@ const { updateBattle, updateBattleState } = battleStateSlice.actions;
  * Given an ability, pick a target that makes sense.
  * Index may be undefined if there were no valid indices to choose from.
  */
-const autoPickTarget = ({
+export const autoPickTarget = ({
     ability,
     actor,
 }: {
@@ -247,12 +247,14 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
     const updatedAbilities = [...actor.abilities];
     const [used] = updatedAbilities.splice(abilityIndex, 1);
     updatedAbilities.push(used);
+    const targeting = autoPickTarget({ ability: updatedAbilities[0], actor: actorInfo });
 
     dispatch(
         updateCombatant({
             combatantId,
             newProperties: {
                 abilities: updatedAbilities,
+                targeting,
             },
         })
     );
@@ -273,7 +275,7 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
 
-        const { side, index } = autoPickTarget({ ability, actor: actorData });
+        const { side, index } = actor?.targeting || autoPickTarget({ ability, actor: actorData });
         const { castTime, channelDuration } = ability;
 
         if (typeof index === "undefined") {
