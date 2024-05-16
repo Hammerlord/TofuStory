@@ -575,7 +575,7 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                 </div>
-                {previewTargetedBy && !isEnemy && state?.battle?.isPlayerTurn && (
+                {previewTargetedBy && !isEnemy && state?.battle?.isPlayerTurn && !action && (
                     <AbilityPreview
                         previewStatUpdate={[previewTargetedBy]}
                         combatant={combatant}
