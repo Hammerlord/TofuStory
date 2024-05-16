@@ -23,7 +23,7 @@ export const rageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 5,
+                triggerFrequencyFromSum: 7,
                 addCards: [furiousStrikeCard],
             },
         },
@@ -43,7 +43,7 @@ export const rampageStone: Item = {
             class: EFFECT_CLASSES.BUFF,
             onResourcesSpent: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 4,
+                triggerFrequencyFromSum: 5,
                 addCards: [furiousStrikeCard],
             },
         },
