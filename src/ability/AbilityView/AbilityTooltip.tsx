@@ -46,7 +46,9 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX
             obj.forEach(findCardsToAdd);
         } else if (typeof obj === "object") {
             const { addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {}, summon, ...other } = obj;
-            const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])];
+            const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])].filter(
+                (obj) => obj?.name // Sometimes the addCards object is being grabbed from upgrade properties and isn't a real card
+            );
 
             if (summon) {
                 const summonCards = summon.reduce((acc, config: ActionSummon) => {
