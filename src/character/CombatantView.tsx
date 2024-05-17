@@ -31,6 +31,7 @@ import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
 import BlockIcon from "../icon/BlockIcon";
 import getAbilityPreviews from "./getAbilityPreviews";
+import { BATTLE_STATES } from "../battle/reducer";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -478,6 +479,10 @@ const CombatantView = forwardRef(
         const overrideWeapon = oldState?.effects?.find(({ override }) => override?.weapon !== undefined)?.override?.weapon;
         const weapon = overrideWeapon !== undefined ? overrideWeapon : oldState?.weapon;
 
+        const { isPlayerTurn, state: battleState } = state.battle || {};
+        const showIncomingDamagePreview =
+            previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !action;
+
         return (
             <div
                 className={classNames(classes.root, {
@@ -575,7 +580,7 @@ const CombatantView = forwardRef(
                         </div>
                     )}
                 </div>
-                {previewTargetedBy && !isEnemy && state?.battle?.isPlayerTurn && !action && (
+                {showIncomingDamagePreview && (
                     <AbilityPreview
                         previewStatUpdate={[previewTargetedBy]}
                         combatant={combatant}
