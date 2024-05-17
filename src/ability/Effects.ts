@@ -216,11 +216,27 @@ export const immunity: Effect = {
 
 export const ward: Effect = {
     ...immunity,
-    type: EFFECT_TYPES.ATTACK_IMMUNITY,
+    type: EFFECT_TYPES.IMMUNITY,
     name: "Ward",
-    description: "Deflects damage from the next attack.",
+    description: "Deflects the next non-auto attack.",
     duration: Infinity,
-    onReceiveAttack: { removeEffect: true },
+    onReceiveAttack: {
+        disableTriggerFromProcs: true,
+        removeEffect: true,
+    },
+    onFailedToReceiveEffect: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                comparator: "eq",
+            },
+        ],
+        disableTriggerFromProcs: true,
+        removeEffect: true,
+    },
 };
 
 export const raging: Effect = {
@@ -324,7 +340,7 @@ export const warding: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: GemHeartImage,
-    description: "Periodically gaining a shield that wards off a single attack.",
+    description: "Periodically gaining a shield that wards off the next non-auto attack.",
     turnsTriggerFrequency: 2,
     onWaveStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
