@@ -2880,21 +2880,21 @@ export const outrage: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             damage: 5,
-        },
-        {
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            damage: 5,
-        },
-        {
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            damage: 5,
             applyAbilityEffects: {
                 pile: CARD_PILE_TYPES.HAND,
                 abilityEffects: [{ resourceCost: 1 }, { resourceCost: -1 }],
                 mode: "random-pick",
             },
+        },
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
+        },
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
         },
     ],
     upgrades: [
