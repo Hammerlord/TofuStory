@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { AreaIndicator } from "../ability/AbilityView/AreaView";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability } from "../ability/types";
+import { ACTION_TYPES, Ability, TARGET_TYPES } from "../ability/types";
 import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/utils";
@@ -191,6 +191,21 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         }
     })();
 
+    const getTargetElement = () => {
+        const { index: targetIndex, side: targetSide } = combatant.targeting || {};
+        const targetCombatant = battle[targetSide]?.[targetIndex];
+        const isExclusionarySelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF && action.excludePrimaryTarget);
+        if (!targetCombatant || abilityHasYetToCast || isExclusionarySelfCast) {
+            return null;
+        }
+
+        return (
+            <span>
+                <Icon icon={targetCombatant.image} />
+            </span>
+        );
+    };
+
     const area = ability.actions.reduce((acc, action) => {
         if (action.area > acc) {
             return action.area;
@@ -279,6 +294,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                                 <Icon icon={<HourglassIcon />} size="sm" />
                             </span>
                         )}
+                        {getTargetElement()}
                         {isTurnPrevented && <Icon icon={NoEntryIcon} size="sm" className={classes.cancelIcon} />}
                     </span>
                 </div>
