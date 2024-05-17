@@ -22,7 +22,7 @@ const getAbilityPreviews = ({
 }): { [combatantId: string]: PreviewStatUpdate[] } => {
     const result = {};
     const hasYetToCastAbility = !actor.casting && ability?.castTime;
-    if (hasYetToCastAbility) {
+    if (!ability || hasYetToCastAbility) {
         return result;
     }
 
