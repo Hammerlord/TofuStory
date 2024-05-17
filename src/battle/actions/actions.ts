@@ -1157,6 +1157,46 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
     }
 };
 
+/**
+ * If a player or an ally taunts, the enemy targeting should reorient to it.
+ */
+const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }) => {
+    return (dispatch, getState) => {
+        if (effectsApplied.every((effect) => effect.type !== EFFECT_TYPES.TAUNT)) {
+            return;
+        }
+
+        const { friendlySide, index } = findCombatantData(getState, combatantId) || {};
+        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            return;
+        }
+
+        getState().battle.enemySide.forEach((enemy) => {
+            if (!enemy?.HP) {
+                return;
+            }
+
+            const enemyInfo = findCombatantData(getState, enemy.id);
+            const ability = getNextTelegraphedAbility(enemyInfo);
+
+            if (ability) {
+                const targeting = autoPickTarget({ ability, actor: enemyInfo });
+                // If targeting picked the new taunting unit, then switch targets.
+                if (targeting.side === friendlySide && targeting.index === index) {
+                    dispatch(
+                        updateCombatant({
+                            combatantId: enemy.id,
+                            newProperties: {
+                                targeting,
+                            },
+                        })
+                    );
+                }
+            }
+        });
+    };
+};
+
 export const triggerStatChangeEvents =
     (statChanges: { statUpdate: UpdatedCombatantStats; source?: TriggerSource }[]) => (dispatch, getState) => {
         statChanges.forEach(({ statUpdate, source }) => {
@@ -1227,6 +1267,8 @@ export const triggerStatChangeEvents =
                     })
                 );
             });
+
+            dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId, effectsApplied: effects }));
 
             removedEffects.forEach((e: CombatEffect) => {
                 if (!e.onRemoved) {
