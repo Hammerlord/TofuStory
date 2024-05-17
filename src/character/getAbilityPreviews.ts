@@ -21,6 +21,10 @@ const getAbilityPreviews = ({
     battle: BattleState;
 }): { [combatantId: string]: PreviewStatUpdate[] } => {
     const result = {};
+    const hasYetToCastAbility = !actor.casting && ability?.castTime;
+    if (hasYetToCastAbility) {
+        return result;
+    }
 
     const previousCombatantStates = {
         battle: {
