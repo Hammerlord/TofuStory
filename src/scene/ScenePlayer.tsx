@@ -491,7 +491,7 @@ const ScenePlayer = ({
         const upgraded = candidates.map((card) => getUpgradeCard(card));
 
         const updatedDeck = deck.map((card: CombatAbility) => {
-            return candidates.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
+            return upgraded.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
         });
 
         updateDeck(updatedDeck);
