@@ -1551,14 +1551,14 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             );
         });
 
-        // The player summoned this unit. Rearrange the enemy targeting.
-        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
-            dispatch(updateEnemyTargetingAfterSummon(minionsSummoned));
-        }
+        dispatch(updateEnemyTargetingAfterSummon(minionsSummoned, friendlySide));
     };
 };
 
-const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[]) => {
+/**
+ * Rearrange the enemy targeting based on new combatants being added to the board
+ */
+const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummoned: BATTLEFIELD_SIDES) => {
     return (dispatch, getState) => {
         const battle = getState().battle;
         battle.enemySide.forEach((enemy) => {
@@ -1573,8 +1573,12 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[]) => {
                 const targeting = autoPickTarget({ ability, actor: enemyInfo });
                 const { index, side } = targeting;
 
-                // Only switch if it rolled one of the summoned minions
-                if (minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id)) {
+                // If the summoned minions are on the player side, only switch if it rolled one of them
+                const isTargetingNewPlayerSideMinion =
+                    sideSummoned === BATTLEFIELD_SIDES.PLAYER_SIDE &&
+                    minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id);
+
+                if (!enemy.targeting || isTargetingNewPlayerSideMinion) {
                     dispatch(
                         updateCombatant({
                             combatantId: enemy.id,
@@ -1663,6 +1667,8 @@ const checkHandleMorph = ({
                 })
             );
         });
+
+        dispatch(updateEnemyTargetingAfterSummon([summons], side));
     };
 };
 
@@ -2712,7 +2718,7 @@ const checkSummonMinion = ({
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
-        dispatch(updateEnemyTargetingAfterSummon([summonedMinion]));
+        dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
     };
 };
 
