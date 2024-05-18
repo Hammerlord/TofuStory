@@ -576,15 +576,6 @@ export const hammerang: Ability = {
                             actions: [
                                 {
                                     damage: 2,
-                                    addCards: [
-                                        {
-                                            actions: [
-                                                {
-                                                    damage: 2,
-                                                },
-                                            ],
-                                        },
-                                    ],
                                 },
                             ],
                         },
@@ -598,15 +589,9 @@ export const hammerang: Ability = {
             actions: [
                 {
                     damage: 2,
-                    addCards: [
-                        {
-                            actions: [
-                                {
-                                    damage: 2,
-                                },
-                            ],
-                        },
-                    ],
+                    addCardOptions: {
+                        upgradeLevels: 1,
+                    },
                 },
             ],
         },
