@@ -118,7 +118,14 @@ const getAbilityPreviews = ({
         }
 
         const previews = previewAction({
-            actionFn: performAction({ action, parent: actionParent, selectedIndex: target.index, side: target.side, actorId: actor.id }),
+            actionFn: performAction({
+                action,
+                parent: actionParent,
+                selectedIndex: target.index,
+                side: target.side,
+                actorId: actor.id,
+                disableRollExtraTargets: true,
+            }),
             battle: { ...battle, ...previousCombatantStates },
         });
 
