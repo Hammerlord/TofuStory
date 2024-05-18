@@ -2176,7 +2176,7 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
     };
 };
 
-const performAction = ({
+export const performAction = ({
     action,
     selectedIndex,
     side,
@@ -2184,6 +2184,7 @@ const performAction = ({
     parent,
     parentSource,
     isAutoCast,
+    disableRollExtraTargets,
 }: {
     action: Action;
     selectedIndex: number;
@@ -2192,6 +2193,7 @@ const performAction = ({
     parent?: Ability | Item | CombatAbility;
     parentSource?: TriggerSource;
     isAutoCast?: boolean;
+    disableRollExtraTargets?: boolean; // Target indices determinism for consumers that require it, eg. damage preview
 }) => {
     return (dispatch, getState) => {
         const actorData: CombatantInfo | undefined = findCombatantData(getState, actorId);
@@ -2212,6 +2214,7 @@ const performAction = ({
             targetData: target,
             battle: getState().battle,
             source: parentSource,
+            disableRollExtraTargets,
         });
 
         const targetIds = targetIndices.map((i: number) => combatants[i]?.id).filter((v) => v !== undefined);

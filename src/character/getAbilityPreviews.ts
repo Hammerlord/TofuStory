@@ -1,45 +1,89 @@
-import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
-import { calculateTargetIndices, findCombatantData, stageStatChanges } from "../battle/actions/actions";
+import { findCombatantData, performAction } from "../battle/actions/actions";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { passesConditions } from "../battle/passesConditions";
+import { BattleState } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../battle/types";
 import { getAbilityResourceCost } from "../battle/utils";
-import { Combatant, Player } from "./types";
-import { BattleState } from "../battle/reducer";
-import { getUpdatedStats } from "../battle/actions/getUpdatedStats";
+import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
+import { Combatant } from "./types";
+
+const previewAction = ({ actionFn, battle }) => {
+    const statUpdates = {};
+    const dispatch = (payload) => {
+        if (typeof payload === "function") {
+            return payload(dispatch, getState);
+        }
+
+        if (payload?.payload) {
+            battle = { ...battle, ...payload.payload };
+
+            if (payload?.payload?.statUpdates) {
+                Object.entries(payload?.payload?.statUpdates).forEach(([key, value]) => {
+                    if (!statUpdates[key]) {
+                        statUpdates[key] = [];
+                    }
+
+                    statUpdates[key].push(value);
+                });
+            }
+        }
+    };
+
+    const getState = () => ({
+        battle,
+    });
+
+    actionFn(dispatch, getState);
+    return {
+        battle,
+        statUpdates,
+    };
+};
 
 const getAbilityPreviews = ({
     ability,
     actor,
     target,
     battle,
+    combatantStates,
 }: {
     ability: CombatAbility | Ability;
     actor: Combatant;
     target: { side: BATTLEFIELD_SIDES; index: number; id: string };
     battle: BattleState;
-}): { [combatantId: string]: PreviewStatUpdate[] } => {
+    combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
+}): {
+    result: { [combatantId: string]: PreviewStatUpdate[] };
+    combatantStates: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
+} => {
     const result = {};
     const hasYetToCastAbility = !actor.casting && ability?.castTime;
-    if (!ability || hasYetToCastAbility) {
-        return result;
-    }
 
-    const previousCombatantStates = {
-        battle: {
-            playerSide: [...battle.playerSide],
-            enemySide: [...battle.enemySide],
-        },
+    const previousCombatantStates = combatantStates || {
+        playerSide: [...battle.playerSide],
+        enemySide: [...battle.enemySide],
     };
+
+    if (!ability || hasYetToCastAbility) {
+        return {
+            result,
+            combatantStates: previousCombatantStates,
+        };
+    }
 
     ability.actions.forEach((action: Action) => {
         if (action.target === TARGET_TYPES.SELF && actor.id !== target.id) {
             return;
         }
 
-        const actorData = findCombatantData(() => previousCombatantStates, actor.id);
-        const targetData = findCombatantData(() => previousCombatantStates, target.id);
+        const lookupCombatantDataHelper = (id: string) => {
+            return findCombatantData(() => ({ battle: previousCombatantStates }), id);
+        };
+
+        const actorData = lookupCombatantDataHelper(actor.id);
+        const targetData = lookupCombatantDataHelper(target.id);
 
         const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
             if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
@@ -73,61 +117,44 @@ const getAbilityPreviews = ({
             return;
         }
 
-        const targetIndices = calculateTargetIndices({
-            action,
-            selectedIndex: target.index,
-            side: target.side,
-            actorData,
-            targetData,
-            battle,
-            disableRollExtraTargets: true,
-            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+        const previews = previewAction({
+            actionFn: performAction({ action, parent: actionParent, selectedIndex: target.index, side: target.side, actorId: actor.id }),
+            battle: { ...battle, ...previousCombatantStates },
         });
 
-        const targetIds = targetIndices
-            .map((i: number) => previousCombatantStates.battle[target.side]?.[i]?.id)
-            .filter((v) => v !== undefined);
+        previousCombatantStates.playerSide = previews.battle.playerSide;
+        previousCombatantStates.enemySide = previews.battle.enemySide;
+        const targetsRandomly =
+            action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget);
 
-        const updatedStatsProperties = {
-            actorId: actor.id,
-            targetIds,
-            selectedIndex: target.index,
-            action,
-            getCombatantById: (id: string) => findCombatantData(() => previousCombatantStates, id),
-            actionParent,
-            source,
-            ...battle,
-        };
+        Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
+            statUpdates.forEach((statUpdate) => {
+                const combatantId = statUpdate.combatantId;
+                if (!result[combatantId]) {
+                    result[combatantId] = [];
+                }
 
-        getUpdatedStats(updatedStatsProperties).forEach(({ statUpdate, action }) => {
-            const combatantId = statUpdate.combatantId;
-            if (!result[combatantId]) {
-                result[combatantId] = [];
-            }
+                const combatantInfo = lookupCombatantDataHelper(combatantId);
+                if (!combatantInfo?.combatant) {
+                    return;
+                }
 
-            const combatantInfo = findCombatantData(() => previousCombatantStates, combatantId);
-            if (!combatantInfo?.combatant) {
-                return;
-            }
+                const { index } = combatantInfo;
+                const hasRandomSecondaryTargets = action.numTargets && target.index !== index;
 
-            const { index, combatant, friendlySide } = combatantInfo;
-            const hasRandomSecondaryTargets = action.numTargets && target.index !== index;
-
-            const staging = stageStatChanges(statUpdate, combatant);
-            // If it's a multi-hit attack being previewed, we want to update the previous combatant state so we can get a more accurate preview of the proceeding hits
-            previousCombatantStates.battle[friendlySide][index] = staging;
-            const targetsRandomly =
-                action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget);
-
-            result[combatantId].push({
-                statUpdate,
-                nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
-                action,
+                result[combatantId].push({
+                    statUpdate,
+                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
+                    action,
+                });
             });
         });
     });
 
-    return result;
+    return {
+        result,
+        combatantStates: previousCombatantStates,
+    };
 };
 
 export default getAbilityPreviews;

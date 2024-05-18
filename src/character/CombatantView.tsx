@@ -5,10 +5,12 @@ import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
-import { BATTLEFIELD_SIDES, Event } from "../battle/types";
-import { StatChange, getCharacterStatChanges, isWithinAbilityArea } from "../battle/utils";
+import { BATTLE_STATES } from "../battle/reducer";
+import { Event } from "../battle/types";
+import { StatChange, getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
+import BlockIcon from "../icon/BlockIcon";
 import EffectGroupIcon from "../icon/EffectGroupIcon";
 import HitIcon from "../icon/HitIcon";
 import Icon from "../icon/Icon";
@@ -22,16 +24,13 @@ import Health from "./HealthView";
 import PlayerResources from "./PlayerResources";
 import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
-import Telegraph, { getNextTelegraphedAbility } from "./Telegraph";
+import Telegraph from "./Telegraph";
 import Weapon from "./Weapon";
 import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
 import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
-import BlockIcon from "../icon/BlockIcon";
-import getAbilityPreviews from "./getAbilityPreviews";
-import { BATTLE_STATES } from "../battle/reducer";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {

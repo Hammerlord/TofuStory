@@ -872,12 +872,13 @@ const BattlefieldContainer = () => {
             actor: selectedMinion || player,
             target: hoveredCombatant,
             battle: state.battle,
-        });
+        }).result;
     })();
 
     const targetedByEnemyAbilities = (() => {
         const targetMap = {};
 
+        let previousCombatantStates;
         enemySide.forEach((enemy) => {
             const { targeting, id, HP } = enemy || {};
 
@@ -895,9 +896,13 @@ const BattlefieldContainer = () => {
                 actor: enemy,
                 target: { index, side, id: targetId },
                 battle: state.battle,
+                combatantStates: previousCombatantStates,
             });
 
-            Object.entries(abilityPreviews).forEach(([combatantId, previews]) => {
+            const { result, combatantStates } = abilityPreviews;
+            previousCombatantStates = combatantStates;
+
+            Object.entries(result).forEach(([combatantId, previews]) => {
                 const traverseAndAggregate = (obj: any, otherObj: any) => {
                     if (!obj || !otherObj) {
                         return;
