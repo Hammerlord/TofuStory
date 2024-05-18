@@ -162,7 +162,7 @@ const AbilityPreview = ({
         return null;
     }
 
-    const isNondeterministic = previewStatUpdate[0].nondeterministic;
+    const isNondeterministic = previewStatUpdate[0]?.nondeterministic;
     // Just show the first item, for abilities like Tribolt
     if (isNondeterministic) {
         previewStatUpdate = previewStatUpdate.slice(0, 1);
